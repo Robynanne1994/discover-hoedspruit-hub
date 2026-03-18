@@ -75,10 +75,10 @@ const CategoriesSection = () => {
             {quick.map((cat) => {
               const Icon = getIcon(cat.icon);
               return (
-                <a key={cat.id} href="#" className="flex items-center gap-2 px-5 py-3 rounded-full bg-card border border-border hover:border-primary hover:shadow-warm transition-all duration-200">
+                <Link key={cat.id} to={`/category/${cat.id}`} className="flex items-center gap-2 px-5 py-3 rounded-full bg-card border border-border hover:border-primary hover:shadow-warm transition-all duration-200">
                   <Icon className="h-4 w-4 text-primary" />
                   <span className="text-foreground font-medium text-sm">{cat.title}</span>
-                </a>
+                </Link>
               );
             })}
           </div>
