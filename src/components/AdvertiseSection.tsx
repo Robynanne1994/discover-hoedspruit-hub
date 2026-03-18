@@ -1,13 +1,24 @@
 import { Megaphone, BarChart3, Eye, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-const benefits = [
-  { icon: Eye, text: "Reach thousands of visitors monthly" },
-  { icon: BarChart3, text: "Track your listing performance" },
-  { icon: CheckCircle, text: "Featured placement in search results" },
-];
+const iconMap: Record<string, any> = { Eye, BarChart3, CheckCircle };
 
 const AdvertiseSection = () => {
+  const { data } = useQuery({
+    queryKey: ["site-content", "advertise"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("site_content").select("content").eq("section", "advertise").single();
+      if (error) throw error;
+      return data?.content as { title?: string; description?: string; benefits?: string[] } | null;
+    },
+  });
+
+  const title = data?.title ?? "Advertise Your Business";
+  const description = data?.description ?? "";
+  const benefits = data?.benefits ?? [];
+
   return (
     <section id="advertise" className="section-padding bg-background">
       <div className="container-wide">
@@ -19,30 +30,22 @@ const AdvertiseSection = () => {
           <div className="relative z-10 max-w-2xl">
             <div className="inline-flex items-center gap-2 bg-secondary-foreground/10 rounded-full px-4 py-2 mb-6">
               <Megaphone className="h-4 w-4 text-secondary-foreground" />
-              <span className="text-secondary-foreground text-sm font-medium">
-                For Businesses
-              </span>
+              <span className="text-secondary-foreground text-sm font-medium">For Businesses</span>
             </div>
 
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-secondary-foreground mb-4">
-              Advertise Your Business
-            </h2>
-            <p className="text-secondary-foreground/80 text-lg mb-8 leading-relaxed">
-              Get your restaurant, lodge, or activity in front of tourists and locals exploring Hoedspruit. Affordable packages for every business size.
-            </p>
+            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-secondary-foreground mb-4">{title}</h2>
+            <p className="text-secondary-foreground/80 text-lg mb-8 leading-relaxed">{description}</p>
 
             <ul className="space-y-3 mb-8">
-              {benefits.map((b) => (
-                <li key={b.text} className="flex items-center gap-3 text-secondary-foreground/90">
-                  <b.icon className="h-5 w-5 text-accent flex-shrink-0" />
-                  <span className="font-medium">{b.text}</span>
+              {benefits.map((b, i) => (
+                <li key={i} className="flex items-center gap-3 text-secondary-foreground/90">
+                  <CheckCircle className="h-5 w-5 text-accent flex-shrink-0" />
+                  <span className="font-medium">{b}</span>
                 </li>
               ))}
             </ul>
 
-            <Button size="lg" className="text-base px-8 py-6 shadow-warm">
-              Get Started
-            </Button>
+            <Button size="lg" className="text-base px-8 py-6 shadow-warm">Get Started</Button>
           </div>
         </div>
       </div>

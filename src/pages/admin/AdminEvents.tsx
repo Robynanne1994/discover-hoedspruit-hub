@@ -1,0 +1,127 @@
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import { Plus, Pencil, Trash2 } from "lucide-react";
+import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+
+type Event = Tables<"events">;
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "" };
+
+const AdminEvents = () => {
+  const qc = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<Event | null>(null);
+  const [form, setForm] = useState(emptyForm);
+
+  const { data: events, isLoading } = useQuery({
+    queryKey: ["admin-events"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("events").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const upsert = useMutation({
+    mutationFn: async (values: TablesInsert<"events">) => {
+      if (editing) {
+        const { error } = await supabase.from("events").update(values).eq("id", editing.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("events").insert(values);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-events"] });
+      toast.success(editing ? "Event updated" : "Event created");
+      resetForm();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const deleteMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("events").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-events"] });
+      toast.success("Event deleted");
+    },
+  });
+
+  const resetForm = () => { setForm(emptyForm); setEditing(null); setOpen(false); };
+
+  const openEdit = (ev: Event) => {
+    setEditing(ev);
+    setForm({ title: ev.title, description: ev.description ?? "", date: ev.date, location: ev.location ?? "", tag: ev.tag ?? "", image_url: ev.image_url ?? "" });
+    setOpen(true);
+  };
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="font-heading text-3xl font-bold text-foreground">Events</h1>
+        <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
+          <DialogTrigger asChild>
+            <Button className="gap-2"><Plus className="h-4 w-4" /> Add Event</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>{editing ? "Edit Event" : "Add Event"}</DialogTitle></DialogHeader>
+            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
+              <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
+              <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+              <div><Label>Date</Label><Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required placeholder="e.g. 22 March 2026 or Every Saturday" /></div>
+              <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
+              <div><Label>Tag</Label><Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} placeholder="e.g. Market, Sport, Dining" /></div>
+              <div><Label>Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
+              <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
+            </form>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-muted">
+              <tr>
+                <th className="text-left p-3 font-medium text-muted-foreground">Title</th>
+                <th className="text-left p-3 font-medium text-muted-foreground">Date</th>
+                <th className="text-left p-3 font-medium text-muted-foreground">Location</th>
+                <th className="text-left p-3 font-medium text-muted-foreground">Tag</th>
+                <th className="p-3"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {events?.map((ev) => (
+                <tr key={ev.id} className="border-t border-border">
+                  <td className="p-3 font-medium text-foreground">{ev.title}</td>
+                  <td className="p-3 text-muted-foreground">{ev.date}</td>
+                  <td className="p-3 text-muted-foreground">{ev.location ?? "—"}</td>
+                  <td className="p-3 text-muted-foreground">{ev.tag ?? "—"}</td>
+                  <td className="p-3 flex gap-1 justify-end">
+                    <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(ev.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  </td>
+                </tr>
+              ))}
+              {events?.length === 0 && (
+                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No events yet.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AdminEvents;
