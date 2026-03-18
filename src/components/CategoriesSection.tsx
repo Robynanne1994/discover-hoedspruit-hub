@@ -55,7 +55,7 @@ const CategoriesSection = () => {
             const Icon = getIcon(cat.icon);
             const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
             return (
-              <a key={cat.id} href="#" className="group relative rounded-xl overflow-hidden aspect-[4/5] shadow-card hover:shadow-warm transition-all duration-300">
+              <Link key={cat.id} to={`/category/${cat.id}`} className="group relative rounded-xl overflow-hidden aspect-[4/5] shadow-card hover:shadow-warm transition-all duration-300">
                 <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
                 <div className="relative h-full flex flex-col justify-end p-6">
@@ -65,7 +65,7 @@ const CategoriesSection = () => {
                   </div>
                   <h3 className="font-heading text-2xl font-bold text-primary-foreground mb-1">{cat.title}</h3>
                 </div>
-              </a>
+              </Link>
             );
           })}
         </div>
