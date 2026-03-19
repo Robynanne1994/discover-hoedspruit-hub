@@ -46,7 +46,7 @@ const CategoriesSection = () => {
             ​Discover the 'Hoed   
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-lg">
-            Browse the best Hoedspruit has to offer, from world-class game lodges to hidden gem restaurants.
+            Explore everything that Hoedspruit has to offer
           </p>
         </div>
 
