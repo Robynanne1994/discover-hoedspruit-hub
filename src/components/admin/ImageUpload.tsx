@@ -39,7 +39,7 @@ const ImageUpload = ({ bucket, value, onChange }: ImageUploadProps) => {
   return (
     <div className="space-y-2">
       {value && (
-        <div className="relative w-full h-40 rounded-lg overflow-hidden border border-border">
+        <div className="relative w-full h-40 rounded-none overflow-hidden border border-border">
           <img src={value} alt="Preview" className="w-full h-full object-cover" />
           <Button
             type="button"
