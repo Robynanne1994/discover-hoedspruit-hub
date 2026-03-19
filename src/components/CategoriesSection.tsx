@@ -59,8 +59,7 @@ const CategoriesSection = () => {
                 <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
                 <div className="relative h-full flex flex-col justify-end p-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Icon className="h-5 w-5 text-accent" />
+                  <div className="mb-2">
                     <span className="text-accent text-sm font-medium">{cat.description}</span>
                   </div>
                   <h3 className="text-2xl font-bold text-primary-foreground mb-1 font-sans">{cat.title}</h3>
