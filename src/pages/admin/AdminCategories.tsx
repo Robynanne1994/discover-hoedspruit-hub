@@ -11,6 +11,7 @@ import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 type Category = Tables<"categories">;
 
@@ -99,7 +100,7 @@ const AdminCategories = () => {
               <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
               <div><Label>Description</Label><Input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
               <div><Label>Icon (Lucide name)</Label><Input value={form.icon} onChange={(e) => setForm({ ...form, icon: e.target.value })} /></div>
-              <div><Label>Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
+              <div><Label>Cover Image</Label><ImageUpload bucket="category-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} /></div>
               <div><Label>Sort Order</Label><Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} /></div>
               <div className="flex items-center gap-2">
                 <Switch checked={form.is_quick_category} onCheckedChange={(v) => setForm({ ...form, is_quick_category: v })} />
