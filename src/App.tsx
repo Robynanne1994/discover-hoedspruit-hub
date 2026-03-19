@@ -31,6 +31,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/category/:id" element={<CategoryPage />} />
             <Route path="/contact" element={<ContactUs />} />
+            <Route path="/events" element={<Events />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
