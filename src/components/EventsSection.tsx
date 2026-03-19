@@ -13,7 +13,7 @@ const EventsSection = () => {
     },
   });
 
-  if (!events?.length) return null;
+  const hasEvents = !!events?.length;
 
   return (
     <section id="events" className="section-padding bg-card">
