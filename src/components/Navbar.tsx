@@ -1,15 +1,38 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, User, Search, Shield } from "lucide-react";
+import { Menu, X, User, Search, Shield, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [exploreOpen, setExploreOpen] = useState(false);
+  const [mobileExploreOpen, setMobileExploreOpen] = useState(false);
+  const exploreRef = useRef<HTMLDivElement>(null);
   const { user, isAdmin, signOut } = useAuth();
 
-  const navLinks = [
-    { label: "Explore", href: "#categories" },
+  const { data: categories } = useQuery({
+    queryKey: ["nav-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("*").order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (exploreRef.current && !exploreRef.current.contains(e.target as Node)) {
+        setExploreOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const otherLinks = [
     { label: "Events", href: "#events" },
     { label: "Advertise", href: "#advertise" },
     { label: "About", href: "#about" },
@@ -26,7 +49,33 @@ const Navbar = () => {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {/* Explore dropdown */}
+            <div ref={exploreRef} className="relative">
+              <button
+                onClick={() => setExploreOpen(!exploreOpen)}
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase"
+              >
+                Explore
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${exploreOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {exploreOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {categories?.map((cat) => (
+                    <Link
+                      key={cat.id}
+                      to={`/category/${cat.id}`}
+                      className="block px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                      onClick={() => setExploreOpen(false)}
+                    >
+                      {cat.title}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {otherLinks.map((link) => (
               <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 {link.label}
               </a>
@@ -63,8 +112,31 @@ const Navbar = () => {
         </div>
 
         {isOpen && (
-          <div className="md:hidden pb-6 space-y-3">
-            {navLinks.map((link) => (
+          <div className="md:hidden pb-6 space-y-1">
+            {/* Mobile Explore accordion */}
+            <button
+              onClick={() => setMobileExploreOpen(!mobileExploreOpen)}
+              className="flex items-center justify-between w-full py-2 text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
+              Explore
+              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileExploreOpen ? "rotate-180" : ""}`} />
+            </button>
+            {mobileExploreOpen && (
+              <div className="pl-4 space-y-1 pb-2">
+                {categories?.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    to={`/category/${cat.id}`}
+                    className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => { setIsOpen(false); setMobileExploreOpen(false); }}
+                  >
+                    {cat.title}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            {otherLinks.map((link) => (
               <a key={link.label} href={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
                 {link.label}
               </a>
