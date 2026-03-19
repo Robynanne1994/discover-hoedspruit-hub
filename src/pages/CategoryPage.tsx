@@ -48,7 +48,7 @@ const CategoryPage = () => {
           ) : listings && listings.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {listings.map((l) => (
-                <div key={l.id} className="bg-card border border-border rounded-xl overflow-hidden shadow-card hover:shadow-warm transition-shadow duration-300">
+                <div key={l.id} className="bg-card border border-border rounded-none overflow-hidden shadow-card hover:shadow-warm transition-shadow duration-300">
                   {l.image_url && (
                     <img src={l.image_url} alt={l.title} className="w-full h-48 object-cover" />
                   )}
