@@ -1,6 +1,29 @@
 import { MapPin, Mail, Phone } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+
+interface FooterContent {
+  tagline?: string;
+  address?: string;
+  email?: string;
+  phone?: string;
+}
 
 const Footer = () => {
+  const { data } = useQuery({
+    queryKey: ["site-content", "footer"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("site_content").select("content").eq("section", "footer").single();
+      if (error) throw error;
+      return data?.content as FooterContent | null;
+    },
+  });
+
+  const tagline = data?.tagline ?? "Your complete guide to everything Hoedspruit – from game drives and bush walks to craft markets and sundowner spots in the heart of the Lowveld.";
+  const address = data?.address ?? "Hoedspruit, Limpopo";
+  const email = data?.email ?? "hello@discoverhoedspruit.co.za";
+  const phone = data?.phone ?? "+27 15 793 0000";
+
   return (
     <footer id="about" className="bg-foreground text-primary-foreground section-padding">
       <div className="container-wide">
@@ -9,9 +32,7 @@ const Footer = () => {
             <h3 className="font-heading text-2xl font-bold mb-4">
               Discover <span className="text-accent">Hoedspruit</span>
             </h3>
-            <p className="text-primary-foreground/60 max-w-md leading-relaxed">
-              Your complete guide to everything Hoedspruit – from game drives and bush walks to craft markets and sundowner spots in the heart of the Lowveld.
-            </p>
+            <p className="text-primary-foreground/60 max-w-md leading-relaxed">{tagline}</p>
           </div>
 
           <div>
@@ -29,15 +50,15 @@ const Footer = () => {
             <ul className="space-y-3 text-primary-foreground/60 text-sm">
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-accent" />
-                Hoedspruit, Limpopo
+                {address}
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-accent" />
-                hello@discoverhoedspruit.co.za
+                {email}
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-accent" />
-                +27 15 793 0000
+                {phone}
               </li>
             </ul>
           </div>
