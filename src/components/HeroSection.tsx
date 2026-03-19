@@ -23,7 +23,7 @@ const HeroSection = () => {
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-bold text-primary-foreground mb-6 leading-tight animate-fade-up font-sans lg:text-8xl" style={{ animationDelay: "0.1s" }}>
-          Discover
+          Hello
           <br />
           <span className="text-accent">Hoedspruit</span>
         </h1>
