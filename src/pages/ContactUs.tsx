@@ -28,7 +28,7 @@ const ContactUs = () => {
       const { data, error } = await supabase.from("site_content").select("content").eq("section", "footer").single();
       if (error) throw error;
       return data?.content as FooterContent | null;
-    },
+    }
   });
 
   const address = data?.address ?? "Hoedspruit, Limpopo";
@@ -48,8 +48,8 @@ const ContactUs = () => {
       <Navbar />
       <main className="flex-1 section-padding pt-32">
         <div className="container-wide max-w-4xl mx-auto">
-          <h1 className="font-heading text-4xl md:text-5xl font-bold mb-4 text-foreground">
-            Contact <span className="text-accent">Us</span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground font-mono">
+            Contact <span className="text-orange-800 font-mono">us</span>
           </h1>
           <p className="text-muted-foreground mb-12 max-w-xl">
             Have a question or want to get in touch? We'd love to hear from you.
@@ -63,7 +63,7 @@ const ContactUs = () => {
                   <MapPin className="h-5 w-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-semibold text-foreground mb-1">Address</h3>
+                  <h3 className="font-semibold text-foreground mb-1 font-mono">Address</h3>
                   <p className="text-muted-foreground">{address}</p>
                 </div>
               </div>
@@ -72,7 +72,7 @@ const ContactUs = () => {
                   <Mail className="h-5 w-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-semibold text-foreground mb-1">Email</h3>
+                  <h3 className="font-semibold text-foreground mb-1 font-mono">Email</h3>
                   <a href={`mailto:${contactEmail}`} className="text-muted-foreground hover:text-accent transition-colors">
                     {contactEmail}
                   </a>
@@ -83,7 +83,7 @@ const ContactUs = () => {
                   <Phone className="h-5 w-5 text-accent" />
                 </div>
                 <div>
-                  <h3 className="font-heading font-semibold text-foreground mb-1">Phone</h3>
+                  <h3 className="font-semibold text-foreground mb-1 font-mono">Phone</h3>
                   <a href={`tel:${phone}`} className="text-muted-foreground hover:text-accent transition-colors">
                     {phone}
                   </a>
@@ -113,8 +113,8 @@ const ContactUs = () => {
         </div>
       </main>
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
 
 export default ContactUs;
