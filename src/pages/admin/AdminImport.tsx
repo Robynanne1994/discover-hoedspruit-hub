@@ -135,15 +135,33 @@ const AdminImport = () => {
     onError: (e) => toast.error(e.message),
   });
 
-  const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,false\n';
-    const blob = new Blob([csv], { type: "text/csv" });
+  const downloadCSV = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "listings_template.csv";
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const downloadTemplate = () => {
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,false\n';
+    downloadCSV(csv, "listings_template.csv");
+  };
+
+  const downloadListings = async () => {
+    const { data: listings } = await supabase.from("listings").select("title, description, image_url, location, phone, email, website, category_id, is_featured");
+    if (!listings?.length) { toast.error("No listings to export"); return; }
+    const catMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
+    const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
+    const rows = listings.map((l) => [
+      l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
+      l.phone ?? "", l.email ?? "", l.website ?? "",
+      catMap.get(l.category_id ?? "") ?? "", String(l.is_featured),
+    ].map(escapeCSV).join(","));
+    downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "listings_export.csv");
+    toast.success(`Exported ${listings.length} listings`);
   };
 
   return (
