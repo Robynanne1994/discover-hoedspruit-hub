@@ -42,7 +42,7 @@ const CategoriesSection = () => {
       <div className="container-wide">
         <div className="text-center mb-12">
           <span className="text-primary font-medium text-sm tracking-widest uppercase">Explore</span>
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-3 mb-4 font-mono">
             What are you looking for?
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-lg">
