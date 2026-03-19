@@ -20,24 +20,58 @@ interface ParsedRow {
 const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "category", "is_featured"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim());
-  if (lines.length === 0) return { headers: [], rows: [] };
-  const headers = lines[0].split(",").map((h) => h.trim().toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
-  const rows = lines.slice(1).map((line) => {
-    const values: string[] = [];
-    let current = "";
-    let inQuotes = false;
-    for (const char of line) {
-      if (char === '"') { inQuotes = !inQuotes; continue; }
-      if (char === "," && !inQuotes) { values.push(current.trim()); current = ""; continue; }
-      current += char;
+  const normalizedText = text.replace(/^\uFEFF/, "");
+  const rows: string[][] = [];
+  let currentRow: string[] = [];
+  let currentValue = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < normalizedText.length; i++) {
+    const char = normalizedText[i];
+    const nextChar = normalizedText[i + 1];
+
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        currentValue += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+      continue;
     }
-    values.push(current.trim());
+
+    if (char === "," && !inQuotes) {
+      currentRow.push(currentValue.trim());
+      currentValue = "";
+      continue;
+    }
+
+    if ((char === "\n" || char === "\r") && !inQuotes) {
+      if (char === "\r" && nextChar === "\n") i++;
+      currentRow.push(currentValue.trim());
+      if (currentRow.some((value) => value.length > 0)) rows.push(currentRow);
+      currentRow = [];
+      currentValue = "";
+      continue;
+    }
+
+    currentValue += char;
+  }
+
+  currentRow.push(currentValue.trim());
+  if (currentRow.some((value) => value.length > 0)) rows.push(currentRow);
+  if (rows.length === 0) return { headers: [], rows: [] };
+
+  const headers = rows[0].map((header) => header.toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
+  const dataRows = rows.slice(1).map((values) => {
     const row: Record<string, string> = {};
-    headers.forEach((h, i) => { row[h] = values[i] || ""; });
+    headers.forEach((header, index) => {
+      row[header] = values[index] ?? "";
+    });
     return row;
   });
-  return { headers, rows };
+
+  return { headers, rows: dataRows };
 }
 
 const AdminImport = () => {
