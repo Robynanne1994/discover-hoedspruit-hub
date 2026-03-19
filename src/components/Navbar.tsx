@@ -22,7 +22,7 @@ const Navbar = () => {
       const { data, error } = await supabase.from("categories").select("*").order("sort_order");
       if (error) throw error;
       return data;
-    },
+    }
   });
 
   const { data: eventTags } = useQuery({
@@ -32,7 +32,7 @@ const Navbar = () => {
       if (error) throw error;
       const tags = [...new Set(data?.map((e) => e.tag).filter(Boolean))] as string[];
       return tags.sort();
-    },
+    }
   });
 
   useEffect(() => {
@@ -54,17 +54,17 @@ const Navbar = () => {
   };
 
   const otherLinks = [
-    { label: "Advertise", href: "#advertise" },
-    { label: "About", href: "#about" },
-  ];
+  { label: "Advertise", href: "#advertise" },
+  { label: "About", href: "#about" }];
+
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="container-wide px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           <Link to="/" className="flex items-center gap-2">
-            <span className="font-heading text-xl sm:text-2xl font-bold text-foreground tracking-tight">
-              Discover <span className="text-primary">Hoedspruit</span>
+            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight font-sans">
+              Discover <span className="text-primary font-sans">Hoedspruit</span>
             </span>
           </Link>
 
@@ -72,90 +72,90 @@ const Navbar = () => {
             {/* Explore dropdown */}
             <div ref={exploreRef} className="relative">
               <button
-                onClick={() => { setExploreOpen(!exploreOpen); setEventsOpen(false); }}
-                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase"
-              >
+                onClick={() => {setExploreOpen(!exploreOpen);setEventsOpen(false);}}
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+                
                 Explore
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${exploreOpen ? "rotate-180" : ""}`} />
               </button>
-              {exploreOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
-                  {categories?.map((cat) => (
-                    <Link
-                      key={cat.id}
-                      to={`/category/${cat.id}`}
-                      className="block px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-                      onClick={() => setExploreOpen(false)}
-                    >
+              {exploreOpen &&
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  {categories?.map((cat) =>
+                <Link
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  className="block px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                  onClick={() => setExploreOpen(false)}>
+                  
                       {cat.title}
                     </Link>
-                  ))}
+                )}
                 </div>
-              )}
+              }
             </div>
 
             {/* Events dropdown */}
             <div ref={eventsRef} className="relative">
               <button
-                onClick={() => { setEventsOpen(!eventsOpen); setExploreOpen(false); }}
-                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase"
-              >
+                onClick={() => {setEventsOpen(!eventsOpen);setExploreOpen(false);}}
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+                
                 Events
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${eventsOpen ? "rotate-180" : ""}`} />
               </button>
-              {eventsOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              {eventsOpen &&
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                   <button
-                    className="block w-full text-left px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent/50 transition-colors"
-                    onClick={() => { setEventsOpen(false); scrollToEvents(); }}
-                  >
+                  className="block w-full text-left px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent/50 transition-colors"
+                  onClick={() => {setEventsOpen(false);scrollToEvents();}}>
+                  
                     All Events
                   </button>
-                  {eventTags && eventTags.length > 0 && (
-                    <div className="border-t border-border my-1" />
-                  )}
-                  {eventTags?.map((tag) => (
-                    <button
-                      key={tag}
-                      className="block w-full text-left px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
-                      onClick={() => { setEventsOpen(false); scrollToEvents(); }}
-                    >
+                  {eventTags && eventTags.length > 0 &&
+                <div className="border-t border-border my-1" />
+                }
+                  {eventTags?.map((tag) =>
+                <button
+                  key={tag}
+                  className="block w-full text-left px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                  onClick={() => {setEventsOpen(false);scrollToEvents();}}>
+                  
                       {tag}
                     </button>
-                  ))}
+                )}
                 </div>
-              )}
+              }
             </div>
 
-            {otherLinks.map((link) => (
-              <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+            {otherLinks.map((link) =>
+            <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 {link.label}
               </a>
-            ))}
+            )}
           </div>
 
           <div className="hidden md:flex items-center gap-3">
             <Button variant="ghost" size="icon" className="text-muted-foreground">
               <Search className="h-5 w-5" />
             </Button>
-            {isAdmin && (
-              <Link to="/admin">
+            {isAdmin &&
+            <Link to="/admin">
                 <Button variant="ghost" size="sm" className="gap-2 text-primary">
                   <Shield className="h-4 w-4" /> Admin
                 </Button>
               </Link>
-            )}
-            {user ? (
-              <Button variant="outline" size="sm" onClick={signOut}>
+            }
+            {user ?
+            <Button variant="outline" size="sm" onClick={signOut}>
                 Sign Out
-              </Button>
-            ) : (
-              <Link to="/auth">
+              </Button> :
+
+            <Link to="/auth">
                 <Button variant="outline" size="sm" className="gap-2">
                   <User className="h-4 w-4" /> Sign In
                 </Button>
               </Link>
-            )}
+            }
           </div>
 
           <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
@@ -163,83 +163,83 @@ const Navbar = () => {
           </button>
         </div>
 
-        {isOpen && (
-          <div className="md:hidden pb-6 space-y-1">
+        {isOpen &&
+        <div className="md:hidden pb-6 space-y-1">
             {/* Mobile Explore accordion */}
             <button
-              onClick={() => setMobileExploreOpen(!mobileExploreOpen)}
-              className="flex items-center justify-between w-full py-2 text-muted-foreground hover:text-foreground font-medium transition-colors"
-            >
+            onClick={() => setMobileExploreOpen(!mobileExploreOpen)}
+            className="flex items-center justify-between w-full py-2 text-muted-foreground hover:text-foreground font-medium transition-colors">
+            
               Explore
               <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileExploreOpen ? "rotate-180" : ""}`} />
             </button>
-            {mobileExploreOpen && (
-              <div className="pl-4 space-y-1 pb-2">
-                {categories?.map((cat) => (
-                  <Link
-                    key={cat.id}
-                    to={`/category/${cat.id}`}
-                    className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    onClick={() => { setIsOpen(false); setMobileExploreOpen(false); }}
-                  >
+            {mobileExploreOpen &&
+          <div className="pl-4 space-y-1 pb-2">
+                {categories?.map((cat) =>
+            <Link
+              key={cat.id}
+              to={`/category/${cat.id}`}
+              className="block py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => {setIsOpen(false);setMobileExploreOpen(false);}}>
+              
                     {cat.title}
                   </Link>
-                ))}
-              </div>
             )}
+              </div>
+          }
 
             {/* Mobile Events accordion */}
             <button
-              onClick={() => setMobileEventsOpen(!mobileEventsOpen)}
-              className="flex items-center justify-between w-full py-2 text-muted-foreground hover:text-foreground font-medium transition-colors"
-            >
+            onClick={() => setMobileEventsOpen(!mobileEventsOpen)}
+            className="flex items-center justify-between w-full py-2 text-muted-foreground hover:text-foreground font-medium transition-colors">
+            
               Events
               <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileEventsOpen ? "rotate-180" : ""}`} />
             </button>
-            {mobileEventsOpen && (
-              <div className="pl-4 space-y-1 pb-2">
+            {mobileEventsOpen &&
+          <div className="pl-4 space-y-1 pb-2">
                 <button
-                  className="block w-full text-left py-2 text-sm font-medium text-foreground transition-colors"
-                  onClick={() => { setIsOpen(false); setMobileEventsOpen(false); scrollToEvents(); }}
-                >
+              className="block w-full text-left py-2 text-sm font-medium text-foreground transition-colors"
+              onClick={() => {setIsOpen(false);setMobileEventsOpen(false);scrollToEvents();}}>
+              
                   All Events
                 </button>
-                {eventTags?.map((tag) => (
-                  <button
-                    key={tag}
-                    className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    onClick={() => { setIsOpen(false); setMobileEventsOpen(false); scrollToEvents(); }}
-                  >
+                {eventTags?.map((tag) =>
+            <button
+              key={tag}
+              className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => {setIsOpen(false);setMobileEventsOpen(false);scrollToEvents();}}>
+              
                     {tag}
                   </button>
-                ))}
-              </div>
             )}
+              </div>
+          }
 
-            {otherLinks.map((link) => (
-              <a key={link.label} href={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
+            {otherLinks.map((link) =>
+          <a key={link.label} href={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
                 {link.label}
               </a>
-            ))}
-            {isAdmin && (
-              <Link to="/admin" className="block py-2 text-primary font-medium" onClick={() => setIsOpen(false)}>
+          )}
+            {isAdmin &&
+          <Link to="/admin" className="block py-2 text-primary font-medium" onClick={() => setIsOpen(false)}>
                 Admin Dashboard
               </Link>
-            )}
-            {user ? (
-              <Button variant="outline" size="sm" className="w-full mt-3" onClick={signOut}>Sign Out</Button>
-            ) : (
-              <Link to="/auth" onClick={() => setIsOpen(false)}>
+          }
+            {user ?
+          <Button variant="outline" size="sm" className="w-full mt-3" onClick={signOut}>Sign Out</Button> :
+
+          <Link to="/auth" onClick={() => setIsOpen(false)}>
                 <Button variant="outline" size="sm" className="gap-2 w-full mt-3">
                   <User className="h-4 w-4" /> Sign In
                 </Button>
               </Link>
-            )}
+          }
           </div>
-        )}
+        }
       </div>
-    </nav>
-  );
+    </nav>);
+
 };
 
 export default Navbar;
