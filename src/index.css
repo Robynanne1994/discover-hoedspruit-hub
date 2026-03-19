@@ -36,8 +36,8 @@
 
     --radius: 0.75rem;
 
-    --font-heading: 'Playfair Display', Georgia, serif;
-    --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+    --font-heading: 'Questrial', sans-serif;
+    --font-body: 'Inter', 'Segoe UI', sans-serif;
 
     --hero-overlay: linear-gradient(to bottom, hsla(25, 20%, 8%, 0.3), hsla(25, 20%, 8%, 0.7));
     --warm-glow: 0 8px 32px -8px hsla(28, 65%, 42%, 0.25);
