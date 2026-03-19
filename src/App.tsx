@@ -12,6 +12,7 @@ import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminListings from "./pages/admin/AdminListings.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminContent from "./pages/admin/AdminContent.tsx";
+import AdminImport from "./pages/admin/AdminImport.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
 import NotFound from "./pages/NotFound.tsx";
