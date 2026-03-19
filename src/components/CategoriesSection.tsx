@@ -10,7 +10,7 @@ import activitiesImg from "@/assets/activities-card.jpg";
 const fallbackImages: Record<string, string> = {
   "Utensils": restaurantImg,
   "Tent": lodgeImg,
-  "TreePine": activitiesImg,
+  "TreePine": activitiesImg
 };
 
 const getIcon = (name: string) => {
@@ -25,7 +25,7 @@ const CategoriesSection = () => {
       const { data, error } = await supabase.from("categories").select("*").eq("is_quick_category", false).order("sort_order");
       if (error) throw error;
       return data;
-    },
+    }
   });
 
   const { data: quick } = useQuery({
@@ -34,7 +34,7 @@ const CategoriesSection = () => {
       const { data, error } = await supabase.from("categories").select("*").eq("is_quick_category", true).order("sort_order");
       if (error) throw error;
       return data;
-    },
+    }
   });
 
   return (
@@ -63,29 +63,29 @@ const CategoriesSection = () => {
                     <Icon className="h-5 w-5 text-accent" />
                     <span className="text-accent text-sm font-medium">{cat.description}</span>
                   </div>
-                  <h3 className="font-heading text-2xl font-bold text-primary-foreground mb-1">{cat.title}</h3>
+                  <h3 className="text-2xl font-bold text-primary-foreground mb-1 font-sans">{cat.title}</h3>
                 </div>
-              </Link>
-            );
+              </Link>);
+
           })}
         </div>
 
-        {quick && quick.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-3">
+        {quick && quick.length > 0 &&
+        <div className="flex flex-wrap justify-center gap-3">
             {quick.map((cat) => {
-              const Icon = getIcon(cat.icon);
-              return (
-                <Link key={cat.id} to={`/category/${cat.id}`} className="flex items-center gap-2 px-5 py-3 rounded-full bg-card border border-border hover:border-primary hover:shadow-warm transition-all duration-200">
+            const Icon = getIcon(cat.icon);
+            return (
+              <Link key={cat.id} to={`/category/${cat.id}`} className="flex items-center gap-2 px-5 py-3 rounded-full bg-card border border-border hover:border-primary hover:shadow-warm transition-all duration-200">
                   <Icon className="h-4 w-4 text-primary" />
                   <span className="text-foreground font-medium text-sm">{cat.title}</span>
-                </Link>
-              );
-            })}
+                </Link>);
+
+          })}
           </div>
-        )}
+        }
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default CategoriesSection;
