@@ -34,7 +34,7 @@ const AdminListings = () => {
   const { data: categories } = useQuery({
     queryKey: ["admin-categories-select"],
     queryFn: async () => {
-      const { data } = await supabase.from("categories").select("id, title").eq("is_quick_category", false).order("sort_order");
+      const { data } = await supabase.from("categories").select("id, title").order("sort_order");
       return data ?? [];
     },
   });
