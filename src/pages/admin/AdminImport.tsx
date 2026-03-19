@@ -168,9 +168,14 @@ const AdminImport = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-heading text-3xl font-bold text-foreground">Import Listings</h1>
-        <Button variant="outline" onClick={downloadTemplate} className="gap-2">
-          <FileSpreadsheet className="h-4 w-4" /> Download Template
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={downloadListings} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> Download Listings
+          </Button>
+          <Button variant="outline" onClick={downloadTemplate} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> Download Template
+          </Button>
+        </div>
       </div>
 
       <div className="bg-card border border-border rounded-xl p-8 space-y-6">
