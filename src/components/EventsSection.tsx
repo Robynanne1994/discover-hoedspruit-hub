@@ -23,8 +23,8 @@ const EventsSection = () => {
             <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
             <h2 className="font-heading text-3xl sm:text-4xl font-bold text-foreground mt-3">Upcoming Events</h2>
           </div>
-          <Button variant="ghost" className="text-primary gap-2 self-start sm:self-auto">
-            View all events <ArrowRight className="h-4 w-4" />
+          <Button variant="ghost" className="text-primary gap-2 self-start sm:self-auto" asChild>
+            <a href="/events">View all events <ArrowRight className="h-4 w-4" /></a>
           </Button>
         </div>
 

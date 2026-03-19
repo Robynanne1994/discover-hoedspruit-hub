@@ -40,8 +40,9 @@ const HeroSection = () => {
             size="lg"
             variant="outline"
             className="text-base px-8 py-6 bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm"
+            asChild
           >
-            View Events
+            <a href="/events">View Events</a>
           </Button>
         </div>
       </div>
