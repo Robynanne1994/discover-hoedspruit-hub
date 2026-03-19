@@ -11,6 +11,7 @@ import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 type Category = Tables<"categories">;
 
