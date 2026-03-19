@@ -19,7 +19,7 @@ const Footer = () => {
     }
   });
 
-  const tagline = data?.tagline ?? "Your complete guide to everything Hoedspruit – from game drives and bush walks to craft markets and sundowner spots in the heart of the Lowveld.";
+  const tagline = data?.tagline ?? "Your full guide to Hoedspruit, all in one place.";
   const address = data?.address ?? "Hoedspruit, Limpopo";
   const email = data?.email ?? "hello@discoverhoedspruit.co.za";
   const phone = data?.phone ?? "+27 15 793 0000";
