@@ -9,8 +9,11 @@ import { supabase } from "@/integrations/supabase/client";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
+  const [eventsOpen, setEventsOpen] = useState(false);
   const [mobileExploreOpen, setMobileExploreOpen] = useState(false);
+  const [mobileEventsOpen, setMobileEventsOpen] = useState(false);
   const exploreRef = useRef<HTMLDivElement>(null);
+  const eventsRef = useRef<HTMLDivElement>(null);
   const { user, isAdmin, signOut } = useAuth();
 
   const { data: categories } = useQuery({
@@ -22,18 +25,35 @@ const Navbar = () => {
     },
   });
 
+  const { data: eventTags } = useQuery({
+    queryKey: ["nav-event-tags"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("events").select("tag");
+      if (error) throw error;
+      const tags = [...new Set(data?.map((e) => e.tag).filter(Boolean))] as string[];
+      return tags.sort();
+    },
+  });
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (exploreRef.current && !exploreRef.current.contains(e.target as Node)) {
         setExploreOpen(false);
+      }
+      if (eventsRef.current && !eventsRef.current.contains(e.target as Node)) {
+        setEventsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const scrollToEvents = () => {
+    const el = document.getElementById("events");
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   const otherLinks = [
-    { label: "Events", href: "#events" },
     { label: "Advertise", href: "#advertise" },
     { label: "About", href: "#about" },
   ];
@@ -52,13 +72,12 @@ const Navbar = () => {
             {/* Explore dropdown */}
             <div ref={exploreRef} className="relative">
               <button
-                onClick={() => setExploreOpen(!exploreOpen)}
+                onClick={() => { setExploreOpen(!exploreOpen); setEventsOpen(false); }}
                 className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase"
               >
                 Explore
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${exploreOpen ? "rotate-180" : ""}`} />
               </button>
-
               {exploreOpen && (
                 <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                   {categories?.map((cat) => (
@@ -70,6 +89,39 @@ const Navbar = () => {
                     >
                       {cat.title}
                     </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Events dropdown */}
+            <div ref={eventsRef} className="relative">
+              <button
+                onClick={() => { setEventsOpen(!eventsOpen); setExploreOpen(false); }}
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase"
+              >
+                Events
+                <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${eventsOpen ? "rotate-180" : ""}`} />
+              </button>
+              {eventsOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <button
+                    className="block w-full text-left px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent/50 transition-colors"
+                    onClick={() => { setEventsOpen(false); scrollToEvents(); }}
+                  >
+                    All Events
+                  </button>
+                  {eventTags && eventTags.length > 0 && (
+                    <div className="border-t border-border my-1" />
+                  )}
+                  {eventTags?.map((tag) => (
+                    <button
+                      key={tag}
+                      className="block w-full text-left px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                      onClick={() => { setEventsOpen(false); scrollToEvents(); }}
+                    >
+                      {tag}
+                    </button>
                   ))}
                 </div>
               )}
@@ -132,6 +184,34 @@ const Navbar = () => {
                   >
                     {cat.title}
                   </Link>
+                ))}
+              </div>
+            )}
+
+            {/* Mobile Events accordion */}
+            <button
+              onClick={() => setMobileEventsOpen(!mobileEventsOpen)}
+              className="flex items-center justify-between w-full py-2 text-muted-foreground hover:text-foreground font-medium transition-colors"
+            >
+              Events
+              <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileEventsOpen ? "rotate-180" : ""}`} />
+            </button>
+            {mobileEventsOpen && (
+              <div className="pl-4 space-y-1 pb-2">
+                <button
+                  className="block w-full text-left py-2 text-sm font-medium text-foreground transition-colors"
+                  onClick={() => { setIsOpen(false); setMobileEventsOpen(false); scrollToEvents(); }}
+                >
+                  All Events
+                </button>
+                {eventTags?.map((tag) => (
+                  <button
+                    key={tag}
+                    className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    onClick={() => { setIsOpen(false); setMobileEventsOpen(false); scrollToEvents(); }}
+                  >
+                    {tag}
+                  </button>
                 ))}
               </div>
             )}
