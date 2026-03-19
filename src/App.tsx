@@ -13,6 +13,7 @@ import AdminListings from "./pages/admin/AdminListings.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminContent from "./pages/admin/AdminContent.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
+import ContactUs from "./pages/ContactUs.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/category/:id" element={<CategoryPage />} />
+            <Route path="/contact" element={<ContactUs />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
