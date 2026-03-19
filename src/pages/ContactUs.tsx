@@ -33,7 +33,7 @@ const ContactUs = () => {
 
   const address = data?.address ?? "Hoedspruit, Limpopo";
   const contactEmail = data?.email ?? "hello@discoverhoedspruit.co.za";
-  const phone = data?.phone ?? "+27 15 793 0000";
+  const phone = data?.phone ?? "+27 61 332 1709";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
