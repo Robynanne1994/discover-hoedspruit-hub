@@ -23,13 +23,13 @@ const HeroSection = () => {
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-bold text-primary-foreground mb-6 leading-tight animate-fade-up font-sans lg:text-8xl" style={{ animationDelay: "0.1s" }}>
-          Hello
+          Discover
           <br />
           <span className="text-accent">Hoedspruit</span>
         </h1>
 
         <p className="text-primary-foreground/80 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed animate-fade-up" style={{ animationDelay: "0.2s" }}>
-          Your gateway to the wild heart of the Lowveld. Explore restaurants, lodges, events and unforgettable safari adventures.
+          Eat. Explore. Experience. Everything Hoedspruit, all in one place.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: "0.3s" }}>
