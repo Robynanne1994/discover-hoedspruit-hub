@@ -37,6 +37,7 @@ const App = () => (
               <Route path="listings" element={<AdminListings />} />
               <Route path="events" element={<AdminEvents />} />
               <Route path="content" element={<AdminContent />} />
+              <Route path="import" element={<AdminImport />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
