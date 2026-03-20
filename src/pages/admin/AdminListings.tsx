@@ -143,6 +143,47 @@ const AdminListings = () => {
                 <Switch checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
                 <Label>Featured</Label>
               </div>
+
+              <div className="border-t border-border pt-4 mt-2">
+                <p className="text-sm font-medium text-foreground mb-3">Detail Page Fields (optional)</p>
+              </div>
+
+              <div>
+                <Label>Long Description</Label>
+                <Textarea
+                  value={form.long_description}
+                  onChange={(e) => setForm({ ...form, long_description: e.target.value })}
+                  rows={5}
+                  placeholder="Detailed information shown on the listing's own page..."
+                />
+              </div>
+
+              <div>
+                <Label>Gallery Images (one URL per line)</Label>
+                <Textarea
+                  value={form.gallery_images}
+                  onChange={(e) => setForm({ ...form, gallery_images: e.target.value })}
+                  rows={3}
+                  placeholder={"https://example.com/photo1.jpg\nhttps://example.com/photo2.jpg"}
+                />
+              </div>
+
+              <div>
+                <Label>Opening Hours</Label>
+                <div className="space-y-2 mt-1">
+                  {DAY_LABELS.map((day) => (
+                    <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
+                      <span className="text-sm text-muted-foreground capitalize">{day}</span>
+                      <Input
+                        value={form.opening_hours[day] ?? ""}
+                        onChange={(e) => setForm({ ...form, opening_hours: { ...form.opening_hours, [day]: e.target.value } })}
+                        placeholder="e.g. 08:00 - 17:00"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>
