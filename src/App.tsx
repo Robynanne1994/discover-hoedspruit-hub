@@ -14,6 +14,7 @@ import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminContent from "./pages/admin/AdminContent.tsx";
 import AdminImport from "./pages/admin/AdminImport.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
+import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
 import Events from "./pages/Events.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -30,6 +31,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/category/:id" element={<CategoryPage />} />
+            <Route path="/listing/:id" element={<ListingDetail />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/events" element={<Events />} />
             <Route path="/auth" element={<Auth />} />

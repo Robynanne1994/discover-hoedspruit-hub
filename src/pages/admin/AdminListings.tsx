@@ -14,7 +14,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Listing = Tables<"listings">;
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false };
+const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -40,8 +42,24 @@ const AdminListings = () => {
   });
 
   const upsert = useMutation({
-    mutationFn: async (values: TablesInsert<"listings">) => {
-      const payload = { ...values, category_id: values.category_id || null };
+    mutationFn: async (values: typeof emptyForm) => {
+      const galleryArr = values.gallery_images
+        ? values.gallery_images.split("\n").map((u) => u.trim()).filter(Boolean)
+        : [];
+      const payload: any = {
+        title: values.title,
+        description: values.description || null,
+        image_url: values.image_url || null,
+        location: values.location || null,
+        phone: values.phone || null,
+        email: values.email || null,
+        website: values.website || null,
+        category_id: values.category_id || null,
+        is_featured: values.is_featured,
+        long_description: values.long_description || null,
+        gallery_images: galleryArr,
+        opening_hours: values.opening_hours,
+      };
       if (editing) {
         const { error } = await supabase.from("listings").update(payload).eq("id", editing.id);
         if (error) throw error;
@@ -73,6 +91,8 @@ const AdminListings = () => {
 
   const openEdit = (l: Listing) => {
     setEditing(l);
+    const hours = (l as any).opening_hours as Record<string, string> | null;
+    const gallery = (l as any).gallery_images as string[] | null;
     setForm({
       title: l.title,
       description: l.description ?? "",
@@ -83,6 +103,9 @@ const AdminListings = () => {
       website: l.website ?? "",
       category_id: l.category_id ?? "",
       is_featured: l.is_featured,
+      long_description: (l as any).long_description ?? "",
+      gallery_images: gallery?.join("\n") ?? "",
+      opening_hours: { ...Object.fromEntries(DAY_LABELS.map((d) => [d, ""])), ...hours },
     });
     setOpen(true);
   };
@@ -120,6 +143,47 @@ const AdminListings = () => {
                 <Switch checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
                 <Label>Featured</Label>
               </div>
+
+              <div className="border-t border-border pt-4 mt-2">
+                <p className="text-sm font-medium text-foreground mb-3">Detail Page Fields (optional)</p>
+              </div>
+
+              <div>
+                <Label>Long Description</Label>
+                <Textarea
+                  value={form.long_description}
+                  onChange={(e) => setForm({ ...form, long_description: e.target.value })}
+                  rows={5}
+                  placeholder="Detailed information shown on the listing's own page..."
+                />
+              </div>
+
+              <div>
+                <Label>Gallery Images (one URL per line)</Label>
+                <Textarea
+                  value={form.gallery_images}
+                  onChange={(e) => setForm({ ...form, gallery_images: e.target.value })}
+                  rows={3}
+                  placeholder={"https://example.com/photo1.jpg\nhttps://example.com/photo2.jpg"}
+                />
+              </div>
+
+              <div>
+                <Label>Opening Hours</Label>
+                <div className="space-y-2 mt-1">
+                  {DAY_LABELS.map((day) => (
+                    <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
+                      <span className="text-sm text-muted-foreground capitalize">{day}</span>
+                      <Input
+                        value={form.opening_hours[day] ?? ""}
+                        onChange={(e) => setForm({ ...form, opening_hours: { ...form.opening_hours, [day]: e.target.value } })}
+                        placeholder="e.g. 08:00 - 17:00"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>

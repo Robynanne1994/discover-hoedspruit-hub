@@ -92,10 +92,13 @@ export type Database = {
           created_at: string
           description: string | null
           email: string | null
+          gallery_images: string[] | null
           id: string
           image_url: string | null
           is_featured: boolean
           location: string | null
+          long_description: string | null
+          opening_hours: Json | null
           phone: string | null
           title: string
           updated_at: string
@@ -106,10 +109,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
+          gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
           location?: string | null
+          long_description?: string | null
+          opening_hours?: Json | null
           phone?: string | null
           title: string
           updated_at?: string
@@ -120,10 +126,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           email?: string | null
+          gallery_images?: string[] | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
           location?: string | null
+          long_description?: string | null
+          opening_hours?: Json | null
           phone?: string | null
           title?: string
           updated_at?: string
