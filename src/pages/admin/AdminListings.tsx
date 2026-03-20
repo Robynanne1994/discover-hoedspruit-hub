@@ -194,6 +194,48 @@ const AdminListings = () => {
                 </div>
               </div>
 
+              {/* Restaurant-specific attributes */}
+              {categories?.some((c) => c.id === form.category_id && /restaurant|cafe/i.test(c.title)) && (
+                <div className="border-t border-border pt-4 mt-2 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Switch checked={form.show_attributes} onCheckedChange={(v) => setForm({ ...form, show_attributes: v })} />
+                    <Label>Show restaurant attributes on detail page</Label>
+                  </div>
+
+                  {form.show_attributes && (
+                    <>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Switch checked={form.good_for_kids === true} onCheckedChange={(v) => setForm({ ...form, good_for_kids: v })} />
+                          <Label>Good for Kids</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                          <Label>Pets Allowed</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Switch checked={form.wheelchair_friendly === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
+                          <Label>Wheelchair Friendly</Label>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Price Level</Label>
+                        <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
+                          <SelectTrigger><SelectValue placeholder="Select price level" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">$ — Budget</SelectItem>
+                            <SelectItem value="2">$$ — Moderate</SelectItem>
+                            <SelectItem value="3">$$$ — Upscale</SelectItem>
+                            <SelectItem value="4">$$$$ — Fine Dining</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>
