@@ -93,16 +93,21 @@ export type Database = {
           description: string | null
           email: string | null
           gallery_images: string[] | null
+          good_for_kids: boolean | null
           id: string
           image_url: string | null
           is_featured: boolean
           location: string | null
           long_description: string | null
           opening_hours: Json | null
+          pets_allowed: boolean | null
           phone: string | null
+          price_level: number | null
+          show_attributes: boolean
           title: string
           updated_at: string
           website: string | null
+          wheelchair_friendly: boolean | null
         }
         Insert: {
           category_id?: string | null
@@ -110,16 +115,21 @@ export type Database = {
           description?: string | null
           email?: string | null
           gallery_images?: string[] | null
+          good_for_kids?: boolean | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
           location?: string | null
           long_description?: string | null
           opening_hours?: Json | null
+          pets_allowed?: boolean | null
           phone?: string | null
+          price_level?: number | null
+          show_attributes?: boolean
           title: string
           updated_at?: string
           website?: string | null
+          wheelchair_friendly?: boolean | null
         }
         Update: {
           category_id?: string | null
@@ -127,16 +137,21 @@ export type Database = {
           description?: string | null
           email?: string | null
           gallery_images?: string[] | null
+          good_for_kids?: boolean | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
           location?: string | null
           long_description?: string | null
           opening_hours?: Json | null
+          pets_allowed?: boolean | null
           phone?: string | null
+          price_level?: number | null
+          show_attributes?: boolean
           title?: string
           updated_at?: string
           website?: string | null
+          wheelchair_friendly?: boolean | null
         }
         Relationships: [
           {
