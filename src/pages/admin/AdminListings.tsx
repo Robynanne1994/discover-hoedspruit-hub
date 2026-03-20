@@ -59,6 +59,11 @@ const AdminListings = () => {
         long_description: values.long_description || null,
         gallery_images: galleryArr,
         opening_hours: values.opening_hours,
+        good_for_kids: values.good_for_kids,
+        pets_allowed: values.pets_allowed,
+        wheelchair_friendly: values.wheelchair_friendly,
+        price_level: values.price_level,
+        show_attributes: values.show_attributes,
       };
       if (editing) {
         const { error } = await supabase.from("listings").update(payload).eq("id", editing.id);
