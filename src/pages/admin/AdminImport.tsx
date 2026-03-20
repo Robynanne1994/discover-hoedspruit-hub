@@ -148,6 +148,23 @@ const AdminImport = () => {
           results.errors.push(`Row ${i + 2}: Category "${row.category}" not found, set to none`);
         }
 
+        const parseBool = (val: string | undefined) => {
+          if (!val || val === "") return null;
+          return val.toLowerCase() === "true" || val === "1";
+        };
+
+        let openingHours = null;
+        if (row.opening_hours) {
+          try { openingHours = JSON.parse(row.opening_hours); } catch { openingHours = null; }
+        }
+
+        let galleryImages: string[] | null = null;
+        if (row.gallery_images) {
+          try { galleryImages = JSON.parse(row.gallery_images); } catch {
+            galleryImages = row.gallery_images.split("|").map(s => s.trim()).filter(Boolean);
+          }
+        }
+
         const payload = {
           title,
           description: row.description || null,
@@ -158,6 +175,14 @@ const AdminImport = () => {
           website: row.website || null,
           category_id: categoryId,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
+          long_description: row.long_description || null,
+          gallery_images: galleryImages,
+          opening_hours: openingHours,
+          good_for_kids: parseBool(row.good_for_kids),
+          pets_allowed: parseBool(row.pets_allowed),
+          wheelchair_friendly: parseBool(row.wheelchair_friendly),
+          price_level: row.price_level ? parseInt(row.price_level, 10) || null : null,
+          show_attributes: row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1",
         };
 
         const existingId = existingMap.get(title.toLowerCase());
