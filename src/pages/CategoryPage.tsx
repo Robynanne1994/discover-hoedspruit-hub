@@ -18,6 +18,15 @@ const CategoryPage = () => {
     enabled: !!id,
   });
 
+  const { data: allCategories } = useQuery({
+    queryKey: ["all-categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("categories").select("id, title").order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const { data: listings, isLoading } = useQuery({
     queryKey: ["listings-by-category", id],
     queryFn: async () => {
@@ -33,9 +42,28 @@ const CategoryPage = () => {
       <Navbar />
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide">
-          <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
+          <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline mb-4">
             <ArrowLeft className="h-4 w-4" /> Back to Home
           </Link>
+
+          {allCategories && allCategories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8">
+              {allCategories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
+                    cat.id === id
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-foreground"
+                  }`}
+                >
+                  {cat.title}
+                </Link>
+              ))}
+            </div>
+          )}
+
           <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-2">
             {category?.title ?? "Category"}
           </h1>
