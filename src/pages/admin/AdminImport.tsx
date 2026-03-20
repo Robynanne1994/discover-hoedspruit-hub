@@ -79,7 +79,7 @@ const AdminImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
 
   const { data: categories } = useQuery({
     queryKey: ["admin-categories-for-import"],
@@ -116,11 +116,14 @@ const AdminImport = () => {
       if (!parsed || !categories) throw new Error("No data");
 
       const catMap = new Map(categories.map((c) => [c.title.toLowerCase(), c.id]));
-      const results = { created: 0, updated: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
 
       // Fetch existing listings for upsert matching
       const { data: existing } = await supabase.from("listings").select("id, title");
       const existingMap = new Map((existing ?? []).map((l) => [l.title.toLowerCase(), l.id]));
+
+      // Track which existing listings appear in the CSV
+      const csvTitles = new Set<string>();
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
@@ -129,6 +132,8 @@ const AdminImport = () => {
           results.errors.push(`Row ${i + 2}: Missing title, skipped`);
           continue;
         }
+
+        csvTitles.add(title.toLowerCase());
 
         const categoryId = row.category ? catMap.get(row.category.toLowerCase()) ?? null : null;
         if (row.category && !categoryId) {
@@ -159,12 +164,21 @@ const AdminImport = () => {
         }
       }
 
+      // Delete listings not present in the CSV
+      for (const [existingTitle, existingId] of existingMap) {
+        if (!csvTitles.has(existingTitle)) {
+          const { error } = await supabase.from("listings").delete().eq("id", existingId);
+          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
+          else results.deleted++;
+        }
+      }
+
       return results;
     },
     onSuccess: (results) => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated`);
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
     },
     onError: (e) => toast.error(e.message),
   });
@@ -277,6 +291,10 @@ const AdminImport = () => {
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle className="h-4 w-4 text-blue-600" />
                 <span className="text-foreground"><strong>{importResult.updated}</strong> updated</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-4 w-4 text-destructive" />
+                <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
             </div>
             {importResult.errors.length > 0 && (
