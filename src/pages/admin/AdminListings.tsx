@@ -91,6 +91,8 @@ const AdminListings = () => {
 
   const openEdit = (l: Listing) => {
     setEditing(l);
+    const hours = (l as any).opening_hours as Record<string, string> | null;
+    const gallery = (l as any).gallery_images as string[] | null;
     setForm({
       title: l.title,
       description: l.description ?? "",
@@ -101,6 +103,9 @@ const AdminListings = () => {
       website: l.website ?? "",
       category_id: l.category_id ?? "",
       is_featured: l.is_featured,
+      long_description: (l as any).long_description ?? "",
+      gallery_images: gallery?.join("\n") ?? "",
+      opening_hours: { ...Object.fromEntries(DAY_LABELS.map((d) => [d, ""])), ...hours },
     });
     setOpen(true);
   };
