@@ -80,7 +80,8 @@ const CategoryPage = () => {
                 const hasDetail = !!(
                   (l as any).long_description ||
                   ((l as any).gallery_images && (l as any).gallery_images.length > 0) ||
-                  ((l as any).opening_hours && Object.values((l as any).opening_hours as Record<string, string>).some((v) => v))
+                  ((l as any).opening_hours && Object.values((l as any).opening_hours as Record<string, string>).some((v) => v)) ||
+                  (l as any).show_attributes
                 );
                 return (
                 <div
