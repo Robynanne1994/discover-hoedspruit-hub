@@ -14,7 +14,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Listing = Tables<"listings">;
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false };
+const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
