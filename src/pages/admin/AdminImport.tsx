@@ -276,7 +276,7 @@ const AdminImport = () => {
           <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">
-            Columns: title, description, image_url, location, phone, email, website, category, is_featured
+            Columns: {EXPECTED_HEADERS.join(", ")}
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
