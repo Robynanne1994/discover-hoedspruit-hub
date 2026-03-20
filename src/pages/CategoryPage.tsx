@@ -85,7 +85,7 @@ const CategoryPage = () => {
                 <div
                   key={l.id}
                   className={`bg-card border border-border rounded-none overflow-hidden shadow-card hover:shadow-warm transition-shadow duration-300 ${hasDetail ? "cursor-pointer" : ""}`}
-                  onClick={hasDetail ? () => window.location.href = `/listing/${l.id}` : undefined}
+                  onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
                 >
                   {l.image_url && (
                     <img src={l.image_url} alt={l.title} className="w-full h-48 object-cover" />
