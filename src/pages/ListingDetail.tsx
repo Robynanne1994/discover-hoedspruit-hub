@@ -133,6 +133,49 @@ const ListingDetail = () => {
             )}
           </div>
 
+          {/* Restaurant attributes */}
+          {showAttributes && (
+            <div className="flex flex-wrap gap-3 mb-8">
+              {priceLabel && (
+                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                  <span className="font-semibold text-foreground">{priceLabel}</span>
+                  {priceName && <span className="text-muted-foreground">· {priceName}</span>}
+                </div>
+              )}
+              {goodForKids === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <Baby className="h-4 w-4" /> Good for Kids
+                </div>
+              )}
+              {goodForKids === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <Baby className="h-4 w-4" /> Good for Kids
+                </div>
+              )}
+              {petsAllowed === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <PawPrint className="h-4 w-4" /> Pets Allowed
+                </div>
+              )}
+              {petsAllowed === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <PawPrint className="h-4 w-4" /> Pets Allowed
+                </div>
+              )}
+              {wheelchairFriendly === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <Accessibility className="h-4 w-4" /> Wheelchair Friendly
+                </div>
+              )}
+              {wheelchairFriendly === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <Accessibility className="h-4 w-4" /> Wheelchair Friendly
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Description */}
           {listing.description && (
             <p className="text-muted-foreground text-lg mb-6">{listing.description}</p>
