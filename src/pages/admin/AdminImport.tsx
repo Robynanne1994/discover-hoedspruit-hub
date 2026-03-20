@@ -15,9 +15,17 @@ interface ParsedRow {
   website: string;
   category: string;
   is_featured: boolean;
+  long_description: string;
+  gallery_images: string;
+  opening_hours: string;
+  good_for_kids: string;
+  pets_allowed: string;
+  wheelchair_friendly: string;
+  price_level: string;
+  show_attributes: string;
 }
 
-const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "category", "is_featured"];
+const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "category", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
