@@ -178,7 +178,7 @@ const AdminImport = () => {
     onSuccess: (results) => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated`);
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
     },
     onError: (e) => toast.error(e.message),
   });
