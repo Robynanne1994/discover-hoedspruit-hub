@@ -7,6 +7,7 @@ import { ArrowLeft, MapPin, Phone, Mail, Globe, Star } from "lucide-react";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const { data: category } = useQuery({
     queryKey: ["category", id],
