@@ -111,6 +111,11 @@ const AdminListings = () => {
       long_description: (l as any).long_description ?? "",
       gallery_images: gallery?.join("\n") ?? "",
       opening_hours: { ...Object.fromEntries(DAY_LABELS.map((d) => [d, ""])), ...hours },
+      good_for_kids: (l as any).good_for_kids ?? null,
+      pets_allowed: (l as any).pets_allowed ?? null,
+      wheelchair_friendly: (l as any).wheelchair_friendly ?? null,
+      price_level: (l as any).price_level ?? null,
+      show_attributes: (l as any).show_attributes ?? false,
     });
     setOpen(true);
   };
