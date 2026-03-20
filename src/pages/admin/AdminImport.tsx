@@ -227,12 +227,12 @@ const AdminImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,false\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,false,"A longer description about the lodge","[""img1.jpg"",""img2.jpg""]","{""monday"":{""open"":""08:00"",""close"":""17:00""}}",true,false,true,2,true\n';
     downloadCSV(csv, "listings_template.csv");
   };
 
   const downloadListings = async () => {
-    const { data: listings } = await supabase.from("listings").select("title, description, image_url, location, phone, email, website, category_id, is_featured");
+    const { data: listings } = await supabase.from("listings").select("title, description, image_url, location, phone, email, website, category_id, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes");
     if (!listings?.length) { toast.error("No listings to export"); return; }
     const catMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
@@ -240,6 +240,14 @@ const AdminImport = () => {
       l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
       l.phone ?? "", l.email ?? "", l.website ?? "",
       catMap.get(l.category_id ?? "") ?? "", String(l.is_featured),
+      l.long_description ?? "",
+      l.gallery_images ? JSON.stringify(l.gallery_images) : "",
+      l.opening_hours ? JSON.stringify(l.opening_hours) : "",
+      l.good_for_kids === null ? "" : String(l.good_for_kids),
+      l.pets_allowed === null ? "" : String(l.pets_allowed),
+      l.wheelchair_friendly === null ? "" : String(l.wheelchair_friendly),
+      l.price_level === null ? "" : String(l.price_level),
+      String(l.show_attributes),
     ].map(escapeCSV).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "listings_export.csv");
     toast.success(`Exported ${listings.length} listings`);
