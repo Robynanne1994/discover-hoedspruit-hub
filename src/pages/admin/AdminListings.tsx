@@ -16,7 +16,7 @@ type Listing = Tables<"listings">;
 
 const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string> };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -59,6 +59,11 @@ const AdminListings = () => {
         long_description: values.long_description || null,
         gallery_images: galleryArr,
         opening_hours: values.opening_hours,
+        good_for_kids: values.good_for_kids,
+        pets_allowed: values.pets_allowed,
+        wheelchair_friendly: values.wheelchair_friendly,
+        price_level: values.price_level,
+        show_attributes: values.show_attributes,
       };
       if (editing) {
         const { error } = await supabase.from("listings").update(payload).eq("id", editing.id);
@@ -106,6 +111,11 @@ const AdminListings = () => {
       long_description: (l as any).long_description ?? "",
       gallery_images: gallery?.join("\n") ?? "",
       opening_hours: { ...Object.fromEntries(DAY_LABELS.map((d) => [d, ""])), ...hours },
+      good_for_kids: (l as any).good_for_kids ?? null,
+      pets_allowed: (l as any).pets_allowed ?? null,
+      wheelchair_friendly: (l as any).wheelchair_friendly ?? null,
+      price_level: (l as any).price_level ?? null,
+      show_attributes: (l as any).show_attributes ?? false,
     });
     setOpen(true);
   };
@@ -183,6 +193,48 @@ const AdminListings = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Restaurant-specific attributes */}
+              {categories?.some((c) => c.id === form.category_id && /restaurant|cafe/i.test(c.title)) && (
+                <div className="border-t border-border pt-4 mt-2 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Switch checked={form.show_attributes} onCheckedChange={(v) => setForm({ ...form, show_attributes: v })} />
+                    <Label>Show restaurant attributes on detail page</Label>
+                  </div>
+
+                  {form.show_attributes && (
+                    <>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Switch checked={form.good_for_kids === true} onCheckedChange={(v) => setForm({ ...form, good_for_kids: v })} />
+                          <Label>Good for Kids</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                          <Label>Pets Allowed</Label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Switch checked={form.wheelchair_friendly === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
+                          <Label>Wheelchair Friendly</Label>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Price Level</Label>
+                        <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
+                          <SelectTrigger><SelectValue placeholder="Select price level" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="1">$ — Budget</SelectItem>
+                            <SelectItem value="2">$$ — Moderate</SelectItem>
+                            <SelectItem value="3">$$$ — Upscale</SelectItem>
+                            <SelectItem value="4">$$$$ — Fine Dining</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
 
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>

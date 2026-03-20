@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ArrowLeft, MapPin, Phone, Mail, Globe, Star, Clock } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign } from "lucide-react";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -59,6 +59,14 @@ const ListingDetail = () => {
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
   const hasGallery = galleryImages && galleryImages.length > 0;
   const hasHours = openingHours && Object.values(openingHours).some((v) => v);
+  const showAttributes = (listing as any).show_attributes as boolean;
+  const goodForKids = (listing as any).good_for_kids as boolean | null;
+  const petsAllowed = (listing as any).pets_allowed as boolean | null;
+  const wheelchairFriendly = (listing as any).wheelchair_friendly as boolean | null;
+  const priceLevel = (listing as any).price_level as number | null;
+
+  const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
+  const priceName = priceLevel === 1 ? "Budget" : priceLevel === 2 ? "Moderate" : priceLevel === 3 ? "Upscale" : priceLevel === 4 ? "Fine Dining" : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -124,6 +132,49 @@ const ListingDetail = () => {
               </a>
             )}
           </div>
+
+          {/* Restaurant attributes */}
+          {showAttributes && (
+            <div className="flex flex-wrap gap-3 mb-8">
+              {priceLabel && (
+                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
+                  <DollarSign className="h-4 w-4 text-primary" />
+                  <span className="font-semibold text-foreground">{priceLabel}</span>
+                  {priceName && <span className="text-muted-foreground">· {priceName}</span>}
+                </div>
+              )}
+              {goodForKids === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <Baby className="h-4 w-4" /> Good for Kids
+                </div>
+              )}
+              {goodForKids === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <Baby className="h-4 w-4" /> Good for Kids
+                </div>
+              )}
+              {petsAllowed === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <PawPrint className="h-4 w-4" /> Pets Allowed
+                </div>
+              )}
+              {petsAllowed === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <PawPrint className="h-4 w-4" /> Pets Allowed
+                </div>
+              )}
+              {wheelchairFriendly === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <Accessibility className="h-4 w-4" /> Wheelchair Friendly
+                </div>
+              )}
+              {wheelchairFriendly === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <Accessibility className="h-4 w-4" /> Wheelchair Friendly
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Description */}
           {listing.description && (
