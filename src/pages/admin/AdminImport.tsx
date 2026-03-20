@@ -15,9 +15,17 @@ interface ParsedRow {
   website: string;
   category: string;
   is_featured: boolean;
+  long_description: string;
+  gallery_images: string;
+  opening_hours: string;
+  good_for_kids: string;
+  pets_allowed: string;
+  wheelchair_friendly: string;
+  price_level: string;
+  show_attributes: string;
 }
 
-const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "category", "is_featured"];
+const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "category", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -140,6 +148,23 @@ const AdminImport = () => {
           results.errors.push(`Row ${i + 2}: Category "${row.category}" not found, set to none`);
         }
 
+        const parseBool = (val: string | undefined) => {
+          if (!val || val === "") return null;
+          return val.toLowerCase() === "true" || val === "1";
+        };
+
+        let openingHours = null;
+        if (row.opening_hours) {
+          try { openingHours = JSON.parse(row.opening_hours); } catch { openingHours = null; }
+        }
+
+        let galleryImages: string[] | null = null;
+        if (row.gallery_images) {
+          try { galleryImages = JSON.parse(row.gallery_images); } catch {
+            galleryImages = row.gallery_images.split("|").map(s => s.trim()).filter(Boolean);
+          }
+        }
+
         const payload = {
           title,
           description: row.description || null,
@@ -150,6 +175,14 @@ const AdminImport = () => {
           website: row.website || null,
           category_id: categoryId,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
+          long_description: row.long_description || null,
+          gallery_images: galleryImages,
+          opening_hours: openingHours,
+          good_for_kids: parseBool(row.good_for_kids),
+          pets_allowed: parseBool(row.pets_allowed),
+          wheelchair_friendly: parseBool(row.wheelchair_friendly),
+          price_level: row.price_level ? parseInt(row.price_level, 10) || null : null,
+          show_attributes: row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1",
         };
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -194,12 +227,12 @@ const AdminImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,false\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,false,"A longer description about the lodge","[""img1.jpg"",""img2.jpg""]","{""monday"":{""open"":""08:00"",""close"":""17:00""}}",true,false,true,2,true\n';
     downloadCSV(csv, "listings_template.csv");
   };
 
   const downloadListings = async () => {
-    const { data: listings } = await supabase.from("listings").select("title, description, image_url, location, phone, email, website, category_id, is_featured");
+    const { data: listings } = await supabase.from("listings").select("title, description, image_url, location, phone, email, website, category_id, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes");
     if (!listings?.length) { toast.error("No listings to export"); return; }
     const catMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
@@ -207,6 +240,14 @@ const AdminImport = () => {
       l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
       l.phone ?? "", l.email ?? "", l.website ?? "",
       catMap.get(l.category_id ?? "") ?? "", String(l.is_featured),
+      l.long_description ?? "",
+      l.gallery_images ? JSON.stringify(l.gallery_images) : "",
+      l.opening_hours ? JSON.stringify(l.opening_hours) : "",
+      l.good_for_kids === null ? "" : String(l.good_for_kids),
+      l.pets_allowed === null ? "" : String(l.pets_allowed),
+      l.wheelchair_friendly === null ? "" : String(l.wheelchair_friendly),
+      l.price_level === null ? "" : String(l.price_level),
+      String(l.show_attributes),
     ].map(escapeCSV).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "listings_export.csv");
     toast.success(`Exported ${listings.length} listings`);
@@ -235,7 +276,7 @@ const AdminImport = () => {
           <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">
-            Columns: title, description, image_url, location, phone, email, website, category, is_featured
+            Columns: {EXPECTED_HEADERS.join(", ")}
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
