@@ -116,11 +116,14 @@ const AdminImport = () => {
       if (!parsed || !categories) throw new Error("No data");
 
       const catMap = new Map(categories.map((c) => [c.title.toLowerCase(), c.id]));
-      const results = { created: 0, updated: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
 
       // Fetch existing listings for upsert matching
       const { data: existing } = await supabase.from("listings").select("id, title");
       const existingMap = new Map((existing ?? []).map((l) => [l.title.toLowerCase(), l.id]));
+
+      // Track which existing listings appear in the CSV
+      const csvTitles = new Set<string>();
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
@@ -129,6 +132,8 @@ const AdminImport = () => {
           results.errors.push(`Row ${i + 2}: Missing title, skipped`);
           continue;
         }
+
+        csvTitles.add(title.toLowerCase());
 
         const categoryId = row.category ? catMap.get(row.category.toLowerCase()) ?? null : null;
         if (row.category && !categoryId) {
@@ -156,6 +161,15 @@ const AdminImport = () => {
           const { error } = await supabase.from("listings").insert(payload);
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
           else results.created++;
+        }
+      }
+
+      // Delete listings not present in the CSV
+      for (const [existingTitle, existingId] of existingMap) {
+        if (!csvTitles.has(existingTitle)) {
+          const { error } = await supabase.from("listings").delete().eq("id", existingId);
+          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
+          else results.deleted++;
         }
       }
 
