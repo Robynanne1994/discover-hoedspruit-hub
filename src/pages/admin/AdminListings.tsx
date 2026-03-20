@@ -42,8 +42,24 @@ const AdminListings = () => {
   });
 
   const upsert = useMutation({
-    mutationFn: async (values: TablesInsert<"listings">) => {
-      const payload = { ...values, category_id: values.category_id || null };
+    mutationFn: async (values: typeof emptyForm) => {
+      const galleryArr = values.gallery_images
+        ? values.gallery_images.split("\n").map((u) => u.trim()).filter(Boolean)
+        : [];
+      const payload: any = {
+        title: values.title,
+        description: values.description || null,
+        image_url: values.image_url || null,
+        location: values.location || null,
+        phone: values.phone || null,
+        email: values.email || null,
+        website: values.website || null,
+        category_id: values.category_id || null,
+        is_featured: values.is_featured,
+        long_description: values.long_description || null,
+        gallery_images: galleryArr,
+        opening_hours: values.opening_hours,
+      };
       if (editing) {
         const { error } = await supabase.from("listings").update(payload).eq("id", editing.id);
         if (error) throw error;
