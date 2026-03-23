@@ -56,7 +56,7 @@ const Navbar = () => {
   };
 
   const otherLinks = [
-  { label: "Advertise", href: "#advertise" },
+  { label: "Directories", href: "/directories" },
   { label: "About", href: "/about" }];
 
 
