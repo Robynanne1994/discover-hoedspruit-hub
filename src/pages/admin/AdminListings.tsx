@@ -152,6 +152,19 @@ const AdminListings = () => {
                   </SelectContent>
                 </Select>
               </div>
+              {form.category_id && subcategories?.filter((s) => s.category_id === form.category_id).length ? (
+                <div>
+                  <Label>Subcategory</Label>
+                  <Select value={form.subcategory_id} onValueChange={(v) => setForm({ ...form, subcategory_id: v })}>
+                    <SelectTrigger><SelectValue placeholder="Select subcategory (optional)" /></SelectTrigger>
+                    <SelectContent>
+                      {subcategories?.filter((s) => s.category_id === form.category_id).map((s) => (
+                        <SelectItem key={s.id} value={s.id}>{s.title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : null}
               <div><Label>Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
               <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-4">
