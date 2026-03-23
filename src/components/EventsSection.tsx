@@ -37,7 +37,7 @@ const EventsSection = () => {
                     {event.tag}
                   </span>
             }
-                <h3 className="font-heading text-lg font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                <h3 className="text-lg font-semibold text-foreground mb-3 group-hover:text-primary transition-colors font-sans">
                   {event.title}
                 </h3>
                 <div className="space-y-2 text-sm text-muted-foreground">
