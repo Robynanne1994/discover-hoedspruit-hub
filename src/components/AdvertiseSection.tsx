@@ -22,7 +22,7 @@ const AdvertiseSection = () => {
   return (
     <section id="advertise" className="section-padding bg-[#f9f6f0]">
       <div className="container-wide">
-        <div className="relative rounded-2xl overflow-hidden bg-secondary p-8 sm:p-12 lg:p-16">
+        <div className="relative rounded-2xl overflow-hidden p-8 sm:p-12 lg:p-16 bg-[#2e6b4a]">
           <div className="absolute top-0 right-0 w-1/2 h-full opacity-10">
             <div className="absolute inset-0 bg-gradient-to-l from-secondary-foreground/20 to-transparent" />
           </div>
