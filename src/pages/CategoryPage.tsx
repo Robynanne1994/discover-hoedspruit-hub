@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
@@ -8,6 +8,8 @@ import { ArrowLeft, MapPin, Phone, Mail, Globe, Star } from "lucide-react";
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeSubId = searchParams.get("sub");
 
   const { data: category } = useQuery({
     queryKey: ["category", id],
@@ -28,15 +30,37 @@ const CategoryPage = () => {
     },
   });
 
-  const { data: listings, isLoading } = useQuery({
-    queryKey: ["listings-by-category", id],
+  const { data: subcategories } = useQuery({
+    queryKey: ["subcategories", id],
     queryFn: async () => {
-      const { data, error } = await supabase.from("listings").select("*").eq("category_id", id!).order("is_featured", { ascending: false });
+      const { data, error } = await supabase.from("subcategories").select("*").eq("category_id", id!).order("sort_order");
       if (error) throw error;
       return data;
     },
     enabled: !!id,
   });
+
+  const { data: listings, isLoading } = useQuery({
+    queryKey: ["listings-by-category", id, activeSubId],
+    queryFn: async () => {
+      let query = supabase.from("listings").select("*").eq("category_id", id!);
+      if (activeSubId) {
+        query = query.eq("subcategory_id", activeSubId);
+      }
+      const { data, error } = await query.order("is_featured", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
+
+  const handleSubFilter = (subId: string | null) => {
+    if (subId) {
+      setSearchParams({ sub: subId });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -69,7 +93,36 @@ const CategoryPage = () => {
             {category?.title ?? "Category"}
           </h1>
           {category?.description && (
-            <p className="text-muted-foreground text-lg mb-8">{category.description}</p>
+            <p className="text-muted-foreground text-lg mb-4">{category.description}</p>
+          )}
+
+          {/* Subcategory filter pills */}
+          {subcategories && subcategories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-8">
+              <button
+                onClick={() => handleSubFilter(null)}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                  !activeSubId
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-foreground"
+                }`}
+              >
+                All
+              </button>
+              {subcategories.map((sub) => (
+                <button
+                  key={sub.id}
+                  onClick={() => handleSubFilter(sub.id)}
+                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors duration-200 ${
+                    activeSubId === sub.id
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-foreground"
+                  }`}
+                >
+                  {sub.title}
+                </button>
+              ))}
+            </div>
           )}
 
           {isLoading ? (
