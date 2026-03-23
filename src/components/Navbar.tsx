@@ -137,9 +137,10 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
+            <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
             {isAdmin &&
             <Link to="/admin">
                 <Button variant="ghost" size="sm" className="gap-2 text-primary">
