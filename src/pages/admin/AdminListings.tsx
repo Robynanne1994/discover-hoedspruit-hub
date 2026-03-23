@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,23 +6,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import type { Tables, TablesInsert } from "@/integrations/supabase/types";
+import type { Tables } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 type Listing = Tables<"listings">;
 
 const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", subcategory_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false };
 
 const AdminListings = () => {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Listing | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
@@ -49,6 +51,26 @@ const AdminListings = () => {
     },
   });
 
+  // Fetch listing_subcategories for the editing listing
+  const { data: editingSubIds } = useQuery({
+    queryKey: ["listing-subcategories", editing?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("listing_subcategories")
+        .select("subcategory_id")
+        .eq("listing_id", editing!.id);
+      if (error) throw error;
+      return data.map((r: any) => r.subcategory_id as string);
+    },
+    enabled: !!editing,
+  });
+
+  useEffect(() => {
+    if (editingSubIds) {
+      setSelectedSubIds(editingSubIds);
+    }
+  }, [editingSubIds]);
+
   const upsert = useMutation({
     mutationFn: async (values: typeof emptyForm) => {
       const galleryArr = values.gallery_images
@@ -63,7 +85,6 @@ const AdminListings = () => {
         email: values.email || null,
         website: values.website || null,
         category_id: values.category_id || null,
-        subcategory_id: values.subcategory_id || null,
         is_featured: values.is_featured,
         long_description: values.long_description || null,
         gallery_images: galleryArr,
@@ -74,12 +95,24 @@ const AdminListings = () => {
         price_level: values.price_level,
         show_attributes: values.show_attributes,
       };
+
+      let listingId: string;
       if (editing) {
         const { error } = await supabase.from("listings").update(payload).eq("id", editing.id);
         if (error) throw error;
+        listingId = editing.id;
       } else {
-        const { error } = await supabase.from("listings").insert(payload);
+        const { data, error } = await supabase.from("listings").insert(payload).select("id").single();
         if (error) throw error;
+        listingId = data.id;
+      }
+
+      // Sync subcategories: delete all then re-insert
+      await supabase.from("listing_subcategories").delete().eq("listing_id", listingId);
+      if (selectedSubIds.length > 0) {
+        const rows = selectedSubIds.map((subId) => ({ listing_id: listingId, subcategory_id: subId }));
+        const { error: subErr } = await supabase.from("listing_subcategories").insert(rows);
+        if (subErr) throw subErr;
       }
     },
     onSuccess: () => {
@@ -101,12 +134,12 @@ const AdminListings = () => {
     },
   });
 
-  const resetForm = () => { setForm(emptyForm); setEditing(null); setOpen(false); };
+  const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedSubIds([]); setOpen(false); };
 
   const openEdit = (l: Listing) => {
     setEditing(l);
-    const hours = (l as any).opening_hours as Record<string, string> | null;
-    const gallery = (l as any).gallery_images as string[] | null;
+    const hours = l.opening_hours as Record<string, string> | null;
+    const gallery = l.gallery_images as string[] | null;
     setForm({
       title: l.title,
       description: l.description ?? "",
@@ -116,19 +149,26 @@ const AdminListings = () => {
       email: l.email ?? "",
       website: l.website ?? "",
       category_id: l.category_id ?? "",
-      subcategory_id: (l as any).subcategory_id ?? "",
       is_featured: l.is_featured,
-      long_description: (l as any).long_description ?? "",
+      long_description: l.long_description ?? "",
       gallery_images: gallery?.join("\n") ?? "",
       opening_hours: { ...Object.fromEntries(DAY_LABELS.map((d) => [d, ""])), ...hours },
-      good_for_kids: (l as any).good_for_kids ?? null,
-      pets_allowed: (l as any).pets_allowed ?? null,
-      wheelchair_friendly: (l as any).wheelchair_friendly ?? null,
-      price_level: (l as any).price_level ?? null,
-      show_attributes: (l as any).show_attributes ?? false,
+      good_for_kids: l.good_for_kids ?? null,
+      pets_allowed: l.pets_allowed ?? null,
+      wheelchair_friendly: l.wheelchair_friendly ?? null,
+      price_level: l.price_level ?? null,
+      show_attributes: l.show_attributes ?? false,
     });
     setOpen(true);
   };
+
+  const toggleSub = (subId: string) => {
+    setSelectedSubIds((prev) =>
+      prev.includes(subId) ? prev.filter((id) => id !== subId) : [...prev, subId]
+    );
+  };
+
+  const availableSubs = subcategories?.filter((s) => s.category_id === form.category_id) ?? [];
 
   return (
     <div>
@@ -145,26 +185,31 @@ const AdminListings = () => {
               <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
               <div>
                 <Label>Category</Label>
-                <Select value={form.category_id} onValueChange={(v) => setForm({ ...form, category_id: v })}>
+                <Select value={form.category_id} onValueChange={(v) => { setForm({ ...form, category_id: v }); setSelectedSubIds([]); }}>
                   <SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
                   <SelectContent>
                     {categories?.map((c) => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
-              {form.category_id && subcategories?.filter((s) => s.category_id === form.category_id).length ? (
+              {availableSubs.length > 0 && (
                 <div>
-                  <Label>Subcategory</Label>
-                  <Select value={form.subcategory_id} onValueChange={(v) => setForm({ ...form, subcategory_id: v })}>
-                    <SelectTrigger><SelectValue placeholder="Select subcategory (optional)" /></SelectTrigger>
-                    <SelectContent>
-                      {subcategories?.filter((s) => s.category_id === form.category_id).map((s) => (
-                        <SelectItem key={s.id} value={s.id}>{s.title}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Label>Subcategories</Label>
+                  <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                  <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
+                    {availableSubs.map((sub) => (
+                      <div key={sub.id} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`sub-${sub.id}`}
+                          checked={selectedSubIds.includes(sub.id)}
+                          onCheckedChange={() => toggleSub(sub.id)}
+                        />
+                        <label htmlFor={`sub-${sub.id}`} className="text-sm text-foreground cursor-pointer">{sub.title}</label>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ) : null}
+              )}
               <div><Label>Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
               <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-4">
@@ -217,7 +262,6 @@ const AdminListings = () => {
                 </div>
               </div>
 
-              {/* Restaurant-specific attributes */}
               {categories?.some((c) => c.id === form.category_id && /restaurant|cafe/i.test(c.title)) && (
                 <div className="border-t border-border pt-4 mt-2 space-y-4">
                   <div className="flex items-center gap-2">

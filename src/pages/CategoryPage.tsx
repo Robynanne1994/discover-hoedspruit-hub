@@ -43,13 +43,32 @@ const CategoryPage = () => {
   const { data: listings, isLoading } = useQuery({
     queryKey: ["listings-by-category", id, activeSubId],
     queryFn: async () => {
-      let query = supabase.from("listings").select("*").eq("category_id", id!);
       if (activeSubId) {
-        query = query.eq("subcategory_id", activeSubId);
+        // Get listing IDs that have this subcategory
+        const { data: junctionData, error: jErr } = await supabase
+          .from("listing_subcategories")
+          .select("listing_id")
+          .eq("subcategory_id", activeSubId);
+        if (jErr) throw jErr;
+        const listingIds = junctionData.map((r: any) => r.listing_id as string);
+        if (listingIds.length === 0) return [];
+        const { data, error } = await supabase
+          .from("listings")
+          .select("*")
+          .eq("category_id", id!)
+          .in("id", listingIds)
+          .order("is_featured", { ascending: false });
+        if (error) throw error;
+        return data;
+      } else {
+        const { data, error } = await supabase
+          .from("listings")
+          .select("*")
+          .eq("category_id", id!)
+          .order("is_featured", { ascending: false });
+        if (error) throw error;
+        return data;
       }
-      const { data, error } = await query.order("is_featured", { ascending: false });
-      if (error) throw error;
-      return data;
     },
     enabled: !!id,
   });
@@ -96,7 +115,6 @@ const CategoryPage = () => {
             <p className="text-muted-foreground text-lg mb-4">{category.description}</p>
           )}
 
-          {/* Subcategory filter pills */}
           {subcategories && subcategories.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-8">
               <button
@@ -131,10 +149,10 @@ const CategoryPage = () => {
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {listings.map((l) => {
                 const hasDetail = !!(
-                  (l as any).long_description ||
-                  ((l as any).gallery_images && (l as any).gallery_images.length > 0) ||
-                  ((l as any).opening_hours && Object.values((l as any).opening_hours as Record<string, string>).some((v) => v)) ||
-                  (l as any).show_attributes
+                  l.long_description ||
+                  (l.gallery_images && l.gallery_images.length > 0) ||
+                  (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
+                  l.show_attributes
                 );
                 return (
                 <div
