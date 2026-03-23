@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
+import SearchDialog from "@/components/SearchDialog";
 import { Menu, X, User, Search, Shield, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -8,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [eventsOpen, setEventsOpen] = useState(false);
   const [mobileExploreOpen, setMobileExploreOpen] = useState(false);
@@ -135,9 +137,10 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
+            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
+            <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
             {isAdmin &&
             <Link to="/admin">
                 <Button variant="ghost" size="sm" className="gap-2 text-primary">
