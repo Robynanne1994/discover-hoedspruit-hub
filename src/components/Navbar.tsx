@@ -19,7 +19,7 @@ const Navbar = () => {
   const { data: categories } = useQuery({
     queryKey: ["nav-categories"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("categories").select("*").order("sort_order");
+      const { data, error } = await supabase.from("categories").select("*").order("title");
       if (error) throw error;
       return data;
     }
