@@ -41,6 +41,14 @@ const AdminListings = () => {
     },
   });
 
+  const { data: subcategories } = useQuery({
+    queryKey: ["admin-subcategories-select"],
+    queryFn: async () => {
+      const { data } = await supabase.from("subcategories").select("id, title, category_id").order("sort_order");
+      return data ?? [];
+    },
+  });
+
   const upsert = useMutation({
     mutationFn: async (values: typeof emptyForm) => {
       const galleryArr = values.gallery_images
