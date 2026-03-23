@@ -115,6 +115,7 @@ const AdminListings = () => {
       email: l.email ?? "",
       website: l.website ?? "",
       category_id: l.category_id ?? "",
+      subcategory_id: (l as any).subcategory_id ?? "",
       is_featured: l.is_featured,
       long_description: (l as any).long_description ?? "",
       gallery_images: gallery?.join("\n") ?? "",
