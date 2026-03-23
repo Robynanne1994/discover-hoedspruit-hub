@@ -5,27 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 
-interface ParsedRow {
-  title: string;
-  description: string;
-  image_url: string;
-  location: string;
-  phone: string;
-  email: string;
-  website: string;
-  category: string;
-  is_featured: boolean;
-  long_description: string;
-  gallery_images: string;
-  opening_hours: string;
-  good_for_kids: string;
-  pets_allowed: string;
-  wheelchair_friendly: string;
-  price_level: string;
-  show_attributes: string;
-}
-
-const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "category", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes"];
+const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "category", "subcategories", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -97,6 +77,14 @@ const AdminImport = () => {
     },
   });
 
+  const { data: subcategories } = useQuery({
+    queryKey: ["admin-subcategories-for-import"],
+    queryFn: async () => {
+      const { data } = await supabase.from("subcategories").select("id, title, category_id").order("sort_order");
+      return data ?? [];
+    },
+  });
+
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -123,14 +111,16 @@ const AdminImport = () => {
     mutationFn: async () => {
       if (!parsed || !categories) throw new Error("No data");
 
+      // Build mutable maps for categories and subcategories
       const catMap = new Map(categories.map((c) => [c.title.toLowerCase(), c.id]));
+      const subMap = new Map((subcategories ?? []).map((s) => [
+        `${s.category_id}::${s.title.toLowerCase()}`, s.id
+      ]));
+
       const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
 
-      // Fetch existing listings for upsert matching
       const { data: existing } = await supabase.from("listings").select("id, title");
       const existingMap = new Map((existing ?? []).map((l) => [l.title.toLowerCase(), l.id]));
-
-      // Track which existing listings appear in the CSV
       const csvTitles = new Set<string>();
 
       for (let i = 0; i < parsed.rows.length; i++) {
@@ -143,9 +133,52 @@ const AdminImport = () => {
 
         csvTitles.add(title.toLowerCase());
 
-        const categoryId = row.category ? catMap.get(row.category.toLowerCase()) ?? null : null;
-        if (row.category && !categoryId) {
-          results.errors.push(`Row ${i + 2}: Category "${row.category}" not found, set to none`);
+        // --- Resolve or create category ---
+        let categoryId: string | null = null;
+        const catName = row.category?.trim();
+        if (catName) {
+          categoryId = catMap.get(catName.toLowerCase()) ?? null;
+          if (!categoryId) {
+            // Create category
+            const { data: newCat, error: catErr } = await supabase
+              .from("categories")
+              .insert({ title: catName })
+              .select("id")
+              .single();
+            if (catErr || !newCat) {
+              results.errors.push(`Row ${i + 2}: Failed to create category "${catName}"`);
+            } else {
+              categoryId = newCat.id;
+              catMap.set(catName.toLowerCase(), newCat.id);
+            }
+          }
+        }
+
+        // --- Resolve or create subcategories ---
+        const subNames = row.subcategories
+          ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean)
+          : [];
+        const resolvedSubIds: string[] = [];
+
+        if (categoryId && subNames.length > 0) {
+          for (const subName of subNames) {
+            const key = `${categoryId}::${subName.toLowerCase()}`;
+            let subId = subMap.get(key) ?? null;
+            if (!subId) {
+              const { data: newSub, error: subErr } = await supabase
+                .from("subcategories")
+                .insert({ title: subName, category_id: categoryId })
+                .select("id")
+                .single();
+              if (subErr || !newSub) {
+                results.errors.push(`Row ${i + 2}: Failed to create subcategory "${subName}"`);
+              } else {
+                subId = newSub.id;
+                subMap.set(key, newSub.id);
+              }
+            }
+            if (subId) resolvedSubIds.push(subId);
+          }
         }
 
         const parseBool = (val: string | undefined) => {
@@ -186,14 +219,31 @@ const AdminImport = () => {
         };
 
         const existingId = existingMap.get(title.toLowerCase());
+        let listingId: string | null = null;
+
         if (existingId) {
           const { error } = await supabase.from("listings").update(payload).eq("id", existingId);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
-          else results.updated++;
+          else { results.updated++; listingId = existingId; }
         } else {
-          const { error } = await supabase.from("listings").insert(payload);
+          const { data: inserted, error } = await supabase.from("listings").insert(payload).select("id").single();
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
-          else results.created++;
+          else { results.created++; listingId = inserted?.id ?? null; }
+        }
+
+        // --- Sync listing_subcategories ---
+        if (listingId) {
+          // Delete existing junction rows for this listing
+          await supabase.from("listing_subcategories").delete().eq("listing_id", listingId);
+          // Insert new ones
+          if (resolvedSubIds.length > 0) {
+            const junctionRows = resolvedSubIds.map((subId) => ({
+              listing_id: listingId!,
+              subcategory_id: subId,
+            }));
+            const { error: jErr } = await supabase.from("listing_subcategories").insert(junctionRows);
+            if (jErr) results.errors.push(`Row ${i + 2}: Failed to assign subcategories`);
+          }
         }
       }
 
@@ -211,6 +261,8 @@ const AdminImport = () => {
     onSuccess: (results) => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
+      qc.invalidateQueries({ queryKey: ["admin-categories"] });
+      qc.invalidateQueries({ queryKey: ["admin-subcategories"] });
       toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
     },
     onError: (e) => toast.error(e.message),
@@ -227,19 +279,37 @@ const AdminImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,false,"A longer description about the lodge","[""img1.jpg"",""img2.jpg""]","{""monday"":{""open"":""08:00"",""close"":""17:00""}}",true,false,true,2,true\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation,Restaurant|Bar,false,"A longer description about the lodge","[""img1.jpg"",""img2.jpg""]","{""monday"":{""open"":""08:00"",""close"":""17:00""}}",true,false,true,2,true\n';
     downloadCSV(csv, "listings_template.csv");
   };
 
   const downloadListings = async () => {
-    const { data: listings } = await supabase.from("listings").select("title, description, image_url, location, phone, email, website, category_id, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes");
+    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, category_id, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes");
     if (!listings?.length) { toast.error("No listings to export"); return; }
+
+    // Fetch all listing_subcategories junction data
+    const { data: junctionData } = await supabase.from("listing_subcategories").select("listing_id, subcategory_id");
+    const subMap = new Map((subcategories ?? []).map((s) => [s.id, s.title]));
+    
+    // Build listing_id -> subcategory names
+    const listingSubMap = new Map<string, string[]>();
+    (junctionData ?? []).forEach((j) => {
+      const name = subMap.get(j.subcategory_id);
+      if (name) {
+        const arr = listingSubMap.get(j.listing_id) ?? [];
+        arr.push(name);
+        listingSubMap.set(j.listing_id, arr);
+      }
+    });
+
     const catMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = listings.map((l) => [
       l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
       l.phone ?? "", l.email ?? "", l.website ?? "",
-      catMap.get(l.category_id ?? "") ?? "", String(l.is_featured),
+      catMap.get(l.category_id ?? "") ?? "",
+      (listingSubMap.get(l.id) ?? []).join("|"),
+      String(l.is_featured),
       l.long_description ?? "",
       l.gallery_images ? JSON.stringify(l.gallery_images) : "",
       l.opening_hours ? JSON.stringify(l.opening_hours) : "",
@@ -277,6 +347,9 @@ const AdminImport = () => {
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">
             Columns: {EXPECTED_HEADERS.join(", ")}
+          </p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Subcategories: use pipe-separated values (e.g. Restaurant|Bar). New categories & subcategories are auto-created.
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
