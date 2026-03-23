@@ -104,6 +104,7 @@ export type Database = {
           phone: string | null
           price_level: number | null
           show_attributes: boolean
+          subcategory_id: string | null
           title: string
           updated_at: string
           website: string | null
@@ -126,6 +127,7 @@ export type Database = {
           phone?: string | null
           price_level?: number | null
           show_attributes?: boolean
+          subcategory_id?: string | null
           title: string
           updated_at?: string
           website?: string | null
@@ -148,6 +150,7 @@ export type Database = {
           phone?: string | null
           price_level?: number | null
           show_attributes?: boolean
+          subcategory_id?: string | null
           title?: string
           updated_at?: string
           website?: string | null
@@ -159,6 +162,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listings_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "subcategories"
             referencedColumns: ["id"]
           },
         ]
@@ -183,6 +193,44 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      subcategories: {
+        Row: {
+          category_id: string
+          created_at: string
+          description: string | null
+          id: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcategories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
