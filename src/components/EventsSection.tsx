@@ -16,7 +16,7 @@ const EventsSection = () => {
   const hasEvents = !!events?.length;
 
   return (
-    <section id="events" className="section-padding bg-card">
+    <section id="events" className="section-padding bg-[#f2ece3]">
       <div className="container-wide">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-12 gap-4">
           <div>
