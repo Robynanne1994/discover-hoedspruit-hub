@@ -56,7 +56,7 @@ const Navbar = () => {
   };
 
   const otherLinks = [
-  { label: "Advertise", href: "#advertise" },
+  { label: "Directories", href: "/directories" },
   { label: "About", href: "/about" }];
 
 
@@ -130,9 +130,15 @@ const Navbar = () => {
             </div>
 
             {otherLinks.map((link) =>
-            <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+            link.href.startsWith("/") ? (
+              <Link key={link.label} to={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+                {link.label}
+              </Link>
+            ) : (
+              <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 {link.label}
               </a>
+            )
             )}
           </div>
 
@@ -220,10 +226,16 @@ const Navbar = () => {
           }
 
             {otherLinks.map((link) =>
-          <a key={link.label} href={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
+            link.href.startsWith("/") ? (
+              <Link key={link.label} to={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
+                {link.label}
+              </Link>
+            ) : (
+              <a key={link.label} href={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
                 {link.label}
               </a>
-          )}
+            )
+            )}
             {isAdmin &&
           <Link to="/admin" className="block py-2 text-primary font-medium" onClick={() => setIsOpen(false)}>
                 Admin Dashboard
