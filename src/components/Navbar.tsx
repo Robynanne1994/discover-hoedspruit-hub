@@ -55,7 +55,7 @@ const Navbar = () => {
 
   const otherLinks = [
   { label: "Advertise", href: "#advertise" },
-  { label: "About", href: "#about" }];
+  { label: "About", href: "/about" }];
 
 
   return (
