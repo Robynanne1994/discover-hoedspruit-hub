@@ -33,7 +33,7 @@ const AdvertiseSection = () => {
               <span className="text-secondary-foreground text-sm font-medium">For Businesses</span>
             </div>
 
-            <h2 className="font-heading text-3xl sm:text-4xl font-bold text-secondary-foreground mb-4">{title}</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold text-secondary-foreground mb-4 font-sans">{title}</h2>
             <p className="text-secondary-foreground/80 text-lg mb-8 leading-relaxed">{description}</p>
 
             <ul className="space-y-3 mb-8">
