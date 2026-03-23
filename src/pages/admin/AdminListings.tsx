@@ -63,6 +63,7 @@ const AdminListings = () => {
         email: values.email || null,
         website: values.website || null,
         category_id: values.category_id || null,
+        subcategory_id: values.subcategory_id || null,
         is_featured: values.is_featured,
         long_description: values.long_description || null,
         gallery_images: galleryArr,
