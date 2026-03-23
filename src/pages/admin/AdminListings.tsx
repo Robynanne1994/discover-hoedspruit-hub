@@ -16,7 +16,7 @@ type Listing = Tables<"listings">;
 
 const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", category_id: "", subcategory_id: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false };
 
 const AdminListings = () => {
   const qc = useQueryClient();
