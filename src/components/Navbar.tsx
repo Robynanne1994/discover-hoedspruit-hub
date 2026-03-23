@@ -130,9 +130,15 @@ const Navbar = () => {
             </div>
 
             {otherLinks.map((link) =>
-            <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+            link.href.startsWith("/") ? (
+              <Link key={link.label} to={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+                {link.label}
+              </Link>
+            ) : (
+              <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 {link.label}
               </a>
+            )
             )}
           </div>
 
