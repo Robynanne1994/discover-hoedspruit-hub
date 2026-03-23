@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [exploreOpen, setExploreOpen] = useState(false);
   const [eventsOpen, setEventsOpen] = useState(false);
   const [mobileExploreOpen, setMobileExploreOpen] = useState(false);
