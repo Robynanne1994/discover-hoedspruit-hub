@@ -20,7 +20,7 @@ const AdvertiseSection = () => {
   const benefits = data?.benefits ?? [];
 
   return (
-    <section id="advertise" className="section-padding bg-background">
+    <section id="advertise" className="section-padding bg-[#f9f6f0]">
       <div className="container-wide">
         <div className="relative rounded-2xl overflow-hidden bg-secondary p-8 sm:p-12 lg:p-16">
           <div className="absolute top-0 right-0 w-1/2 h-full opacity-10">
