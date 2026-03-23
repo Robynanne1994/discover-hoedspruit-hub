@@ -226,10 +226,16 @@ const Navbar = () => {
           }
 
             {otherLinks.map((link) =>
-          <a key={link.label} href={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
+            link.href.startsWith("/") ? (
+              <Link key={link.label} to={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
+                {link.label}
+              </Link>
+            ) : (
+              <a key={link.label} href={link.href} className="block py-2 text-muted-foreground hover:text-foreground font-medium transition-colors" onClick={() => setIsOpen(false)}>
                 {link.label}
               </a>
-          )}
+            )
+            )}
             {isAdmin &&
           <Link to="/admin" className="block py-2 text-primary font-medium" onClick={() => setIsOpen(false)}>
                 Admin Dashboard
