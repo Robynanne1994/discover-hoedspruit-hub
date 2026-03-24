@@ -122,6 +122,20 @@ const MyAccount = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["been-here"] }),
   });
 
+  if (!user || loading) {
+    return (
+      <div className="min-h-screen bg-[#f9f6f0]">
+        <Navbar />
+        <div className="pt-24 pb-16 section-padding">
+          <div className="container-wide text-center py-16">
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f9f6f0]">
       <Navbar />
