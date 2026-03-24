@@ -181,6 +181,39 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_categories: {
+        Row: {
+          category_id: string
+          id: string
+          listing_id: string
+        }
+        Insert: {
+          category_id: string
+          id?: string
+          listing_id: string
+        }
+        Update: {
+          category_id?: string
+          id?: string
+          listing_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listing_categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "listing_categories_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listing_subcategories: {
         Row: {
           id: string
