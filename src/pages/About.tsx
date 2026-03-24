@@ -32,13 +32,13 @@ const About = () => {
               <h2 className="font-heading text-3xl font-bold text-foreground">Who am I?</h2>
               <div className="text-muted-foreground leading-relaxed space-y-4">
                 <p>
-                  I'm the person behind Discover Hoedspruit — a local who fell in love with this incredible bushveld town and wanted to share it with the world.
+                  My name is Robyn Dawes (previously McDonald), and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the Lowveld, and over the years I've watched this little town blossom into something truly special.
                 </p>
                 <p>
-                  After years of exploring every hidden gem, tasting every menu, and connecting with the passionate people who call Hoedspruit home, I decided to create a single place where all of this could live.
+                  Having spent my whole life here, I know just how much Hoedspruit has to offer, from its incredible wildlife and outdoor adventures to its warm community spirit and hidden gems that only a local would know.
                 </p>
                 <p>
-                  This platform is my way of celebrating the community, supporting local businesses, and helping visitors experience Hoedspruit the way it deserves to be experienced.
+                  The idea behind Hello Hoedspruit came from a simple frustration: there was no single place where visitors and locals alike could find everything our town has to offer, all in one spot. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together and showing the world what makes this place so extraordinary.
                 </p>
               </div>
             </div>
