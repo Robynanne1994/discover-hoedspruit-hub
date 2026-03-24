@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,68 +19,71 @@ import {
 } from "@/components/ui/dialog";
 
 const MyAccount = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newCollectionName, setNewCollectionName] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
 
-  if (!user) {
-    navigate("/auth");
-    return null;
-  }
+  useEffect(() => {
+    if (!loading && !user) navigate("/auth");
+  }, [user, loading, navigate]);
 
   const { data: profile } = useQuery({
-    queryKey: ["profile", user.id],
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id", user!.id)
         .single();
       return data;
     },
+    enabled: !!user,
   });
 
   const { data: collections } = useQuery({
-    queryKey: ["collections", user.id],
+    queryKey: ["collections", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("collections")
         .select("*, collection_items(id, listing_id, listings(id, title, image_url, description))")
-        .eq("user_id", user.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data;
     },
+    enabled: !!user,
   });
 
   const { data: beenHere } = useQuery({
-    queryKey: ["been-here", user.id],
+    queryKey: ["been-here", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("been_here")
         .select("*, listings(id, title, image_url, description)")
-        .eq("user_id", user.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data;
     },
+    enabled: !!user,
   });
 
   const { data: reviews } = useQuery({
-    queryKey: ["my-reviews", user.id],
+    queryKey: ["my-reviews", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("reviews")
         .select("*, listings(id, title)")
-        .eq("user_id", user.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data;
     },
+    enabled: !!user,
   });
 
   const createCollection = useMutation({
     mutationFn: async (name: string) => {
-      const { error } = await supabase.from("collections").insert({ name, user_id: user.id });
+      const { error } = await supabase.from("collections").insert({ name, user_id: user!.id });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -118,6 +121,20 @@ const MyAccount = () => {
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["been-here"] }),
   });
+
+  if (!user || loading) {
+    return (
+      <div className="min-h-screen bg-[#f9f6f0]">
+        <Navbar />
+        <div className="pt-24 pb-16 section-padding">
+          <div className="container-wide text-center py-16">
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f9f6f0]">
