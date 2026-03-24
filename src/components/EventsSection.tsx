@@ -52,12 +52,12 @@ const EventsSection = () => {
                   <div className="mt-auto space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2.5">
                       <Calendar className="h-5 w-5 text-primary/70 shrink-0" />
-                      <span className="truncate">{event.date}</span>
+                      <span className="truncate break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.date }} />
                     </div>
                     {event.location &&
                       <div className="flex items-center gap-2.5">
                         <MapPin className="h-5 w-5 text-primary/70 shrink-0" />
-                        <span className="truncate">{event.location}</span>
+                        <span className="truncate break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.location }} />
                       </div>
                     }
                   </div>
