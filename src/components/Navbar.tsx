@@ -230,11 +230,6 @@ const Navbar = () => {
               </a>
             )
             )}
-            {isAdmin &&
-          <Link to="/admin" className="block py-2 text-primary font-medium" onClick={() => setIsOpen(false)}>
-                Admin Dashboard
-              </Link>
-          }
             {user ?
           <div className="space-y-2 mt-3">
                 <Link to="/my-account" className="block" onClick={() => setIsOpen(false)}>
@@ -242,7 +237,6 @@ const Navbar = () => {
                     <User className="h-4 w-4" /> My Account
                   </Button>
                 </Link>
-                <Button variant="outline" size="sm" className="w-full" onClick={signOut}>Sign Out</Button>
               </div> :
 
           <Link to="/auth" onClick={() => setIsOpen(false)}>
