@@ -91,6 +91,7 @@ const AdminEventsImport = () => {
           image_url: row.image_url || null,
           start_time: row.start_time || null,
           end_time: row.end_time || null,
+          recurrence: row.recurrence || null,
         };
 
         const existingId = existingMap.get(title.toLowerCase());
