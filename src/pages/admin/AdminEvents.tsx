@@ -95,6 +95,7 @@ const AdminEvents = () => {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
