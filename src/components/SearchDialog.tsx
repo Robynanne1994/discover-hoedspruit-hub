@@ -82,7 +82,7 @@ const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg p-0 gap-0 overflow-hidden">
+      <DialogContent className="sm:max-w-lg p-0 gap-0 overflow-hidden [&>button.absolute]:hidden">
         <div className="flex items-center gap-3 px-4 border-b border-border">
           <Search className="h-4 w-4 text-muted-foreground shrink-0" />
           <Input
@@ -93,9 +93,12 @@ const SearchDialog = ({ open, onOpenChange }: SearchDialogProps) => {
             autoFocus
           />
           {isFetching && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />}
-          <kbd className="hidden sm:inline-flex items-center gap-1 rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+          <button
+            onClick={() => onOpenChange(false)}
+            className="hidden sm:inline-flex items-center gap-1 rounded border border-border bg-muted px-2 py-1 text-[10px] font-mono text-muted-foreground hover:bg-muted/80 transition-colors shrink-0"
+          >
             ESC
-          </kbd>
+          </button>
         </div>
 
         <div className="max-h-80 overflow-y-auto">
