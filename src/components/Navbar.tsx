@@ -142,30 +142,17 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
             <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-            {isAdmin &&
-            <Link to="/admin">
-                <Button variant="ghost" size="sm" className="gap-2 text-primary">
-                  <Shield className="h-4 w-4" /> Admin
-                </Button>
-              </Link>
-            }
             {user ?
-            <div className="flex items-center gap-2">
-                <Link to="/my-account">
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <User className="h-4 w-4" /> My Account
-                  </Button>
-                </Link>
-                <Button variant="outline" size="sm" onClick={signOut}>
-                  Sign Out
+            <Link to="/my-account">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <User className="h-4 w-4" /> My Account
                 </Button>
-              </div> :
-
+              </Link> :
             <Link to="/auth">
                 <Button variant="outline" size="sm" className="gap-2">
                   <User className="h-4 w-4" /> Sign In
