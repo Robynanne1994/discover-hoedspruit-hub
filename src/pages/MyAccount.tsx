@@ -8,7 +8,8 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, MapPinCheck, Star, Plus, Trash2, FolderOpen } from "lucide-react";
+import { Heart, MapPinCheck, Star, Plus, Trash2, FolderOpen, UserCircle } from "lucide-react";
+import ProfileForm from "@/components/profile/ProfileForm";
 import { toast } from "sonner";
 import {
   Dialog,
