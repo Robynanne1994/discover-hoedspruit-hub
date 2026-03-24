@@ -66,7 +66,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-16 sm:h-20">
           <Link to="/" className="flex items-center gap-2">
             <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight font-sans">
-              Discover <span className="text-primary font-sans">Hoedspruit</span>
+              Hello <span className="text-primary font-sans">Hoedspruit</span>
             </span>
           </Link>
 
