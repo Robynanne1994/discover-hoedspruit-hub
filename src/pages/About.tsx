@@ -77,7 +77,7 @@ const About = () => {
           <div className="bg-accent/10 border border-accent/20 rounded-xl p-8 text-center space-y-4">
             <h2 className="font-heading text-2xl font-bold text-foreground">Want to be listed?</h2>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you on Discover Hoedspruit.
+              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you on Hello Hoedspruit.
             </p>
             <a href="/contact" className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
               Get in Touch
