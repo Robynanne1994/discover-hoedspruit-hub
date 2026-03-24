@@ -298,14 +298,25 @@ const AdminImport = () => {
   };
 
   const downloadListings = async () => {
-    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, category_id, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes");
+    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes");
     if (!listings?.length) { toast.error("No listings to export"); return; }
 
-    // Fetch all listing_subcategories junction data
+    // Fetch listing_categories junction
+    const { data: catJunction } = await supabase.from("listing_categories").select("listing_id, category_id");
+    const catMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
+    const listingCatMap = new Map<string, string[]>();
+    (catJunction ?? []).forEach((j) => {
+      const name = catMap.get(j.category_id);
+      if (name) {
+        const arr = listingCatMap.get(j.listing_id) ?? [];
+        arr.push(name);
+        listingCatMap.set(j.listing_id, arr);
+      }
+    });
+
+    // Fetch listing_subcategories junction
     const { data: junctionData } = await supabase.from("listing_subcategories").select("listing_id, subcategory_id");
     const subMap = new Map((subcategories ?? []).map((s) => [s.id, s.title]));
-    
-    // Build listing_id -> subcategory names
     const listingSubMap = new Map<string, string[]>();
     (junctionData ?? []).forEach((j) => {
       const name = subMap.get(j.subcategory_id);
@@ -316,12 +327,11 @@ const AdminImport = () => {
       }
     });
 
-    const catMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = listings.map((l) => [
       l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
       l.phone ?? "", l.email ?? "", l.website ?? "",
-      catMap.get(l.category_id ?? "") ?? "",
+      (listingCatMap.get(l.id) ?? []).join("|"),
       (listingSubMap.get(l.id) ?? []).join("|"),
       String(l.is_featured),
       l.long_description ?? "",
