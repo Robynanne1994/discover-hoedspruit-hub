@@ -178,6 +178,11 @@ const ListingDetail = () => {
             </div>
           )}
 
+          {/* User actions */}
+          <div className="mb-8">
+            <ListingActions listingId={listing.id} />
+          </div>
+
           {/* Description */}
           {listing.description && (
             <p className="text-muted-foreground text-lg mb-6">{listing.description}</p>
