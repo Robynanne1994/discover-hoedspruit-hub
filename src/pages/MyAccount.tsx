@@ -25,16 +25,21 @@ const MyAccount = () => {
   const [newCollectionName, setNewCollectionName] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
 
+  useEffect(() => {
+    if (!loading && !user) navigate("/auth");
+  }, [user, loading, navigate]);
+
   const { data: profile } = useQuery({
-    queryKey: ["profile", user.id],
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", user.id)
+        .eq("id", user!.id)
         .single();
       return data;
     },
+    enabled: !!user,
   });
 
   const { data: collections } = useQuery({
