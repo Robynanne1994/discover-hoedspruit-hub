@@ -22,8 +22,8 @@ const About = () => {
         <div className="container-wide max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="rounded-xl overflow-hidden aspect-[4/5] bg-muted">
-              <img
-                src="/lovable-uploads/e1d40f2a-0fbb-4509-ae22-086be06106da.jpg"
+            <img
+                src="https://media.licdn.com/dms/image/v2/D4D03AQEovnKgk_KDnw/profile-displayphoto-crop_800_800/B4DZxSzIvCJcAM-/0/1770915663825?e=1775692800&v=beta&t=cqieS2K8_BvM9SoPttQVDEJWbBVERBzXXdwEie_hLnk"
                 alt="About Discover Hoedspruit"
                 className="w-full h-full object-cover"
               />
