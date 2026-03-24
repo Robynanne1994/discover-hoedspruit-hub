@@ -43,15 +43,16 @@ const MyAccount = () => {
   });
 
   const { data: collections } = useQuery({
-    queryKey: ["collections", user.id],
+    queryKey: ["collections", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("collections")
         .select("*, collection_items(id, listing_id, listings(id, title, image_url, description))")
-        .eq("user_id", user.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data;
     },
+    enabled: !!user,
   });
 
   const { data: beenHere } = useQuery({
