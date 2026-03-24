@@ -10,7 +10,7 @@ const About = () => {
       <section className="pt-28 pb-16 section-padding bg-muted/30">
         <div className="container-wide max-w-4xl mx-auto text-center">
           <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mb-6">
-            About <span className="text-primary">Discover Hoedspruit</span>
+            About <span className="text-primary">Hello Hoedspruit</span>
           </h1>
           <p className="text-muted-foreground text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto">
             Your full guide to Hoedspruit — eat, explore, and experience everything this incredible bushveld town has to offer, all in one place.
@@ -24,7 +24,7 @@ const About = () => {
             <div className="rounded-xl overflow-hidden aspect-[4/5] bg-muted">
             <img
                 src="https://media.licdn.com/dms/image/v2/D4D03AQEovnKgk_KDnw/profile-displayphoto-crop_800_800/B4DZxSzIvCJcAM-/0/1770915663825?e=1775692800&v=beta&t=cqieS2K8_BvM9SoPttQVDEJWbBVERBzXXdwEie_hLnk"
-                alt="About Discover Hoedspruit"
+                alt="About Hello Hoedspruit"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -53,7 +53,7 @@ const About = () => {
               Nestled at the foot of the Drakensberg escarpment in Limpopo, South Africa, Hoedspruit is a gateway to some of the country's most breathtaking wildlife reserves, adventure activities, and culinary experiences.
             </p>
             <p>
-              <strong className="text-foreground">Discover Hoedspruit</strong> was created to bring together the best of what this town has to offer — from restaurants and cafés to outdoor adventures, family-friendly activities, and community events. Whether you're a first-time visitor or a long-time local, we're here to help you make the most of your time in Hoedspruit.
+              <strong className="text-foreground">Hello Hoedspruit</strong> was created to bring together the best of what this town has to offer — from restaurants and cafés to outdoor adventures, family-friendly activities, and community events. Whether you're a first-time visitor or a long-time local, we're here to help you make the most of your time in Hoedspruit.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ const About = () => {
           <div className="bg-accent/10 border border-accent/20 rounded-xl p-8 text-center space-y-4">
             <h2 className="font-heading text-2xl font-bold text-foreground">Want to be listed?</h2>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you on Discover Hoedspruit.
+              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you on Hello Hoedspruit.
             </p>
             <a href="/contact" className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
               Get in Touch

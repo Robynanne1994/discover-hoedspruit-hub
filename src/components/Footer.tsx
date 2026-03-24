@@ -66,7 +66,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/10 pt-8 text-center text-primary-foreground/40 text-sm">
-          © {new Date().getFullYear()} Discover Hoedspruit. All rights reserved.
+          © {new Date().getFullYear()} Hello Hoedspruit. All rights reserved.
         </div>
       </div>
     </footer>);
