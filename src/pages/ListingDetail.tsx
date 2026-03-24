@@ -230,6 +230,9 @@ const ListingDetail = () => {
               </div>
             </div>
           )}
+
+          {/* Reviews & ratings */}
+          <ReviewSection listingId={listing.id} />
         </div>
       </section>
       <Footer />
