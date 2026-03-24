@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchDialog from "@/components/SearchDialog";
-import { Menu, X, User, Search, Shield, ChevronDown } from "lucide-react";
+import { Menu, X, User, Search, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -142,30 +142,17 @@ const Navbar = () => {
             )}
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
             <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
-            {isAdmin &&
-            <Link to="/admin">
-                <Button variant="ghost" size="sm" className="gap-2 text-primary">
-                  <Shield className="h-4 w-4" /> Admin
-                </Button>
-              </Link>
-            }
             {user ?
-            <div className="flex items-center gap-2">
-                <Link to="/my-account">
-                  <Button variant="ghost" size="sm" className="gap-2">
-                    <User className="h-4 w-4" /> My Account
-                  </Button>
-                </Link>
-                <Button variant="outline" size="sm" onClick={signOut}>
-                  Sign Out
+            <Link to="/my-account">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <User className="h-4 w-4" /> My Account
                 </Button>
-              </div> :
-
+              </Link> :
             <Link to="/auth">
                 <Button variant="outline" size="sm" className="gap-2">
                   <User className="h-4 w-4" /> Sign In
@@ -243,11 +230,6 @@ const Navbar = () => {
               </a>
             )
             )}
-            {isAdmin &&
-          <Link to="/admin" className="block py-2 text-primary font-medium" onClick={() => setIsOpen(false)}>
-                Admin Dashboard
-              </Link>
-          }
             {user ?
           <div className="space-y-2 mt-3">
                 <Link to="/my-account" className="block" onClick={() => setIsOpen(false)}>
@@ -255,7 +237,6 @@ const Navbar = () => {
                     <User className="h-4 w-4" /> My Account
                   </Button>
                 </Link>
-                <Button variant="outline" size="sm" className="w-full" onClick={signOut}>Sign Out</Button>
               </div> :
 
           <Link to="/auth" onClick={() => setIsOpen(false)}>
