@@ -24,8 +24,7 @@ const HeroSection = () => {
 
         <h1 className="text-4xl sm:text-6xl font-bold text-primary-foreground mb-6 leading-tight animate-fade-up font-sans lg:text-8xl" style={{ animationDelay: "0.1s" }}>
           Hello
-          <br />
-          <span className="text-accent">Hoedspruit</span>
+          <span className="text-accent"> Hoedspruit</span>
         </h1>
 
         <p className="text-primary-foreground/80 text-lg sm:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed animate-fade-up" style={{ animationDelay: "0.2s" }}>
