@@ -69,15 +69,16 @@ const MyAccount = () => {
   });
 
   const { data: reviews } = useQuery({
-    queryKey: ["my-reviews", user.id],
+    queryKey: ["my-reviews", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("reviews")
         .select("*, listings(id, title)")
-        .eq("user_id", user.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data;
     },
+    enabled: !!user,
   });
 
   const createCollection = useMutation({
