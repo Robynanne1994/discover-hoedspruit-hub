@@ -70,7 +70,11 @@ const AdminEvents = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-heading text-3xl font-bold text-foreground">Events</h1>
-        <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
+        <div className="flex gap-2">
+          <Link to="/admin/events/import">
+            <Button variant="outline" className="gap-2"><FileSpreadsheet className="h-4 w-4" /> Import/Export CSV</Button>
+          </Link>
+          <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> Add Event</Button>
           </DialogTrigger>

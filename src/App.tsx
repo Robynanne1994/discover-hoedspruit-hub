@@ -47,6 +47,7 @@ const App = () => (
               <Route path="categories" element={<AdminCategories />} />
               <Route path="listings" element={<AdminListings />} />
               <Route path="events" element={<AdminEvents />} />
+              <Route path="events/import" element={<AdminEventsImport />} />
               <Route path="content" element={<AdminContent />} />
               <Route path="import" element={<AdminImport />} />
             </Route>
