@@ -53,7 +53,7 @@ const About = () => {
               Nestled at the foot of the Drakensberg escarpment in Limpopo, South Africa, Hoedspruit is a gateway to some of the country's most breathtaking wildlife reserves, adventure activities, and culinary experiences.
             </p>
             <p>
-              <strong className="text-foreground">Discover Hoedspruit</strong> was created to bring together the best of what this town has to offer — from restaurants and cafés to outdoor adventures, family-friendly activities, and community events. Whether you're a first-time visitor or a long-time local, we're here to help you make the most of your time in Hoedspruit.
+              <strong className="text-foreground">Hello Hoedspruit</strong> was created to bring together the best of what this town has to offer — from restaurants and cafés to outdoor adventures, family-friendly activities, and community events. Whether you're a first-time visitor or a long-time local, we're here to help you make the most of your time in Hoedspruit.
             </p>
           </div>
 
