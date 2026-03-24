@@ -19,6 +19,34 @@ const About = () => {
       </section>
 
       <section className="section-padding">
+        <div className="container-wide max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="rounded-xl overflow-hidden aspect-[4/5] bg-muted">
+              <img
+                src="/placeholder.svg"
+                alt="About Discover Hoedspruit"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="space-y-4">
+              <h2 className="font-heading text-3xl font-bold text-foreground">Who am I?</h2>
+              <div className="text-muted-foreground leading-relaxed space-y-4">
+                <p>
+                  I'm the person behind Discover Hoedspruit — a local who fell in love with this incredible bushveld town and wanted to share it with the world.
+                </p>
+                <p>
+                  After years of exploring every hidden gem, tasting every menu, and connecting with the passionate people who call Hoedspruit home, I decided to create a single place where all of this could live.
+                </p>
+                <p>
+                  This platform is my way of celebrating the community, supporting local businesses, and helping visitors experience Hoedspruit the way it deserves to be experienced.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding">
         <div className="container-wide max-w-4xl mx-auto space-y-12">
           <div className="prose prose-lg max-w-none text-muted-foreground">
             <p>
