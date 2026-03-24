@@ -30,7 +30,7 @@ const Footer = () => {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           <div className="lg:col-span-2">
             <h3 className="font-heading text-2xl font-bold mb-4">
-              Discover <span className="text-amber-600 font-sans">Hoedspruit</span>
+              Hello <span className="text-amber-600 font-sans">Hoedspruit</span>
             </h3>
             <p className="text-primary-foreground/60 max-w-md leading-relaxed">{tagline}</p>
           </div>
