@@ -56,15 +56,16 @@ const MyAccount = () => {
   });
 
   const { data: beenHere } = useQuery({
-    queryKey: ["been-here", user.id],
+    queryKey: ["been-here", user?.id],
     queryFn: async () => {
       const { data } = await supabase
         .from("been_here")
         .select("*, listings(id, title, image_url, description)")
-        .eq("user_id", user.id)
+        .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data;
     },
+    enabled: !!user,
   });
 
   const { data: reviews } = useQuery({
