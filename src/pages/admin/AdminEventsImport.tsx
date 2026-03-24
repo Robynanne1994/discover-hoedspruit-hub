@@ -134,7 +134,7 @@ const AdminEventsImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","Hoedspruit Town","Market","https://example.com/img.jpg","08:00","13:00"\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","Hoedspruit Town","Market","https://example.com/img.jpg","08:00","13:00","Weekly"\n';
     downloadCSV(csv, "events_template.csv");
   };
 
