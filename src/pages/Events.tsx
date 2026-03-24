@@ -57,13 +57,13 @@ const Events = () => {
                               )}
                               <div className="space-y-1.5 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-2">
-                                  <Calendar className="h-4 w-4 text-primary/70" />
-                                  {event.date}
+                                  <Calendar className="h-4 w-4 text-primary/70 shrink-0" />
+                                  <span className="break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.date }} />
                                 </div>
                                 {event.location && (
                                   <div className="flex items-center gap-2">
-                                    <MapPin className="h-4 w-4 text-primary/70" />
-                                    {event.location}
+                                    <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
+                                    <span className="break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.location }} />
                                   </div>
                                 )}
                               </div>
