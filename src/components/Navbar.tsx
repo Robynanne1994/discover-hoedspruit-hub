@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchDialog from "@/components/SearchDialog";
-import { Menu, X, User, Search, ChevronDown } from "lucide-react";
+import { Menu, X, User, Search, ChevronDown, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -147,6 +147,13 @@ const Navbar = () => {
               <Search className="h-5 w-5" />
             </Button>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+            {isAdmin && (
+              <Link to="/admin">
+                <Button variant="ghost" size="icon" className="text-primary">
+                  <Shield className="h-5 w-5" />
+                </Button>
+              </Link>
+            )}
             {user ?
             <Link to="/my-account">
                 <Button variant="ghost" size="sm" className="gap-2">
@@ -229,6 +236,13 @@ const Navbar = () => {
                 {link.label}
               </a>
             )
+            )}
+            {isAdmin && (
+              <Link to="/admin" className="block" onClick={() => setIsOpen(false)}>
+                <Button variant="ghost" size="sm" className="gap-2 w-full justify-start text-primary">
+                  <Shield className="h-4 w-4" /> Admin
+                </Button>
+              </Link>
             )}
             {user ?
           <div className="space-y-2 mt-3">
