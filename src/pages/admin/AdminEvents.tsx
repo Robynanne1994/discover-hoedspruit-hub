@@ -89,27 +89,29 @@ const AdminEvents = () => {
       </div>
 
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm table-fixed">
             <thead className="bg-muted">
               <tr>
-                <th className="text-left p-3 font-medium text-muted-foreground">Title</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Date</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Location</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Tag</th>
-                <th className="p-3"></th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Title</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Date</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Location</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Tag</th>
+                <th className="p-3 w-[15%]"></th>
               </tr>
             </thead>
             <tbody>
               {events?.map((ev) => (
                 <tr key={ev.id} className="border-t border-border">
-                  <td className="p-3 font-medium text-foreground">{ev.title}</td>
-                  <td className="p-3 text-muted-foreground">{ev.date}</td>
-                  <td className="p-3 text-muted-foreground">{ev.location ?? "—"}</td>
-                  <td className="p-3 text-muted-foreground">{ev.tag ?? "—"}</td>
-                  <td className="p-3 flex gap-1 justify-end">
-                    <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(ev.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                  <td className="p-3 font-medium text-foreground truncate">{ev.title}</td>
+                  <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
+                  <td className="p-3 text-muted-foreground truncate">{ev.location ?? "—"}</td>
+                  <td className="p-3 text-muted-foreground truncate">{ev.tag ?? "—"}</td>
+                  <td className="p-3">
+                    <div className="flex gap-1 justify-end">
+                      <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(ev.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    </div>
                   </td>
                 </tr>
               ))}
