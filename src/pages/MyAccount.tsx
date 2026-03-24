@@ -83,7 +83,7 @@ const MyAccount = () => {
 
   const createCollection = useMutation({
     mutationFn: async (name: string) => {
-      const { error } = await supabase.from("collections").insert({ name, user_id: user.id });
+      const { error } = await supabase.from("collections").insert({ name, user_id: user!.id });
       if (error) throw error;
     },
     onSuccess: () => {
