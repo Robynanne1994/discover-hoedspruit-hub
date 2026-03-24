@@ -249,7 +249,14 @@ const Navbar = () => {
               </Link>
           }
             {user ?
-          <Button variant="outline" size="sm" className="w-full mt-3" onClick={signOut}>Sign Out</Button> :
+          <div className="space-y-2 mt-3">
+                <Link to="/my-account" className="block" onClick={() => setIsOpen(false)}>
+                  <Button variant="ghost" size="sm" className="gap-2 w-full justify-start">
+                    <User className="h-4 w-4" /> My Account
+                  </Button>
+                </Link>
+                <Button variant="outline" size="sm" className="w-full" onClick={signOut}>Sign Out</Button>
+              </div> :
 
           <Link to="/auth" onClick={() => setIsOpen(false)}>
                 <Button variant="outline" size="sm" className="gap-2 w-full mt-3">
