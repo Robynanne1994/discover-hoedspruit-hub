@@ -24,7 +24,7 @@ const AdminLayout = () => {
     <div className="min-h-screen flex bg-background">
       <aside className="w-64 bg-card border-r border-border p-4 flex flex-col">
         <Link to="/" className="font-heading text-lg font-bold text-foreground mb-8 block">
-          Discover <span className="text-primary">Hoedspruit</span>
+          Hello <span className="text-primary">Hoedspruit</span>
         </Link>
         <nav className="flex-1 space-y-1">
           {navItems.map((item) => {
