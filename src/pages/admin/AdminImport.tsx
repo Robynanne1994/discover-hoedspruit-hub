@@ -133,13 +133,14 @@ const AdminImport = () => {
 
         csvTitles.add(title.toLowerCase());
 
-        // --- Resolve or create category ---
-        let categoryId: string | null = null;
-        const catName = row.category?.trim();
-        if (catName) {
-          categoryId = catMap.get(catName.toLowerCase()) ?? null;
-          if (!categoryId) {
-            // Create category
+        // --- Resolve or create categories (pipe-separated) ---
+        const catField = row.categories?.trim() || row.category?.trim() || "";
+        const catNames = catField ? catField.split("|").map((s) => s.trim()).filter(Boolean) : [];
+        const resolvedCatIds: string[] = [];
+
+        for (const catName of catNames) {
+          let catId = catMap.get(catName.toLowerCase()) ?? null;
+          if (!catId) {
             const { data: newCat, error: catErr } = await supabase
               .from("categories")
               .insert({ title: catName })
@@ -148,10 +149,11 @@ const AdminImport = () => {
             if (catErr || !newCat) {
               results.errors.push(`Row ${i + 2}: Failed to create category "${catName}"`);
             } else {
-              categoryId = newCat.id;
+              catId = newCat.id;
               catMap.set(catName.toLowerCase(), newCat.id);
             }
           }
+          if (catId) resolvedCatIds.push(catId);
         }
 
         // --- Resolve or create subcategories ---
@@ -160,24 +162,33 @@ const AdminImport = () => {
           : [];
         const resolvedSubIds: string[] = [];
 
-        if (categoryId && subNames.length > 0) {
+        if (resolvedCatIds.length > 0 && subNames.length > 0) {
           for (const subName of subNames) {
-            const key = `${categoryId}::${subName.toLowerCase()}`;
-            let subId = subMap.get(key) ?? null;
-            if (!subId) {
+            // Try matching against all resolved categories
+            let found = false;
+            for (const cId of resolvedCatIds) {
+              const key = `${cId}::${subName.toLowerCase()}`;
+              let subId = subMap.get(key) ?? null;
+              if (subId) {
+                resolvedSubIds.push(subId);
+                found = true;
+                break;
+              }
+            }
+            if (!found) {
+              // Create under the first category
               const { data: newSub, error: subErr } = await supabase
                 .from("subcategories")
-                .insert({ title: subName, category_id: categoryId })
+                .insert({ title: subName, category_id: resolvedCatIds[0] })
                 .select("id")
                 .single();
               if (subErr || !newSub) {
                 results.errors.push(`Row ${i + 2}: Failed to create subcategory "${subName}"`);
               } else {
-                subId = newSub.id;
-                subMap.set(key, newSub.id);
+                resolvedSubIds.push(newSub.id);
+                subMap.set(`${resolvedCatIds[0]}::${subName.toLowerCase()}`, newSub.id);
               }
             }
-            if (subId) resolvedSubIds.push(subId);
           }
         }
 
@@ -206,7 +217,7 @@ const AdminImport = () => {
           phone: row.phone || null,
           email: row.email || null,
           website: row.website || null,
-          category_id: categoryId,
+          category_id: resolvedCatIds[0] || null,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
           long_description: row.long_description || null,
           gallery_images: galleryImages,
@@ -231,16 +242,19 @@ const AdminImport = () => {
           else { results.created++; listingId = inserted?.id ?? null; }
         }
 
-        // --- Sync listing_subcategories ---
+        // --- Sync listing_categories junction ---
         if (listingId) {
-          // Delete existing junction rows for this listing
+          await supabase.from("listing_categories").delete().eq("listing_id", listingId);
+          if (resolvedCatIds.length > 0) {
+            const catRows = resolvedCatIds.map((catId) => ({ listing_id: listingId!, category_id: catId }));
+            const { error: catJErr } = await supabase.from("listing_categories").insert(catRows);
+            if (catJErr) results.errors.push(`Row ${i + 2}: Failed to assign categories`);
+          }
+
+          // Sync listing_subcategories
           await supabase.from("listing_subcategories").delete().eq("listing_id", listingId);
-          // Insert new ones
           if (resolvedSubIds.length > 0) {
-            const junctionRows = resolvedSubIds.map((subId) => ({
-              listing_id: listingId!,
-              subcategory_id: subId,
-            }));
+            const junctionRows = resolvedSubIds.map((subId) => ({ listing_id: listingId!, subcategory_id: subId }));
             const { error: jErr } = await supabase.from("listing_subcategories").insert(junctionRows);
             if (jErr) results.errors.push(`Row ${i + 2}: Failed to assign subcategories`);
           }
