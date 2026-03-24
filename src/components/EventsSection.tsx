@@ -29,28 +29,35 @@ const EventsSection = () => {
         </div>
 
         {hasEvents ?
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {events.slice(0, 4).map((event) =>
-          <a key={event.id} href="#" className="group bg-background rounded-xl p-5 border border-border hover:border-primary/50 hover:shadow-warm transition-all duration-200">
-                {event.tag &&
-            <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-3 py-1 mb-4">
-                    {event.tag}
-                  </span>
-            }
-                <h3 className="text-lg font-semibold text-foreground mb-3 group-hover:text-primary transition-colors font-sans">
-                  {event.title}
-                </h3>
-                <div className="space-y-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-primary/70" />
-                    {event.date}
+          <a key={event.id} href="#" className="group bg-background rounded-xl border border-border hover:border-primary/50 hover:shadow-warm transition-all duration-200 flex flex-col overflow-hidden">
+                {event.image_url && (
+                  <div className="aspect-[16/10] overflow-hidden">
+                    <img src={event.image_url} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   </div>
-                  {event.location &&
-              <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-primary/70" />
-                      {event.location}
+                )}
+                <div className="p-5 flex flex-col flex-1">
+                  {event.tag &&
+                    <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-3 py-1 mb-3 self-start">
+                      {event.tag}
+                    </span>
+                  }
+                  <h3 className="text-base font-semibold text-foreground mb-4 group-hover:text-primary transition-colors font-sans line-clamp-2 leading-snug">
+                    {event.title}
+                  </h3>
+                  <div className="mt-auto space-y-2.5 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2.5">
+                      <Calendar className="h-5 w-5 text-primary/70 shrink-0" />
+                      <span>{event.date}</span>
                     </div>
-              }
+                    {event.location &&
+                      <div className="flex items-center gap-2.5">
+                        <MapPin className="h-5 w-5 text-primary/70 shrink-0" />
+                        <span className="truncate">{event.location}</span>
+                      </div>
+                    }
+                  </div>
                 </div>
               </a>
           )}
