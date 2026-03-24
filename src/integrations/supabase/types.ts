@@ -14,6 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      been_here: {
+        Row: {
+          created_at: string
+          id: string
+          listing_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          listing_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          listing_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "been_here_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -47,6 +76,63 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      collection_items: {
+        Row: {
+          collection_id: string
+          created_at: string
+          id: string
+          listing_id: string
+        }
+        Insert: {
+          collection_id: string
+          created_at?: string
+          id?: string
+          listing_id: string
+        }
+        Update: {
+          collection_id?: string
+          created_at?: string
+          id?: string
+          listing_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collection_items_collection_id_fkey"
+            columns: ["collection_id"]
+            isOneToOne: false
+            referencedRelation: "collections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collection_items_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      collections: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -192,6 +278,68 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          listing_id: string
+          rating: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          listing_id: string
+          rating: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          listing_id?: string
+          rating?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
             referencedColumns: ["id"]
           },
         ]

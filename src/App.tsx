@@ -19,6 +19,7 @@ import ContactUs from "./pages/ContactUs.tsx";
 import Events from "./pages/Events.tsx";
 import About from "./pages/About.tsx";
 import Directories from "./pages/Directories.tsx";
+import MyAccount from "./pages/MyAccount.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/directories" element={<Directories />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/my-account" element={<MyAccount />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="categories" element={<AdminCategories />} />

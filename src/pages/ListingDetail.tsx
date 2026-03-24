@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ListingActions from "@/components/listing/ListingActions";
+import ReviewSection from "@/components/listing/ReviewSection";
 import { ArrowLeft, MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign } from "lucide-react";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -176,6 +178,11 @@ const ListingDetail = () => {
             </div>
           )}
 
+          {/* User actions */}
+          <div className="mb-8">
+            <ListingActions listingId={listing.id} />
+          </div>
+
           {/* Description */}
           {listing.description && (
             <p className="text-muted-foreground text-lg mb-6">{listing.description}</p>
@@ -223,6 +230,9 @@ const ListingDetail = () => {
               </div>
             </div>
           )}
+
+          {/* Reviews & ratings */}
+          <ReviewSection listingId={listing.id} />
         </div>
       </section>
       <Footer />
