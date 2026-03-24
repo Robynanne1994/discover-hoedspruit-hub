@@ -12,7 +12,8 @@ import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 type Event = Tables<"events">;
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "" };
+const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "" };
 
 const AdminEvents = () => {
   const qc = useQueryClient();
