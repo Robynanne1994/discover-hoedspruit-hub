@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, FileSpreadsheet } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -69,7 +70,11 @@ const AdminEvents = () => {
     <div>
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-heading text-3xl font-bold text-foreground">Events</h1>
-        <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
+        <div className="flex gap-2">
+          <Link to="/admin/events/import">
+            <Button variant="outline" className="gap-2"><FileSpreadsheet className="h-4 w-4" /> Import/Export CSV</Button>
+          </Link>
+          <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> Add Event</Button>
           </DialogTrigger>
@@ -90,6 +95,7 @@ const AdminEvents = () => {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
