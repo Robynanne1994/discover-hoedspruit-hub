@@ -60,6 +60,12 @@ const EventsSection = () => {
                         <span>{(event as any).start_time}{(event as any).start_time && (event as any).end_time ? ' – ' : ''}{(event as any).end_time}</span>
                       </div>
                     )}
+                    {(event as any).recurrence && (
+                      <div className="flex items-center gap-2.5">
+                        <Repeat className="h-5 w-5 text-primary/70 shrink-0" />
+                        <span>{(event as any).recurrence}</span>
+                      </div>
+                    )}
                     {event.location &&
                       <div className="flex items-center gap-2.5">
                         <MapPin className="h-5 w-5 text-primary/70 shrink-0" />
