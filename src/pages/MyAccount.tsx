@@ -19,16 +19,11 @@ import {
 } from "@/components/ui/dialog";
 
 const MyAccount = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, loading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newCollectionName, setNewCollectionName] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
-
-  if (!user) {
-    navigate("/auth");
-    return null;
-  }
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user.id],
