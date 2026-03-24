@@ -106,7 +106,7 @@ const Directories = () => {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-left border-b-2 border-border">
+                        <tr className="text-left border-b-2 border-border bg-primary/10 rounded">
                           <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Business</th>
                           <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Phone</th>
                           <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Email</th>
