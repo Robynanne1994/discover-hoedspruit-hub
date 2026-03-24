@@ -373,7 +373,7 @@ const AdminImport = () => {
             Columns: {EXPECTED_HEADERS.join(", ")}
           </p>
           <p className="text-xs text-muted-foreground mt-1">
-            Subcategories: use pipe-separated values (e.g. Restaurant|Bar). New categories & subcategories are auto-created.
+            Categories: use pipe-separated values for multiple (e.g. Accommodation|Activities). Subcategories: also pipe-separated. New categories & subcategories are auto-created.
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
