@@ -48,8 +48,8 @@ const ContactUs = () => {
       <Navbar />
       <main className="flex-1 section-padding pt-32">
         <div className="container-wide max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground font-mono">
-            Contact <span className="text-orange-800 font-mono">us</span>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground font-sans">
+            Contact <span className="text-orange-800 font-sans">us</span>
           </h1>
           <p className="text-muted-foreground mb-12 max-w-xl">
             Have a question or want to get in touch? We'd love to hear from you.
