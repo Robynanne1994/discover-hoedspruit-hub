@@ -19,6 +19,7 @@ import ContactUs from "./pages/ContactUs.tsx";
 import Events from "./pages/Events.tsx";
 import About from "./pages/About.tsx";
 import Directories from "./pages/Directories.tsx";
+import MyAccount from "./pages/MyAccount.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
