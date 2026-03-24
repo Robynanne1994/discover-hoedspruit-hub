@@ -43,32 +43,34 @@ const CategoryPage = () => {
   const { data: listings, isLoading } = useQuery({
     queryKey: ["listings-by-category", id, activeSubId],
     queryFn: async () => {
+      // Get listing IDs belonging to this category via junction table
+      const { data: junctionData, error: jErr } = await supabase
+        .from("listing_categories")
+        .select("listing_id")
+        .eq("category_id", id!);
+      if (jErr) throw jErr;
+      let listingIds = junctionData.map((r: any) => r.listing_id as string);
+      if (listingIds.length === 0) return [];
+
       if (activeSubId) {
-        // Get listing IDs that have this subcategory
-        const { data: junctionData, error: jErr } = await supabase
+        // Further filter by subcategory
+        const { data: subJunction, error: sErr } = await supabase
           .from("listing_subcategories")
           .select("listing_id")
           .eq("subcategory_id", activeSubId);
-        if (jErr) throw jErr;
-        const listingIds = junctionData.map((r: any) => r.listing_id as string);
+        if (sErr) throw sErr;
+        const subListingIds = new Set(subJunction.map((r: any) => r.listing_id as string));
+        listingIds = listingIds.filter((id) => subListingIds.has(id));
         if (listingIds.length === 0) return [];
-        const { data, error } = await supabase
-          .from("listings")
-          .select("*")
-          .eq("category_id", id!)
-          .in("id", listingIds)
-          .order("is_featured", { ascending: false });
-        if (error) throw error;
-        return data;
-      } else {
-        const { data, error } = await supabase
-          .from("listings")
-          .select("*")
-          .eq("category_id", id!)
-          .order("is_featured", { ascending: false });
-        if (error) throw error;
-        return data;
       }
+
+      const { data, error } = await supabase
+        .from("listings")
+        .select("*")
+        .in("id", listingIds)
+        .order("is_featured", { ascending: false });
+      if (error) throw error;
+      return data;
     },
     enabled: !!id,
   });
