@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar, MapPin, Clock, Repeat } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
@@ -65,7 +65,13 @@ const Events = () => {
                                     <Clock className="h-4 w-4 text-primary/70 shrink-0" />
                                     <span>{(event as any).start_time}{(event as any).start_time && (event as any).end_time ? ' – ' : ''}{(event as any).end_time}</span>
                                   </div>
-                                )}
+                                  )}
+                                  {(event as any).recurrence && (
+                                    <div className="flex items-center gap-2">
+                                      <Repeat className="h-4 w-4 text-primary/70 shrink-0" />
+                                      <span>{(event as any).recurrence}</span>
+                                    </div>
+                                  )}
                                 {event.location && (
                                    <div className="flex items-center gap-2">
                                      <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
@@ -104,6 +110,12 @@ const Events = () => {
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4 text-primary/70 shrink-0" />
                               <span>{(event as any).start_time}{(event as any).start_time && (event as any).end_time ? ' – ' : ''}{(event as any).end_time}</span>
+                            </div>
+                          )}
+                          {(event as any).recurrence && (
+                            <div className="flex items-center gap-2">
+                              <Repeat className="h-4 w-4 text-primary/70 shrink-0" />
+                              <span>{(event as any).recurrence}</span>
                             </div>
                           )}
                           {event.location && (

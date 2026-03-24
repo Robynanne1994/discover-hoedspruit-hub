@@ -145,6 +145,7 @@ export type Database = {
           id: string
           image_url: string | null
           location: string | null
+          recurrence: string | null
           start_time: string | null
           tag: string | null
           title: string
@@ -158,6 +159,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           location?: string | null
+          recurrence?: string | null
           start_time?: string | null
           tag?: string | null
           title: string
@@ -171,6 +173,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           location?: string | null
+          recurrence?: string | null
           start_time?: string | null
           tag?: string | null
           title?: string

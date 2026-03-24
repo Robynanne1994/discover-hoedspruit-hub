@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Clock, ArrowRight, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,6 +58,12 @@ const EventsSection = () => {
                       <div className="flex items-center gap-2.5">
                         <Clock className="h-5 w-5 text-primary/70 shrink-0" />
                         <span>{(event as any).start_time}{(event as any).start_time && (event as any).end_time ? ' – ' : ''}{(event as any).end_time}</span>
+                      </div>
+                    )}
+                    {(event as any).recurrence && (
+                      <div className="flex items-center gap-2.5">
+                        <Repeat className="h-5 w-5 text-primary/70 shrink-0" />
+                        <span>{(event as any).recurrence}</span>
                       </div>
                     )}
                     {event.location &&
