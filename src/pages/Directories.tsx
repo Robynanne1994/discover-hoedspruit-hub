@@ -100,17 +100,17 @@ const Directories = () => {
             <div className="space-y-10">
               {grouped.map((cat) => (
                 <section key={cat.id}>
-                  <h2 className="text-xl font-bold text-foreground font-sans mb-3 border-b border-border pb-2">
+                  <h2 className="text-2xl font-bold text-foreground font-heading mb-4 border-b-2 border-primary/30 pb-3">
                     {cat.title}
                   </h2>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-left text-muted-foreground border-b border-border">
-                          <th className="py-2 pr-4 font-medium">Business</th>
-                          <th className="py-2 pr-4 font-medium">Phone</th>
-                          <th className="py-2 pr-4 font-medium">Email</th>
-                          <th className="py-2 font-medium">Website</th>
+                        <tr className="text-left border-b-2 border-border">
+                          <th className="py-3 pr-4 font-bold text-foreground text-sm uppercase tracking-wide">Business</th>
+                          <th className="py-3 pr-4 font-bold text-foreground text-sm uppercase tracking-wide">Phone</th>
+                          <th className="py-3 pr-4 font-bold text-foreground text-sm uppercase tracking-wide">Email</th>
+                          <th className="py-3 font-bold text-foreground text-sm uppercase tracking-wide">Website</th>
                         </tr>
                       </thead>
                       <tbody>
