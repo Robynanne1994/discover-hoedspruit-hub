@@ -17,11 +17,30 @@ const ListingDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select("*, categories(id, title)")
+        .select("*")
         .eq("id", id!)
         .single();
       if (error) throw error;
       return data;
+    },
+    enabled: !!id,
+  });
+
+  // Fetch categories via junction table
+  const { data: listingCategories } = useQuery({
+    queryKey: ["listing-detail-categories", id],
+    queryFn: async () => {
+      const { data: junctions } = await supabase
+        .from("listing_categories")
+        .select("category_id")
+        .eq("listing_id", id!);
+      if (!junctions || junctions.length === 0) return [];
+      const catIds = junctions.map((j: any) => j.category_id);
+      const { data: cats } = await supabase
+        .from("categories")
+        .select("id, title")
+        .in("id", catIds);
+      return cats ?? [];
     },
     enabled: !!id,
   });
@@ -55,7 +74,7 @@ const ListingDetail = () => {
     );
   }
 
-  const categoryData = listing.categories as { id: string; title: string } | null;
+  const firstCategory = listingCategories && listingCategories.length > 0 ? listingCategories[0] : null;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
@@ -75,12 +94,12 @@ const ListingDetail = () => {
       <Navbar />
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
-          {categoryData ? (
+          {firstCategory ? (
             <Link
-              to={`/category/${categoryData.id}`}
+              to={`/category/${firstCategory.id}`}
               className="inline-flex items-center gap-2 text-primary hover:underline mb-6"
             >
-              <ArrowLeft className="h-4 w-4" /> Back to {categoryData.title}
+              <ArrowLeft className="h-4 w-4" /> Back to {firstCategory.title}
             </Link>
           ) : (
             <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
@@ -109,6 +128,20 @@ const ListingDetail = () => {
             <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
               {listing.title}
             </h1>
+            {/* Show all categories as tags */}
+            {listingCategories && listingCategories.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {listingCategories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    to={`/category/${cat.id}`}
+                    className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  >
+                    {cat.title}
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Contact info bar */}
