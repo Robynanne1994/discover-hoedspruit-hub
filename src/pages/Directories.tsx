@@ -100,7 +100,7 @@ const Directories = () => {
             <div className="space-y-10">
               {grouped.map((cat) => (
                 <section key={cat.id}>
-                  <h2 className="text-2xl font-bold text-foreground font-heading mb-4 border-b-2 border-primary/30 pb-3">
+                  <h2 className="text-2xl font-bold text-foreground font-heading mb-0 border-b-2 border-primary/30 pb-3">
                     {cat.title}
                   </h2>
                   <div className="overflow-x-auto">
