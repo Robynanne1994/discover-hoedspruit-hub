@@ -43,13 +43,16 @@ const EventsSection = () => {
                       {event.tag}
                     </span>
                   }
-                  <h3 className="text-base font-semibold text-foreground mb-4 group-hover:text-primary transition-colors font-sans line-clamp-2 leading-snug">
+                  <h3 className="text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors font-sans line-clamp-2 leading-snug">
                     {event.title}
                   </h3>
-                  <div className="mt-auto space-y-2.5 text-sm text-muted-foreground">
+                  {event.description && (
+                    <div className="text-sm text-muted-foreground mb-3 line-clamp-2 break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.description }} />
+                  )}
+                  <div className="mt-auto space-y-2 text-sm text-muted-foreground">
                     <div className="flex items-center gap-2.5">
                       <Calendar className="h-5 w-5 text-primary/70 shrink-0" />
-                      <span>{event.date}</span>
+                      <span className="truncate">{event.date}</span>
                     </div>
                     {event.location &&
                       <div className="flex items-center gap-2.5">

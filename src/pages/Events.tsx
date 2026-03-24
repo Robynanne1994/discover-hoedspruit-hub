@@ -87,7 +87,7 @@ const Events = () => {
                           {event.title}
                         </h3>
                         {event.description && (
-                          <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{event.description}</p>
+                          <div className="text-muted-foreground text-sm mb-3 line-clamp-3 break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.description }} />
                         )}
                         <div className="space-y-1.5 text-sm text-muted-foreground">
                           <div className="flex items-center gap-2">
