@@ -1,4 +1,4 @@
-import { Calendar, MapPin, Clock, ArrowRight } from "lucide-react";
+import { Calendar, MapPin, Clock, ArrowRight, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
