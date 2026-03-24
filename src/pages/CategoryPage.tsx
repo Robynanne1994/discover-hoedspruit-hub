@@ -110,7 +110,7 @@ const CategoryPage = () => {
             </div>
           )}
 
-          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-6 mb-2">
+          <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mt-10 mb-2">
             {category?.title ?? "Category"}
           </h1>
           {category?.description && (
