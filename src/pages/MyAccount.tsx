@@ -143,19 +143,33 @@ const MyAccount = () => {
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
           <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="font-sans text-3xl font-bold text-foreground">
-                Hi, {profile?.display_name || user.email?.split("@")[0]} 👋
-              </h1>
-              <p className="text-muted-foreground mt-1">{user.email}</p>
+            <div className="flex items-center gap-4">
+              <div className="h-14 w-14 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center">
+                {profile?.avatar_url ? (
+                  <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-xl font-bold text-muted-foreground">
+                    {(profile?.display_name || user.email || "?")[0].toUpperCase()}
+                  </span>
+                )}
+              </div>
+              <div>
+                <h1 className="font-sans text-2xl sm:text-3xl font-bold text-foreground">
+                  Hi, {profile?.display_name || user.email?.split("@")[0]} 👋
+                </h1>
+                <p className="text-muted-foreground text-sm mt-0.5">{user.email}</p>
+              </div>
             </div>
             <Button variant="outline" size="sm" onClick={() => { signOut(); navigate("/"); }}>
               Sign Out
             </Button>
           </div>
 
-          <Tabs defaultValue="collections" className="w-full">
-            <TabsList className="w-full grid grid-cols-3 mb-6">
+          <Tabs defaultValue="profile" className="w-full">
+            <TabsList className="w-full grid grid-cols-4 mb-6">
+              <TabsTrigger value="profile" className="gap-2">
+                <UserCircle className="h-4 w-4" /> Profile
+              </TabsTrigger>
               <TabsTrigger value="collections" className="gap-2">
                 <Heart className="h-4 w-4" /> Collections
               </TabsTrigger>
@@ -163,9 +177,14 @@ const MyAccount = () => {
                 <MapPinCheck className="h-4 w-4" /> Been Here
               </TabsTrigger>
               <TabsTrigger value="reviews" className="gap-2">
-                <Star className="h-4 w-4" /> My Reviews
+                <Star className="h-4 w-4" /> Reviews
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="profile">
+              <h2 className="font-sans text-xl font-semibold mb-4">My Profile</h2>
+              <ProfileForm profile={profile as any} />
+            </TabsContent>
 
             <TabsContent value="collections">
               <div className="flex items-center justify-between mb-4">
