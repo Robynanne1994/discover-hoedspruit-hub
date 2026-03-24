@@ -23,7 +23,7 @@ const About = () => {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="rounded-xl overflow-hidden aspect-[4/5] bg-muted">
               <img
-                src="/placeholder.svg"
+                src="/lovable-uploads/e1d40f2a-0fbb-4509-ae22-086be06106da.jpg"
                 alt="About Discover Hoedspruit"
                 className="w-full h-full object-cover"
               />
