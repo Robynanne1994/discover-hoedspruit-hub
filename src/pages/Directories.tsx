@@ -107,10 +107,10 @@ const Directories = () => {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="text-left border-b-2 border-border">
-                          <th className="py-3 pr-4 font-bold text-foreground text-sm uppercase tracking-wide">Business</th>
-                          <th className="py-3 pr-4 font-bold text-foreground text-sm uppercase tracking-wide">Phone</th>
-                          <th className="py-3 pr-4 font-bold text-foreground text-sm uppercase tracking-wide">Email</th>
-                          <th className="py-3 font-bold text-foreground text-sm uppercase tracking-wide">Website</th>
+                          <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Business</th>
+                          <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Phone</th>
+                          <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Email</th>
+                          <th className="py-3 font-bold text-primary text-sm uppercase tracking-wide">Website</th>
                         </tr>
                       </thead>
                       <tbody>
