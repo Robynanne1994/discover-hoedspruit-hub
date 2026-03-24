@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import { Sun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudDrizzle, Wind, Droplets, Thermometer, Eye } from "lucide-react";
+import { Sun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudDrizzle, Wind, Droplets, Thermometer } from "lucide-react";
 
 const getWeatherIcon = (code: number) => {
-  if (code === 0 || code === 1) return <Sun className="h-12 w-12 text-amber-500" />;
-  if (code === 2 || code === 3) return <Cloud className="h-12 w-12 text-muted-foreground" />;
-  if (code >= 51 && code <= 57) return <CloudDrizzle className="h-12 w-12 text-blue-400" />;
-  if (code >= 61 && code <= 67) return <CloudRain className="h-12 w-12 text-blue-500" />;
-  if (code >= 71 && code <= 77) return <CloudSnow className="h-12 w-12 text-slate-400" />;
-  if (code >= 80 && code <= 82) return <CloudRain className="h-12 w-12 text-blue-600" />;
-  if (code >= 95 && code <= 99) return <CloudLightning className="h-12 w-12 text-yellow-500" />;
-  return <Sun className="h-12 w-12 text-amber-500" />;
+  if (code === 0 || code === 1) return <Sun className="h-10 w-10 text-accent" />;
+  if (code === 2 || code === 3) return <Cloud className="h-10 w-10 text-muted-foreground" />;
+  if (code >= 51 && code <= 57) return <CloudDrizzle className="h-10 w-10 text-muted-foreground" />;
+  if (code >= 61 && code <= 67) return <CloudRain className="h-10 w-10 text-muted-foreground" />;
+  if (code >= 71 && code <= 77) return <CloudSnow className="h-10 w-10 text-muted-foreground" />;
+  if (code >= 80 && code <= 82) return <CloudRain className="h-10 w-10 text-muted-foreground" />;
+  if (code >= 95 && code <= 99) return <CloudLightning className="h-10 w-10 text-accent" />;
+  return <Sun className="h-10 w-10 text-accent" />;
 };
 
 const getWeatherDescription = (code: number) => {
@@ -40,7 +40,7 @@ const WeatherSection = () => {
       if (!res.ok) throw new Error("Failed to fetch weather");
       return res.json();
     },
-    staleTime: 1000 * 60 * 30, // 30 minutes
+    staleTime: 1000 * 60 * 30,
   });
 
   if (isLoading) {
@@ -58,71 +58,87 @@ const WeatherSection = () => {
   const current = weather.current;
   const daily = weather.daily;
 
+  const stats = [
+    {
+      icon: <Thermometer className="h-5 w-5 text-primary" />,
+      label: "Feels like",
+      value: `${Math.round(current.apparent_temperature)}°C`,
+    },
+    {
+      icon: <Wind className="h-5 w-5 text-primary" />,
+      label: "Wind",
+      value: `${Math.round(current.wind_speed_10m)} km/h`,
+    },
+    {
+      icon: <Droplets className="h-5 w-5 text-primary" />,
+      label: "Humidity",
+      value: `${current.relative_humidity_2m}%`,
+    },
+    {
+      icon: <Sun className="h-5 w-5 text-primary" />,
+      label: "High / Low",
+      value: daily
+        ? `${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°`
+        : "—",
+    },
+  ];
+
   return (
-    <section className="section-padding bg-background">
+    <section className="section-padding bg-[#f2ece3]">
       <div className="container-wide">
         <div className="mb-8">
           <span className="text-primary font-medium text-sm tracking-widest uppercase">Live Weather</span>
-          <h2 className="text-3xl sm:text-4xl font-bold mt-3 font-sans text-stone-900">Hoedspruit Weather Today</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mt-3 font-sans text-stone-900">
+            Hoedspruit Weather Today
+          </h2>
         </div>
 
-        <div className="bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-950/20 dark:to-blue-950/20 rounded-2xl border border-border p-6 sm:p-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 items-center">
-            {/* Main temp */}
-            <div className="flex items-center gap-4">
+        <div className="bg-background/80 backdrop-blur rounded-2xl border border-border overflow-hidden">
+          <div className="flex flex-col sm:flex-row">
+            {/* Hero temperature */}
+            <div className="flex items-center gap-5 p-8 sm:p-10 sm:border-r border-border sm:min-w-[280px]">
               {getWeatherIcon(current.weather_code)}
               <div>
-                <p className="text-4xl font-bold text-foreground font-sans">
-                  {Math.round(current.temperature_2m)}°C
+                <p className="text-5xl font-bold text-foreground font-sans tracking-tight">
+                  {Math.round(current.temperature_2m)}°
                 </p>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground text-sm mt-1">
                   {getWeatherDescription(current.weather_code)}
                 </p>
               </div>
             </div>
 
-            {/* Feels like & High/Low */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Thermometer className="h-4 w-4 text-primary/70" />
-                <span>Feels like {Math.round(current.apparent_temperature)}°C</span>
-              </div>
-              {daily && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Sun className="h-4 w-4 text-primary/70" />
-                  <span>
-                    H: {Math.round(daily.temperature_2m_max[0])}° &nbsp; L: {Math.round(daily.temperature_2m_min[0])}°
-                  </span>
+            {/* Stats grid */}
+            <div className="grid grid-cols-2 flex-1">
+              {stats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="flex items-center gap-3 p-6 border-t sm:border-t-0 border-border [&:nth-child(odd)]:border-r [&:nth-child(n+3)]:border-t"
+                >
+                  <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    {stat.icon}
+                  </div>
+                  <div>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">{stat.label}</p>
+                    <p className="text-lg font-semibold text-foreground font-sans">{stat.value}</p>
+                  </div>
                 </div>
-              )}
+              ))}
             </div>
-
-            {/* Wind & Humidity */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Wind className="h-4 w-4 text-primary/70" />
-                <span>Wind {Math.round(current.wind_speed_10m)} km/h</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Droplets className="h-4 w-4 text-primary/70" />
-                <span>Humidity {current.relative_humidity_2m}%</span>
-              </div>
-            </div>
-
-            {/* Sunrise & Sunset */}
-            {daily && (
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Sun className="h-4 w-4 text-amber-500" />
-                  <span>Sunrise {daily.sunrise[0]?.slice(11)}</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Eye className="h-4 w-4 text-orange-400" />
-                  <span>Sunset {daily.sunset[0]?.slice(11)}</span>
-                </div>
-              </div>
-            )}
           </div>
+
+          {/* Sunrise / Sunset footer */}
+          {daily && (
+            <div className="flex items-center justify-center gap-8 px-8 py-4 border-t border-border bg-muted/30 text-sm text-muted-foreground">
+              <span className="flex items-center gap-2">
+                <Sun className="h-4 w-4 text-accent" /> Sunrise {daily.sunrise[0]?.slice(11)}
+              </span>
+              <span className="w-px h-4 bg-border" />
+              <span className="flex items-center gap-2">
+                <Sun className="h-4 w-4 text-primary" /> Sunset {daily.sunset[0]?.slice(11)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </section>
