@@ -38,7 +38,7 @@ const CategoriesSection = () => {
   });
 
   return (
-    <section id="categories" className="section-padding bg-[#f9f6f0]">
+    <section id="categories" className="section-padding bg-background">
       <div className="container-wide">
         <div className="text-center mb-12">
           <span className="text-primary font-medium text-sm tracking-widest uppercase">Explore</span>

@@ -39,7 +39,7 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f6f0]">
+    <div className="min-h-screen bg-background">
       <Navbar />
       <div className="pt-24 pb-16 flex items-center justify-center px-4">
         <div className="w-full max-w-md">

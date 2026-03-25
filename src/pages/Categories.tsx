@@ -48,7 +48,7 @@ const Categories = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <section className="pt-24 pb-16 section-padding bg-[#f9f6f0]">
+      <section className="pt-24 pb-16 section-padding bg-background">
         <div className="container-wide">
           <div className="text-center mb-12">
             <span className="text-primary font-medium text-sm tracking-widest uppercase">
