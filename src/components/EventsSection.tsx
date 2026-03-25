@@ -16,12 +16,12 @@ const EventsSection = () => {
   const hasEvents = !!events?.length;
 
   return (
-    <section id="events" className="section-padding bg-[#f2ece3]">
+    <section id="events" className="section-padding bg-secondary-fill">
       <div className="container-wide">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-12 gap-4">
           <div>
             <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
-            <h2 className="text-3xl sm:text-4xl font-bold mt-3 font-sans text-stone-900">Upcoming Events</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mt-3 font-sans text-foreground">Upcoming Events</h2>
           </div>
           <Button variant="ghost" className="text-primary gap-2 self-start sm:self-auto" asChild>
             <a href="/events">View all events <ArrowRight className="h-4 w-4" /></a>
