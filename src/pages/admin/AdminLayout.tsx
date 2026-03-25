@@ -43,7 +43,7 @@ const AdminLayout = () => {
             );
           })}
         </nav>
-        <Button variant="ghost" className="justify-start gap-3 text-muted-foreground" onClick={signOut}>
+        <Button variant="ghost" className="rounded-none bg-accent" onClick={signOut}>
           <LogOut className="h-4 w-4" />
           Sign Out
         </Button>
