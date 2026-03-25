@@ -45,7 +45,7 @@ const AdvertiseSection = () => {
               ))}
             </ul>
 
-            <Button size="lg" className="text-base px-8 py-6 shadow-warm">Get Started</Button>
+            <Button size="lg" className="text-base px-8 py-6 shadow-warm rounded-none">Get Started</Button>
           </div>
         </div>
       </div>
