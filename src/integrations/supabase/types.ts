@@ -251,6 +251,7 @@ export type Database = {
         Row: {
           category_id: string | null
           created_at: string
+          cuisine: string[] | null
           description: string | null
           email: string | null
           gallery_images: string[] | null
@@ -258,21 +259,28 @@ export type Database = {
           id: string
           image_url: string | null
           is_featured: boolean
+          kids_playground: boolean | null
           location: string | null
           long_description: string | null
+          meal: string[] | null
           opening_hours: Json | null
           pets_allowed: boolean | null
           phone: string | null
           price_level: number | null
+          seating: string[] | null
+          service_type: string[] | null
           show_attributes: boolean
+          smoking_allowed: boolean | null
           title: string
           updated_at: string
+          vibe: string[] | null
           website: string | null
           wheelchair_friendly: boolean | null
         }
         Insert: {
           category_id?: string | null
           created_at?: string
+          cuisine?: string[] | null
           description?: string | null
           email?: string | null
           gallery_images?: string[] | null
@@ -280,21 +288,28 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          kids_playground?: boolean | null
           location?: string | null
           long_description?: string | null
+          meal?: string[] | null
           opening_hours?: Json | null
           pets_allowed?: boolean | null
           phone?: string | null
           price_level?: number | null
+          seating?: string[] | null
+          service_type?: string[] | null
           show_attributes?: boolean
+          smoking_allowed?: boolean | null
           title: string
           updated_at?: string
+          vibe?: string[] | null
           website?: string | null
           wheelchair_friendly?: boolean | null
         }
         Update: {
           category_id?: string | null
           created_at?: string
+          cuisine?: string[] | null
           description?: string | null
           email?: string | null
           gallery_images?: string[] | null
@@ -302,15 +317,21 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          kids_playground?: boolean | null
           location?: string | null
           long_description?: string | null
+          meal?: string[] | null
           opening_hours?: Json | null
           pets_allowed?: boolean | null
           phone?: string | null
           price_level?: number | null
+          seating?: string[] | null
+          service_type?: string[] | null
           show_attributes?: boolean
+          smoking_allowed?: boolean | null
           title?: string
           updated_at?: string
+          vibe?: string[] | null
           website?: string | null
           wheelchair_friendly?: boolean | null
         }
