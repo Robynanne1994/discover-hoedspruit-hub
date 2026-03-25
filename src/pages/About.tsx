@@ -1,5 +1,4 @@
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { MapPin, Heart, Sun, TreePine } from "lucide-react";
 
 const About = () => {
@@ -86,7 +85,6 @@ const About = () => {
         </div>
       </section>
 
-      <Footer />
     </div>
   );
 };

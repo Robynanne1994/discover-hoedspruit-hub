@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { UtensilsCrossed, ShoppingBag, Compass } from "lucide-react";
 import RestaurantQuizComponent from "@/components/quiz/RestaurantQuiz";
@@ -77,7 +76,6 @@ const RestaurantQuiz = () => {
         ) : null}
       </main>
 
-      <Footer />
     </div>
   );
 };
