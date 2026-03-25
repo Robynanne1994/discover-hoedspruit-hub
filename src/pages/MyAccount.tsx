@@ -325,7 +325,7 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <section className="pt-24 pb-16 section-padding">
+      <section className="pt-24 pb-32 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
           {/* Header: avatar + name */}
           <div className="flex items-center gap-4 mb-8">
