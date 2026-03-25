@@ -209,6 +209,11 @@ const AdminImport = () => {
           }
         }
 
+        const parseArray = (val: string | undefined): string[] | null => {
+          if (!val || val === "") return null;
+          return val.split("|").map(s => s.trim()).filter(Boolean);
+        };
+
         const payload = {
           title,
           description: row.description || null,
@@ -227,6 +232,13 @@ const AdminImport = () => {
           wheelchair_friendly: parseBool(row.wheelchair_friendly),
           price_level: row.price_level ? parseInt(row.price_level, 10) || null : null,
           show_attributes: row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1",
+          meal: parseArray(row.meal) ?? [],
+          vibe: parseArray(row.vibe) ?? [],
+          cuisine: parseArray(row.cuisine) ?? [],
+          seating: parseArray(row.seating) ?? [],
+          kids_playground: parseBool(row.kids_playground),
+          smoking_allowed: parseBool(row.smoking_allowed),
+          service_type: parseArray(row.service_type) ?? [],
         };
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -293,12 +305,12 @@ const AdminImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation|Activities,Restaurant|Bar,false,"A longer description about the lodge","[""img1.jpg"",""img2.jpg""]","{""monday"":{""open"":""08:00"",""close"":""17:00""}}",true,false,true,2,true\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation|Activities,Restaurant|Bar,false,"A longer description about the lodge","[""img1.jpg"",""img2.jpg""]","{""monday"":{""open"":""08:00"",""close"":""17:00""}}",true,false,true,2,true,Breakfast|Lunch,Casual|Scenic,Burgers|Grill,Indoor|Outdoor,true,false,Sit Down|Take Away\n';
     downloadCSV(csv, "listings_template.csv");
   };
 
   const downloadListings = async () => {
-    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes");
+    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes, meal, vibe, cuisine, seating, kids_playground, smoking_allowed, service_type");
     if (!listings?.length) { toast.error("No listings to export"); return; }
 
     // Fetch listing_categories junction
@@ -342,6 +354,13 @@ const AdminImport = () => {
       l.wheelchair_friendly === null ? "" : String(l.wheelchair_friendly),
       l.price_level === null ? "" : String(l.price_level),
       String(l.show_attributes),
+      (l.meal ?? []).join("|"),
+      (l.vibe ?? []).join("|"),
+      (l.cuisine ?? []).join("|"),
+      (l.seating ?? []).join("|"),
+      l.kids_playground === null ? "" : String(l.kids_playground),
+      l.smoking_allowed === null ? "" : String(l.smoking_allowed),
+      (l.service_type ?? []).join("|"),
     ].map(escapeCSV).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "listings_export.csv");
     toast.success(`Exported ${listings.length} listings`);
