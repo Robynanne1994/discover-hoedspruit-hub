@@ -199,9 +199,10 @@ const Navbar = () => {
             }
           </div>
 
-          <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          {/* Mobile: account icon right */}
+          <Link to={user ? "/my-account" : "/auth"} className="md:hidden text-muted-foreground">
+            <User className="h-6 w-6" />
+          </Link>
         </div>
 
         {isOpen &&
