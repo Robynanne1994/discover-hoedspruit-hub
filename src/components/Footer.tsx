@@ -28,7 +28,7 @@ const Footer = () => {
     <footer id="about" className="bg-foreground text-primary-foreground section-padding">
       <div className="container-wide">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
-          <div className="lg:col-span-2">
+          <div>
             <h3 className="font-heading text-2xl font-bold mb-4">
               Hello <span className="text-amber-600 font-sans">Hoedspruit</span>
             </h3>
@@ -36,18 +36,26 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg mb-4 font-sans">Quick Links</h4>
+            <h4 className="font-semibold text-lg mb-4 font-sans">Discover</h4>
             <ul className="space-y-2 text-primary-foreground/60">
-              <li><a href="#categories" className="hover:text-accent transition-colors">Discover</a></li>
+              <li><a href="#categories" className="hover:text-accent transition-colors">Explore</a></li>
               <li><a href="#events" className="hover:text-accent transition-colors">Events</a></li>
-              <li><a href="#advertise" className="hover:text-accent transition-colors">Advertise</a></li>
-              <li><a href="/about" className="hover:text-accent transition-colors">About</a></li>
-              <li><a href="/contact" className="hover:text-accent transition-colors">Contact us</a></li>
+              <li><a href="/quiz" className="hover:text-accent transition-colors">Discover</a></li>
+              <li><a href="/directories" className="hover:text-accent transition-colors">Directory</a></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-heading font-semibold text-lg mb-4">Get in Touch</h4>
+            <h4 className="font-semibold text-lg mb-4 font-sans">About</h4>
+            <ul className="space-y-2 text-primary-foreground/60">
+              <li><a href="/about" className="hover:text-accent transition-colors">About</a></li>
+              <li><a href="/contact" className="hover:text-accent transition-colors">Contact</a></li>
+              <li><a href="#advertise" className="hover:text-accent transition-colors">Advertise</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold text-lg mb-4 font-sans">Get in Touch</h4>
             <ul className="space-y-3 text-primary-foreground/60 text-sm">
               <li className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 text-accent" />
