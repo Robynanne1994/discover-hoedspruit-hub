@@ -27,6 +27,15 @@ const Navbar = () => {
     }
   });
 
+  const { data: headerContent } = useQuery({
+    queryKey: ["site-content", "header"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("site_content").select("*").eq("section", "header").single();
+      if (error) return null;
+      return data?.content as { logo_url?: string } | null;
+    }
+  });
+
   const { data: eventTags } = useQuery({
     queryKey: ["nav-event-tags"],
     queryFn: async () => {
@@ -66,9 +75,13 @@ const Navbar = () => {
       <div className="container-wide px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight font-sans">
-              Hello <span className="text-primary font-sans">Hoedspruit</span>
-            </span>
+            {headerContent?.logo_url ? (
+              <img src={headerContent.logo_url} alt="Hello Hoedspruit" className="h-10 sm:h-12 w-auto" />
+            ) : (
+              <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight font-sans">
+                Hello <span className="text-primary font-sans">Hoedspruit</span>
+              </span>
+            )}
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
