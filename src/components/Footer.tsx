@@ -25,19 +25,19 @@ const Footer = () => {
   const phone = data?.phone ?? "+27 15 793 0000";
 
   return (
-    <footer id="about" className="bg-foreground text-primary-foreground section-padding">
-      <div className="container-wide">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+    <footer id="about" className="bg-foreground text-primary-foreground py-16 px-6 lg:px-12">
+      <div className="container-wide max-w-6xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10 mb-14">
           <div>
-            <h3 className="font-heading text-2xl font-bold mb-4">
+            <h3 className="font-heading text-2xl font-bold mb-3">
               Hello <span className="text-amber-600 font-sans">Hoedspruit</span>
             </h3>
-            <p className="text-primary-foreground/60 max-w-md leading-relaxed">{tagline}</p>
+            <p className="text-primary-foreground/60 max-w-xs leading-relaxed text-sm">{tagline}</p>
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg mb-4 font-sans">Discover</h4>
-            <ul className="space-y-2 text-primary-foreground/60">
+            <h4 className="font-semibold text-lg mb-3 font-sans">Discover</h4>
+            <ul className="space-y-2.5 text-primary-foreground/60 text-sm">
               <li><a href="#categories" className="hover:text-accent transition-colors">Explore</a></li>
               <li><a href="#events" className="hover:text-accent transition-colors">Events</a></li>
               <li><a href="/quiz" className="hover:text-accent transition-colors">Discover</a></li>
@@ -46,8 +46,8 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg mb-4 font-sans">About</h4>
-            <ul className="space-y-2 text-primary-foreground/60">
+            <h4 className="font-semibold text-lg mb-3 font-sans">About</h4>
+            <ul className="space-y-2.5 text-primary-foreground/60 text-sm">
               <li><a href="/about" className="hover:text-accent transition-colors">About</a></li>
               <li><a href="/contact" className="hover:text-accent transition-colors">Contact</a></li>
               <li><a href="#advertise" className="hover:text-accent transition-colors">Advertise</a></li>
@@ -55,25 +55,25 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="font-semibold text-lg mb-4 font-sans">Get in Touch</h4>
+            <h4 className="font-semibold text-lg mb-3 font-sans">Get in Touch</h4>
             <ul className="space-y-3 text-primary-foreground/60 text-sm">
               <li className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-accent" />
+                <MapPin className="h-4 w-4 shrink-0 text-accent" />
                 {address}
               </li>
               <li className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-accent" />
+                <Mail className="h-4 w-4 shrink-0 text-accent" />
                 {email}
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-accent" />
+                <Phone className="h-4 w-4 shrink-0 text-accent" />
                 {phone}
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-primary-foreground/10 pt-8 text-center text-primary-foreground/40 text-sm">
+        <div className="border-t border-primary-foreground/10 pt-6 text-center text-primary-foreground/40 text-sm">
           © {new Date().getFullYear()} Hello Hoedspruit. All rights reserved.
         </div>
       </div>
