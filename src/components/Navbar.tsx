@@ -78,7 +78,7 @@ const Navbar = () => {
                 onClick={() => {setExploreOpen(!exploreOpen);setEventsOpen(false);}}
                 className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 
-                Explore
+                Discover
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${exploreOpen ? "rotate-180" : ""}`} />
               </button>
               {exploreOpen &&
@@ -181,7 +181,7 @@ const Navbar = () => {
             onClick={() => setMobileExploreOpen(!mobileExploreOpen)}
             className="flex items-center justify-between w-full py-2 text-muted-foreground hover:text-foreground font-medium transition-colors">
             
-              Explore
+              Discover
               <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${mobileExploreOpen ? "rotate-180" : ""}`} />
             </button>
             {mobileExploreOpen &&
