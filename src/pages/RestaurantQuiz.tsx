@@ -37,7 +37,7 @@ const RestaurantQuiz = () => {
     <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-4 py-12">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 pt-24 pb-12">
         {activeQuiz === "none" ? (
           <div className="w-full max-w-3xl">
             <div className="text-center mb-10">
