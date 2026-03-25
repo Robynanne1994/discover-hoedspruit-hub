@@ -74,11 +74,28 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
       <div className="container-wide px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          <Link to="/" className="flex items-center gap-2">
+          {/* Mobile: menu icon left */}
+          <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+
+          {/* Desktop: logo left */}
+          <Link to="/" className="hidden md:flex items-center gap-2">
             {headerContent?.logo_url ? (
               <img src={headerContent.logo_url} alt="Hello Hoedspruit" className="h-10 sm:h-12 w-auto" />
             ) : (
               <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight font-sans">
+                Hello <span className="text-primary font-sans">Hoedspruit</span>
+              </span>
+            )}
+          </Link>
+
+          {/* Mobile: centered logo */}
+          <Link to="/" className="md:hidden flex items-center gap-2">
+            {headerContent?.logo_url ? (
+              <img src={headerContent.logo_url} alt="Hello Hoedspruit" className="h-10 w-auto" />
+            ) : (
+              <span className="text-xl font-bold text-foreground tracking-tight font-sans">
                 Hello <span className="text-primary font-sans">Hoedspruit</span>
               </span>
             )}
