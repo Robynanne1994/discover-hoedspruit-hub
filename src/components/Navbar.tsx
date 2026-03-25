@@ -57,7 +57,7 @@ const Navbar = () => {
 
   const otherLinks = [
   { label: "Directories", href: "/directories" },
-  { label: "Where to Eat", href: "/quiz" },
+  { label: "Exploe", href: "/quiz" },
   { label: "About", href: "/about" }];
 
 
