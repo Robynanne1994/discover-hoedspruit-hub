@@ -84,7 +84,7 @@ const WeatherSection = () => {
   ];
 
   return (
-    <section className="section-padding bg-[#f2ece3]">
+    <section className="section-padding bg-[#f5ede0]">
       <div className="container-wide">
         <div className="mb-8">
           <span className="text-primary font-medium text-sm tracking-widest uppercase">Live Weather</span>
