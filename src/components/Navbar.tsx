@@ -75,7 +75,7 @@ const Navbar = () => {
       <div className="container-wide px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Mobile: menu icon left */}
-          <Link to={user ? "/my-account" : "/auth"} className="md:hidden text-muted-foreground">
+          <Link to={user ? "/my-account" : "/auth"} className="md:hidden text-primary-foreground/70">
             <User className="h-6 w-6" />
           </Link>
 
@@ -84,8 +84,8 @@ const Navbar = () => {
             {headerContent?.logo_url ? (
               <img src={headerContent.logo_url} alt="Hello Hoedspruit" className="h-10 sm:h-12 w-auto" />
             ) : (
-              <span className="text-xl sm:text-2xl font-bold text-foreground tracking-tight font-sans">
-                Hello <span className="text-primary font-sans">Hoedspruit</span>
+              <span className="text-xl sm:text-2xl font-bold text-primary-foreground tracking-tight font-sans">
+                Hello <span className="text-primary-foreground/90 font-sans">Hoedspruit</span>
               </span>
             )}
           </Link>
@@ -95,8 +95,8 @@ const Navbar = () => {
             {headerContent?.logo_url ? (
               <img src={headerContent.logo_url} alt="Hello Hoedspruit" className="h-10 w-auto" />
             ) : (
-              <span className="text-xl font-bold text-foreground tracking-tight font-sans">
-                Hello <span className="text-primary font-sans">Hoedspruit</span>
+              <span className="text-xl font-bold text-primary-foreground tracking-tight font-sans">
+                Hello <span className="text-primary-foreground/90 font-sans">Hoedspruit</span>
               </span>
             )}
           </Link>
@@ -106,7 +106,7 @@ const Navbar = () => {
             <div ref={exploreRef} className="relative">
               <button
                 onClick={() => {setExploreOpen(!exploreOpen);setEventsOpen(false);}}
-                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+                className="flex items-center gap-1 text-primary-foreground/70 hover:text-primary-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 
                 Discover
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${exploreOpen ? "rotate-180" : ""}`} />
@@ -117,7 +117,7 @@ const Navbar = () => {
                 <Link
                   key={cat.id}
                   to={`/category/${cat.id}`}
-                  className="block px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                  className="block px-4 py-2.5 text-sm text-primary-foreground/70 hover:text-primary-foreground hover:bg-accent/50 transition-colors"
                   onClick={() => setExploreOpen(false)}>
                   
                       {cat.title}
@@ -131,7 +131,7 @@ const Navbar = () => {
             <div ref={eventsRef} className="relative">
               <button
                 onClick={() => {setEventsOpen(!eventsOpen);setExploreOpen(false);}}
-                className="flex items-center gap-1 text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+                className="flex items-center gap-1 text-primary-foreground/70 hover:text-primary-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 
                 Events
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${eventsOpen ? "rotate-180" : ""}`} />
@@ -139,7 +139,7 @@ const Navbar = () => {
               {eventsOpen &&
               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                   <button
-                  className="block w-full text-left px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent/50 transition-colors"
+                  className="block w-full text-left px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-accent/50 transition-colors"
                   onClick={() => {setEventsOpen(false);scrollToEvents();}}>
                   
                     All Events
@@ -150,7 +150,7 @@ const Navbar = () => {
                   {eventTags?.map((tag) =>
                 <button
                   key={tag}
-                  className="block w-full text-left px-4 py-2.5 text-sm text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                  className="block w-full text-left px-4 py-2.5 text-sm text-primary-foreground/70 hover:text-primary-foreground hover:bg-accent/50 transition-colors"
                   onClick={() => {setEventsOpen(false);scrollToEvents();}}>
                   
                       {tag}
@@ -162,11 +162,11 @@ const Navbar = () => {
 
             {otherLinks.map((link) =>
             link.href.startsWith("/") ? (
-              <Link key={link.label} to={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+              <Link key={link.label} to={link.href} className="text-primary-foreground/70 hover:text-primary-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 {link.label}
               </Link>
             ) : (
-              <a key={link.label} href={link.href} className="text-muted-foreground hover:text-foreground font-medium transition-colors text-sm tracking-wide uppercase">
+              <a key={link.label} href={link.href} className="text-primary-foreground/70 hover:text-primary-foreground font-medium transition-colors text-sm tracking-wide uppercase">
                 {link.label}
               </a>
             )
@@ -174,7 +174,7 @@ const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-muted-foreground" onClick={() => setSearchOpen(true)}>
+            <Button variant="ghost" size="icon" className="text-primary-foreground/70" onClick={() => setSearchOpen(true)}>
               <Search className="h-5 w-5" />
             </Button>
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
@@ -200,7 +200,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile: account icon right */}
-          <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
+          <button className="md:hidden text-primary-foreground" onClick={() => setIsOpen(!isOpen)}>
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
