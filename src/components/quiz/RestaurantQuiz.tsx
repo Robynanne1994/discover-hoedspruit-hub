@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Baby, PawPrint, Accessibility, DollarSign, ArrowRight, ArrowLeft, RotateCcw, MapPin, Phone, Globe, UtensilsCrossed } from "lucide-react";
+import { Baby, PawPrint, Accessibility, DollarSign, ArrowRight, ArrowLeft, RotateCcw, MapPin, Phone, Globe, UtensilsCrossed, Cigarette, Coffee, Sparkles, ChefHat, Armchair, TreePine, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 
 type Answers = {
@@ -12,13 +12,42 @@ type Answers = {
   pets: boolean | null;
   wheelchair: boolean | null;
   priceLevel: number | null;
+  smoking: boolean | null;
+  meal: string | null;
+  vibe: string | null;
+  cuisine: string | null;
+  seating: string | null;
+  kidsPlayground: boolean | null;
+  serviceType: string | null;
 };
 
-const questions = [
-  { key: "kids" as const, title: "Are you bringing kids?", subtitle: "We'll find places that are family-friendly", icon: Baby, type: "boolean" as const },
-  { key: "pets" as const, title: "Bringing any furry friends?", subtitle: "We'll show pet-friendly restaurants", icon: PawPrint, type: "boolean" as const },
-  { key: "wheelchair" as const, title: "Need wheelchair access?", subtitle: "We'll filter for accessible venues", icon: Accessibility, type: "boolean" as const },
-  { key: "priceLevel" as const, title: "What's your budget?", subtitle: "Pick your preferred price range", icon: DollarSign, type: "price" as const },
+const mealOptions = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
+const vibeOptions = ["Casual", "Social", "Fancy", "Scenic"];
+const cuisineOptions = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food"];
+const seatingOptions = ["Indoor", "Outdoor", "No Seating", "Bar"];
+const serviceTypeOptions = ["Sit Down", "Take Away"];
+
+type QuestionDef = {
+  key: keyof Answers;
+  title: string;
+  subtitle: string;
+  icon: React.ElementType;
+  type: "boolean" | "price" | "multi";
+  options?: string[];
+};
+
+const questions: QuestionDef[] = [
+  { key: "kids", title: "Are you bringing kids?", subtitle: "We'll find places that are family-friendly", icon: Baby, type: "boolean" },
+  { key: "pets", title: "Bringing any furry friends?", subtitle: "We'll show pet-friendly restaurants", icon: PawPrint, type: "boolean" },
+  { key: "wheelchair", title: "Need wheelchair access?", subtitle: "We'll filter for accessible venues", icon: Accessibility, type: "boolean" },
+  { key: "smoking", title: "Do you need a smoking area?", subtitle: "We'll find places that allow smoking", icon: Cigarette, type: "boolean" },
+  { key: "kidsPlayground", title: "Need a kids playground?", subtitle: "We'll find places with play areas", icon: TreePine, type: "boolean" },
+  { key: "meal", title: "What meal are you looking for?", subtitle: "Pick your preferred meal type", icon: Coffee, type: "multi", options: mealOptions },
+  { key: "vibe", title: "What vibe are you after?", subtitle: "Choose the atmosphere you prefer", icon: Sparkles, type: "multi", options: vibeOptions },
+  { key: "cuisine", title: "What cuisine do you fancy?", subtitle: "Pick a cuisine type", icon: ChefHat, type: "multi", options: cuisineOptions },
+  { key: "seating", title: "Seating preference?", subtitle: "Where would you like to sit?", icon: Armchair, type: "multi", options: seatingOptions },
+  { key: "serviceType", title: "Sit down or take away?", subtitle: "How would you like to dine?", icon: ShoppingBag, type: "multi", options: serviceTypeOptions },
+  { key: "priceLevel", title: "What's your budget?", subtitle: "Pick your preferred price range", icon: DollarSign, type: "price" },
 ];
 
 const priceLevels = [
@@ -34,7 +63,11 @@ interface RestaurantQuizProps {
 
 const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({ kids: null, pets: null, wheelchair: null, priceLevel: null });
+  const [answers, setAnswers] = useState<Answers>({
+    kids: null, pets: null, wheelchair: null, priceLevel: null,
+    smoking: null, meal: null, vibe: null, cuisine: null,
+    seating: null, kidsPlayground: null, serviceType: null,
+  });
   const [showResults, setShowResults] = useState(false);
 
   const { data: listings } = useQuery({
@@ -53,17 +86,33 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
     if (answers.kids === true && !listing.good_for_kids) return false;
     if (answers.pets === true && !listing.pets_allowed) return false;
     if (answers.wheelchair === true && !listing.wheelchair_friendly) return false;
+    if (answers.smoking === true && !listing.smoking_allowed) return false;
+    if (answers.kidsPlayground === true && !listing.kids_playground) return false;
     if (answers.priceLevel !== null && listing.price_level !== null && listing.price_level > answers.priceLevel) return false;
+    if (answers.meal !== null && listing.meal && !listing.meal.includes(answers.meal)) return false;
+    if (answers.vibe !== null && listing.vibe && !listing.vibe.includes(answers.vibe)) return false;
+    if (answers.cuisine !== null && listing.cuisine && !listing.cuisine.includes(answers.cuisine)) return false;
+    if (answers.seating !== null && listing.seating && !listing.seating.includes(answers.seating)) return false;
+    if (answers.serviceType !== null && listing.service_type && !listing.service_type.includes(answers.serviceType)) return false;
     return true;
   }) ?? [];
 
-  const handleBooleanAnswer = (key: "kids" | "pets" | "wheelchair", value: boolean) => {
-    setAnswers((prev) => ({ ...prev, [key]: value }));
+  const advance = () => {
     if (step < questions.length - 1) {
       setTimeout(() => setStep(step + 1), 300);
     } else {
       setTimeout(() => setShowResults(true), 300);
     }
+  };
+
+  const handleBooleanAnswer = (key: keyof Answers, value: boolean) => {
+    setAnswers((prev) => ({ ...prev, [key]: value }));
+    advance();
+  };
+
+  const handleMultiAnswer = (key: keyof Answers, value: string) => {
+    setAnswers((prev) => ({ ...prev, [key]: value }));
+    advance();
   };
 
   const handlePriceAnswer = (value: number) => {
@@ -83,11 +132,15 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
 
   const reset = () => {
     setStep(0);
-    setAnswers({ kids: null, pets: null, wheelchair: null, priceLevel: null });
+    setAnswers({
+      kids: null, pets: null, wheelchair: null, priceLevel: null,
+      smoking: null, meal: null, vibe: null, cuisine: null,
+      seating: null, kidsPlayground: null, serviceType: null,
+    });
     setShowResults(false);
   };
 
-  const progress = showResults ? 100 : ((step) / questions.length) * 100;
+  const progress = showResults ? 100 : (step / questions.length) * 100;
   const currentQuestion = questions[step];
 
   return (
@@ -114,8 +167,16 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
 
             {currentQuestion.type === "boolean" ? (
               <div className="flex gap-4 justify-center">
-                <Button size="lg" className="px-8 text-lg" onClick={() => handleBooleanAnswer(currentQuestion.key as "kids" | "pets" | "wheelchair", true)}>Yes</Button>
-                <Button size="lg" variant="outline" className="px-8 text-lg" onClick={() => handleBooleanAnswer(currentQuestion.key as "kids" | "pets" | "wheelchair", false)}>No</Button>
+                <Button size="lg" className="px-8 text-lg" onClick={() => handleBooleanAnswer(currentQuestion.key, true)}>Yes</Button>
+                <Button size="lg" variant="outline" className="px-8 text-lg" onClick={() => handleBooleanAnswer(currentQuestion.key, false)}>No</Button>
+              </div>
+            ) : currentQuestion.type === "multi" ? (
+              <div className="grid grid-cols-2 gap-3">
+                {currentQuestion.options?.map((option) => (
+                  <Button key={option} variant="outline" className="h-auto py-3 hover:bg-primary hover:text-primary-foreground transition-colors" onClick={() => handleMultiAnswer(currentQuestion.key, option)}>
+                    {option}
+                  </Button>
+                ))}
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3">
