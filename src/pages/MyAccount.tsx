@@ -142,9 +142,9 @@ const MyAccount = () => {
       <Navbar />
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
             <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center">
+              <div className="h-14 w-14 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center shrink-0">
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
                 ) : (
@@ -153,14 +153,14 @@ const MyAccount = () => {
                   </span>
                 )}
               </div>
-              <div>
-                <h1 className="font-sans text-2xl sm:text-3xl font-bold text-foreground">
+              <div className="min-w-0">
+                <h1 className="font-sans text-2xl sm:text-3xl font-bold text-foreground truncate">
                   Hi, {profile?.display_name || user.email?.split("@")[0]} 👋
                 </h1>
-                <p className="text-muted-foreground text-sm mt-0.5">{user.email}</p>
+                <p className="text-muted-foreground text-sm mt-0.5 truncate">{user.email}</p>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={() => { signOut(); navigate("/"); }}>
+            <Button variant="outline" size="sm" className="w-full sm:w-auto" onClick={() => { signOut(); navigate("/"); }}>
               Sign Out
             </Button>
           </div>
