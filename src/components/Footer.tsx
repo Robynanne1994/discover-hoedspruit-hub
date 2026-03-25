@@ -29,7 +29,7 @@ const Footer = () => {
       <div className="container-wide max-w-6xl mx-auto">
         <div className="grid sm:grid-cols-2 lg:grid-cols-[2fr_0.8fr_0.8fr_1.5fr] gap-x-4 gap-y-10 mb-14">
           <div>
-            <h3 className="font-heading text-2xl font-bold mb-3">
+            <h3 className="text-2xl font-bold mb-3 font-sans">
               Hello <span className="text-amber-600 font-sans">Hoedspruit</span>
             </h3>
             <p className="text-primary-foreground/60 max-w-xs leading-relaxed text-sm">{tagline}</p>
