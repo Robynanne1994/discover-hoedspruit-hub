@@ -6,9 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 const AdminContent = () => {
   const qc = useQueryClient();
+
+  // Header / Logo state
+  const [logoUrl, setLogoUrl] = useState("");
 
   // Advertise section state
   const [advTitle, setAdvTitle] = useState("");
@@ -20,6 +24,15 @@ const AdminContent = () => {
   const [footerAddress, setFooterAddress] = useState("");
   const [footerEmail, setFooterEmail] = useState("");
   const [footerPhone, setFooterPhone] = useState("");
+
+  const { data: headerData } = useQuery({
+    queryKey: ["admin-site-content", "header"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("site_content").select("*").eq("section", "header").single();
+      if (error) throw error;
+      return data;
+    },
+  });
 
   const { data: advData } = useQuery({
     queryKey: ["admin-site-content", "advertise"],
@@ -40,6 +53,13 @@ const AdminContent = () => {
   });
 
   useEffect(() => {
+    if (headerData?.content) {
+      const c = headerData.content as { logo_url?: string };
+      setLogoUrl(c.logo_url ?? "");
+    }
+  }, [headerData]);
+
+  useEffect(() => {
     if (advData?.content) {
       const c = advData.content as { title?: string; description?: string; benefits?: string[] };
       setAdvTitle(c.title ?? "");
@@ -57,6 +77,16 @@ const AdminContent = () => {
       setFooterPhone(c.phone ?? "");
     }
   }, [footerData]);
+
+  const saveHeader = useMutation({
+    mutationFn: async () => {
+      const content = { logo_url: logoUrl };
+      const { error } = await supabase.from("site_content").update({ content }).eq("section", "header");
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["site-content"] }); toast.success("Header saved"); },
+    onError: (e) => toast.error(e.message),
+  });
 
   const saveAdvertise = useMutation({
     mutationFn: async () => {
@@ -83,6 +113,16 @@ const AdminContent = () => {
       <h1 className="font-heading text-3xl font-bold text-foreground mb-8">Site Content</h1>
 
       <div className="space-y-8 max-w-2xl">
+        {/* Header / Logo */}
+        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+          <h2 className="font-heading text-xl font-semibold text-foreground">Header / Logo</h2>
+          <div>
+            <Label>Logo Image</Label>
+            <ImageUpload bucket="listing-images" value={logoUrl} onChange={setLogoUrl} />
+          </div>
+          <Button onClick={() => saveHeader.mutate()} disabled={saveHeader.isPending}>Save Changes</Button>
+        </div>
+
         {/* Advertise Section */}
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
           <h2 className="font-heading text-xl font-semibold text-foreground">Advertise Section</h2>
