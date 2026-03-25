@@ -7,32 +7,40 @@
 @layer base {
   :root {
     --background: 60 23% 97%;
-    --foreground: 144 5% 20%;
+    --foreground: 0 0% 0%;
 
     --card: 0 0% 100%;
     --card-foreground: 144 5% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 144 5% 20%;
+    --popover-foreground: 0 0% 0%;
 
     --primary: 156 41% 30%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 158 42% 24%;
+    --primary-tint: 142 21% 93%;
 
-    --secondary: 142 21% 93%;
-    --secondary-foreground: 144 5% 20%;
+    --secondary: 68 22% 44%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-border: 35 58% 60%;
+    --secondary-fill: 37 51% 92%;
 
-    --muted: 60 10% 92%;
-    --muted-foreground: 144 5% 40%;
+    --muted: 37 51% 92%;
+    --muted-foreground: 60 4% 40%;
 
     --accent: 30 58% 48%;
     --accent-foreground: 0 0% 100%;
     --accent-hover: 29 58% 42%;
+    --accent-tint: 34 76% 94%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 7 57% 46%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 142 10% 88%;
+    --success: 156 41% 30%;
+    --warning: 30 58% 48%;
+    --info: 203 48% 44%;
+
+    --border: 35 58% 60%;
     --input: 0 0% 100%;
     --ring: 156 41% 30%;
 
@@ -41,49 +49,66 @@
     --font-heading: 'Questrial', sans-serif;
     --font-body: 'Inter', 'Segoe UI', sans-serif;
 
-    --hero-overlay: linear-gradient(to bottom, hsla(25, 20%, 8%, 0.3), hsla(25, 20%, 8%, 0.7));
+    --hero-overlay: linear-gradient(to bottom, hsla(0, 0%, 0%, 0.3), hsla(0, 0%, 0%, 0.7));
     --warm-glow: 0 8px 32px -8px hsla(156, 41%, 30%, 0.25);
-    --card-shadow: 0 4px 20px -4px hsla(144, 5%, 20%, 0.1);
+    --card-shadow: 0 4px 20px -4px hsla(0, 0%, 0%, 0.08);
 
-    --sidebar-background: 60 15% 95%;
-    --sidebar-foreground: 144 5% 26%;
+    --sidebar-background: 37 51% 92%;
+    --sidebar-foreground: 144 5% 20%;
     --sidebar-primary: 156 41% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 142 21% 93%;
-    --sidebar-accent-foreground: 144 5% 26%;
-    --sidebar-border: 142 10% 88%;
+    --sidebar-accent-foreground: 144 5% 20%;
+    --sidebar-border: 35 58% 60%;
     --sidebar-ring: 156 41% 30%;
   }
 
   .dark {
-    --background: 144 5% 8%;
-    --foreground: 60 10% 92%;
-    --card: 144 5% 12%;
-    --card-foreground: 60 10% 92%;
-    --popover: 144 5% 12%;
-    --popover-foreground: 60 10% 92%;
+    --background: 140 5% 11%;
+    --foreground: 60 12% 90%;
+
+    --card: 150 5% 15%;
+    --card-foreground: 60 12% 90%;
+
+    --popover: 150 5% 15%;
+    --popover-foreground: 60 12% 90%;
+
     --primary: 156 41% 38%;
     --primary-foreground: 0 0% 100%;
     --primary-hover: 158 42% 30%;
-    --secondary: 142 15% 18%;
-    --secondary-foreground: 60 10% 92%;
-    --muted: 144 5% 18%;
-    --muted-foreground: 60 8% 55%;
+    --primary-tint: 142 15% 20%;
+
+    --secondary: 68 18% 36%;
+    --secondary-foreground: 60 12% 90%;
+    --secondary-border: 35 40% 45%;
+    --secondary-fill: 144 5% 20%;
+
+    --muted: 144 5% 20%;
+    --muted-foreground: 60 4% 55%;
+
     --accent: 30 58% 52%;
     --accent-foreground: 0 0% 100%;
     --accent-hover: 29 58% 45%;
-    --destructive: 0 62.8% 30.6%;
+    --accent-tint: 30 20% 18%;
+
+    --destructive: 7 57% 40%;
     --destructive-foreground: 0 0% 100%;
-    --border: 144 5% 22%;
-    --input: 144 5% 15%;
+
+    --success: 156 41% 38%;
+    --warning: 30 58% 52%;
+    --info: 203 48% 40%;
+
+    --border: 150 5% 25%;
+    --input: 150 5% 18%;
     --ring: 156 41% 38%;
-    --sidebar-background: 144 5% 10%;
-    --sidebar-foreground: 60 10% 90%;
+
+    --sidebar-background: 140 5% 13%;
+    --sidebar-foreground: 60 12% 90%;
     --sidebar-primary: 156 41% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 144 5% 16%;
-    --sidebar-accent-foreground: 60 10% 90%;
-    --sidebar-border: 144 5% 22%;
+    --sidebar-accent: 150 5% 18%;
+    --sidebar-accent-foreground: 60 12% 90%;
+    --sidebar-border: 150 5% 25%;
     --sidebar-ring: 156 41% 38%;
   }
 }
