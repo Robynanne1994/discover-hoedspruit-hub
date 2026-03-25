@@ -27,7 +27,7 @@ const Footer = () => {
   return (
     <footer id="about" className="bg-foreground text-primary-foreground py-16 px-6 lg:px-12">
       <div className="container-wide max-w-6xl mx-auto">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.5fr] gap-x-6 gap-y-10 mb-14">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-[2fr_0.8fr_0.8fr_1.5fr] gap-x-4 gap-y-10 mb-14">
           <div>
             <h3 className="font-heading text-2xl font-bold mb-3">
               Hello <span className="text-amber-600 font-sans">Hoedspruit</span>
