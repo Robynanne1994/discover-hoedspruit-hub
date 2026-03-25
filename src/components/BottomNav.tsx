@@ -12,9 +12,10 @@ const BottomNav = () => {
   const location = useLocation();
 
   const handleClick = (href: string) => {
-    if (href === "/#events") {
+    const hash = href.replace("/", "");
+    if (hash.startsWith("#")) {
       if (location.pathname === "/") {
-        const el = document.getElementById("events");
+        const el = document.getElementById(hash.slice(1));
         if (el) el.scrollIntoView({ behavior: "smooth" });
       }
     }
@@ -24,9 +25,10 @@ const BottomNav = () => {
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-md border-t border-border">
       <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
-          const isEvents = item.href === "/#events";
-          const isActive = isEvents
-            ? location.pathname === "/" && location.hash === "#events"
+          const isHashLink = item.href.startsWith("/#");
+          const hash = item.href.replace("/", "");
+          const isActive = isHashLink
+            ? location.pathname === "/" && location.hash === hash
             : location.pathname === item.href;
 
           const Icon = item.icon;
@@ -41,13 +43,13 @@ const BottomNav = () => {
             </div>
           );
 
-          if (isEvents) {
+          if (isHashLink) {
             return location.pathname === "/" ? (
               <button key={item.label} onClick={() => handleClick(item.href)} className="flex-1 flex justify-center py-2">
                 {content}
               </button>
             ) : (
-              <Link key={item.label} to="/#events" className="flex-1 flex justify-center py-2">
+              <Link key={item.label} to={item.href} className="flex-1 flex justify-center py-2">
                 {content}
               </Link>
             );
