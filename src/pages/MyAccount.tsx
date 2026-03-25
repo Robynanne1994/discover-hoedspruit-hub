@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -149,7 +148,6 @@ const MyAccount = () => {
             <p className="text-muted-foreground">Loading...</p>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -320,7 +318,6 @@ const MyAccount = () => {
             )}
           </div>
         </section>
-        <Footer />
       </div>
     );
   }
@@ -398,7 +395,6 @@ const MyAccount = () => {
           </div>
         </div>
       </section>
-      <Footer />
     </div>
   );
 };

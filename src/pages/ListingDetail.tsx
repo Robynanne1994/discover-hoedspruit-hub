@@ -2,7 +2,6 @@ import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import ListingActions from "@/components/listing/ListingActions";
 import ReviewSection from "@/components/listing/ReviewSection";
 import { ArrowLeft, MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag } from "lucide-react";
@@ -54,7 +53,6 @@ const ListingDetail = () => {
             <p className="text-muted-foreground">Loading...</p>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -69,7 +67,6 @@ const ListingDetail = () => {
             <Link to="/" className="text-primary hover:underline mt-4 inline-block">Back to Home</Link>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -325,7 +322,6 @@ const ListingDetail = () => {
           <ReviewSection listingId={listing.id} />
         </div>
       </section>
-      <Footer />
     </div>
   );
 };

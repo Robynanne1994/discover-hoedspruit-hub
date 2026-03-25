@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import lodgeImg from "@/assets/lodge-card.jpg";
 import restaurantImg from "@/assets/restaurant-card.jpg";
 import activitiesImg from "@/assets/activities-card.jpg";
@@ -114,7 +113,6 @@ const Categories = () => {
           )}
         </div>
       </section>
-      <Footer />
     </div>
   );
 };

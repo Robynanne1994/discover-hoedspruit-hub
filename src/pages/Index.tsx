@@ -5,7 +5,6 @@ import EventsSection from "@/components/EventsSection";
 import WeatherSection from "@/components/WeatherSection";
 import { Link } from "react-router-dom";
 import AdvertiseSection from "@/components/AdvertiseSection";
-import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -16,7 +15,6 @@ const Index = () => {
       <EventsSection />
       <WeatherSection />
       <AdvertiseSection />
-      <Footer />
     </div>
   );
 };
