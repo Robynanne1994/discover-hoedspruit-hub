@@ -75,9 +75,9 @@ const Navbar = () => {
       <div className="container-wide px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Mobile: menu icon left */}
-          <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          <Link to={user ? "/my-account" : "/auth"} className="md:hidden text-muted-foreground">
+            <User className="h-6 w-6" />
+          </Link>
 
           {/* Desktop: logo left */}
           <Link to="/" className="hidden md:flex items-center gap-2">
@@ -200,9 +200,9 @@ const Navbar = () => {
           </div>
 
           {/* Mobile: account icon right */}
-          <Link to={user ? "/my-account" : "/auth"} className="md:hidden text-muted-foreground">
-            <User className="h-6 w-6" />
-          </Link>
+          <button className="md:hidden text-foreground" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
 
         {isOpen &&
