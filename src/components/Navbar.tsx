@@ -189,7 +189,7 @@ const Navbar = () => {
 
         {isOpen &&
         <div className="md:hidden pb-6 space-y-1">
-            <div className="border-b border-border mb-2 pb-1" />
+            <div className="border-b border-border mb-2 pb-1 bg-[sidebar-accent-foreground] bg-foreground" />
             {/* Mobile Explore accordion */}
             <button
             onClick={() => setMobileExploreOpen(!mobileExploreOpen)}
