@@ -81,24 +81,16 @@ const Navbar = () => {
 
           {/* Desktop: logo left */}
           <Link to="/" className="hidden md:flex items-center gap-2">
-            {headerContent?.logo_url ? (
-              <img src={headerContent.logo_url} alt="Hello Hoedspruit" className="h-10 sm:h-12 w-auto" />
-            ) : (
-              <span className="text-xl sm:text-2xl font-bold text-primary-foreground tracking-tight font-sans">
-                Hello <span className="text-primary-foreground/90 font-sans">Hoedspruit</span>
-              </span>
-            )}
+            <span className="text-xl sm:text-2xl font-bold text-primary-foreground tracking-tight font-sans">
+              Hello <span className="text-primary-foreground/90 font-sans">Hoedspruit</span>
+            </span>
           </Link>
 
           {/* Mobile: centered logo */}
           <Link to="/" className="md:hidden flex items-center gap-2">
-            {headerContent?.logo_url ? (
-              <img src={headerContent.logo_url} alt="Hello Hoedspruit" className="h-10 w-auto" />
-            ) : (
-              <span className="text-xl font-bold text-primary-foreground tracking-tight font-sans">
-                Hello <span className="text-primary-foreground/90 font-sans">Hoedspruit</span>
-              </span>
-            )}
+            <span className="text-xl font-bold text-primary-foreground tracking-tight font-sans">
+              Hello <span className="text-primary-foreground/90 font-sans">Hoedspruit</span>
+            </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
