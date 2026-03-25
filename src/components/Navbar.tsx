@@ -180,19 +180,19 @@ const Navbar = () => {
             <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
             {isAdmin && (
               <Link to="/admin">
-                <Button variant="ghost" size="icon" className="text-primary">
+                <Button variant="ghost" size="icon" className="text-primary-foreground">
                   <Shield className="h-5 w-5" />
                 </Button>
               </Link>
             )}
             {user ?
             <Link to="/my-account">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 text-primary-foreground">
                   <User className="h-4 w-4" /> My Account
                 </Button>
               </Link> :
             <Link to="/auth">
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button variant="outline" size="sm" className="gap-2 text-primary-foreground border-primary-foreground/30">
                   <User className="h-4 w-4" /> Sign In
                 </Button>
               </Link>
