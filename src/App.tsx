@@ -24,6 +24,7 @@ import Directories from "./pages/Directories.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
+import Categories from "./pages/Categories.tsx";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/categories" element={<Categories />} />
             <Route path="/quiz" element={<RestaurantQuiz />} />
             <Route path="/category/:id" element={<CategoryPage />} />
             <Route path="/listing/:id" element={<ListingDetail />} />
