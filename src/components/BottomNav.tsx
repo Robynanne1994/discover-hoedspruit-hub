@@ -3,8 +3,8 @@ import { Compass, Calendar, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Discover", href: "/#categories", icon: Compass },
-  { label: "Events", href: "/#events", icon: Calendar },
+  { label: "Discover", href: "/directories", icon: Compass },
+  { label: "Events", href: "/events", icon: Calendar },
   { label: "Explore", href: "/quiz", icon: Sparkles },
 ];
 
