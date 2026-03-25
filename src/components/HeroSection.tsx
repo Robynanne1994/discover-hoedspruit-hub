@@ -31,19 +31,6 @@ const HeroSection = () => {
           Eat. Explore. Experience. Everything Hoedspruit, all in one place.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: "0.3s" }}>
-          <Button size="lg" className="text-base px-8 py-6 shadow-warm rounded-none">
-            Explore Now
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="text-base px-8 py-6 bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 backdrop-blur-sm"
-            asChild>
-            
-            <a href="/events">View Events</a>
-          </Button>
-        </div>
       </div>
 
       <a
