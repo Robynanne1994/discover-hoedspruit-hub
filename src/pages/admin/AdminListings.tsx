@@ -18,7 +18,13 @@ type Listing = Tables<"listings">;
 
 const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false };
+const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
+const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic"];
+const CUISINE_OPTIONS = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food"];
+const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
+const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
+
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[] };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -126,6 +132,13 @@ const AdminListings = () => {
         wheelchair_friendly: values.wheelchair_friendly,
         price_level: values.price_level,
         show_attributes: values.show_attributes,
+        meal: values.meal,
+        vibe: values.vibe,
+        cuisine: values.cuisine,
+        seating: values.seating,
+        kids_playground: values.kids_playground,
+        smoking_allowed: values.smoking_allowed,
+        service_type: values.service_type,
       };
 
       let listingId: string;
@@ -197,6 +210,13 @@ const AdminListings = () => {
       wheelchair_friendly: l.wheelchair_friendly ?? null,
       price_level: l.price_level ?? null,
       show_attributes: l.show_attributes ?? false,
+      meal: (l as any).meal ?? [],
+      vibe: (l as any).vibe ?? [],
+      cuisine: (l as any).cuisine ?? [],
+      seating: (l as any).seating ?? [],
+      kids_playground: (l as any).kids_playground ?? null,
+      smoking_allowed: (l as any).smoking_allowed ?? null,
+      service_type: (l as any).service_type ?? [],
     });
     setOpen(true);
   };
@@ -344,6 +364,14 @@ const AdminListings = () => {
                             <Switch checked={form.wheelchair_friendly === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
                             <Label>Wheelchair Friendly</Label>
                           </div>
+                          <div className="flex items-center gap-2">
+                            <Switch checked={form.kids_playground === true} onCheckedChange={(v) => setForm({ ...form, kids_playground: v })} />
+                            <Label>Kids Playground</Label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Switch checked={form.smoking_allowed === true} onCheckedChange={(v) => setForm({ ...form, smoking_allowed: v })} />
+                            <Label>Smoking Allowed</Label>
+                          </div>
                         </div>
 
                         <div>
@@ -358,6 +386,34 @@ const AdminListings = () => {
                             </SelectContent>
                           </Select>
                         </div>
+
+                        {[
+                          { label: "Meal", options: MEAL_OPTIONS, key: "meal" as const },
+                          { label: "Vibe", options: VIBE_OPTIONS, key: "vibe" as const },
+                          { label: "Cuisine", options: CUISINE_OPTIONS, key: "cuisine" as const },
+                          { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
+                          { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
+                        ].map(({ label, options, key }) => (
+                          <div key={key}>
+                            <Label>{label}</Label>
+                            <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                            <div className="flex flex-wrap gap-2">
+                              {options.map((opt) => {
+                                const selected = form[key].includes(opt);
+                                return (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    onClick={() => setForm({ ...form, [key]: selected ? form[key].filter((v) => v !== opt) : [...form[key], opt] })}
+                                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                                  >
+                                    {opt}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
                       </>
                     )}
                   </div>

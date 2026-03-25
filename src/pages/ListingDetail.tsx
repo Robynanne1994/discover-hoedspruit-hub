@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ListingActions from "@/components/listing/ListingActions";
 import ReviewSection from "@/components/listing/ReviewSection";
-import { ArrowLeft, MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign } from "lucide-react";
+import { ArrowLeft, MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag } from "lucide-react";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -85,6 +85,13 @@ const ListingDetail = () => {
   const petsAllowed = (listing as any).pets_allowed as boolean | null;
   const wheelchairFriendly = (listing as any).wheelchair_friendly as boolean | null;
   const priceLevel = (listing as any).price_level as number | null;
+  const meal = (listing as any).meal as string[] | null;
+  const vibe = (listing as any).vibe as string[] | null;
+  const cuisine = (listing as any).cuisine as string[] | null;
+  const seating = (listing as any).seating as string[] | null;
+  const kidsPlayground = (listing as any).kids_playground as boolean | null;
+  const smokingAllowed = (listing as any).smoking_allowed as boolean | null;
+  const serviceType = (listing as any).service_type as string[] | null;
 
   const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
   const priceName = priceLevel === 1 ? "Budget" : priceLevel === 2 ? "Moderate" : priceLevel === 3 ? "Upscale" : priceLevel === 4 ? "Fine Dining" : null;
@@ -206,6 +213,56 @@ const ListingDetail = () => {
               {wheelchairFriendly === false && (
                 <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
                   <Accessibility className="h-4 w-4" /> Wheelchair Friendly
+                </div>
+              )}
+              {kidsPlayground === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <TreePine className="h-4 w-4" /> Kids Playground
+                </div>
+              )}
+              {kidsPlayground === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <TreePine className="h-4 w-4" /> Kids Playground
+                </div>
+              )}
+              {smokingAllowed === true && (
+                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
+                  <Cigarette className="h-4 w-4" /> Smoking Allowed
+                </div>
+              )}
+              {smokingAllowed === false && (
+                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
+                  <Cigarette className="h-4 w-4" /> Smoking Allowed
+                </div>
+              )}
+              {meal && meal.length > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
+                  <UtensilsCrossed className="h-4 w-4 text-primary" />
+                  <span className="text-foreground">{meal.join(", ")}</span>
+                </div>
+              )}
+              {vibe && vibe.length > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
+                  <Palette className="h-4 w-4 text-primary" />
+                  <span className="text-foreground">{vibe.join(", ")}</span>
+                </div>
+              )}
+              {cuisine && cuisine.length > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
+                  <ChefHat className="h-4 w-4 text-primary" />
+                  <span className="text-foreground">{cuisine.join(", ")}</span>
+                </div>
+              )}
+              {seating && seating.length > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
+                  <Armchair className="h-4 w-4 text-primary" />
+                  <span className="text-foreground">{seating.join(", ")}</span>
+                </div>
+              )}
+              {serviceType && serviceType.length > 0 && (
+                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
+                  <ShoppingBag className="h-4 w-4 text-primary" />
+                  <span className="text-foreground">{serviceType.join(", ")}</span>
                 </div>
               )}
             </div>
