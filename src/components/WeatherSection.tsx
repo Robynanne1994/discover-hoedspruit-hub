@@ -88,7 +88,7 @@ const WeatherSection = () => {
       <div className="container-wide">
         <div className="mb-8">
           <span className="text-primary font-medium text-sm tracking-widest uppercase">Live Weather</span>
-          <h2 className="text-3xl sm:text-4xl font-bold mt-3 font-sans text-stone-900">
+          <h2 className="text-3xl sm:text-4xl font-bold mt-3 font-sans text-foreground">
             Hoedspruit Weather Today
           </h2>
         </div>
