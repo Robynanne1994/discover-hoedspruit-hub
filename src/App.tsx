@@ -25,6 +25,7 @@ import MyAccount from "./pages/MyAccount.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
+import EventsCalendar from "./pages/EventsCalendar.tsx";
 
 const queryClient = new QueryClient();
 
