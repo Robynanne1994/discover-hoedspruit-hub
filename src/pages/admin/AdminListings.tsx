@@ -237,7 +237,7 @@ const AdminListings = () => {
   const availableSubs = subcategories?.filter((s) => selectedCatIds.includes(s.category_id)) ?? [];
 
   // Check if any selected category is a restaurant type
-  const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|cafe/i.test(c.title));
+  const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
 
   return (
     <div>
