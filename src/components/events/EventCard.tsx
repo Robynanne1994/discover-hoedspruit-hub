@@ -59,12 +59,6 @@ const EventCard = ({ event }: EventCardProps) => {
                 </span>
               </div>
             )}
-            {event.recurrence && (
-              <div className="flex items-center gap-2">
-                <Repeat className="h-3.5 w-3.5 text-primary/70 shrink-0" />
-                <span className="text-xs">{event.recurrence}</span>
-              </div>
-            )}
             {event.location && (
               <div className="flex items-center gap-2">
                 <MapPin className="h-3.5 w-3.5 text-primary/70 shrink-0" />
