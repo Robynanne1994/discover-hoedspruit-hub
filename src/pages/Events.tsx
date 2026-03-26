@@ -87,7 +87,7 @@ const Events = () => {
       <section className="pt-32 pb-16 section-padding bg-background">
         <div className="container-wide">
           <BackButton />
-          <div className="mb-8">
+          <div className="mb-8 bg-muted-foreground">
             <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
             <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mt-3">Events</h1>
             <p className="text-muted-foreground mt-3 max-w-2xl">Discover markets, sports, dining experiences and more happening in and around Hoedspruit.</p>
@@ -111,7 +111,7 @@ const Events = () => {
           </div>
 
           {/* Calendar link button */}
-          <div className="mb-8">
+          <div className="mb-8 bg-muted-foreground">
             <Button asChild variant="outline" className="gap-2">
               <Link to="/events/calendar">
                 <CalendarDays className="h-4 w-4" />
