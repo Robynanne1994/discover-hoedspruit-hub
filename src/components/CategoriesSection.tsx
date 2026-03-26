@@ -1,4 +1,3 @@
-import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +5,11 @@ import * as LucideIcons from "lucide-react";
 import lodgeImg from "@/assets/lodge-card.jpg";
 import restaurantImg from "@/assets/restaurant-card.jpg";
 import activitiesImg from "@/assets/activities-card.jpg";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 
 const fallbackImages: Record<string, string> = {
   "Utensils": restaurantImg,
@@ -50,22 +54,29 @@ const CategoriesSection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mb-10">
-          {featured?.map((cat) => {
-            const Icon = getIcon(cat.icon);
-            const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
-            return (
-              <Link key={cat.id} to={`/category/${cat.id}`} className="group relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
-                <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-foreground/50" />
-                <div className="relative h-full flex flex-col justify-end p-3">
-                  <div className="mb-1">
-                    <span className="text-accent text-[10px] font-medium leading-tight">{cat.description}</span>
-                  </div>
-                  <h3 className="text-sm font-bold text-primary-foreground font-sans">{cat.title}</h3>
-                </div>
-              </Link>);
-          })}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-foreground mb-3 font-sans">Categories</h3>
+          <Carousel opts={{ align: "start", loop: false }} className="w-full">
+            <CarouselContent className="-ml-2">
+              {featured?.map((cat) => {
+                const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
+                return (
+                  <CarouselItem key={cat.id} className="pl-2 basis-1/3">
+                    <Link to={`/category/${cat.id}`} className="group relative block rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
+                      <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-foreground/50" />
+                      <div className="relative h-full flex flex-col justify-end p-3">
+                        <div className="mb-1">
+                          <span className="text-accent text-[10px] font-medium leading-tight">{cat.description}</span>
+                        </div>
+                        <h3 className="text-sm font-bold text-primary-foreground font-sans">{cat.title}</h3>
+                      </div>
+                    </Link>
+                  </CarouselItem>
+                );
+              })}
+            </CarouselContent>
+          </Carousel>
         </div>
 
         {quick && quick.length > 0 &&
@@ -77,13 +88,11 @@ const CategoriesSection = () => {
                   <Icon className="h-4 w-4 text-primary" />
                   <span className="text-foreground font-medium text-sm">{cat.title}</span>
                 </Link>);
-
           })}
           </div>
         }
       </div>
     </section>);
-
 };
 
 export default CategoriesSection;
