@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { MapPin, Phone, Mail, Globe, Star } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import FavouriteButton from "@/components/FavouriteButton";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
