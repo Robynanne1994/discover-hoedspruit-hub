@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 
-const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "categories", "subcategories", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes", "meal", "vibe", "cuisine", "seating", "kids_playground", "smoking_allowed", "service_type"];
+const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "google_maps_link", "categories", "subcategories", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes", "meal", "vibe", "cuisine", "seating", "kids_playground", "smoking_allowed", "service_type"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -222,6 +222,7 @@ const AdminImport = () => {
           phone: row.phone || null,
           email: row.email || null,
           website: row.website || null,
+          google_maps_link: row.google_maps_link || null,
           category_id: resolvedCatIds[0] || null,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
           long_description: row.long_description || null,
@@ -310,7 +311,7 @@ const AdminImport = () => {
   };
 
   const downloadListings = async () => {
-    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes, meal, vibe, cuisine, seating, kids_playground, smoking_allowed, service_type");
+    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, google_maps_link, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes, meal, vibe, cuisine, seating, kids_playground, smoking_allowed, service_type");
     if (!listings?.length) { toast.error("No listings to export"); return; }
 
     // Fetch listing_categories junction
@@ -343,6 +344,7 @@ const AdminImport = () => {
     const rows = listings.map((l) => [
       l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
       l.phone ?? "", l.email ?? "", l.website ?? "",
+      (l as any).google_maps_link ?? "",
       (listingCatMap.get(l.id) ?? []).join("|"),
       (listingSubMap.get(l.id) ?? []).join("|"),
       String(l.is_featured),
