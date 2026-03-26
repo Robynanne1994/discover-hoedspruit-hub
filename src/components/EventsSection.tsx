@@ -24,7 +24,6 @@ const EventsSection = () => {
   return (
     <section id="events" className="section-padding bg-secondary-fill">
       <div className="container-wide">
-        <div className="mb-6">
 
         {hasEvents ? (
           <div className="mb-6">
