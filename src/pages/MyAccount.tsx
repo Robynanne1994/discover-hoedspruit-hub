@@ -239,6 +239,45 @@ const MyAccount = () => {
               </>
             )}
 
+            {activeSection === "favourites" && (
+              <>
+                <h2 className="font-sans text-xl font-semibold mb-4">My Favourites</h2>
+                {!favourites?.length ? (
+                  <div className="text-center py-12 bg-card border border-border rounded-xl">
+                    <Heart className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
+                    <p className="text-muted-foreground">No favourites yet. Tap the heart on listings and events!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {favourites.map((fav: any) => (
+                      <div key={fav.id} className="flex items-center gap-3 bg-card border border-border rounded-xl p-4">
+                        {fav.details?.image_url && (
+                          <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <Link
+                            to={fav.item_type === "listing" ? `/listing/${fav.item_id}` : `/events`}
+                            className="font-medium hover:text-primary truncate block"
+                          >
+                            {fav.details?.title || "Unknown"}
+                          </Link>
+                          <span className="text-xs text-muted-foreground capitalize">{fav.item_type}</span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0"
+                          onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+
             {activeSection === "collections" && (
               <>
                 <div className="flex items-center justify-between mb-4">
