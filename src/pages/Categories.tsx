@@ -72,7 +72,7 @@ const Categories = () => {
                 <Link
                   key={cat.id}
                   to={`/category/${cat.id}`}
-                  className="group relative rounded-none overflow-hidden aspect-[3/4] shadow-card hover:shadow-warm transition-all duration-300"
+                  className="group relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300"
                 >
                   <img
                     src={img}
