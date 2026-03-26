@@ -69,12 +69,13 @@ const CategoriesSection = () => {
                 const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
                 return (
                   <CarouselItem key={cat.id} className="pl-2 basis-1/2">
-                    <Link to={`/category/${cat.id}`} className="group relative block rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
-                      <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-foreground/50" />
-                      <div className="relative h-full flex flex-col justify-end p-2">
-                        <span className="text-accent text-[8px] font-medium leading-tight">{cat.description}</span>
-                        <h3 className="text-xs font-bold text-primary-foreground font-sans mt-0.5">{cat.title}</h3>
+                    <Link to={`/category/${cat.id}`} className="group block">
+                      <div className="relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
+                        <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      </div>
+                      <div className="pt-1.5 px-0.5">
+                        <span className="text-muted-foreground text-[8px] font-medium leading-tight">{cat.description}</span>
+                        <h3 className="text-xs font-bold text-foreground font-sans mt-0.5">{cat.title}</h3>
                       </div>
                     </Link>
                   </CarouselItem>);
