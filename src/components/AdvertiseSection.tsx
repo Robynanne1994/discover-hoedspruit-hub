@@ -28,10 +28,6 @@ const AdvertiseSection = () => {
           </div>
 
           <div className="relative z-10 max-w-2xl">
-            <div className="inline-flex items-center gap-2 bg-secondary-foreground/10 rounded-full px-4 py-2 mb-6">
-              <Megaphone className="h-4 w-4 text-secondary-foreground" />
-              <span className="text-secondary-foreground text-sm font-medium">For Businesses</span>
-            </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold text-secondary-foreground mb-4 font-sans">{title}</h2>
             <p className="text-secondary-foreground/80 mb-8 leading-relaxed text-sm">{description}</p>
