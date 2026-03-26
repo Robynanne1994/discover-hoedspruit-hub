@@ -284,6 +284,9 @@ export type Database = {
           google_rating: number | null
           google_reviews_count: number | null
           google_reviews_url: string | null
+          has_free_wifi: boolean | null
+          has_toilet: boolean | null
+          has_wifi: boolean | null
           high_chairs: boolean | null
           id: string
           image_url: string | null
@@ -305,7 +308,11 @@ export type Database = {
           updated_at: string
           vibe: string[] | null
           website: string | null
+          wheelchair_car_park: boolean | null
+          wheelchair_entrance: boolean | null
           wheelchair_friendly: boolean | null
+          wheelchair_seating: boolean | null
+          wheelchair_toilet: boolean | null
         }
         Insert: {
           category_id?: string | null
@@ -319,6 +326,9 @@ export type Database = {
           google_rating?: number | null
           google_reviews_count?: number | null
           google_reviews_url?: string | null
+          has_free_wifi?: boolean | null
+          has_toilet?: boolean | null
+          has_wifi?: boolean | null
           high_chairs?: boolean | null
           id?: string
           image_url?: string | null
@@ -340,7 +350,11 @@ export type Database = {
           updated_at?: string
           vibe?: string[] | null
           website?: string | null
+          wheelchair_car_park?: boolean | null
+          wheelchair_entrance?: boolean | null
           wheelchair_friendly?: boolean | null
+          wheelchair_seating?: boolean | null
+          wheelchair_toilet?: boolean | null
         }
         Update: {
           category_id?: string | null
@@ -354,6 +368,9 @@ export type Database = {
           google_rating?: number | null
           google_reviews_count?: number | null
           google_reviews_url?: string | null
+          has_free_wifi?: boolean | null
+          has_toilet?: boolean | null
+          has_wifi?: boolean | null
           high_chairs?: boolean | null
           id?: string
           image_url?: string | null
@@ -375,7 +392,11 @@ export type Database = {
           updated_at?: string
           vibe?: string[] | null
           website?: string | null
+          wheelchair_car_park?: boolean | null
+          wheelchair_entrance?: boolean | null
           wheelchair_friendly?: boolean | null
+          wheelchair_seating?: boolean | null
+          wheelchair_toilet?: boolean | null
         }
         Relationships: [
           {
