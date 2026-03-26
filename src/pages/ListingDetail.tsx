@@ -387,7 +387,7 @@ const ListingDetail = () => {
 
           {/* Accordion sections - only one open at a time */}
           {(hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
-            <Accordion type="single" collapsible className="space-y-2">
+            <Accordion type="single" collapsible className="space-y-2 mb-20">
               {hasKidsInfo && (
                 <AccordionItem value="kids" className="border-0">
                   <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
