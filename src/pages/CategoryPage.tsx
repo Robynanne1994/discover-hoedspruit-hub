@@ -92,7 +92,7 @@ const CategoryPage = () => {
       <section className="pt-24 pb-24 section-padding">
         <div className="container-wide">
           <div className="flex items-center justify-between mb-6">
-            <BackButton />
+            <BackButton className="mb-0" />
             {allCategories && allCategories.length > 0 && (
               <button
                 onClick={() => setShowCategories((v) => !v)}
