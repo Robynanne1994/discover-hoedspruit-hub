@@ -98,8 +98,8 @@ const Events = () => {
                 onClick={() => setActiveFilter(filter.value)}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeFilter === filter.value
-                    ? "bg-chip text-chip-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-accent"
+                    ? "bg-accent text-primary"
+                    : "bg-muted text-muted-foreground hover:bg-accent/50"
                 }`}
               >
                 {filter.label}
