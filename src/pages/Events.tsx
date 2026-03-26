@@ -86,9 +86,9 @@ const Events = () => {
       <Navbar />
       <section className="pt-24 sm:pt-32 pb-16 section-padding bg-background">
         <div className="container-wide">
-          <BackButton className="text-white" />
+          <BackButton className="text-foreground" />
           <div className="mb-4 bg-muted-foreground">
-            <span className="text-white font-medium text-sm tracking-widest uppercase">What's On</span>
+            <span className="text-foreground font-medium text-sm tracking-widest uppercase">What's On</span>
             <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mt-3">Events</h1>
             <p className="text-muted-foreground mt-3 max-w-2xl">Discover markets, sports, dining experiences and more happening in and around Hoedspruit.</p>
           </div>
@@ -127,7 +127,7 @@ const Events = () => {
               {tags.length > 0 ? (
                 tags.map((tag) => (
                   <div key={tag}>
-                    <h2 className="font-heading text-2xl font-semibold text-white mb-6">{tag}</h2>
+                    <h2 className="font-heading text-2xl font-semibold text-foreground mb-6">{tag}</h2>
                     <div className="space-y-4">
                       {filteredEvents
                         .filter((e) => e.tag === tag)
