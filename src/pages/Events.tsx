@@ -87,22 +87,22 @@ const Events = () => {
       <section className="pt-32 pb-16 section-padding bg-background">
         <div className="container-wide">
           <BackButton />
-          <div className="mb-8 bg-muted-foreground">
+          <div className="mb-4 bg-muted-foreground">
             <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
             <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mt-3">Events</h1>
             <p className="text-muted-foreground mt-3 max-w-2xl">Discover markets, sports, dining experiences and more happening in and around Hoedspruit.</p>
           </div>
 
           {/* Filter pills */}
-          <div className="flex flex-wrap gap-2 mb-6">
+          <div className="flex flex-wrap gap-1.5 mb-6">
             {filters.map((filter) => (
               <button
                 key={filter.value}
                 onClick={() => setActiveFilter(filter.value)}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors border ${
                   activeFilter === filter.value
-                    ? "bg-accent text-primary"
-                    : "bg-muted text-muted-foreground hover:bg-accent/50"
+                    ? "bg-background text-foreground border-border shadow-sm"
+                    : "bg-background text-foreground/70 border-border/50 hover:border-border"
                 }`}
               >
                 {filter.label}
