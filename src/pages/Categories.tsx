@@ -64,14 +64,14 @@ const Categories = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
             {featured?.map((cat) => {
               const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
               return (
                 <Link
                   key={cat.id}
                   to={`/category/${cat.id}`}
-                  className="group relative rounded-none overflow-hidden aspect-[4/5] shadow-card hover:shadow-warm transition-all duration-300"
+                  className="group relative rounded-none overflow-hidden aspect-[3/4] shadow-card hover:shadow-warm transition-all duration-300"
                 >
                   <img
                     src={img}
