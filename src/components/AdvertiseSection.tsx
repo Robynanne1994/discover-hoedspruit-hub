@@ -1,4 +1,4 @@
-import { Megaphone, BarChart3, Eye, CheckCircle } from "lucide-react";
+import { Megaphone, BarChart3, Eye, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
