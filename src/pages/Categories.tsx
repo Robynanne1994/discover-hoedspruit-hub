@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
@@ -78,16 +79,19 @@ const Categories = () => {
                     alt={cat.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
-                  <div className="relative h-full flex flex-col justify-end p-6">
-                    <div className="mb-2">
-                      <span className="text-accent text-sm font-medium">
+                  <div className="absolute inset-0 bg-foreground/50" />
+                  <div className="relative h-full flex flex-col justify-end p-3">
+                    <div className="mb-1">
+                      <span className="text-accent text-[10px] font-medium leading-tight">
                         {cat.description}
                       </span>
                     </div>
-                    <h3 className="text-2xl font-bold text-primary-foreground mb-1 font-sans">
-                      {cat.title}
-                    </h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold text-primary-foreground font-sans">
+                        {cat.title}
+                      </h3>
+                      <ArrowRight className="h-3.5 w-3.5 text-primary-foreground shrink-0" />
+                    </div>
                   </div>
                 </Link>
               );
