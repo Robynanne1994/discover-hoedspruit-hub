@@ -281,6 +281,8 @@ export type Database = {
           gallery_images: string[] | null
           good_for_kids: boolean | null
           google_maps_link: string | null
+          google_rating: number | null
+          google_reviews_count: number | null
           id: string
           image_url: string | null
           is_featured: boolean
@@ -311,6 +313,8 @@ export type Database = {
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
+          google_rating?: number | null
+          google_reviews_count?: number | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
@@ -341,6 +345,8 @@ export type Database = {
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
+          google_rating?: number | null
+          google_reviews_count?: number | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
