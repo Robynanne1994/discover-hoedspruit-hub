@@ -50,22 +50,21 @@ const CategoriesSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
+        <div className="grid grid-cols-3 gap-2 mb-10">
           {featured?.map((cat) => {
             const Icon = getIcon(cat.icon);
             const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
             return (
-              <Link key={cat.id} to={`/category/${cat.id}`} className="group relative rounded-none overflow-hidden aspect-[4/5] shadow-card hover:shadow-warm transition-all duration-300">
+              <Link key={cat.id} to={`/category/${cat.id}`} className="group relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
                 <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent" />
-                <div className="relative h-full flex flex-col justify-end p-6">
-                  <div className="mb-2">
-                    <span className="text-accent text-sm font-medium">{cat.description}</span>
+                <div className="absolute inset-0 bg-foreground/50" />
+                <div className="relative h-full flex flex-col justify-end p-3">
+                  <div className="mb-1">
+                    <span className="text-accent text-[10px] font-medium leading-tight">{cat.description}</span>
                   </div>
-                  <h3 className="text-2xl font-bold text-primary-foreground mb-1 font-sans">{cat.title}</h3>
+                  <h3 className="text-sm font-bold text-primary-foreground font-sans">{cat.title}</h3>
                 </div>
               </Link>);
-
           })}
         </div>
 
