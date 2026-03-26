@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import ListingActions from "@/components/listing/ListingActions";
-import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown } from "lucide-react";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import BackButton from "@/components/BackButton";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -89,6 +90,15 @@ const ListingDetail = () => {
   const kidsPlayground = (listing as any).kids_playground as boolean | null;
   const smokingAllowed = (listing as any).smoking_allowed as boolean | null;
   const serviceType = (listing as any).service_type as string[] | null;
+  const kidsMenu = (listing as any).kids_menu as boolean | null;
+  const highChairs = (listing as any).high_chairs as boolean | null;
+
+  const kidsItems = [
+    { label: "Kids Playground", value: kidsPlayground },
+    { label: "Kids Menu", value: kidsMenu },
+    { label: "High Chairs", value: highChairs },
+  ].filter((item) => item.value === true);
+  const hasKidsInfo = kidsItems.length > 0;
 
   const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
   const priceName = priceLevel === 1 ? "Budget" : priceLevel === 2 ? "Moderate" : priceLevel === 3 ? "Upscale" : priceLevel === 4 ? "Fine Dining" : null;
@@ -341,6 +351,26 @@ const ListingDetail = () => {
                   );
                 })}
               </div>
+            </div>
+          )}
+
+          {/* Kids accordion */}
+          {hasKidsInfo && (
+            <div className="mb-10">
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
+                  <span className="flex items-center gap-2"><Baby className="h-4 w-4 text-primary" /> Kids</span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
+                  {kidsItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           )}
         </div>
