@@ -84,11 +84,11 @@ const Events = () => {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <section className="pt-32 pb-16 section-padding bg-background">
+      <section className="pt-24 sm:pt-32 pb-16 section-padding bg-background">
         <div className="container-wide">
-          <BackButton />
+          <BackButton className="text-white" />
           <div className="mb-4 bg-muted-foreground">
-            <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
+            <span className="text-white font-medium text-sm tracking-widest uppercase">What's On</span>
             <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mt-3">Events</h1>
             <p className="text-muted-foreground mt-3 max-w-2xl">Discover markets, sports, dining experiences and more happening in and around Hoedspruit.</p>
           </div>
