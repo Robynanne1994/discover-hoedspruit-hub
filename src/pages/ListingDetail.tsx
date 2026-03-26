@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import ListingActions from "@/components/listing/ListingActions";
-import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown, Wifi, Bath } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import BackButton from "@/components/BackButton";
 
@@ -92,6 +92,13 @@ const ListingDetail = () => {
   const serviceType = (listing as any).service_type as string[] | null;
   const kidsMenu = (listing as any).kids_menu as boolean | null;
   const highChairs = (listing as any).high_chairs as boolean | null;
+  const wheelchairCarPark = (listing as any).wheelchair_car_park as boolean | null;
+  const wheelchairEntrance = (listing as any).wheelchair_entrance as boolean | null;
+  const wheelchairSeating = (listing as any).wheelchair_seating as boolean | null;
+  const wheelchairToilet = (listing as any).wheelchair_toilet as boolean | null;
+  const hasToilet = (listing as any).has_toilet as boolean | null;
+  const hasWifi = (listing as any).has_wifi as boolean | null;
+  const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
   const kidsItems = [
     { label: "Kids Playground", value: kidsPlayground },
@@ -99,6 +106,21 @@ const ListingDetail = () => {
     { label: "High Chairs", value: highChairs },
   ].filter((item) => item.value === true);
   const hasKidsInfo = kidsItems.length > 0;
+
+  const accessibilityItems = [
+    { label: "Wheelchair-accessible Car Park", value: wheelchairCarPark },
+    { label: "Wheelchair-accessible Entrance", value: wheelchairEntrance },
+    { label: "Wheelchair-accessible Seating", value: wheelchairSeating },
+    { label: "Wheelchair-accessible Toilet", value: wheelchairToilet },
+  ].filter((item) => item.value === true);
+  const hasAccessibilityInfo = accessibilityItems.length > 0;
+
+  const amenitiesItems = [
+    { label: "Toilet", value: hasToilet },
+    { label: "Wi-Fi", value: hasWifi },
+    { label: "Free Wi-Fi", value: hasFreeWifi },
+  ].filter((item) => item.value === true);
+  const hasAmenitiesInfo = amenitiesItems.length > 0;
 
   const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
   const priceName = priceLevel === 1 ? "Budget" : priceLevel === 2 ? "Moderate" : priceLevel === 3 ? "Upscale" : priceLevel === 4 ? "Fine Dining" : null;
@@ -364,6 +386,46 @@ const ListingDetail = () => {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
                   {kidsItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          )}
+
+          {/* Accessibility accordion */}
+          {hasAccessibilityInfo && (
+            <div className="mb-10">
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
+                  <span className="flex items-center gap-2"><Accessibility className="h-4 w-4 text-primary" /> Accessibility</span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
+                  {accessibilityItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          )}
+
+          {/* Amenities accordion */}
+          {hasAmenitiesInfo && (
+            <div className="mb-10">
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
+                  <span className="flex items-center gap-2"><Wifi className="h-4 w-4 text-primary" /> Amenities</span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
+                  {amenitiesItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
                       <Check className="h-3.5 w-3.5 text-emerald-600" />
                       <span>{item.label}</span>

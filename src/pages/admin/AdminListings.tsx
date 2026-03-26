@@ -24,7 +24,7 @@ const CUISINE_OPTIONS = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Gri
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -146,6 +146,13 @@ const AdminListings = () => {
         service_type: values.service_type,
         kids_menu: values.kids_menu,
         high_chairs: values.high_chairs,
+        wheelchair_car_park: values.wheelchair_car_park,
+        wheelchair_entrance: values.wheelchair_entrance,
+        wheelchair_seating: values.wheelchair_seating,
+        wheelchair_toilet: values.wheelchair_toilet,
+        has_toilet: values.has_toilet,
+        has_wifi: values.has_wifi,
+        has_free_wifi: values.has_free_wifi,
       };
 
       let listingId: string;
@@ -230,6 +237,13 @@ const AdminListings = () => {
       service_type: (l as any).service_type ?? [],
       kids_menu: (l as any).kids_menu ?? null,
       high_chairs: (l as any).high_chairs ?? null,
+      wheelchair_car_park: (l as any).wheelchair_car_park ?? null,
+      wheelchair_entrance: (l as any).wheelchair_entrance ?? null,
+      wheelchair_seating: (l as any).wheelchair_seating ?? null,
+      wheelchair_toilet: (l as any).wheelchair_toilet ?? null,
+      has_toilet: (l as any).has_toilet ?? null,
+      has_wifi: (l as any).has_wifi ?? null,
+      has_free_wifi: (l as any).has_free_wifi ?? null,
     });
     setOpen(true);
   };
@@ -404,6 +418,48 @@ const AdminListings = () => {
                             <div className="flex items-center gap-2">
                               <Switch checked={form.high_chairs === true} onCheckedChange={(v) => setForm({ ...form, high_chairs: v })} />
                               <Label>High Chairs</Label>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Accessibility Section */}
+                        <div className="border-t border-border pt-3 mt-2">
+                          <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <Switch checked={form.wheelchair_car_park === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
+                              <Label>Wheelchair-accessible Car Park</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch checked={form.wheelchair_entrance === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
+                              <Label>Wheelchair-accessible Entrance</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch checked={form.wheelchair_seating === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
+                              <Label>Wheelchair-accessible Seating</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch checked={form.wheelchair_toilet === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
+                              <Label>Wheelchair-accessible Toilet</Label>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Amenities Section */}
+                        <div className="border-t border-border pt-3 mt-2">
+                          <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
+                          <div className="space-y-3">
+                            <div className="flex items-center gap-2">
+                              <Switch checked={form.has_toilet === true} onCheckedChange={(v) => setForm({ ...form, has_toilet: v })} />
+                              <Label>Toilet</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch checked={form.has_wifi === true} onCheckedChange={(v) => setForm({ ...form, has_wifi: v })} />
+                              <Label>Wi-Fi</Label>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch checked={form.has_free_wifi === true} onCheckedChange={(v) => setForm({ ...form, has_free_wifi: v })} />
+                              <Label>Free Wi-Fi</Label>
                             </div>
                           </div>
                         </div>
