@@ -204,7 +204,8 @@ const MyAccount = () => {
 
   const sectionCards = [
     { key: "profile" as const, label: "Profile", icon: UserCircle, color: "text-primary" },
-    { key: "collections" as const, label: "Collections", icon: Heart, color: "text-rose-500" },
+    { key: "favourites" as const, label: "Favourites", icon: Heart, color: "text-pink-500" },
+    { key: "collections" as const, label: "Collections", icon: FolderOpen, color: "text-rose-500" },
     { key: "been-here" as const, label: "Been Here", icon: MapPinCheck, color: "text-emerald-500" },
     { key: "reviews" as const, label: "Reviews", icon: Star, color: "text-amber-500" },
   ];
