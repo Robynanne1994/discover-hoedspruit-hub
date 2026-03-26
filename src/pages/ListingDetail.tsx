@@ -200,91 +200,91 @@ const ListingDetail = () => {
 
           {/* Restaurant attributes */}
           {showAttributes && (
-            <div className="flex flex-wrap gap-3 mb-8">
+            <div className="flex flex-wrap gap-1.5 mb-8">
               {priceLabel && (
-                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
-                  <DollarSign className="h-4 w-4 text-primary" />
+                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                  <DollarSign className="h-3 w-3 text-primary" />
                   <span className="font-semibold text-foreground">{priceLabel}</span>
                   {priceName && <span className="text-muted-foreground">· {priceName}</span>}
                 </div>
               )}
               {goodForKids === true && (
-                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
-                  <Baby className="h-4 w-4" /> Good for Kids
+                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
+                  <Baby className="h-3 w-3" /> Good for Kids
                 </div>
               )}
               {goodForKids === false && (
-                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
-                  <Baby className="h-4 w-4" /> Good for Kids
+                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
+                  <Baby className="h-3 w-3" /> Good for Kids
                 </div>
               )}
               {petsAllowed === true && (
-                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
-                  <PawPrint className="h-4 w-4" /> Pets Allowed
+                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
+                  <PawPrint className="h-3 w-3" /> Pets Allowed
                 </div>
               )}
               {petsAllowed === false && (
-                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
-                  <PawPrint className="h-4 w-4" /> Pets Allowed
+                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
+                  <PawPrint className="h-3 w-3" /> Pets Allowed
                 </div>
               )}
               {wheelchairFriendly === true && (
-                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
-                  <Accessibility className="h-4 w-4" /> Wheelchair Friendly
+                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
+                  <Accessibility className="h-3 w-3" /> Wheelchair Friendly
                 </div>
               )}
               {wheelchairFriendly === false && (
-                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
-                  <Accessibility className="h-4 w-4" /> Wheelchair Friendly
+                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
+                  <Accessibility className="h-3 w-3" /> Wheelchair Friendly
                 </div>
               )}
               {kidsPlayground === true && (
-                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
-                  <TreePine className="h-4 w-4" /> Kids Playground
+                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
+                  <TreePine className="h-3 w-3" /> Kids Playground
                 </div>
               )}
               {kidsPlayground === false && (
-                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
-                  <TreePine className="h-4 w-4" /> Kids Playground
+                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
+                  <TreePine className="h-3 w-3" /> Kids Playground
                 </div>
               )}
               {smokingAllowed === true && (
-                <div className="inline-flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-lg px-3 py-2 text-sm font-medium">
-                  <Cigarette className="h-4 w-4" /> Smoking Allowed
+                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
+                  <Cigarette className="h-3 w-3" /> Smoking Allowed
                 </div>
               )}
               {smokingAllowed === false && (
-                <div className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground border border-border rounded-lg px-3 py-2 text-sm font-medium line-through opacity-60">
-                  <Cigarette className="h-4 w-4" /> Smoking Allowed
+                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
+                  <Cigarette className="h-3 w-3" /> Smoking Allowed
                 </div>
               )}
               {meal && meal.length > 0 && (
-                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
-                  <UtensilsCrossed className="h-4 w-4 text-primary" />
+                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                  <UtensilsCrossed className="h-3 w-3 text-primary" />
                   <span className="text-foreground">{meal.join(", ")}</span>
                 </div>
               )}
               {vibe && vibe.length > 0 && (
-                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
-                  <Palette className="h-4 w-4 text-primary" />
+                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                  <Palette className="h-3 w-3 text-primary" />
                   <span className="text-foreground">{vibe.join(", ")}</span>
                 </div>
               )}
               {cuisine && cuisine.length > 0 && (
-                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
-                  <ChefHat className="h-4 w-4 text-primary" />
+                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                  <ChefHat className="h-3 w-3 text-primary" />
                   <span className="text-foreground">{cuisine.join(", ")}</span>
                 </div>
               )}
               {seating && seating.length > 0 && (
-                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
-                  <Armchair className="h-4 w-4 text-primary" />
+                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                  <Armchair className="h-3 w-3 text-primary" />
                   <span className="text-foreground">{seating.join(", ")}</span>
                 </div>
               )}
               {serviceType && serviceType.length > 0 && (
-                <div className="inline-flex items-center gap-1.5 bg-card border border-border rounded-lg px-3 py-2 text-sm">
-                  <ShoppingBag className="h-4 w-4 text-primary" />
+                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                  <ShoppingBag className="h-3 w-3 text-primary" />
                   <span className="text-foreground">{serviceType.join(", ")}</span>
                 </div>
               )}
