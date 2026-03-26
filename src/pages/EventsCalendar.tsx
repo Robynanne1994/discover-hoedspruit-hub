@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin, Clock, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BackButton from "@/components/BackButton";
 import {
   format,
   startOfMonth,
@@ -123,6 +124,7 @@ const EventsCalendar = () => {
       <Navbar />
       <section className="pt-24 pb-32 section-padding">
         <div className="container-wide max-w-3xl mx-auto">
+          <BackButton />
           <div className="mb-8">
             <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
             <h1 className="font-sans text-3xl sm:text-4xl font-bold text-foreground mt-2">

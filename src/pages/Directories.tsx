@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Globe, Mail, Phone } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 const Directories = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -44,6 +45,7 @@ const Directories = () => {
       <Navbar />
       <main className="flex-1 pt-24 pb-16">
         <div className="container-wide px-4 sm:px-6 lg:px-8">
+          <BackButton />
           <div className="mb-8">
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground font-sans mb-2">
               Directories

@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import ListingActions from "@/components/listing/ListingActions";
 import ReviewSection from "@/components/listing/ReviewSection";
-import { ArrowLeft, MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -98,18 +99,7 @@ const ListingDetail = () => {
       <Navbar />
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
-          {firstCategory ? (
-            <Link
-              to={`/category/${firstCategory.id}`}
-              className="inline-flex items-center gap-2 text-primary hover:underline mb-6"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back to {firstCategory.title}
-            </Link>
-          ) : (
-            <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
-              <ArrowLeft className="h-4 w-4" /> Back to Home
-            </Link>
-          )}
+          <BackButton />
 
           {/* Hero image */}
           {listing.image_url && (

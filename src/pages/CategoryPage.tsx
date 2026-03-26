@@ -2,7 +2,8 @@ import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import { ArrowLeft, MapPin, Phone, Mail, Globe, Star } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -87,9 +88,7 @@ const CategoryPage = () => {
       <Navbar />
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide">
-          <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline mb-4">
-            <ArrowLeft className="h-4 w-4" /> Back to Home
-          </Link>
+          <BackButton />
 
           {allCategories && allCategories.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-8">

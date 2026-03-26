@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import BackButton from "@/components/BackButton";
 import { MapPin, Heart, Sun, TreePine } from "lucide-react";
 
 const About = () => {
@@ -7,13 +8,16 @@ const About = () => {
       <Navbar />
 
       <section className="pt-28 pb-16 section-padding bg-muted/30">
-        <div className="container-wide max-w-4xl mx-auto text-center">
-          <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mb-6">
-            About <span className="text-primary">Hello Hoedspruit</span>
-          </h1>
-          <p className="text-muted-foreground text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto">
-            Your full guide to Hoedspruit — eat, explore, and experience everything this incredible bushveld town has to offer, all in one place.
-          </p>
+        <div className="container-wide max-w-4xl mx-auto">
+          <BackButton />
+          <div className="text-center">
+            <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mb-6">
+              About <span className="text-primary">Hello Hoedspruit</span>
+            </h1>
+            <p className="text-muted-foreground text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto">
+              Your full guide to Hoedspruit — eat, explore, and experience everything this incredible bushveld town has to offer, all in one place.
+            </p>
+          </div>
         </div>
       </section>
 

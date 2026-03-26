@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Card, CardContent } from "@/components/ui/card";
 import { UtensilsCrossed, ShoppingBag, Compass } from "lucide-react";
+import BackButton from "@/components/BackButton";
 import RestaurantQuizComponent from "@/components/quiz/RestaurantQuiz";
 
 type QuizType = "none" | "restaurant" | "shopping";
@@ -37,6 +38,9 @@ const RestaurantQuiz = () => {
       <Navbar />
 
       <main className="flex-1 flex flex-col items-center justify-center px-4 pt-24 pb-12">
+        <div className="w-full max-w-3xl mb-4">
+          <BackButton />
+        </div>
         {activeQuiz === "none" ? (
           <div className="w-full max-w-3xl">
             <div className="text-center mb-10">

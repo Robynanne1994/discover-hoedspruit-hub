@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
+import BackButton from "@/components/BackButton";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -47,6 +48,7 @@ const ContactUs = () => {
       <Navbar />
       <main className="flex-1 section-padding pt-32">
         <div className="container-wide max-w-4xl mx-auto">
+          <BackButton />
           <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground font-sans">
             Contact <span className="text-orange-800 font-sans">us</span>
           </h1>

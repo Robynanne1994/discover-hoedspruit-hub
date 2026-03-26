@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
+import BackButton from "@/components/BackButton";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -327,6 +328,7 @@ const MyAccount = () => {
       <Navbar />
       <section className="pt-24 pb-32 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
+          <BackButton />
           {/* Header: avatar + name */}
           <div className="flex items-center gap-4 mb-8">
             <div className="h-14 w-14 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center shrink-0">
