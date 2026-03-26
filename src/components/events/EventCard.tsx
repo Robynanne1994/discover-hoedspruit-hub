@@ -1,5 +1,6 @@
 import { Calendar, MapPin, Clock, Repeat } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
+import ShareButton from "@/components/ShareButton";
 
 interface EventCardProps {
   event: {
