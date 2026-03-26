@@ -34,7 +34,7 @@ const EventCard = ({ event }: EventCardProps) => {
         )}
         <div className="p-4 flex-1 min-w-0">
           {event.tag && (
-            <span className="inline-block text-[10px] font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-2 py-0.5 mb-1.5">
+            <span className="inline-block text-[8px] font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-1.5 py-0.5 mb-1 -mt-1">
               {event.tag}
             </span>
           )}
