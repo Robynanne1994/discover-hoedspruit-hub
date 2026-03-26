@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import Navbar from "@/components/Navbar";
 import BackButton from "@/components/BackButton";
-import BackButton from "@/components/BackButton";
 import { useState } from "react";
 import { toast } from "sonner";
 
