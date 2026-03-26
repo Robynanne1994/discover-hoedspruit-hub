@@ -61,21 +61,20 @@ const CategoriesSection = () => {
               {featured?.map((cat) => {
                 const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
                 return (
-                  <CarouselItem key={cat.id} className="pl-2 basis-1/3">
+                  <CarouselItem key={cat.id} className="pl-2 basis-1/2">
                     <Link to={`/category/${cat.id}`} className="group relative block rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
                       <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-foreground/50" />
-                      <div className="relative h-full flex flex-col justify-end p-3">
-                        <div className="mb-1">
-                          <span className="text-accent text-[10px] font-medium leading-tight">{cat.description}</span>
-                        </div>
-                        <h3 className="text-sm font-bold text-primary-foreground font-sans">{cat.title}</h3>
+                      <div className="relative h-full flex flex-col justify-end p-2">
+                        <span className="text-accent text-[8px] font-medium leading-tight">{cat.description}</span>
+                        <h3 className="text-xs font-bold text-primary-foreground font-sans mt-0.5">{cat.title}</h3>
                       </div>
                     </Link>
                   </CarouselItem>
                 );
               })}
             </CarouselContent>
+            <CarouselNext className="hidden sm:flex" />
           </Carousel>
         </div>
 
