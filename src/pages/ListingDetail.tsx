@@ -141,17 +141,30 @@ const ListingDetail = () => {
           {/* Google rating */}
           {(listing as any).google_rating != null && (
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`h-4 w-4 ${star <= Math.round((listing as any).google_rating) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"}`}
-                  />
-                ))}
-              </div>
-              <span className="text-sm font-semibold text-foreground">{(listing as any).google_rating}</span>
-              {(listing as any).google_reviews_count != null && (
-                <span className="text-xs text-muted-foreground">({(listing as any).google_reviews_count} Google reviews)</span>
+              {(listing as any).google_reviews_url ? (
+                <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} className={`h-4 w-4 ${star <= Math.round((listing as any).google_rating) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"}`} />
+                    ))}
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">{(listing as any).google_rating}</span>
+                  {(listing as any).google_reviews_count != null && (
+                    <span className="text-xs text-muted-foreground underline">({(listing as any).google_reviews_count} Google reviews)</span>
+                  )}
+                </a>
+              ) : (
+                <>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star key={star} className={`h-4 w-4 ${star <= Math.round((listing as any).google_rating) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"}`} />
+                    ))}
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">{(listing as any).google_rating}</span>
+                  {(listing as any).google_reviews_count != null && (
+                    <span className="text-xs text-muted-foreground">({(listing as any).google_reviews_count} Google reviews)</span>
+                  )}
+                </>
               )}
             </div>
           )}

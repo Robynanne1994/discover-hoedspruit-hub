@@ -24,7 +24,7 @@ const CUISINE_OPTIONS = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Gri
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[] };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[] };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -126,6 +126,7 @@ const AdminListings = () => {
           google_maps_link: values.google_maps_link || null,
           google_rating: values.google_rating,
           google_reviews_count: values.google_reviews_count,
+          google_reviews_url: values.google_reviews_url || null,
           category_id: selectedCatIds[0] || null, // keep legacy field in sync
         is_featured: values.is_featured,
         long_description: values.long_description || null,
@@ -208,6 +209,7 @@ const AdminListings = () => {
       google_maps_link: (l as any).google_maps_link ?? "",
       google_rating: (l as any).google_rating ?? null,
       google_reviews_count: (l as any).google_reviews_count ?? null,
+      google_reviews_url: (l as any).google_reviews_url ?? "",
       is_featured: l.is_featured,
       long_description: l.long_description ?? "",
       gallery_images: gallery?.join("\n") ?? "",
@@ -307,8 +309,9 @@ const AdminListings = () => {
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Google Rating (0-5)</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
-                  <div><Label>Google Reviews Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
+                   <div><Label>Google Reviews Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
                 </div>
+                <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." /></div>
                 <div className="flex items-center gap-2">
                   <Switch checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
                   <Label>Featured</Label>
