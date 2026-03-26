@@ -150,17 +150,17 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
   };
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1">
       {/* Save to collection */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            variant={isSavedAnywhere ? "default" : "outline"}
+            variant="ghost"
             size="sm"
-            className="gap-1.5 h-8 px-2.5 text-xs"
+            className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
             onClick={(e) => { if (requireAuth()) e.preventDefault(); }}
           >
-            <Heart className={`h-3.5 w-3.5 ${isSavedAnywhere ? "fill-current" : ""}`} />
+            <Heart className={`h-3 w-3 ${isSavedAnywhere ? "fill-current" : ""}`} />
             {isSavedAnywhere ? "Saved" : "Save"}
           </Button>
         </DropdownMenuTrigger>
@@ -185,23 +185,23 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
 
       {/* Share */}
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
-        className="gap-1.5 h-8 px-2.5 text-xs"
+        className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
         onClick={handleShare}
       >
-        <Share2 className="h-3.5 w-3.5" />
+        <Share2 className="h-3 w-3" />
         Share
       </Button>
 
       {/* Been here */}
       <Button
-        variant={beenHere ? "default" : "outline"}
+        variant="ghost"
         size="sm"
-        className="gap-1.5 h-8 px-2.5 text-xs"
+        className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
         onClick={() => { if (!requireAuth()) toggleBeenHere.mutate(); }}
       >
-        <MapPinCheck className={`h-3.5 w-3.5 ${beenHere ? "fill-current" : ""}`} />
+        <MapPinCheck className={`h-3 w-3 ${beenHere ? "fill-current" : ""}`} />
         {beenHere ? "Been Here" : "Been Here?"}
       </Button>
 
