@@ -1,8 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
-import { Compass, Calendar, Sparkles } from "lucide-react";
+import { Home, Compass, Calendar, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
+  { label: "Home", href: "/", icon: Home },
   { label: "Discover", href: "/categories", icon: Compass },
   { label: "Events", href: "/events/calendar", icon: Calendar },
   { label: "Explore", href: "/quiz", icon: Sparkles },
