@@ -173,6 +173,22 @@ const MyAccount = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["been-here"] }),
   });
 
+  const removeFavourite = useMutation({
+    mutationFn: async (fav: { item_id: string; item_type: string }) => {
+      const { error } = await supabase
+        .from("favourites" as any)
+        .delete()
+        .eq("user_id", user!.id)
+        .eq("item_id", fav.item_id)
+        .eq("item_type", fav.item_type);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["favourite"] });
+    },
+  });
+
   if (!user || loading) {
     return (
       <div className="min-h-screen bg-background">
