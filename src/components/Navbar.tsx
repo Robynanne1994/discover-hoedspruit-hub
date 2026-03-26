@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SearchDialog from "@/components/SearchDialog";
-import { Menu, X, User, Search, ChevronDown, Shield } from "lucide-react";
+import { Menu, X, User, Search, ChevronDown, Shield, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useQuery } from "@tanstack/react-query";
