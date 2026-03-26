@@ -327,6 +327,7 @@ const MyAccount = () => {
       <Navbar />
       <section className="pt-24 pb-32 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
+          <BackButton />
           {/* Header: avatar + name */}
           <div className="flex items-center gap-4 mb-8">
             <div className="h-14 w-14 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center shrink-0">
