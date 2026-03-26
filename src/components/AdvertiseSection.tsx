@@ -34,7 +34,7 @@ const AdvertiseSection = () => {
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold text-secondary-foreground mb-4 font-sans">{title}</h2>
-            <p className="text-secondary-foreground/80 text-lg mb-8 leading-relaxed">{description}</p>
+            <p className="text-secondary-foreground/80 mb-8 leading-relaxed text-sm">{description}</p>
 
             <ul className="space-y-3 mb-8">
               {benefits.map((b, i) => (
