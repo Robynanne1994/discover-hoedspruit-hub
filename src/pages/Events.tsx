@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Calendar, MapPin, Clock, Repeat, CalendarDays } from "lucide-react";
+import { Calendar, CalendarDays } from "lucide-react";
+import EventCard from "@/components/events/EventCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
@@ -127,98 +128,19 @@ const Events = () => {
                 tags.map((tag) => (
                   <div key={tag}>
                     <h2 className="font-heading text-2xl font-semibold text-foreground mb-6">{tag}</h2>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <div className="space-y-4">
                       {filteredEvents
                         .filter((e) => e.tag === tag)
                         .map((event) => (
-                          <div key={event.id} className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-warm transition-all duration-200">
-                            {event.image_url && (
-                              <div className="aspect-video overflow-hidden">
-                                <img src={event.image_url} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                              </div>
-                            )}
-                            <div className="p-5">
-                              <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-3 py-1 mb-3">
-                                {event.tag}
-                              </span>
-                              <h3 className="font-heading text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                                {event.title}
-                              </h3>
-                              {event.description && (
-                                <div className="text-muted-foreground text-sm mb-3 line-clamp-3 break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.description }} />
-                              )}
-                              <div className="space-y-1.5 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-2">
-                                  <Calendar className="h-4 w-4 text-primary/70 shrink-0" />
-                                  <span className="break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.date }} />
-                                </div>
-                                {(event.start_time || event.end_time) && (
-                                  <div className="flex items-center gap-2">
-                                    <Clock className="h-4 w-4 text-primary/70 shrink-0" />
-                                    <span>{event.start_time}{event.start_time && event.end_time ? ' – ' : ''}{event.end_time}</span>
-                                  </div>
-                                )}
-                                {event.recurrence && (
-                                  <div className="flex items-center gap-2">
-                                    <Repeat className="h-4 w-4 text-primary/70 shrink-0" />
-                                    <span>{event.recurrence}</span>
-                                  </div>
-                                )}
-                                {event.location && (
-                                  <div className="flex items-center gap-2">
-                                    <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
-                                    <span className="break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.location }} />
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                          <EventCard key={event.id} event={event} />
                         ))}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="space-y-4">
                   {filteredEvents.map((event) => (
-                    <div key={event.id} className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-warm transition-all duration-200">
-                      {event.image_url && (
-                        <div className="aspect-video overflow-hidden">
-                          <img src={event.image_url} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                        </div>
-                      )}
-                      <div className="p-5">
-                        <h3 className="font-heading text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                          {event.title}
-                        </h3>
-                        {event.description && (
-                          <div className="text-muted-foreground text-sm mb-3 line-clamp-3 break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.description }} />
-                        )}
-                        <div className="space-y-1.5 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-primary/70 shrink-0" />
-                            <span className="break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.date }} />
-                          </div>
-                          {(event.start_time || event.end_time) && (
-                            <div className="flex items-center gap-2">
-                              <Clock className="h-4 w-4 text-primary/70 shrink-0" />
-                              <span>{event.start_time}{event.start_time && event.end_time ? ' – ' : ''}{event.end_time}</span>
-                            </div>
-                          )}
-                          {event.recurrence && (
-                            <div className="flex items-center gap-2">
-                              <Repeat className="h-4 w-4 text-primary/70 shrink-0" />
-                              <span>{event.recurrence}</span>
-                            </div>
-                          )}
-                          {event.location && (
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4 text-primary/70 shrink-0" />
-                              <span className="break-words prose-a:text-primary prose-a:underline" dangerouslySetInnerHTML={{ __html: event.location }} />
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                    <EventCard key={event.id} event={event} />
                   ))}
                 </div>
               )}
