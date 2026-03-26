@@ -50,7 +50,7 @@ const CategoriesSection = () => {
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mt-3 mb-4 font-sans lg:text-6xl">
             ​Discover the 'Hoed   
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto text-lg">
+          <p className="text-muted-foreground max-w-xl mx-auto text-lg text-left">
             Explore everything that Hoedspruit has to offer
           </p>
         </div>
