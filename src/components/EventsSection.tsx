@@ -41,21 +41,22 @@ const EventsSection = () => {
               <CarouselContent className="-ml-2">
                 {events.slice(0, 8).map((event) => (
                   <CarouselItem key={event.id} className="pl-2 basis-1/2">
-                    <a href="/events" className="group relative block rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
-                      {event.image_url ? (
-                        <img src={event.image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      ) : (
-                        <div className="absolute inset-0 bg-muted flex items-center justify-center">
-                          <Calendar className="h-8 w-8 text-muted-foreground/40" />
-                        </div>
-                      )}
-                      <div className="absolute inset-0 bg-foreground/50" />
-                      <div className="relative h-full flex flex-col justify-end p-2">
-                        {event.tag && (
-                          <span className="text-accent text-[8px] font-semibold uppercase tracking-wider mb-0.5">{event.tag}</span>
+                    <a href="/events" className="group block">
+                      <div className="relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
+                        {event.image_url ? (
+                          <img src={event.image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        ) : (
+                          <div className="absolute inset-0 bg-muted flex items-center justify-center">
+                            <Calendar className="h-8 w-8 text-muted-foreground/40" />
+                          </div>
                         )}
-                        <h3 className="text-xs font-bold text-primary-foreground font-sans line-clamp-2 leading-tight">{event.title}</h3>
-                        <span className="text-primary-foreground/70 text-[8px] mt-0.5">{event.date}</span>
+                      </div>
+                      <div className="pt-1.5 px-0.5">
+                        {event.tag && (
+                          <span className="text-primary text-[8px] font-semibold uppercase tracking-wider">{event.tag}</span>
+                        )}
+                        <h3 className="text-xs font-bold text-foreground font-sans line-clamp-2 leading-tight">{event.title}</h3>
+                        <span className="text-muted-foreground text-[8px] mt-0.5">{event.date}</span>
                       </div>
                     </a>
                   </CarouselItem>
