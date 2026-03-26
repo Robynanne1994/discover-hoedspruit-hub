@@ -105,27 +105,17 @@ const CategoryPage = () => {
           </div>
           {showCategories && allCategories && allCategories.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-6">
-                onClick={() => setShowCategories((v) => !v)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm font-medium hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
-              >
-                Other Categories
-                {showCategories ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-              </button>
-              {showCategories && (
-                <div className="flex flex-wrap gap-2 mt-3">
-                  {allCategories
-                    .filter((cat) => cat.id !== id)
-                    .map((cat) => (
-                      <Link
-                        key={cat.id}
-                        to={`/category/${cat.id}`}
-                        className="px-4 py-1.5 rounded-full text-sm font-medium bg-muted text-muted-foreground hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
-                      >
-                        {cat.title}
-                      </Link>
-                    ))}
-                </div>
-              )}
+              {allCategories
+                .filter((cat) => cat.id !== id)
+                .map((cat) => (
+                  <Link
+                    key={cat.id}
+                    to={`/category/${cat.id}`}
+                    className="px-4 py-1.5 rounded-full text-sm font-medium bg-muted text-muted-foreground hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
+                  >
+                    {cat.title}
+                  </Link>
+                ))}
             </div>
           )}
 
