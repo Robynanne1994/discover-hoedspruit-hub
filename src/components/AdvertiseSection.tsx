@@ -22,26 +22,26 @@ const AdvertiseSection = () => {
   return (
     <section id="advertise" className="section-padding bg-background">
       <div className="container-wide">
-        <div className="relative rounded-2xl overflow-hidden p-8 sm:p-12 lg:p-16 bg-primary">
+        <div className="relative rounded-2xl overflow-hidden p-5 sm:p-8 bg-primary">
           <div className="absolute top-0 right-0 w-1/2 h-full opacity-10">
             <div className="absolute inset-0 bg-gradient-to-l from-secondary-foreground/20 to-transparent" />
           </div>
 
-          <div className="relative z-10 max-w-2xl">
+          <div className="relative z-10 max-w-xl">
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-secondary-foreground mb-4 font-sans">{title}</h2>
-            <p className="text-secondary-foreground/80 mb-8 leading-relaxed text-sm">{description}</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-secondary-foreground mb-2 font-sans">{title}</h2>
+            <p className="text-secondary-foreground/80 mb-4 leading-relaxed text-xs">{description}</p>
 
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-2 mb-4">
               {benefits.map((b, i) => (
-                <li key={i} className="flex items-center gap-3 text-secondary-foreground/90">
-                  <CheckCircle className="h-5 w-5 text-accent flex-shrink-0" />
-                  <span className="font-medium">{b}</span>
+                <li key={i} className="flex items-center gap-2 text-secondary-foreground/90">
+                  <CheckCircle className="h-4 w-4 text-accent flex-shrink-0" />
+                  <span className="font-medium text-sm">{b}</span>
                 </li>
               ))}
             </ul>
 
-            <Button size="lg" className="text-base px-8 py-6 shadow-warm rounded-none bg-secondary-border">Get Started</Button>
+            <Button size="sm" className="text-sm px-6 py-3 shadow-warm rounded-none bg-secondary-border">Get Started</Button>
           </div>
         </div>
       </div>
