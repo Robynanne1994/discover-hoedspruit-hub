@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Calendar, MapPin, Clock, Repeat, CalendarDays } from "lucide-react";
+import { Calendar, CalendarDays } from "lucide-react";
+import EventCard from "@/components/events/EventCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
