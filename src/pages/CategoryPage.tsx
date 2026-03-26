@@ -1,8 +1,9 @@
 import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import { MapPin, Phone, Mail, Globe, Star } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, ChevronDown, ChevronUp } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import FavouriteButton from "@/components/FavouriteButton";
 
@@ -11,6 +12,7 @@ const CategoryPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
+  const [showCategories, setShowCategories] = useState(false);
 
   const { data: category } = useQuery({
     queryKey: ["category", id],
@@ -87,25 +89,34 @@ const CategoryPage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <section className="pt-24 pb-16 section-padding">
+      <section className="pt-24 pb-24 section-padding">
         <div className="container-wide">
           <BackButton />
 
           {allCategories && allCategories.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-8">
-              {allCategories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  to={`/category/${cat.id}`}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
-                    cat.id === id
-                      ? "bg-primary text-primary-foreground shadow-sm"
-                      : "bg-muted text-muted-foreground hover:bg-accent/20 hover:text-foreground"
-                  }`}
-                >
-                  {cat.title}
-                </Link>
-              ))}
+            <div className="mb-6">
+              <button
+                onClick={() => setShowCategories((v) => !v)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm font-medium hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
+              >
+                Other Categories
+                {showCategories ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </button>
+              {showCategories && (
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {allCategories
+                    .filter((cat) => cat.id !== id)
+                    .map((cat) => (
+                      <Link
+                        key={cat.id}
+                        to={`/category/${cat.id}`}
+                        className="px-4 py-1.5 rounded-full text-sm font-medium bg-muted text-muted-foreground hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
+                      >
+                        {cat.title}
+                      </Link>
+                    ))}
+                </div>
+              )}
             </div>
           )}
 
