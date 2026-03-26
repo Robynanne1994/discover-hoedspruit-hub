@@ -19,7 +19,7 @@ interface EventCardProps {
 
 const EventCard = ({ event }: EventCardProps) => {
   return (
-    <div className="group relative bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-warm transition-all duration-200">
+    <div className="group relative bg-card rounded-xl overflow-hidden border border-muted-foreground/30 hover:border-muted-foreground/60 hover:shadow-warm transition-all duration-200">
       <FavouriteButton itemId={event.id} itemType="event" />
       <ShareButton title={event.title} url={`${window.location.origin}/events`} />
       <div className="flex">
