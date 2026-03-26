@@ -344,7 +344,7 @@ const AdminImport = () => {
     const rows = listings.map((l) => [
       l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
       l.phone ?? "", l.email ?? "", l.website ?? "",
-      (l as any).google_maps_link ?? "",
+      l.google_maps_link ?? "",
       (listingCatMap.get(l.id) ?? []).join("|"),
       (listingSubMap.get(l.id) ?? []).join("|"),
       String(l.is_featured),
