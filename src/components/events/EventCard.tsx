@@ -39,12 +39,6 @@ const EventCard = ({ event }: EventCardProps) => {
           <h3 className="font-heading text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-2">
             {event.title}
           </h3>
-          {event.description && (
-            <div
-              className="text-muted-foreground text-sm mb-2 line-clamp-2 break-words prose-a:text-primary prose-a:underline"
-              dangerouslySetInnerHTML={{ __html: event.description }}
-            />
-          )}
           <div className="space-y-1 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Calendar className="h-3.5 w-3.5 text-primary/70 shrink-0" />
