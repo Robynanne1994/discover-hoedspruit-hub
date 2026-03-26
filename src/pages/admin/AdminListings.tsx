@@ -430,6 +430,16 @@ const AdminListings = () => {
         </div>
       </div>
 
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search listings..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <table className="w-full text-sm table-fixed">
@@ -443,7 +453,11 @@ const AdminListings = () => {
               </tr>
             </thead>
             <tbody>
-              {listings?.map((l) => (
+              {listings?.filter((l) => {
+                if (!searchQuery.trim()) return true;
+                const q = searchQuery.toLowerCase();
+                return l.title.toLowerCase().includes(q) || (l.location ?? "").toLowerCase().includes(q) || ((l as any)._categoryNames ?? []).some((n: string) => n.toLowerCase().includes(q));
+              }).map((l) => (
                 <tr key={l.id} className="border-t border-border">
                   <td className="p-3 font-medium text-foreground truncate">{l.title}</td>
                   <td className="p-3 text-muted-foreground truncate">{(l as any)._categoryNames?.join(", ") || "—"}</td>
