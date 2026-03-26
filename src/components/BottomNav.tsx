@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/categories", icon: Search },
-  { label: "Notifications", href: "#", icon: Bell },
   { label: "Events", href: "/events/calendar", icon: Calendar },
+  { label: "Notifications", href: "#", icon: Bell },
 ];
 
 const BottomNav = () => {
