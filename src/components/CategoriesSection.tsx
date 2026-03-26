@@ -56,7 +56,13 @@ const CategoriesSection = () => {
         </div>
 
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-foreground mb-3 font-sans">Categories</h3>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-semibold text-foreground font-sans">Categories</h3>
+            <Link to="/categories" className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+              View all
+              <LucideIcons.ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
           <Carousel opts={{ align: "start", loop: false }} className="w-full">
             <CarouselContent className="-ml-2">
               {featured?.map((cat) => {
