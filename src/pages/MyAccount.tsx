@@ -99,6 +99,39 @@ const MyAccount = () => {
     enabled: !!user,
   });
 
+  const { data: favourites } = useQuery({
+    queryKey: ["favourites", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("*")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      if (!data || data.length === 0) return [];
+
+      const listingIds = data.filter((f: any) => f.item_type === "listing").map((f: any) => f.item_id);
+      const eventIds = data.filter((f: any) => f.item_type === "event").map((f: any) => f.item_id);
+
+      const [listingsRes, eventsRes] = await Promise.all([
+        listingIds.length > 0
+          ? supabase.from("listings").select("id, title, image_url").in("id", listingIds)
+          : { data: [] },
+        eventIds.length > 0
+          ? supabase.from("events").select("id, title, image_url").in("id", eventIds)
+          : { data: [] },
+      ]);
+
+      const listingsMap = Object.fromEntries((listingsRes.data || []).map((l: any) => [l.id, l]));
+      const eventsMap = Object.fromEntries((eventsRes.data || []).map((e: any) => [e.id, e]));
+
+      return data.map((f: any) => ({
+        ...f,
+        details: f.item_type === "listing" ? listingsMap[f.item_id] : eventsMap[f.item_id],
+      }));
+    },
+    enabled: !!user,
+  });
+
   const createCollection = useMutation({
     mutationFn: async (name: string) => {
       const { error } = await supabase.from("collections").insert({ name, user_id: user!.id });
