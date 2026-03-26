@@ -1,12 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, Bell, Sparkles } from "lucide-react";
+import { Home, Search, Bell, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/categories", icon: Search },
   { label: "Notifications", href: "#", icon: Bell },
-  { label: "Discover", href: "/quiz", icon: Sparkles },
+  { label: "Events", href: "/events/calendar", icon: Calendar },
 ];
 
 const BottomNav = () => {
