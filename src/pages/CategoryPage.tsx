@@ -91,11 +91,20 @@ const CategoryPage = () => {
       <Navbar />
       <section className="pt-24 pb-24 section-padding">
         <div className="container-wide">
-          <BackButton />
-
-          {allCategories && allCategories.length > 0 && (
-            <div className="mb-6">
+          <div className="flex items-center justify-between mb-6">
+            <BackButton />
+            {allCategories && allCategories.length > 0 && (
               <button
+                onClick={() => setShowCategories((v) => !v)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm font-medium hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
+              >
+                Other Categories
+                {showCategories ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+              </button>
+            )}
+          </div>
+          {showCategories && allCategories && allCategories.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-6">
                 onClick={() => setShowCategories((v) => !v)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm font-medium hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
               >
