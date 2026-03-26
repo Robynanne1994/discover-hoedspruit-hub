@@ -41,7 +41,11 @@ const AdvertiseSection = () => {
               ))}
             </ul>
 
-            <Button size="sm" className="text-sm px-6 py-3 shadow-warm rounded-none bg-secondary-border">Get Started</Button>
+            <div className="flex justify-end">
+              <Button variant="ghost" size="sm" className="text-sm text-secondary-foreground hover:text-secondary-foreground/80 hover:bg-transparent gap-1 p-0">
+                Get Started <ArrowRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
