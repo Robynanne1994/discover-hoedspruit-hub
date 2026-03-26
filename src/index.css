@@ -147,7 +147,7 @@
   }
 
   body {
-    @apply text-[16px] leading-[1.5];
+    @apply text-[14px] leading-[1.5];
   }
 
   a {
