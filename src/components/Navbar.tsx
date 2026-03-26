@@ -74,10 +74,10 @@ const Navbar = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-primary backdrop-blur-md border-b border-primary/80">
       <div className="container-wide px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Mobile: menu icon left */}
-          <Link to={user ? "/my-account" : "/auth"} className="md:hidden text-primary-foreground/70">
-            <User className="h-6 w-6" />
-          </Link>
+          {/* Mobile: hamburger left */}
+          <button className="md:hidden text-primary-foreground" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
 
           {/* Desktop: logo left */}
           <Link to="/" className="hidden md:flex items-center gap-2">
@@ -191,9 +191,9 @@ const Navbar = () => {
             }
           </div>
 
-          {/* Mobile: account icon right */}
-          <button className="md:hidden text-primary-foreground" onClick={() => setIsOpen(!isOpen)}>
-            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {/* Mobile: bell icon right */}
+          <button className="md:hidden text-primary-foreground/70">
+            <Bell className="h-6 w-6" />
           </button>
         </div>
 
