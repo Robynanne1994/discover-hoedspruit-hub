@@ -34,6 +34,7 @@ const AdminListings = () => {
   const [form, setForm] = useState(emptyForm);
   const [selectedCatIds, setSelectedCatIds] = useState<string[]>([]);
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
