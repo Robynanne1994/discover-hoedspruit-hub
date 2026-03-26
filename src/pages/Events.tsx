@@ -90,7 +90,7 @@ const Events = () => {
           <div className="mb-4 bg-muted-foreground">
             <span className="text-foreground font-medium text-sm tracking-widest uppercase">What's On</span>
             <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mt-3">Events</h1>
-            <p className="text-muted-foreground mt-3 max-w-2xl">Discover markets, sports, dining experiences and more happening in and around Hoedspruit.</p>
+            <p className="text-muted-foreground mt-3 max-w-2xl bg-primary-foreground">Discover markets, sports, dining experiences and more happening in and around Hoedspruit.</p>
           </div>
 
           {/* Filter pills */}
