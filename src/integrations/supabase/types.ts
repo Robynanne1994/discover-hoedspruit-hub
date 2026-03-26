@@ -283,6 +283,7 @@ export type Database = {
           google_maps_link: string | null
           google_rating: number | null
           google_reviews_count: number | null
+          google_reviews_url: string | null
           id: string
           image_url: string | null
           is_featured: boolean
@@ -315,6 +316,7 @@ export type Database = {
           google_maps_link?: string | null
           google_rating?: number | null
           google_reviews_count?: number | null
+          google_reviews_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
@@ -347,6 +349,7 @@ export type Database = {
           google_maps_link?: string | null
           google_rating?: number | null
           google_reviews_count?: number | null
+          google_reviews_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
