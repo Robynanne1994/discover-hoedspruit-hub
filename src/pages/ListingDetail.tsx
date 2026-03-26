@@ -416,6 +416,32 @@ const ListingDetail = () => {
             </div>
           )}
 
+          {/* Service options accordion */}
+          {((seating && seating.length > 0) || (serviceType && serviceType.length > 0)) && (
+            <div className="mb-10">
+              <Collapsible>
+                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
+                  <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-primary" /> Service options</span>
+                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
+                  {seating && seating.map((item) => (
+                    <div key={item} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                  {serviceType && serviceType.map((item) => (
+                    <div key={item} className="flex items-center gap-2 text-sm text-foreground">
+                      <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </CollapsibleContent>
+              </Collapsible>
+            </div>
+          )}
+
           {/* Amenities accordion */}
           {hasAmenitiesInfo && (
             <div className="mb-10">
