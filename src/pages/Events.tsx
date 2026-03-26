@@ -127,7 +127,7 @@ const Events = () => {
               {tags.length > 0 ? (
                 tags.map((tag) => (
                   <div key={tag}>
-                    <h2 className="font-heading text-2xl font-semibold text-foreground mb-6">{tag}</h2>
+                    <h2 className="font-heading text-2xl font-semibold text-white mb-6">{tag}</h2>
                     <div className="space-y-4">
                       {filteredEvents
                         .filter((e) => e.tag === tag)
