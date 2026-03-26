@@ -5,7 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Heart, MapPinCheck, Plus, Check } from "lucide-react";
+import { Heart, MapPinCheck, Plus, Check, Share2 } from "lucide-react";
+import { toast as sonnerToast } from "sonner";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -134,18 +135,32 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
     c.collection_items?.some((i: any) => i.listing_id === listingId)
   );
 
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    const shareData = { title: "Check this out!", url: shareUrl };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          try { await navigator.clipboard.writeText(shareUrl); sonnerToast.success("Link copied!"); } catch { sonnerToast.error("Could not copy link"); }
+        }
+      }
+    } else {
+      try { await navigator.clipboard.writeText(shareUrl); sonnerToast.success("Link copied!"); } catch { sonnerToast.error("Could not copy link"); }
+    }
+  };
+
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       {/* Save to collection */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
             variant={isSavedAnywhere ? "default" : "outline"}
             size="sm"
-            className="gap-2"
+            className="gap-1.5 h-8 px-2.5 text-xs"
             onClick={(e) => { if (requireAuth()) e.preventDefault(); }}
           >
-            <Heart className={`h-4 w-4 ${isSavedAnywhere ? "fill-current" : ""}`} />
+            <Heart className={`h-3.5 w-3.5 ${isSavedAnywhere ? "fill-current" : ""}`} />
             {isSavedAnywhere ? "Saved" : "Save"}
           </Button>
         </DropdownMenuTrigger>
@@ -168,14 +183,25 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
         )}
       </DropdownMenu>
 
+      {/* Share */}
+      <Button
+        variant="outline"
+        size="sm"
+        className="gap-1.5 h-8 px-2.5 text-xs"
+        onClick={handleShare}
+      >
+        <Share2 className="h-3.5 w-3.5" />
+        Share
+      </Button>
+
       {/* Been here */}
       <Button
         variant={beenHere ? "default" : "outline"}
         size="sm"
-        className="gap-2"
+        className="gap-1.5 h-8 px-2.5 text-xs"
         onClick={() => { if (!requireAuth()) toggleBeenHere.mutate(); }}
       >
-        <MapPinCheck className={`h-4 w-4 ${beenHere ? "fill-current" : ""}`} />
+        <MapPinCheck className={`h-3.5 w-3.5 ${beenHere ? "fill-current" : ""}`} />
         {beenHere ? "Been Here" : "Been Here?"}
       </Button>
 
