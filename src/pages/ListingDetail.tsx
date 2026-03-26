@@ -368,7 +368,7 @@ const ListingDetail = () => {
 
           {/* Kids accordion */}
           {hasKidsInfo && (
-            <div className="mb-10">
+            <div className="mb-2">
               <Collapsible>
                 <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
                   <span className="flex items-center gap-2"><Baby className="h-4 w-4 text-primary" /> Kids</span>
