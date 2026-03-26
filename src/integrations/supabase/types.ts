@@ -284,9 +284,11 @@ export type Database = {
           google_rating: number | null
           google_reviews_count: number | null
           google_reviews_url: string | null
+          high_chairs: boolean | null
           id: string
           image_url: string | null
           is_featured: boolean
+          kids_menu: boolean | null
           kids_playground: boolean | null
           location: string | null
           long_description: string | null
@@ -317,9 +319,11 @@ export type Database = {
           google_rating?: number | null
           google_reviews_count?: number | null
           google_reviews_url?: string | null
+          high_chairs?: boolean | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          kids_menu?: boolean | null
           kids_playground?: boolean | null
           location?: string | null
           long_description?: string | null
@@ -350,9 +354,11 @@ export type Database = {
           google_rating?: number | null
           google_reviews_count?: number | null
           google_reviews_url?: string | null
+          high_chairs?: boolean | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          kids_menu?: boolean | null
           kids_playground?: boolean | null
           location?: string | null
           long_description?: string | null
