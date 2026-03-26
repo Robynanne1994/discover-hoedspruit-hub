@@ -139,31 +139,31 @@ const ListingDetail = () => {
           </div>
 
           {/* Contact info bar */}
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-8">
+          <div className="flex flex-col gap-2 mb-8">
             {listing.location && (
               (listing as any).google_maps_link ? (
-                <a href={(listing as any).google_maps_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                  <MapPin className="h-4 w-4 text-accent" /> {listing.location}
+                <a href={(listing as any).google_maps_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 bg-muted/50 border border-border rounded-sm text-xs text-muted-foreground hover:text-primary transition-colors">
+                  <MapPin className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.location}
                 </a>
               ) : (
-                <div className="flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-accent" /> {listing.location}
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 border border-border rounded-sm text-xs text-muted-foreground">
+                  <MapPin className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.location}
                 </div>
               )
             )}
             {listing.phone && (
-              <a href={`tel:${listing.phone}`} className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                <Phone className="h-4 w-4 text-accent" /> {listing.phone}
+              <a href={`tel:${listing.phone}`} className="flex items-center gap-2 px-3 py-2 bg-muted/50 border border-border rounded-sm text-xs text-muted-foreground hover:text-primary transition-colors">
+                <Phone className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.phone}
               </a>
             )}
             {listing.email && (
-              <a href={`mailto:${listing.email}`} className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                <Mail className="h-4 w-4 text-accent" /> {listing.email}
+              <a href={`mailto:${listing.email}`} className="flex items-center gap-2 px-3 py-2 bg-muted/50 border border-border rounded-sm text-xs text-muted-foreground hover:text-primary transition-colors">
+                <Mail className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.email}
               </a>
             )}
             {listing.website && (
-              <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                <Globe className="h-4 w-4 text-accent" /> Website
+              <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-3 py-2 bg-muted/50 border border-border rounded-sm text-xs text-muted-foreground hover:text-primary transition-colors">
+                <Globe className="h-3.5 w-3.5 text-accent shrink-0" /> Website
               </a>
             )}
           </div>
