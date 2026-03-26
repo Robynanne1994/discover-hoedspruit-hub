@@ -9,8 +9,8 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-} from "@/components/ui/carousel";
+  CarouselNext } from
+"@/components/ui/carousel";
 
 const fallbackImages: Record<string, string> = {
   "Utensils": restaurantImg,
@@ -47,7 +47,7 @@ const CategoriesSection = () => {
       <div className="container-wide">
         <div className="text-center mb-12">
           <span className="text-primary font-medium text-sm tracking-widest uppercase">Explore</span>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mt-3 mb-4 font-sans lg:text-6xl text-left">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mt-3 mb-4 font-sans lg:text-6xl">
             ​Discover the 'Hoed   
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto text-lg">
@@ -71,8 +71,8 @@ const CategoriesSection = () => {
                         <h3 className="text-xs font-bold text-primary-foreground font-sans mt-0.5">{cat.title}</h3>
                       </div>
                     </Link>
-                  </CarouselItem>
-                );
+                  </CarouselItem>);
+
               })}
             </CarouselContent>
             <CarouselNext className="hidden sm:flex" />
