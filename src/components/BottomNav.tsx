@@ -1,19 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Compass, Calendar, Sparkles } from "lucide-react";
+import { Home, Search, Bell, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Home", href: "/", icon: Home },
-  { label: "Discover", href: "/categories", icon: Compass },
-  { label: "Events", href: "/events/calendar", icon: Calendar },
-  { label: "Explore", href: "/quiz", icon: Sparkles },
+  { label: "Explore", href: "/categories", icon: Search },
+  { label: "Notifications", href: "#", icon: Bell },
+  { label: "Discover", href: "/quiz", icon: Sparkles },
 ];
 
 const BottomNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-background/95 backdrop-blur-md border-t border-border">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/98 backdrop-blur-md border-t border-border shadow-[0_-2px_10px_rgba(0,0,0,0.06)]">
       <div className="flex items-center justify-around h-16">
         {navItems.map((item) => {
           const isActive = location.pathname === item.href;
