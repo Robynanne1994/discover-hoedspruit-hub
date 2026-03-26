@@ -18,6 +18,7 @@ const About = () => {
               Your full guide to Hoedspruit — eat, explore, and experience everything this incredible bushveld town has to offer, all in one place.
             </p>
           </div>
+        </div>
       </section>
 
       <section className="section-padding">
