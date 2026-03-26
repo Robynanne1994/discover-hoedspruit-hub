@@ -143,27 +143,27 @@ const ListingDetail = () => {
             {listing.location && (
               (listing as any).google_maps_link ? (
                 <a href={(listing as any).google_maps_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                  <MapPin className="h-4 w-4 text-primary" /> {listing.location}
+                  <MapPin className="h-4 w-4 text-accent" /> {listing.location}
                 </a>
               ) : (
                 <div className="flex items-center gap-1.5">
-                  <MapPin className="h-4 w-4 text-primary" /> {listing.location}
+                  <MapPin className="h-4 w-4 text-accent" /> {listing.location}
                 </div>
               )
             )}
             {listing.phone && (
               <a href={`tel:${listing.phone}`} className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                <Phone className="h-4 w-4 text-primary" /> {listing.phone}
+                <Phone className="h-4 w-4 text-accent" /> {listing.phone}
               </a>
             )}
             {listing.email && (
               <a href={`mailto:${listing.email}`} className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                <Mail className="h-4 w-4 text-primary" /> {listing.email}
+                <Mail className="h-4 w-4 text-accent" /> {listing.email}
               </a>
             )}
             {listing.website && (
               <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-primary transition-colors">
-                <Globe className="h-4 w-4 text-primary" /> Website
+                <Globe className="h-4 w-4 text-accent" /> Website
               </a>
             )}
           </div>
