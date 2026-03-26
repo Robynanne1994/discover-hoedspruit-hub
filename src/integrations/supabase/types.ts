@@ -280,6 +280,7 @@ export type Database = {
           email: string | null
           gallery_images: string[] | null
           good_for_kids: boolean | null
+          google_maps_link: string | null
           id: string
           image_url: string | null
           is_featured: boolean
@@ -309,6 +310,7 @@ export type Database = {
           email?: string | null
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
+          google_maps_link?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
@@ -338,6 +340,7 @@ export type Database = {
           email?: string | null
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
+          google_maps_link?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean

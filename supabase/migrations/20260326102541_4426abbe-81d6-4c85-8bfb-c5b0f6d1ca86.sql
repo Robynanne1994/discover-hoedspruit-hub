@@ -1,0 +1,1 @@
+ALTER TABLE public.listings ADD COLUMN google_maps_link text DEFAULT NULL;

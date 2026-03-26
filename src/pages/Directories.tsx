@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import { Globe, Mail, Phone } from "lucide-react";
+import { Globe, Mail, MapPin, Phone } from "lucide-react";
 import BackButton from "@/components/BackButton";
 
 const Directories = () => {
@@ -25,7 +25,7 @@ const Directories = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select("id, title, phone, email, website, category_id")
+        .select("id, title, phone, email, website, location, google_maps_link, category_id")
         .order("title");
       if (error) throw error;
       return data;
@@ -107,12 +107,13 @@ const Directories = () => {
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-left border-b-2 border-border bg-primary/10 rounded">
-                          <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Business</th>
-                          <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Phone</th>
-                          <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Email</th>
-                          <th className="py-3 font-bold text-primary text-sm uppercase tracking-wide">Website</th>
-                        </tr>
+                         <tr className="text-left border-b-2 border-border bg-primary/10 rounded">
+                           <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Business</th>
+                           <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Location</th>
+                           <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Phone</th>
+                           <th className="py-3 pr-4 font-bold text-primary text-sm uppercase tracking-wide">Email</th>
+                           <th className="py-3 font-bold text-primary text-sm uppercase tracking-wide">Website</th>
+                         </tr>
                       </thead>
                       <tbody>
                         {cat.listings.map((listing) => (
@@ -120,10 +121,32 @@ const Directories = () => {
                             key={listing.id}
                             className="border-b border-border/50 hover:bg-accent/30 transition-colors"
                           >
-                            <td className="py-3 pr-4 font-medium text-foreground whitespace-nowrap">
-                              {listing.title}
-                            </td>
-                            <td className="py-3 pr-4 whitespace-nowrap">
+                             <td className="py-3 pr-4 font-medium text-foreground whitespace-nowrap">
+                               {listing.title}
+                             </td>
+                             <td className="py-3 pr-4 whitespace-nowrap">
+                               {listing.location ? (
+                                 (listing as any).google_maps_link ? (
+                                   <a
+                                     href={(listing as any).google_maps_link}
+                                     target="_blank"
+                                     rel="noopener noreferrer"
+                                     className="flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+                                   >
+                                     <MapPin className="h-3.5 w-3.5 shrink-0" />
+                                     {listing.location}
+                                   </a>
+                                 ) : (
+                                   <span className="flex items-center gap-1.5 text-muted-foreground">
+                                     <MapPin className="h-3.5 w-3.5 shrink-0" />
+                                     {listing.location}
+                                   </span>
+                                 )
+                               ) : (
+                                 <span className="text-muted-foreground/40">—</span>
+                               )}
+                             </td>
+                             <td className="py-3 pr-4 whitespace-nowrap">
                               {listing.phone ? (
                                 <a
                                   href={`tel:${listing.phone}`}
