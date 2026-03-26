@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import * as LucideIcons from "lucide-react";
 import Navbar from "@/components/Navbar";
+import BackButton from "@/components/BackButton";
 import lodgeImg from "@/assets/lodge-card.jpg";
 import restaurantImg from "@/assets/restaurant-card.jpg";
 import activitiesImg from "@/assets/activities-card.jpg";
@@ -50,6 +51,7 @@ const Categories = () => {
       <Navbar />
       <section className="pt-24 pb-16 section-padding bg-background">
         <div className="container-wide">
+          <BackButton />
           <div className="text-center mb-12">
             <span className="text-primary font-medium text-sm tracking-widest uppercase">
               Explore

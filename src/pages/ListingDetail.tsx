@@ -98,16 +98,7 @@ const ListingDetail = () => {
       <Navbar />
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
-          {firstCategory ? (
-            <Link
-              to={`/category/${firstCategory.id}`}
-              className="inline-flex items-center gap-2 text-primary hover:underline mb-6"
-            >
-              <ArrowLeft className="h-4 w-4" /> Back to {firstCategory.title}
-            </Link>
-          ) : (
-            <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
-              <ArrowLeft className="h-4 w-4" /> Back to Home
+          <BackButton />
             </Link>
           )}
 

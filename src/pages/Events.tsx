@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import BackButton from "@/components/BackButton";
 import { parse, isToday, isTomorrow, isWeekend, isBefore, isAfter, startOfToday, format } from "date-fns";
 
 type FilterType = "upcoming" | "today" | "tomorrow" | "weekend" | "past";
@@ -84,6 +85,7 @@ const Events = () => {
       <Navbar />
       <section className="pt-32 pb-16 section-padding bg-background">
         <div className="container-wide">
+          <BackButton />
           <div className="mb-8">
             <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
             <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mt-3">Events</h1>
