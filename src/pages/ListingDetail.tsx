@@ -138,6 +138,24 @@ const ListingDetail = () => {
             )}
           </div>
 
+          {/* Google rating */}
+          {(listing as any).google_rating != null && (
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`h-4 w-4 ${star <= Math.round((listing as any).google_rating) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"}`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm font-semibold text-foreground">{(listing as any).google_rating}</span>
+              {(listing as any).google_reviews_count != null && (
+                <span className="text-xs text-muted-foreground">({(listing as any).google_reviews_count} Google reviews)</span>
+              )}
+            </div>
+          )}
+
           {/* Contact info box */}
           <div className="bg-muted/50 border border-border rounded-sm px-3 py-3 mb-8 flex flex-col gap-2.5">
             {listing.location && (
