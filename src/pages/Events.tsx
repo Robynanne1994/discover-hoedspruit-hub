@@ -111,7 +111,7 @@ const Events = () => {
           </div>
 
           {/* Calendar link button */}
-          <div className="mb-8">
+          <div className="mb-8 bg-muted-foreground">
             <Button asChild variant="outline" className="gap-2">
               <Link to="/events/calendar">
                 <CalendarDays className="h-4 w-4" />
