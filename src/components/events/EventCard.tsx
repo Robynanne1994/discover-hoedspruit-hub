@@ -1,4 +1,5 @@
 import { Calendar, MapPin, Clock, Repeat } from "lucide-react";
+import FavouriteButton from "@/components/FavouriteButton";
 
 interface EventCardProps {
   event: {
@@ -17,7 +18,8 @@ interface EventCardProps {
 
 const EventCard = ({ event }: EventCardProps) => {
   return (
-    <div className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-warm transition-all duration-200">
+    <div className="group relative bg-card rounded-xl overflow-hidden border border-border hover:border-primary/50 hover:shadow-warm transition-all duration-200">
+      <FavouriteButton itemId={event.id} itemType="event" />
       <div className="flex">
         {event.image_url && (
           <div className="w-32 sm:w-40 shrink-0">
@@ -30,7 +32,7 @@ const EventCard = ({ event }: EventCardProps) => {
         )}
         <div className="p-4 flex-1 min-w-0">
           {event.tag && (
-            <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-2.5 py-0.5 mb-2">
+            <span className="inline-block text-[10px] font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-2 py-0.5 mb-1.5">
               {event.tag}
             </span>
           )}
