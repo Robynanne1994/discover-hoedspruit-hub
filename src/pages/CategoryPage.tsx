@@ -96,7 +96,7 @@ const CategoryPage = () => {
             {allCategories && allCategories.length > 0 && (
               <button
                 onClick={() => setShowCategories((v) => !v)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-muted text-muted-foreground text-sm font-medium hover:bg-accent/20 hover:text-foreground transition-colors duration-200"
+                className="flex items-center gap-1 text-sm font-bold text-foreground hover:text-primary transition-colors duration-200"
               >
                 Other Categories
                 {showCategories ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
