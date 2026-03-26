@@ -96,13 +96,13 @@ const WeatherSection = () => {
         <div className="bg-background/80 backdrop-blur rounded-2xl border border-border overflow-hidden">
           <div className="flex flex-col sm:flex-row">
             {/* Hero temperature */}
-            <div className="flex items-center gap-5 p-8 sm:p-10 sm:border-r border-border sm:min-w-[280px]">
+            <div className="flex items-center gap-3 p-5 sm:p-6 sm:border-r border-border sm:min-w-[200px]">
               {getWeatherIcon(current.weather_code)}
               <div>
-                <p className="text-5xl font-bold text-foreground font-sans tracking-tight">
+                <p className="text-3xl font-bold text-foreground font-sans tracking-tight">
                   {Math.round(current.temperature_2m)}°
                 </p>
-                <p className="text-muted-foreground text-sm mt-1">
+                <p className="text-muted-foreground text-xs mt-0.5">
                   {getWeatherDescription(current.weather_code)}
                 </p>
               </div>
