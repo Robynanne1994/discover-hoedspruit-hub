@@ -298,7 +298,7 @@ const ListingDetail = () => {
 
           {/* Description */}
           {listing.description && (
-            <p className="text-muted-foreground text-lg mb-6">{listing.description}</p>
+            <p className="text-muted-foreground text-sm mb-6">{listing.description}</p>
           )}
 
           {/* Long description */}
