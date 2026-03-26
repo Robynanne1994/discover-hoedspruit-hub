@@ -1,5 +1,5 @@
 import { Calendar, MapPin, Clock, ArrowRight, Repeat } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -24,19 +24,16 @@ const EventsSection = () => {
   return (
     <section id="events" className="section-padding bg-secondary-fill">
       <div className="container-wide">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-6 gap-4">
-          <div>
-            <span className="text-primary font-medium text-sm tracking-widest uppercase">What's On</span>
-            <h2 className="text-3xl sm:text-4xl font-bold mt-3 font-sans text-foreground">Upcoming Events</h2>
-          </div>
-          <Button variant="ghost" className="text-primary gap-2 self-start sm:self-auto" asChild>
-            <a href="/events">View all events <ArrowRight className="h-4 w-4" /></a>
-          </Button>
-        </div>
 
         {hasEvents ? (
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-foreground mb-3 font-sans">Events</h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-semibold text-foreground font-sans">Events</h3>
+              <a href="/events" className="flex items-center gap-1 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                View all
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
             <Carousel opts={{ align: "start", loop: false }} className="w-full">
               <CarouselContent className="-ml-2">
                 {events.slice(0, 8).map((event) => (
