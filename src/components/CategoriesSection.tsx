@@ -9,6 +9,7 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  CarouselNext,
 } from "@/components/ui/carousel";
 
 const fallbackImages: Record<string, string> = {
