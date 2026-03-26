@@ -122,6 +122,25 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasAmenitiesInfo = amenitiesItems.length > 0;
 
+  // Service options: Sit down, Takeaway, Delivery (delivery always shows)
+  const hasSitDown = serviceType?.includes("Sit down") || serviceType?.includes("Dine-in") || false;
+  const hasTakeaway = serviceType?.includes("Takeaway") || serviceType?.includes("Take away") || false;
+  const hasDelivery = serviceType?.includes("Delivery") || false;
+  const serviceItems = [
+    ...(hasSitDown ? [{ label: "Sit down", available: true }] : []),
+    ...(hasTakeaway ? [{ label: "Takeaway", available: true }] : []),
+    { label: "Delivery", available: hasDelivery },
+  ];
+  const hasServiceInfo = hasSitDown || hasTakeaway || true; // always show because delivery always shows
+
+  // Seating: Bar, Indoor, Outdoor
+  const seatingItems = [
+    ...(seating?.includes("Bar seating") ? [{ label: "Bar seating" }] : []),
+    ...(seating?.includes("Indoor seating") ? [{ label: "Indoor seating" }] : []),
+    ...(seating?.includes("Outdoor seating") ? [{ label: "Outdoor seating" }] : []),
+  ];
+  const hasSeatingInfo = seatingItems.length > 0;
+
   const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
   const priceName = priceLevel === 1 ? "Budget" : priceLevel === 2 ? "Moderate" : priceLevel === 3 ? "Upscale" : priceLevel === 4 ? "Fine Dining" : null;
 
