@@ -158,9 +158,10 @@ const CategoryPage = () => {
                 return (
                 <div
                   key={l.id}
-                  className={`bg-card border border-border rounded-none overflow-hidden shadow-card hover:shadow-warm transition-shadow duration-300 ${hasDetail ? "cursor-pointer" : ""}`}
+                  className={`relative bg-card border border-border rounded-none overflow-hidden shadow-card hover:shadow-warm transition-shadow duration-300 ${hasDetail ? "cursor-pointer" : ""}`}
                   onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
                 >
+                  <FavouriteButton itemId={l.id} itemType="listing" />
                   {l.image_url && (
                     <img src={l.image_url} alt={l.title} className="w-full h-48 object-cover" />
                   )}
