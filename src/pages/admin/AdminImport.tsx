@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 
-const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "google_maps_link", "google_rating", "google_reviews_count", "categories", "subcategories", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes", "meal", "vibe", "cuisine", "seating", "kids_playground", "smoking_allowed", "service_type"];
+const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url", "categories", "subcategories", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes", "meal", "vibe", "cuisine", "seating", "kids_playground", "smoking_allowed", "service_type"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
