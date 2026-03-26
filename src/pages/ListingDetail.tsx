@@ -388,7 +388,7 @@ const ListingDetail = () => {
 
           {/* Accessibility accordion */}
           {hasAccessibilityInfo && (
-            <div className="mb-10">
+            <div className="mb-2">
               <Collapsible>
                 <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
                   <span className="flex items-center gap-2"><Accessibility className="h-4 w-4 text-primary" /> Accessibility</span>
@@ -408,7 +408,7 @@ const ListingDetail = () => {
 
           {/* Service options accordion */}
           {((seating && seating.length > 0) || (serviceType && serviceType.length > 0)) && (
-            <div className="mb-10">
+            <div className="mb-2">
               <Collapsible>
                 <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
                   <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-primary" /> Service options</span>
@@ -434,7 +434,7 @@ const ListingDetail = () => {
 
           {/* Amenities accordion */}
           {hasAmenitiesInfo && (
-            <div className="mb-10">
+            <div className="mb-2">
               <Collapsible>
                 <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
                   <span className="flex items-center gap-2"><Wifi className="h-4 w-4 text-primary" /> Amenities</span>
