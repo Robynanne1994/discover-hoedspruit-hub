@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchDialog from "@/components/SearchDialog";
 import { Menu, X, User, Search, ChevronDown, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -59,9 +59,9 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const scrollToEvents = () => {
-    const el = document.getElementById("events");
-    if (el) el.scrollIntoView({ behavior: "smooth" });
+  const navigate = useNavigate();
+  const goToEvents = () => {
+    navigate("/events");
   };
 
   const otherLinks = [
