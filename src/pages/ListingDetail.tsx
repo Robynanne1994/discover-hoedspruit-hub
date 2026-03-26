@@ -385,90 +385,93 @@ const ListingDetail = () => {
             </div>
           )}
 
-          {/* Kids accordion */}
-          {hasKidsInfo && (
-            <div className="mb-2">
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
-                  <span className="flex items-center gap-2"><Baby className="h-4 w-4 text-primary" /> Kids</span>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
-                  {kidsItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                      <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
-          )}
+          {/* Accordion sections - only one open at a time */}
+          {(hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
+            <Accordion type="single" collapsible className="space-y-2">
+              {hasKidsInfo && (
+                <AccordionItem value="kids" className="border-0">
+                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                    <span className="flex items-center gap-2"><Baby className="h-4 w-4 text-primary" /> Kids</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
+                    {kidsItems.map((item) => (
+                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                        <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        <span>{item.label}</span>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
 
-          {/* Accessibility accordion */}
-          {hasAccessibilityInfo && (
-            <div className="mb-2">
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
-                  <span className="flex items-center gap-2"><Accessibility className="h-4 w-4 text-primary" /> Accessibility</span>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
-                  {accessibilityItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                      <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
-          )}
+              {hasAccessibilityInfo && (
+                <AccordionItem value="accessibility" className="border-0">
+                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                    <span className="flex items-center gap-2"><Accessibility className="h-4 w-4 text-primary" /> Accessibility</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
+                    {accessibilityItems.map((item) => (
+                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                        <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        <span>{item.label}</span>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
 
-          {/* Service options accordion */}
-          {((seating && seating.length > 0) || (serviceType && serviceType.length > 0)) && (
-            <div className="mb-2">
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
-                  <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-primary" /> Service options</span>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
-                  {seating && seating.map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-sm text-foreground">
-                      <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                  {serviceType && serviceType.map((item) => (
-                    <div key={item} className="flex items-center gap-2 text-sm text-foreground">
-                      <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
-          )}
+              {hasServiceInfo && (
+                <AccordionItem value="service" className="border-0">
+                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                    <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-primary" /> Service options</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
+                    {serviceItems.map((item) => (
+                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                        {item.available ? (
+                          <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        ) : (
+                          <Ban className="h-3.5 w-3.5 text-destructive" />
+                        )}
+                        <span className={item.available ? "" : "text-muted-foreground"}>{item.label}</span>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
 
-          {/* Amenities accordion */}
-          {hasAmenitiesInfo && (
-            <div className="mb-2">
-              <Collapsible>
-                <CollapsibleTrigger className="flex items-center justify-between w-full bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors group">
-                  <span className="flex items-center gap-2"><Wifi className="h-4 w-4 text-primary" /> Amenities</span>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-                </CollapsibleTrigger>
-                <CollapsibleContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 py-3 space-y-2">
-                  {amenitiesItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                      <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </CollapsibleContent>
-              </Collapsible>
-            </div>
+              {hasSeatingInfo && (
+                <AccordionItem value="seating" className="border-0">
+                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                    <span className="flex items-center gap-2"><Armchair className="h-4 w-4 text-primary" /> Seating</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
+                    {seatingItems.map((item) => (
+                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                        <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        <span>{item.label}</span>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+
+              {hasAmenitiesInfo && (
+                <AccordionItem value="amenities" className="border-0">
+                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                    <span className="flex items-center gap-2"><Wifi className="h-4 w-4 text-primary" /> Amenities</span>
+                  </AccordionTrigger>
+                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
+                    {amenitiesItems.map((item) => (
+                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
+                        <Check className="h-3.5 w-3.5 text-emerald-600" />
+                        <span>{item.label}</span>
+                      </div>
+                    ))}
+                  </AccordionContent>
+                </AccordionItem>
+              )}
+            </Accordion>
           )}
         </div>
       </section>
