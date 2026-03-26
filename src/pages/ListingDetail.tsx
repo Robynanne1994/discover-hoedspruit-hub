@@ -99,8 +99,6 @@ const ListingDetail = () => {
       <section className="pt-24 pb-16 section-padding">
         <div className="container-wide max-w-4xl mx-auto">
           <BackButton />
-            </Link>
-          )}
 
           {/* Hero image */}
           {listing.image_url && (
