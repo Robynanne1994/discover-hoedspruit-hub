@@ -33,7 +33,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-type ActiveSection = null | "profile" | "collections" | "been-here" | "reviews";
+type ActiveSection = null | "profile" | "favourites" | "collections" | "been-here" | "reviews";
 
 const MyAccount = () => {
   const { user, signOut, loading } = useAuth();
