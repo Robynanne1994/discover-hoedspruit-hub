@@ -270,16 +270,6 @@ const ListingDetail = () => {
                   <Accessibility className="h-3 w-3" /> Wheelchair Friendly
                 </div>
               )}
-              {kidsPlayground === true && (
-                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
-                  <TreePine className="h-3 w-3" /> Kids Playground
-                </div>
-              )}
-              {kidsPlayground === false && (
-                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
-                  <TreePine className="h-3 w-3" /> Kids Playground
-                </div>
-              )}
               {smokingAllowed === true && (
                 <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
                   <Cigarette className="h-3 w-3" /> Smoking Allowed
