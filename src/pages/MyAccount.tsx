@@ -33,7 +33,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-type ActiveSection = null | "profile" | "collections" | "been-here" | "reviews";
+type ActiveSection = null | "profile" | "favourites" | "collections" | "been-here" | "reviews";
 
 const MyAccount = () => {
   const { user, signOut, loading } = useAuth();
@@ -99,6 +99,39 @@ const MyAccount = () => {
     enabled: !!user,
   });
 
+  const { data: favourites } = useQuery({
+    queryKey: ["favourites", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("*")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      if (!data || data.length === 0) return [];
+
+      const listingIds = data.filter((f: any) => f.item_type === "listing").map((f: any) => f.item_id);
+      const eventIds = data.filter((f: any) => f.item_type === "event").map((f: any) => f.item_id);
+
+      const [listingsRes, eventsRes] = await Promise.all([
+        listingIds.length > 0
+          ? supabase.from("listings").select("id, title, image_url").in("id", listingIds)
+          : { data: [] },
+        eventIds.length > 0
+          ? supabase.from("events").select("id, title, image_url").in("id", eventIds)
+          : { data: [] },
+      ]);
+
+      const listingsMap = Object.fromEntries((listingsRes.data || []).map((l: any) => [l.id, l]));
+      const eventsMap = Object.fromEntries((eventsRes.data || []).map((e: any) => [e.id, e]));
+
+      return data.map((f: any) => ({
+        ...f,
+        details: f.item_type === "listing" ? listingsMap[f.item_id] : eventsMap[f.item_id],
+      }));
+    },
+    enabled: !!user,
+  });
+
   const createCollection = useMutation({
     mutationFn: async (name: string) => {
       const { error } = await supabase.from("collections").insert({ name, user_id: user!.id });
@@ -140,6 +173,22 @@ const MyAccount = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["been-here"] }),
   });
 
+  const removeFavourite = useMutation({
+    mutationFn: async (fav: { item_id: string; item_type: string }) => {
+      const { error } = await supabase
+        .from("favourites" as any)
+        .delete()
+        .eq("user_id", user!.id)
+        .eq("item_id", fav.item_id)
+        .eq("item_type", fav.item_type);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["favourite"] });
+    },
+  });
+
   if (!user || loading) {
     return (
       <div className="min-h-screen bg-background">
@@ -155,7 +204,8 @@ const MyAccount = () => {
 
   const sectionCards = [
     { key: "profile" as const, label: "Profile", icon: UserCircle, color: "text-primary" },
-    { key: "collections" as const, label: "Collections", icon: Heart, color: "text-rose-500" },
+    { key: "favourites" as const, label: "Favourites", icon: Heart, color: "text-pink-500" },
+    { key: "collections" as const, label: "Collections", icon: FolderOpen, color: "text-rose-500" },
     { key: "been-here" as const, label: "Been Here", icon: MapPinCheck, color: "text-emerald-500" },
     { key: "reviews" as const, label: "Reviews", icon: Star, color: "text-amber-500" },
   ];
@@ -186,6 +236,45 @@ const MyAccount = () => {
               <>
                 <h2 className="font-sans text-xl font-semibold mb-4">My Profile</h2>
                 <ProfileForm profile={profile as any} />
+              </>
+            )}
+
+            {activeSection === "favourites" && (
+              <>
+                <h2 className="font-sans text-xl font-semibold mb-4">My Favourites</h2>
+                {!favourites?.length ? (
+                  <div className="text-center py-12 bg-card border border-border rounded-xl">
+                    <Heart className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
+                    <p className="text-muted-foreground">No favourites yet. Tap the heart on listings and events!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {favourites.map((fav: any) => (
+                      <div key={fav.id} className="flex items-center gap-3 bg-card border border-border rounded-xl p-4">
+                        {fav.details?.image_url && (
+                          <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <Link
+                            to={fav.item_type === "listing" ? `/listing/${fav.item_id}` : `/events`}
+                            className="font-medium hover:text-primary truncate block"
+                          >
+                            {fav.details?.title || "Unknown"}
+                          </Link>
+                          <span className="text-xs text-muted-foreground capitalize">{fav.item_type}</span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0"
+                          onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </>
             )}
 
