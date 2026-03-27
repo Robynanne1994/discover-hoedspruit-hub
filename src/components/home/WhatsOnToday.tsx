@@ -70,8 +70,8 @@ const WhatsOnToday = () => {
       <div className="mx-4 divide-y divide-border">
         {events.map((event) => (
           <div key={event.id} className="flex items-baseline gap-4 py-3">
-            <span className="text-sm font-semibold text-primary whitespace-nowrap w-[72px]">
-              {formatTime(event.start_time) || event.date?.slice(0, 6) || "TBA"}
+            <span className="text-sm font-semibold text-primary whitespace-nowrap min-w-[72px]">
+              {event.date || "TBA"}
             </span>
             <span className="text-sm text-foreground">
               {event.title}{" "}
