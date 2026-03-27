@@ -25,6 +25,7 @@ import {
   Pencil,
   UserCircle,
   LayoutDashboard,
+  Megaphone,
 } from "lucide-react";
 import ProfileForm from "@/components/profile/ProfileForm";
 import { toast } from "sonner";
@@ -537,6 +538,7 @@ const MyAccount = () => {
             { icon: Shield, label: "Privacy & Security" },
             { icon: HelpCircle, label: "Help & Support", href: "/contact" },
             { icon: Info, label: "About & Info", href: "/about" },
+            { icon: Megaphone, label: "Advertise", href: "/advertise" },
           ].map((item, i, arr) => {
             const Icon = item.icon;
             const content = (
