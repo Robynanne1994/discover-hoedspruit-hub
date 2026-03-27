@@ -542,10 +542,10 @@ const MyAccount = () => {
           ].map((item, i, arr) => {
             const Icon = item.icon;
             const content = (
-              <div className={`flex items-center gap-3 px-4 py-3.5 ${i < arr.length - 1 ? "border-b border-border" : ""}`}>
-                <Icon className="h-4.5 w-4.5 text-primary" />
-                <span className="flex-1 text-sm font-medium text-foreground">{item.label}</span>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
+              <div className={`flex items-center gap-4 px-5 py-5 ${i < arr.length - 1 ? "border-b border-border" : ""}`}>
+                <Icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
+                <span className="flex-1 text-base font-medium text-foreground">{item.label}</span>
+                <ChevronRight className="h-5 w-5 text-muted-foreground/40" />
               </div>
             );
             if (item.href) {
