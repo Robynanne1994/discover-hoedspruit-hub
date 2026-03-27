@@ -233,19 +233,6 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
               <p className="text-xs text-muted-foreground mt-0.5">Upload or change photo</p>
             </div>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => fileRef.current?.click()}
-            disabled={uploading}
-            className="w-full mt-4 rounded-xl h-10 gap-2 border-primary/30 text-primary hover:bg-primary/5 font-semibold text-sm"
-          >
-            {uploading ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</>
-            ) : (
-              <><Camera className="h-4 w-4" /> Change Photo</>
-            )}
-          </Button>
           <input
             ref={fileRef}
             type="file"
