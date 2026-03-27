@@ -1,10 +1,37 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, ChevronDown } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const AREA_CODES = [
+  { code: "+27", country: "ZA", flag: "🇿🇦" },
+  { code: "+1", country: "US", flag: "🇺🇸" },
+  { code: "+44", country: "UK", flag: "🇬🇧" },
+  { code: "+61", country: "AU", flag: "🇦🇺" },
+  { code: "+49", country: "DE", flag: "🇩🇪" },
+  { code: "+33", country: "FR", flag: "🇫🇷" },
+  { code: "+31", country: "NL", flag: "🇳🇱" },
+  { code: "+351", country: "PT", flag: "🇵🇹" },
+  { code: "+254", country: "KE", flag: "🇰🇪" },
+  { code: "+255", country: "TZ", flag: "🇹🇿" },
+  { code: "+258", country: "MZ", flag: "🇲🇿" },
+  { code: "+267", country: "BW", flag: "🇧🇼" },
+  { code: "+264", country: "NA", flag: "🇳🇦" },
+  { code: "+263", country: "ZW", flag: "🇿🇼" },
+];
+
+function parsePhone(phone: string) {
+  for (const ac of AREA_CODES) {
+    if (phone.startsWith(ac.code)) {
+      return { areaCode: ac.code, number: phone.slice(ac.code.length).trim() };
+    }
+  }
+  return { areaCode: "+27", number: phone.replace(/^\+?\d{1,3}\s?/, "") };
+}
 import { toast } from "sonner";
 import heroBg from "@/assets/hero-homepage.jpg";
 
@@ -213,16 +240,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
               className="rounded-xl bg-card h-12"
             />
           </div>
-          <div>
-            <label className="block text-sm font-bold text-foreground mb-1.5">Phone Number</label>
-            <Input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+27..."
-              className="rounded-xl bg-card h-12"
-            />
-          </div>
+          <PhoneInput phone={phone} onChange={setPhone} />
 
           <div className="pt-2">
             <Button
