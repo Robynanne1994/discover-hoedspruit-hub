@@ -1,10 +1,37 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Camera, Loader2 } from "lucide-react";
+import { Camera, Loader2, ChevronDown } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
+const AREA_CODES = [
+  { code: "+27", country: "ZA", flag: "🇿🇦" },
+  { code: "+1", country: "US", flag: "🇺🇸" },
+  { code: "+44", country: "UK", flag: "🇬🇧" },
+  { code: "+61", country: "AU", flag: "🇦🇺" },
+  { code: "+49", country: "DE", flag: "🇩🇪" },
+  { code: "+33", country: "FR", flag: "🇫🇷" },
+  { code: "+31", country: "NL", flag: "🇳🇱" },
+  { code: "+351", country: "PT", flag: "🇵🇹" },
+  { code: "+254", country: "KE", flag: "🇰🇪" },
+  { code: "+255", country: "TZ", flag: "🇹🇿" },
+  { code: "+258", country: "MZ", flag: "🇲🇿" },
+  { code: "+267", country: "BW", flag: "🇧🇼" },
+  { code: "+264", country: "NA", flag: "🇳🇦" },
+  { code: "+263", country: "ZW", flag: "🇿🇼" },
+];
+
+function parsePhone(phone: string) {
+  for (const ac of AREA_CODES) {
+    if (phone.startsWith(ac.code)) {
+      return { areaCode: ac.code, number: phone.slice(ac.code.length).trim() };
+    }
+  }
+  return { areaCode: "+27", number: phone.replace(/^\+?\d{1,3}\s?/, "") };
+}
 import { toast } from "sonner";
 import heroBg from "@/assets/hero-homepage.jpg";
 
@@ -17,6 +44,60 @@ interface ProfileFormProps {
     email: string | null;
   } | null;
 }
+
+const PhoneInput = ({ phone, onChange }: { phone: string; onChange: (v: string) => void }) => {
+  const parsed = parsePhone(phone);
+  const [areaCode, setAreaCode] = useState(parsed.areaCode);
+  const [number, setNumber] = useState(parsed.number);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    onChange(number ? `${areaCode}${number}` : "");
+  }, [areaCode, number]);
+
+  const selected = AREA_CODES.find((a) => a.code === areaCode) || AREA_CODES[0];
+
+  return (
+    <div>
+      <label className="block text-sm font-bold text-foreground mb-1.5">Phone Number</label>
+      <div className="flex gap-2">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 h-12 px-3 rounded-xl border border-input bg-card text-sm font-medium shrink-0 hover:bg-accent/50 transition-colors"
+            >
+              <span className="text-base">{selected.flag}</span>
+              <span>{selected.code}</span>
+              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-1 rounded-xl" align="start">
+            {AREA_CODES.map((ac) => (
+              <button
+                key={ac.code}
+                type="button"
+                onClick={() => { setAreaCode(ac.code); setOpen(false); }}
+                className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm hover:bg-accent/50 transition-colors ${ac.code === areaCode ? "bg-accent/30 font-semibold" : ""}`}
+              >
+                <span className="text-base">{ac.flag}</span>
+                <span>{ac.code}</span>
+                <span className="text-muted-foreground text-xs ml-auto">{ac.country}</span>
+              </button>
+            ))}
+          </PopoverContent>
+        </Popover>
+        <Input
+          type="tel"
+          value={number}
+          onChange={(e) => setNumber(e.target.value)}
+          placeholder="Phone number"
+          className="rounded-xl bg-card h-12 flex-1"
+        />
+      </div>
+    </div>
+  );
+};
 
 const ProfileForm = ({ profile }: ProfileFormProps) => {
   const { user } = useAuth();
@@ -213,16 +294,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
               className="rounded-xl bg-card h-12"
             />
           </div>
-          <div>
-            <label className="block text-sm font-bold text-foreground mb-1.5">Phone Number</label>
-            <Input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+27..."
-              className="rounded-xl bg-card h-12"
-            />
-          </div>
+          <PhoneInput phone={phone} onChange={setPhone} />
 
           <div className="pt-2">
             <Button
