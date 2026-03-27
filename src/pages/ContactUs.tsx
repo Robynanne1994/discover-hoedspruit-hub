@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import heroBg from "@/assets/hero-homepage.jpg";
 
-const CONTACT_EMAIL = "info@hellohoedspruit.co.za";
+const CONTACT_EMAIL = "hellohoedspruit@gmail.com";
 const CONTACT_PHONE = "+27 72 123 4567";
 const CONTACT_ADDRESS = "Hoedspruit, Limpopo\nSouth Africa";
 const INSTAGRAM = "https://instagram.com/hellohoedspruit";
