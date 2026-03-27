@@ -65,7 +65,7 @@ const WhatsOnToday = () => {
   };
 
   return (
-    <section className="pb-4">
+    <section className="pt-6 pb-4">
       <SectionHeader title="What's On in Hoedspruit" actionLabel="See all" actionHref="/events" />
       <div className="mx-4 divide-y divide-border">
         {events.map((event) => (
