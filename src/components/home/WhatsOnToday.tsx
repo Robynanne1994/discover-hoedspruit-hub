@@ -71,7 +71,14 @@ const WhatsOnToday = () => {
         {events.map((event) => (
           <div key={event.id} className="flex items-baseline gap-4 py-3">
             <span className="text-sm font-semibold text-primary whitespace-nowrap min-w-[72px]">
-              {event.date || "TBA"}
+              {(() => {
+                if (!event.date) return "TBA";
+                const parsed = new Date(event.date);
+                if (!isNaN(parsed.getTime())) {
+                  return `${String(parsed.getDate()).padStart(2, "0")}/${String(parsed.getMonth() + 1).padStart(2, "0")}`;
+                }
+                return event.date;
+              })()}
             </span>
             <span className="text-sm text-foreground">
               {event.title}{" "}
