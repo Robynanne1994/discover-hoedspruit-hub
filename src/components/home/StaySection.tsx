@@ -59,7 +59,6 @@ const StaySection = () => {
             image={listing.image_url || ""}
             name={listing.title}
             rating={listing.google_rating || 0}
-            location={listing.location || ""}
             href={`/listing/${listing.id}`}
           />
         ))}

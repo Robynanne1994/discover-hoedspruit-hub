@@ -5,11 +5,10 @@ interface VenueCardProps {
   image: string;
   name: string;
   rating: number;
-  location?: string;
   href?: string;
 }
 
-const VenueCard = ({ image, name, rating, location, href }: VenueCardProps) => {
+const VenueCard = ({ image, name, rating, href }: VenueCardProps) => {
   const content = (
     <div className="group cursor-pointer">
       <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-muted shadow-sm">
@@ -30,38 +29,27 @@ const VenueCard = ({ image, name, rating, location, href }: VenueCardProps) => {
           <h4 className="font-bold text-sm text-white leading-tight line-clamp-2 drop-shadow-sm">
             {name}
           </h4>
-          {(rating > 0 || location) && (
+          {rating > 0 && (
             <div className="flex items-center gap-1.5 mt-1">
-              {rating > 0 && (
-                <>
-                  <div className="flex items-center gap-px">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-2.5 w-2.5 ${
-                          i < Math.round(rating)
-                            ? "fill-amber-400 text-amber-400"
-                            : "fill-white/30 text-white/30"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-[11px] text-white/90 font-medium">{rating}</span>
-                </>
-              )}
-              {rating > 0 && location && (
-                <span className="text-white/60 text-[11px]">·</span>
-              )}
-              {location && (
-                <span className="text-[11px] text-white/80 leading-tight line-clamp-1">{location}</span>
-              )}
+              <div className="flex items-center gap-px">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`h-2.5 w-2.5 ${
+                      i < Math.round(rating)
+                        ? "fill-amber-400 text-amber-400"
+                        : "fill-white/30 text-white/30"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-[11px] text-white/90 font-medium">{rating}</span>
             </div>
           )}
         </div>
       </div>
     </div>
   );
-
   if (href) {
     return <Link to={href}>{content}</Link>;
   }
