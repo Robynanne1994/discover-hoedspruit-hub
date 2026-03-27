@@ -34,7 +34,7 @@ const HomeHero = () => {
       </div>
 
       {/* Subheading + search */}
-      <div className="px-5 -mt-4 relative z-10">
+      <div className="px-5 mt-2 relative z-10">
         <p
           className="text-center text-[13px] font-medium mb-2.5"
           style={{ color: "#6B5E52" }}
