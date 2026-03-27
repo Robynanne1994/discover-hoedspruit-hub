@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Star, MapPin } from "lucide-react";
 import heroBg from "@/assets/hero-homepage.jpg";
 
-const filterOptions = ["All", "Restaurants", "Lodges", "Activities", "Events", "Shopping", "Services"];
+const filterOptions = ["All", "Restaurants", "Lodges", "Activities", "Shopping", "Services"];
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
@@ -24,31 +24,23 @@ const SavedListings = () => {
         .from("favourites")
         .select("*")
         .eq("user_id", user!.id)
+        .eq("item_type", "listing")
         .order("created_at", { ascending: false });
       if (!favs || favs.length === 0) return [];
 
-      const listingIds = favs.filter((f) => f.item_type === "listing").map((f) => f.item_id);
-      const eventIds = favs.filter((f) => f.item_type === "event").map((f) => f.item_id);
+      const listingIds = favs.map((f) => f.item_id);
 
-      const [listingsRes, eventsRes] = await Promise.all([
-        listingIds.length > 0
-          ? supabase
-              .from("listings")
-              .select("id, title, image_url, location, google_rating, category_id, categories(title)")
-              .in("id", listingIds)
-          : { data: [] },
-        eventIds.length > 0
-          ? supabase.from("events").select("id, title, image_url, location").in("id", eventIds)
-          : { data: [] },
-      ]);
+      const { data: listings } = await supabase
+        .from("listings")
+        .select("id, title, image_url, location, google_rating, category_id, categories(title)")
+        .in("id", listingIds);
 
-      const listingsMap = Object.fromEntries((listingsRes.data || []).map((l: any) => [l.id, l]));
-      const eventsMap = Object.fromEntries((eventsRes.data || []).map((e: any) => [e.id, e]));
+      const listingsMap = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
 
       return favs.map((f) => ({
         ...f,
-        details: f.item_type === "listing" ? listingsMap[f.item_id] : eventsMap[f.item_id],
-      }));
+        details: listingsMap[f.item_id],
+      })).filter((f) => f.details);
     },
     enabled: !!user,
   });
@@ -72,7 +64,6 @@ const SavedListings = () => {
   // Filter logic
   const filtered = favourites?.filter((f: any) => {
     if (activeFilter === "All") return true;
-    if (activeFilter === "Events") return f.item_type === "event";
     const categoryTitle = f.details?.categories?.title?.toLowerCase() || "";
     return categoryTitle.includes(activeFilter.toLowerCase());
   }) || [];
@@ -211,9 +202,9 @@ const SavedListings = () => {
             const detail = fav.details;
             if (!detail) return null;
             const rating = detail.google_rating ? Number(detail.google_rating) : null;
-            const categoryName = detail.categories?.title || (fav.item_type === "event" ? "Event" : "");
+            const categoryName = detail.categories?.title || "";
             const location = detail.location;
-            const link = fav.item_type === "listing" ? `/listing/${fav.item_id}` : `/events`;
+            const link = `/listing/${fav.item_id}`;
 
             return (
               <Link key={fav.id} to={link} className="block">
