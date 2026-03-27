@@ -1,28 +1,17 @@
+import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { Search } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import * as LucideIcons from "lucide-react";
-import Navbar from "@/components/Navbar";
-import BackButton from "@/components/BackButton";
-import lodgeImg from "@/assets/lodge-card.jpg";
-import restaurantImg from "@/assets/restaurant-card.jpg";
-import activitiesImg from "@/assets/activities-card.jpg";
-
-const fallbackImages: Record<string, string> = {
-  Utensils: restaurantImg,
-  Tent: lodgeImg,
-  TreePine: activitiesImg,
-};
-
-const getIcon = (name: string) => {
-  const Icon = (LucideIcons as any)[name];
-  return Icon || LucideIcons.Folder;
-};
+import { Skeleton } from "@/components/ui/skeleton";
+import BottomNav from "@/components/BottomNav";
+import heroBg from "@/assets/hero-homepage.jpg";
 
 const Categories = () => {
-  const { data: featured } = useQuery({
-    queryKey: ["categories-featured"],
+  const [search, setSearch] = useState("");
+
+  const { data: categories, isLoading } = useQuery({
+    queryKey: ["categories-all"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("categories")
@@ -34,90 +23,109 @@ const Categories = () => {
     },
   });
 
-  const { data: quick } = useQuery({
-    queryKey: ["categories-quick"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("*")
-        .eq("is_quick_category", true)
-        .order("sort_order");
-      if (error) throw error;
-      return data;
-    },
-  });
+  const filtered = useMemo(() => {
+    if (!categories) return [];
+    if (!search.trim()) return categories;
+    const q = search.toLowerCase();
+    return categories.filter((c) => c.title.toLowerCase().includes(q));
+  }, [categories, search]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <section className="pt-24 pb-16 section-padding bg-background">
-        <div className="container-wide">
-          <BackButton />
-          <div className="text-center mb-12">
-            <span className="text-primary font-medium text-sm tracking-widest uppercase">
-              Explore
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mt-3 mb-4 font-sans lg:text-6xl">
-              Discover the 'Hoed
+    <div className="min-h-screen pb-20 bg-background">
+      {/* Hero */}
+      <section className="relative">
+        <div className="relative h-[200px] overflow-hidden">
+          <img
+            src={heroBg}
+            alt="Hoedspruit bushveld"
+            className="w-full h-full object-cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{ background: "var(--hero-overlay)" }}
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+            <h1
+              className="text-3xl font-bold tracking-tight leading-tight text-center"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Hello
+              <br />
+              Hoedspruit
             </h1>
-            <p className="text-muted-foreground max-w-xl mx-auto text-lg">
-              Explore everything that Hoedspruit has to offer
+          </div>
+        </div>
+
+        <div className="px-4 -mt-3 relative z-10">
+          <p
+            className="text-center text-lg font-semibold text-foreground mb-3"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Explore Hoedspruit
+          </p>
+
+          {/* Search bar */}
+          <div className="flex items-center bg-card rounded-full shadow-card border border-border px-4 py-3 gap-3">
+            <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <input
+              type="text"
+              placeholder="Search categories..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="text-sm flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Grid */}
+      <section className="px-4 pt-5 pb-4">
+        {isLoading ? (
+          <div className="grid grid-cols-2 gap-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-[4/3] rounded-xl" />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-foreground font-semibold text-lg mb-1">
+              {search ? "No matching categories found" : "Nothing to explore just yet"}
+            </p>
+            <p className="text-muted-foreground text-sm">
+              {search
+                ? "Try another search term"
+                : "We're getting Hoedspruit ready for you"}
             </p>
           </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
-            {featured?.map((cat) => {
-              const img = cat.image_url || fallbackImages[cat.icon] || lodgeImg;
-              return (
-                <Link
-                  key={cat.id}
-                  to={`/category/${cat.id}`}
-                  className="group relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300"
-                >
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            {filtered.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/category/${cat.id}`}
+                className="group relative rounded-xl overflow-hidden aspect-[4/3] shadow-card active:scale-[0.97] transition-transform duration-150"
+              >
+                {cat.image_url ? (
                   <img
-                    src={img}
+                    src={cat.image_url}
                     alt={cat.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-foreground/50" />
-                  <div className="relative h-full flex flex-col justify-end p-3">
-                    <div className="mb-1">
-                      <span className="text-accent text-[10px] font-medium leading-tight">
-                        {cat.description}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-bold text-primary-foreground font-sans">
-                        {cat.title}
-                      </h3>
-                      <ArrowRight className="h-3.5 w-3.5 text-primary-foreground shrink-0" />
-                    </div>
-                  </div>
-                </Link>
-              );
-            })}
+                ) : (
+                  <div className="absolute inset-0 bg-muted" />
+                )}
+                {/* Gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                {/* Title */}
+                <div className="absolute bottom-0 left-0 right-0 p-3">
+                  <h3 className="text-white text-sm font-bold drop-shadow-md">
+                    {cat.title}
+                  </h3>
+                </div>
+              </Link>
+            ))}
           </div>
-
-          {quick && quick.length > 0 && (
-            <div className="flex flex-wrap justify-center gap-3">
-              {quick.map((cat) => {
-                const Icon = getIcon(cat.icon);
-                return (
-                  <Link
-                    key={cat.id}
-                    to={`/category/${cat.id}`}
-                    className="flex items-center gap-2 px-5 py-3 rounded-full bg-card border border-border hover:border-primary hover:shadow-warm transition-all duration-200"
-                  >
-                    <Icon className="h-4 w-4 text-primary" />
-                    <span className="text-foreground font-medium text-sm">
-                      {cat.title}
-                    </span>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
+        )}
       </section>
     </div>
   );
