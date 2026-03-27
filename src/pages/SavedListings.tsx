@@ -202,9 +202,9 @@ const SavedListings = () => {
             const detail = fav.details;
             if (!detail) return null;
             const rating = detail.google_rating ? Number(detail.google_rating) : null;
-            const categoryName = detail.categories?.title || (fav.item_type === "event" ? "Event" : "");
+            const categoryName = detail.categories?.title || "";
             const location = detail.location;
-            const link = fav.item_type === "listing" ? `/listing/${fav.item_id}` : `/events`;
+            const link = `/listing/${fav.item_id}`;
 
             return (
               <Link key={fav.id} to={link} className="block">
