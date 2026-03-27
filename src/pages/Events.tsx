@@ -202,7 +202,7 @@ const Events = () => {
         <>
           {/* Featured Events */}
           {featuredEvents.length > 0 && (
-            <section className="mb-4">
+            <section className="mt-6 mb-4">
               <div className="flex items-center px-4 mb-3">
                 <h2
                   className="text-lg font-bold text-foreground"
