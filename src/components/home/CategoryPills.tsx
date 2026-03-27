@@ -11,18 +11,18 @@ const categories = [
 
 const CategoryPills = () => {
   return (
-    <section className="px-4 py-4">
-      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
+    <section className="px-4 pt-3 pb-2">
+      <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5">
         {categories.map((cat) => {
           const Icon = cat.icon;
           return (
             <Link
               key={cat.label}
               to={cat.href}
-              className="flex items-center gap-2 px-4 py-2.5 bg-card rounded-full border border-border shadow-card whitespace-nowrap transition-all active:scale-95 hover:shadow-warm"
+              className="flex items-center gap-1.5 px-3 py-2 bg-card rounded-full border border-border/50 shadow-sm whitespace-nowrap transition-all active:scale-95"
             >
-              <Icon className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">{cat.label}</span>
+              <Icon className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium text-foreground">{cat.label}</span>
             </Link>
           );
         })}
