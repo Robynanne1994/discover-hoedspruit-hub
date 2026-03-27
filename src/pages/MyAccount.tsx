@@ -526,20 +526,13 @@ const MyAccount = () => {
           </button>
         </div>
 
-        <button
-          onClick={() => {}}
-          className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 mt-3 w-full active:scale-[0.97] transition-transform"
-        >
-          <Bell className="h-4.5 w-4.5 text-accent" />
-          <span className="text-sm font-medium text-foreground">Notifications</span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground/50 ml-auto" />
-        </button>
       </div>
 
       {/* Settings menu */}
       <div className="px-4 mb-4">
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           {[
+            { icon: Bell, label: "Notifications", action: () => {} },
             { icon: Settings, label: "Account Settings", action: () => setActiveSection("profile") },
             { icon: Shield, label: "Privacy & Security" },
             { icon: HelpCircle, label: "Help & Support", href: "/contact" },
