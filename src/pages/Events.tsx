@@ -256,7 +256,7 @@ const Events = () => {
           {/* Upcoming Events */}
           {upcomingEvents.length > 0 && (
             <section className="px-4 mt-6">
-              <div className="flex items-center mb-3">
+              <div className="flex items-center mb-3 mx-0 my-0">
                 <h2
                   className="text-lg font-bold text-foreground"
                   style={{ fontFamily: "var(--font-heading)" }}
