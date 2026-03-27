@@ -5,7 +5,7 @@ const HomeHero = () => {
   return (
     <section className="relative pb-2">
       {/* Background image with light warm overlay */}
-      <div className="relative h-[280px] overflow-hidden">
+      <div className="relative h-[220px] overflow-hidden">
         <img
           src={heroBg}
           alt="Hoedspruit bushveld sunrise"
