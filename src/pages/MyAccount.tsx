@@ -496,14 +496,14 @@ const MyAccount = () => {
       {/* Quick access */}
       <div className="px-4 mb-4">
         <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => setActiveSection("favourites")}
+          <Link
+            to="/saved"
             className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
           >
             <Heart className="h-4.5 w-4.5 text-primary fill-primary" />
             <span className="text-sm font-medium text-foreground">Saved Listings</span>
             <ChevronRight className="h-4 w-4 text-muted-foreground/50 ml-auto" />
-          </button>
+          </Link>
           <button
             onClick={() => setActiveSection("my-events")}
             className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
