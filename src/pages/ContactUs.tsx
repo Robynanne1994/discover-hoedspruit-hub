@@ -76,7 +76,7 @@ const ContactUs = () => {
         <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
       </section>
 
-      <div className="relative -mt-6 px-4 pt-2">
+      <div className="relative -mt-6 px-4 pt-6">
         {/* Welcome text */}
         <div className="mb-6">
           <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-heading)" }}>
