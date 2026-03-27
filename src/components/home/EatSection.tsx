@@ -52,7 +52,7 @@ const EatSection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section className="pb-8">
+    <section className="pt-6 pb-8">
       <SectionHeader title="Eat in Hoedspruit" />
       <div className="grid grid-cols-2 gap-3 px-4">
         {listings.map((listing) => (
