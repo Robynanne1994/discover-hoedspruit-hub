@@ -186,7 +186,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
           className="space-y-4"
         >
           <div>
-            <label className="block text-sm font-bold text-foreground mb-1.5">Display Name</label>
+            <label className="block text-sm font-bold text-foreground mb-1.5">Username</label>
             <Input
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
