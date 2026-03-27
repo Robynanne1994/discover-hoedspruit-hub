@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Star, MapPin } from "lucide-react";
 import heroBg from "@/assets/hero-homepage.jpg";
 
-const filterOptions = ["All", "Restaurants", "Lodges", "Activities", "Shopping", "Services"];
+
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
@@ -30,12 +30,31 @@ const SavedListings = () => {
 
       const listingIds = favs.map((f) => f.item_id);
 
+      // Fetch listings with their direct category
       const { data: listings } = await supabase
         .from("listings")
         .select("id, title, image_url, location, google_rating, category_id, categories(title)")
         .in("id", listingIds);
 
-      const listingsMap = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
+      // Also fetch categories via junction table for each listing
+      const { data: junctions } = await supabase
+        .from("listing_categories")
+        .select("listing_id, categories(id, title)")
+        .in("listing_id", listingIds);
+
+      const junctionMap: Record<string, string[]> = {};
+      (junctions || []).forEach((j: any) => {
+        if (!junctionMap[j.listing_id]) junctionMap[j.listing_id] = [];
+        if (j.categories?.title) junctionMap[j.listing_id].push(j.categories.title);
+      });
+
+      const listingsMap = Object.fromEntries((listings || []).map((l: any) => [l.id, {
+        ...l,
+        categoryNames: [
+          ...(l.categories?.title ? [l.categories.title] : []),
+          ...(junctionMap[l.id] || []),
+        ].filter((v, i, a) => a.indexOf(v) === i), // dedupe
+      }]));
 
       return favs.map((f) => ({
         ...f,
@@ -61,11 +80,24 @@ const SavedListings = () => {
     },
   });
 
+  // Derive dynamic category filters from saved listings
+  const dynamicCategories = (() => {
+    if (!favourites || favourites.length === 0) return [];
+    const cats = new Set<string>();
+    favourites.forEach((f: any) => {
+      (f.details?.categoryNames || []).forEach((c: string) => cats.add(c));
+    });
+    return Array.from(cats).sort();
+  })();
+
+  const filterOptions = ["All", ...dynamicCategories];
+
   // Filter logic
   const filtered = favourites?.filter((f: any) => {
     if (activeFilter === "All") return true;
-    const categoryTitle = f.details?.categories?.title?.toLowerCase() || "";
-    return categoryTitle.includes(activeFilter.toLowerCase());
+    return (f.details?.categoryNames || []).some(
+      (c: string) => c.toLowerCase() === activeFilter.toLowerCase()
+    );
   }) || [];
 
   // Not signed in
@@ -167,7 +199,7 @@ const SavedListings = () => {
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-colors shrink-0 ${
+              className={`whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-medium transition-colors shrink-0 ${
                 activeFilter === filter
                   ? "bg-primary text-primary-foreground"
                   : "bg-card border border-border text-foreground"
