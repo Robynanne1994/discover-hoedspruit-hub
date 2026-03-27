@@ -241,6 +241,21 @@ const MyAccount = () => {
   }
 
   // Detail section view
+  if (activeSection === "profile") {
+    return (
+      <div className="relative">
+        {/* Back button floating over hero */}
+        <button
+          onClick={() => setActiveSection(null)}
+          className="fixed top-4 left-4 z-50 flex items-center gap-1 bg-black/30 backdrop-blur-sm text-white rounded-full px-3 py-1.5 text-sm font-medium active:scale-95 transition-transform"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back
+        </button>
+        <ProfileForm profile={profile as any} />
+      </div>
+    );
+  }
+
   if (activeSection) {
     return (
       <div className="min-h-screen pb-20 bg-background">
@@ -250,7 +265,6 @@ const MyAccount = () => {
             <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
             <div className="absolute inset-0 flex items-end justify-center pb-4">
               <h1 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-heading)" }}>
-                {activeSection === "profile" && "Edit Profile"}
                 {activeSection === "favourites" && "Saved Listings"}
                 {activeSection === "my-events" && "My Events"}
                 {activeSection === "collections" && "Collections"}
@@ -268,8 +282,6 @@ const MyAccount = () => {
           >
             <ChevronLeft className="h-4 w-4" /> Back
           </button>
-
-          {activeSection === "profile" && <ProfileForm profile={profile as any} />}
 
           {activeSection === "favourites" && (
             <>
