@@ -22,6 +22,7 @@ import Events from "./pages/Events.tsx";
 import About from "./pages/About.tsx";
 import Directories from "./pages/Directories.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
+import SavedListings from "./pages/SavedListings.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
@@ -49,6 +50,7 @@ const App = () => (
             <Route path="/directories" element={<Directories />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-account" element={<MyAccount />} />
+            <Route path="/saved" element={<SavedListings />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="categories" element={<AdminCategories />} />
