@@ -4,9 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import heroBg from "@/assets/hero-homepage.jpg";
 
 interface ProfileFormProps {
   profile: {
@@ -72,43 +72,99 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      toast.success("Profile saved!");
+      toast.success("Profile updated successfully");
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: () => toast.error("We couldn't save your changes right now. Please try again."),
   });
 
+  const initial = (displayName || user?.email || "?")[0].toUpperCase();
+
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        saveProfile.mutate();
-      }}
-      className="bg-card border border-border rounded-xl p-6 space-y-6"
-    >
-      {/* Avatar */}
-      <div className="flex items-center gap-5">
-        <div className="relative group">
-          <div className="h-20 w-20 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center">
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
-            ) : (
-              <span className="text-2xl font-bold text-muted-foreground">
-                {(displayName || user?.email || "?")[0].toUpperCase()}
-              </span>
-            )}
+    <div className="min-h-screen pb-20 bg-background">
+      {/* Hero */}
+      <section className="relative">
+        <div className="relative h-[220px] overflow-hidden">
+          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-6">
+            <h1
+              className="text-2xl font-bold tracking-tight mb-1"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Hello<br />Hoedspruit
+            </h1>
+            <p
+              className="text-xl font-semibold mt-2"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Edit Profile
+            </p>
           </div>
-          <button
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
+      </section>
+
+      <div className="relative -mt-6 px-5 pt-6">
+        {/* Intro */}
+        <div className="mb-6">
+          <h2
+            className="text-lg font-bold text-foreground mb-1"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Manage Your Profile
+          </h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            Keep your Hello Hoedspruit account up to date.
+          </p>
+        </div>
+
+        {/* Profile Photo Card */}
+        <div className="bg-card border border-border rounded-2xl p-5 mb-6">
+          <div className="flex items-center gap-4">
+            <div className="relative group shrink-0">
+              <div className="h-16 w-16 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center">
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
+                ) : (
+                  <span
+                    className="text-xl font-bold text-muted-foreground"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {initial}
+                  </span>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="absolute -bottom-0.5 -right-0.5 h-7 w-7 rounded-full bg-primary flex items-center justify-center shadow-md active:scale-95 transition-transform"
+              >
+                {uploading ? (
+                  <Loader2 className="h-3.5 w-3.5 text-primary-foreground animate-spin" />
+                ) : (
+                  <Camera className="h-3.5 w-3.5 text-primary-foreground" />
+                )}
+              </button>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-sm text-foreground">Profile Photo</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Upload or change photo</p>
+            </div>
+          </div>
+          <Button
             type="button"
+            variant="outline"
             onClick={() => fileRef.current?.click()}
             disabled={uploading}
-            className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+            className="w-full mt-4 rounded-xl h-10 gap-2 border-primary/30 text-primary hover:bg-primary/5 font-semibold text-sm"
           >
             {uploading ? (
-              <Loader2 className="h-5 w-5 text-white animate-spin" />
+              <><Loader2 className="h-4 w-4 animate-spin" /> Uploading...</>
             ) : (
-              <Camera className="h-5 w-5 text-white" />
+              <><Camera className="h-4 w-4" /> Change Photo</>
             )}
-          </button>
+          </Button>
           <input
             ref={fileRef}
             type="file"
@@ -120,58 +176,70 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
             }}
           />
         </div>
-        <div>
-          <p className="font-medium text-foreground text-sm">Profile Photo</p>
-          <p className="text-xs text-muted-foreground">Click to upload or change</p>
-        </div>
-      </div>
 
-      {/* Fields */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="displayName">Display Name</Label>
-          <Input
-            id="displayName"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Your name"
-          />
-        </div>
-        <div>
-          <Label htmlFor="profileEmail">Email</Label>
-          <Input
-            id="profileEmail"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your@email.com"
-          />
-        </div>
-        <div>
-          <Label htmlFor="location">Location</Label>
-          <Input
-            id="location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            placeholder="e.g. Hoedspruit"
-          />
-        </div>
-        <div>
-          <Label htmlFor="phone">Phone Number</Label>
-          <Input
-            id="phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            placeholder="+27..."
-          />
-        </div>
-      </div>
+        {/* Form */}
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveProfile.mutate();
+          }}
+          className="space-y-4"
+        >
+          <div>
+            <label className="block text-sm font-bold text-foreground mb-1.5">Display Name</label>
+            <Input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Your name"
+              className="rounded-xl bg-card h-12"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-foreground mb-1.5">Email</label>
+            <Input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              className="rounded-xl bg-card h-12"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-foreground mb-1.5">Location</label>
+            <Input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Hoedspruit"
+              className="rounded-xl bg-card h-12"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-foreground mb-1.5">Phone Number</label>
+            <Input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+27..."
+              className="rounded-xl bg-card h-12"
+            />
+          </div>
 
-      <Button type="submit" disabled={saveProfile.isPending}>
-        {saveProfile.isPending ? "Saving..." : "Save Profile"}
-      </Button>
-    </form>
+          <div className="pt-2">
+            <Button
+              type="submit"
+              disabled={saveProfile.isPending}
+              className="w-full rounded-xl h-12 font-bold text-base"
+            >
+              {saveProfile.isPending ? (
+                <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</>
+              ) : (
+                "Save Profile"
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 };
 
