@@ -71,16 +71,16 @@ const Categories = () => {
               <br />
               Hoedspruit
             </h1>
+            <p
+              className="text-center text-sm font-semibold text-white/90 mt-1"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Explore Hoedspruit
+            </p>
           </div>
         </div>
 
         <div className="px-4 -mt-3 relative z-10">
-          <p
-            className="text-center text-lg font-semibold text-foreground mb-3"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Explore Hoedspruit
-          </p>
 
           {/* Search bar */}
           <div className="flex items-center bg-card rounded-full shadow-card border border-border px-4 py-3 gap-3">
