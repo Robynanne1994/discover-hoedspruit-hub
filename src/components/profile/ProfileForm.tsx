@@ -45,6 +45,60 @@ interface ProfileFormProps {
   } | null;
 }
 
+const PhoneInput = ({ phone, onChange }: { phone: string; onChange: (v: string) => void }) => {
+  const parsed = parsePhone(phone);
+  const [areaCode, setAreaCode] = useState(parsed.areaCode);
+  const [number, setNumber] = useState(parsed.number);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    onChange(number ? `${areaCode}${number}` : "");
+  }, [areaCode, number]);
+
+  const selected = AREA_CODES.find((a) => a.code === areaCode) || AREA_CODES[0];
+
+  return (
+    <div>
+      <label className="block text-sm font-bold text-foreground mb-1.5">Phone Number</label>
+      <div className="flex gap-2">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 h-12 px-3 rounded-xl border border-input bg-card text-sm font-medium shrink-0 hover:bg-accent/50 transition-colors"
+            >
+              <span className="text-base">{selected.flag}</span>
+              <span>{selected.code}</span>
+              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-1 rounded-xl" align="start">
+            {AREA_CODES.map((ac) => (
+              <button
+                key={ac.code}
+                type="button"
+                onClick={() => { setAreaCode(ac.code); setOpen(false); }}
+                className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm hover:bg-accent/50 transition-colors ${ac.code === areaCode ? "bg-accent/30 font-semibold" : ""}`}
+              >
+                <span className="text-base">{ac.flag}</span>
+                <span>{ac.code}</span>
+                <span className="text-muted-foreground text-xs ml-auto">{ac.country}</span>
+              </button>
+            ))}
+          </PopoverContent>
+        </Popover>
+        <Input
+          type="tel"
+          value={number}
+          onChange={(e) => setNumber(e.target.value)}
+          placeholder="Phone number"
+          className="rounded-xl bg-card h-12 flex-1"
+        />
+      </div>
+    </div>
+  );
+};
+
 const ProfileForm = ({ profile }: ProfileFormProps) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
