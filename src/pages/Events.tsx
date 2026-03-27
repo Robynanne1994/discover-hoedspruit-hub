@@ -255,7 +255,7 @@ const Events = () => {
 
           {/* Upcoming Events */}
           {upcomingEvents.length > 0 && (
-            <section className="px-4">
+            <section className="px-4 mt-6">
               <div className="flex items-center mb-3">
                 <h2
                   className="text-lg font-bold text-foreground"
