@@ -27,6 +27,7 @@ import NotFound from "./pages/NotFound.tsx";
 import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
 import EventsCalendar from "./pages/EventsCalendar.tsx";
+import Advertise from "./pages/Advertise.tsx";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/events" element={<Events />} />
             <Route path="/events/calendar" element={<EventsCalendar />} />
             <Route path="/about" element={<About />} />
+            <Route path="/advertise" element={<Advertise />} />
             <Route path="/directories" element={<Directories />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-account" element={<MyAccount />} />
