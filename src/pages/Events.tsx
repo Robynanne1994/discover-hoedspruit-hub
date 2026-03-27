@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-homepage.jpg";
 import { parse, isToday, isBefore, startOfToday, endOfWeek, isWithinInterval, startOfWeek, addDays } from "date-fns";
 
-type FilterType = "all" | "today" | "this-week" | "upcoming";
+type FilterType = "all" | "today" | "this-week" | "upcoming" | "past";
 
 function parseDateText(raw: string): Date | null {
   if (!raw) return null;
@@ -48,6 +48,7 @@ const filters: { label: string; value: FilterType }[] = [
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
   { label: "Upcoming", value: "upcoming" },
+  { label: "Past", value: "past" },
 ];
 
 const Events = () => {
@@ -94,6 +95,8 @@ const Events = () => {
             return isWithinInterval(date, { start: today, end: weekEnd });
           case "upcoming":
             return !isBefore(date, today);
+          case "past":
+            return isBefore(date, today) && !isToday(date);
           default:
             return true;
         }
