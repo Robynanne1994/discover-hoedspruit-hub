@@ -75,7 +75,8 @@ const WhatsOnToday = () => {
                 if (!event.date) return "TBA";
                 const parsed = new Date(event.date);
                 if (!isNaN(parsed.getTime())) {
-                  return `${String(parsed.getDate()).padStart(2, "0")}/${String(parsed.getMonth() + 1).padStart(2, "0")}`;
+                  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                  return `${parsed.getDate()} ${months[parsed.getMonth()]}`;
                 }
                 return event.date;
               })()}
