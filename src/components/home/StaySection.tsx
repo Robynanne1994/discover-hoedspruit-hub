@@ -27,7 +27,7 @@ const StaySection = () => {
 
       const { data } = await supabase
         .from("listings")
-        .select("id, title, image_url, google_rating")
+        .select("id, title, image_url, google_rating, location")
         .or(`category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`)
         .limit(4);
 
@@ -59,6 +59,7 @@ const StaySection = () => {
             image={listing.image_url || ""}
             name={listing.title}
             rating={listing.google_rating || 0}
+            location={listing.location || ""}
             href={`/listing/${listing.id}`}
           />
         ))}
