@@ -116,7 +116,7 @@ const ContactUs = () => {
             </div>
             <h3 className="font-bold text-sm text-foreground mb-1">Visit Us</h3>
             <p className="text-muted-foreground text-xs whitespace-pre-line leading-tight">{CONTACT_ADDRESS}</p>
-            <p className="text-muted-foreground text-[10px] mt-1">By appointment.</p>
+            
           </div>
 
           {/* Follow card */}
