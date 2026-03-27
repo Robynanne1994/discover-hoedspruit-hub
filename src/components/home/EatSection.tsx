@@ -29,7 +29,7 @@ const EatSection = () => {
 
       const { data } = await supabase
         .from("listings")
-        .select("id, title, image_url, google_rating, location")
+        .select("id, title, image_url, google_rating")
         .or(`category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`)
         .limit(4);
 
@@ -61,7 +61,6 @@ const EatSection = () => {
             image={listing.image_url || ""}
             name={listing.title}
             rating={listing.google_rating || 0}
-            location={listing.location || ""}
             href={`/listing/${listing.id}`}
           />
         ))}

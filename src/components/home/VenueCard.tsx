@@ -5,7 +5,7 @@ interface VenueCardProps {
   image: string;
   name: string;
   rating: number;
-  location: string;
+  location?: string;
   href?: string;
 }
 
