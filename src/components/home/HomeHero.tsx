@@ -21,7 +21,7 @@ const HomeHero = () => {
           }}
         />
         {/* All content on top of image */}
-        <div className="absolute inset-0 flex flex-col items-center justify-between pt-10 pb-4 px-5">
+        <div className="absolute inset-0 flex flex-col items-center pt-10 pb-4 px-5">
           {/* Logo */}
           <p
             className="text-[22px] font-bold text-white leading-[1.1] text-center drop-shadow-sm"
@@ -32,7 +32,7 @@ const HomeHero = () => {
             Hoedspruit
           </p>
 
-          <div className="w-full">
+          <div className="w-full mt-3">
             {/* Subheading */}
             <p className="text-center text-[13px] font-medium mb-2.5 text-white/90 drop-shadow-sm">
               Discover what's happening in town today.
