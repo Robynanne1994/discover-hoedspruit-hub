@@ -95,7 +95,7 @@ const ContactUs = () => {
               <Mail className="h-5 w-5 text-primary" />
             </div>
             <h3 className="font-bold text-sm text-foreground mb-1">Email Us</h3>
-            <p className="text-primary text-xs font-medium mb-1">{CONTACT_EMAIL}</p>
+            <p className="text-primary text-[10px] font-medium mb-1 break-all">{CONTACT_EMAIL}</p>
             <p className="text-muted-foreground text-[10px] leading-tight">We typically reply within 24 hours.</p>
           </a>
 
