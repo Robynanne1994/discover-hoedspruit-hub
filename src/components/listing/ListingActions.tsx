@@ -4,23 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Heart, MapPinCheck, Plus, Check, Share2 } from "lucide-react";
-import { toast as sonnerToast } from "sonner";
+import { Heart, MapPinCheck, Share2 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 interface ListingActionsProps {
   listingId: string;
@@ -30,8 +15,23 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [createOpen, setCreateOpen] = useState(false);
-  const [newName, setNewName] = useState("");
+
+  // Check if favourited
+  const { data: isFavourited } = useQuery({
+    queryKey: ["favourite", "listing", listingId, user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data } = await supabase
+        .from("favourites")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("item_id", listingId)
+        .eq("item_type", "listing")
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user,
+  });
 
   const { data: beenHere } = useQuery({
     queryKey: ["been-here-check", listingId, user?.id],
@@ -48,18 +48,28 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
     enabled: !!user,
   });
 
-  const { data: collections } = useQuery({
-    queryKey: ["collections-for-save", user?.id],
-    queryFn: async () => {
-      if (!user) return [];
-      const { data } = await supabase
-        .from("collections")
-        .select("id, name, collection_items(listing_id)")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      return data || [];
+  const toggleFavourite = useMutation({
+    mutationFn: async () => {
+      if (!user) return;
+      if (isFavourited) {
+        await supabase
+          .from("favourites")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", listingId)
+          .eq("item_type", "listing");
+      } else {
+        await supabase
+          .from("favourites")
+          .insert({ user_id: user.id, item_id: listingId, item_type: "listing" });
+      }
     },
-    enabled: !!user,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favourite", "listing", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
+      toast.success(isFavourited ? "Removed from saved" : "Saved!");
+    },
   });
 
   const toggleBeenHere = useMutation({
@@ -79,49 +89,6 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
     },
   });
 
-  const toggleSave = useMutation({
-    mutationFn: async (collectionId: string) => {
-      if (!user) return;
-      const collection = collections?.find((c: any) => c.id === collectionId);
-      const alreadySaved = collection?.collection_items?.some((i: any) => i.listing_id === listingId);
-      if (alreadySaved) {
-        const { data: item } = await supabase
-          .from("collection_items")
-          .select("id")
-          .eq("collection_id", collectionId)
-          .eq("listing_id", listingId)
-          .single();
-        if (item) await supabase.from("collection_items").delete().eq("id", item.id);
-      } else {
-        await supabase.from("collection_items").insert({ collection_id: collectionId, listing_id: listingId });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["collections-for-save"] });
-      queryClient.invalidateQueries({ queryKey: ["collections"] });
-    },
-  });
-
-  const createAndSave = useMutation({
-    mutationFn: async (name: string) => {
-      if (!user) return;
-      const { data, error } = await supabase
-        .from("collections")
-        .insert({ name, user_id: user.id })
-        .select("id")
-        .single();
-      if (error) throw error;
-      await supabase.from("collection_items").insert({ collection_id: data.id, listing_id: listingId });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["collections-for-save"] });
-      queryClient.invalidateQueries({ queryKey: ["collections"] });
-      setNewName("");
-      setCreateOpen(false);
-      toast.success("Saved to new collection!");
-    },
-  });
-
   const requireAuth = () => {
     if (!user) {
       toast.info("Sign in to use this feature");
@@ -131,57 +98,32 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
     return false;
   };
 
-  const isSavedAnywhere = collections?.some((c: any) =>
-    c.collection_items?.some((i: any) => i.listing_id === listingId)
-  );
-
   const handleShare = async () => {
     const shareUrl = window.location.href;
     const shareData = { title: "Check this out!", url: shareUrl };
     if (navigator.share) {
       try { await navigator.share(shareData); } catch (err) {
         if ((err as Error).name !== "AbortError") {
-          try { await navigator.clipboard.writeText(shareUrl); sonnerToast.success("Link copied!"); } catch { sonnerToast.error("Could not copy link"); }
+          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
         }
       }
     } else {
-      try { await navigator.clipboard.writeText(shareUrl); sonnerToast.success("Link copied!"); } catch { sonnerToast.error("Could not copy link"); }
+      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
     }
   };
 
   return (
     <div className="flex items-center gap-1">
-      {/* Save to collection */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
-            onClick={(e) => { if (requireAuth()) e.preventDefault(); }}
-          >
-            <Heart className={`h-3 w-3 ${isSavedAnywhere ? "fill-current" : ""}`} />
-            {isSavedAnywhere ? "Saved" : "Save"}
-          </Button>
-        </DropdownMenuTrigger>
-        {user && (
-          <DropdownMenuContent align="end" className="w-56">
-            {collections?.map((col: any) => {
-              const saved = col.collection_items?.some((i: any) => i.listing_id === listingId);
-              return (
-                <DropdownMenuItem key={col.id} onClick={() => toggleSave.mutate(col.id)} className="gap-2">
-                  {saved ? <Check className="h-4 w-4 text-primary" /> : <div className="h-4 w-4" />}
-                  {col.name}
-                </DropdownMenuItem>
-              );
-            })}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setCreateOpen(true)} className="gap-2">
-              <Plus className="h-4 w-4" /> New Collection
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        )}
-      </DropdownMenu>
+      {/* Save / Unsave */}
+      <Button
+        variant="ghost"
+        size="sm"
+        className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
+        onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
+      >
+        <Heart className={`h-3 w-3 ${isFavourited ? "fill-current" : ""}`} />
+        {isFavourited ? "Saved" : "Save"}
+      </Button>
 
       {/* Share */}
       <Button
@@ -204,18 +146,6 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
         <MapPinCheck className={`h-3 w-3 ${beenHere ? "fill-current" : ""}`} />
         {beenHere ? "Been Here" : "Been Here?"}
       </Button>
-
-      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Create Collection & Save</DialogTitle>
-          </DialogHeader>
-          <form onSubmit={(e) => { e.preventDefault(); createAndSave.mutate(newName); }} className="space-y-4">
-            <Input placeholder="Collection name" value={newName} onChange={(e) => setNewName(e.target.value)} required />
-            <Button type="submit" className="w-full" disabled={createAndSave.isPending}>Save</Button>
-          </form>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };
