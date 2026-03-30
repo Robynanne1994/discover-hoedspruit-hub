@@ -356,6 +356,71 @@ const ListingDetail = () => {
             </div>
           )}
 
+          {/* Shopping attributes */}
+          {isListingShopping && (() => {
+            const airCon = (listing as any).air_conditioned as boolean | null;
+            const paymentMethods = (listing as any).payment_methods as string[] | null;
+            const deliveryAvail = (listing as any).delivery_available as boolean | null;
+            const clickCollect = (listing as any).click_and_collect as boolean | null;
+            const orderOnline = (listing as any).order_online as boolean | null;
+            const parkingAvail = (listing as any).parking_available as boolean | null;
+            const shopWheelchair = (listing as any).wheelchair_friendly as boolean | null;
+            const localProds = (listing as any).local_products as boolean | null;
+            const shopType = (listing as any).shop_type as string | null;
+            const curioGifts = (listing as any).curio_or_gifts as boolean | null;
+            const prodCats = (listing as any).product_categories as string[] | null;
+            const priceRng = (listing as any).price_range as string | null;
+
+            const boolItems = [
+              { label: "Air Conditioned", value: airCon },
+              { label: "Delivery Available", value: deliveryAvail },
+              { label: "Click & Collect", value: clickCollect },
+              { label: "Order Online", value: orderOnline },
+              { label: "Parking Available", value: parkingAvail },
+              { label: "Wheelchair Friendly", value: shopWheelchair },
+              { label: "Local Products", value: localProds },
+              { label: "Curio / Gifts", value: curioGifts },
+            ].filter((item) => item.value === true);
+
+            const hasAnyShopInfo = boolItems.length > 0 || (paymentMethods && paymentMethods.length > 0) || shopType || (prodCats && prodCats.length > 0) || priceRng;
+
+            if (!hasAnyShopInfo) return null;
+
+            return (
+              <div className="flex flex-wrap gap-1.5 mb-8">
+                {shopType && (
+                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                    <ShoppingBag className="h-3 w-3 text-primary" />
+                    <span className="text-foreground">{shopType}</span>
+                  </div>
+                )}
+                {priceRng && (
+                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                    <DollarSign className="h-3 w-3 text-primary" />
+                    <span className="text-foreground">{priceRng}</span>
+                  </div>
+                )}
+                {boolItems.map((item) => (
+                  <div key={item.label} className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
+                    <Check className="h-3 w-3" /> {item.label}
+                  </div>
+                ))}
+                {paymentMethods && paymentMethods.length > 0 && (
+                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                    <span className="text-muted-foreground">Payment:</span>
+                    <span className="text-foreground">{paymentMethods.join(", ")}</span>
+                  </div>
+                )}
+                {prodCats && prodCats.length > 0 && (
+                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                    <span className="text-muted-foreground">Products:</span>
+                    <span className="text-foreground">{prodCats.join(", ")}</span>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
+
           {/* User actions */}
           <div className="mb-8">
             <ListingActions listingId={listing.id} />
