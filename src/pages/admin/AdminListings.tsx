@@ -26,6 +26,15 @@ const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
 
 const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null };
 
+const BULK_FIELDS = [
+  { key: "is_featured", label: "Featured", type: "switch" },
+  { key: "show_attributes", label: "Show Attributes", type: "switch" },
+  { key: "good_for_kids", label: "Good for Kids", type: "switch" },
+  { key: "pets_allowed", label: "Pets Allowed", type: "switch" },
+  { key: "wheelchair_friendly", label: "Wheelchair Friendly", type: "switch" },
+  { key: "smoking_allowed", label: "Smoking Allowed", type: "switch" },
+] as const;
+
 const AdminListings = () => {
   const qc = useQueryClient();
   const navigate = useNavigate();
@@ -36,6 +45,11 @@ const AdminListings = () => {
   const [selectedCatIds, setSelectedCatIds] = useState<string[]>([]);
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkForm, setBulkForm] = useState<Record<string, { enabled: boolean; value: any }>>({});
+  const [bulkCatAction, setBulkCatAction] = useState<"none" | "add" | "set">("none");
+  const [bulkCatIds, setBulkCatIds] = useState<string[]>([]);
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
