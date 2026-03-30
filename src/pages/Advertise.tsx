@@ -63,7 +63,10 @@ const Advertise = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      <div className="px-5 pt-6">
+      <div className="px-5 pt-4 pb-2">
+        <BackButton />
+      </div>
+      <div className="px-5">
         {/* Intro */}
         <div className="mb-6">
           <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-heading)" }}>
