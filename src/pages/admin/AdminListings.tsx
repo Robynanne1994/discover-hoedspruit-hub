@@ -587,7 +587,81 @@ const AdminListings = () => {
           </Button>
           <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>Clear</Button>
         </div>
-      )}
+                )}
+
+                {isShoppingType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-sm font-medium text-foreground">Shopping Fields</p>
+
+                    <div className="space-y-3">
+                      {[
+                        { label: "Air Conditioned", key: "air_conditioned" as const },
+                        { label: "Delivery Available", key: "delivery_available" as const },
+                        { label: "Click & Collect", key: "click_and_collect" as const },
+                        { label: "Order Online", key: "order_online" as const },
+                        { label: "Parking Available", key: "parking_available" as const },
+                        { label: "Wheelchair Friendly", key: "wheelchair_friendly" as const },
+                        { label: "Local Products", key: "local_products" as const },
+                        { label: "Curio / Gifts", key: "curio_or_gifts" as const },
+                      ].map(({ label, key }) => (
+                        <div key={key} className="flex items-center gap-2">
+                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
+                          <Label>{label}</Label>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div>
+                      <Label>Payment Methods</Label>
+                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                      <div className="flex flex-wrap gap-2">
+                        {PAYMENT_METHOD_OPTIONS.map((opt) => {
+                          const selected = form.payment_methods.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, payment_methods: selected ? form.payment_methods.filter((v) => v !== opt) : [...form.payment_methods, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Shop Type</Label>
+                      <Select value={form.shop_type} onValueChange={(v) => setForm({ ...form, shop_type: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select shop type" /></SelectTrigger>
+                        <SelectContent>
+                          {SHOP_TYPE_OPTIONS.map((opt) => (
+                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>Product Categories</Label>
+                      <Input
+                        value={form.product_categories}
+                        onChange={(e) => setForm({ ...form, product_categories: e.target.value })}
+                        placeholder="e.g. Clothing, Food, Hardware (comma-separated)"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Price Range</Label>
+                      <Input
+                        value={form.price_range}
+                        onChange={(e) => setForm({ ...form, price_range: e.target.value })}
+                        placeholder="e.g. Budget, Mid-range, Premium"
+                      />
+                    </div>
+                  </div>
+                )}
 
 
 
