@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Star, MapPin } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
