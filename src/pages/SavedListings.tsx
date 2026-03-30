@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Star, MapPin } from "lucide-react";
+import BackButton from "@/components/BackButton";
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
@@ -97,7 +98,10 @@ const SavedListings = () => {
   if (!loading && !user) {
     return (
       <div className="min-h-screen pb-20 bg-background">
-        <div className="px-4 pt-6 text-center">
+        <div className="px-4 pt-4">
+          <BackButton />
+        </div>
+        <div className="px-4 text-center">
           <Heart className="h-12 w-12 mx-auto text-primary/30 mb-4" />
           <h2 className="text-lg font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-heading)" }}>
             Sign in to see your saved listings
@@ -117,7 +121,10 @@ const SavedListings = () => {
   if (loading || isLoading) {
     return (
       <div className="min-h-screen pb-20 bg-background">
-        <div className="pt-6 px-4 space-y-4">
+        <div className="px-4 pt-4">
+          <BackButton />
+        </div>
+        <div className="px-4 space-y-4">
           <Skeleton className="h-5 w-48" />
           <div className="flex gap-2">
             {[1, 2, 3, 4].map((i) => (
@@ -136,7 +143,10 @@ const SavedListings = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      <div className="pt-6 px-4">
+      <div className="px-4 pt-4">
+        <BackButton />
+      </div>
+      <div className="px-4">
         {/* Saved count */}
         <p className="text-foreground text-sm mb-4">
           You have <span className="font-semibold">{savedCount}</span> saved listing{savedCount !== 1 ? "s" : ""}
