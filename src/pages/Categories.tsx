@@ -74,9 +74,7 @@ const Categories = () => {
             <p
               className="text-center text-sm font-semibold text-white/90 mt-1"
               style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Explore Hoedspruit
-            </p>
+            />
           </div>
         </div>
 
