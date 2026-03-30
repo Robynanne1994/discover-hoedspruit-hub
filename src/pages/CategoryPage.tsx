@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { MapPin, Phone, Mail, Globe, Star, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import FavouriteButton from "@/components/FavouriteButton";
+import { isRestaurantCategory } from "@/lib/categoryFields";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -159,11 +160,12 @@ const CategoryPage = () => {
           ) : listings && listings.length > 0 ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {listings.map((l) => {
+                const isCatRestaurant = category ? isRestaurantCategory(category.title) : false;
                 const hasDetail = !!(
                   l.long_description ||
                   (l.gallery_images && l.gallery_images.length > 0) ||
                   (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
-                  l.show_attributes
+                  (isCatRestaurant && l.show_attributes)
                 );
                 return (
                 <div

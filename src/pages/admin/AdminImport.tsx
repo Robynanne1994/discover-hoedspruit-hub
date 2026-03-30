@@ -4,8 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
-
-const EXPECTED_HEADERS = ["title", "description", "image_url", "location", "phone", "email", "website", "whatsapp", "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url", "categories", "subcategories", "is_featured", "long_description", "gallery_images", "opening_hours", "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level", "show_attributes", "meal", "vibe", "cuisine", "seating", "kids_playground", "smoking_allowed", "service_type"];
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { getCSVHeadersForCategory, isRestaurantCategory, RESTAURANT_ONLY_FIELDS } from "@/lib/categoryFields";
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -62,12 +63,15 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
   return { headers, rows: dataRows };
 }
 
+const restaurantFieldSet = new Set<string>(RESTAURANT_ONLY_FIELDS);
+
 const AdminImport = () => {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; errors: string[] } | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
   const { data: categories } = useQuery({
     queryKey: ["admin-categories-for-import"],
@@ -85,9 +89,19 @@ const AdminImport = () => {
     },
   });
 
+  const selectedCategory = categories?.find((c) => c.id === selectedCategoryId);
+  const selectedCategoryTitle = selectedCategory?.title ?? null;
+  const csvHeaders = getCSVHeadersForCategory(selectedCategoryTitle);
+  const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
+
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!selectedCategoryId) {
+      toast.error("Please select a category first");
+      if (fileRef.current) fileRef.current.value = "";
+      return;
+    }
     setFileName(file.name);
     setImportResult(null);
     const reader = new FileReader();
@@ -102,6 +116,13 @@ const AdminImport = () => {
         toast.error("CSV must have a 'title' column");
         return;
       }
+      // Warn if restaurant columns found in non-restaurant import
+      if (!isRestaurant) {
+        const extraCols = result.headers.filter((h) => restaurantFieldSet.has(h));
+        if (extraCols.length > 0) {
+          toast.warning(`Restaurant-only columns found and will be ignored: ${extraCols.join(", ")}`);
+        }
+      }
       setParsed(result);
     };
     reader.readAsText(file);
@@ -109,19 +130,25 @@ const AdminImport = () => {
 
   const importMutation = useMutation({
     mutationFn: async () => {
-      if (!parsed || !categories) throw new Error("No data");
+      if (!parsed || !categories || !selectedCategoryId) throw new Error("No data or category selected");
 
-      // Build mutable maps for categories and subcategories
       const catMap = new Map(categories.map((c) => [c.title.toLowerCase(), c.id]));
       const subMap = new Map((subcategories ?? []).map((s) => [
         `${s.category_id}::${s.title.toLowerCase()}`, s.id
       ]));
 
-      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, errors: [] as string[] };
+
+      // Only match against listings in this category
+      const { data: catJunctions } = await supabase
+        .from("listing_categories")
+        .select("listing_id")
+        .eq("category_id", selectedCategoryId);
+      const categoryListingIds = new Set((catJunctions ?? []).map((j) => j.listing_id));
 
       const { data: existing } = await supabase.from("listings").select("id, title");
-      const existingMap = new Map((existing ?? []).map((l) => [l.title.toLowerCase(), l.id]));
-      const csvTitles = new Set<string>();
+      const existingInCategory = (existing ?? []).filter((l) => categoryListingIds.has(l.id));
+      const existingMap = new Map(existingInCategory.map((l) => [l.title.toLowerCase(), l.id]));
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
@@ -131,63 +158,41 @@ const AdminImport = () => {
           continue;
         }
 
-        csvTitles.add(title.toLowerCase());
-
-        // --- Resolve or create categories (pipe-separated) ---
-        const catField = row.categories?.trim() || row.category?.trim() || "";
+        // Resolve additional categories from CSV (pipe-separated), always include selected category
+        const catField = row.categories?.trim() || "";
         const catNames = catField ? catField.split("|").map((s) => s.trim()).filter(Boolean) : [];
-        const resolvedCatIds: string[] = [];
+        const resolvedCatIds: string[] = [selectedCategoryId];
 
         for (const catName of catNames) {
           let catId = catMap.get(catName.toLowerCase()) ?? null;
-          if (!catId) {
+          if (catId && catId !== selectedCategoryId) {
+            resolvedCatIds.push(catId);
+          } else if (!catId) {
             const { data: newCat, error: catErr } = await supabase
-              .from("categories")
-              .insert({ title: catName })
-              .select("id")
-              .single();
-            if (catErr || !newCat) {
-              results.errors.push(`Row ${i + 2}: Failed to create category "${catName}"`);
-            } else {
-              catId = newCat.id;
+              .from("categories").insert({ title: catName }).select("id").single();
+            if (!catErr && newCat) {
               catMap.set(catName.toLowerCase(), newCat.id);
+              resolvedCatIds.push(newCat.id);
             }
           }
-          if (catId) resolvedCatIds.push(catId);
         }
 
-        // --- Resolve or create subcategories ---
-        const subNames = row.subcategories
-          ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean)
-          : [];
+        // Resolve subcategories
+        const subNames = row.subcategories ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean) : [];
         const resolvedSubIds: string[] = [];
-
-        if (resolvedCatIds.length > 0 && subNames.length > 0) {
-          for (const subName of subNames) {
-            // Try matching against all resolved categories
-            let found = false;
-            for (const cId of resolvedCatIds) {
-              const key = `${cId}::${subName.toLowerCase()}`;
-              let subId = subMap.get(key) ?? null;
-              if (subId) {
-                resolvedSubIds.push(subId);
-                found = true;
-                break;
-              }
-            }
-            if (!found) {
-              // Create under the first category
-              const { data: newSub, error: subErr } = await supabase
-                .from("subcategories")
-                .insert({ title: subName, category_id: resolvedCatIds[0] })
-                .select("id")
-                .single();
-              if (subErr || !newSub) {
-                results.errors.push(`Row ${i + 2}: Failed to create subcategory "${subName}"`);
-              } else {
-                resolvedSubIds.push(newSub.id);
-                subMap.set(`${resolvedCatIds[0]}::${subName.toLowerCase()}`, newSub.id);
-              }
+        for (const subName of subNames) {
+          let found = false;
+          for (const cId of resolvedCatIds) {
+            const key = `${cId}::${subName.toLowerCase()}`;
+            const subId = subMap.get(key);
+            if (subId) { resolvedSubIds.push(subId); found = true; break; }
+          }
+          if (!found) {
+            const { data: newSub, error: subErr } = await supabase
+              .from("subcategories").insert({ title: subName, category_id: resolvedCatIds[0] }).select("id").single();
+            if (!subErr && newSub) {
+              resolvedSubIds.push(newSub.id);
+              subMap.set(`${resolvedCatIds[0]}::${subName.toLowerCase()}`, newSub.id);
             }
           }
         }
@@ -195,6 +200,11 @@ const AdminImport = () => {
         const parseBool = (val: string | undefined) => {
           if (!val || val === "") return null;
           return val.toLowerCase() === "true" || val === "1";
+        };
+
+        const parseArray = (val: string | undefined): string[] | null => {
+          if (!val || val === "") return null;
+          return val.split("|").map(s => s.trim()).filter(Boolean);
         };
 
         let openingHours = null;
@@ -209,12 +219,7 @@ const AdminImport = () => {
           }
         }
 
-        const parseArray = (val: string | undefined): string[] | null => {
-          if (!val || val === "") return null;
-          return val.split("|").map(s => s.trim()).filter(Boolean);
-        };
-
-        const payload = {
+        const payload: Record<string, any> = {
           title,
           description: row.description || null,
           image_url: row.image_url || null,
@@ -232,19 +237,32 @@ const AdminImport = () => {
           long_description: row.long_description || null,
           gallery_images: galleryImages,
           opening_hours: openingHours,
-          good_for_kids: parseBool(row.good_for_kids),
-          pets_allowed: parseBool(row.pets_allowed),
-          wheelchair_friendly: parseBool(row.wheelchair_friendly),
-          price_level: row.price_level ? parseInt(row.price_level, 10) || null : null,
-          show_attributes: row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1",
-          meal: parseArray(row.meal) ?? [],
-          vibe: parseArray(row.vibe) ?? [],
-          cuisine: parseArray(row.cuisine) ?? [],
-          seating: parseArray(row.seating) ?? [],
-          kids_playground: parseBool(row.kids_playground),
-          smoking_allowed: parseBool(row.smoking_allowed),
-          service_type: parseArray(row.service_type) ?? [],
         };
+
+        // Only include restaurant fields if importing for a restaurant category
+        if (isRestaurant) {
+          payload.good_for_kids = parseBool(row.good_for_kids);
+          payload.pets_allowed = parseBool(row.pets_allowed);
+          payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
+          payload.price_level = row.price_level ? parseInt(row.price_level, 10) || null : null;
+          payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
+          payload.meal = parseArray(row.meal) ?? [];
+          payload.vibe = parseArray(row.vibe) ?? [];
+          payload.cuisine = parseArray(row.cuisine) ?? [];
+          payload.seating = parseArray(row.seating) ?? [];
+          payload.kids_playground = parseBool(row.kids_playground);
+          payload.smoking_allowed = parseBool(row.smoking_allowed);
+          payload.service_type = parseArray(row.service_type) ?? [];
+          payload.kids_menu = parseBool(row.kids_menu);
+          payload.high_chairs = parseBool(row.high_chairs);
+          payload.wheelchair_car_park = parseBool(row.wheelchair_car_park);
+          payload.wheelchair_entrance = parseBool(row.wheelchair_entrance);
+          payload.wheelchair_seating = parseBool(row.wheelchair_seating);
+          payload.wheelchair_toilet = parseBool(row.wheelchair_toilet);
+          payload.has_toilet = parseBool(row.has_toilet);
+          payload.has_wifi = parseBool(row.has_wifi);
+          payload.has_free_wifi = parseBool(row.has_free_wifi);
+        }
 
         const existingId = existingMap.get(title.toLowerCase());
         let listingId: string | null = null;
@@ -254,36 +272,23 @@ const AdminImport = () => {
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
           else { results.updated++; listingId = existingId; }
         } else {
-          const { data: inserted, error } = await supabase.from("listings").insert(payload).select("id").single();
+          const { data: inserted, error } = await supabase.from("listings").insert(payload as any).select("id").single();
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
           else { results.created++; listingId = inserted?.id ?? null; }
         }
 
-        // --- Sync listing_categories junction ---
         if (listingId) {
           await supabase.from("listing_categories").delete().eq("listing_id", listingId);
           if (resolvedCatIds.length > 0) {
             const catRows = resolvedCatIds.map((catId) => ({ listing_id: listingId!, category_id: catId }));
-            const { error: catJErr } = await supabase.from("listing_categories").insert(catRows);
-            if (catJErr) results.errors.push(`Row ${i + 2}: Failed to assign categories`);
+            await supabase.from("listing_categories").insert(catRows);
           }
 
-          // Sync listing_subcategories
           await supabase.from("listing_subcategories").delete().eq("listing_id", listingId);
           if (resolvedSubIds.length > 0) {
             const junctionRows = resolvedSubIds.map((subId) => ({ listing_id: listingId!, subcategory_id: subId }));
-            const { error: jErr } = await supabase.from("listing_subcategories").insert(junctionRows);
-            if (jErr) results.errors.push(`Row ${i + 2}: Failed to assign subcategories`);
+            await supabase.from("listing_subcategories").insert(junctionRows);
           }
-        }
-      }
-
-      // Delete listings not present in the CSV
-      for (const [existingTitle, existingId] of existingMap) {
-        if (!csvTitles.has(existingTitle)) {
-          const { error } = await supabase.from("listings").delete().eq("id", existingId);
-          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
-          else results.deleted++;
         }
       }
 
@@ -293,8 +298,7 @@ const AdminImport = () => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
-      qc.invalidateQueries({ queryKey: ["admin-subcategories"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated`);
     },
     onError: (e) => toast.error(e.message),
   });
@@ -310,20 +314,41 @@ const AdminImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + 'Example Lodge,"A beautiful lodge in the bush",https://example.com/image.jpg,"Main Road, Hoedspruit",012-345-6789,info@example.com,https://example.com,Accommodation|Activities,Restaurant|Bar,false,"A longer description about the lodge","[""img1.jpg"",""img2.jpg""]","{""monday"":{""open"":""08:00"",""close"":""17:00""}}",true,false,true,2,true,Breakfast|Lunch,Casual|Scenic,Burgers|Grill,Indoor|Outdoor,true,false,Sit Down|Take Away\n';
-    downloadCSV(csv, "listings_template.csv");
+    if (!selectedCategoryId) {
+      toast.error("Please select a category first");
+      return;
+    }
+    const headers = csvHeaders;
+    const csv = headers.join(",") + "\n";
+    const safeName = (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+    downloadCSV(csv, `${safeName}_template.csv`);
+    toast.success("Template downloaded");
   };
 
   const downloadListings = async () => {
-    const { data: listings } = await supabase.from("listings").select("id, title, description, image_url, location, phone, email, website, whatsapp, google_maps_link, google_rating, google_reviews_count, google_reviews_url, is_featured, long_description, gallery_images, opening_hours, good_for_kids, pets_allowed, wheelchair_friendly, price_level, show_attributes, meal, vibe, cuisine, seating, kids_playground, smoking_allowed, service_type");
+    if (!selectedCategoryId) {
+      toast.error("Please select a category first");
+      return;
+    }
+
+    // Get listings in selected category
+    const { data: catJunctions } = await supabase
+      .from("listing_categories").select("listing_id").eq("category_id", selectedCategoryId);
+    const listingIds = (catJunctions ?? []).map((j) => j.listing_id);
+    if (listingIds.length === 0) {
+      toast.error("No listings in this category");
+      return;
+    }
+
+    const { data: listings } = await supabase.from("listings").select("*").in("id", listingIds);
     if (!listings?.length) { toast.error("No listings to export"); return; }
 
-    // Fetch listing_categories junction
-    const { data: catJunction } = await supabase.from("listing_categories").select("listing_id, category_id");
-    const catMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
+    // Fetch junctions
+    const { data: allCatJunction } = await supabase.from("listing_categories").select("listing_id, category_id");
+    const catNameMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
     const listingCatMap = new Map<string, string[]>();
-    (catJunction ?? []).forEach((j) => {
-      const name = catMap.get(j.category_id);
+    (allCatJunction ?? []).forEach((j) => {
+      const name = catNameMap.get(j.category_id);
       if (name) {
         const arr = listingCatMap.get(j.listing_id) ?? [];
         arr.push(name);
@@ -331,12 +356,11 @@ const AdminImport = () => {
       }
     });
 
-    // Fetch listing_subcategories junction
-    const { data: junctionData } = await supabase.from("listing_subcategories").select("listing_id, subcategory_id");
-    const subMap = new Map((subcategories ?? []).map((s) => [s.id, s.title]));
+    const { data: subJunction } = await supabase.from("listing_subcategories").select("listing_id, subcategory_id");
+    const subNameMap = new Map((subcategories ?? []).map((s) => [s.id, s.title]));
     const listingSubMap = new Map<string, string[]>();
-    (junctionData ?? []).forEach((j) => {
-      const name = subMap.get(j.subcategory_id);
+    (subJunction ?? []).forEach((j) => {
+      const name = subNameMap.get(j.subcategory_id);
       if (name) {
         const arr = listingSubMap.get(j.listing_id) ?? [];
         arr.push(name);
@@ -344,75 +368,133 @@ const AdminImport = () => {
       }
     });
 
+    const headers = csvHeaders;
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
-    const rows = listings.map((l) => [
-      l.title, l.description ?? "", l.image_url ?? "", l.location ?? "",
-      l.phone ?? "", l.email ?? "", l.website ?? "",
-      (l as any).whatsapp ?? "",
-      l.google_maps_link ?? "",
-      (l as any).google_rating === null ? "" : String((l as any).google_rating),
-      (l as any).google_reviews_count === null ? "" : String((l as any).google_reviews_count),
-      (l as any).google_reviews_url ?? "",
-      (listingCatMap.get(l.id) ?? []).join("|"),
-      (listingSubMap.get(l.id) ?? []).join("|"),
-      String(l.is_featured),
-      l.long_description ?? "",
-      l.gallery_images ? JSON.stringify(l.gallery_images) : "",
-      l.opening_hours ? JSON.stringify(l.opening_hours) : "",
-      l.good_for_kids === null ? "" : String(l.good_for_kids),
-      l.pets_allowed === null ? "" : String(l.pets_allowed),
-      l.wheelchair_friendly === null ? "" : String(l.wheelchair_friendly),
-      l.price_level === null ? "" : String(l.price_level),
-      String(l.show_attributes),
-      (l.meal ?? []).join("|"),
-      (l.vibe ?? []).join("|"),
-      (l.cuisine ?? []).join("|"),
-      (l.seating ?? []).join("|"),
-      l.kids_playground === null ? "" : String(l.kids_playground),
-      l.smoking_allowed === null ? "" : String(l.smoking_allowed),
-      (l.service_type ?? []).join("|"),
-    ].map(escapeCSV).join(","));
-    downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "listings_export.csv");
+
+    const rows = listings.map((l: any) => {
+      const fieldMap: Record<string, string> = {
+        title: l.title ?? "",
+        description: l.description ?? "",
+        image_url: l.image_url ?? "",
+        location: l.location ?? "",
+        phone: l.phone ?? "",
+        email: l.email ?? "",
+        website: l.website ?? "",
+        whatsapp: l.whatsapp ?? "",
+        google_maps_link: l.google_maps_link ?? "",
+        google_rating: l.google_rating == null ? "" : String(l.google_rating),
+        google_reviews_count: l.google_reviews_count == null ? "" : String(l.google_reviews_count),
+        google_reviews_url: l.google_reviews_url ?? "",
+        categories: (listingCatMap.get(l.id) ?? []).join("|"),
+        subcategories: (listingSubMap.get(l.id) ?? []).join("|"),
+        is_featured: String(l.is_featured),
+        long_description: l.long_description ?? "",
+        gallery_images: l.gallery_images ? JSON.stringify(l.gallery_images) : "",
+        opening_hours: l.opening_hours ? JSON.stringify(l.opening_hours) : "",
+        // Restaurant fields
+        good_for_kids: l.good_for_kids == null ? "" : String(l.good_for_kids),
+        pets_allowed: l.pets_allowed == null ? "" : String(l.pets_allowed),
+        wheelchair_friendly: l.wheelchair_friendly == null ? "" : String(l.wheelchair_friendly),
+        price_level: l.price_level == null ? "" : String(l.price_level),
+        show_attributes: String(l.show_attributes ?? false),
+        meal: (l.meal ?? []).join("|"),
+        vibe: (l.vibe ?? []).join("|"),
+        cuisine: (l.cuisine ?? []).join("|"),
+        seating: (l.seating ?? []).join("|"),
+        kids_playground: l.kids_playground == null ? "" : String(l.kids_playground),
+        smoking_allowed: l.smoking_allowed == null ? "" : String(l.smoking_allowed),
+        service_type: (l.service_type ?? []).join("|"),
+        kids_menu: l.kids_menu == null ? "" : String(l.kids_menu),
+        high_chairs: l.high_chairs == null ? "" : String(l.high_chairs),
+        wheelchair_car_park: l.wheelchair_car_park == null ? "" : String(l.wheelchair_car_park),
+        wheelchair_entrance: l.wheelchair_entrance == null ? "" : String(l.wheelchair_entrance),
+        wheelchair_seating: l.wheelchair_seating == null ? "" : String(l.wheelchair_seating),
+        wheelchair_toilet: l.wheelchair_toilet == null ? "" : String(l.wheelchair_toilet),
+        has_toilet: l.has_toilet == null ? "" : String(l.has_toilet),
+        has_wifi: l.has_wifi == null ? "" : String(l.has_wifi),
+        has_free_wifi: l.has_free_wifi == null ? "" : String(l.has_free_wifi),
+      };
+
+      return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
+    });
+
+    const safeName = (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+    downloadCSV(headers.join(",") + "\n" + rows.join("\n") + "\n", `${safeName}_export.csv`);
     toast.success(`Exported ${listings.length} listings`);
+  };
+
+  const resetUpload = () => {
+    setParsed(null);
+    setFileName("");
+    setImportResult(null);
+    if (fileRef.current) fileRef.current.value = "";
   };
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-heading text-3xl font-bold text-foreground">Import Listings</h1>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={downloadListings} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Download Listings
-          </Button>
-          <Button variant="outline" onClick={downloadTemplate} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Download Template
-          </Button>
-        </div>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <h1 className="font-heading text-3xl font-bold text-foreground">Import / Export Listings</h1>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-8 space-y-6">
-        {/* Upload area */}
-        <div
-          className="border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary transition-colors"
-          onClick={() => fileRef.current?.click()}
-        >
-          <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
-          <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
-          <p className="text-sm text-muted-foreground mt-1">
-            Columns: {EXPECTED_HEADERS.join(", ")}
-          </p>
-          <p className="text-xs text-muted-foreground mt-1">
-            Categories: use pipe-separated values for multiple (e.g. Accommodation|Activities). Subcategories: also pipe-separated. New categories & subcategories are auto-created.
-          </p>
-          <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
+      <div className="bg-card border border-border rounded-xl p-6 sm:p-8 space-y-6">
+        {/* Category selector */}
+        <div className="max-w-sm">
+          <Label className="mb-2 block">Select Category</Label>
+          <Select value={selectedCategoryId} onValueChange={(v) => { setSelectedCategoryId(v); resetUpload(); }}>
+            <SelectTrigger>
+              <SelectValue placeholder="Choose a category..." />
+            </SelectTrigger>
+            <SelectContent>
+              {categories?.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>{cat.title}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {selectedCategoryId && (
+            <p className="text-xs text-muted-foreground mt-2">
+              {isRestaurant
+                ? "This export/import will include universal + restaurant-specific fields."
+                : "This export/import will include universal fields only."}
+            </p>
+          )}
         </div>
+
+        {/* Action buttons */}
+        {selectedCategoryId && (
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={downloadListings} className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" /> Export {selectedCategoryTitle} Listings
+            </Button>
+            <Button variant="outline" onClick={downloadTemplate} className="gap-2">
+              <FileSpreadsheet className="h-4 w-4" /> Download Template
+            </Button>
+          </div>
+        )}
+
+        {/* Upload area */}
+        {selectedCategoryId && (
+          <div
+            className="border-2 border-dashed border-border rounded-xl p-8 sm:p-12 text-center cursor-pointer hover:border-primary transition-colors"
+            onClick={() => fileRef.current?.click()}
+          >
+            <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+            <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              Expected columns: {csvHeaders.join(", ")}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Matching listings by title will be updated, new ones created. No deletions.
+            </p>
+            <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
+          </div>
+        )}
 
         {/* Preview */}
         {parsed && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <p className="text-sm text-muted-foreground">
-                <strong className="text-foreground">{parsed.rows.length}</strong> rows found. Matching listings by title will be updated, new ones created.
+                <strong className="text-foreground">{parsed.rows.length}</strong> rows found for <strong className="text-foreground">{selectedCategoryTitle}</strong>.
               </p>
               <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
                 {importMutation.isPending ? "Importing..." : "Import All"}
@@ -425,7 +507,7 @@ const AdminImport = () => {
                   <tr>
                     <th className="p-2 text-left text-muted-foreground font-medium">#</th>
                     {parsed.headers.map((h) => (
-                      <th key={h} className="p-2 text-left text-muted-foreground font-medium whitespace-nowrap">{h}</th>
+                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${restaurantFieldSet.has(h) && !isRestaurant ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -434,7 +516,7 @@ const AdminImport = () => {
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
                       {parsed.headers.map((h) => (
-                        <td key={h} className="p-2 text-foreground max-w-[200px] truncate">{row[h] || "—"}</td>
+                        <td key={h} className={`p-2 max-w-[200px] truncate ${restaurantFieldSet.has(h) && !isRestaurant ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
                       ))}
                     </tr>
                   ))}
@@ -458,10 +540,6 @@ const AdminImport = () => {
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle className="h-4 w-4 text-blue-600" />
                 <span className="text-foreground"><strong>{importResult.updated}</strong> updated</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <CheckCircle className="h-4 w-4 text-destructive" />
-                <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
             </div>
             {importResult.errors.length > 0 && (
