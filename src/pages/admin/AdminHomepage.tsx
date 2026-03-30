@@ -9,7 +9,7 @@ import { X, Search, GripVertical } from "lucide-react";
 const SECTIONS = [
   { key: "homepage-eat", label: "Eat in Hoedspruit", categorySearch: "%restaurant%" },
   { key: "homepage-stay", label: "Places to Stay", categorySearch: "%accommodation%" },
-  { key: "homepage-shop", label: "Shop in Hoedspruit", categorySearch: "%shop%" },
+  { key: "homepage-shop", label: "Where to Shop", categorySearch: "%shop%" },
   { key: "homepage-do", label: "What to Do", categorySearch: "%activit%" },
 ];
 
