@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 type Listing = Tables<"listings">;
 
@@ -29,6 +29,7 @@ const emptyForm = { title: "", description: "", image_url: "", location: "", pho
 const AdminListings = () => {
   const qc = useQueryClient();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Listing | null>(null);
   const [form, setForm] = useState(emptyForm);
@@ -109,6 +110,18 @@ const AdminListings = () => {
   useEffect(() => {
     if (editingSubIds) setSelectedSubIds(editingSubIds);
   }, [editingSubIds]);
+
+  // Auto-open edit dialog from ?edit= query param
+  useEffect(() => {
+    const editId = searchParams.get("edit");
+    if (editId && listings && !editing) {
+      const found = listings.find((l) => l.id === editId);
+      if (found) {
+        openEdit(found);
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, listings]);
 
   const upsert = useMutation({
     mutationFn: async (values: typeof emptyForm) => {

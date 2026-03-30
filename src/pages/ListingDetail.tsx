@@ -1,15 +1,18 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import ListingActions from "@/components/listing/ListingActions";
-import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown, Wifi, Bath, Ban, MessageCircle } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown, Wifi, Bath, Ban, MessageCircle, Pencil } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import BackButton from "@/components/BackButton";
+import { useAuth } from "@/hooks/useAuth";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const ListingDetail = () => {
+  const { isAdmin } = useAuth();
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
 
   const { data: listing, isLoading } = useQuery({
@@ -164,14 +167,27 @@ const ListingDetail = () => {
 
           {/* Title & featured badge */}
           <div className="mb-6">
-            {listing.is_featured && (
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent mb-2">
-                <Star className="h-3 w-3 fill-current" /> Featured
-              </span>
-            )}
-            <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
-              {listing.title}
-            </h1>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                {listing.is_featured && (
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent mb-2">
+                    <Star className="h-3 w-3 fill-current" /> Featured
+                  </span>
+                )}
+                <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
+                  {listing.title}
+                </h1>
+              </div>
+              {isAdmin && (
+                <button
+                  onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
+                  className="shrink-0 mt-1 p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  title="Edit listing"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+              )}
+            </div>
             {/* Show all categories as tags */}
             {listingCategories && listingCategories.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
