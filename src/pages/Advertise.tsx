@@ -122,7 +122,7 @@ const Advertise = () => {
               </Button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-2.5">
+            <form onSubmit={handleSubmit} className="space-y-1">
               <div>
                 <Input
                   placeholder="Your name"
