@@ -599,37 +599,132 @@ const AdminListings = () => {
         />
       </div>
 
+      {/* Bulk action bar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+          <span className="text-sm font-medium text-foreground">{selectedIds.size} selected</span>
+          <Button size="sm" variant="outline" onClick={() => { setBulkForm({}); setBulkCatAction("none"); setBulkCatIds([]); setBulkOpen(true); }}>
+            <Pencil className="h-3.5 w-3.5 mr-1.5" /> Bulk Edit
+          </Button>
+          <Button size="sm" variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { if (confirm(`Delete ${selectedIds.size} listing(s)?`)) bulkDelete.mutate(); }}>
+            <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Delete
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>Clear</Button>
+        </div>
+      )}
+
+      {/* Bulk edit dialog */}
+      <Dialog open={bulkOpen} onOpenChange={setBulkOpen}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>Bulk Edit {selectedIds.size} Listing(s)</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground mb-4">Toggle on the fields you want to change. Only enabled fields will be updated.</p>
+          <div className="space-y-4">
+            {BULK_FIELDS.map((field) => {
+              const entry = bulkForm[field.key] ?? { enabled: false, value: false };
+              return (
+                <div key={field.key} className="flex items-center gap-3">
+                  <Checkbox
+                    checked={entry.enabled}
+                    onCheckedChange={(v) => setBulkForm({ ...bulkForm, [field.key]: { enabled: !!v, value: entry.value } })}
+                  />
+                  <div className="flex items-center gap-2 flex-1">
+                    <Label className={!entry.enabled ? "text-muted-foreground" : ""}>{field.label}</Label>
+                    {entry.enabled && (
+                      <Switch
+                        checked={entry.value === true}
+                        onCheckedChange={(v) => setBulkForm({ ...bulkForm, [field.key]: { enabled: true, value: v } })}
+                      />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="border-t border-border pt-4">
+              <Label>Categories</Label>
+              <Select value={bulkCatAction} onValueChange={(v: any) => setBulkCatAction(v)}>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Don't change</SelectItem>
+                  <SelectItem value="add">Add categories</SelectItem>
+                  <SelectItem value="set">Replace categories</SelectItem>
+                </SelectContent>
+              </Select>
+              {bulkCatAction !== "none" && (
+                <div className="space-y-2 mt-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
+                  {categories?.map((cat) => (
+                    <div key={cat.id} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={bulkCatIds.includes(cat.id)}
+                        onCheckedChange={() => setBulkCatIds((prev) => prev.includes(cat.id) ? prev.filter((id) => id !== cat.id) : [...prev, cat.id])}
+                      />
+                      <label className="text-sm text-foreground cursor-pointer">{cat.title}</label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Button
+              className="w-full"
+              disabled={bulkUpdate.isPending}
+              onClick={() => bulkUpdate.mutate()}
+            >
+              {bulkUpdate.isPending ? "Updating..." : `Update ${selectedIds.size} Listing(s)`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <table className="w-full text-sm table-fixed">
             <thead className="bg-muted">
               <tr>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[30%]">Title</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[30%]">Categories</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[20%]">Location</th>
+                <th className="p-3 w-[40px]">
+                  <Checkbox
+                    checked={filteredListings.length > 0 && filteredListings.every((l) => selectedIds.has(l.id))}
+                    onCheckedChange={(v) => {
+                      if (v) {
+                        setSelectedIds(new Set(filteredListings.map((l) => l.id)));
+                      } else {
+                        setSelectedIds(new Set());
+                      }
+                    }}
+                  />
+                </th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[28%]">Title</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Categories</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[18%]">Location</th>
                 <th className="text-left p-3 font-medium text-muted-foreground w-[8%]">Featured</th>
                 <th className="p-3 w-[12%]"></th>
               </tr>
             </thead>
             <tbody>
-              {listings?.filter((l) => {
-                if (!searchQuery.trim()) return true;
-                const q = searchQuery.toLowerCase();
-                return l.title.toLowerCase().includes(q) || (l.location ?? "").toLowerCase().includes(q) || ((l as any)._categoryNames ?? []).some((n: string) => n.toLowerCase().includes(q));
-              }).map((l) => (
-                <tr key={l.id} className="border-t border-border">
+              {filteredListings.map((l) => (
+                <tr key={l.id} className={`border-t border-border ${selectedIds.has(l.id) ? "bg-primary/5" : ""}`}>
+                  <td className="p-3">
+                    <Checkbox
+                      checked={selectedIds.has(l.id)}
+                      onCheckedChange={(v) => {
+                        const next = new Set(selectedIds);
+                        if (v) next.add(l.id); else next.delete(l.id);
+                        setSelectedIds(next);
+                      }}
+                    />
+                  </td>
                   <td className="p-3 font-medium text-foreground truncate">{l.title}</td>
                   <td className="p-3 text-muted-foreground truncate">{(l as any)._categoryNames?.join(", ") || "—"}</td>
                   <td className="p-3 text-muted-foreground truncate">{l.location ?? "—"}</td>
                   <td className="p-3 text-muted-foreground">{l.is_featured ? "Yes" : "No"}</td>
                   <td className="p-3 flex gap-1 justify-end">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(l)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(l.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this listing?")) { supabase.from("listings").delete().eq("id", l.id).then(() => { qc.invalidateQueries({ queryKey: ["admin-listings"] }); toast.success("Listing deleted"); }); } }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </td>
                 </tr>
               ))}
-              {listings?.length === 0 && (
-                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No listings yet. Add your first one!</td></tr>
+              {filteredListings.length === 0 && (
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No listings found.</td></tr>
               )}
             </tbody>
           </table>
