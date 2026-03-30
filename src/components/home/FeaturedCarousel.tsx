@@ -50,7 +50,7 @@ const FeaturedCarousel = () => {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex gap-3 overflow-x-auto scrollbar-hide px-4 snap-x snap-mandatory"
+        className="flex gap-3 overflow-x-auto scrollbar-hide pl-4 pr-4 snap-x snap-mandatory"
       >
         {featuredItems.map((item) => (
           <Link
