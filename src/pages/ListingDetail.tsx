@@ -77,12 +77,13 @@ const ListingDetail = () => {
   }
 
   const firstCategory = listingCategories && listingCategories.length > 0 ? listingCategories[0] : null;
+  const isListingRestaurant = listingCategories?.some((cat) => isRestaurantCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
   const hasGallery = galleryImages && galleryImages.length > 0;
   const hasHours = openingHours && Object.values(openingHours).some((v) => v);
-  const showAttributes = (listing as any).show_attributes as boolean;
+  const showAttributes = isListingRestaurant && ((listing as any).show_attributes as boolean);
   const goodForKids = (listing as any).good_for_kids as boolean | null;
   const petsAllowed = (listing as any).pets_allowed as boolean | null;
   const wheelchairFriendly = (listing as any).wheelchair_friendly as boolean | null;
