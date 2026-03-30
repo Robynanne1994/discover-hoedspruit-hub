@@ -162,8 +162,7 @@ const CategoryPage = () => {
                 const hasDetail = !!(
                   l.long_description ||
                   (l.gallery_images && l.gallery_images.length > 0) ||
-                  (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
-                  l.show_attributes
+                  (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v))
                 );
                 return (
                 <div
