@@ -81,7 +81,7 @@ const Categories = () => {
         <div className="px-4 -mt-3 relative z-10">
 
           {/* Search bar */}
-          <div className="flex items-center bg-card rounded-full shadow-card border border-border px-4 py-3 gap-3">
+          <div className="flex items-center bg-card rounded-full shadow-card border px-4 py-3 gap-3 border-primary-hover">
             <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <input
               type="text"
