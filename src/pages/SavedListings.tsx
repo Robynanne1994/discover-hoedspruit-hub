@@ -6,9 +6,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Star, MapPin } from "lucide-react";
-import heroBg from "@/assets/hero-homepage.jpg";
-
-
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
@@ -30,13 +27,11 @@ const SavedListings = () => {
 
       const listingIds = favs.map((f) => f.item_id);
 
-      // Fetch listings with their direct category
       const { data: listings } = await supabase
         .from("listings")
         .select("id, title, image_url, location, google_rating, category_id, categories(title)")
         .in("id", listingIds);
 
-      // Also fetch categories via junction table for each listing
       const { data: junctions } = await supabase
         .from("listing_categories")
         .select("listing_id, categories(id, title)")
@@ -53,7 +48,7 @@ const SavedListings = () => {
         categoryNames: [
           ...(l.categories?.title ? [l.categories.title] : []),
           ...(junctionMap[l.id] || []),
-        ].filter((v, i, a) => a.indexOf(v) === i), // dedupe
+        ].filter((v, i, a) => a.indexOf(v) === i),
       }]));
 
       return favs.map((f) => ({
@@ -80,7 +75,6 @@ const SavedListings = () => {
     },
   });
 
-  // Derive dynamic category filters from saved listings
   const dynamicCategories = (() => {
     if (!favourites || favourites.length === 0) return [];
     const cats = new Set<string>();
@@ -92,7 +86,6 @@ const SavedListings = () => {
 
   const filterOptions = ["All", ...dynamicCategories];
 
-  // Filter logic
   const filtered = favourites?.filter((f: any) => {
     if (activeFilter === "All") return true;
     return (f.details?.categoryNames || []).some(
@@ -104,21 +97,6 @@ const SavedListings = () => {
   if (!loading && !user) {
     return (
       <div className="min-h-screen pb-20 bg-background">
-        <section className="relative">
-          <div className="relative h-[220px] overflow-hidden">
-            <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-            <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-              <h1 className="text-2xl font-bold tracking-tight text-center mb-1" style={{ fontFamily: "var(--font-heading)" }}>
-                Hello<br />Hoedspruit
-              </h1>
-              <p className="text-lg font-semibold mt-1" style={{ fontFamily: "var(--font-heading)" }}>
-                ​
-              </p>
-            </div>
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
-        </section>
         <div className="px-4 pt-6 text-center">
           <Heart className="h-12 w-12 mx-auto text-primary/30 mb-4" />
           <h2 className="text-lg font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-heading)" }}>
@@ -139,19 +117,7 @@ const SavedListings = () => {
   if (loading || isLoading) {
     return (
       <div className="min-h-screen pb-20 bg-background">
-        <div className="relative h-[220px] overflow-hidden">
-          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-            <h1 className="text-2xl font-bold tracking-tight text-center mb-1" style={{ fontFamily: "var(--font-heading)" }}>
-              Hello<br />Hoedspruit
-            </h1>
-            <p className="text-lg font-semibold mt-1" style={{ fontFamily: "var(--font-heading)" }}>
-              ​
-            </p>
-          </div>
-        </div>
-        <div className="relative -mt-6 bg-background rounded-t-[2rem] pt-6 px-4 space-y-4">
+        <div className="pt-6 px-4 space-y-4">
           <Skeleton className="h-5 w-48" />
           <div className="flex gap-2">
             {[1, 2, 3, 4].map((i) => (
@@ -170,24 +136,7 @@ const SavedListings = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      {/* Hero */}
-      <section className="relative">
-        <div className="relative h-[220px] overflow-hidden">
-          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-            <h1 className="text-2xl font-bold tracking-tight text-center mb-1" style={{ fontFamily: "var(--font-heading)" }}>
-              Hello<br />Hoedspruit
-            </h1>
-            <p className="text-lg font-semibold mt-1" style={{ fontFamily: "var(--font-heading)" }}>
-              ​
-            </p>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
-      </section>
-
-      <div className="relative -mt-6 pt-2 px-4">
+      <div className="pt-6 px-4">
         {/* Saved count */}
         <p className="text-foreground text-sm mb-4">
           You have <span className="font-semibold">{savedCount}</span> saved listing{savedCount !== 1 ? "s" : ""}
@@ -241,7 +190,6 @@ const SavedListings = () => {
             return (
               <Link key={fav.id} to={link} className="block">
                 <div className="relative rounded-2xl overflow-hidden shadow-sm">
-                  {/* Image */}
                   <div className="relative h-48">
                     {detail.image_url ? (
                       <img
@@ -254,10 +202,8 @@ const SavedListings = () => {
                         <MapPin className="h-8 w-8 text-muted-foreground/40" />
                       </div>
                     )}
-                    {/* Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
-                    {/* Heart button */}
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -270,7 +216,6 @@ const SavedListings = () => {
                       <Heart className="h-3.5 w-3.5 fill-primary text-primary" />
                     </button>
 
-                    {/* Title and info overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-4">
                       <h3 className="text-white font-bold text-lg leading-tight mb-1" style={{ fontFamily: "var(--font-heading)" }}>
                         {detail.title}
@@ -278,7 +223,6 @@ const SavedListings = () => {
                     </div>
                   </div>
 
-                  {/* Info row below image */}
                   <div className="bg-card px-4 py-3 flex items-center gap-2">
                     {rating && (
                       <div className="flex items-center gap-1">
