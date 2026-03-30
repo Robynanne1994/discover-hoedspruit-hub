@@ -98,7 +98,10 @@ const SavedListings = () => {
   if (!loading && !user) {
     return (
       <div className="min-h-screen pb-20 bg-background">
-        <div className="px-4 pt-6 text-center">
+        <div className="px-4 pt-4">
+          <BackButton />
+        </div>
+        <div className="px-4 text-center">
           <Heart className="h-12 w-12 mx-auto text-primary/30 mb-4" />
           <h2 className="text-lg font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-heading)" }}>
             Sign in to see your saved listings
