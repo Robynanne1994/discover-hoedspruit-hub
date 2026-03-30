@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
-import { MapPin, Phone, Mail, Globe, Star, ChevronDown, ChevronUp } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import FavouriteButton from "@/components/FavouriteButton";
 
@@ -199,6 +199,9 @@ const CategoryPage = () => {
                       )}
                       {l.website && (
                         <div className="flex items-center gap-2"><Globe className="h-4 w-4 text-primary" /> <a href={l.website} target="_blank" rel="noopener noreferrer" className="hover:text-primary">Website</a></div>
+                      )}
+                      {(l as any).whatsapp && (
+                        <div className="flex items-center gap-2"><MessageCircle className="h-4 w-4 text-primary" /> <a href={`https://wa.me/${(l as any).whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="hover:text-primary">WhatsApp</a></div>
                       )}
                     </div>
                   </div>

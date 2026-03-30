@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import ListingActions from "@/components/listing/ListingActions";
-import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown, Wifi, Bath, Ban } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown, Wifi, Bath, Ban, MessageCircle } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import BackButton from "@/components/BackButton";
 
@@ -245,6 +245,11 @@ const ListingDetail = () => {
             {listing.website && (
               <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
                 <Globe className="h-3.5 w-3.5 text-accent shrink-0" /> Website
+              </a>
+            )}
+            {(listing as any).whatsapp && (
+              <a href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
+                <MessageCircle className="h-3.5 w-3.5 text-accent shrink-0" /> WhatsApp
               </a>
             )}
           </div>
