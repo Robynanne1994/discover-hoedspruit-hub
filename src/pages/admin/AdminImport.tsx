@@ -491,6 +491,8 @@ const AdminImport = () => {
             <p className="text-xs text-muted-foreground mt-2">
               {isRestaurant
                 ? "This export/import will include universal + restaurant-specific fields."
+                : isShopping
+                ? "This export/import will include universal + shopping-specific fields."
                 : "This export/import will include universal fields only."}
             </p>
           )}
