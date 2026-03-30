@@ -7,8 +7,6 @@ import { MapPin, Phone, Mail, Globe, Star, ChevronDown, ChevronUp, MessageCircle
 import BackButton from "@/components/BackButton";
 import FavouriteButton from "@/components/FavouriteButton";
 import { isRestaurantCategory } from "@/lib/categoryFields";
-import BackButton from "@/components/BackButton";
-import FavouriteButton from "@/components/FavouriteButton";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
