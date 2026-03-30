@@ -50,13 +50,13 @@ const FeaturedCarousel = () => {
       <div
         ref={scrollRef}
         onScroll={handleScroll}
-        className="flex gap-3 overflow-x-auto scrollbar-hide pl-4 pr-4 snap-x snap-mandatory"
+        className="flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory"
       >
-        {featuredItems.map((item) => (
+        {featuredItems.map((item, index) => (
           <Link
             to={`/listing/${item.id}`}
             key={item.id}
-            className="snap-start flex-shrink-0 w-[72%] rounded-xl overflow-hidden relative aspect-[4/3] group"
+            className={`snap-start flex-shrink-0 w-[72%] rounded-xl overflow-hidden relative aspect-[4/3] group ${index === 0 ? "ml-4" : ""} ${index === featuredItems.length - 1 ? "mr-4" : ""}`}
           >
             <img
               src={item.image_url || "/placeholder.svg"}
