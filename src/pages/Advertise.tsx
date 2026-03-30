@@ -13,7 +13,7 @@ const BENEFITS = [
   { icon: Eye, title: "Local Visibility", description: "" },
   { icon: Users, title: "Targeted Audience", description: "" },
   { icon: Star, title: "Premium Placement", description: "" },
-  { icon: TrendingUp, title: "Grow Your Brand", description: "Build awareness and drive real foot traffic with a trusted local platform." },
+  { icon: TrendingUp, title: "Grow Your Brand", description: "" },
 ];
 
 const Advertise = () => {
