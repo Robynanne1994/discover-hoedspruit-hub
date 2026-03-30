@@ -10,7 +10,7 @@ import BackButton from "@/components/BackButton";
 
 
 const BENEFITS = [
-  { icon: Eye, title: "Local Visibility", description: "Get your business in front of thousands of locals and visitors exploring Hoedspruit." },
+  { icon: Eye, title: "Local Visibility", description: "" },
   { icon: Users, title: "Targeted Audience", description: "Reach people actively searching for things to do, eat, and experience in the area." },
   { icon: Star, title: "Premium Placement", description: "Featured listings and homepage highlights to make your business stand out." },
   { icon: TrendingUp, title: "Grow Your Brand", description: "Build awareness and drive real foot traffic with a trusted local platform." },
