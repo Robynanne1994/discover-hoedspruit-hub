@@ -143,7 +143,10 @@ const SavedListings = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      <div className="pt-6 px-4">
+      <div className="px-4 pt-4">
+        <BackButton />
+      </div>
+      <div className="px-4">
         {/* Saved count */}
         <p className="text-foreground text-sm mb-4">
           You have <span className="font-semibold">{savedCount}</span> saved listing{savedCount !== 1 ? "s" : ""}
