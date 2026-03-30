@@ -546,7 +546,7 @@ const AdminImport = () => {
                   <tr>
                     <th className="p-2 text-left text-muted-foreground font-medium">#</th>
                     {parsed.headers.map((h) => (
-                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${restaurantFieldSet.has(h) && !isRestaurant ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
+                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
