@@ -111,6 +111,18 @@ const AdminListings = () => {
     if (editingSubIds) setSelectedSubIds(editingSubIds);
   }, [editingSubIds]);
 
+  // Auto-open edit dialog from ?edit= query param
+  useEffect(() => {
+    const editId = searchParams.get("edit");
+    if (editId && listings && !editing) {
+      const found = listings.find((l) => l.id === editId);
+      if (found) {
+        openEdit(found);
+        setSearchParams({}, { replace: true });
+      }
+    }
+  }, [searchParams, listings]);
+
   const upsert = useMutation({
     mutationFn: async (values: typeof emptyForm) => {
       const galleryArr = values.gallery_images
