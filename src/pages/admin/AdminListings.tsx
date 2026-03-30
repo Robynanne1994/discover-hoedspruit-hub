@@ -13,6 +13,7 @@ import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 type Listing = Tables<"listings">;
 
