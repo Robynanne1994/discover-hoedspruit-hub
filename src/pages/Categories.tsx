@@ -88,7 +88,7 @@ const Categories = () => {
               placeholder="Search categories & listings..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="text-sm flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
+              className="text-sm flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground placeholder:italic"
             />
           </div>
         </div>
