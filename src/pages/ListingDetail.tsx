@@ -358,8 +358,8 @@ const ListingDetail = () => {
             <ListingActions listingId={listing.id} />
           </div>
 
-          {/* Description */}
-          {listing.description && (
+          {/* Description - only show short description if there's no long description */}
+          {listing.description && !longDescription && (
             <p className="text-muted-foreground text-sm mb-6">{listing.description}</p>
           )}
 
