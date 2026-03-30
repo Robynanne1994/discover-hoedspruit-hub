@@ -409,7 +409,7 @@ const ListingDetail = () => {
           )}
 
           {/* Accordion sections - only one open at a time */}
-          {(hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
+          {isListingRestaurant && (hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
             <Accordion type="single" collapsible className="mb-20">
               {hasKidsInfo && (
                 <AccordionItem value="kids" className="border-0">
