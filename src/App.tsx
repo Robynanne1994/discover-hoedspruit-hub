@@ -16,6 +16,7 @@ import AdminContent from "./pages/admin/AdminContent.tsx";
 import AdminImport from "./pages/admin/AdminImport.tsx";
 import AdminEventsImport from "./pages/admin/AdminEventsImport.tsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.tsx";
+import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
@@ -59,6 +60,7 @@ const App = () => (
               <Route path="homepage" element={<AdminHomepage />} />
               <Route path="categories" element={<AdminCategories />} />
               <Route path="listings" element={<AdminListings />} />
+              <Route path="listings/bulk-edit" element={<AdminBulkEdit />} />
               <Route path="events" element={<AdminEvents />} />
               <Route path="events/import" element={<AdminEventsImport />} />
               <Route path="content" element={<AdminContent />} />
