@@ -264,7 +264,7 @@ const SavedListings = () => {
                         e.stopPropagation();
                         removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type });
                       }}
-                      className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-1.5 shadow-sm hover:bg-white transition-colors active:scale-95"
+                      className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full p-1.5 shadow-sm hover:bg-white transition-colors active:scale-95 border border-primary-hover"
                       aria-label="Remove from saved"
                     >
                       <Heart className="h-3.5 w-3.5 fill-primary text-primary" />
