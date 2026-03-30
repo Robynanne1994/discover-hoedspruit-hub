@@ -64,6 +64,7 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
 }
 
 const restaurantFieldSet = new Set<string>(RESTAURANT_ONLY_FIELDS);
+const shoppingFieldSet = new Set<string>(SHOPPING_ONLY_FIELDS);
 
 const AdminImport = () => {
   const qc = useQueryClient();
