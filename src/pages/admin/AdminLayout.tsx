@@ -1,10 +1,11 @@
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, List, Calendar, FolderOpen, FileText, LogOut, Upload } from "lucide-react";
+import { LayoutDashboard, List, Calendar, FolderOpen, FileText, LogOut, Upload, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
+  { label: "Homepage", path: "/admin/homepage", icon: Home },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },
   { label: "Events", path: "/admin/events", icon: Calendar },
