@@ -53,7 +53,7 @@ const EatSection = () => {
 
   return (
     <section className="pt-6 pb-8">
-      <SectionHeader title="Eat in Hoedspruit" />
+      <SectionHeader title="Eat in Hoedspruit" actionLabel="See all" actionHref="/categories" />
       <div className="grid grid-cols-2 gap-3 px-4">
         {listings.map((listing) => (
           <VenueCard
