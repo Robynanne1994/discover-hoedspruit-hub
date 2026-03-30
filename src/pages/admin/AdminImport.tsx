@@ -272,7 +272,7 @@ const AdminImport = () => {
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
           else { results.updated++; listingId = existingId; }
         } else {
-          const { data: inserted, error } = await supabase.from("listings").insert(payload).select("id").single();
+          const { data: inserted, error } = await supabase.from("listings").insert(payload as any).select("id").single();
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
           else { results.created++; listingId = inserted?.id ?? null; }
         }
