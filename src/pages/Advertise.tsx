@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import heroBg from "@/assets/hero-homepage.jpg";
+
 
 const BENEFITS = [
   { icon: Eye, title: "Local Visibility", description: "Get your business in front of thousands of locals and visitors exploring Hoedspruit." },
