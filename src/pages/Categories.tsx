@@ -52,7 +52,7 @@ const Categories = () => {
     <div className="min-h-screen pb-20 bg-background">
       {/* Hero */}
       <section className="relative">
-        <div className="relative h-[200px] overflow-hidden">
+        <div className="relative h-[160px] overflow-hidden">
           <img
             src={heroBg}
             alt="Hoedspruit bushveld"
