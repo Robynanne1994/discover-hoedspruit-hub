@@ -125,6 +125,13 @@ const AdminImport = () => {
           toast.warning(`Restaurant-only columns found and will be ignored: ${extraCols.join(", ")}`);
         }
       }
+      // Warn if shopping columns found in non-shopping import
+      if (!isShopping) {
+        const extraCols = result.headers.filter((h) => shoppingFieldSet.has(h));
+        if (extraCols.length > 0) {
+          toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
+        }
+      }
       setParsed(result);
     };
     reader.readAsText(file);
