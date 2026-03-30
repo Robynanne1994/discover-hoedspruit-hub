@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { getCSVHeadersForCategory, isRestaurantCategory, RESTAURANT_ONLY_FIELDS } from "@/lib/categoryFields";
+import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS } from "@/lib/categoryFields";
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -64,6 +64,7 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
 }
 
 const restaurantFieldSet = new Set<string>(RESTAURANT_ONLY_FIELDS);
+const shoppingFieldSet = new Set<string>(SHOPPING_ONLY_FIELDS);
 
 const AdminImport = () => {
   const qc = useQueryClient();
@@ -93,6 +94,7 @@ const AdminImport = () => {
   const selectedCategoryTitle = selectedCategory?.title ?? null;
   const csvHeaders = getCSVHeadersForCategory(selectedCategoryTitle);
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
+  const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -121,6 +123,13 @@ const AdminImport = () => {
         const extraCols = result.headers.filter((h) => restaurantFieldSet.has(h));
         if (extraCols.length > 0) {
           toast.warning(`Restaurant-only columns found and will be ignored: ${extraCols.join(", ")}`);
+        }
+      }
+      // Warn if shopping columns found in non-shopping import
+      if (!isShopping) {
+        const extraCols = result.headers.filter((h) => shoppingFieldSet.has(h));
+        if (extraCols.length > 0) {
+          toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
         }
       }
       setParsed(result);
@@ -262,6 +271,22 @@ const AdminImport = () => {
           payload.has_toilet = parseBool(row.has_toilet);
           payload.has_wifi = parseBool(row.has_wifi);
           payload.has_free_wifi = parseBool(row.has_free_wifi);
+        }
+
+        // Only include shopping fields if importing for a shopping category
+        if (isShopping) {
+          payload.air_conditioned = parseBool(row.air_conditioned);
+          payload.payment_methods = parseArray(row.payment_methods) ?? [];
+          payload.delivery_available = parseBool(row.delivery_available);
+          payload.click_and_collect = parseBool(row.click_and_collect);
+          payload.order_online = parseBool(row.order_online);
+          payload.parking_available = parseBool(row.parking_available);
+          payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
+          payload.local_products = parseBool(row.local_products);
+          payload.shop_type = row.shop_type || null;
+          payload.curio_or_gifts = parseBool(row.curio_or_gifts);
+          payload.product_categories = parseArray(row.product_categories) ?? [];
+          payload.price_range = row.price_range || null;
         }
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -413,6 +438,18 @@ const AdminImport = () => {
         has_toilet: l.has_toilet == null ? "" : String(l.has_toilet),
         has_wifi: l.has_wifi == null ? "" : String(l.has_wifi),
         has_free_wifi: l.has_free_wifi == null ? "" : String(l.has_free_wifi),
+        // Shopping fields
+        air_conditioned: l.air_conditioned == null ? "" : String(l.air_conditioned),
+        payment_methods: (l.payment_methods ?? []).join("|"),
+        delivery_available: l.delivery_available == null ? "" : String(l.delivery_available),
+        click_and_collect: l.click_and_collect == null ? "" : String(l.click_and_collect),
+        order_online: l.order_online == null ? "" : String(l.order_online),
+        parking_available: l.parking_available == null ? "" : String(l.parking_available),
+        local_products: l.local_products == null ? "" : String(l.local_products),
+        shop_type: l.shop_type ?? "",
+        curio_or_gifts: l.curio_or_gifts == null ? "" : String(l.curio_or_gifts),
+        product_categories: (l.product_categories ?? []).join("|"),
+        price_range: l.price_range ?? "",
       };
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
@@ -454,6 +491,8 @@ const AdminImport = () => {
             <p className="text-xs text-muted-foreground mt-2">
               {isRestaurant
                 ? "This export/import will include universal + restaurant-specific fields."
+                : isShopping
+                ? "This export/import will include universal + shopping-specific fields."
                 : "This export/import will include universal fields only."}
             </p>
           )}
@@ -507,7 +546,7 @@ const AdminImport = () => {
                   <tr>
                     <th className="p-2 text-left text-muted-foreground font-medium">#</th>
                     {parsed.headers.map((h) => (
-                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${restaurantFieldSet.has(h) && !isRestaurant ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
+                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -516,7 +555,7 @@ const AdminImport = () => {
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
                       {parsed.headers.map((h) => (
-                        <td key={h} className={`p-2 max-w-[200px] truncate ${restaurantFieldSet.has(h) && !isRestaurant ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
+                        <td key={h} className={`p-2 max-w-[200px] truncate ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
                       ))}
                     </tr>
                   ))}

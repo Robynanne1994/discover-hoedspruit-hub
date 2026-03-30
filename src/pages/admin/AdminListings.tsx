@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { isShoppingCategory } from "@/lib/categoryFields";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
@@ -25,8 +26,10 @@ const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic"];
 const CUISINE_OPTIONS = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
+const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
+const SHOP_TYPE_OPTIONS = ["General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Other"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -170,6 +173,17 @@ const AdminListings = () => {
         has_toilet: values.has_toilet,
         has_wifi: values.has_wifi,
         has_free_wifi: values.has_free_wifi,
+        air_conditioned: values.air_conditioned,
+        payment_methods: values.payment_methods,
+        delivery_available: values.delivery_available,
+        click_and_collect: values.click_and_collect,
+        order_online: values.order_online,
+        parking_available: values.parking_available,
+        local_products: values.local_products,
+        shop_type: values.shop_type || null,
+        curio_or_gifts: values.curio_or_gifts,
+        product_categories: values.product_categories ? values.product_categories.split(",").map(s => s.trim()).filter(Boolean) : [],
+        price_range: values.price_range || null,
       };
 
       let listingId: string;
@@ -265,6 +279,17 @@ const AdminListings = () => {
       has_toilet: (l as any).has_toilet ?? null,
       has_wifi: (l as any).has_wifi ?? null,
       has_free_wifi: (l as any).has_free_wifi ?? null,
+      air_conditioned: (l as any).air_conditioned ?? null,
+      payment_methods: (l as any).payment_methods ?? [],
+      delivery_available: (l as any).delivery_available ?? null,
+      click_and_collect: (l as any).click_and_collect ?? null,
+      order_online: (l as any).order_online ?? null,
+      parking_available: (l as any).parking_available ?? null,
+      local_products: (l as any).local_products ?? null,
+      shop_type: (l as any).shop_type ?? "",
+      curio_or_gifts: (l as any).curio_or_gifts ?? null,
+      product_categories: ((l as any).product_categories ?? []).join(", "),
+      price_range: (l as any).price_range ?? "",
     });
     setOpen(true);
   };
@@ -286,6 +311,7 @@ const AdminListings = () => {
 
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
+  const isShoppingType = categories?.some((c) => selectedCatIds.includes(c.id) && isShoppingCategory(c.title));
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
@@ -561,7 +587,81 @@ const AdminListings = () => {
           </Button>
           <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>Clear</Button>
         </div>
-      )}
+                )}
+
+                {isShoppingType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-sm font-medium text-foreground">Shopping Fields</p>
+
+                    <div className="space-y-3">
+                      {[
+                        { label: "Air Conditioned", key: "air_conditioned" as const },
+                        { label: "Delivery Available", key: "delivery_available" as const },
+                        { label: "Click & Collect", key: "click_and_collect" as const },
+                        { label: "Order Online", key: "order_online" as const },
+                        { label: "Parking Available", key: "parking_available" as const },
+                        { label: "Wheelchair Friendly", key: "wheelchair_friendly" as const },
+                        { label: "Local Products", key: "local_products" as const },
+                        { label: "Curio / Gifts", key: "curio_or_gifts" as const },
+                      ].map(({ label, key }) => (
+                        <div key={key} className="flex items-center gap-2">
+                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
+                          <Label>{label}</Label>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div>
+                      <Label>Payment Methods</Label>
+                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                      <div className="flex flex-wrap gap-2">
+                        {PAYMENT_METHOD_OPTIONS.map((opt) => {
+                          const selected = form.payment_methods.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, payment_methods: selected ? form.payment_methods.filter((v) => v !== opt) : [...form.payment_methods, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Shop Type</Label>
+                      <Select value={form.shop_type} onValueChange={(v) => setForm({ ...form, shop_type: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select shop type" /></SelectTrigger>
+                        <SelectContent>
+                          {SHOP_TYPE_OPTIONS.map((opt) => (
+                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>Product Categories</Label>
+                      <Input
+                        value={form.product_categories}
+                        onChange={(e) => setForm({ ...form, product_categories: e.target.value })}
+                        placeholder="e.g. Clothing, Food, Hardware (comma-separated)"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Price Range</Label>
+                      <Input
+                        value={form.price_range}
+                        onChange={(e) => setForm({ ...form, price_range: e.target.value })}
+                        placeholder="e.g. Budget, Mid-range, Premium"
+                      />
+                    </div>
+                  </div>
+                )}
 
 
 

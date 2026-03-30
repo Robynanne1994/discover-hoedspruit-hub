@@ -15,16 +15,30 @@ export const RESTAURANT_ONLY_FIELDS = [
   "wheelchair_seating", "wheelchair_toilet", "has_toilet", "has_wifi", "has_free_wifi"
 ] as const;
 
+export const SHOPPING_ONLY_FIELDS = [
+  "air_conditioned", "payment_methods", "delivery_available", "click_and_collect",
+  "order_online", "parking_available", "wheelchair_friendly", "local_products",
+  "shop_type", "curio_or_gifts", "product_categories", "price_range"
+] as const;
+
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
+export const SHOPPING_CATEGORY_PATTERN = /^shopping$/i;
 
 export function isRestaurantCategory(categoryTitle: string): boolean {
   return RESTAURANT_CATEGORY_PATTERN.test(categoryTitle);
+}
+
+export function isShoppingCategory(categoryTitle: string): boolean {
+  return SHOPPING_CATEGORY_PATTERN.test(categoryTitle);
 }
 
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
     headers.push(...RESTAURANT_ONLY_FIELDS);
+  }
+  if (categoryTitle && isShoppingCategory(categoryTitle)) {
+    headers.push(...SHOPPING_ONLY_FIELDS);
   }
   return headers;
 }

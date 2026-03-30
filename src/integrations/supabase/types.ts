@@ -297,9 +297,13 @@ export type Database = {
       }
       listings: {
         Row: {
+          air_conditioned: boolean | null
           category_id: string | null
+          click_and_collect: boolean | null
           created_at: string
           cuisine: string[] | null
+          curio_or_gifts: boolean | null
+          delivery_available: boolean | null
           description: string | null
           email: string | null
           gallery_images: string[] | null
@@ -317,15 +321,22 @@ export type Database = {
           is_featured: boolean
           kids_menu: boolean | null
           kids_playground: boolean | null
+          local_products: boolean | null
           location: string | null
           long_description: string | null
           meal: string[] | null
           opening_hours: Json | null
+          order_online: boolean | null
+          parking_available: boolean | null
+          payment_methods: string[] | null
           pets_allowed: boolean | null
           phone: string | null
           price_level: number | null
+          price_range: string | null
+          product_categories: string[] | null
           seating: string[] | null
           service_type: string[] | null
+          shop_type: string | null
           show_attributes: boolean
           smoking_allowed: boolean | null
           title: string
@@ -340,9 +351,13 @@ export type Database = {
           wheelchair_toilet: boolean | null
         }
         Insert: {
+          air_conditioned?: boolean | null
           category_id?: string | null
+          click_and_collect?: boolean | null
           created_at?: string
           cuisine?: string[] | null
+          curio_or_gifts?: boolean | null
+          delivery_available?: boolean | null
           description?: string | null
           email?: string | null
           gallery_images?: string[] | null
@@ -360,15 +375,22 @@ export type Database = {
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null
+          local_products?: boolean | null
           location?: string | null
           long_description?: string | null
           meal?: string[] | null
           opening_hours?: Json | null
+          order_online?: boolean | null
+          parking_available?: boolean | null
+          payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
           price_level?: number | null
+          price_range?: string | null
+          product_categories?: string[] | null
           seating?: string[] | null
           service_type?: string[] | null
+          shop_type?: string | null
           show_attributes?: boolean
           smoking_allowed?: boolean | null
           title: string
@@ -383,9 +405,13 @@ export type Database = {
           wheelchair_toilet?: boolean | null
         }
         Update: {
+          air_conditioned?: boolean | null
           category_id?: string | null
+          click_and_collect?: boolean | null
           created_at?: string
           cuisine?: string[] | null
+          curio_or_gifts?: boolean | null
+          delivery_available?: boolean | null
           description?: string | null
           email?: string | null
           gallery_images?: string[] | null
@@ -403,15 +429,22 @@ export type Database = {
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null
+          local_products?: boolean | null
           location?: string | null
           long_description?: string | null
           meal?: string[] | null
           opening_hours?: Json | null
+          order_online?: boolean | null
+          parking_available?: boolean | null
+          payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
           price_level?: number | null
+          price_range?: string | null
+          product_categories?: string[] | null
           seating?: string[] | null
           service_type?: string[] | null
+          shop_type?: string | null
           show_attributes?: boolean
           smoking_allowed?: boolean | null
           title?: string
