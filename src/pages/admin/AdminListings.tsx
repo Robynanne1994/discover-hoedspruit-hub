@@ -619,68 +619,7 @@ const AdminListings = () => {
         </div>
       )}
 
-      {/* Bulk edit dialog */}
-      <Dialog open={bulkOpen} onOpenChange={setBulkOpen}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto">
-          <DialogHeader><DialogTitle>Bulk Edit {selectedIds.size} Listing(s)</DialogTitle></DialogHeader>
-          <p className="text-sm text-muted-foreground mb-4">Toggle on the fields you want to change. Only enabled fields will be updated.</p>
-          <div className="space-y-4">
-            {BULK_FIELDS.map((field) => {
-              const entry = bulkForm[field.key] ?? { enabled: false, value: false };
-              return (
-                <div key={field.key} className="flex items-center gap-3">
-                  <Checkbox
-                    checked={entry.enabled}
-                    onCheckedChange={(v) => setBulkForm({ ...bulkForm, [field.key]: { enabled: !!v, value: entry.value } })}
-                  />
-                  <div className="flex items-center gap-2 flex-1">
-                    <Label className={!entry.enabled ? "text-muted-foreground" : ""}>{field.label}</Label>
-                    {entry.enabled && (
-                      <Switch
-                        checked={entry.value === true}
-                        onCheckedChange={(v) => setBulkForm({ ...bulkForm, [field.key]: { enabled: true, value: v } })}
-                      />
-                    )}
-                  </div>
-                </div>
-              );
-            })}
 
-            <div className="border-t border-border pt-4">
-              <Label>Categories</Label>
-              <Select value={bulkCatAction} onValueChange={(v: any) => setBulkCatAction(v)}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">Don't change</SelectItem>
-                  <SelectItem value="add">Add categories</SelectItem>
-                  <SelectItem value="set">Replace categories</SelectItem>
-                </SelectContent>
-              </Select>
-              {bulkCatAction !== "none" && (
-                <div className="space-y-2 mt-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
-                  {categories?.map((cat) => (
-                    <div key={cat.id} className="flex items-center gap-2">
-                      <Checkbox
-                        checked={bulkCatIds.includes(cat.id)}
-                        onCheckedChange={() => setBulkCatIds((prev) => prev.includes(cat.id) ? prev.filter((id) => id !== cat.id) : [...prev, cat.id])}
-                      />
-                      <label className="text-sm text-foreground cursor-pointer">{cat.title}</label>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Button
-              className="w-full"
-              disabled={bulkUpdate.isPending}
-              onClick={() => bulkUpdate.mutate()}
-            >
-              {bulkUpdate.isPending ? "Updating..." : `Update ${selectedIds.size} Listing(s)`}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
