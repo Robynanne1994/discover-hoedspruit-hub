@@ -218,15 +218,58 @@ const AdminListings = () => {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("listings").delete().eq("id", id);
+  const bulkUpdate = useMutation({
+    mutationFn: async () => {
+      const ids = Array.from(selectedIds);
+      if (!ids.length) return;
+
+      // Build payload from enabled bulk fields
+      const payload: Record<string, any> = {};
+      for (const field of BULK_FIELDS) {
+        const entry = bulkForm[field.key];
+        if (entry?.enabled) payload[field.key] = entry.value;
+      }
+
+      if (Object.keys(payload).length > 0) {
+        const { error } = await supabase.from("listings").update(payload).in("id", ids);
+        if (error) throw error;
+      }
+
+      // Handle category changes
+      if (bulkCatAction !== "none" && bulkCatIds.length > 0) {
+        for (const listingId of ids) {
+          if (bulkCatAction === "set") {
+            await supabase.from("listing_categories").delete().eq("listing_id", listingId);
+          }
+          const rows = bulkCatIds.map((catId) => ({ listing_id: listingId, category_id: catId }));
+          await supabase.from("listing_categories").upsert(rows, { onConflict: "listing_id,category_id", ignoreDuplicates: true });
+        }
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-listings"] });
+      toast.success(`${selectedIds.size} listing(s) updated`);
+      setSelectedIds(new Set());
+      setBulkOpen(false);
+      setBulkForm({});
+      setBulkCatAction("none");
+      setBulkCatIds([]);
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const bulkDelete = useMutation({
+    mutationFn: async () => {
+      const ids = Array.from(selectedIds);
+      const { error } = await supabase.from("listings").delete().in("id", ids);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
-      toast.success("Listing deleted");
+      toast.success(`${selectedIds.size} listing(s) deleted`);
+      setSelectedIds(new Set());
     },
+    onError: (e) => toast.error(e.message),
   });
 
   const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setSelectedSubIds([]); setOpen(false); };
