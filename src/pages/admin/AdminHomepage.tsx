@@ -94,22 +94,23 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
 
   const saveMutation = useMutation({
     mutationFn: async (newIds: string[]) => {
-      // Upsert into site_content
       const { data: existing } = await supabase
         .from("site_content")
         .select("id")
         .eq("section", sectionKey)
         .maybeSingle();
 
+      const contentValue = JSON.parse(JSON.stringify(newIds));
+
       if (existing) {
         await supabase
           .from("site_content")
-          .update({ content: newIds as unknown as Record<string, unknown> })
+          .update({ content: contentValue })
           .eq("section", sectionKey);
       } else {
         await supabase
           .from("site_content")
-          .insert({ section: sectionKey, content: newIds as unknown as Record<string, unknown> });
+          .insert([{ section: sectionKey, content: contentValue }]);
       }
     },
     onSuccess: () => {
