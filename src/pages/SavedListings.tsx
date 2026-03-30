@@ -121,7 +121,10 @@ const SavedListings = () => {
   if (loading || isLoading) {
     return (
       <div className="min-h-screen pb-20 bg-background">
-        <div className="pt-6 px-4 space-y-4">
+        <div className="px-4 pt-4">
+          <BackButton />
+        </div>
+        <div className="px-4 space-y-4">
           <Skeleton className="h-5 w-48" />
           <div className="flex gap-2">
             {[1, 2, 3, 4].map((i) => (
