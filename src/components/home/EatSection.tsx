@@ -1,15 +1,16 @@
 import SectionHeader from "./SectionHeader";
 import VenueCard from "./VenueCard";
-import { useHomepageSection } from "@/hooks/useHomepageSection";
+import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const EatSection = () => {
   const { data: listings, isLoading } = useHomepageSection("eat", "%restaurant%");
+  const { data: title } = useHomepageSectionTitle("eat", "Eat in Hoedspruit");
 
   if (isLoading) {
     return (
       <section className="pb-4">
-        <SectionHeader title="Eat in Hoedspruit" />
+        <SectionHeader title={title || "Eat in Hoedspruit"} />
         <div className="flex gap-3 px-4">
           <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
           <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
@@ -22,7 +23,7 @@ const EatSection = () => {
 
   return (
     <section className="pt-6 pb-8">
-      <SectionHeader title="Eat in Hoedspruit" actionLabel="See all" actionHref="/categories" />
+      <SectionHeader title={title || "Eat in Hoedspruit"} actionLabel="See all" actionHref="/categories" />
       <div className="grid grid-cols-2 gap-3 px-4">
         {listings.map((listing) => (
           <VenueCard
