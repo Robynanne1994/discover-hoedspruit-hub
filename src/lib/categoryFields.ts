@@ -22,9 +22,9 @@ export function isRestaurantCategory(categoryTitle: string): boolean {
 }
 
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
-  const headers = [...UNIVERSAL_FIELDS];
+  const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
     headers.push(...RESTAURANT_ONLY_FIELDS);
   }
-  return headers as unknown as string[];
+  return headers;
 }
