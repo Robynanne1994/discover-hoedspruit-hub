@@ -51,7 +51,7 @@ const StaySection = () => {
 
   return (
     <section className="pb-6">
-      <SectionHeader title="Places to Stay" />
+      <SectionHeader title="Places to Stay" actionLabel="See all" actionHref="/categories" />
       <div className="grid grid-cols-2 gap-3 px-4">
         {listings.map((listing) => (
           <VenueCard
