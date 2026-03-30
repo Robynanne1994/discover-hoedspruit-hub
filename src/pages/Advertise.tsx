@@ -77,18 +77,6 @@ const Advertise = () => {
           </p>
         </div>
 
-        {/* Benefits */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          {BENEFITS.map((item) => (
-            <div key={item.title} className="bg-card border border-border rounded-2xl p-4 text-center">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
-                <item.icon className="h-5 w-5 text-primary" />
-              </div>
-              <h3 className="font-bold text-sm text-foreground mb-1">{item.title}</h3>
-              <p className="text-muted-foreground text-[10px] leading-tight">{item.description}</p>
-            </div>
-          ))}
-        </div>
 
         {/* CTA */}
         <div className="bg-accent/10 border border-accent/20 rounded-2xl p-6 text-center mb-6">
