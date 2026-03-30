@@ -273,6 +273,22 @@ const AdminImport = () => {
           payload.has_free_wifi = parseBool(row.has_free_wifi);
         }
 
+        // Only include shopping fields if importing for a shopping category
+        if (isShopping) {
+          payload.air_conditioned = parseBool(row.air_conditioned);
+          payload.payment_methods = parseArray(row.payment_methods) ?? [];
+          payload.delivery_available = parseBool(row.delivery_available);
+          payload.click_and_collect = parseBool(row.click_and_collect);
+          payload.order_online = parseBool(row.order_online);
+          payload.parking_available = parseBool(row.parking_available);
+          payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
+          payload.local_products = parseBool(row.local_products);
+          payload.shop_type = row.shop_type || null;
+          payload.curio_or_gifts = parseBool(row.curio_or_gifts);
+          payload.product_categories = parseArray(row.product_categories) ?? [];
+          payload.price_range = row.price_range || null;
+        }
+
         const existingId = existingMap.get(title.toLowerCase());
         let listingId: string | null = null;
 
