@@ -9,7 +9,7 @@ const ShopSection = () => {
   if (isLoading) {
     return (
       <section className="pb-6">
-        <SectionHeader title="Shop in Hoedspruit" />
+        <SectionHeader title="Where to Shop" />
         <div className="flex gap-3 px-4">
           <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
           <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
@@ -22,7 +22,7 @@ const ShopSection = () => {
 
   return (
     <section className="pt-6 pb-6">
-      <SectionHeader title="Shop in Hoedspruit" actionLabel="See all" actionHref="/categories" />
+      <SectionHeader title="Where to Shop" actionLabel="See all" actionHref="/categories" />
       <div className="grid grid-cols-2 gap-3 px-4">
         {listings.map((listing) => (
           <VenueCard
