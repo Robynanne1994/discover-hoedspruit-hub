@@ -338,6 +338,12 @@ const AdminListings = () => {
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
 
+  const filteredListings = (listings ?? []).filter((l) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return l.title.toLowerCase().includes(q) || (l.location ?? "").toLowerCase().includes(q) || ((l as any)._categoryNames ?? []).some((n: string) => n.toLowerCase().includes(q));
+  });
+
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
