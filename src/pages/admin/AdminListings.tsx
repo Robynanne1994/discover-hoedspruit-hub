@@ -173,6 +173,17 @@ const AdminListings = () => {
         has_toilet: values.has_toilet,
         has_wifi: values.has_wifi,
         has_free_wifi: values.has_free_wifi,
+        air_conditioned: values.air_conditioned,
+        payment_methods: values.payment_methods,
+        delivery_available: values.delivery_available,
+        click_and_collect: values.click_and_collect,
+        order_online: values.order_online,
+        parking_available: values.parking_available,
+        local_products: values.local_products,
+        shop_type: values.shop_type || null,
+        curio_or_gifts: values.curio_or_gifts,
+        product_categories: values.product_categories ? values.product_categories.split(",").map(s => s.trim()).filter(Boolean) : [],
+        price_range: values.price_range || null,
       };
 
       let listingId: string;
