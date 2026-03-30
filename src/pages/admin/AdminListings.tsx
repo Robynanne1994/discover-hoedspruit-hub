@@ -268,6 +268,17 @@ const AdminListings = () => {
       has_toilet: (l as any).has_toilet ?? null,
       has_wifi: (l as any).has_wifi ?? null,
       has_free_wifi: (l as any).has_free_wifi ?? null,
+      air_conditioned: (l as any).air_conditioned ?? null,
+      payment_methods: (l as any).payment_methods ?? [],
+      delivery_available: (l as any).delivery_available ?? null,
+      click_and_collect: (l as any).click_and_collect ?? null,
+      order_online: (l as any).order_online ?? null,
+      parking_available: (l as any).parking_available ?? null,
+      local_products: (l as any).local_products ?? null,
+      shop_type: (l as any).shop_type ?? "",
+      curio_or_gifts: (l as any).curio_or_gifts ?? null,
+      product_categories: ((l as any).product_categories ?? []).join(", "),
+      price_range: (l as any).price_range ?? "",
     });
     setOpen(true);
   };
