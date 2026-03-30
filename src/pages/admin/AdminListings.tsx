@@ -343,7 +343,7 @@ const AdminListings = () => {
                     </div>
                   </div>
                 )}
-                <div><Label>Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
+                <div><Label>Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} /></div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
