@@ -609,7 +609,7 @@ const AdminListings = () => {
       {selectedIds.size > 0 && (
         <div className="flex items-center gap-3 mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
           <span className="text-sm font-medium text-foreground">{selectedIds.size} selected</span>
-          <Button size="sm" variant="outline" onClick={() => { setBulkForm({}); setBulkCatAction("none"); setBulkCatIds([]); setBulkOpen(true); }}>
+          <Button size="sm" variant="outline" onClick={() => navigate(`/admin/listings/bulk-edit?ids=${Array.from(selectedIds).join(",")}`)}>
             <Pencil className="h-3.5 w-3.5 mr-1.5" /> Bulk Edit
           </Button>
           <Button size="sm" variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { if (confirm(`Delete ${selectedIds.size} listing(s)?`)) bulkDelete.mutate(); }}>
