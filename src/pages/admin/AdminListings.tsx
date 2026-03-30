@@ -558,37 +558,6 @@ const AdminListings = () => {
                   </div>
                 )}
 
-                <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-      </div>
-
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search listings..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-9"
-        />
-      </div>
-
-      {/* Bulk action bar */}
-      {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
-          <span className="text-sm font-medium text-foreground">{selectedIds.size} selected</span>
-          <Button size="sm" variant="outline" onClick={() => navigate(`/admin/listings/bulk-edit?ids=${Array.from(selectedIds).join(",")}`)}>
-            <Pencil className="h-3.5 w-3.5 mr-1.5" /> Bulk Edit
-          </Button>
-          <Button size="sm" variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { if (confirm(`Delete ${selectedIds.size} listing(s)?`)) bulkDelete.mutate(); }}>
-            <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Delete
-          </Button>
-          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>Clear</Button>
-        </div>
-                )}
-
                 {isShoppingType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="text-sm font-medium text-foreground">Shopping Fields</p>
@@ -662,6 +631,37 @@ const AdminListings = () => {
                     </div>
                   </div>
                 )}
+
+                <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
+
+      <div className="relative mb-4">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Search listings..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
+      {/* Bulk action bar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+          <span className="text-sm font-medium text-foreground">{selectedIds.size} selected</span>
+          <Button size="sm" variant="outline" onClick={() => navigate(`/admin/listings/bulk-edit?ids=${Array.from(selectedIds).join(",")}`)}>
+            <Pencil className="h-3.5 w-3.5 mr-1.5" /> Bulk Edit
+          </Button>
+          <Button size="sm" variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { if (confirm(`Delete ${selectedIds.size} listing(s)?`)) bulkDelete.mutate(); }}>
+            <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Delete
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>Clear</Button>
+        </div>
+      )}
 
 
 
