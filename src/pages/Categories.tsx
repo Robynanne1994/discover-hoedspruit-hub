@@ -67,7 +67,7 @@ const Categories = () => {
               className="text-3xl font-bold tracking-tight leading-tight text-center"
               style={{ fontFamily: "var(--font-heading)" }}
             >
-              Hello
+              Explore
               <br />
               Hoedspruit
             </h1>
