@@ -514,7 +514,7 @@ const MyAccount = () => {
             className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
           >
             <Heart className="h-4.5 w-4.5 text-primary fill-primary" />
-            <span className="text-sm font-medium text-foreground">Saved Listings</span>
+            <span className="font-medium text-foreground text-xs">Saved Listings</span>
             <ChevronRight className="h-4 w-4 text-muted-foreground/50 ml-auto" />
           </Link>
           <button
