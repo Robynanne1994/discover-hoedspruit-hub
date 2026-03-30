@@ -438,6 +438,18 @@ const AdminImport = () => {
         has_toilet: l.has_toilet == null ? "" : String(l.has_toilet),
         has_wifi: l.has_wifi == null ? "" : String(l.has_wifi),
         has_free_wifi: l.has_free_wifi == null ? "" : String(l.has_free_wifi),
+        // Shopping fields
+        air_conditioned: l.air_conditioned == null ? "" : String(l.air_conditioned),
+        payment_methods: (l.payment_methods ?? []).join("|"),
+        delivery_available: l.delivery_available == null ? "" : String(l.delivery_available),
+        click_and_collect: l.click_and_collect == null ? "" : String(l.click_and_collect),
+        order_online: l.order_online == null ? "" : String(l.order_online),
+        parking_available: l.parking_available == null ? "" : String(l.parking_available),
+        local_products: l.local_products == null ? "" : String(l.local_products),
+        shop_type: l.shop_type ?? "",
+        curio_or_gifts: l.curio_or_gifts == null ? "" : String(l.curio_or_gifts),
+        product_categories: (l.product_categories ?? []).join("|"),
+        price_range: l.price_range ?? "",
       };
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
