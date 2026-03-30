@@ -94,6 +94,7 @@ const AdminImport = () => {
   const selectedCategoryTitle = selectedCategory?.title ?? null;
   const csvHeaders = getCSVHeadersForCategory(selectedCategoryTitle);
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
+  const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
