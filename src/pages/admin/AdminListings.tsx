@@ -377,15 +377,10 @@ const AdminListings = () => {
                   />
                 </div>
 
-                <div>
-                  <Label>Gallery Images (one URL per line)</Label>
-                  <Textarea
-                    value={form.gallery_images}
-                    onChange={(e) => setForm({ ...form, gallery_images: e.target.value })}
-                    rows={3}
-                    placeholder={"https://example.com/photo1.jpg\nhttps://example.com/photo2.jpg"}
-                  />
-                </div>
+                <GalleryUpload
+                  value={form.gallery_images}
+                  onChange={(val) => setForm({ ...form, gallery_images: val })}
+                />
 
                 <div>
                   <Label>Opening Hours</Label>
