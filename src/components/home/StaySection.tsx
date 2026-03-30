@@ -1,39 +1,10 @@
 import SectionHeader from "./SectionHeader";
 import VenueCard from "./VenueCard";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { useHomepageSection } from "@/hooks/useHomepageSection";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const StaySection = () => {
-  const { data: listings, isLoading } = useQuery({
-    queryKey: ["homepage-stay"],
-    queryFn: async () => {
-      const { data: categories } = await supabase
-        .from("categories")
-        .select("id")
-        .ilike("title", "%accommodation%")
-        .limit(1);
-
-      if (!categories?.length) return [];
-
-      const categoryId = categories[0].id;
-
-      const { data: linkedIds } = await supabase
-        .from("listing_categories")
-        .select("listing_id")
-        .eq("category_id", categoryId);
-
-      const ids = linkedIds?.map((l) => l.listing_id) || [];
-
-      const { data } = await supabase
-        .from("listings")
-        .select("id, title, image_url, google_rating, location")
-        .or(`category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`)
-        .limit(4);
-
-      return data || [];
-    },
-  });
+  const { data: listings, isLoading } = useHomepageSection("stay", "%accommodation%");
 
   if (isLoading) {
     return (
