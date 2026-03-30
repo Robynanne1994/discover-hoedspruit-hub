@@ -113,7 +113,7 @@ const SavedListings = () => {
                 Hello<br />Hoedspruit
               </h1>
               <p className="text-lg font-semibold mt-1" style={{ fontFamily: "var(--font-heading)" }}>
-                Saved Listings
+                ​
               </p>
             </div>
           </div>
@@ -147,7 +147,7 @@ const SavedListings = () => {
               Hello<br />Hoedspruit
             </h1>
             <p className="text-lg font-semibold mt-1" style={{ fontFamily: "var(--font-heading)" }}>
-              Saved Listings
+              ​
             </p>
           </div>
         </div>
@@ -180,7 +180,7 @@ const SavedListings = () => {
               Hello<br />Hoedspruit
             </h1>
             <p className="text-lg font-semibold mt-1" style={{ fontFamily: "var(--font-heading)" }}>
-              Saved Listings
+              ​
             </p>
           </div>
         </div>
