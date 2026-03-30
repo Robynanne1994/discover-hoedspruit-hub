@@ -6,6 +6,9 @@ import Navbar from "@/components/Navbar";
 import { MapPin, Phone, Mail, Globe, Star, ChevronDown, ChevronUp, MessageCircle } from "lucide-react";
 import BackButton from "@/components/BackButton";
 import FavouriteButton from "@/components/FavouriteButton";
+import { isRestaurantCategory } from "@/lib/categoryFields";
+import BackButton from "@/components/BackButton";
+import FavouriteButton from "@/components/FavouriteButton";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
