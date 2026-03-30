@@ -65,3 +65,26 @@ export const useHomepageSection = (
     },
   });
 };
+
+export const useHomepageSectionTitle = (sectionKey: string, defaultTitle: string) => {
+  return useQuery({
+    queryKey: [`homepage-${sectionKey}-title`],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", `homepage-${sectionKey}-title`)
+        .maybeSingle();
+
+      if (data?.content && typeof data.content === "string" && data.content.trim()) {
+        return data.content;
+      }
+      // Handle case where content is stored as JSON string
+      if (data?.content && typeof data.content === "object") {
+        const val = (data.content as any);
+        if (typeof val === "string" && val.trim()) return val;
+      }
+      return defaultTitle;
+    },
+  });
+};

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { X, Search, GripVertical } from "lucide-react";
+import { X, Search, GripVertical, Pencil, Check } from "lucide-react";
 
 const SECTIONS = [
   { key: "homepage-eat", label: "Eat in Hoedspruit", categorySearch: "%restaurant%" },
@@ -20,11 +20,108 @@ interface Listing {
   location: string | null;
 }
 
+const SectionTitleEditor = ({ sectionKey, defaultLabel }: { sectionKey: string; defaultLabel: string }) => {
+  const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState("");
+
+  const titleKey = `${sectionKey}-title`;
+
+  const { data: customTitle } = useQuery({
+    queryKey: ["site-content", titleKey],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", titleKey)
+        .maybeSingle();
+      if (data?.content && typeof data.content === "string" && data.content.trim()) {
+        return data.content;
+      }
+      return null;
+    },
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (newTitle: string) => {
+      const { data: existing } = await supabase
+        .from("site_content")
+        .select("id")
+        .eq("section", titleKey)
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from("site_content")
+          .update({ content: newTitle as any })
+          .eq("section", titleKey);
+      } else {
+        await supabase
+          .from("site_content")
+          .insert([{ section: titleKey, content: newTitle as any }]);
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["site-content", titleKey] });
+      // Also invalidate the frontend hook cache
+      const shortKey = sectionKey.replace("homepage-", "");
+      queryClient.invalidateQueries({ queryKey: [`homepage-${shortKey}-title`] });
+      toast.success("Section title updated");
+      setIsEditing(false);
+    },
+  });
+
+  const displayTitle = customTitle || defaultLabel;
+
+  const startEditing = () => {
+    setEditValue(displayTitle);
+    setIsEditing(true);
+  };
+
+  const saveTitle = () => {
+    const trimmed = editValue.trim();
+    if (!trimmed || trimmed === defaultLabel) {
+      // Reset to default
+      saveMutation.mutate(defaultLabel);
+    } else {
+      saveMutation.mutate(trimmed);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className="flex items-center gap-2">
+        <Input
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          className="text-lg font-bold h-9 w-64"
+          onKeyDown={(e) => e.key === "Enter" && saveTitle()}
+          autoFocus
+        />
+        <Button size="icon" variant="ghost" onClick={saveTitle} disabled={saveMutation.isPending}>
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button size="icon" variant="ghost" onClick={() => setIsEditing(false)}>
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <h3 className="font-bold text-lg">{displayTitle}</h3>
+      <Button size="icon" variant="ghost" onClick={startEditing} className="h-7 w-7">
+        <Pencil className="h-3.5 w-3.5" />
+      </Button>
+    </div>
+  );
+};
+
 const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: string; label: string; categorySearch: string }) => {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
 
-  // Fetch current curated IDs from site_content
   const { data: curatedIds = [] } = useQuery({
     queryKey: ["site-content", sectionKey],
     queryFn: async () => {
@@ -40,7 +137,6 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
     },
   });
 
-  // Fetch curated listing details
   const { data: curatedListings = [] } = useQuery({
     queryKey: ["curated-listings", sectionKey, curatedIds],
     queryFn: async () => {
@@ -49,18 +145,15 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
         .from("listings")
         .select("id, title, image_url, location")
         .in("id", curatedIds);
-      // Preserve order from curatedIds
       const map = new Map((data || []).map((l) => [l.id, l]));
       return curatedIds.map((id) => map.get(id)).filter(Boolean) as Listing[];
     },
     enabled: curatedIds.length > 0,
   });
 
-  // Search all listings in this category
   const { data: searchResults = [] } = useQuery({
     queryKey: ["listing-search", sectionKey, search],
     queryFn: async () => {
-      // Find category
       const { data: categories } = await supabase
         .from("categories")
         .select("id")
@@ -70,7 +163,6 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
       if (!categories?.length) return [];
       const categoryId = categories[0].id;
 
-      // Get linked listing IDs
       const { data: linkedIds } = await supabase
         .from("listing_categories")
         .select("listing_id")
@@ -137,9 +229,8 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
 
   return (
     <div className="border border-border rounded-lg p-4 space-y-4">
-      <h3 className="font-bold text-lg">{label}</h3>
+      <SectionTitleEditor sectionKey={sectionKey} defaultLabel={label} />
 
-      {/* Currently selected */}
       <div>
         <p className="text-sm text-muted-foreground mb-2">
           Selected ({curatedIds.length}/4) — {curatedIds.length === 0 ? "showing auto-picks" : "showing curated picks"}
@@ -163,7 +254,6 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
         </div>
       </div>
 
-      {/* Search to add */}
       {curatedIds.length < 4 && (
         <div>
           <div className="relative mb-2">

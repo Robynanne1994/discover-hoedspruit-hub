@@ -1,15 +1,16 @@
 import SectionHeader from "./SectionHeader";
 import VenueCard from "./VenueCard";
-import { useHomepageSection } from "@/hooks/useHomepageSection";
+import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const StaySection = () => {
   const { data: listings, isLoading } = useHomepageSection("stay", "%accommodation%");
+  const { data: title } = useHomepageSectionTitle("stay", "Places to Stay");
 
   if (isLoading) {
     return (
       <section className="pb-6">
-        <SectionHeader title="Places to Stay" />
+        <SectionHeader title={title || "Places to Stay"} />
         <div className="flex gap-3 px-4">
           <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
           <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
@@ -22,7 +23,7 @@ const StaySection = () => {
 
   return (
     <section className="pb-6">
-      <SectionHeader title="Places to Stay" actionLabel="See all" actionHref="/categories" />
+      <SectionHeader title={title || "Places to Stay"} actionLabel="See all" actionHref="/categories" />
       <div className="grid grid-cols-2 gap-3 px-4">
         {listings.map((listing) => (
           <VenueCard
