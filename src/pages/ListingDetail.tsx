@@ -78,6 +78,7 @@ const ListingDetail = () => {
 
   const firstCategory = listingCategories && listingCategories.length > 0 ? listingCategories[0] : null;
   const isListingRestaurant = listingCategories?.some((cat) => isRestaurantCategory(cat.title)) ?? false;
+  const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
