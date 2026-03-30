@@ -26,6 +26,15 @@ const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
 
 const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null };
 
+const BULK_FIELDS = [
+  { key: "is_featured", label: "Featured", type: "switch" },
+  { key: "show_attributes", label: "Show Attributes", type: "switch" },
+  { key: "good_for_kids", label: "Good for Kids", type: "switch" },
+  { key: "pets_allowed", label: "Pets Allowed", type: "switch" },
+  { key: "wheelchair_friendly", label: "Wheelchair Friendly", type: "switch" },
+  { key: "smoking_allowed", label: "Smoking Allowed", type: "switch" },
+] as const;
+
 const AdminListings = () => {
   const qc = useQueryClient();
   const navigate = useNavigate();
@@ -36,6 +45,11 @@ const AdminListings = () => {
   const [selectedCatIds, setSelectedCatIds] = useState<string[]>([]);
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkOpen, setBulkOpen] = useState(false);
+  const [bulkForm, setBulkForm] = useState<Record<string, { enabled: boolean; value: any }>>({});
+  const [bulkCatAction, setBulkCatAction] = useState<"none" | "add" | "set">("none");
+  const [bulkCatIds, setBulkCatIds] = useState<string[]>([]);
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
@@ -204,15 +218,58 @@ const AdminListings = () => {
     onError: (e) => toast.error(e.message),
   });
 
-  const deleteMut = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("listings").delete().eq("id", id);
+  const bulkUpdate = useMutation({
+    mutationFn: async () => {
+      const ids = Array.from(selectedIds);
+      if (!ids.length) return;
+
+      // Build payload from enabled bulk fields
+      const payload: Record<string, any> = {};
+      for (const field of BULK_FIELDS) {
+        const entry = bulkForm[field.key];
+        if (entry?.enabled) payload[field.key] = entry.value;
+      }
+
+      if (Object.keys(payload).length > 0) {
+        const { error } = await supabase.from("listings").update(payload).in("id", ids);
+        if (error) throw error;
+      }
+
+      // Handle category changes
+      if (bulkCatAction !== "none" && bulkCatIds.length > 0) {
+        for (const listingId of ids) {
+          if (bulkCatAction === "set") {
+            await supabase.from("listing_categories").delete().eq("listing_id", listingId);
+          }
+          const rows = bulkCatIds.map((catId) => ({ listing_id: listingId, category_id: catId }));
+          await supabase.from("listing_categories").upsert(rows, { onConflict: "listing_id,category_id", ignoreDuplicates: true });
+        }
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-listings"] });
+      toast.success(`${selectedIds.size} listing(s) updated`);
+      setSelectedIds(new Set());
+      setBulkOpen(false);
+      setBulkForm({});
+      setBulkCatAction("none");
+      setBulkCatIds([]);
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const bulkDelete = useMutation({
+    mutationFn: async () => {
+      const ids = Array.from(selectedIds);
+      const { error } = await supabase.from("listings").delete().in("id", ids);
       if (error) throw error;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
-      toast.success("Listing deleted");
+      toast.success(`${selectedIds.size} listing(s) deleted`);
+      setSelectedIds(new Set());
     },
+    onError: (e) => toast.error(e.message),
   });
 
   const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setSelectedSubIds([]); setOpen(false); };
@@ -280,6 +337,12 @@ const AdminListings = () => {
 
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
+
+  const filteredListings = (listings ?? []).filter((l) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return l.title.toLowerCase().includes(q) || (l.location ?? "").toLowerCase().includes(q) || ((l as any)._categoryNames ?? []).some((n: string) => n.toLowerCase().includes(q));
+  });
 
   return (
     <div>
@@ -542,37 +605,132 @@ const AdminListings = () => {
         />
       </div>
 
+      {/* Bulk action bar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 mb-4 p-3 bg-primary/10 border border-primary/20 rounded-lg">
+          <span className="text-sm font-medium text-foreground">{selectedIds.size} selected</span>
+          <Button size="sm" variant="outline" onClick={() => { setBulkForm({}); setBulkCatAction("none"); setBulkCatIds([]); setBulkOpen(true); }}>
+            <Pencil className="h-3.5 w-3.5 mr-1.5" /> Bulk Edit
+          </Button>
+          <Button size="sm" variant="outline" className="text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { if (confirm(`Delete ${selectedIds.size} listing(s)?`)) bulkDelete.mutate(); }}>
+            <Trash2 className="h-3.5 w-3.5 mr-1.5" /> Delete
+          </Button>
+          <Button size="sm" variant="ghost" onClick={() => setSelectedIds(new Set())}>Clear</Button>
+        </div>
+      )}
+
+      {/* Bulk edit dialog */}
+      <Dialog open={bulkOpen} onOpenChange={setBulkOpen}>
+        <DialogContent className="max-h-[85vh] overflow-y-auto">
+          <DialogHeader><DialogTitle>Bulk Edit {selectedIds.size} Listing(s)</DialogTitle></DialogHeader>
+          <p className="text-sm text-muted-foreground mb-4">Toggle on the fields you want to change. Only enabled fields will be updated.</p>
+          <div className="space-y-4">
+            {BULK_FIELDS.map((field) => {
+              const entry = bulkForm[field.key] ?? { enabled: false, value: false };
+              return (
+                <div key={field.key} className="flex items-center gap-3">
+                  <Checkbox
+                    checked={entry.enabled}
+                    onCheckedChange={(v) => setBulkForm({ ...bulkForm, [field.key]: { enabled: !!v, value: entry.value } })}
+                  />
+                  <div className="flex items-center gap-2 flex-1">
+                    <Label className={!entry.enabled ? "text-muted-foreground" : ""}>{field.label}</Label>
+                    {entry.enabled && (
+                      <Switch
+                        checked={entry.value === true}
+                        onCheckedChange={(v) => setBulkForm({ ...bulkForm, [field.key]: { enabled: true, value: v } })}
+                      />
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="border-t border-border pt-4">
+              <Label>Categories</Label>
+              <Select value={bulkCatAction} onValueChange={(v: any) => setBulkCatAction(v)}>
+                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Don't change</SelectItem>
+                  <SelectItem value="add">Add categories</SelectItem>
+                  <SelectItem value="set">Replace categories</SelectItem>
+                </SelectContent>
+              </Select>
+              {bulkCatAction !== "none" && (
+                <div className="space-y-2 mt-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
+                  {categories?.map((cat) => (
+                    <div key={cat.id} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={bulkCatIds.includes(cat.id)}
+                        onCheckedChange={() => setBulkCatIds((prev) => prev.includes(cat.id) ? prev.filter((id) => id !== cat.id) : [...prev, cat.id])}
+                      />
+                      <label className="text-sm text-foreground cursor-pointer">{cat.title}</label>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <Button
+              className="w-full"
+              disabled={bulkUpdate.isPending}
+              onClick={() => bulkUpdate.mutate()}
+            >
+              {bulkUpdate.isPending ? "Updating..." : `Update ${selectedIds.size} Listing(s)`}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
         <div className="bg-card border border-border rounded-xl overflow-hidden">
           <table className="w-full text-sm table-fixed">
             <thead className="bg-muted">
               <tr>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[30%]">Title</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[30%]">Categories</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[20%]">Location</th>
+                <th className="p-3 w-[40px]">
+                  <Checkbox
+                    checked={filteredListings.length > 0 && filteredListings.every((l) => selectedIds.has(l.id))}
+                    onCheckedChange={(v) => {
+                      if (v) {
+                        setSelectedIds(new Set(filteredListings.map((l) => l.id)));
+                      } else {
+                        setSelectedIds(new Set());
+                      }
+                    }}
+                  />
+                </th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[28%]">Title</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Categories</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[18%]">Location</th>
                 <th className="text-left p-3 font-medium text-muted-foreground w-[8%]">Featured</th>
                 <th className="p-3 w-[12%]"></th>
               </tr>
             </thead>
             <tbody>
-              {listings?.filter((l) => {
-                if (!searchQuery.trim()) return true;
-                const q = searchQuery.toLowerCase();
-                return l.title.toLowerCase().includes(q) || (l.location ?? "").toLowerCase().includes(q) || ((l as any)._categoryNames ?? []).some((n: string) => n.toLowerCase().includes(q));
-              }).map((l) => (
-                <tr key={l.id} className="border-t border-border">
+              {filteredListings.map((l) => (
+                <tr key={l.id} className={`border-t border-border ${selectedIds.has(l.id) ? "bg-primary/5" : ""}`}>
+                  <td className="p-3">
+                    <Checkbox
+                      checked={selectedIds.has(l.id)}
+                      onCheckedChange={(v) => {
+                        const next = new Set(selectedIds);
+                        if (v) next.add(l.id); else next.delete(l.id);
+                        setSelectedIds(next);
+                      }}
+                    />
+                  </td>
                   <td className="p-3 font-medium text-foreground truncate">{l.title}</td>
                   <td className="p-3 text-muted-foreground truncate">{(l as any)._categoryNames?.join(", ") || "—"}</td>
                   <td className="p-3 text-muted-foreground truncate">{l.location ?? "—"}</td>
                   <td className="p-3 text-muted-foreground">{l.is_featured ? "Yes" : "No"}</td>
                   <td className="p-3 flex gap-1 justify-end">
                     <Button variant="ghost" size="icon" onClick={() => openEdit(l)}><Pencil className="h-4 w-4" /></Button>
-                    <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(l.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this listing?")) { supabase.from("listings").delete().eq("id", l.id).then(() => { qc.invalidateQueries({ queryKey: ["admin-listings"] }); toast.success("Listing deleted"); }); } }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
                   </td>
                 </tr>
               ))}
-              {listings?.length === 0 && (
-                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No listings yet. Add your first one!</td></tr>
+              {filteredListings.length === 0 && (
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No listings found.</td></tr>
               )}
             </tbody>
           </table>
