@@ -128,7 +128,7 @@ const Advertise = () => {
                   placeholder="Your name"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors(p => ({ ...p, name: "" })); }}
-                  className={`rounded-xl bg-card h-12 ${errors.name ? "border-destructive" : ""}`}
+                  className={`rounded-xl bg-card h-12 border border-border ${errors.name ? "border-destructive" : ""}`}
                 />
                 {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
               </div>
@@ -138,7 +138,7 @@ const Advertise = () => {
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors(p => ({ ...p, email: "" })); }}
-                  className={`rounded-xl bg-card h-12 ${errors.email ? "border-destructive" : ""}`}
+                  className={`rounded-xl bg-card h-12 border border-border ${errors.email ? "border-destructive" : ""}`}
                 />
                 {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
               </div>
@@ -147,7 +147,7 @@ const Advertise = () => {
                   placeholder="Business name (optional)"
                   value={business}
                   onChange={(e) => setBusiness(e.target.value)}
-                  className="rounded-xl bg-card h-12"
+                  className="rounded-xl bg-card h-12 border border-border"
                 />
               </div>
               <div>
@@ -156,7 +156,7 @@ const Advertise = () => {
                   value={message}
                   onChange={(e) => { setMessage(e.target.value); if (errors.message) setErrors(p => ({ ...p, message: "" })); }}
                   rows={5}
-                  className={`rounded-xl bg-card ${errors.message ? "border-destructive" : ""}`}
+                  className={`rounded-xl bg-card border border-border ${errors.message ? "border-destructive" : ""}`}
                 />
                 {errors.message && <p className="text-destructive text-xs mt-1">{errors.message}</p>}
               </div>
