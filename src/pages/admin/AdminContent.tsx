@@ -159,6 +159,17 @@ const AdminContent = () => {
           <Button onClick={() => saveHeader.mutate()} disabled={saveHeader.isPending}>Save Changes</Button>
         </div>
 
+        {/* Hero Image */}
+        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+          <h2 className="font-heading text-xl font-semibold text-foreground">Homepage Hero Image</h2>
+          <p className="text-sm text-muted-foreground">Recommended size: 1080×720px (landscape). This image appears at the top of the homepage.</p>
+          <div>
+            <Label>Hero Background Image</Label>
+            <ImageUpload bucket="listing-images" value={heroImageUrl} onChange={setHeroImageUrl} />
+          </div>
+          <Button onClick={() => saveHero.mutate()} disabled={saveHero.isPending}>Save Changes</Button>
+        </div>
+
         {/* Advertise Section */}
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
           <h2 className="font-heading text-xl font-semibold text-foreground">Advertise Section</h2>

@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import { Search, Sun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudDrizzle, Cloudy, MapPin, CalendarDays, FolderOpen, Loader2 } from "lucide-react";
 import { Calendar, UtensilsCrossed, Compass, Home, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import heroBg from "@/assets/hero-homepage.jpg";
+import heroFallback from "@/assets/hero-homepage.jpg";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 
 const categories = [
