@@ -201,25 +201,31 @@ const MyAccount = () => {
   // Not signed in
   if (!loading && !user) {
     return (
-      <div className="min-h-screen pb-20 bg-background">
-        <section className="relative">
-          <div className="relative h-[200px] overflow-hidden">
-            <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-            <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-              <h1 className="text-3xl font-bold tracking-tight leading-tight text-center" style={{ fontFamily: "var(--font-heading)" }}>
-                Hello<br />Hoedspruit
-              </h1>
-            </div>
+      <div className="min-h-screen pb-16 bg-background">
+        <div className="relative h-[180px] overflow-hidden">
+          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }} />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <h1
+              className="text-[32px] font-semibold text-white tracking-tight"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Profile
+            </h1>
           </div>
-        </section>
-        <div className="px-4 pt-8 text-center">
-          <h2 className="text-xl font-bold text-foreground mb-2" style={{ fontFamily: "var(--font-heading)" }}>
+        </div>
+        <div className="px-5 pt-12 text-center">
+          <h2
+            className="text-[22px] font-semibold text-foreground mb-2 tracking-tight"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
             Welcome to Hello Hoedspruit
           </h2>
-          <p className="text-muted-foreground text-sm mb-6">Sign in to access your profile, saved listings, and events.</p>
+          <p className="text-muted-foreground text-[13px] leading-relaxed mb-8 max-w-xs mx-auto">
+            Sign in to access your profile, saved listings, and events.
+          </p>
           <Link to="/auth">
-            <Button className="rounded-full px-8">Sign In / Create Account</Button>
+            <Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button>
           </Link>
         </div>
       </div>
@@ -229,15 +235,15 @@ const MyAccount = () => {
   // Loading state
   if (loading || !user) {
     return (
-      <div className="min-h-screen pb-20 bg-background">
-        <div className="relative h-[200px] overflow-hidden">
+      <div className="min-h-screen pb-16 bg-background">
+        <div className="relative h-[180px] overflow-hidden">
           <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }} />
         </div>
-        <div className="px-4 -mt-12 relative z-10 flex flex-col items-center">
-          <Skeleton className="h-24 w-24 rounded-full mb-3" />
-          <Skeleton className="h-5 w-40 mb-2" />
-          <Skeleton className="h-4 w-52" />
+        <div className="px-5 -mt-12 relative z-10 flex flex-col items-center">
+          <Skeleton className="h-20 w-20 rounded-full mb-3" />
+          <Skeleton className="h-5 w-36 mb-2" />
+          <Skeleton className="h-4 w-48" />
         </div>
       </div>
     );
@@ -245,59 +251,54 @@ const MyAccount = () => {
 
   // Detail section view
   if (activeSection === "profile") {
-    return (
-      <ProfileForm profile={profile as any} />
-    );
+    return <ProfileForm profile={profile as any} />;
   }
 
   if (activeSection) {
     return (
-      <div className="min-h-screen pb-20 bg-background">
-        <section className="relative">
-          <div className="relative h-[140px] overflow-hidden">
-            <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-            <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-            <div className="absolute inset-0 flex items-end justify-center pb-4">
-              <h1 className="text-xl font-bold text-white" style={{ fontFamily: "var(--font-heading)" }}>
-                {activeSection === "favourites" && "Saved Listings"}
-                {activeSection === "my-events" && "My Events"}
-                {activeSection === "collections" && "Collections"}
-                {activeSection === "been-here" && "Been Here"}
-                {activeSection === "reviews" && "My Reviews"}
-              </h1>
-            </div>
-          </div>
-        </section>
-
-        <div className="px-4 pt-4 pb-8">
+      <div className="min-h-screen pb-16 bg-background">
+        <div className="px-5 pt-5">
           <button
             onClick={() => setActiveSection(null)}
-            className="flex items-center gap-1 text-muted-foreground hover:text-foreground mb-4 text-sm font-medium"
+            className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium"
           >
             <ChevronLeft className="h-4 w-4" /> Back
           </button>
+        </div>
+
+        <div className="px-5 pt-6 pb-8">
+          <h1
+            className="text-[26px] font-semibold text-foreground tracking-tight mb-6"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            {activeSection === "favourites" && "Saved Listings"}
+            {activeSection === "my-events" && "My Events"}
+            {activeSection === "collections" && "Collections"}
+            {activeSection === "been-here" && "Been Here"}
+            {activeSection === "reviews" && "My Reviews"}
+          </h1>
 
           {activeSection === "favourites" && (
             <>
               {!favourites?.filter((f: any) => f.item_type === "listing").length ? (
-                <div className="text-center py-12 bg-card border border-border rounded-xl">
-                  <Heart className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                  <p className="text-muted-foreground text-sm">No saved listings yet</p>
-                  <p className="text-muted-foreground/60 text-xs mt-1">Tap the heart on listings you love!</p>
+                <div className="text-center py-16">
+                  <Heart className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No saved listings yet</p>
+                  <p className="text-muted-foreground/60 text-[12px] mt-1">Tap the heart on listings you love!</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {favourites.filter((f: any) => f.item_type === "listing").map((fav: any) => (
-                    <div key={fav.id} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
+                    <div key={fav.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
                       {fav.details?.image_url && (
                         <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <Link to={`/listing/${fav.item_id}`} className="font-medium text-sm hover:text-primary truncate block">
+                        <Link to={`/listing/${fav.item_id}`} className="font-medium text-[14px] hover:text-primary truncate block">
                           {fav.details?.title || "Unknown"}
                         </Link>
                       </div>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground" onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -310,24 +311,24 @@ const MyAccount = () => {
           {activeSection === "my-events" && (
             <>
               {!savedEvents.length ? (
-                <div className="text-center py-12 bg-card border border-border rounded-xl">
-                  <Calendar className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                  <p className="text-muted-foreground text-sm">No saved events yet</p>
-                  <p className="text-muted-foreground/60 text-xs mt-1">Save events you're interested in!</p>
+                <div className="text-center py-16">
+                  <Calendar className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No saved events yet</p>
+                  <p className="text-muted-foreground/60 text-[12px] mt-1">Save events you're interested in!</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {savedEvents.map((fav: any) => (
-                    <div key={fav.id} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
+                    <div key={fav.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
                       {fav.details?.image_url && (
                         <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />
                       )}
                       <div className="flex-1 min-w-0">
-                        <Link to="/events" className="font-medium text-sm hover:text-primary truncate block">
+                        <Link to="/events" className="font-medium text-[14px] hover:text-primary truncate block">
                           {fav.details?.title || "Unknown"}
                         </Link>
                       </div>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground" onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -339,10 +340,10 @@ const MyAccount = () => {
 
           {activeSection === "collections" && (
             <>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-5">
                 <Dialog open={createOpen} onOpenChange={setCreateOpen}>
                   <DialogTrigger asChild>
-                    <Button size="sm" className="gap-2 rounded-full"><Plus className="h-4 w-4" /> New Collection</Button>
+                    <Button size="sm" className="gap-2 rounded-full text-[13px]"><Plus className="h-4 w-4" /> New Collection</Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader><DialogTitle>Create Collection</DialogTitle></DialogHeader>
@@ -354,29 +355,29 @@ const MyAccount = () => {
                 </Dialog>
               </div>
               {!collections?.length ? (
-                <div className="text-center py-12 bg-card border border-border rounded-xl">
-                  <FolderOpen className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                  <p className="text-muted-foreground text-sm">No collections yet</p>
+                <div className="text-center py-16">
+                  <FolderOpen className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No collections yet</p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {collections.map((col: any) => (
-                    <div key={col.id} className="bg-card border border-border rounded-xl p-4">
+                    <div key={col.id} className="bg-card border border-border/60 rounded-xl p-4">
                       <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-semibold text-foreground text-sm">{col.name}</h3>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteCollection.mutate(col.id)}>
+                        <h3 className="font-medium text-foreground text-[14px]">{col.name}</h3>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => deleteCollection.mutate(col.id)}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
                       </div>
                       {!col.collection_items?.length ? (
-                        <p className="text-xs text-muted-foreground">No listings saved yet</p>
+                        <p className="text-[12px] text-muted-foreground">No listings saved yet</p>
                       ) : (
                         <div className="space-y-2">
                           {col.collection_items.map((item: any) => (
                             <div key={item.id} className="flex items-center gap-3 bg-background rounded-lg p-2">
                               {item.listings?.image_url && <img src={item.listings.image_url} alt="" className="w-10 h-10 rounded-lg object-cover" />}
-                              <Link to={`/listing/${item.listings?.id}`} className="text-xs font-medium hover:text-primary truncate flex-1">{item.listings?.title}</Link>
-                              <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={() => removeFromCollection.mutate(item.id)}>
+                              <Link to={`/listing/${item.listings?.id}`} className="text-[12px] font-medium hover:text-primary truncate flex-1">{item.listings?.title}</Link>
+                              <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 text-muted-foreground" onClick={() => removeFromCollection.mutate(item.id)}>
                                 <Trash2 className="h-3 w-3" />
                               </Button>
                             </div>
@@ -393,17 +394,17 @@ const MyAccount = () => {
           {activeSection === "been-here" && (
             <>
               {!beenHere?.length ? (
-                <div className="text-center py-12 bg-card border border-border rounded-xl">
-                  <MapPinCheck className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                  <p className="text-muted-foreground text-sm">No places visited yet</p>
+                <div className="text-center py-16">
+                  <MapPinCheck className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No places visited yet</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   {beenHere.map((bh: any) => (
-                    <div key={bh.id} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
+                    <div key={bh.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
                       {bh.listings?.image_url && <img src={bh.listings.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />}
-                      <Link to={`/listing/${bh.listings?.id}`} className="font-medium text-sm hover:text-primary truncate flex-1">{bh.listings?.title}</Link>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={() => removeBeenHere.mutate(bh.id)}>
+                      <Link to={`/listing/${bh.listings?.id}`} className="font-medium text-[14px] hover:text-primary truncate flex-1">{bh.listings?.title}</Link>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground" onClick={() => removeBeenHere.mutate(bh.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -416,23 +417,23 @@ const MyAccount = () => {
           {activeSection === "reviews" && (
             <>
               {!reviews?.length ? (
-                <div className="text-center py-12 bg-card border border-border rounded-xl">
-                  <Star className="h-12 w-12 mx-auto text-muted-foreground/40 mb-3" />
-                  <p className="text-muted-foreground text-sm">No reviews yet</p>
+                <div className="text-center py-16">
+                  <Star className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No reviews yet</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {reviews.map((review: any) => (
-                    <div key={review.id} className="bg-card border border-border rounded-xl p-4">
+                    <div key={review.id} className="bg-card border border-border/60 rounded-xl p-4">
                       <div className="flex items-center justify-between mb-2">
-                        <Link to={`/listing/${review.listings?.id}`} className="font-medium text-sm hover:text-primary">{review.listings?.title}</Link>
+                        <Link to={`/listing/${review.listings?.id}`} className="font-medium text-[14px] hover:text-primary">{review.listings?.title}</Link>
                         <div className="flex gap-0.5">
                           {[1, 2, 3, 4, 5].map((s) => (
-                            <Star key={s} className={`h-3.5 w-3.5 ${s <= review.rating ? "text-accent fill-accent" : "text-muted-foreground/30"}`} />
+                            <Star key={s} className={`h-3 w-3 ${s <= review.rating ? "text-accent fill-accent" : "text-muted-foreground/20"}`} />
                           ))}
                         </div>
                       </div>
-                      {review.comment && <p className="text-xs text-muted-foreground">{review.comment}</p>}
+                      {review.comment && <p className="text-[12px] text-muted-foreground leading-relaxed">{review.comment}</p>}
                     </div>
                   ))}
                 </div>
@@ -446,32 +447,33 @@ const MyAccount = () => {
 
   // Main account page
   return (
-    <div className="min-h-screen pb-20 bg-background">
+    <div className="min-h-screen pb-16 bg-background">
       {/* Hero */}
-      <section className="relative">
-        <div className="relative h-[200px] overflow-hidden">
-          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-            <h1 className="text-2xl font-bold tracking-tight leading-tight text-center mb-1" style={{ fontFamily: "var(--font-heading)" }}>
-              Hello<br />Hoedspruit
-            </h1>
-            <p className="text-lg font-semibold mt-1" style={{ fontFamily: "var(--font-heading)" }}>
-              My Account
-            </p>
-          </div>
+      <div className="relative h-[180px] overflow-hidden">
+        <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1
+            className="text-[32px] font-semibold text-white tracking-tight"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Profile
+          </h1>
         </div>
-      </section>
+      </div>
 
       {/* Profile summary */}
-      <div className="px-4 -mt-12 relative z-10 flex flex-col items-center">
-        <div className="h-24 w-24 rounded-full bg-card border-4 border-card overflow-hidden flex items-center justify-center shadow-card mb-3">
+      <div className="px-5 -mt-10 relative z-10 flex flex-col items-center">
+        <div className="h-20 w-20 rounded-full bg-card border-[3px] border-card overflow-hidden flex items-center justify-center mb-3">
           {profileLoading ? (
             <Skeleton className="h-full w-full rounded-full" />
           ) : profile?.avatar_url ? (
             <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
           ) : (
-            <UserCircle className="h-16 w-16 text-muted-foreground/40" />
+            <UserCircle className="h-12 w-12 text-muted-foreground/30" />
           )}
         </div>
 
@@ -483,10 +485,13 @@ const MyAccount = () => {
           </>
         ) : (
           <>
-            <h2 className="text-lg font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+            <h2
+              className="text-[20px] font-semibold text-foreground tracking-tight"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
               {profile?.display_name || user.email?.split("@")[0]}
             </h2>
-            <p className="text-muted-foreground text-sm mb-2">{user.email}</p>
+            <p className="text-muted-foreground text-[12px] mb-2">{user.email}</p>
             <FollowStats userId={user.id} />
           </>
         )}
@@ -494,50 +499,50 @@ const MyAccount = () => {
         {/* Edit Profile button */}
         <button
           onClick={() => setActiveSection("profile")}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-card border border-border shadow-card text-sm font-medium text-foreground active:scale-95 transition-transform mt-3 mb-6"
+          className="flex items-center gap-2 px-6 py-2 rounded-full bg-card border border-border/60 text-[13px] font-medium text-foreground active:scale-95 transition-transform mt-3 mb-6"
         >
-          <Pencil className="h-3.5 w-3.5" />
+          <Pencil className="h-3 w-3" />
           Edit Profile
         </button>
       </div>
 
       {/* Quick access */}
-      <div className="px-4 mb-4">
+      <div className="px-5 mb-3">
         <div className="grid grid-cols-2 gap-3">
           <Link
             to="/saved"
-            className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
+            className="flex items-center gap-3 bg-card border border-border/60 rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
           >
-            <Heart className="h-4.5 w-4.5 text-primary fill-primary" />
-            <span className="text-sm font-medium text-foreground">Saved Listings</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/50 ml-auto" />
+            <Heart className="h-4 w-4 text-primary fill-primary" />
+            <span className="text-[13px] font-medium text-foreground">Saved</span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/30 ml-auto" />
           </Link>
           <button
             onClick={() => setActiveSection("my-events")}
-            className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
+            className="flex items-center gap-3 bg-card border border-border/60 rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
           >
-            <Calendar className="h-4.5 w-4.5 text-accent" />
-            <span className="text-sm font-medium text-foreground">My Events</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/50 ml-auto" />
+            <Calendar className="h-4 w-4 text-accent" />
+            <span className="text-[13px] font-medium text-foreground">My Events</span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/30 ml-auto" />
           </button>
         </div>
       </div>
 
       {/* Find People */}
-      <div className="px-4 mb-4">
+      <div className="px-5 mb-3">
         <Link
           to="/people"
-          className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform w-full"
+          className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform w-full"
         >
-          <Users className="h-5 w-5 text-secondary" />
-          <span className="flex-1 text-sm font-medium text-foreground">Find People</span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
+          <Users className="h-4 w-4 text-secondary" />
+          <span className="flex-1 text-[13px] font-medium text-foreground">Find People</span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
         </Link>
       </div>
 
       {/* Settings menu */}
-      <div className="px-4 mb-4">
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="px-5 mb-3">
+        <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
           {[
             { icon: Bell, label: "Notifications", action: () => {} },
             { icon: Settings, label: "Account Settings", action: () => setActiveSection("profile") },
@@ -548,17 +553,17 @@ const MyAccount = () => {
           ].map((item, i, arr) => {
             const Icon = item.icon;
             const content = (
-              <div className={`flex items-center gap-4 px-5 py-5 ${i < arr.length - 1 ? "border-b border-border" : ""}`}>
-                <Icon className="h-6 w-6 text-primary" strokeWidth={1.5} />
-                <span className="flex-1 text-base font-medium text-foreground">{item.label}</span>
-                <ChevronRight className="h-5 w-5 text-muted-foreground/40" />
+              <div className={`flex items-center gap-4 px-4 py-3.5 ${i < arr.length - 1 ? "border-b border-border/40" : ""}`}>
+                <Icon className="h-[18px] w-[18px] text-primary" strokeWidth={1.5} />
+                <span className="flex-1 text-[14px] font-medium text-foreground">{item.label}</span>
+                <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
               </div>
             );
             if (item.href) {
               return <Link key={item.label} to={item.href}>{content}</Link>;
             }
             return (
-              <button key={item.label} onClick={item.action} className="w-full text-left hover:bg-accent/30 transition-colors">
+              <button key={item.label} onClick={item.action} className="w-full text-left hover:bg-muted/50 transition-colors">
                 {content}
               </button>
             );
@@ -567,25 +572,24 @@ const MyAccount = () => {
       </div>
 
       {isAdmin && (
-        <div className="px-4 mb-4">
-          <div className="bg-card border border-border rounded-xl overflow-hidden">
+        <div className="px-5 mb-3">
+          <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
             <Link to="/admin">
-              <div className="flex items-center gap-3 px-4 py-3.5">
-                <LayoutDashboard className="h-4.5 w-4.5 text-primary" />
-                <span className="flex-1 text-sm font-medium text-foreground">Admin Dashboard</span>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
+              <div className="flex items-center gap-4 px-4 py-3.5">
+                <LayoutDashboard className="h-[18px] w-[18px] text-primary" strokeWidth={1.5} />
+                <span className="flex-1 text-[14px] font-medium text-foreground">Admin Dashboard</span>
+                <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
               </div>
             </Link>
           </div>
         </div>
       )}
 
-
       {/* Logout */}
-      <div className="px-4 mb-8">
+      <div className="px-5 mb-8">
         <button
           onClick={() => { signOut(); navigate("/"); }}
-          className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-card border border-border text-destructive font-medium text-sm active:scale-[0.97] transition-transform"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-card border border-border/60 text-destructive font-medium text-[13px] active:scale-[0.97] transition-transform"
         >
           <LogOut className="h-4 w-4" />
           Log Out
