@@ -72,6 +72,13 @@ const AdminContent = () => {
   }, [headerData]);
 
   useEffect(() => {
+    if (heroData?.content) {
+      const c = heroData.content as { image_url?: string };
+      setHeroImageUrl(c.image_url ?? "");
+    }
+  }, [heroData]);
+
+  useEffect(() => {
     if (advData?.content) {
       const c = advData.content as { title?: string; description?: string; benefits?: string[] };
       setAdvTitle(c.title ?? "");
