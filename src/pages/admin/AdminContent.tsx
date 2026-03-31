@@ -107,6 +107,23 @@ const AdminContent = () => {
     onError: (e) => toast.error(e.message),
   });
 
+  const saveHero = useMutation({
+    mutationFn: async () => {
+      const content = { image_url: heroImageUrl };
+      // upsert: update if exists, insert if not
+      const { data: existing } = await supabase.from("site_content").select("id").eq("section", "hero").maybeSingle();
+      if (existing) {
+        const { error } = await supabase.from("site_content").update({ content }).eq("section", "hero");
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("site_content").insert({ section: "hero", content });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["site-content"] }); qc.invalidateQueries({ queryKey: ["admin-site-content", "hero"] }); toast.success("Hero image saved"); },
+    onError: (e) => toast.error(e.message),
+  });
+
   const saveAdvertise = useMutation({
     mutationFn: async () => {
       const content = { title: advTitle, description: advDescription, benefits: advBenefits.split("\n").filter(Boolean) };
