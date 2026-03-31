@@ -286,6 +286,17 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
             />
           </div>
           <PhoneInput phone={phone} onChange={setPhone} />
+          <div>
+            <label className="block text-sm font-bold text-foreground mb-1.5">Bio</label>
+            <Textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Tell people a little about yourself..."
+              className="rounded-xl bg-card min-h-[80px] resize-none"
+              maxLength={200}
+            />
+            <p className="text-xs text-muted-foreground mt-1 text-right">{bio.length}/200</p>
+          </div>
 
           <div className="pt-2">
             <Button
