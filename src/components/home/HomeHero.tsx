@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Search, Sun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudDrizzle, Cloudy, MapPin, CalendarDays, FolderOpen, Loader2 } from "lucide-react";
 import { Calendar, UtensilsCrossed, Compass, Home, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import heroBg from "@/assets/hero-homepage.jpg";
+import heroFallback from "@/assets/hero-homepage.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -28,6 +28,18 @@ const getWeatherIcon = (code: number) => {
 
 const HomeHero = () => {
   const [query, setQuery] = useState("");
+
+  const { data: heroImageUrl } = useQuery({
+    queryKey: ["site-content", "hero-image"],
+    queryFn: async () => {
+      const { data } = await supabase.from("site_content").select("content").eq("section", "hero").maybeSingle();
+      const c = data?.content as { image_url?: string } | null;
+      return c?.image_url || null;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const heroBg = heroImageUrl || heroFallback;
   const [focused, setFocused] = useState(false);
   const [temp, setTemp] = useState<number | null>(null);
   const [weatherCode, setWeatherCode] = useState<number>(0);

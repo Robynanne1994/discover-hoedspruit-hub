@@ -14,6 +14,9 @@ const AdminContent = () => {
   // Header / Logo state
   const [logoUrl, setLogoUrl] = useState("");
 
+  // Hero image state
+  const [heroImageUrl, setHeroImageUrl] = useState("");
+
   // Advertise section state
   const [advTitle, setAdvTitle] = useState("");
   const [advDescription, setAdvDescription] = useState("");
@@ -29,6 +32,15 @@ const AdminContent = () => {
     queryKey: ["admin-site-content", "header"],
     queryFn: async () => {
       const { data, error } = await supabase.from("site_content").select("*").eq("section", "header").single();
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: heroData } = useQuery({
+    queryKey: ["admin-site-content", "hero"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("site_content").select("*").eq("section", "hero").maybeSingle();
       if (error) throw error;
       return data;
     },
@@ -60,6 +72,13 @@ const AdminContent = () => {
   }, [headerData]);
 
   useEffect(() => {
+    if (heroData?.content) {
+      const c = heroData.content as { image_url?: string };
+      setHeroImageUrl(c.image_url ?? "");
+    }
+  }, [heroData]);
+
+  useEffect(() => {
     if (advData?.content) {
       const c = advData.content as { title?: string; description?: string; benefits?: string[] };
       setAdvTitle(c.title ?? "");
@@ -85,6 +104,23 @@ const AdminContent = () => {
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["site-content"] }); toast.success("Header saved"); },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const saveHero = useMutation({
+    mutationFn: async () => {
+      const content = { image_url: heroImageUrl };
+      // upsert: update if exists, insert if not
+      const { data: existing } = await supabase.from("site_content").select("id").eq("section", "hero").maybeSingle();
+      if (existing) {
+        const { error } = await supabase.from("site_content").update({ content }).eq("section", "hero");
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("site_content").insert({ section: "hero", content });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["site-content"] }); qc.invalidateQueries({ queryKey: ["admin-site-content", "hero"] }); toast.success("Hero image saved"); },
     onError: (e) => toast.error(e.message),
   });
 
@@ -121,6 +157,17 @@ const AdminContent = () => {
             <ImageUpload bucket="listing-images" value={logoUrl} onChange={setLogoUrl} />
           </div>
           <Button onClick={() => saveHeader.mutate()} disabled={saveHeader.isPending}>Save Changes</Button>
+        </div>
+
+        {/* Hero Image */}
+        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+          <h2 className="font-heading text-xl font-semibold text-foreground">Homepage Hero Image</h2>
+          <p className="text-sm text-muted-foreground">Recommended size: 1080×720px (landscape). This image appears at the top of the homepage.</p>
+          <div>
+            <Label>Hero Background Image</Label>
+            <ImageUpload bucket="listing-images" value={heroImageUrl} onChange={setHeroImageUrl} />
+          </div>
+          <Button onClick={() => saveHero.mutate()} disabled={saveHero.isPending}>Save Changes</Button>
         </div>
 
         {/* Advertise Section */}
