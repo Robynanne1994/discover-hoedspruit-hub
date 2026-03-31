@@ -110,6 +110,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const [location, setLocation] = useState(profile?.location || "");
   const [phone, setPhone] = useState(profile?.phone || "");
   const [email, setEmail] = useState(profile?.email || user?.email || "");
+  const [bio, setBio] = useState(profile?.bio || "");
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
 
