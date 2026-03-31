@@ -1,11 +1,9 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import Navbar from "@/components/Navbar";
 import ListingActions from "@/components/listing/ListingActions";
-import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, TreePine, Cigarette, ShoppingBag, Check, ChevronDown, Wifi, Bath, Ban, MessageCircle, Pencil } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility, DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, Cigarette, ShoppingBag, Check, Wifi, Ban, MessageCircle, Pencil, ChevronLeft } from "lucide-react";
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
-import BackButton from "@/components/BackButton";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 
@@ -30,7 +28,6 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
-  // Fetch categories via junction table
   const { data: listingCategories } = useQuery({
     queryKey: ["listing-detail-categories", id],
     queryFn: async () => {
@@ -51,12 +48,14 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-24 pb-16 section-padding">
-          <div className="container-wide">
-            <p className="text-muted-foreground">Loading...</p>
-          </div>
+      <div className="min-h-screen pb-16 bg-background">
+        <div className="px-5 pt-5">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium">
+            <ChevronLeft className="h-4 w-4" /> Back
+          </button>
+        </div>
+        <div className="px-5 pt-8">
+          <p className="text-muted-foreground text-[13px]">Loading...</p>
         </div>
       </div>
     );
@@ -64,13 +63,15 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-24 pb-16 section-padding">
-          <div className="container-wide text-center py-16">
-            <p className="text-muted-foreground text-lg">Listing not found.</p>
-            <Link to="/" className="text-primary hover:underline mt-4 inline-block">Back to Home</Link>
-          </div>
+      <div className="min-h-screen pb-16 bg-background">
+        <div className="px-5 pt-5">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium">
+            <ChevronLeft className="h-4 w-4" /> Back
+          </button>
+        </div>
+        <div className="px-5 pt-16 text-center">
+          <p className="text-muted-foreground text-[14px]">Listing not found.</p>
+          <Link to="/" className="text-primary hover:underline mt-4 inline-block text-[13px]">Back to Home</Link>
         </div>
       </div>
     );
@@ -129,7 +130,6 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasAmenitiesInfo = amenitiesItems.length > 0;
 
-  // Service options: Sit down, Takeaway, Delivery (delivery always shows)
   const hasSitDown = serviceType?.includes("Sit down") || serviceType?.includes("Dine-in") || false;
   const hasTakeaway = serviceType?.includes("Takeaway") || serviceType?.includes("Take away") || false;
   const hasDelivery = serviceType?.includes("Delivery") || false;
@@ -138,9 +138,8 @@ const ListingDetail = () => {
     ...(hasTakeaway ? [{ label: "Takeaway", available: true }] : []),
     { label: "Delivery", available: hasDelivery },
   ];
-  const hasServiceInfo = hasSitDown || hasTakeaway || true; // always show because delivery always shows
+  const hasServiceInfo = hasSitDown || hasTakeaway || true;
 
-  // Seating: Bar, Indoor, Outdoor
   const seatingItems = [
     ...(seating?.includes("Bar seating") ? [{ label: "Bar seating" }] : []),
     ...(seating?.includes("Indoor seating") ? [{ label: "Indoor seating" }] : []),
@@ -151,465 +150,412 @@ const ListingDetail = () => {
   const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
   const priceName = priceLevel === 1 ? "Budget" : priceLevel === 2 ? "Moderate" : priceLevel === 3 ? "Upscale" : priceLevel === 4 ? "Fine Dining" : null;
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <section className="pt-24 pb-16 section-padding">
-        <div className="container-wide max-w-4xl mx-auto">
-          <BackButton />
+  // Pill helper
+  const Pill = ({ children, variant = "neutral" }: { children: React.ReactNode; variant?: "neutral" | "positive" | "muted" }) => {
+    const base = "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium";
+    const styles = {
+      neutral: "bg-card border border-border/60 text-foreground",
+      positive: "bg-primary/8 text-primary border border-primary/15",
+      muted: "bg-muted/60 text-muted-foreground border border-border/40 line-through opacity-60",
+    };
+    return <span className={`${base} ${styles[variant]}`}>{children}</span>;
+  };
 
-          {/* Hero image */}
-          {listing.image_url && (
-            <div className="rounded-xl overflow-hidden mb-8">
-              <img
-                src={listing.image_url}
-                alt={listing.title}
-                className="w-full h-64 sm:h-80 lg:h-96 object-cover"
-              />
+  return (
+    <div className="min-h-screen pb-16 bg-background">
+      {/* Back button overlay on image */}
+      {listing.image_url ? (
+        <div className="relative">
+          <div className="relative h-[280px] overflow-hidden">
+            <img
+              src={listing.image_url}
+              alt={listing.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/20" />
+          </div>
+          <button
+            onClick={() => navigate(-1)}
+            className="absolute top-5 left-5 z-10 bg-card/90 backdrop-blur-sm rounded-full p-2 active:scale-95 transition-transform"
+          >
+            <ChevronLeft className="h-4 w-4 text-foreground" />
+          </button>
+          {isAdmin && (
+            <button
+              onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
+              className="absolute top-5 right-5 z-10 bg-card/90 backdrop-blur-sm rounded-full p-2 active:scale-95 transition-transform"
+              title="Edit listing"
+            >
+              <Pencil className="h-4 w-4 text-foreground" />
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="px-5 pt-5 flex items-center justify-between">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium">
+            <ChevronLeft className="h-4 w-4" /> Back
+          </button>
+          {isAdmin && (
+            <button
+              onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
+              className="p-2 rounded-full bg-primary/8 text-primary"
+              title="Edit listing"
+            >
+              <Pencil className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="px-5 pt-5 pb-8">
+        {/* Title & identity */}
+        <div className="mb-5">
+          {listing.is_featured && (
+            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent uppercase tracking-wide mb-2">
+              <Star className="h-3 w-3 fill-current" /> Featured
+            </span>
+          )}
+          <h1
+            className="text-[28px] font-semibold text-foreground leading-[1.15] tracking-tight mb-3"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            {listing.title}
+          </h1>
+
+          {/* Categories */}
+          {listingCategories && listingCategories.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {listingCategories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/8 text-primary border border-primary/15 hover:bg-primary/15 transition-colors"
+                >
+                  {cat.title}
+                </Link>
+              ))}
             </div>
           )}
 
-          {/* Title & featured badge */}
-          <div className="mb-6">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                {listing.is_featured && (
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent mb-2">
-                    <Star className="h-3 w-3 fill-current" /> Featured
-                  </span>
-                )}
-                <h1 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground">
-                  {listing.title}
-                </h1>
-              </div>
-              {isAdmin && (
-                <button
-                  onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
-                  className="shrink-0 mt-1 p-2 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                  title="Edit listing"
-                >
-                  <Pencil className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-            {/* Show all categories as tags */}
-            {listingCategories && listingCategories.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {listingCategories.map((cat) => (
-                  <Link
-                    key={cat.id}
-                    to={`/category/${cat.id}`}
-                    className="px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                  >
-                    {cat.title}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-
           {/* Google rating */}
           {(listing as any).google_rating != null && (
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2">
               {(listing as any).google_reviews_url ? (
-                <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer">
-                  <div className="flex items-center gap-1">
+                <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+                  <div className="flex items-center gap-0.5">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className={`h-4 w-4 ${star <= Math.round((listing as any).google_rating) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"}`} />
+                      <Star key={star} className={`h-3.5 w-3.5 ${star <= Math.round((listing as any).google_rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/20"}`} />
                     ))}
                   </div>
-                  <span className="text-sm font-semibold text-foreground">{(listing as any).google_rating}</span>
+                  <span className="text-[13px] font-medium text-foreground">{(listing as any).google_rating}</span>
                   {(listing as any).google_reviews_count != null && (
-                    <span className="text-xs text-muted-foreground underline">({(listing as any).google_reviews_count} Google reviews)</span>
+                    <span className="text-[12px] text-muted-foreground underline">({(listing as any).google_reviews_count} reviews)</span>
                   )}
                 </a>
               ) : (
                 <>
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5">
                     {[1, 2, 3, 4, 5].map((star) => (
-                      <Star key={star} className={`h-4 w-4 ${star <= Math.round((listing as any).google_rating) ? "text-yellow-400 fill-yellow-400" : "text-muted-foreground/30"}`} />
+                      <Star key={star} className={`h-3.5 w-3.5 ${star <= Math.round((listing as any).google_rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/20"}`} />
                     ))}
                   </div>
-                  <span className="text-sm font-semibold text-foreground">{(listing as any).google_rating}</span>
+                  <span className="text-[13px] font-medium text-foreground">{(listing as any).google_rating}</span>
                   {(listing as any).google_reviews_count != null && (
-                    <span className="text-xs text-muted-foreground">({(listing as any).google_reviews_count} Google reviews)</span>
+                    <span className="text-[12px] text-muted-foreground">({(listing as any).google_reviews_count} reviews)</span>
                   )}
                 </>
               )}
             </div>
           )}
+        </div>
 
-          {/* Contact info box */}
-          <div className="bg-muted/50 border border-border rounded-sm px-3 py-3 mb-8 flex flex-col gap-2.5">
+        {/* User actions */}
+        <div className="mb-6">
+          <ListingActions listingId={listing.id} />
+        </div>
+
+        {/* Contact info */}
+        {(listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp) && (
+          <div className="bg-card border border-border/60 rounded-xl px-4 py-3.5 mb-6 space-y-3">
             {listing.location && (
               (listing as any).google_maps_link ? (
-                <a href={(listing as any).google_maps_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
-                  <MapPin className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.location}
+                <a href={(listing as any).google_maps_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
+                  <MapPin className="h-4 w-4 text-primary/60 shrink-0" /> {listing.location}
                 </a>
               ) : (
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  <MapPin className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.location}
+                <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
+                  <MapPin className="h-4 w-4 text-primary/60 shrink-0" /> {listing.location}
                 </div>
               )
             )}
             {listing.phone && (
-              <a href={`tel:${listing.phone}`} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
-                <Phone className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.phone}
+              <a href={`tel:${listing.phone}`} className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
+                <Phone className="h-4 w-4 text-primary/60 shrink-0" /> {listing.phone}
               </a>
             )}
             {listing.email && (
-              <a href={`mailto:${listing.email}`} className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
-                <Mail className="h-3.5 w-3.5 text-accent shrink-0" /> {listing.email}
+              <a href={`mailto:${listing.email}`} className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
+                <Mail className="h-4 w-4 text-primary/60 shrink-0" /> {listing.email}
               </a>
             )}
             {listing.website && (
-              <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
-                <Globe className="h-3.5 w-3.5 text-accent shrink-0" /> Website
+              <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
+                <Globe className="h-4 w-4 text-primary/60 shrink-0" /> Website
               </a>
             )}
             {(listing as any).whatsapp && (
-              <a href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors">
-                <MessageCircle className="h-3.5 w-3.5 text-accent shrink-0" /> WhatsApp
+              <a href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
+                <MessageCircle className="h-4 w-4 text-primary/60 shrink-0" /> WhatsApp
               </a>
             )}
           </div>
+        )}
 
-          {/* Restaurant attributes */}
-          {showAttributes && (
-            <div className="flex flex-wrap gap-1.5 mb-8">
-              {priceLabel && (
-                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                  <DollarSign className="h-3 w-3 text-primary" />
-                  <span className="font-semibold text-foreground">{priceLabel}</span>
-                  {priceName && <span className="text-muted-foreground">· {priceName}</span>}
-                </div>
+        {/* Restaurant attributes */}
+        {showAttributes && (
+          <div className="flex flex-wrap gap-1.5 mb-6">
+            {priceLabel && (
+              <Pill>
+                <DollarSign className="h-3 w-3 text-primary" />
+                <span className="font-semibold">{priceLabel}</span>
+                {priceName && <span className="text-muted-foreground">· {priceName}</span>}
+              </Pill>
+            )}
+            {goodForKids === true && <Pill variant="positive"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
+            {goodForKids === false && <Pill variant="muted"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
+            {petsAllowed === true && <Pill variant="positive"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
+            {petsAllowed === false && <Pill variant="muted"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
+            {wheelchairFriendly === true && <Pill variant="positive"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
+            {wheelchairFriendly === false && <Pill variant="muted"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
+            {smokingAllowed === true && <Pill variant="positive"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
+            {smokingAllowed === false && <Pill variant="muted"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
+            {meal && meal.length > 0 && <Pill><UtensilsCrossed className="h-3 w-3 text-primary" /> {meal.join(", ")}</Pill>}
+            {vibe && vibe.length > 0 && <Pill><Palette className="h-3 w-3 text-primary" /> {vibe.join(", ")}</Pill>}
+            {cuisine && cuisine.length > 0 && <Pill><ChefHat className="h-3 w-3 text-primary" /> {cuisine.join(", ")}</Pill>}
+            {seating && seating.length > 0 && <Pill><Armchair className="h-3 w-3 text-primary" /> {seating.join(", ")}</Pill>}
+            {serviceType && serviceType.length > 0 && <Pill><ShoppingBag className="h-3 w-3 text-primary" /> {serviceType.join(", ")}</Pill>}
+          </div>
+        )}
+
+        {/* Shopping attributes */}
+        {isListingShopping && (() => {
+          const airCon = (listing as any).air_conditioned as boolean | null;
+          const paymentMethods = (listing as any).payment_methods as string[] | null;
+          const deliveryAvail = (listing as any).delivery_available as boolean | null;
+          const clickCollect = (listing as any).click_and_collect as boolean | null;
+          const orderOnline = (listing as any).order_online as boolean | null;
+          const parkingAvail = (listing as any).parking_available as boolean | null;
+          const shopWheelchair = (listing as any).wheelchair_friendly as boolean | null;
+          const localProds = (listing as any).local_products as boolean | null;
+          const shopType = (listing as any).shop_type as string | null;
+          const curioGifts = (listing as any).curio_or_gifts as boolean | null;
+          const prodCats = (listing as any).product_categories as string[] | null;
+          const priceRng = (listing as any).price_range as string | null;
+
+          const boolItems = [
+            { label: "Air Conditioned", value: airCon },
+            { label: "Delivery Available", value: deliveryAvail },
+            { label: "Click & Collect", value: clickCollect },
+            { label: "Order Online", value: orderOnline },
+            { label: "Parking Available", value: parkingAvail },
+            { label: "Wheelchair Friendly", value: shopWheelchair },
+            { label: "Local Products", value: localProds },
+            { label: "Curio / Gifts", value: curioGifts },
+          ].filter((item) => item.value === true);
+
+          const hasAnyShopInfo = boolItems.length > 0 || (paymentMethods && paymentMethods.length > 0) || shopType || (prodCats && prodCats.length > 0) || priceRng;
+          if (!hasAnyShopInfo) return null;
+
+          return (
+            <div className="flex flex-wrap gap-1.5 mb-6">
+              {shopType && <Pill><ShoppingBag className="h-3 w-3 text-primary" /> {shopType}</Pill>}
+              {priceRng && <Pill><DollarSign className="h-3 w-3 text-primary" /> {priceRng}</Pill>}
+              {boolItems.map((item) => (
+                <Pill key={item.label} variant="positive"><Check className="h-3 w-3" /> {item.label}</Pill>
+              ))}
+              {paymentMethods && paymentMethods.length > 0 && (
+                <Pill><span className="text-muted-foreground">Payment:</span> {paymentMethods.join(", ")}</Pill>
               )}
-              {goodForKids === true && (
-                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
-                  <Baby className="h-3 w-3" /> Good for Kids
-                </div>
-              )}
-              {goodForKids === false && (
-                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
-                  <Baby className="h-3 w-3" /> Good for Kids
-                </div>
-              )}
-              {petsAllowed === true && (
-                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
-                  <PawPrint className="h-3 w-3" /> Pets Allowed
-                </div>
-              )}
-              {petsAllowed === false && (
-                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
-                  <PawPrint className="h-3 w-3" /> Pets Allowed
-                </div>
-              )}
-              {wheelchairFriendly === true && (
-                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
-                  <Accessibility className="h-3 w-3" /> Wheelchair Friendly
-                </div>
-              )}
-              {wheelchairFriendly === false && (
-                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
-                  <Accessibility className="h-3 w-3" /> Wheelchair Friendly
-                </div>
-              )}
-              {smokingAllowed === true && (
-                <div className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
-                  <Cigarette className="h-3 w-3" /> Smoking Allowed
-                </div>
-              )}
-              {smokingAllowed === false && (
-                <div className="inline-flex items-center gap-1 bg-muted text-muted-foreground border border-border rounded-md px-2 py-1 text-xs font-medium line-through opacity-60">
-                  <Cigarette className="h-3 w-3" /> Smoking Allowed
-                </div>
-              )}
-              {meal && meal.length > 0 && (
-                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                  <UtensilsCrossed className="h-3 w-3 text-primary" />
-                  <span className="text-foreground">{meal.join(", ")}</span>
-                </div>
-              )}
-              {vibe && vibe.length > 0 && (
-                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                  <Palette className="h-3 w-3 text-primary" />
-                  <span className="text-foreground">{vibe.join(", ")}</span>
-                </div>
-              )}
-              {cuisine && cuisine.length > 0 && (
-                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                  <ChefHat className="h-3 w-3 text-primary" />
-                  <span className="text-foreground">{cuisine.join(", ")}</span>
-                </div>
-              )}
-              {seating && seating.length > 0 && (
-                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                  <Armchair className="h-3 w-3 text-primary" />
-                  <span className="text-foreground">{seating.join(", ")}</span>
-                </div>
-              )}
-              {serviceType && serviceType.length > 0 && (
-                <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                  <ShoppingBag className="h-3 w-3 text-primary" />
-                  <span className="text-foreground">{serviceType.join(", ")}</span>
-                </div>
+              {prodCats && prodCats.length > 0 && (
+                <Pill><span className="text-muted-foreground">Products:</span> {prodCats.join(", ")}</Pill>
               )}
             </div>
-          )}
+          );
+        })()}
 
-          {/* Shopping attributes */}
-          {isListingShopping && (() => {
-            const airCon = (listing as any).air_conditioned as boolean | null;
-            const paymentMethods = (listing as any).payment_methods as string[] | null;
-            const deliveryAvail = (listing as any).delivery_available as boolean | null;
-            const clickCollect = (listing as any).click_and_collect as boolean | null;
-            const orderOnline = (listing as any).order_online as boolean | null;
-            const parkingAvail = (listing as any).parking_available as boolean | null;
-            const shopWheelchair = (listing as any).wheelchair_friendly as boolean | null;
-            const localProds = (listing as any).local_products as boolean | null;
-            const shopType = (listing as any).shop_type as string | null;
-            const curioGifts = (listing as any).curio_or_gifts as boolean | null;
-            const prodCats = (listing as any).product_categories as string[] | null;
-            const priceRng = (listing as any).price_range as string | null;
+        {/* Accommodation attributes */}
+        {isListingAccommodation && (() => {
+          const petsAllowed = (listing as any).pets_allowed as boolean | null;
+          const amenities = (listing as any).amenities as string[] | null;
+          const sleeps = (listing as any).sleeps as number | null;
+          const priceRng = (listing as any).price_range as string | null;
+          const kmFromTown = (listing as any).km_from_town as string | null;
 
-            const boolItems = [
-              { label: "Air Conditioned", value: airCon },
-              { label: "Delivery Available", value: deliveryAvail },
-              { label: "Click & Collect", value: clickCollect },
-              { label: "Order Online", value: orderOnline },
-              { label: "Parking Available", value: parkingAvail },
-              { label: "Wheelchair Friendly", value: shopWheelchair },
-              { label: "Local Products", value: localProds },
-              { label: "Curio / Gifts", value: curioGifts },
-            ].filter((item) => item.value === true);
+          const hasAnyAccomInfo = petsAllowed != null || (amenities && amenities.length > 0) || sleeps != null || priceRng || kmFromTown;
+          if (!hasAnyAccomInfo) return null;
 
-            const hasAnyShopInfo = boolItems.length > 0 || (paymentMethods && paymentMethods.length > 0) || shopType || (prodCats && prodCats.length > 0) || priceRng;
-
-            if (!hasAnyShopInfo) return null;
-
-            return (
-              <div className="flex flex-wrap gap-1.5 mb-8">
-                {shopType && (
-                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                    <ShoppingBag className="h-3 w-3 text-primary" />
-                    <span className="text-foreground">{shopType}</span>
-                  </div>
-                )}
-                {priceRng && (
-                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                    <DollarSign className="h-3 w-3 text-primary" />
-                    <span className="text-foreground">{priceRng}</span>
-                  </div>
-                )}
-                {boolItems.map((item) => (
-                  <div key={item.label} className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
-                    <Check className="h-3 w-3" /> {item.label}
-                  </div>
-                ))}
-                {paymentMethods && paymentMethods.length > 0 && (
-                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                    <span className="text-muted-foreground">Payment:</span>
-                    <span className="text-foreground">{paymentMethods.join(", ")}</span>
-                  </div>
-                )}
-                {prodCats && prodCats.length > 0 && (
-                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                    <span className="text-muted-foreground">Products:</span>
-                    <span className="text-foreground">{prodCats.join(", ")}</span>
-                  </div>
-                )}
-              </div>
-            );
-          })()}
-
-          {/* Accommodation attributes */}
-          {isListingAccommodation && (() => {
-            const petsAllowed = (listing as any).pets_allowed as boolean | null;
-            const amenities = (listing as any).amenities as string[] | null;
-            const sleeps = (listing as any).sleeps as number | null;
-            const priceRng = (listing as any).price_range as string | null;
-            const kmFromTown = (listing as any).km_from_town as string | null;
-
-            const hasAnyAccomInfo = petsAllowed != null || (amenities && amenities.length > 0) || sleeps != null || priceRng || kmFromTown;
-            if (!hasAnyAccomInfo) return null;
-
-            return (
-              <div className="flex flex-wrap gap-1.5 mb-8">
-                {petsAllowed != null && (
-                  <div className={`inline-flex items-center gap-1 ${petsAllowed ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20" : "bg-card border-border"} border rounded-md px-2 py-1 text-xs font-medium`}>
-                    <PawPrint className="h-3 w-3" /> {petsAllowed ? "Pets Allowed" : "No Pets"}
-                  </div>
-                )}
-                {sleeps != null && (
-                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                    <span className="text-muted-foreground">Sleeps:</span>
-                    <span className="text-foreground">{sleeps}</span>
-                  </div>
-                )}
-                {priceRng && (
-                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                    <DollarSign className="h-3 w-3 text-primary" />
-                    <span className="text-foreground">{priceRng}</span>
-                  </div>
-                )}
-                {kmFromTown && (
-                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
-                    <MapPin className="h-3 w-3 text-primary" />
-                    <span className="text-foreground">{kmFromTown} km from town</span>
-                  </div>
-                )}
-                {amenities && amenities.length > 0 && amenities.map((a) => (
-                  <div key={a} className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
-                    <Check className="h-3 w-3" /> {a}
-                  </div>
-                ))}
-              </div>
-            );
-          })()}
-
-          {/* User actions */}
-          <div className="mb-8">
-            <ListingActions listingId={listing.id} />
-          </div>
-
-          {/* Description - only show short description if there's no long description */}
-          {listing.description && !longDescription && (
-            <p className="text-muted-foreground text-sm mb-6">{listing.description}</p>
-          )}
-
-          {/* Long description */}
-          {longDescription && (
-            <div className="prose prose-neutral max-w-none mb-10">
-              {longDescription.split("\n").map((paragraph, i) => (
-                <p key={i} className="text-foreground/80 leading-relaxed mb-3">{paragraph}</p>
+          return (
+            <div className="flex flex-wrap gap-1.5 mb-6">
+              {petsAllowed != null && (
+                <Pill variant={petsAllowed ? "positive" : "neutral"}>
+                  <PawPrint className="h-3 w-3" /> {petsAllowed ? "Pets Allowed" : "No Pets"}
+                </Pill>
+              )}
+              {sleeps != null && <Pill><span className="text-muted-foreground">Sleeps:</span> {sleeps}</Pill>}
+              {priceRng && <Pill><DollarSign className="h-3 w-3 text-primary" /> {priceRng}</Pill>}
+              {kmFromTown && <Pill><MapPin className="h-3 w-3 text-primary" /> {kmFromTown} km from town</Pill>}
+              {amenities && amenities.length > 0 && amenities.map((a) => (
+                <Pill key={a} variant="positive"><Check className="h-3 w-3" /> {a}</Pill>
               ))}
             </div>
-          )}
+          );
+        })()}
 
-          {/* Gallery */}
-          {hasGallery && (
-            <div className="mb-10">
-              <h2 className="font-heading text-2xl font-bold text-foreground mb-4">Gallery</h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {galleryImages.map((url, i) => (
-                  <div key={i} className="rounded-lg overflow-hidden aspect-[4/3]">
-                    <img src={url} alt={`${listing.title} gallery ${i + 1}`} className="w-full h-full object-cover" />
+        {/* Description */}
+        {listing.description && !longDescription && (
+          <p className="text-muted-foreground text-[14px] leading-relaxed mb-6">{listing.description}</p>
+        )}
+
+        {/* Long description */}
+        {longDescription && (
+          <div className="mb-8">
+            {longDescription.split("\n").map((paragraph, i) => (
+              <p key={i} className="text-foreground/80 text-[14px] leading-[1.7] mb-3">{paragraph}</p>
+            ))}
+          </div>
+        )}
+
+        {/* Gallery */}
+        {hasGallery && (
+          <div className="mb-8">
+            <h2
+              className="text-[20px] font-semibold text-foreground tracking-tight mb-4"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Gallery
+            </h2>
+            <div className="grid grid-cols-2 gap-2.5">
+              {galleryImages.map((url, i) => (
+                <div key={i} className="rounded-xl overflow-hidden aspect-[3/4]">
+                  <img src={url} alt={`${listing.title} gallery ${i + 1}`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Opening hours */}
+        {hasHours && (
+          <div className="mb-8">
+            <h2
+              className="text-[20px] font-semibold text-foreground tracking-tight mb-4 flex items-center gap-2"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              <Clock className="h-4 w-4 text-primary/60" /> Hours
+            </h2>
+            <div className="bg-card border border-border/60 rounded-xl px-4 py-4 space-y-2.5">
+              {DAY_LABELS.map((day) => {
+                const value = openingHours[day.toLowerCase()] || "";
+                return (
+                  <div key={day} className="flex justify-between text-[13px]">
+                    <span className="font-medium text-foreground">{day}</span>
+                    <span className="text-muted-foreground">{value || "Closed"}</span>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
-          )}
+          </div>
+        )}
 
-          {/* Opening hours */}
-          {hasHours && (
-            <div className="mb-10">
-              <h2 className="font-heading text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
-                <Clock className="h-5 w-5 text-primary" /> Opening Hours
-              </h2>
-              <div className="bg-card border border-border rounded-xl p-5 space-y-2">
-                {DAY_LABELS.map((day) => {
-                  const value = openingHours[day.toLowerCase()] || "";
-                  return (
-                    <div key={day} className="flex justify-between text-sm">
-                      <span className="font-medium text-foreground">{day}</span>
-                      <span className="text-muted-foreground">{value || "Closed"}</span>
+        {/* Accordion sections */}
+        {isListingRestaurant && (hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
+          <Accordion type="single" collapsible className="space-y-2 mb-8">
+            {hasKidsInfo && (
+              <AccordionItem value="kids" className="border-0">
+                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2"><Baby className="h-4 w-4 text-primary/60" /> Kids</span>
+                </AccordionTrigger>
+                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                  {kidsItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                      <Check className="h-3.5 w-3.5 text-primary" />
+                      <span>{item.label}</span>
                     </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
-          {/* Accordion sections - only one open at a time */}
-          {isListingRestaurant && (hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
-            <Accordion type="single" collapsible className="mb-20">
-              {hasKidsInfo && (
-                <AccordionItem value="kids" className="border-0">
-                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                    <span className="flex items-center gap-2"><Baby className="h-4 w-4 text-primary" /> Kids</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
-                    {kidsItems.map((item) => (
-                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                        <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>{item.label}</span>
-                      </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+            {hasAccessibilityInfo && (
+              <AccordionItem value="accessibility" className="border-0">
+                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2"><Accessibility className="h-4 w-4 text-primary/60" /> Accessibility</span>
+                </AccordionTrigger>
+                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                  {accessibilityItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                      <Check className="h-3.5 w-3.5 text-primary" />
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
-              {hasAccessibilityInfo && (
-                <AccordionItem value="accessibility" className="border-0">
-                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                    <span className="flex items-center gap-2"><Accessibility className="h-4 w-4 text-primary" /> Accessibility</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
-                    {accessibilityItems.map((item) => (
-                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                        <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>{item.label}</span>
-                      </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+            {hasServiceInfo && (
+              <AccordionItem value="service" className="border-0">
+                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-primary/60" /> Service options</span>
+                </AccordionTrigger>
+                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                  {serviceItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                      {item.available ? (
+                        <Check className="h-3.5 w-3.5 text-primary" />
+                      ) : (
+                        <Ban className="h-3.5 w-3.5 text-destructive" />
+                      )}
+                      <span className={item.available ? "" : "text-muted-foreground"}>{item.label}</span>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
-              {hasServiceInfo && (
-                <AccordionItem value="service" className="border-0">
-                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                    <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-primary" /> Service options</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
-                    {serviceItems.map((item) => (
-                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                        {item.available ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        ) : (
-                          <Ban className="h-3.5 w-3.5 text-destructive" />
-                        )}
-                        <span className={item.available ? "" : "text-muted-foreground"}>{item.label}</span>
-                      </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
+            {hasSeatingInfo && (
+              <AccordionItem value="seating" className="border-0">
+                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2"><Armchair className="h-4 w-4 text-primary/60" /> Seating</span>
+                </AccordionTrigger>
+                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                  {seatingItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                      <Check className="h-3.5 w-3.5 text-primary" />
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
-              {hasSeatingInfo && (
-                <AccordionItem value="seating" className="border-0">
-                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                    <span className="flex items-center gap-2"><Armchair className="h-4 w-4 text-primary" /> Seating</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
-                    {seatingItems.map((item) => (
-                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                        <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>{item.label}</span>
-                      </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-
-              {hasAmenitiesInfo && (
-                <AccordionItem value="amenities" className="border-0">
-                  <AccordionTrigger className="bg-card border border-border rounded-xl px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                    <span className="flex items-center gap-2"><Wifi className="h-4 w-4 text-primary" /> Amenities</span>
-                  </AccordionTrigger>
-                  <AccordionContent className="bg-card border border-t-0 border-border rounded-b-xl px-5 pb-3 pt-0 space-y-2">
-                    {amenitiesItems.map((item) => (
-                      <div key={item.label} className="flex items-center gap-2 text-sm text-foreground">
-                        <Check className="h-3.5 w-3.5 text-emerald-600" />
-                        <span>{item.label}</span>
-                      </div>
-                    ))}
-                  </AccordionContent>
-                </AccordionItem>
-              )}
-            </Accordion>
-          )}
-        </div>
-      </section>
+            {hasAmenitiesInfo && (
+              <AccordionItem value="amenities" className="border-0">
+                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2"><Wifi className="h-4 w-4 text-primary/60" /> Amenities</span>
+                </AccordionTrigger>
+                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                  {amenitiesItems.map((item) => (
+                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                      <Check className="h-3.5 w-3.5 text-primary" />
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            )}
+          </Accordion>
+        )}
+      </div>
     </div>
   );
 };
