@@ -529,7 +529,18 @@ const MyAccount = () => {
             <ChevronRight className="h-4 w-4 text-muted-foreground/50 ml-auto" />
           </button>
         </div>
+      </div>
 
+      {/* Find People */}
+      <div className="px-4 mb-4">
+        <Link
+          to="/people"
+          className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform w-full"
+        >
+          <Users className="h-5 w-5 text-secondary" />
+          <span className="flex-1 text-sm font-medium text-foreground">Find People</span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
+        </Link>
       </div>
 
       {/* Settings menu */}
