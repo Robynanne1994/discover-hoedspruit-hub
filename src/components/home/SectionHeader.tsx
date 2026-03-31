@@ -9,7 +9,7 @@ interface SectionHeaderProps {
 
 const SectionHeader = ({ title, actionLabel, actionHref }: SectionHeaderProps) => {
   return (
-    <div className="flex items-center gap-3 px-4 mb-3">
+    <div className="flex items-center gap-3 px-4 mb-3 mt-6">
       <h2 className="font-bold text-foreground whitespace-nowrap text-2xl" style={{ fontFamily: "var(--font-heading)" }}>
         {title}
       </h2>
