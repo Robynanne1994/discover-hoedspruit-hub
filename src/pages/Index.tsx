@@ -5,6 +5,7 @@ import EatSection from "@/components/home/EatSection";
 import StaySection from "@/components/home/StaySection";
 import ShopSection from "@/components/home/ShopSection";
 import DoSection from "@/components/home/DoSection";
+import AdvertiseWithUs from "@/components/home/AdvertiseWithUs";
 
 const Index = () => {
   return (
@@ -16,6 +17,7 @@ const Index = () => {
       <StaySection />
       <ShopSection />
       <DoSection />
+      <AdvertiseWithUs />
     </div>
   );
 };
