@@ -641,6 +641,68 @@ const AdminListings = () => {
                   </div>
                 )}
 
+                {isAccommodationType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-sm font-medium text-foreground">Accommodation Fields</p>
+
+                    <div className="flex items-center gap-2">
+                      <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                      <Label>Pets Allowed</Label>
+                    </div>
+
+                    <div>
+                      <Label>Amenities</Label>
+                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                      <div className="flex flex-wrap gap-2">
+                        {AMENITIES_OPTIONS.map((opt) => {
+                          const selected = form.amenities.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, amenities: selected ? form.amenities.filter((v) => v !== opt) : [...form.amenities, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Sleeps (number of guests)</Label>
+                      <Input
+                        type="number"
+                        value={form.sleeps ?? ""}
+                        onChange={(e) => setForm({ ...form, sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 4"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Price Range</Label>
+                      <Select value={form.price_range} onValueChange={(v) => setForm({ ...form, price_range: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select price range" /></SelectTrigger>
+                        <SelectContent>
+                          {ACCOMMODATION_PRICE_RANGE_OPTIONS.map((opt) => (
+                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>KM from Town</Label>
+                      <Input
+                        value={form.km_from_town}
+                        onChange={(e) => setForm({ ...form, km_from_town: e.target.value })}
+                        placeholder="e.g. 5"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
               </form>
             </DialogContent>
