@@ -30,6 +30,9 @@ import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
 import EventsCalendar from "./pages/EventsCalendar.tsx";
 import Advertise from "./pages/Advertise.tsx";
+import People from "./pages/People.tsx";
+import UserProfile from "./pages/UserProfile.tsx";
+import FollowList from "./pages/FollowList.tsx";
 
 const queryClient = new QueryClient();
 
