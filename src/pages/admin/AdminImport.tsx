@@ -467,6 +467,10 @@ const AdminImport = () => {
         curio_or_gifts: l.curio_or_gifts == null ? "" : String(l.curio_or_gifts),
         product_categories: (l.product_categories ?? []).join("|"),
         price_range: l.price_range ?? "",
+        // Accommodation fields
+        amenities: (l.amenities ?? []).join("|"),
+        sleeps: l.sleeps == null ? "" : String(l.sleeps),
+        km_from_town: l.km_from_town ?? "",
       };
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
