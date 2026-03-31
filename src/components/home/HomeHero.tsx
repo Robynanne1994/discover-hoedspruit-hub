@@ -150,7 +150,7 @@ const HomeHero = () => {
           </div>
         </div>
 
-        <div className="-mt-4 relative z-10">
+        <div className="mt-2 relative z-10">
           <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pl-4 pr-8">
             {categories.map((cat) => {
               const Icon = cat.icon;
