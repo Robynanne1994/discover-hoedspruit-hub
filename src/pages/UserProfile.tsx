@@ -71,7 +71,12 @@ const UserProfile = () => {
                 {profile.location}
               </p>
             )}
-            {!profile?.location && <div className="mb-2" />}
+            {(profile as any)?.bio && (
+              <p className="text-sm text-muted-foreground text-center mt-2 mb-1 px-6 leading-relaxed">
+                {(profile as any).bio}
+              </p>
+            )}
+            {!profile?.location && !(profile as any)?.bio && <div className="mb-2" />}
 
             <FollowStats userId={id!} />
 

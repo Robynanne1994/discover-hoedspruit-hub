@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Camera, Loader2, ChevronDown } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const AREA_CODES = [
@@ -42,6 +43,7 @@ interface ProfileFormProps {
     location: string | null;
     phone: string | null;
     email: string | null;
+    bio: string | null;
   } | null;
 }
 
@@ -108,6 +110,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const [location, setLocation] = useState(profile?.location || "");
   const [phone, setPhone] = useState(profile?.phone || "");
   const [email, setEmail] = useState(profile?.email || user?.email || "");
+  const [bio, setBio] = useState(profile?.bio || "");
   const [uploading, setUploading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url || "");
 
@@ -147,7 +150,8 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
           location: location.trim() || null,
           phone: phone.trim() || null,
           email: email.trim() || null,
-        })
+          bio: bio.trim() || null,
+        } as any)
         .eq("id", user.id);
       if (error) throw error;
     },
@@ -282,6 +286,17 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
             />
           </div>
           <PhoneInput phone={phone} onChange={setPhone} />
+          <div>
+            <label className="block text-sm font-bold text-foreground mb-1.5">Bio</label>
+            <Textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Tell people a little about yourself..."
+              className="rounded-xl bg-card min-h-[80px] resize-none"
+              maxLength={200}
+            />
+            <p className="text-xs text-muted-foreground mt-1 text-right">{bio.length}/200</p>
+          </div>
 
           <div className="pt-2">
             <Button
