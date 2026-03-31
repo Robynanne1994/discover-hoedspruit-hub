@@ -1,7 +1,8 @@
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useFollowersList, useFollowingList } from "@/hooks/useFollows";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Users } from "lucide-react";
+import { Users, UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import UserCard from "@/components/social/UserCard";
 import BackButton from "@/components/BackButton";
 
@@ -18,9 +19,11 @@ const FollowList = () => {
   return (
     <div className="min-h-screen pb-20 bg-background">
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <BackButton />
-          <h1 className="text-lg font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
+        <div className="px-4 pt-3">
+          <BackButton className="mb-0" />
+        </div>
+        <div className="px-4 pt-2 pb-3">
+          <h1 className="text-xl font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
             {isFollowers ? "Followers" : "Following"}
           </h1>
         </div>
@@ -41,9 +44,18 @@ const FollowList = () => {
         ) : !users?.length ? (
           <div className="text-center py-16">
             <Users className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground text-sm font-medium">
+            <p className="text-muted-foreground text-sm font-medium mb-1">
               {isFollowers ? "No followers yet" : "Not following anyone yet"}
             </p>
+            <p className="text-muted-foreground/60 text-xs mb-5">
+              {isFollowers ? "Share your profile to get followers" : "Discover people in the community"}
+            </p>
+            <Link to="/people">
+              <Button className="rounded-full gap-2">
+                <UserPlus className="h-4 w-4" />
+                Find Friends
+              </Button>
+            </Link>
           </div>
         ) : (
           users.map((u) => <UserCard key={u.id} user={u} />)
