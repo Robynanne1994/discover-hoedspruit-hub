@@ -7,7 +7,7 @@ import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility,
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import BackButton from "@/components/BackButton";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -79,6 +79,7 @@ const ListingDetail = () => {
   const firstCategory = listingCategories && listingCategories.length > 0 ? listingCategories[0] : null;
   const isListingRestaurant = listingCategories?.some((cat) => isRestaurantCategory(cat.title)) ?? false;
   const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
+  const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
@@ -417,6 +418,51 @@ const ListingDetail = () => {
                     <span className="text-foreground">{prodCats.join(", ")}</span>
                   </div>
                 )}
+              </div>
+            );
+          })()}
+
+          {/* Accommodation attributes */}
+          {isListingAccommodation && (() => {
+            const petsAllowed = (listing as any).pets_allowed as boolean | null;
+            const amenities = (listing as any).amenities as string[] | null;
+            const sleeps = (listing as any).sleeps as number | null;
+            const priceRng = (listing as any).price_range as string | null;
+            const kmFromTown = (listing as any).km_from_town as string | null;
+
+            const hasAnyAccomInfo = petsAllowed != null || (amenities && amenities.length > 0) || sleeps != null || priceRng || kmFromTown;
+            if (!hasAnyAccomInfo) return null;
+
+            return (
+              <div className="flex flex-wrap gap-1.5 mb-8">
+                {petsAllowed != null && (
+                  <div className={`inline-flex items-center gap-1 ${petsAllowed ? "bg-emerald-500/10 text-emerald-700 border-emerald-500/20" : "bg-card border-border"} border rounded-md px-2 py-1 text-xs font-medium`}>
+                    <PawPrint className="h-3 w-3" /> {petsAllowed ? "Pets Allowed" : "No Pets"}
+                  </div>
+                )}
+                {sleeps != null && (
+                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                    <span className="text-muted-foreground">Sleeps:</span>
+                    <span className="text-foreground">{sleeps}</span>
+                  </div>
+                )}
+                {priceRng && (
+                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                    <DollarSign className="h-3 w-3 text-primary" />
+                    <span className="text-foreground">{priceRng}</span>
+                  </div>
+                )}
+                {kmFromTown && (
+                  <div className="inline-flex items-center gap-1 bg-card border border-border rounded-md px-2 py-1 text-xs">
+                    <MapPin className="h-3 w-3 text-primary" />
+                    <span className="text-foreground">{kmFromTown} km from town</span>
+                  </div>
+                )}
+                {amenities && amenities.length > 0 && amenities.map((a) => (
+                  <div key={a} className="inline-flex items-center gap-1 bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 rounded-md px-2 py-1 text-xs font-medium">
+                    <Check className="h-3 w-3" /> {a}
+                  </div>
+                ))}
               </div>
             );
           })()}

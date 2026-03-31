@@ -298,6 +298,7 @@ export type Database = {
       listings: {
         Row: {
           air_conditioned: boolean | null
+          amenities: string[] | null
           category_id: string | null
           click_and_collect: boolean | null
           created_at: string
@@ -321,6 +322,7 @@ export type Database = {
           is_featured: boolean
           kids_menu: boolean | null
           kids_playground: boolean | null
+          km_from_town: string | null
           local_products: boolean | null
           location: string | null
           long_description: string | null
@@ -338,6 +340,7 @@ export type Database = {
           service_type: string[] | null
           shop_type: string | null
           show_attributes: boolean
+          sleeps: number | null
           smoking_allowed: boolean | null
           title: string
           updated_at: string
@@ -352,6 +355,7 @@ export type Database = {
         }
         Insert: {
           air_conditioned?: boolean | null
+          amenities?: string[] | null
           category_id?: string | null
           click_and_collect?: boolean | null
           created_at?: string
@@ -375,6 +379,7 @@ export type Database = {
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null
+          km_from_town?: string | null
           local_products?: boolean | null
           location?: string | null
           long_description?: string | null
@@ -392,6 +397,7 @@ export type Database = {
           service_type?: string[] | null
           shop_type?: string | null
           show_attributes?: boolean
+          sleeps?: number | null
           smoking_allowed?: boolean | null
           title: string
           updated_at?: string
@@ -406,6 +412,7 @@ export type Database = {
         }
         Update: {
           air_conditioned?: boolean | null
+          amenities?: string[] | null
           category_id?: string | null
           click_and_collect?: boolean | null
           created_at?: string
@@ -429,6 +436,7 @@ export type Database = {
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null
+          km_from_town?: string | null
           local_products?: boolean | null
           location?: string | null
           long_description?: string | null
@@ -446,6 +454,7 @@ export type Database = {
           service_type?: string[] | null
           shop_type?: string | null
           show_attributes?: boolean
+          sleeps?: number | null
           smoking_allowed?: boolean | null
           title?: string
           updated_at?: string

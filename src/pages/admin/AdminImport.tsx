@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS } from "@/lib/categoryFields";
+import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -65,6 +65,7 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
 
 const restaurantFieldSet = new Set<string>(RESTAURANT_ONLY_FIELDS);
 const shoppingFieldSet = new Set<string>(SHOPPING_ONLY_FIELDS);
+const accommodationFieldSet = new Set<string>(ACCOMMODATION_ONLY_FIELDS);
 
 const AdminImport = () => {
   const qc = useQueryClient();
@@ -95,6 +96,7 @@ const AdminImport = () => {
   const csvHeaders = getCSVHeadersForCategory(selectedCategoryTitle);
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
   const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
+  const isAccommodation = selectedCategoryTitle ? isAccommodationCategory(selectedCategoryTitle) : false;
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -130,6 +132,12 @@ const AdminImport = () => {
         const extraCols = result.headers.filter((h) => shoppingFieldSet.has(h));
         if (extraCols.length > 0) {
           toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
+        }
+      }
+      if (!isAccommodation) {
+        const extraCols = result.headers.filter((h) => accommodationFieldSet.has(h));
+        if (extraCols.length > 0) {
+          toast.warning(`Accommodation-only columns found and will be ignored: ${extraCols.join(", ")}`);
         }
       }
       setParsed(result);
@@ -287,6 +295,15 @@ const AdminImport = () => {
           payload.curio_or_gifts = parseBool(row.curio_or_gifts);
           payload.product_categories = parseArray(row.product_categories) ?? [];
           payload.price_range = row.price_range || null;
+        }
+
+        // Only include accommodation fields if importing for an accommodation category
+        if (isAccommodation) {
+          payload.pets_allowed = parseBool(row.pets_allowed);
+          payload.amenities = parseArray(row.amenities) ?? [];
+          payload.sleeps = row.sleeps ? parseInt(row.sleeps, 10) || null : null;
+          payload.price_range = row.price_range || null;
+          payload.km_from_town = row.km_from_town || null;
         }
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -450,6 +467,10 @@ const AdminImport = () => {
         curio_or_gifts: l.curio_or_gifts == null ? "" : String(l.curio_or_gifts),
         product_categories: (l.product_categories ?? []).join("|"),
         price_range: l.price_range ?? "",
+        // Accommodation fields
+        amenities: (l.amenities ?? []).join("|"),
+        sleeps: l.sleeps == null ? "" : String(l.sleeps),
+        km_from_town: l.km_from_town ?? "",
       };
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
@@ -493,6 +514,8 @@ const AdminImport = () => {
                 ? "This export/import will include universal + restaurant-specific fields."
                 : isShopping
                 ? "This export/import will include universal + shopping-specific fields."
+                : isAccommodation
+                ? "This export/import will include universal + accommodation-specific fields."
                 : "This export/import will include universal fields only."}
             </p>
           )}
@@ -546,7 +569,7 @@ const AdminImport = () => {
                   <tr>
                     <th className="p-2 text-left text-muted-foreground font-medium">#</th>
                     {parsed.headers.map((h) => (
-                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
+                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) || (accommodationFieldSet.has(h) && !isAccommodation) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -555,7 +578,7 @@ const AdminImport = () => {
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
                       {parsed.headers.map((h) => (
-                        <td key={h} className={`p-2 max-w-[200px] truncate ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
+                        <td key={h} className={`p-2 max-w-[200px] truncate ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) || (accommodationFieldSet.has(h) && !isAccommodation) ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
                       ))}
                     </tr>
                   ))}

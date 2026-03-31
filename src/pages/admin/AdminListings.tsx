@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { isShoppingCategory } from "@/lib/categoryFields";
+import { isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
@@ -28,8 +28,10 @@ const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Other"];
+const AMENITIES_OPTIONS = ["Braai", "Swimming Pool", "Wifi", "Aircon"];
+const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -184,6 +186,9 @@ const AdminListings = () => {
         curio_or_gifts: values.curio_or_gifts,
         product_categories: values.product_categories ? values.product_categories.split(",").map(s => s.trim()).filter(Boolean) : [],
         price_range: values.price_range || null,
+        amenities: values.amenities,
+        sleeps: values.sleeps,
+        km_from_town: values.km_from_town || null,
       };
 
       let listingId: string;
@@ -290,6 +295,9 @@ const AdminListings = () => {
       curio_or_gifts: (l as any).curio_or_gifts ?? null,
       product_categories: ((l as any).product_categories ?? []).join(", "),
       price_range: (l as any).price_range ?? "",
+      amenities: (l as any).amenities ?? [],
+      sleeps: (l as any).sleeps ?? null,
+      km_from_town: (l as any).km_from_town ?? "",
     });
     setOpen(true);
   };
@@ -312,6 +320,7 @@ const AdminListings = () => {
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
   const isShoppingType = categories?.some((c) => selectedCatIds.includes(c.id) && isShoppingCategory(c.title));
+  const isAccommodationType = categories?.some((c) => selectedCatIds.includes(c.id) && isAccommodationCategory(c.title));
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
@@ -627,6 +636,68 @@ const AdminListings = () => {
                         value={form.price_range}
                         onChange={(e) => setForm({ ...form, price_range: e.target.value })}
                         placeholder="e.g. Budget, Mid-range, Premium"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {isAccommodationType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-sm font-medium text-foreground">Accommodation Fields</p>
+
+                    <div className="flex items-center gap-2">
+                      <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                      <Label>Pets Allowed</Label>
+                    </div>
+
+                    <div>
+                      <Label>Amenities</Label>
+                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                      <div className="flex flex-wrap gap-2">
+                        {AMENITIES_OPTIONS.map((opt) => {
+                          const selected = form.amenities.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, amenities: selected ? form.amenities.filter((v) => v !== opt) : [...form.amenities, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Sleeps (number of guests)</Label>
+                      <Input
+                        type="number"
+                        value={form.sleeps ?? ""}
+                        onChange={(e) => setForm({ ...form, sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 4"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Price Range</Label>
+                      <Select value={form.price_range} onValueChange={(v) => setForm({ ...form, price_range: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select price range" /></SelectTrigger>
+                        <SelectContent>
+                          {ACCOMMODATION_PRICE_RANGE_OPTIONS.map((opt) => (
+                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label>KM from Town</Label>
+                      <Input
+                        value={form.km_from_town}
+                        onChange={(e) => setForm({ ...form, km_from_town: e.target.value })}
+                        placeholder="e.g. 5"
                       />
                     </div>
                   </div>
