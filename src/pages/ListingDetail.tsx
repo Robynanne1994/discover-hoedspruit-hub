@@ -7,7 +7,7 @@ import { MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility,
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import BackButton from "@/components/BackButton";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
