@@ -37,6 +37,15 @@ const AdminContent = () => {
     },
   });
 
+  const { data: heroData } = useQuery({
+    queryKey: ["admin-site-content", "hero"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("site_content").select("*").eq("section", "hero").maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const { data: advData } = useQuery({
     queryKey: ["admin-site-content", "advertise"],
     queryFn: async () => {
