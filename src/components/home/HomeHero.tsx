@@ -120,9 +120,9 @@ const HomeHero = () => {
             width={1080}
             height={720}
           />
-          <div className="absolute inset-0 flex flex-col items-center pt-10 pb-4 px-5">
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 px-5">
 
-            <div className="w-full mt-3">
+            <div className="w-full">
               <p className="text-center text-[13px] font-medium mb-2.5 text-white/90 drop-shadow-sm">
                 Discover what's happening in town today.
               </p>
