@@ -292,6 +292,9 @@ const AdminListings = () => {
       curio_or_gifts: (l as any).curio_or_gifts ?? null,
       product_categories: ((l as any).product_categories ?? []).join(", "),
       price_range: (l as any).price_range ?? "",
+      amenities: (l as any).amenities ?? [],
+      sleeps: (l as any).sleeps ?? null,
+      km_from_town: (l as any).km_from_town ?? "",
     });
     setOpen(true);
   };
