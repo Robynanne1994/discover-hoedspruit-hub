@@ -28,6 +28,7 @@ import {
   Megaphone,
 } from "lucide-react";
 import ProfileForm from "@/components/profile/ProfileForm";
+import FollowStats from "@/components/social/FollowStats";
 import { toast } from "sonner";
 import {
   Dialog,
