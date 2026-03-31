@@ -186,6 +186,9 @@ const AdminListings = () => {
         curio_or_gifts: values.curio_or_gifts,
         product_categories: values.product_categories ? values.product_categories.split(",").map(s => s.trim()).filter(Boolean) : [],
         price_range: values.price_range || null,
+        amenities: values.amenities,
+        sleeps: values.sleeps,
+        km_from_town: values.km_from_town || null,
       };
 
       let listingId: string;
