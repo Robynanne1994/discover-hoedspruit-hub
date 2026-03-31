@@ -150,7 +150,8 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
           location: location.trim() || null,
           phone: phone.trim() || null,
           email: email.trim() || null,
-        })
+          bio: bio.trim() || null,
+        } as any)
         .eq("id", user.id);
       if (error) throw error;
     },
