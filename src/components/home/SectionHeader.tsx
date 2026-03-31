@@ -9,18 +9,20 @@ interface SectionHeaderProps {
 
 const SectionHeader = ({ title, actionLabel, actionHref }: SectionHeaderProps) => {
   return (
-    <div className="flex items-center gap-3 px-4 mb-3 mt-6">
-      <h2 className="font-bold text-foreground whitespace-nowrap text-2xl" style={{ fontFamily: "var(--font-heading)" }}>
+    <div className="flex items-baseline justify-between px-5 mb-5">
+      <h2
+        className="text-[22px] font-semibold text-foreground tracking-tight"
+        style={{ fontFamily: "var(--font-heading)" }}
+      >
         {title}
       </h2>
-      <div className="flex-1 h-px bg-border" />
       {actionLabel && actionHref && (
         <Link
           to={actionHref}
-          className="flex items-center gap-0.5 text-sm text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
+          className="flex items-center gap-0.5 text-[12px] font-medium text-muted-foreground hover:text-foreground transition-colors tracking-wide uppercase"
         >
           {actionLabel}
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3.5 w-3.5" />
         </Link>
       )}
     </div>

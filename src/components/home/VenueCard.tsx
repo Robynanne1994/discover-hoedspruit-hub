@@ -11,12 +11,12 @@ interface VenueCardProps {
 const VenueCard = ({ image, name, rating, href }: VenueCardProps) => {
   const content = (
     <div className="group cursor-pointer">
-      <div className="relative rounded-2xl overflow-hidden aspect-[4/3] bg-muted shadow-sm">
+      <div className="relative rounded-xl overflow-hidden aspect-[3/4] bg-muted">
         {image ? (
           <img
             src={image}
             alt={name}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
             loading="lazy"
           />
         ) : (
@@ -24,26 +24,18 @@ const VenueCard = ({ image, name, rating, href }: VenueCardProps) => {
             <span className="text-muted-foreground text-xs">No image</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <h4 className="font-bold text-sm text-white leading-tight line-clamp-2 drop-shadow-sm">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 p-3.5">
+          <h4
+            className="font-medium text-[13px] text-white leading-snug line-clamp-2 drop-shadow-sm"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
             {name}
           </h4>
           {rating > 0 && (
-            <div className="flex items-center gap-1.5 mt-1">
-              <div className="flex items-center gap-px">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-2.5 w-2.5 ${
-                      i < Math.round(rating)
-                        ? "fill-amber-400 text-amber-400"
-                        : "fill-white/30 text-white/30"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-[11px] text-white/90 font-medium">{rating}</span>
+            <div className="flex items-center gap-1 mt-1.5">
+              <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+              <span className="text-[11px] text-white/85 font-medium">{rating}</span>
             </div>
           )}
         </div>

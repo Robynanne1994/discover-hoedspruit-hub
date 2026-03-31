@@ -15,22 +15,18 @@ const WhatsOnToday = () => {
 
       if (!data) return [];
 
-      // Sort by date proximity — try to parse dates and show soonest first
       const now = new Date();
       const sorted = data
         .map((e) => {
-          // Try to extract a date from the date string
           const parsed = new Date(e.date);
           return { ...e, parsedDate: isNaN(parsed.getTime()) ? null : parsed };
         })
-        // Show events with parseable future dates first, then others
         .sort((a, b) => {
           if (a.parsedDate && b.parsedDate) return a.parsedDate.getTime() - b.parsedDate.getTime();
           if (a.parsedDate) return -1;
           if (b.parsedDate) return 1;
           return 0;
         })
-        // Filter to upcoming or undated
         .filter((e) => !e.parsedDate || e.parsedDate >= new Date(now.toDateString()))
         .slice(0, 3);
 
@@ -40,11 +36,11 @@ const WhatsOnToday = () => {
 
   if (isLoading) {
     return (
-      <section className="pb-4">
-        <SectionHeader title="What's On in Hoedspruit" actionLabel="See all" actionHref="/events" />
-        <div className="mx-4 space-y-3">
+      <section className="py-8">
+        <SectionHeader title="What's On" actionLabel="See all" actionHref="/events" />
+        <div className="mx-5 space-y-4">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-6 w-full rounded" />
+            <Skeleton key={i} className="h-5 w-full rounded" />
           ))}
         </div>
       </section>
@@ -53,24 +49,19 @@ const WhatsOnToday = () => {
 
   if (!events?.length) return null;
 
-  const formatTime = (time: string | null) => {
-    if (!time) return "";
-    // Convert "07:30" to "7:30 AM"
-    const [h, m] = time.split(":");
-    const hour = parseInt(h);
-    if (isNaN(hour)) return time;
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return `${displayHour}:${m} ${ampm}`;
-  };
-
   return (
-    <section className="pt-6 pb-4">
-      <SectionHeader title="What's On in Hoedspruit" actionLabel="See all" actionHref="/events" />
-      <div className="mx-4 divide-y divide-border">
-        {events.map((event) => (
-          <div key={event.id} className="flex items-baseline gap-4 py-3">
-            <span className="text-sm font-semibold text-primary whitespace-nowrap min-w-[72px]">
+    <section className="py-8">
+      <SectionHeader title="What's On" actionLabel="See all" actionHref="/events" />
+      <div className="mx-5 space-y-0">
+        {events.map((event, idx) => (
+          <div
+            key={event.id}
+            className={`flex items-baseline gap-5 py-4 ${idx < events.length - 1 ? "border-b border-border/60" : ""}`}
+          >
+            <span
+              className="text-[13px] font-semibold text-primary whitespace-nowrap min-w-[60px] uppercase tracking-wide"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
               {(() => {
                 if (!event.date) return "TBA";
                 const parsed = new Date(event.date);
@@ -81,12 +72,14 @@ const WhatsOnToday = () => {
                 return event.date;
               })()}
             </span>
-            <span className="text-sm text-foreground">
-              {event.title}{" "}
+            <div className="flex-1 min-w-0">
+              <span className="text-[14px] text-foreground leading-snug">
+                {event.title}
+              </span>
               {event.location && (
-                <span className="text-xs text-primary-hover">at {event.location}</span>
+                <span className="block text-[12px] text-muted-foreground mt-0.5">{event.location}</span>
               )}
-            </span>
+            </div>
           </div>
         ))}
       </div>
