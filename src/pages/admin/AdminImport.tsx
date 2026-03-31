@@ -134,6 +134,12 @@ const AdminImport = () => {
           toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
         }
       }
+      if (!isAccommodation) {
+        const extraCols = result.headers.filter((h) => accommodationFieldSet.has(h));
+        if (extraCols.length > 0) {
+          toast.warning(`Accommodation-only columns found and will be ignored: ${extraCols.join(", ")}`);
+        }
+      }
       setParsed(result);
     };
     reader.readAsText(file);
