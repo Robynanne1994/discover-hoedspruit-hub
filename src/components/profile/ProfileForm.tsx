@@ -35,7 +35,7 @@ function parsePhone(phone: string) {
 }
 import { toast } from "sonner";
 import BackButton from "@/components/BackButton";
-import heroBg from "@/assets/hero-homepage.jpg";
+
 
 interface ProfileFormProps {
   profile: {
