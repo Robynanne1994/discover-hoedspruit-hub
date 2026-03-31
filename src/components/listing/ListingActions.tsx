@@ -16,7 +16,6 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // Check if favourited
   const { data: isFavourited } = useQuery({
     queryKey: ["favourite", "listing", listingId, user?.id],
     queryFn: async () => {
@@ -113,39 +112,38 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
   };
 
   return (
-    <div className="flex items-center gap-1">
-      {/* Save / Unsave */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
+    <div className="flex items-center gap-2">
+      <button
         onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors active:scale-95 ${
+          isFavourited
+            ? "bg-primary/8 text-primary border-primary/20"
+            : "bg-card text-foreground border-border/60 hover:bg-muted/50"
+        }`}
       >
         <Heart className={`h-3 w-3 ${isFavourited ? "fill-current" : ""}`} />
         {isFavourited ? "Saved" : "Save"}
-      </Button>
+      </button>
 
-      {/* Share */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
+      <button
         onClick={handleShare}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium bg-card text-foreground border border-border/60 hover:bg-muted/50 transition-colors active:scale-95"
       >
         <Share2 className="h-3 w-3" />
         Share
-      </Button>
+      </button>
 
-      {/* Been here */}
-      <Button
-        variant="ghost"
-        size="sm"
-        className="gap-1 h-7 px-2 text-[11px] bg-secondary text-secondary-foreground hover:bg-secondary/80"
+      <button
         onClick={() => { if (!requireAuth()) toggleBeenHere.mutate(); }}
+        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors active:scale-95 ${
+          beenHere
+            ? "bg-primary/8 text-primary border-primary/20"
+            : "bg-card text-foreground border-border/60 hover:bg-muted/50"
+        }`}
       >
         <MapPinCheck className={`h-3 w-3 ${beenHere ? "fill-current" : ""}`} />
         {beenHere ? "Been Here" : "Been Here?"}
-      </Button>
+      </button>
     </div>
   );
 };
