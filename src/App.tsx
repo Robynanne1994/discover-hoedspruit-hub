@@ -30,6 +30,9 @@ import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
 import EventsCalendar from "./pages/EventsCalendar.tsx";
 import Advertise from "./pages/Advertise.tsx";
+import People from "./pages/People.tsx";
+import UserProfile from "./pages/UserProfile.tsx";
+import FollowList from "./pages/FollowList.tsx";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +58,9 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-account" element={<MyAccount />} />
             <Route path="/saved" element={<SavedListings />} />
+            <Route path="/people" element={<People />} />
+            <Route path="/profile/:id" element={<UserProfile />} />
+            <Route path="/profile/:id/:type" element={<FollowList />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="homepage" element={<AdminHomepage />} />

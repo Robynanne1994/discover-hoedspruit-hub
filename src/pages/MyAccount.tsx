@@ -26,8 +26,10 @@ import {
   UserCircle,
   LayoutDashboard,
   Megaphone,
+  Users,
 } from "lucide-react";
 import ProfileForm from "@/components/profile/ProfileForm";
+import FollowStats from "@/components/social/FollowStats";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -485,21 +487,23 @@ const MyAccount = () => {
         {profileLoading ? (
           <>
             <Skeleton className="h-5 w-36 mb-1" />
-            <Skeleton className="h-4 w-48 mb-4" />
+            <Skeleton className="h-4 w-48 mb-2" />
+            <Skeleton className="h-5 w-40 mb-4" />
           </>
         ) : (
           <>
             <h2 className="text-lg font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
               {profile?.display_name || user.email?.split("@")[0]}
             </h2>
-            <p className="text-muted-foreground text-sm mb-4">{user.email}</p>
+            <p className="text-muted-foreground text-sm mb-2">{user.email}</p>
+            <FollowStats userId={user.id} />
           </>
         )}
 
         {/* Edit Profile button */}
         <button
           onClick={() => setActiveSection("profile")}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-card border border-border shadow-card text-sm font-medium text-foreground active:scale-95 transition-transform mb-6"
+          className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-card border border-border shadow-card text-sm font-medium text-foreground active:scale-95 transition-transform mt-3 mb-6"
         >
           <Pencil className="h-3.5 w-3.5" />
           Edit Profile
@@ -526,7 +530,18 @@ const MyAccount = () => {
             <ChevronRight className="h-4 w-4 text-muted-foreground/50 ml-auto" />
           </button>
         </div>
+      </div>
 
+      {/* Find People */}
+      <div className="px-4 mb-4">
+        <Link
+          to="/people"
+          className="flex items-center gap-3 bg-card border border-border rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform w-full"
+        >
+          <Users className="h-5 w-5 text-secondary" />
+          <span className="flex-1 text-sm font-medium text-foreground">Find People</span>
+          <ChevronRight className="h-4 w-4 text-muted-foreground/50" />
+        </Link>
       </div>
 
       {/* Settings menu */}
