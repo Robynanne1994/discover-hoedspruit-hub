@@ -4,9 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-homepage.jpg";
-import { parse, isToday, isBefore, startOfToday, endOfWeek, isWithinInterval, startOfWeek, addDays } from "date-fns";
+import { parse, isToday, isBefore, startOfToday, endOfWeek, isWithinInterval } from "date-fns";
 
 type FilterType = "all" | "today" | "this-week" | "upcoming" | "past";
 
@@ -66,7 +65,6 @@ const Events = () => {
 
   const sortedEvents = useMemo(() => {
     if (!events) return [];
-    const now = new Date();
     return [...events]
       .map((e) => ({ ...e, _parsed: parseDateText(e.date) }))
       .sort((a, b) => {
@@ -83,7 +81,6 @@ const Events = () => {
 
     let filtered = sortedEvents;
 
-    // Apply date filter
     if (activeFilter !== "all") {
       filtered = filtered.filter((event) => {
         const date = event._parsed;
@@ -103,7 +100,6 @@ const Events = () => {
       });
     }
 
-    // Apply search
     if (search.trim()) {
       const q = search.toLowerCase();
       filtered = filtered.filter(
@@ -117,7 +113,6 @@ const Events = () => {
     return filtered;
   }, [sortedEvents, activeFilter, search]);
 
-  // Split into featured (first 2 with images) and upcoming
   const featuredEvents = useMemo(
     () => filteredEvents.filter((e) => e.image_url).slice(0, 2),
     [filteredEvents]
@@ -129,46 +124,50 @@ const Events = () => {
   }, [filteredEvents, featuredEvents]);
 
   return (
-    <div className="min-h-screen pb-20 bg-background">
+    <div className="min-h-screen pb-16 bg-background">
       {/* Hero */}
       <div className="relative h-[180px] overflow-hidden">
         <img src={heroBg} alt="Events in Hoedspruit" className="w-full h-full object-cover" />
-        <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-        <div className="absolute inset-0 flex items-end justify-center pb-6">
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
           <h1
-            className="text-2xl font-bold text-white tracking-tight"
+            className="text-[32px] font-semibold text-white tracking-tight"
             style={{ fontFamily: "var(--font-heading)" }}
           >
-            Events in Hoedspruit
+            Events
           </h1>
         </div>
       </div>
 
       {/* Search */}
-      <div className="px-4 -mt-4 relative z-10 mb-3">
-        <div className="flex items-center bg-card rounded-full shadow-card border border-border px-4 py-3 gap-3">
+      <div className="px-5 -mt-5 relative z-10 mb-5">
+        <div className="flex items-center bg-card/95 backdrop-blur-sm rounded-full px-4 py-3 gap-3 border border-border/40">
           <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           <input
             type="text"
             placeholder="Search events..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+            className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground placeholder:italic outline-none"
+            style={{ fontFamily: "var(--font-body)" }}
           />
         </div>
       </div>
 
       {/* Filter pills */}
-      <div className="px-4 mb-4">
+      <div className="px-5 mb-6">
         <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center">
           {filters.map((filter) => (
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors whitespace-nowrap ${
                 activeFilter === filter.value
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "bg-card text-foreground border border-border hover:shadow-card"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-card text-foreground border border-border/60"
               }`}
             >
               {filter.label}
@@ -178,24 +177,27 @@ const Events = () => {
       </div>
 
       {isLoading ? (
-        <div className="px-4 space-y-4">
-          <Skeleton className="h-6 w-40 rounded" />
-          <div className="flex gap-3">
-            <Skeleton className="w-[72%] aspect-[4/3] rounded-xl flex-shrink-0" />
-            <Skeleton className="w-[72%] aspect-[4/3] rounded-xl flex-shrink-0" />
+        <div className="px-5 space-y-4">
+          <Skeleton className="h-5 w-32 rounded" />
+          <div className="flex gap-3.5">
+            <Skeleton className="w-[78%] aspect-[3/4] rounded-xl flex-shrink-0" />
+            <Skeleton className="w-[78%] aspect-[3/4] rounded-xl flex-shrink-0" />
           </div>
-          <Skeleton className="h-6 w-40 rounded mt-4" />
+          <Skeleton className="h-5 w-32 rounded mt-6" />
           {[1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-20 w-full rounded-xl" />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="px-4 py-16 text-center">
-          <Calendar className="h-12 w-12 text-muted-foreground/40 mx-auto mb-4" />
-          <p className="text-foreground font-semibold text-lg mb-1">
-            {search ? "No matching events" : "No events found right now"}
+        <div className="px-5 py-20 text-center">
+          <Calendar className="h-10 w-10 text-primary/15 mx-auto mb-5" />
+          <p
+            className="text-foreground font-semibold text-[20px] mb-2 tracking-tight"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            {search ? "No matching events" : "No events right now"}
           </p>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-muted-foreground text-[13px] leading-relaxed">
             {search
               ? "Try another search or browse upcoming events"
               : "Check back soon for what's happening in Hoedspruit"}
@@ -205,50 +207,46 @@ const Events = () => {
         <>
           {/* Featured Events */}
           {featuredEvents.length > 0 && (
-            <section className="mt-6 mb-4">
-              <div className="flex items-center px-4 mb-3">
+            <section className="mb-2">
+              <div className="flex items-baseline justify-between px-5 mb-5">
                 <h2
-                  className="text-lg font-bold text-foreground"
+                  className="text-[22px] font-semibold text-foreground tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
-                  Featured Events
+                  Featured
                 </h2>
-                <div className="flex-1 ml-3 h-px bg-border" />
               </div>
-              <div className="flex gap-3 overflow-x-auto scrollbar-hide px-4 snap-x snap-mandatory">
-                {featuredEvents.map((event) => (
+              <div className="flex gap-3.5 overflow-x-auto scrollbar-hide px-5 snap-x snap-mandatory">
+                {featuredEvents.map((event, index) => (
                   <Link
                     key={event.id}
                     to={`/listing/${event.id}`}
-                    className="snap-start flex-shrink-0 w-[72%] rounded-xl overflow-hidden relative aspect-[4/3] group"
+                    className={`snap-start flex-shrink-0 w-[78%] rounded-xl overflow-hidden relative aspect-[3/4] group ${index === featuredEvents.length - 1 ? "mr-5" : ""}`}
                   >
                     <img
                       src={event.image_url!}
                       alt={event.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h3 className="text-white font-bold text-base mb-1 leading-tight">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <p className="text-white/70 text-[12px] font-medium uppercase tracking-wide mb-1.5">
+                        {formatEventDate(event.date)}
+                        {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
+                      </p>
+                      <h3
+                        className="text-white font-semibold text-lg leading-snug mb-1"
+                        style={{ fontFamily: "var(--font-heading)" }}
+                      >
                         {event.title}
                       </h3>
-                      <p className="text-white/80 text-xs mb-0.5">
-                        {formatEventDate(event.date)}
-                        {event.start_time ? `, ${formatTime(event.start_time)}` : ""}
-                      </p>
                       {event.location && (
-                        <p className="text-white/70 text-xs flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {event.location}
-                        </p>
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="h-3 w-3 text-white/60" />
+                          <p className="text-white/60 text-[12px]">{event.location}</p>
+                        </div>
                       )}
-                      <Button
-                        size="sm"
-                        className="mt-2 bg-accent hover:bg-accent-hover text-accent-foreground text-xs px-4 py-1.5 rounded-lg h-auto"
-                      >
-                        View Details
-                      </Button>
                     </div>
                   </Link>
                 ))}
@@ -258,57 +256,56 @@ const Events = () => {
 
           {/* Upcoming Events */}
           {upcomingEvents.length > 0 && (
-            <section className="px-4 mt-6">
-              <div className="flex items-center mb-3 mx-0 my-0">
+            <section className="px-5 py-8">
+              <div className="flex items-baseline justify-between mb-5">
                 <h2
-                  className="text-lg font-bold text-foreground"
+                  className="text-[22px] font-semibold text-foreground tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
-                  Upcoming Events
+                  Upcoming
                 </h2>
-                <div className="flex-1 ml-3 h-px bg-border" />
               </div>
-              <div className="space-y-3">
-                {upcomingEvents.map((event) => (
+              <div className="space-y-0">
+                {upcomingEvents.map((event, idx) => (
                   <Link
                     key={event.id}
                     to={`/listing/${event.id}`}
-                    className="flex items-center gap-3 bg-card rounded-xl border border-border p-3 hover:shadow-card transition-shadow group"
+                    className={`flex items-center gap-4 py-4 group ${idx < upcomingEvents.length - 1 ? "border-b border-border/60" : ""}`}
                   >
                     {/* Thumbnail */}
-                    <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
                       {event.image_url ? (
                         <img
                           src={event.image_url}
                           alt={event.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
                           loading="lazy"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Calendar className="h-5 w-5 text-muted-foreground/50" />
+                          <Calendar className="h-5 w-5 text-muted-foreground/30" />
                         </div>
                       )}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-accent font-semibold">
+                      <p className="text-[11px] text-primary font-semibold uppercase tracking-wide mb-0.5">
                         {formatEventDate(event.date)}
-                        {event.start_time ? ` | ${formatTime(event.start_time)}` : ""}
+                        {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
                       </p>
-                      <h4 className="text-sm font-bold text-foreground leading-tight line-clamp-1">
+                      <h4 className="text-[14px] font-medium text-foreground leading-snug line-clamp-1">
                         {event.title}
                       </h4>
                       {event.location && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-                          <MapPin className="h-3 w-3" />
+                        <p className="text-[12px] text-muted-foreground flex items-center gap-1 mt-0.5">
+                          <MapPin className="h-3 w-3 flex-shrink-0" />
                           <span className="line-clamp-1">{event.location}</span>
                         </p>
                       )}
                     </div>
 
-                    <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/40 flex-shrink-0" />
                   </Link>
                 ))}
               </div>
