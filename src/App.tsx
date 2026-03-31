@@ -58,6 +58,9 @@ const App = () => (
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-account" element={<MyAccount />} />
             <Route path="/saved" element={<SavedListings />} />
+            <Route path="/people" element={<People />} />
+            <Route path="/profile/:id" element={<UserProfile />} />
+            <Route path="/profile/:id/:type" element={<FollowList />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminDashboard />} />
               <Route path="homepage" element={<AdminHomepage />} />
