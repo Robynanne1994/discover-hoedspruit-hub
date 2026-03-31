@@ -578,7 +578,7 @@ const AdminImport = () => {
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
                       {parsed.headers.map((h) => (
-                        <td key={h} className={`p-2 max-w-[200px] truncate ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
+                        <td key={h} className={`p-2 max-w-[200px] truncate ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) || (accommodationFieldSet.has(h) && !isAccommodation) ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
                       ))}
                     </tr>
                   ))}
