@@ -21,8 +21,13 @@ export const SHOPPING_ONLY_FIELDS = [
   "shop_type", "curio_or_gifts", "product_categories", "price_range"
 ] as const;
 
+export const ACCOMMODATION_ONLY_FIELDS = [
+  "pets_allowed", "amenities", "sleeps", "price_range", "km_from_town"
+] as const;
+
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
 export const SHOPPING_CATEGORY_PATTERN = /^shopping$/i;
+export const ACCOMMODATION_CATEGORY_PATTERN = /^accommodation$/i;
 
 export function isRestaurantCategory(categoryTitle: string): boolean {
   return RESTAURANT_CATEGORY_PATTERN.test(categoryTitle);
@@ -32,6 +37,10 @@ export function isShoppingCategory(categoryTitle: string): boolean {
   return SHOPPING_CATEGORY_PATTERN.test(categoryTitle);
 }
 
+export function isAccommodationCategory(categoryTitle: string): boolean {
+  return ACCOMMODATION_CATEGORY_PATTERN.test(categoryTitle);
+}
+
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
@@ -39,6 +48,9 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   }
   if (categoryTitle && isShoppingCategory(categoryTitle)) {
     headers.push(...SHOPPING_ONLY_FIELDS);
+  }
+  if (categoryTitle && isAccommodationCategory(categoryTitle)) {
+    headers.push(...ACCOMMODATION_ONLY_FIELDS);
   }
   return headers;
 }
