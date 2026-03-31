@@ -42,6 +42,7 @@ interface ProfileFormProps {
     location: string | null;
     phone: string | null;
     email: string | null;
+    bio: string | null;
   } | null;
 }
 
