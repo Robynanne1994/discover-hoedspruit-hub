@@ -120,22 +120,7 @@ const HomeHero = () => {
             width={1080}
             height={720}
           />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(to bottom, hsla(35, 40%, 85%, 0.1), hsla(35, 40%, 92%, 0.3))",
-            }}
-          />
           <div className="absolute inset-0 flex flex-col items-center pt-10 pb-4 px-5">
-            <p
-              className="text-[22px] font-bold text-white leading-[1.1] text-center drop-shadow-sm"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              <span className="italic">Hello</span>
-              <br />
-              Hoedspruit
-            </p>
 
             <div className="w-full mt-3">
               <p className="text-center text-[13px] font-medium mb-2.5 text-white/90 drop-shadow-sm">
