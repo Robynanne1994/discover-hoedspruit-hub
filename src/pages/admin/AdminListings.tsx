@@ -317,6 +317,7 @@ const AdminListings = () => {
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
   const isShoppingType = categories?.some((c) => selectedCatIds.includes(c.id) && isShoppingCategory(c.title));
+  const isAccommodationType = categories?.some((c) => selectedCatIds.includes(c.id) && isAccommodationCategory(c.title));
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
