@@ -7,7 +7,7 @@ const AdvertiseWithUs = () => {
   return (
     <section className="section-padding bg-background">
       <div className="container-wide">
-        <div className="rounded-2xl bg-primary/15 p-8 text-center space-y-4">
+        <div className="rounded-2xl bg-primary/15 p-8 text-center space-y-4 border border-primary-hover">
           <h2 className="text-2xl font-bold text-foreground">
             Want to be listed?
           </h2>
