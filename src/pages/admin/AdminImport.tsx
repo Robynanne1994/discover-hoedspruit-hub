@@ -297,6 +297,15 @@ const AdminImport = () => {
           payload.price_range = row.price_range || null;
         }
 
+        // Only include accommodation fields if importing for an accommodation category
+        if (isAccommodation) {
+          payload.pets_allowed = parseBool(row.pets_allowed);
+          payload.amenities = parseArray(row.amenities) ?? [];
+          payload.sleeps = row.sleeps ? parseInt(row.sleeps, 10) || null : null;
+          payload.price_range = row.price_range || null;
+          payload.km_from_town = row.km_from_town || null;
+        }
+
         const existingId = existingMap.get(title.toLowerCase());
         let listingId: string | null = null;
 
