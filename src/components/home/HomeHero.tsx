@@ -28,6 +28,18 @@ const getWeatherIcon = (code: number) => {
 
 const HomeHero = () => {
   const [query, setQuery] = useState("");
+
+  const { data: heroImageUrl } = useQuery({
+    queryKey: ["site-content", "hero-image"],
+    queryFn: async () => {
+      const { data } = await supabase.from("site_content").select("content").eq("section", "hero").maybeSingle();
+      const c = data?.content as { image_url?: string } | null;
+      return c?.image_url || null;
+    },
+    staleTime: 5 * 60 * 1000,
+  });
+
+  const heroBg = heroImageUrl || heroFallback;
   const [focused, setFocused] = useState(false);
   const [temp, setTemp] = useState<number | null>(null);
   const [weatherCode, setWeatherCode] = useState<number>(0);
