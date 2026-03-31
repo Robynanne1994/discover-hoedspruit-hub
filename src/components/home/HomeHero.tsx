@@ -138,7 +138,7 @@ const HomeHero = () => {
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => setFocused(true)}
                     placeholder="Search events, food, stays, activities..."
-                    className="text-xs flex-1 font-normal text-left bg-transparent outline-none placeholder:text-muted-foreground text-foreground"
+                    className="text-xs flex-1 font-normal text-left bg-transparent outline-none placeholder:text-muted-foreground text-foreground placeholder:italic"
                   />
                   {isFetching && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground flex-shrink-0" />}
                   <div className="flex items-center gap-1 flex-shrink-0">
