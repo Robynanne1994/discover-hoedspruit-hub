@@ -14,6 +14,9 @@ const AdminContent = () => {
   // Header / Logo state
   const [logoUrl, setLogoUrl] = useState("");
 
+  // Hero image state
+  const [heroImageUrl, setHeroImageUrl] = useState("");
+
   // Advertise section state
   const [advTitle, setAdvTitle] = useState("");
   const [advDescription, setAdvDescription] = useState("");
