@@ -34,7 +34,8 @@ function parsePhone(phone: string) {
   return { areaCode: "+27", number: phone.replace(/^\+?\d{1,3}\s?/, "") };
 }
 import { toast } from "sonner";
-import heroBg from "@/assets/hero-homepage.jpg";
+import BackButton from "@/components/BackButton";
+
 
 interface ProfileFormProps {
   profile: {
@@ -166,30 +167,11 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      {/* Hero */}
-      <section className="relative">
-        <div className="relative h-[220px] overflow-hidden">
-          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "var(--hero-overlay)" }} />
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-6">
-            <h1
-              className="text-2xl font-bold tracking-tight mb-1"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Hello<br />Hoedspruit
-            </h1>
-            <p
-              className="text-xl font-semibold mt-2"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Edit Profile
-            </p>
-          </div>
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-6 bg-background rounded-t-[2rem]" />
-      </section>
+      <div className="px-5 pt-4">
+        <BackButton className="mb-0" />
+      </div>
 
-      <div className="relative -mt-6 px-5 pt-6">
+      <div className="px-5 pt-4">
         {/* Intro */}
         <div className="mb-6">
           <h2
