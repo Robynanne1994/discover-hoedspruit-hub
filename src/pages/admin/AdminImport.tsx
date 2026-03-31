@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS } from "@/lib/categoryFields";
+import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
