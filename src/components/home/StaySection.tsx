@@ -11,9 +11,9 @@ const StaySection = () => {
     return (
       <section className="pb-6">
         <SectionHeader title={title || "Places to Stay"} />
-        <div className="flex gap-3 px-4">
-          <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
-          <Skeleton className="w-[46%] aspect-[4/3] rounded-xl" />
+        <div className="flex gap-3 px-5">
+          <Skeleton className="w-[46%] aspect-[3/4] rounded-xl" />
+          <Skeleton className="w-[46%] aspect-[3/4] rounded-xl" />
         </div>
       </section>
     );
@@ -22,9 +22,9 @@ const StaySection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section className="pb-6">
+    <section className="py-4">
       <SectionHeader title={title || "Places to Stay"} actionLabel="See all" actionHref="/categories" />
-      <div className="grid grid-cols-2 gap-3 px-4">
+      <div className="grid grid-cols-2 gap-3.5 px-5">
         {listings.map((listing) => (
           <VenueCard
             key={listing.id}

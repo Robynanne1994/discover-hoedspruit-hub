@@ -9,7 +9,7 @@ import AdvertiseWithUs from "@/components/home/AdvertiseWithUs";
 
 const Index = () => {
   return (
-    <div className="min-h-screen pb-20 bg-background">
+    <div className="min-h-screen pb-16 bg-background">
       <HomeHero />
       <FeaturedCarousel />
       <WhatsOnToday />

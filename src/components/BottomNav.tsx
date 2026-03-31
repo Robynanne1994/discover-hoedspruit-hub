@@ -14,8 +14,8 @@ const BottomNav = () => {
   const location = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/95 backdrop-blur-md border-t border-border">
-      <div className="flex items-center justify-around h-16">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-card/98 backdrop-blur-lg border-t border-border/50">
+      <div className="flex items-center justify-around h-14">
         {navItems.map((item) => {
           const isActive = item.href === "/" 
             ? location.pathname === "/" 
@@ -23,12 +23,15 @@ const BottomNav = () => {
           const Icon = item.icon;
 
           return (
-            <Link key={item.label} to={item.href} className="flex-1 flex justify-center py-2">
+            <Link key={item.label} to={item.href} className="flex-1 flex justify-center py-1.5">
               <div className={cn(
-                "flex flex-col items-center gap-1 text-[10px] font-medium transition-colors",
+                "flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors",
                 isActive ? "text-primary" : "text-muted-foreground"
               )}>
-                <Icon className={cn("h-5 w-5", isActive && item.icon === Heart && "fill-primary")} />
+                <Icon className={cn(
+                  "h-[18px] w-[18px]",
+                  isActive && item.icon === Heart && "fill-primary"
+                )} strokeWidth={isActive ? 2 : 1.5} />
                 <span>{item.label}</span>
               </div>
             </Link>
