@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Poppins', 'sans-serif'],
-        body: ['Inter', 'Segoe UI', 'sans-serif'],
-        sans: ['Inter', 'Segoe UI', 'sans-serif'],
+        heading: ['Cormorant Garamond', 'Georgia', 'serif'],
+        body: ['DM Sans', 'Segoe UI', 'sans-serif'],
+        sans: ['DM Sans', 'Segoe UI', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
