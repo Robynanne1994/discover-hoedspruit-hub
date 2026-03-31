@@ -514,6 +514,8 @@ const AdminImport = () => {
                 ? "This export/import will include universal + restaurant-specific fields."
                 : isShopping
                 ? "This export/import will include universal + shopping-specific fields."
+                : isAccommodation
+                ? "This export/import will include universal + accommodation-specific fields."
                 : "This export/import will include universal fields only."}
             </p>
           )}
