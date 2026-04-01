@@ -447,125 +447,144 @@ const MyAccount = () => {
 
   // Main account page
   return (
-    <div className="min-h-screen pb-16 bg-background">
-      {/* Hero */}
-      <div className="relative h-[180px] overflow-hidden">
-        <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }}
-        />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <h1
-            className="text-[32px] font-semibold text-white tracking-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Profile
-          </h1>
-        </div>
+    <div className="min-h-screen pb-20 bg-background">
+      {/* Minimal top bar */}
+      <div className="px-5 pt-6 pb-2">
+        <h1
+          className="text-center text-[15px] font-semibold text-foreground tracking-tight"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          My Account
+        </h1>
       </div>
 
-      {/* Profile summary */}
-      <div className="px-5 -mt-10 relative z-10 flex flex-col items-center">
-        <div className="h-20 w-20 rounded-full bg-card border-[3px] border-card overflow-hidden flex items-center justify-center mb-3">
-          {profileLoading ? (
-            <Skeleton className="h-full w-full rounded-full" />
-          ) : profile?.avatar_url ? (
-            <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
-          ) : (
-            <UserCircle className="h-12 w-12 text-muted-foreground/30" />
-          )}
-        </div>
-
-        {profileLoading ? (
-          <>
-            <Skeleton className="h-5 w-36 mb-1" />
-            <Skeleton className="h-4 w-48 mb-2" />
-            <Skeleton className="h-5 w-40 mb-4" />
-          </>
-        ) : (
-          <>
-            <h2
-              className="text-[20px] font-semibold text-foreground tracking-tight"
-              style={{ fontFamily: "var(--font-heading)" }}
+      {/* Profile summary card */}
+      <div className="px-5 pt-3 mb-5">
+        <div className="bg-card border border-border/50 rounded-2xl p-5">
+          <div className="flex items-center gap-4">
+            <div className="h-[64px] w-[64px] rounded-full bg-muted border-2 border-border/40 overflow-hidden flex items-center justify-center shrink-0">
+              {profileLoading ? (
+                <Skeleton className="h-full w-full rounded-full" />
+              ) : profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
+              ) : (
+                <UserCircle className="h-9 w-9 text-muted-foreground/30" />
+              )}
+            </div>
+            <div className="flex-1 min-w-0">
+              {profileLoading ? (
+                <>
+                  <Skeleton className="h-5 w-32 mb-1" />
+                  <Skeleton className="h-3.5 w-40" />
+                </>
+              ) : (
+                <>
+                  <h2
+                    className="text-[17px] font-semibold text-foreground tracking-tight truncate"
+                    style={{ fontFamily: "var(--font-heading)" }}
+                  >
+                    {profile?.display_name || user.email?.split("@")[0]}
+                  </h2>
+                  <p className="text-muted-foreground text-[12px] truncate">{user.email}</p>
+                </>
+              )}
+            </div>
+            <button
+              onClick={() => setActiveSection("profile")}
+              className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/8 text-primary text-[12px] font-medium active:scale-95 transition-transform"
             >
-              {profile?.display_name || user.email?.split("@")[0]}
-            </h2>
-            <p className="text-muted-foreground text-[12px] mb-2">{user.email}</p>
-            <FollowStats userId={user.id} />
-          </>
-        )}
+              <Pencil className="h-3 w-3" />
+              Edit
+            </button>
+          </div>
 
-        {/* Edit Profile button */}
-        <button
-          onClick={() => setActiveSection("profile")}
-          className="flex items-center gap-2 px-6 py-2 rounded-full bg-card border border-border/60 text-[13px] font-medium text-foreground active:scale-95 transition-transform mt-3 mb-6"
-        >
-          <Pencil className="h-3 w-3" />
-          Edit Profile
-        </button>
+          {/* Follow stats inline */}
+          <div className="mt-4 pt-3.5 border-t border-border/40">
+            <FollowStats userId={user.id} />
+          </div>
+        </div>
       </div>
 
       {/* Quick access */}
       <div className="px-5 mb-3">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           <Link
             to="/saved"
-            className="flex items-center gap-3 bg-card border border-border/60 rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
+            className="flex items-center gap-3 bg-card border border-border/50 rounded-xl px-4 py-3 active:scale-[0.97] transition-transform"
           >
             <Heart className="h-4 w-4 text-primary fill-primary" />
             <span className="text-[13px] font-medium text-foreground">Saved</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/30 ml-auto" />
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 ml-auto" />
           </Link>
           <button
             onClick={() => setActiveSection("my-events")}
-            className="flex items-center gap-3 bg-card border border-border/60 rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform"
+            className="flex items-center gap-3 bg-card border border-border/50 rounded-xl px-4 py-3 active:scale-[0.97] transition-transform"
           >
             <Calendar className="h-4 w-4 text-accent" />
             <span className="text-[13px] font-medium text-foreground">My Events</span>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/30 ml-auto" />
+            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 ml-auto" />
           </button>
         </div>
       </div>
 
-      {/* Find People */}
+      {/* Social */}
       <div className="px-5 mb-3">
-        <Link
-          to="/people"
-          className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl px-4 py-3.5 active:scale-[0.97] transition-transform w-full"
-        >
-          <Users className="h-4 w-4 text-secondary" />
-          <span className="flex-1 text-[13px] font-medium text-foreground">Find People</span>
-          <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
-        </Link>
+        <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
+          <Link to="/people">
+            <div className="flex items-center gap-4 px-4 py-3.5">
+              <Users className="h-[18px] w-[18px] text-primary" strokeWidth={1.5} />
+              <span className="flex-1 text-[13px] font-medium text-foreground">Find People</span>
+              <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
+            </div>
+          </Link>
+        </div>
       </div>
 
-      {/* Settings menu */}
+      {/* Settings & Support */}
       <div className="px-5 mb-3">
-        <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
+        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">Settings & Support</p>
+        <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
           {[
             { icon: Bell, label: "Notifications", action: () => {} },
             { icon: Settings, label: "Account Settings", action: () => setActiveSection("profile") },
             { icon: Shield, label: "Privacy & Security" },
+          ].map((item, i, arr) => {
+            const Icon = item.icon;
+            return (
+              <button
+                key={item.label}
+                onClick={item.action}
+                className="w-full text-left hover:bg-muted/30 transition-colors"
+              >
+                <div className={`flex items-center gap-4 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/30" : ""}`}>
+                  <Icon className="h-[17px] w-[17px] text-primary" strokeWidth={1.5} />
+                  <span className="flex-1 text-[13px] font-medium text-foreground">{item.label}</span>
+                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/25" />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Info & More */}
+      <div className="px-5 mb-3">
+        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">Info & More</p>
+        <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
+          {[
             { icon: HelpCircle, label: "Help & Support", href: "/contact" },
             { icon: Info, label: "About & Info", href: "/about" },
             { icon: Megaphone, label: "Advertise", href: "/advertise" },
           ].map((item, i, arr) => {
             const Icon = item.icon;
-            const content = (
-              <div className={`flex items-center gap-4 px-4 py-3.5 ${i < arr.length - 1 ? "border-b border-border/40" : ""}`}>
-                <Icon className="h-[18px] w-[18px] text-primary" strokeWidth={1.5} />
-                <span className="flex-1 text-[14px] font-medium text-foreground">{item.label}</span>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
-              </div>
-            );
-            if (item.href) {
-              return <Link key={item.label} to={item.href}>{content}</Link>;
-            }
             return (
-              <button key={item.label} onClick={item.action} className="w-full text-left hover:bg-muted/50 transition-colors">
-                {content}
-              </button>
+              <Link key={item.label} to={item.href}>
+                <div className={`flex items-center gap-4 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/30" : ""}`}>
+                  <Icon className="h-[17px] w-[17px] text-primary" strokeWidth={1.5} />
+                  <span className="flex-1 text-[13px] font-medium text-foreground">{item.label}</span>
+                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/25" />
+                </div>
+              </Link>
             );
           })}
         </div>
@@ -573,12 +592,13 @@ const MyAccount = () => {
 
       {isAdmin && (
         <div className="px-5 mb-3">
-          <div className="bg-card border border-border/60 rounded-xl overflow-hidden">
+          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">Admin</p>
+          <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
             <Link to="/admin">
-              <div className="flex items-center gap-4 px-4 py-3.5">
-                <LayoutDashboard className="h-[18px] w-[18px] text-primary" strokeWidth={1.5} />
-                <span className="flex-1 text-[14px] font-medium text-foreground">Admin Dashboard</span>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
+              <div className="flex items-center gap-4 px-4 py-3">
+                <LayoutDashboard className="h-[17px] w-[17px] text-primary" strokeWidth={1.5} />
+                <span className="flex-1 text-[13px] font-medium text-foreground">Admin Dashboard</span>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/25" />
               </div>
             </Link>
           </div>
@@ -586,10 +606,10 @@ const MyAccount = () => {
       )}
 
       {/* Logout */}
-      <div className="px-5 mb-8">
+      <div className="px-5 mt-2 mb-8">
         <button
           onClick={() => { signOut(); navigate("/"); }}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-card border border-border/60 text-destructive font-medium text-[13px] active:scale-[0.97] transition-transform"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-destructive font-medium text-[13px] active:scale-[0.97] transition-transform"
         >
           <LogOut className="h-4 w-4" />
           Log Out
