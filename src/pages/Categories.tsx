@@ -65,7 +65,7 @@ const Categories = () => {
 
           {/* Back button */}
           <div className="absolute top-4 left-4 z-10">
-            <BackButton />
+            <BackButton className="text-white/90 hover:text-white mb-0" />
           </div>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
