@@ -159,7 +159,7 @@ const Events = () => {
 
       {/* Filter pills */}
       <div className="px-5 mb-6">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center px-1">
           {filters.map((filter) => (
             <button
               key={filter.value}
