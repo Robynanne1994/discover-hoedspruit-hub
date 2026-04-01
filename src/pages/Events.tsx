@@ -269,7 +269,7 @@ const Events = () => {
                 {upcomingEvents.map((event, idx) => (
                   <Link
                     key={event.id}
-                    to={`/listing/${event.id}`}
+                    to={`/events/${event.id}`}
                     className={`flex items-center gap-4 py-4 group ${idx < upcomingEvents.length - 1 ? "border-b border-border/60" : ""}`}
                   >
                     {/* Thumbnail */}
