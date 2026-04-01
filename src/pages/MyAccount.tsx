@@ -449,118 +449,117 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen pb-20 bg-background">
       {/* Minimal top bar */}
-      <div className="px-5 pt-6 pb-2">
+      <div className="pt-14 pb-1 px-5">
         <h1
-          className="text-center text-[15px] font-semibold text-foreground tracking-tight"
-          style={{ fontFamily: "var(--font-heading)" }}
+          className="text-center text-[13px] font-medium text-muted-foreground uppercase tracking-[0.08em]"
         >
           My Account
         </h1>
       </div>
 
-      {/* Profile summary card */}
-      <div className="px-5 pt-3 mb-5">
-        <div className="bg-card border border-border/50 rounded-2xl p-5">
-          <div className="flex items-center gap-4">
-            <div className="h-[64px] w-[64px] rounded-full bg-muted border-2 border-border/40 overflow-hidden flex items-center justify-center shrink-0">
+      {/* Profile identity card */}
+      <div className="px-5 pt-4 mb-6">
+        <div className="bg-card border border-border/40 rounded-2xl px-5 py-5">
+          <div className="flex items-center gap-3.5">
+            <div className="h-[56px] w-[56px] rounded-full bg-muted border border-border/30 overflow-hidden flex items-center justify-center shrink-0">
               {profileLoading ? (
                 <Skeleton className="h-full w-full rounded-full" />
               ) : profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
               ) : (
-                <UserCircle className="h-9 w-9 text-muted-foreground/30" />
+                <UserCircle className="h-8 w-8 text-muted-foreground/25" />
               )}
             </div>
             <div className="flex-1 min-w-0">
               {profileLoading ? (
                 <>
-                  <Skeleton className="h-5 w-32 mb-1" />
-                  <Skeleton className="h-3.5 w-40" />
+                  <Skeleton className="h-5 w-28 mb-1.5" />
+                  <Skeleton className="h-3 w-36" />
                 </>
               ) : (
                 <>
                   <h2
-                    className="text-[17px] font-semibold text-foreground tracking-tight truncate"
+                    className="text-[18px] font-semibold text-foreground tracking-tight truncate leading-tight"
                     style={{ fontFamily: "var(--font-heading)" }}
                   >
                     {profile?.display_name || user.email?.split("@")[0]}
                   </h2>
-                  <p className="text-muted-foreground text-[12px] truncate">{user.email}</p>
+                  <p className="text-muted-foreground text-[12px] truncate mt-0.5">{user.email}</p>
                 </>
               )}
             </div>
+          </div>
+
+          {/* Stats + Edit row */}
+          <div className="mt-4 pt-3.5 border-t border-border/30 flex items-center justify-between">
+            <FollowStats userId={user.id} />
             <button
               onClick={() => setActiveSection("profile")}
-              className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/8 text-primary text-[12px] font-medium active:scale-95 transition-transform"
+              className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border/40 text-foreground text-[12px] font-medium active:scale-95 transition-transform hover:bg-muted/30"
             >
               <Pencil className="h-3 w-3" />
               Edit
             </button>
           </div>
-
-          {/* Follow stats inline */}
-          <div className="mt-4 pt-3.5 border-t border-border/40">
-            <FollowStats userId={user.id} />
-          </div>
         </div>
       </div>
 
-      {/* Quick access */}
-      <div className="px-5 mb-3">
-        <div className="grid grid-cols-2 gap-2.5">
+      {/* Quick actions — Saved & My Events */}
+      <div className="px-5 mb-6">
+        <div className="space-y-2">
           <Link
             to="/saved"
-            className="flex items-center gap-3 bg-card border border-border/50 rounded-xl px-4 py-3 active:scale-[0.97] transition-transform"
+            className="flex items-center gap-3.5 bg-card border border-border/40 rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
           >
-            <Heart className="h-4 w-4 text-primary fill-primary" />
-            <span className="text-[13px] font-medium text-foreground">Saved</span>
-            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 ml-auto" />
+            <div className="w-9 h-9 rounded-full bg-primary/8 flex items-center justify-center shrink-0">
+              <Heart className="h-4 w-4 text-primary" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[13px] font-medium text-foreground block">Saved Listings</span>
+              <span className="text-[11px] text-muted-foreground">Listings you've bookmarked</span>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/25 shrink-0" />
           </Link>
           <button
             onClick={() => setActiveSection("my-events")}
-            className="flex items-center gap-3 bg-card border border-border/50 rounded-xl px-4 py-3 active:scale-[0.97] transition-transform"
+            className="w-full flex items-center gap-3.5 bg-card border border-border/40 rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform text-left"
           >
-            <Calendar className="h-4 w-4 text-accent" />
-            <span className="text-[13px] font-medium text-foreground">My Events</span>
-            <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/30 ml-auto" />
+            <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+              <Calendar className="h-4 w-4 text-accent" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[13px] font-medium text-foreground block">My Events</span>
+              <span className="text-[11px] text-muted-foreground">Your RSVP'd and saved events</span>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/25 shrink-0" />
           </button>
         </div>
       </div>
 
-      {/* Social */}
-      <div className="px-5 mb-3">
-        <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
-          <Link to="/people">
-            <div className="flex items-center gap-4 px-4 py-3.5">
-              <Users className="h-[18px] w-[18px] text-primary" strokeWidth={1.5} />
-              <span className="flex-1 text-[13px] font-medium text-foreground">Find People</span>
-              <ChevronRight className="h-4 w-4 text-muted-foreground/30" />
-            </div>
-          </Link>
-        </div>
-      </div>
-
       {/* Settings & Support */}
-      <div className="px-5 mb-3">
-        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">Settings & Support</p>
-        <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
+      <div className="px-5 mb-5">
+        <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-[0.1em] mb-2 px-1">Settings & Support</p>
+        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
           {[
+            { icon: Users, label: "Find People", href: "/people" },
             { icon: Bell, label: "Notifications", action: () => {} },
             { icon: Settings, label: "Account Settings", action: () => setActiveSection("profile") },
             { icon: Shield, label: "Privacy & Security" },
           ].map((item, i, arr) => {
             const Icon = item.icon;
+            const content = (
+              <div className={`flex items-center gap-3.5 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/20" : ""}`}>
+                <Icon className="h-[16px] w-[16px] text-primary/70" strokeWidth={1.5} />
+                <span className="flex-1 text-[13px] text-foreground">{item.label}</span>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20" />
+              </div>
+            );
+            if ('href' in item && item.href) {
+              return <Link key={item.label} to={item.href}>{content}</Link>;
+            }
             return (
-              <button
-                key={item.label}
-                onClick={item.action}
-                className="w-full text-left hover:bg-muted/30 transition-colors"
-              >
-                <div className={`flex items-center gap-4 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/30" : ""}`}>
-                  <Icon className="h-[17px] w-[17px] text-primary" strokeWidth={1.5} />
-                  <span className="flex-1 text-[13px] font-medium text-foreground">{item.label}</span>
-                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/25" />
-                </div>
+              <button key={item.label} onClick={item.action} className="w-full text-left hover:bg-muted/20 transition-colors">
+                {content}
               </button>
             );
           })}
@@ -568,21 +567,21 @@ const MyAccount = () => {
       </div>
 
       {/* Info & More */}
-      <div className="px-5 mb-3">
-        <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">Info & More</p>
-        <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
+      <div className="px-5 mb-5">
+        <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-[0.1em] mb-2 px-1">Info & More</p>
+        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
           {[
             { icon: HelpCircle, label: "Help & Support", href: "/contact" },
-            { icon: Info, label: "About & Info", href: "/about" },
-            { icon: Megaphone, label: "Advertise", href: "/advertise" },
+            { icon: Info, label: "About", href: "/about" },
+            { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
           ].map((item, i, arr) => {
             const Icon = item.icon;
             return (
               <Link key={item.label} to={item.href}>
-                <div className={`flex items-center gap-4 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/30" : ""}`}>
-                  <Icon className="h-[17px] w-[17px] text-primary" strokeWidth={1.5} />
-                  <span className="flex-1 text-[13px] font-medium text-foreground">{item.label}</span>
-                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/25" />
+                <div className={`flex items-center gap-3.5 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/20" : ""}`}>
+                  <Icon className="h-[16px] w-[16px] text-primary/70" strokeWidth={1.5} />
+                  <span className="flex-1 text-[13px] text-foreground">{item.label}</span>
+                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20" />
                 </div>
               </Link>
             );
@@ -591,14 +590,14 @@ const MyAccount = () => {
       </div>
 
       {isAdmin && (
-        <div className="px-5 mb-3">
-          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-2 px-1">Admin</p>
-          <div className="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div className="px-5 mb-5">
+          <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-[0.1em] mb-2 px-1">Admin</p>
+          <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
             <Link to="/admin">
-              <div className="flex items-center gap-4 px-4 py-3">
-                <LayoutDashboard className="h-[17px] w-[17px] text-primary" strokeWidth={1.5} />
-                <span className="flex-1 text-[13px] font-medium text-foreground">Admin Dashboard</span>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/25" />
+              <div className="flex items-center gap-3.5 px-4 py-3">
+                <LayoutDashboard className="h-[16px] w-[16px] text-primary/70" strokeWidth={1.5} />
+                <span className="flex-1 text-[13px] text-foreground">Admin Dashboard</span>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20" />
               </div>
             </Link>
           </div>
@@ -606,10 +605,10 @@ const MyAccount = () => {
       )}
 
       {/* Logout */}
-      <div className="px-5 mt-2 mb-8">
+      <div className="px-5 mt-1 mb-8">
         <button
           onClick={() => { signOut(); navigate("/"); }}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-destructive font-medium text-[13px] active:scale-[0.97] transition-transform"
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-destructive/80 font-medium text-[13px] active:scale-[0.97] transition-transform hover:bg-destructive/5"
         >
           <LogOut className="h-4 w-4" />
           Log Out
