@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail, Phone, MessageCircle, HelpCircle, ChevronRight, Send, Check, Loader2 } from "lucide-react";
+import BackButton from "@/components/BackButton";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
