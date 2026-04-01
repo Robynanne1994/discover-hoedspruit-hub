@@ -14,6 +14,7 @@ const ListingDetail = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const whatToKnowRef = useRef<HTMLDivElement>(null);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
