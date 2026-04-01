@@ -23,7 +23,7 @@ const EatSection = () => {
 
   return (
     <section className="py-4">
-      <SectionHeader title={title || "Eat in Hoedspruit"} actionLabel="See all" <SectionHeader title={title || "Eat in Hoedspruit"} actionLabel="See all" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" /> />
+      <SectionHeader title={title || "Eat in Hoedspruit"} actionLabel="See all" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" />
       <div className="grid grid-cols-2 gap-3.5 px-5">
         {listings.map((listing) => (
           <VenueCard
