@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Heart, Info, Share2 } from "lucide-react";
+import { Heart, MapPinCheck, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface ListingActionsProps {
@@ -27,6 +26,21 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
         .eq("user_id", user.id)
         .eq("item_id", listingId)
         .eq("item_type", "listing")
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user,
+  });
+
+  const { data: isVisited } = useQuery({
+    queryKey: ["been-here", listingId, user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data } = await supabase
+        .from("been_here")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("listing_id", listingId)
         .maybeSingle();
       return !!data;
     },
@@ -57,6 +71,28 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
     },
   });
 
+  const toggleVisited = useMutation({
+    mutationFn: async () => {
+      if (!user) return;
+      if (isVisited) {
+        await supabase
+          .from("been_here")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("listing_id", listingId);
+      } else {
+        await supabase
+          .from("been_here")
+          .insert({ user_id: user.id, listing_id: listingId });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["been-here", listingId] });
+      queryClient.invalidateQueries({ queryKey: ["been-here"] });
+      toast.success(isVisited ? "Removed from visited" : "Marked as visited!");
+    },
+  });
+
   const requireAuth = () => {
     if (!user) {
       toast.info("Sign in to use this feature");
@@ -80,14 +116,17 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
     }
   };
 
+  const btnBase = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors active:scale-95";
+  const btnInactive = "bg-card text-foreground border-border/60 hover:bg-muted/50";
+
   return (
     <div className="flex items-center gap-2">
       <button
         onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors active:scale-95 ${
+        className={`${btnBase} ${
           isFavourited
             ? "bg-primary/8 text-primary border-primary/20"
-            : "bg-card text-foreground border-border/60 hover:bg-muted/50"
+            : btnInactive
         }`}
       >
         <Heart className={`h-3 w-3 ${isFavourited ? "fill-current" : ""}`} />
@@ -96,18 +135,22 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
 
       <button
         onClick={handleShare}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium bg-card text-foreground border border-border/60 hover:bg-muted/50 transition-colors active:scale-95"
+        className={`${btnBase} ${btnInactive}`}
       >
         <Share2 className="h-3 w-3" />
         Share
       </button>
 
       <button
-        onClick={onWhatToKnow}
-        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium bg-card text-foreground border border-border/60 hover:bg-muted/50 transition-colors active:scale-95"
+        onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
+        className={`${btnBase} ${
+          isVisited
+            ? "bg-accent/10 text-accent border-accent/20"
+            : btnInactive
+        }`}
       >
-        <Info className="h-3 w-3" />
-        What to Know
+        <MapPinCheck className={`h-3 w-3 ${isVisited ? "fill-current" : ""}`} />
+        {isVisited ? "Visited" : "Visited"}
       </button>
     </div>
   );
