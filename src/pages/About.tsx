@@ -60,17 +60,6 @@ const About = () => {
           </div>
         </div>
 
-        {/* About text */}
-        <div className="bg-card border border-border/60 rounded-2xl p-5">
-          <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
-            <p>
-              Nestled at the foot of the Drakensberg escarpment in Limpopo, South Africa, Hoedspruit is a gateway to some of the country's most breathtaking wildlife reserves, adventure activities, and culinary experiences.
-            </p>
-            <p>
-              <span className="font-semibold text-foreground">Hello Hoedspruit</span> was created to bring together the best of what this town has to offer — from restaurants and cafés to outdoor adventures, family-friendly activities, and community events.
-            </p>
-          </div>
-        </div>
 
         {/* Value cards */}
         <div>
