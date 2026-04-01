@@ -77,7 +77,7 @@ const WhatsOnToday = () => {
                 {event.title}
               </span>
               {event.location && (
-                <span className="block text-[12px] text-muted-foreground mt-0.5">{event.location}</span>
+                <span className="block text-[12px] mt-0.5 text-orange-800">{event.location}</span>
               )}
             </div>
           </div>
