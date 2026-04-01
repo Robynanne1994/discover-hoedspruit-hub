@@ -109,16 +109,18 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
-  // Kids & Family accordion items (exclude items shown as top pills)
+  // Kids & Family accordion items
   const kidsItems = [
+    { label: "Good for Kids", value: goodForKids },
     { label: "Kids Playground", value: kidsPlayground },
     { label: "Kids Menu", value: kidsMenu },
     { label: "High Chairs", value: highChairs },
   ].filter((item) => item.value === true);
   const hasKidsInfo = kidsItems.length > 0;
 
-  // Accessibility accordion items (exclude items shown as top pills)
+  // Accessibility accordion items
   const accessibilityItems = [
+    { label: "Wheelchair Friendly", value: wheelchairFriendly },
     { label: "Wheelchair-accessible Car Park", value: wheelchairCarPark },
     { label: "Wheelchair-accessible Entrance", value: wheelchairEntrance },
     { label: "Wheelchair-accessible Seating", value: wheelchairSeating },
