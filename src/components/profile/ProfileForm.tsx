@@ -166,58 +166,50 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const initial = (displayName || user?.email || "?")[0].toUpperCase();
 
   return (
-    <div className="min-h-screen pb-20 bg-background">
-      <div className="px-5 pt-4">
+    <div className="min-h-screen pb-24 bg-background">
+      {/* Minimal top bar */}
+      <div className="flex items-center px-5 pt-5 pb-2">
         <BackButton className="mb-0" />
+        <h1
+          className="flex-1 text-center text-[15px] font-semibold text-foreground tracking-tight pr-10"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Edit Profile
+        </h1>
       </div>
 
-      <div className="px-5 pt-4">
-        {/* Intro */}
-        <div className="mb-6">
-          <h2
-            className="text-lg font-bold text-foreground mb-1"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Manage Your Profile
-          </h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            Keep your Hello Hoedspruit account up to date.
-          </p>
-        </div>
-
+      <div className="px-5 pt-4 space-y-5">
         {/* Profile Photo Card */}
-        <div className="bg-card border border-border rounded-2xl p-5 mb-6">
-          <div className="flex items-center gap-4">
-            <div className="relative group shrink-0">
-              <div className="h-16 w-16 rounded-full bg-muted border-2 border-border overflow-hidden flex items-center justify-center">
-                {avatarUrl ? (
-                  <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
-                ) : (
-                  <span
-                    className="text-xl font-bold text-muted-foreground"
-                    style={{ fontFamily: "var(--font-heading)" }}
-                  >
-                    {initial}
-                  </span>
-                )}
-              </div>
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                disabled={uploading}
-                className="absolute -bottom-0.5 -right-0.5 h-7 w-7 rounded-full bg-primary flex items-center justify-center shadow-md active:scale-95 transition-transform"
-              >
-                {uploading ? (
-                  <Loader2 className="h-3.5 w-3.5 text-primary-foreground animate-spin" />
-                ) : (
-                  <Camera className="h-3.5 w-3.5 text-primary-foreground" />
-                )}
-              </button>
+        <div className="bg-card border border-border/50 rounded-2xl p-5 flex items-center gap-4">
+          <div className="relative shrink-0">
+            <div className="h-[72px] w-[72px] rounded-full bg-muted border-2 border-border/40 overflow-hidden flex items-center justify-center">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
+              ) : (
+                <span
+                  className="text-xl font-semibold text-muted-foreground"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  {initial}
+                </span>
+              )}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-sm text-foreground">Profile Photo</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Upload or change photo</p>
-            </div>
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              disabled={uploading}
+              className="absolute -bottom-0.5 -right-0.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center shadow-sm active:scale-95 transition-transform"
+            >
+              {uploading ? (
+                <Loader2 className="h-3 w-3 text-primary-foreground animate-spin" />
+              ) : (
+                <Camera className="h-3 w-3 text-primary-foreground" />
+              )}
+            </button>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-[14px] font-semibold text-foreground truncate">{displayName || "Your Name"}</p>
+            <p className="text-[12px] text-muted-foreground mt-0.5">Tap icon to change photo</p>
           </div>
           <input
             ref={fileRef}
@@ -237,59 +229,98 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
             e.preventDefault();
             saveProfile.mutate();
           }}
-          className="space-y-4"
+          className="space-y-1"
         >
-          <div>
-            <label className="block text-sm font-bold text-foreground mb-1.5">Username</label>
-            <Input
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Your name"
-              className="rounded-xl bg-card h-12"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-foreground mb-1.5">Email</label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              className="rounded-xl bg-card h-12"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-bold text-foreground mb-1.5">Location</label>
-            <Input
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              placeholder="Hoedspruit"
-              className="rounded-xl bg-card h-12"
-            />
-          </div>
-          <PhoneInput phone={phone} onChange={setPhone} />
-          <div>
-            <label className="block text-sm font-bold text-foreground mb-1.5">Bio</label>
-            <Textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Tell people a little about yourself..."
-              className="rounded-xl bg-card min-h-[80px] resize-none"
-              maxLength={200}
-            />
-            <p className="text-xs text-muted-foreground mt-1 text-right">{bio.length}/200</p>
+          <div className="bg-card border border-border/50 rounded-2xl overflow-hidden divide-y divide-border/40">
+            <div className="px-4 py-3.5">
+              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Username</label>
+              <Input
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="Your name"
+                className="rounded-lg bg-muted/40 border-border/30 h-10 text-[14px]"
+              />
+            </div>
+            <div className="px-4 py-3.5">
+              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Email</label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                className="rounded-lg bg-muted/40 border-border/30 h-10 text-[14px]"
+              />
+            </div>
+            <div className="px-4 py-3.5">
+              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Location</label>
+              <Input
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                placeholder="Hoedspruit"
+                className="rounded-lg bg-muted/40 border-border/30 h-10 text-[14px]"
+              />
+            </div>
+            <div className="px-4 py-3.5">
+              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Phone Number</label>
+              <div className="flex gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1.5 h-10 px-2.5 rounded-lg border border-border/30 bg-muted/40 text-[13px] font-medium shrink-0 hover:bg-accent/50 transition-colors"
+                    >
+                      <span className="text-sm">{(AREA_CODES.find((a) => a.code === (parsePhone(phone).areaCode)) || AREA_CODES[0]).flag}</span>
+                      <span>{parsePhone(phone).areaCode}</span>
+                      <ChevronDown className="h-3 w-3 text-muted-foreground" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-1 rounded-xl" align="start">
+                    {AREA_CODES.map((ac) => (
+                      <button
+                        key={ac.code}
+                        type="button"
+                        onClick={() => setPhone(ac.code + parsePhone(phone).number)}
+                        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm hover:bg-accent/50 transition-colors"
+                      >
+                        <span className="text-base">{ac.flag}</span>
+                        <span>{ac.code}</span>
+                        <span className="text-muted-foreground text-xs ml-auto">{ac.country}</span>
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+                <Input
+                  type="tel"
+                  value={parsePhone(phone).number}
+                  onChange={(e) => setPhone(parsePhone(phone).areaCode + e.target.value)}
+                  placeholder="Phone number"
+                  className="rounded-lg bg-muted/40 border-border/30 h-10 flex-1 text-[14px]"
+                />
+              </div>
+            </div>
+            <div className="px-4 py-3.5">
+              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Bio</label>
+              <Textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Tell people a little about yourself..."
+                className="rounded-lg bg-muted/40 border-border/30 min-h-[72px] resize-none text-[14px]"
+                maxLength={200}
+              />
+              <p className="text-[11px] text-muted-foreground mt-1 text-right">{bio.length}/200</p>
+            </div>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-4">
             <Button
               type="submit"
               disabled={saveProfile.isPending}
-              className="w-full rounded-xl h-12 font-bold text-base"
+              className="w-full rounded-xl h-11 font-semibold text-[14px]"
             >
               {saveProfile.isPending ? (
                 <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</>
               ) : (
-                "Save Profile"
+                "Save Changes"
               )}
             </Button>
           </div>
