@@ -513,6 +513,9 @@ const ListingDetail = () => {
           </div>
         )}
 
+        {/* What to Know anchor */}
+        <div ref={whatToKnowRef} className="scroll-mt-4" />
+
         {/* Opening hours */}
         {hasHours && (
           <div className="mb-8">
