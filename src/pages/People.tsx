@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Search, Users } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Search, Users, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import UserCard from "@/components/social/UserCard";
-import BackButton from "@/components/BackButton";
+import { useNavigate } from "react-router-dom";
 
 const People = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
 
   const { data: users, isLoading } = useQuery({
@@ -24,7 +24,6 @@ const People = () => {
         query = query.ilike("display_name", `%${search.trim()}%`);
       }
 
-      // Exclude self
       if (user) {
         query = query.neq("id", user.id);
       }
@@ -36,51 +35,82 @@ const People = () => {
   });
 
   return (
-    <div className="min-h-screen pb-20 bg-background">
-      <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="flex items-center gap-3 px-4 py-3">
-          <BackButton />
-          <h1 className="text-lg font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
-            People
+    <div className="min-h-screen pb-24 bg-background">
+      {/* Header */}
+      <div className="bg-background border-b border-border/60">
+        <div className="px-5 pt-14 pb-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors mb-5"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="text-sm">Back</span>
+          </button>
+
+          <h1
+            className="text-2xl font-semibold text-foreground tracking-tight"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Find People
           </h1>
+          <p className="text-sm text-muted-foreground mt-1.5">
+            Connect with people exploring Hoedspruit
+          </p>
         </div>
-        <div className="px-4 pb-3">
+
+        {/* Search */}
+        <div className="px-5 pb-5">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search people..."
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
+            <input
+              type="text"
+              placeholder="Search by name..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 rounded-full bg-card border-border"
+              className="w-full h-11 pl-11 pr-4 rounded-xl bg-card border border-border/80 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
             />
           </div>
         </div>
       </div>
 
-      <div className="px-4 pt-4 space-y-2">
+      {/* Content */}
+      <div className="px-5 pt-5">
         {isLoading ? (
-          Array.from({ length: 5 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
-              <Skeleton className="h-12 w-12 rounded-full" />
-              <div className="flex-1">
-                <Skeleton className="h-4 w-28 mb-1" />
-                <Skeleton className="h-3 w-20" />
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="flex items-center gap-4 bg-card border border-border/60 rounded-xl p-4">
+                <Skeleton className="h-12 w-12 rounded-full" />
+                <div className="flex-1">
+                  <Skeleton className="h-4 w-28 mb-2" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-8 w-20 rounded-full" />
               </div>
-              <Skeleton className="h-7 w-20 rounded-full" />
-            </div>
-          ))
+            ))}
+          </div>
         ) : !users?.length ? (
-          <div className="text-center py-16">
-            <Users className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
-            <p className="text-muted-foreground text-sm font-medium">
-              {search ? "No people found" : "No users yet"}
+          <div className="flex flex-col items-center justify-center py-24 px-6">
+            <div className="h-16 w-16 rounded-full bg-muted/60 flex items-center justify-center mb-5">
+              <Users className="h-7 w-7 text-muted-foreground/40" />
+            </div>
+            <p
+              className="text-base font-semibold text-foreground mb-1.5"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              {search ? "No matching profiles" : "No people yet"}
             </p>
-            {search && (
-              <p className="text-muted-foreground/60 text-xs mt-1">Try another name</p>
-            )}
+            <p className="text-sm text-muted-foreground/70 text-center max-w-[240px]">
+              {search
+                ? "Try searching with a different name"
+                : "People you can follow will appear here"}
+            </p>
           </div>
         ) : (
-          users.map((u) => <UserCard key={u.id} user={u} />)
+          <div className="space-y-3">
+            {users.map((u) => (
+              <UserCard key={u.id} user={u} />
+            ))}
+          </div>
         )}
       </div>
     </div>
