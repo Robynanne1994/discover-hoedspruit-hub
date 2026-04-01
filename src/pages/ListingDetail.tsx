@@ -48,13 +48,14 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-16 bg-background">
-        <div className="px-5 pt-5">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium">
+      <div className="min-h-screen pb-20 bg-background">
+        <div className="px-5 pt-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors">
             <ChevronLeft className="h-4 w-4" /> Back
           </button>
         </div>
-        <div className="px-5 pt-8">
+        <div className="px-5 pt-12 flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
           <p className="text-muted-foreground text-[13px]">Loading...</p>
         </div>
       </div>
@@ -63,15 +64,15 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div className="min-h-screen pb-16 bg-background">
-        <div className="px-5 pt-5">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium">
+      <div className="min-h-screen pb-20 bg-background">
+        <div className="px-5 pt-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors">
             <ChevronLeft className="h-4 w-4" /> Back
           </button>
         </div>
-        <div className="px-5 pt-16 text-center">
-          <p className="text-muted-foreground text-[14px]">Listing not found.</p>
-          <Link to="/" className="text-primary hover:underline mt-4 inline-block text-[13px]">Back to Home</Link>
+        <div className="px-5 pt-20 text-center">
+          <p className="text-muted-foreground text-[14px] mb-4">Listing not found.</p>
+          <Link to="/" className="text-primary hover:underline text-[13px] font-medium">Back to Home</Link>
         </div>
       </div>
     );
@@ -152,38 +153,50 @@ const ListingDetail = () => {
 
   // Pill helper
   const Pill = ({ children, variant = "neutral" }: { children: React.ReactNode; variant?: "neutral" | "positive" | "muted" }) => {
-    const base = "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-medium";
+    const base = "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide";
     const styles = {
-      neutral: "bg-card border border-border/60 text-foreground",
-      positive: "bg-primary/8 text-primary border border-primary/15",
-      muted: "bg-muted/60 text-muted-foreground border border-border/40 line-through opacity-60",
+      neutral: "bg-card border border-border/50 text-foreground",
+      positive: "bg-primary/6 text-primary border border-primary/12",
+      muted: "bg-muted/40 text-muted-foreground border border-border/30 line-through opacity-50",
     };
     return <span className={`${base} ${styles[variant]}`}>{children}</span>;
   };
 
+  const SectionHeading = ({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) => (
+    <h2
+      className="text-[18px] font-semibold text-foreground tracking-tight mb-4 flex items-center gap-2.5"
+      style={{ fontFamily: "var(--font-heading)" }}
+    >
+      {icon && <span className="text-primary/50">{icon}</span>}
+      {children}
+    </h2>
+  );
+
+  const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
+
   return (
-    <div className="min-h-screen pb-16 bg-background">
-      {/* Back button overlay on image */}
+    <div className="min-h-screen pb-20 bg-background">
+      {/* Hero image */}
       {listing.image_url ? (
         <div className="relative">
-          <div className="relative h-[280px] overflow-hidden">
+          <div className="relative h-[320px] overflow-hidden">
             <img
               src={listing.image_url}
               alt={listing.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/20" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-black/20" />
           </div>
           <button
             onClick={() => navigate(-1)}
-            className="absolute top-5 left-5 z-10 bg-card/90 backdrop-blur-sm rounded-full p-2 active:scale-95 transition-transform"
+            className="absolute top-5 left-5 z-10 bg-card/90 backdrop-blur-md rounded-full p-2.5 active:scale-95 transition-all shadow-sm"
           >
             <ChevronLeft className="h-4 w-4 text-foreground" />
           </button>
           {isAdmin && (
             <button
               onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
-              className="absolute top-5 right-5 z-10 bg-card/90 backdrop-blur-sm rounded-full p-2 active:scale-95 transition-transform"
+              className="absolute top-5 right-5 z-10 bg-card/90 backdrop-blur-md rounded-full p-2.5 active:scale-95 transition-all shadow-sm"
               title="Edit listing"
             >
               <Pencil className="h-4 w-4 text-foreground" />
@@ -191,14 +204,14 @@ const ListingDetail = () => {
           )}
         </div>
       ) : (
-        <div className="px-5 pt-5 flex items-center justify-between">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium">
+        <div className="px-5 pt-6 flex items-center justify-between">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors">
             <ChevronLeft className="h-4 w-4" /> Back
           </button>
           {isAdmin && (
             <button
               onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
-              className="p-2 rounded-full bg-primary/8 text-primary"
+              className="p-2.5 rounded-full bg-primary/8 text-primary"
               title="Edit listing"
             >
               <Pencil className="h-4 w-4" />
@@ -207,16 +220,16 @@ const ListingDetail = () => {
         </div>
       )}
 
-      <div className="px-5 pt-5 pb-8">
+      <div className="px-5 pt-6 pb-10">
         {/* Title & identity */}
         <div className="mb-5">
           {listing.is_featured && (
-            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-accent uppercase tracking-wide mb-2">
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-accent uppercase tracking-[0.08em] mb-2.5">
               <Star className="h-3 w-3 fill-current" /> Featured
             </span>
           )}
           <h1
-            className="text-[28px] font-semibold text-foreground leading-[1.15] tracking-tight mb-3"
+            className="text-[26px] font-semibold text-foreground leading-[1.15] tracking-tight"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             {listing.title}
@@ -224,12 +237,12 @@ const ListingDetail = () => {
 
           {/* Categories */}
           {listingCategories && listingCategories.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-3">
+            <div className="flex flex-wrap gap-1.5 mt-3">
               {listingCategories.map((cat) => (
                 <Link
                   key={cat.id}
                   to={`/category/${cat.id}`}
-                  className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/8 text-primary border border-primary/15 hover:bg-primary/15 transition-colors"
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/6 text-primary border border-primary/12 hover:bg-primary/12 transition-colors"
                 >
                   {cat.title}
                 </Link>
@@ -239,7 +252,7 @@ const ListingDetail = () => {
 
           {/* Google rating */}
           {(listing as any).google_rating != null && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mt-3">
               {(listing as any).google_reviews_url ? (
                 <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                   <div className="flex items-center gap-0.5">
@@ -269,71 +282,83 @@ const ListingDetail = () => {
           )}
         </div>
 
-        {/* User actions */}
-        <div className="mb-6">
+        {/* Actions */}
+        <div className="mb-7">
           <ListingActions listingId={listing.id} />
         </div>
 
-        {/* Contact info */}
-        {(listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp) && (
-          <div className="bg-card border border-border/60 rounded-xl px-4 py-3.5 mb-6 space-y-3">
-            {listing.location && (
-              (listing as any).google_maps_link ? (
-                <a href={(listing as any).google_maps_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
-                  <MapPin className="h-4 w-4 text-primary/60 shrink-0" /> {listing.location}
+        {/* Grouped contact details block */}
+        {hasContactInfo && (
+          <div className="bg-card rounded-2xl border border-border/50 mb-8 overflow-hidden" style={{ boxShadow: "var(--card-shadow)" }}>
+            <div className="px-4 py-3.5 border-b border-border/40">
+              <h3 className="text-[13px] font-semibold text-foreground tracking-wide uppercase" style={{ letterSpacing: "0.04em" }}>
+                Contact & Location
+              </h3>
+            </div>
+            <div className="divide-y divide-border/30">
+              {listing.location && (
+                (listing as any).google_maps_link ? (
+                  <a href={(listing as any).google_maps_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors">
+                    <MapPin className="h-[18px] w-[18px] text-primary/50 shrink-0" /> 
+                    <span className="leading-snug">{listing.location}</span>
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground">
+                    <MapPin className="h-[18px] w-[18px] text-primary/50 shrink-0" /> 
+                    <span className="leading-snug">{listing.location}</span>
+                  </div>
+                )
+              )}
+              {listing.phone && (
+                <a href={`tel:${listing.phone}`} className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors">
+                  <Phone className="h-[18px] w-[18px] text-primary/50 shrink-0" /> {listing.phone}
                 </a>
-              ) : (
-                <div className="flex items-center gap-3 text-[13px] text-muted-foreground">
-                  <MapPin className="h-4 w-4 text-primary/60 shrink-0" /> {listing.location}
-                </div>
-              )
-            )}
-            {listing.phone && (
-              <a href={`tel:${listing.phone}`} className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
-                <Phone className="h-4 w-4 text-primary/60 shrink-0" /> {listing.phone}
-              </a>
-            )}
-            {listing.email && (
-              <a href={`mailto:${listing.email}`} className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
-                <Mail className="h-4 w-4 text-primary/60 shrink-0" /> {listing.email}
-              </a>
-            )}
-            {listing.website && (
-              <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
-                <Globe className="h-4 w-4 text-primary/60 shrink-0" /> Website
-              </a>
-            )}
-            {(listing as any).whatsapp && (
-              <a href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[13px] text-muted-foreground hover:text-primary transition-colors">
-                <MessageCircle className="h-4 w-4 text-primary/60 shrink-0" /> WhatsApp
-              </a>
-            )}
+              )}
+              {listing.email && (
+                <a href={`mailto:${listing.email}`} className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors">
+                  <Mail className="h-[18px] w-[18px] text-primary/50 shrink-0" /> {listing.email}
+                </a>
+              )}
+              {listing.website && (
+                <a href={listing.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors">
+                  <Globe className="h-[18px] w-[18px] text-primary/50 shrink-0" /> Website
+                </a>
+              )}
+              {(listing as any).whatsapp && (
+                <a href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, '')}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors">
+                  <MessageCircle className="h-[18px] w-[18px] text-primary/50 shrink-0" /> WhatsApp
+                </a>
+              )}
+            </div>
           </div>
         )}
 
         {/* Restaurant attributes */}
         {showAttributes && (
-          <div className="flex flex-wrap gap-1.5 mb-6">
-            {priceLabel && (
-              <Pill>
-                <DollarSign className="h-3 w-3 text-primary" />
-                <span className="font-semibold">{priceLabel}</span>
-                {priceName && <span className="text-muted-foreground">· {priceName}</span>}
-              </Pill>
-            )}
-            {goodForKids === true && <Pill variant="positive"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
-            {goodForKids === false && <Pill variant="muted"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
-            {petsAllowed === true && <Pill variant="positive"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
-            {petsAllowed === false && <Pill variant="muted"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
-            {wheelchairFriendly === true && <Pill variant="positive"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
-            {wheelchairFriendly === false && <Pill variant="muted"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
-            {smokingAllowed === true && <Pill variant="positive"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
-            {smokingAllowed === false && <Pill variant="muted"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
-            {meal && meal.length > 0 && <Pill><UtensilsCrossed className="h-3 w-3 text-primary" /> {meal.join(", ")}</Pill>}
-            {vibe && vibe.length > 0 && <Pill><Palette className="h-3 w-3 text-primary" /> {vibe.join(", ")}</Pill>}
-            {cuisine && cuisine.length > 0 && <Pill><ChefHat className="h-3 w-3 text-primary" /> {cuisine.join(", ")}</Pill>}
-            {seating && seating.length > 0 && <Pill><Armchair className="h-3 w-3 text-primary" /> {seating.join(", ")}</Pill>}
-            {serviceType && serviceType.length > 0 && <Pill><ShoppingBag className="h-3 w-3 text-primary" /> {serviceType.join(", ")}</Pill>}
+          <div className="mb-8">
+            <SectionHeading>Details</SectionHeading>
+            <div className="flex flex-wrap gap-2">
+              {priceLabel && (
+                <Pill>
+                  <DollarSign className="h-3 w-3 text-primary" />
+                  <span className="font-semibold">{priceLabel}</span>
+                  {priceName && <span className="text-muted-foreground">· {priceName}</span>}
+                </Pill>
+              )}
+              {goodForKids === true && <Pill variant="positive"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
+              {goodForKids === false && <Pill variant="muted"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
+              {petsAllowed === true && <Pill variant="positive"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
+              {petsAllowed === false && <Pill variant="muted"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
+              {wheelchairFriendly === true && <Pill variant="positive"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
+              {wheelchairFriendly === false && <Pill variant="muted"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
+              {smokingAllowed === true && <Pill variant="positive"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
+              {smokingAllowed === false && <Pill variant="muted"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
+              {meal && meal.length > 0 && <Pill><UtensilsCrossed className="h-3 w-3 text-primary" /> {meal.join(", ")}</Pill>}
+              {vibe && vibe.length > 0 && <Pill><Palette className="h-3 w-3 text-primary" /> {vibe.join(", ")}</Pill>}
+              {cuisine && cuisine.length > 0 && <Pill><ChefHat className="h-3 w-3 text-primary" /> {cuisine.join(", ")}</Pill>}
+              {seating && seating.length > 0 && <Pill><Armchair className="h-3 w-3 text-primary" /> {seating.join(", ")}</Pill>}
+              {serviceType && serviceType.length > 0 && <Pill><ShoppingBag className="h-3 w-3 text-primary" /> {serviceType.join(", ")}</Pill>}
+            </div>
           </div>
         )}
 
@@ -367,18 +392,21 @@ const ListingDetail = () => {
           if (!hasAnyShopInfo) return null;
 
           return (
-            <div className="flex flex-wrap gap-1.5 mb-6">
-              {shopType && <Pill><ShoppingBag className="h-3 w-3 text-primary" /> {shopType}</Pill>}
-              {priceRng && <Pill><DollarSign className="h-3 w-3 text-primary" /> {priceRng}</Pill>}
-              {boolItems.map((item) => (
-                <Pill key={item.label} variant="positive"><Check className="h-3 w-3" /> {item.label}</Pill>
-              ))}
-              {paymentMethods && paymentMethods.length > 0 && (
-                <Pill><span className="text-muted-foreground">Payment:</span> {paymentMethods.join(", ")}</Pill>
-              )}
-              {prodCats && prodCats.length > 0 && (
-                <Pill><span className="text-muted-foreground">Products:</span> {prodCats.join(", ")}</Pill>
-              )}
+            <div className="mb-8">
+              <SectionHeading>Details</SectionHeading>
+              <div className="flex flex-wrap gap-2">
+                {shopType && <Pill><ShoppingBag className="h-3 w-3 text-primary" /> {shopType}</Pill>}
+                {priceRng && <Pill><DollarSign className="h-3 w-3 text-primary" /> {priceRng}</Pill>}
+                {boolItems.map((item) => (
+                  <Pill key={item.label} variant="positive"><Check className="h-3 w-3" /> {item.label}</Pill>
+                ))}
+                {paymentMethods && paymentMethods.length > 0 && (
+                  <Pill><span className="text-muted-foreground">Payment:</span> {paymentMethods.join(", ")}</Pill>
+                )}
+                {prodCats && prodCats.length > 0 && (
+                  <Pill><span className="text-muted-foreground">Products:</span> {prodCats.join(", ")}</Pill>
+                )}
+              </div>
             </div>
           );
         })()}
@@ -395,32 +423,39 @@ const ListingDetail = () => {
           if (!hasAnyAccomInfo) return null;
 
           return (
-            <div className="flex flex-wrap gap-1.5 mb-6">
-              {petsAllowed != null && (
-                <Pill variant={petsAllowed ? "positive" : "neutral"}>
-                  <PawPrint className="h-3 w-3" /> {petsAllowed ? "Pets Allowed" : "No Pets"}
-                </Pill>
-              )}
-              {sleeps != null && <Pill><span className="text-muted-foreground">Sleeps:</span> {sleeps}</Pill>}
-              {priceRng && <Pill><DollarSign className="h-3 w-3 text-primary" /> {priceRng}</Pill>}
-              {kmFromTown && <Pill><MapPin className="h-3 w-3 text-primary" /> {kmFromTown} km from town</Pill>}
-              {amenities && amenities.length > 0 && amenities.map((a) => (
-                <Pill key={a} variant="positive"><Check className="h-3 w-3" /> {a}</Pill>
-              ))}
+            <div className="mb-8">
+              <SectionHeading>Details</SectionHeading>
+              <div className="flex flex-wrap gap-2">
+                {petsAllowed != null && (
+                  <Pill variant={petsAllowed ? "positive" : "neutral"}>
+                    <PawPrint className="h-3 w-3" /> {petsAllowed ? "Pets Allowed" : "No Pets"}
+                  </Pill>
+                )}
+                {sleeps != null && <Pill><span className="text-muted-foreground">Sleeps:</span> {sleeps}</Pill>}
+                {priceRng && <Pill><DollarSign className="h-3 w-3 text-primary" /> {priceRng}</Pill>}
+                {kmFromTown && <Pill><MapPin className="h-3 w-3 text-primary" /> {kmFromTown} km from town</Pill>}
+                {amenities && amenities.length > 0 && amenities.map((a) => (
+                  <Pill key={a} variant="positive"><Check className="h-3 w-3" /> {a}</Pill>
+                ))}
+              </div>
             </div>
           );
         })()}
 
         {/* Description */}
         {listing.description && !longDescription && (
-          <p className="text-muted-foreground text-[14px] leading-relaxed mb-6">{listing.description}</p>
+          <div className="mb-8">
+            <SectionHeading>About</SectionHeading>
+            <p className="text-muted-foreground text-[14px] leading-[1.75]">{listing.description}</p>
+          </div>
         )}
 
         {/* Long description */}
         {longDescription && (
           <div className="mb-8">
+            <SectionHeading>About</SectionHeading>
             {longDescription.split("\n").map((paragraph, i) => (
-              <p key={i} className="text-foreground/80 text-[14px] leading-[1.7] mb-3">{paragraph}</p>
+              <p key={i} className="text-foreground/75 text-[14px] leading-[1.8] mb-3 last:mb-0">{paragraph}</p>
             ))}
           </div>
         )}
@@ -428,12 +463,7 @@ const ListingDetail = () => {
         {/* Gallery */}
         {hasGallery && (
           <div className="mb-8">
-            <h2
-              className="text-[20px] font-semibold text-foreground tracking-tight mb-4"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Gallery
-            </h2>
+            <SectionHeading>Gallery</SectionHeading>
             <div className="grid grid-cols-2 gap-2.5">
               {galleryImages.map((url, i) => (
                 <div key={i} className="rounded-xl overflow-hidden aspect-[3/4]">
@@ -447,37 +477,34 @@ const ListingDetail = () => {
         {/* Opening hours */}
         {hasHours && (
           <div className="mb-8">
-            <h2
-              className="text-[20px] font-semibold text-foreground tracking-tight mb-4 flex items-center gap-2"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              <Clock className="h-4 w-4 text-primary/60" /> Hours
-            </h2>
-            <div className="bg-card border border-border/60 rounded-xl px-4 py-4 space-y-2.5">
-              {DAY_LABELS.map((day) => {
-                const value = openingHours[day.toLowerCase()] || "";
-                return (
-                  <div key={day} className="flex justify-between text-[13px]">
-                    <span className="font-medium text-foreground">{day}</span>
-                    <span className="text-muted-foreground">{value || "Closed"}</span>
-                  </div>
-                );
-              })}
+            <SectionHeading icon={<Clock className="h-4 w-4" />}>Hours</SectionHeading>
+            <div className="bg-card rounded-2xl border border-border/50 overflow-hidden" style={{ boxShadow: "var(--card-shadow)" }}>
+              <div className="divide-y divide-border/30">
+                {DAY_LABELS.map((day) => {
+                  const value = openingHours[day.toLowerCase()] || "";
+                  return (
+                    <div key={day} className="flex justify-between px-4 py-3 text-[13px]">
+                      <span className="font-medium text-foreground">{day}</span>
+                      <span className="text-muted-foreground">{value || "Closed"}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         )}
 
         {/* Accordion sections */}
         {isListingRestaurant && (hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
-          <Accordion type="single" collapsible className="space-y-2 mb-8">
+          <Accordion type="single" collapsible className="space-y-2.5 mb-8">
             {hasKidsInfo && (
               <AccordionItem value="kids" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2"><Baby className="h-4 w-4 text-primary/60" /> Kids</span>
+                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2.5"><Baby className="h-4 w-4 text-primary/50" /> Kids</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
                   {kidsItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
                       <span>{item.label}</span>
                     </div>
@@ -488,12 +515,12 @@ const ListingDetail = () => {
 
             {hasAccessibilityInfo && (
               <AccordionItem value="accessibility" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2"><Accessibility className="h-4 w-4 text-primary/60" /> Accessibility</span>
+                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2.5"><Accessibility className="h-4 w-4 text-primary/50" /> Accessibility</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
                   {accessibilityItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
                       <span>{item.label}</span>
                     </div>
@@ -504,12 +531,12 @@ const ListingDetail = () => {
 
             {hasServiceInfo && (
               <AccordionItem value="service" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2"><ShoppingBag className="h-4 w-4 text-primary/60" /> Service options</span>
+                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2.5"><ShoppingBag className="h-4 w-4 text-primary/50" /> Service options</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
                   {serviceItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       {item.available ? (
                         <Check className="h-3.5 w-3.5 text-primary" />
                       ) : (
@@ -524,12 +551,12 @@ const ListingDetail = () => {
 
             {hasSeatingInfo && (
               <AccordionItem value="seating" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2"><Armchair className="h-4 w-4 text-primary/60" /> Seating</span>
+                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2.5"><Armchair className="h-4 w-4 text-primary/50" /> Seating</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
                   {seatingItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
                       <span>{item.label}</span>
                     </div>
@@ -540,12 +567,12 @@ const ListingDetail = () => {
 
             {hasAmenitiesInfo && (
               <AccordionItem value="amenities" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/60 rounded-xl px-4 py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2"><Wifi className="h-4 w-4 text-primary/60" /> Amenities</span>
+                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
+                  <span className="flex items-center gap-2.5"><Wifi className="h-4 w-4 text-primary/50" /> Amenities</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/60 rounded-b-xl px-4 pb-3 pt-0 space-y-2">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
                   {amenitiesItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2 text-[13px] text-foreground">
+                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
                       <span>{item.label}</span>
                     </div>
