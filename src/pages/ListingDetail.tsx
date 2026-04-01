@@ -325,7 +325,7 @@ const ListingDetail = () => {
 
         {/* Actions */}
         <div className="mb-7">
-          <ListingActions listingId={listing.id} />
+          <ListingActions listingId={listing.id} onWhatToKnow={handleWhatToKnow} />
         </div>
 
         {/* Quick-scan pills (max 3-4) */}
