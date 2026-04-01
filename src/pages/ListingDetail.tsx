@@ -117,9 +117,8 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasKidsInfo = kidsItems.length > 0;
 
-  // Accessibility accordion items
+  // Accessibility accordion items (exclude items shown as top pills)
   const accessibilityItems = [
-    { label: "Wheelchair Friendly", value: wheelchairFriendly },
     { label: "Wheelchair-accessible Car Park", value: wheelchairCarPark },
     { label: "Wheelchair-accessible Entrance", value: wheelchairEntrance },
     { label: "Wheelchair-accessible Seating", value: wheelchairSeating },
