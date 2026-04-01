@@ -386,14 +386,6 @@ const ListingDetail = () => {
                   {priceName && <span className="text-muted-foreground">· {priceName}</span>}
                 </Pill>
               )}
-              {goodForKids === true && <Pill variant="positive"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
-              {goodForKids === false && <Pill variant="muted"><Baby className="h-3 w-3" /> Good for Kids</Pill>}
-              {petsAllowed === true && <Pill variant="positive"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
-              {petsAllowed === false && <Pill variant="muted"><PawPrint className="h-3 w-3" /> Pets Allowed</Pill>}
-              {wheelchairFriendly === true && <Pill variant="positive"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
-              {wheelchairFriendly === false && <Pill variant="muted"><Accessibility className="h-3 w-3" /> Wheelchair Friendly</Pill>}
-              {smokingAllowed === true && <Pill variant="positive"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
-              {smokingAllowed === false && <Pill variant="muted"><Cigarette className="h-3 w-3" /> Smoking Allowed</Pill>}
               {meal && meal.length > 0 && <Pill><UtensilsCrossed className="h-3 w-3 text-primary" /> {meal.join(", ")}</Pill>}
               {vibe && vibe.length > 0 && <Pill><Palette className="h-3 w-3 text-primary" /> {vibe.join(", ")}</Pill>}
               {cuisine && cuisine.length > 0 && <Pill><ChefHat className="h-3 w-3 text-primary" /> {cuisine.join(", ")}</Pill>}
