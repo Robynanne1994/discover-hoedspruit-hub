@@ -504,7 +504,7 @@ const MyAccount = () => {
         </div>
       </div>
 
-      {/* Quick actions — Saved & My Events */}
+      {/* Quick actions — Saved, Visited & My Events */}
       <div className="px-5 mb-6">
         <div className="space-y-2">
           <Link
@@ -517,6 +517,19 @@ const MyAccount = () => {
             <div className="flex-1 min-w-0">
               <span className="text-[13px] font-medium text-foreground block">Saved Listings</span>
               <span className="text-[11px] text-muted-foreground">Listings you've bookmarked</span>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground/25 shrink-0" />
+          </Link>
+          <Link
+            to="/visited"
+            className="flex items-center gap-3.5 bg-card border border-border/40 rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
+          >
+            <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+              <MapPinCheck className="h-4 w-4 text-accent" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <span className="text-[13px] font-medium text-foreground block">Visited Places</span>
+              <span className="text-[11px] text-muted-foreground">Places you've been to</span>
             </div>
             <ChevronRight className="h-4 w-4 text-muted-foreground/25 shrink-0" />
           </Link>
