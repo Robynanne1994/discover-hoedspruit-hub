@@ -196,6 +196,11 @@ const ListingDetail = () => {
     </h2>
   );
 
+  const whatToKnowRef = useRef<HTMLDivElement>(null);
+  const handleWhatToKnow = () => {
+    whatToKnowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
 
   // Grouped accordion trigger style
