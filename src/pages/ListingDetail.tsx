@@ -109,9 +109,8 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
-  // Kids & Family accordion items
+  // Kids & Family accordion items (exclude items shown as top pills)
   const kidsItems = [
-    { label: "Good for Kids", value: goodForKids },
     { label: "Kids Playground", value: kidsPlayground },
     { label: "Kids Menu", value: kidsMenu },
     { label: "High Chairs", value: highChairs },
