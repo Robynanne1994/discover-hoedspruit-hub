@@ -55,6 +55,7 @@ const App = () => (
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/events" element={<Events />} />
             <Route path="/events/calendar" element={<EventsCalendar />} />
+            <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/advertise" element={<Advertise />} />
             <Route path="/directories" element={<Directories />} />
