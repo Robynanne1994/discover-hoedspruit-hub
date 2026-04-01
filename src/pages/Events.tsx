@@ -132,6 +132,14 @@ const Events = () => {
           className="absolute inset-0"
           style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }}
         />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1
+            className="text-[32px] font-semibold text-white tracking-tight"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Events
+          </h1>
+        </div>
       </div>
 
       {/* Search */}
