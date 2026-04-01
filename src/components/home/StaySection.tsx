@@ -23,7 +23,7 @@ const StaySection = () => {
 
   return (
     <section className="py-4">
-      <SectionHeader title={title || "Places to Stay"} actionLabel="See all" actionHref="/categories" />
+      <SectionHeader title={title || "Places to Stay"} actionLabel="See all" actionHref="/category/cef1c5ad-b199-41c9-bc8a-5834703a953a" />
       <div className="grid grid-cols-2 gap-3.5 px-5">
         {listings.map((listing) => (
           <VenueCard
