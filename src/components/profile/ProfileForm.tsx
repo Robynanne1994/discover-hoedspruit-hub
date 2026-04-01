@@ -146,14 +146,14 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
       if (!user) return;
       const { error } = await supabase
         .from("profiles")
-        .update({
+        .upsert({
+          id: user.id,
           display_name: displayName.trim() || null,
           location: location.trim() || null,
           phone: phone.trim() || null,
           email: email.trim() || null,
           bio: bio.trim() || null,
-        } as any)
-        .eq("id", user.id);
+        } as any);
       if (error) throw error;
     },
     onSuccess: () => {
