@@ -158,13 +158,13 @@ const Events = () => {
       </div>
 
       {/* Filter pills */}
-      <div className="px-5 mb-6 overflow-hidden">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center py-0.5">
+      <div className="mb-6">
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center px-5 py-0.5">
           {filters.map((filter) => (
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
-              className={`first:ml-1 px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors whitespace-nowrap ${
                 activeFilter === filter.value
                   ? "bg-primary text-primary-foreground"
                   : "bg-card text-foreground border border-border/60"
