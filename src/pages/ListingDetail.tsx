@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,6 +14,7 @@ const ListingDetail = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const whatToKnowRef = useRef<HTMLDivElement>(null);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -195,6 +197,10 @@ const ListingDetail = () => {
     </h2>
   );
 
+  const handleWhatToKnow = () => {
+    whatToKnowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
 
   // Grouped accordion trigger style
@@ -319,7 +325,7 @@ const ListingDetail = () => {
 
         {/* Actions */}
         <div className="mb-7">
-          <ListingActions listingId={listing.id} />
+          <ListingActions listingId={listing.id} onWhatToKnow={handleWhatToKnow} />
         </div>
 
         {/* Quick-scan pills (max 3-4) */}
@@ -506,6 +512,9 @@ const ListingDetail = () => {
             </div>
           </div>
         )}
+
+        {/* What to Know anchor */}
+        <div ref={whatToKnowRef} className="scroll-mt-4" />
 
         {/* Opening hours */}
         {hasHours && (

@@ -4,14 +4,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Heart, MapPinCheck, Share2 } from "lucide-react";
+import { Heart, Info, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface ListingActionsProps {
   listingId: string;
+  onWhatToKnow?: () => void;
 }
 
-const ListingActions = ({ listingId }: ListingActionsProps) => {
+const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -28,21 +29,6 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
         .eq("item_type", "listing")
         .maybeSingle();
       return !!data;
-    },
-    enabled: !!user,
-  });
-
-  const { data: beenHere } = useQuery({
-    queryKey: ["been-here-check", listingId, user?.id],
-    queryFn: async () => {
-      if (!user) return null;
-      const { data } = await supabase
-        .from("been_here")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("listing_id", listingId)
-        .maybeSingle();
-      return data;
     },
     enabled: !!user,
   });
@@ -68,23 +54,6 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
       queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
       toast.success(isFavourited ? "Removed from saved" : "Saved!");
-    },
-  });
-
-  const toggleBeenHere = useMutation({
-    mutationFn: async () => {
-      if (!user) return;
-      if (beenHere) {
-        await supabase.from("been_here").delete().eq("id", beenHere.id);
-      } else {
-        await supabase.from("been_here").insert({ user_id: user.id, listing_id: listingId });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["been-here-check", listingId] });
-      queryClient.invalidateQueries({ queryKey: ["been-here"] });
-      queryClient.invalidateQueries({ queryKey: ["been-here-count", listingId] });
-      toast.success(beenHere ? "Removed from visited" : "Marked as visited!");
     },
   });
 
@@ -134,15 +103,11 @@ const ListingActions = ({ listingId }: ListingActionsProps) => {
       </button>
 
       <button
-        onClick={() => { if (!requireAuth()) toggleBeenHere.mutate(); }}
-        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium border transition-colors active:scale-95 ${
-          beenHere
-            ? "bg-primary/8 text-primary border-primary/20"
-            : "bg-card text-foreground border-border/60 hover:bg-muted/50"
-        }`}
+        onClick={onWhatToKnow}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium bg-card text-foreground border border-border/60 hover:bg-muted/50 transition-colors active:scale-95"
       >
-        <MapPinCheck className={`h-3 w-3 ${beenHere ? "fill-current" : ""}`} />
-        {beenHere ? "Been Here" : "Been Here?"}
+        <Info className="h-3 w-3" />
+        What to Know
       </button>
     </div>
   );
