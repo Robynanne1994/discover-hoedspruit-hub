@@ -1,94 +1,127 @@
-import Navbar from "@/components/Navbar";
 import BackButton from "@/components/BackButton";
 import { MapPin, Heart, Sun, TreePine } from "lucide-react";
 
+const values = [
+  { icon: MapPin, title: "Local Knowledge", description: "Curated listings and insider tips from people who know and love Hoedspruit." },
+  { icon: Heart, title: "Community Driven", description: "Supporting local businesses and helping them connect with visitors and residents." },
+  { icon: Sun, title: "Always Up to Date", description: "From seasonal events to new openings, we keep our finger on the pulse of the town." },
+  { icon: TreePine, title: "Nature at Heart", description: "Celebrating the incredible natural beauty and wildlife that makes Hoedspruit unique." },
+];
+
 const About = () => {
   return (
-    <div className="min-h-screen">
-      <Navbar />
+    <div className="min-h-screen pb-24 bg-background">
+      {/* Back button */}
+      <div className="pt-4 px-4">
+        <BackButton />
+      </div>
 
-      <section className="pt-28 pb-16 section-padding bg-muted/30">
-        <div className="container-wide max-w-4xl mx-auto">
-          <BackButton />
-          <div className="text-center">
-            <h1 className="font-heading text-4xl sm:text-5xl font-bold text-foreground mb-6">
-              About <span className="text-primary">Hello Hoedspruit</span>
-            </h1>
-            <p className="text-muted-foreground text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto">
-              Your full guide to Hoedspruit — eat, explore, and experience everything this incredible bushveld town has to offer, all in one place.
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Intro */}
+      <div className="pt-2 pb-6 px-5 text-center">
+        <h1
+          className="text-2xl font-bold text-foreground tracking-tight"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          About Hello Hoedspruit
+        </h1>
+        <p className="text-sm text-muted-foreground mt-3 leading-relaxed max-w-xs mx-auto">
+          Your full guide to Hoedspruit — eat, explore, and experience everything this incredible bushveld town has to offer.
+        </p>
+      </div>
 
-      <section className="section-padding">
-        <div className="container-wide max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="rounded-xl overflow-hidden aspect-[4/5] bg-muted">
+      <div className="px-5 space-y-6">
+        {/* Founder section */}
+        <div className="bg-card border border-border/60 rounded-2xl overflow-hidden">
+          <div className="aspect-[4/3] overflow-hidden">
             <img
-                src="https://media.licdn.com/dms/image/v2/D4D03AQEovnKgk_KDnw/profile-displayphoto-crop_800_800/B4DZxSzIvCJcAM-/0/1770915663825?e=1775692800&v=beta&t=cqieS2K8_BvM9SoPttQVDEJWbBVERBzXXdwEie_hLnk"
-                alt="About Hello Hoedspruit"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="space-y-4">
-              <h2 className="font-heading text-3xl font-bold text-foreground">Who am I?</h2>
-              <div className="text-muted-foreground leading-relaxed space-y-4">
-                <p>
-                  My name is Robyn Dawes (previously McDonald), and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the Lowveld, and over the years I've watched this little town blossom into something truly special.
-                </p>
-                <p>
-                  Having spent my whole life here, I know just how much Hoedspruit has to offer, from its incredible wildlife and outdoor adventures to its warm community spirit and hidden gems that only a local would know.
-                </p>
-                <p>
-                  The idea behind Hello Hoedspruit came from a simple frustration: there was no single place where visitors and locals alike could find everything our town has to offer, all in one spot. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together and showing the world what makes this place so extraordinary.
-                </p>
-              </div>
+              src="https://media.licdn.com/dms/image/v2/D4D03AQEovnKgk_KDnw/profile-displayphoto-crop_800_800/B4DZxSzIvCJcAM-/0/1770915663825?e=1775692800&v=beta&t=cqieS2K8_BvM9SoPttQVDEJWbBVERBzXXdwEie_hLnk"
+              alt="Robyn Dawes — Founder of Hello Hoedspruit"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="p-5 space-y-3">
+            <h2
+              className="text-lg font-bold text-foreground"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Meet the Founder
+            </h2>
+            <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
+              <p>
+                My name is Robyn Dawes, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the Lowveld, and over the years I've watched this little town blossom into something truly special.
+              </p>
+              <p>
+                Having spent my whole life here, I know just how much Hoedspruit has to offer — from incredible wildlife and outdoor adventures to its warm community spirit and hidden gems that only a local would know.
+              </p>
+              <p>
+                The idea behind Hello Hoedspruit came from a simple frustration: there was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local — Hello Hoedspruit is my way of bringing our community together.
+              </p>
             </div>
           </div>
         </div>
-      </section>
 
-      <section className="section-padding">
-        <div className="container-wide max-w-4xl mx-auto space-y-12">
-          <div className="prose prose-lg max-w-none text-muted-foreground">
+        {/* About text */}
+        <div className="bg-card border border-border/60 rounded-2xl p-5">
+          <div className="text-sm text-muted-foreground leading-relaxed space-y-3">
             <p>
               Nestled at the foot of the Drakensberg escarpment in Limpopo, South Africa, Hoedspruit is a gateway to some of the country's most breathtaking wildlife reserves, adventure activities, and culinary experiences.
             </p>
             <p>
-              <strong className="text-foreground">Hello Hoedspruit</strong> was created to bring together the best of what this town has to offer — from restaurants and cafés to outdoor adventures, family-friendly activities, and community events. Whether you're a first-time visitor or a long-time local, we're here to help you make the most of your time in Hoedspruit.
+              <span className="font-semibold text-foreground">Hello Hoedspruit</span> was created to bring together the best of what this town has to offer — from restaurants and cafés to outdoor adventures, family-friendly activities, and community events.
             </p>
           </div>
+        </div>
 
-          <div className="grid sm:grid-cols-2 gap-6">
-            {[
-              { icon: MapPin, title: "Local Knowledge", description: "Curated listings and insider tips from people who know and love Hoedspruit." },
-              { icon: Heart, title: "Community Driven", description: "Supporting local businesses and helping them connect with visitors and residents alike." },
-              { icon: Sun, title: "Always Up to Date", description: "From seasonal events to new openings, we keep our finger on the pulse of the town." },
-              { icon: TreePine, title: "Nature at Heart", description: "Celebrating the incredible natural beauty and wildlife that makes Hoedspruit unique." },
-            ].map((item) => (
-              <div key={item.title} className="bg-card border border-border rounded-xl p-6 space-y-3">
-                <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <item.icon className="h-5 w-5 text-primary" />
+        {/* Value cards */}
+        <div>
+          <h2
+            className="text-lg font-bold text-foreground mb-4"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            What We Stand For
+          </h2>
+          <div className="grid grid-cols-2 gap-3">
+            {values.map((item) => (
+              <div
+                key={item.title}
+                className="bg-card border border-border/60 rounded-2xl p-4 space-y-2"
+              >
+                <div className="w-9 h-9 rounded-full bg-muted/50 flex items-center justify-center">
+                  <item.icon className="h-4 w-4 text-foreground/70" />
                 </div>
-                <h3 className="font-heading text-lg font-semibold text-foreground">{item.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                <h3
+                  className="text-sm font-semibold text-foreground"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  {item.title}
+                </h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {item.description}
+                </p>
               </div>
             ))}
           </div>
-
-          <div className="bg-accent/10 border border-accent/20 rounded-xl p-8 text-center space-y-4">
-            <h2 className="font-heading text-2xl font-bold text-foreground">Want to be listed?</h2>
-            <p className="text-muted-foreground max-w-lg mx-auto">
-              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you on Hello Hoedspruit.
-            </p>
-            <a href="/contact" className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity">
-              Get in Touch
-            </a>
-          </div>
         </div>
-      </section>
 
+        {/* CTA */}
+        <div className="bg-card border border-border/60 rounded-2xl p-6 text-center">
+          <h2
+            className="text-lg font-bold text-foreground mb-2"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Want to be listed?
+          </h2>
+          <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+            If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
+          </p>
+          <a
+            href="/contact"
+            className="inline-block bg-primary text-primary-foreground px-6 py-3 rounded-xl text-sm font-medium active:scale-[0.97] transition-transform"
+          >
+            Get in Touch
+          </a>
+        </div>
+      </div>
     </div>
   );
 };
