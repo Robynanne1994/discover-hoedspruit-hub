@@ -144,17 +144,6 @@ const VisitedPlaces = () => {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      removeVisited.mutate(item.id);
-                    }}
-                    className="absolute top-2.5 right-2.5 bg-card/90 backdrop-blur-sm rounded-full p-1.5 hover:bg-card transition-colors active:scale-95"
-                    aria-label="Remove from visited"
-                  >
-                    <MapPinCheck className="h-3.5 w-3.5 fill-accent text-accent" />
-                  </button>
 
                   <div className="absolute bottom-0 left-0 right-0 p-3.5">
                     <h3
