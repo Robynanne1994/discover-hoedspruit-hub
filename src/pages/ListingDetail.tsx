@@ -197,7 +197,6 @@ const ListingDetail = () => {
     </h2>
   );
 
-  const whatToKnowRef = useRef<HTMLDivElement>(null);
   const handleWhatToKnow = () => {
     whatToKnowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
