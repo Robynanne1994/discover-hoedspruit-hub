@@ -22,7 +22,7 @@ const ShopSection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section className="py-4">
+    <section className="pt-8 pb-4">
       <SectionHeader title={title || "Where to Shop"} actionLabel="See all" actionHref="/category/7b335bd5-3ce9-4ecd-92bd-3735804402b8" />
       <div className="grid grid-cols-2 gap-3.5 px-5">
         {listings.map((listing) => (
