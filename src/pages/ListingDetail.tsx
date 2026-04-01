@@ -109,14 +109,18 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
+  // Kids & Family accordion items
   const kidsItems = [
+    { label: "Good for Kids", value: goodForKids },
     { label: "Kids Playground", value: kidsPlayground },
     { label: "Kids Menu", value: kidsMenu },
     { label: "High Chairs", value: highChairs },
   ].filter((item) => item.value === true);
   const hasKidsInfo = kidsItems.length > 0;
 
+  // Accessibility accordion items
   const accessibilityItems = [
+    { label: "Wheelchair Friendly", value: wheelchairFriendly },
     { label: "Wheelchair-accessible Car Park", value: wheelchairCarPark },
     { label: "Wheelchair-accessible Entrance", value: wheelchairEntrance },
     { label: "Wheelchair-accessible Seating", value: wheelchairSeating },
@@ -124,6 +128,7 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasAccessibilityInfo = accessibilityItems.length > 0;
 
+  // Amenities accordion items
   const amenitiesItems = [
     { label: "Toilet", value: hasToilet },
     { label: "Wi-Fi", value: hasWifi },
@@ -131,6 +136,7 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasAmenitiesInfo = amenitiesItems.length > 0;
 
+  // Service options
   const hasSitDown = serviceType?.includes("Sit down") || serviceType?.includes("Dine-in") || false;
   const hasTakeaway = serviceType?.includes("Takeaway") || serviceType?.includes("Take away") || false;
   const hasDelivery = serviceType?.includes("Delivery") || false;
@@ -141,6 +147,7 @@ const ListingDetail = () => {
   ];
   const hasServiceInfo = hasSitDown || hasTakeaway || true;
 
+  // Seating
   const seatingItems = [
     ...(seating?.includes("Bar seating") ? [{ label: "Bar seating" }] : []),
     ...(seating?.includes("Indoor seating") ? [{ label: "Indoor seating" }] : []),
@@ -148,8 +155,24 @@ const ListingDetail = () => {
   ];
   const hasSeatingInfo = seatingItems.length > 0;
 
+  // Dining details accordion
+  const diningDetails: { label: string; value: string }[] = [];
+  if (cuisine && cuisine.length > 0) diningDetails.push({ label: "Cuisine", value: cuisine.join(", ") });
+  if (vibe && vibe.length > 0) diningDetails.push({ label: "Vibe", value: vibe.join(", ") });
+  if (meal && meal.length > 0) diningDetails.push({ label: "Meal types", value: meal.join(", ") });
+  const hasDiningInfo = diningDetails.length > 0;
+
   const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
   const priceName = priceLevel === 1 ? "Budget" : priceLevel === 2 ? "Moderate" : priceLevel === 3 ? "Upscale" : priceLevel === 4 ? "Fine Dining" : null;
+
+  // Top quick-scan pills (max 3-4 most important)
+  const topPills: { icon: React.ReactNode; label: string; variant: "positive" | "muted" }[] = [];
+  if (showAttributes) {
+    if (goodForKids === true) topPills.push({ icon: <Baby className="h-3 w-3" />, label: "Good for Kids", variant: "positive" });
+    if (petsAllowed === true) topPills.push({ icon: <PawPrint className="h-3 w-3" />, label: "Pets Allowed", variant: "positive" });
+    if (smokingAllowed === true) topPills.push({ icon: <Cigarette className="h-3 w-3" />, label: "Smoking Allowed", variant: "positive" });
+    if (wheelchairFriendly === true) topPills.push({ icon: <Accessibility className="h-3 w-3" />, label: "Wheelchair Friendly", variant: "positive" });
+  }
 
   // Pill helper
   const Pill = ({ children, variant = "neutral" }: { children: React.ReactNode; variant?: "neutral" | "positive" | "muted" }) => {
@@ -173,6 +196,9 @@ const ListingDetail = () => {
   );
 
   const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
+
+  // Grouped accordion trigger style
+  const triggerClass = "bg-card px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline";
 
   return (
     <div className="min-h-screen pb-20 bg-background">
@@ -280,6 +306,15 @@ const ListingDetail = () => {
               )}
             </div>
           )}
+
+          {/* Price level inline */}
+          {showAttributes && priceLabel && (
+            <div className="flex items-center gap-1.5 mt-3 text-[13px] text-muted-foreground">
+              <DollarSign className="h-3.5 w-3.5 text-primary/60" />
+              <span className="font-semibold text-foreground">{priceLabel}</span>
+              {priceName && <span>· {priceName}</span>}
+            </div>
+          )}
         </div>
 
         {/* Actions */}
@@ -287,14 +322,20 @@ const ListingDetail = () => {
           <ListingActions listingId={listing.id} />
         </div>
 
-        {/* Grouped contact details block */}
+        {/* Quick-scan pills (max 3-4) */}
+        {topPills.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-7">
+            {topPills.slice(0, 4).map((pill) => (
+              <Pill key={pill.label} variant={pill.variant}>
+                {pill.icon} {pill.label}
+              </Pill>
+            ))}
+          </div>
+        )}
+
+        {/* Grouped contact details block — no heading */}
         {hasContactInfo && (
           <div className="bg-card rounded-2xl border border-border/50 mb-8 overflow-hidden" style={{ boxShadow: "var(--card-shadow)" }}>
-            <div className="px-4 py-3.5 border-b border-border/40">
-              <h3 className="text-[13px] font-semibold text-foreground tracking-wide uppercase" style={{ letterSpacing: "0.04em" }}>
-                Contact & Location
-              </h3>
-            </div>
             <div className="divide-y divide-border/30">
               {listing.location && (
                 (listing as any).google_maps_link ? (
@@ -446,7 +487,7 @@ const ListingDetail = () => {
         {listing.description && !longDescription && (
           <div className="mb-8">
             <SectionHeading>About</SectionHeading>
-            <p className="text-muted-foreground text-[14px] leading-[1.75]">{listing.description}</p>
+            <p className="text-muted-foreground text-[14px] leading-[1.75] text-left">{listing.description}</p>
           </div>
         )}
 
@@ -455,7 +496,7 @@ const ListingDetail = () => {
           <div className="mb-8">
             <SectionHeading>About</SectionHeading>
             {longDescription.split("\n").map((paragraph, i) => (
-              <p key={i} className="text-foreground/75 text-[14px] leading-[1.8] mb-3 last:mb-0">{paragraph}</p>
+              <p key={i} className="text-foreground/75 text-[14px] leading-[1.8] mb-3 last:mb-0 text-left">{paragraph}</p>
             ))}
           </div>
         )}
@@ -494,93 +535,113 @@ const ListingDetail = () => {
           </div>
         )}
 
-        {/* Accordion sections */}
-        {isListingRestaurant && (hasKidsInfo || hasAccessibilityInfo || hasServiceInfo || hasSeatingInfo || hasAmenitiesInfo) && (
-          <Accordion type="single" collapsible className="space-y-2.5 mb-8">
-            {hasKidsInfo && (
-              <AccordionItem value="kids" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2.5"><Baby className="h-4 w-4 text-primary/50" /> Kids</span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
-                  {kidsItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                      <Check className="h-3.5 w-3.5 text-primary" />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            )}
+        {/* Grouped accordion sections — no gaps, one connected block */}
+        {isListingRestaurant && (hasDiningInfo || hasServiceInfo || hasKidsInfo || hasAccessibilityInfo || hasAmenitiesInfo || hasSeatingInfo) && (
+          <div className="mb-8">
+            <div className="bg-card rounded-2xl border border-border/50 overflow-hidden" style={{ boxShadow: "var(--card-shadow)" }}>
+              <Accordion type="single" collapsible>
+                {hasDiningInfo && (
+                  <AccordionItem value="dining" className="border-b border-border/30 last:border-b-0">
+                    <AccordionTrigger className={triggerClass}>
+                      <span className="flex items-center gap-2.5"><ChefHat className="h-4 w-4 text-primary/50" /> Dining Details</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 pt-3 space-y-3">
+                      {diningDetails.map((item) => (
+                        <div key={item.label} className="flex items-start gap-2.5 text-[13px]">
+                          <span className="font-medium text-foreground min-w-[80px]">{item.label}</span>
+                          <span className="text-muted-foreground">{item.value}</span>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
 
-            {hasAccessibilityInfo && (
-              <AccordionItem value="accessibility" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2.5"><Accessibility className="h-4 w-4 text-primary/50" /> Accessibility</span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
-                  {accessibilityItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                      <Check className="h-3.5 w-3.5 text-primary" />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            )}
+                {hasServiceInfo && (
+                  <AccordionItem value="service" className="border-b border-border/30 last:border-b-0">
+                    <AccordionTrigger className={triggerClass}>
+                      <span className="flex items-center gap-2.5"><ShoppingBag className="h-4 w-4 text-primary/50" /> Service Options</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                      {serviceItems.map((item) => (
+                        <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                          {item.available ? (
+                            <Check className="h-3.5 w-3.5 text-primary" />
+                          ) : (
+                            <Ban className="h-3.5 w-3.5 text-destructive" />
+                          )}
+                          <span className={item.available ? "" : "text-muted-foreground"}>{item.label}</span>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
 
-            {hasServiceInfo && (
-              <AccordionItem value="service" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2.5"><ShoppingBag className="h-4 w-4 text-primary/50" /> Service options</span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
-                  {serviceItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                      {item.available ? (
-                        <Check className="h-3.5 w-3.5 text-primary" />
-                      ) : (
-                        <Ban className="h-3.5 w-3.5 text-destructive" />
-                      )}
-                      <span className={item.available ? "" : "text-muted-foreground"}>{item.label}</span>
-                    </div>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            )}
+                {hasSeatingInfo && (
+                  <AccordionItem value="seating" className="border-b border-border/30 last:border-b-0">
+                    <AccordionTrigger className={triggerClass}>
+                      <span className="flex items-center gap-2.5"><Armchair className="h-4 w-4 text-primary/50" /> Seating</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                      {seatingItems.map((item) => (
+                        <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                          <Check className="h-3.5 w-3.5 text-primary" />
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
 
-            {hasSeatingInfo && (
-              <AccordionItem value="seating" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2.5"><Armchair className="h-4 w-4 text-primary/50" /> Seating</span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
-                  {seatingItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                      <Check className="h-3.5 w-3.5 text-primary" />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            )}
+                {hasAmenitiesInfo && (
+                  <AccordionItem value="amenities" className="border-b border-border/30 last:border-b-0">
+                    <AccordionTrigger className={triggerClass}>
+                      <span className="flex items-center gap-2.5"><Wifi className="h-4 w-4 text-primary/50" /> Amenities</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                      {amenitiesItems.map((item) => (
+                        <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                          <Check className="h-3.5 w-3.5 text-primary" />
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
 
-            {hasAmenitiesInfo && (
-              <AccordionItem value="amenities" className="border-0">
-                <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
-                  <span className="flex items-center gap-2.5"><Wifi className="h-4 w-4 text-primary/50" /> Amenities</span>
-                </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
-                  {amenitiesItems.map((item) => (
-                    <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                      <Check className="h-3.5 w-3.5 text-primary" />
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            )}
-          </Accordion>
+                {hasKidsInfo && (
+                  <AccordionItem value="kids" className="border-b border-border/30 last:border-b-0">
+                    <AccordionTrigger className={triggerClass}>
+                      <span className="flex items-center gap-2.5"><Baby className="h-4 w-4 text-primary/50" /> Kids & Family</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                      {kidsItems.map((item) => (
+                        <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                          <Check className="h-3.5 w-3.5 text-primary" />
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
+
+                {hasAccessibilityInfo && (
+                  <AccordionItem value="accessibility" className="border-b border-border/30 last:border-b-0">
+                    <AccordionTrigger className={triggerClass}>
+                      <span className="flex items-center gap-2.5"><Accessibility className="h-4 w-4 text-primary/50" /> Accessibility</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                      {accessibilityItems.map((item) => (
+                        <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                          <Check className="h-3.5 w-3.5 text-primary" />
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
+              </Accordion>
+            </div>
+          </div>
         )}
       </div>
     </div>
