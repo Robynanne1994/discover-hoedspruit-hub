@@ -15,23 +15,26 @@ const UserCard = ({ user }: UserCardProps) => {
   return (
     <Link
       to={`/profile/${user.id}`}
-      className="flex items-center gap-3 bg-card border border-border rounded-xl p-3 active:scale-[0.98] transition-transform"
+      className="flex items-center gap-4 bg-card border border-border/60 rounded-xl p-4 active:scale-[0.98] transition-all hover:border-border"
     >
-      <div className="h-12 w-12 rounded-full bg-muted overflow-hidden flex items-center justify-center shrink-0">
+      <div className="h-12 w-12 rounded-full bg-muted/60 overflow-hidden flex items-center justify-center shrink-0 ring-1 ring-border/40">
         {user.avatar_url ? (
           <img src={user.avatar_url} alt="" className="h-full w-full object-cover" />
         ) : (
-          <UserCircle className="h-8 w-8 text-muted-foreground/40" />
+          <UserCircle className="h-7 w-7 text-muted-foreground/30" />
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-foreground truncate">
+        <p
+          className="text-sm font-semibold text-foreground truncate"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
           {user.display_name || "User"}
         </p>
         {user.location && (
-          <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+          <p className="text-xs text-muted-foreground/70 flex items-center gap-1 mt-1">
             <MapPin className="h-3 w-3" />
-            {user.location}
+            <span className="truncate">{user.location}</span>
           </p>
         )}
       </div>
