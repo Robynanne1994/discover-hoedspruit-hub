@@ -502,7 +502,7 @@ const ListingDetail = () => {
                 <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
                   <span className="flex items-center gap-2.5"><Baby className="h-4 w-4 text-primary/50" /> Kids</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
                   {kidsItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
@@ -518,7 +518,7 @@ const ListingDetail = () => {
                 <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
                   <span className="flex items-center gap-2.5"><Accessibility className="h-4 w-4 text-primary/50" /> Accessibility</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
                   {accessibilityItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
@@ -534,7 +534,7 @@ const ListingDetail = () => {
                 <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
                   <span className="flex items-center gap-2.5"><ShoppingBag className="h-4 w-4 text-primary/50" /> Service options</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
                   {serviceItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       {item.available ? (
@@ -554,7 +554,7 @@ const ListingDetail = () => {
                 <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
                   <span className="flex items-center gap-2.5"><Armchair className="h-4 w-4 text-primary/50" /> Seating</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
                   {seatingItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
@@ -570,7 +570,7 @@ const ListingDetail = () => {
                 <AccordionTrigger className="bg-card border border-border/50 rounded-2xl px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline [&[data-state=open]]:rounded-b-none">
                   <span className="flex items-center gap-2.5"><Wifi className="h-4 w-4 text-primary/50" /> Amenities</span>
                 </AccordionTrigger>
-                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-1 space-y-2.5">
+                <AccordionContent className="bg-card border border-t-0 border-border/50 rounded-b-2xl px-4 pb-4 pt-3 space-y-2.5">
                   {amenitiesItems.map((item) => (
                     <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
                       <Check className="h-3.5 w-3.5 text-primary" />
