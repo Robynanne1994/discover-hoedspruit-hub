@@ -164,7 +164,7 @@ const Events = () => {
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
-              className={`first:ml-1 px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors whitespace-nowrap ${
                 activeFilter === filter.value
                   ? "bg-primary text-primary-foreground"
                   : "bg-card text-foreground border border-border/60"
