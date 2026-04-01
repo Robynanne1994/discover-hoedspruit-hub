@@ -75,6 +75,7 @@ const App = () => (
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <ScrollToTop />
           <BottomNav />
         </BrowserRouter>
       </AuthProvider>
