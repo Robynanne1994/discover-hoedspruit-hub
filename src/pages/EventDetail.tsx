@@ -89,7 +89,7 @@ const EventDetail = () => {
       {/* Title */}
       <div className="px-6 pt-8 pb-2">
         <h1
-          className="text-[36px] font-light text-neutral-900 leading-[1.1] tracking-[-0.02em]"
+          className="text-[36px] text-neutral-900 leading-[1.1] tracking-[-0.02em] font-bold"
           style={{ fontFamily: "'Poppins', sans-serif" }}
         >
           {event.title}
