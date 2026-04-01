@@ -26,7 +26,7 @@ const DoSection = () => {
 
   return (
     <section className="py-4">
-      <SectionHeader title={title || "What to Do"} actionLabel="See all" <SectionHeader title={title || "What to Do"} actionLabel="See all" actionHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb" /> />
+      <SectionHeader title={title || "What to Do"} actionLabel="See all" actionHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb" /> title={title || "What to Do"} actionLabel="See all" actionHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb" /> />
       <div className="grid grid-cols-2 gap-3.5 px-5">
         {listings.map((listing) => (
           <VenueCard
