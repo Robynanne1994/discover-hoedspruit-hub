@@ -84,8 +84,13 @@ const ContactUs = () => {
 
   return (
     <div className="min-h-screen pb-24 bg-background">
+      {/* Back button */}
+      <div className="pt-4 px-4">
+        <BackButton />
+      </div>
+
       {/* Header */}
-      <div className="pt-14 pb-6 px-5 text-center">
+      <div className="pt-2 pb-6 px-5 text-center">
         <h1
           className="text-2xl font-bold text-foreground tracking-tight"
           style={{ fontFamily: "var(--font-heading)" }}
