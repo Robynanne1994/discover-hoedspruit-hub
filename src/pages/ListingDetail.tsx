@@ -322,6 +322,16 @@ const ListingDetail = () => {
           <ListingActions listingId={listing.id} />
         </div>
 
+        {/* Quick-scan pills (max 3-4) */}
+        {topPills.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-7">
+            {topPills.slice(0, 4).map((pill) => (
+              <Pill key={pill.label} variant={pill.variant}>
+                {pill.icon} {pill.label}
+              </Pill>
+            ))}
+          </div>
+        )}
 
         {/* Grouped contact details block — no heading */}
         {hasContactInfo && (
