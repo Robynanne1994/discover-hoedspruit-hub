@@ -220,7 +220,7 @@ const Events = () => {
                 {featuredEvents.map((event, index) => (
                   <Link
                     key={event.id}
-                    to={`/listing/${event.id}`}
+                    to={`/events/${event.id}`}
                     className={`snap-start flex-shrink-0 w-[78%] rounded-xl overflow-hidden relative aspect-[3/4] group ${index === featuredEvents.length - 1 ? "mr-5" : ""}`}
                   >
                     <img
@@ -269,7 +269,7 @@ const Events = () => {
                 {upcomingEvents.map((event, idx) => (
                   <Link
                     key={event.id}
-                    to={`/listing/${event.id}`}
+                    to={`/events/${event.id}`}
                     className={`flex items-center gap-4 py-4 group ${idx < upcomingEvents.length - 1 ? "border-b border-border/60" : ""}`}
                   >
                     {/* Thumbnail */}

@@ -35,6 +35,7 @@ import Advertise from "./pages/Advertise.tsx";
 import People from "./pages/People.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
+import EventDetail from "./pages/EventDetail.tsx";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/events" element={<Events />} />
             <Route path="/events/calendar" element={<EventsCalendar />} />
+            <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/advertise" element={<Advertise />} />
             <Route path="/directories" element={<Directories />} />
