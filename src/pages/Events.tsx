@@ -216,40 +216,42 @@ const Events = () => {
                   Featured
                 </h2>
               </div>
-              <div className="flex gap-3.5 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
-                {featuredEvents.map((event, index) => (
-                  <Link
-                    key={event.id}
-                    to={`/events/${event.id}`}
-                    className={`snap-start flex-shrink-0 w-[78%] rounded-xl overflow-hidden relative aspect-[3/4] group ${index === 0 ? "ml-5" : ""} ${index === featuredEvents.length - 1 ? "mr-5" : ""}`}
-                  >
-                    <img
-                      src={event.image_url!}
-                      alt={event.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-5">
-                      <p className="text-white/70 text-[12px] font-medium uppercase tracking-wide mb-1.5">
-                        {formatEventDate(event.date)}
-                        {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
-                      </p>
-                      <h3
-                        className="text-white font-semibold text-lg leading-snug mb-1"
-                        style={{ fontFamily: "var(--font-heading)" }}
-                      >
-                        {event.title}
-                      </h3>
-                      {event.location && (
-                        <div className="flex items-center gap-1.5">
-                          <MapPin className="h-3 w-3 text-white/60" />
-                          <p className="text-white/60 text-[12px]">{event.location}</p>
-                        </div>
-                      )}
-                    </div>
-                  </Link>
-                ))}
+              <div className="overflow-x-auto scrollbar-hide">
+                <div className="flex gap-3.5 px-5 snap-x snap-mandatory">
+                  {featuredEvents.map((event) => (
+                    <Link
+                      key={event.id}
+                      to={`/events/${event.id}`}
+                      className="snap-start flex-shrink-0 w-[78%] rounded-xl overflow-hidden relative aspect-[3/4] group"
+                    >
+                      <img
+                        src={event.image_url!}
+                        alt={event.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <p className="text-white/70 text-[12px] font-medium uppercase tracking-wide mb-1.5">
+                          {formatEventDate(event.date)}
+                          {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
+                        </p>
+                        <h3
+                          className="text-white font-semibold text-lg leading-snug mb-1"
+                          style={{ fontFamily: "var(--font-heading)" }}
+                        >
+                          {event.title}
+                        </h3>
+                        {event.location && (
+                          <div className="flex items-center gap-1.5">
+                            <MapPin className="h-3 w-3 text-white/60" />
+                            <p className="text-white/60 text-[12px]">{event.location}</p>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </section>
           )}
