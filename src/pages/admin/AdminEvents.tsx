@@ -63,7 +63,7 @@ const AdminEvents = () => {
 
   const openEdit = (ev: Event) => {
     setEditing(ev);
-    setForm({ title: ev.title, description: ev.description ?? "", date: ev.date, location: ev.location ?? "", tag: ev.tag ?? "", image_url: ev.image_url ?? "", start_time: (ev as any).start_time ?? "", end_time: (ev as any).end_time ?? "", recurrence: (ev as any).recurrence ?? "" });
+    setForm({ title: ev.title, description: ev.description ?? "", date: ev.date, location: ev.location ?? "", tag: ev.tag ?? "", image_url: ev.image_url ?? "", start_time: (ev as any).start_time ?? "", end_time: (ev as any).end_time ?? "", recurrence: (ev as any).recurrence ?? "", google_maps_link: (ev as any).google_maps_link ?? "" });
     setOpen(true);
   };
 
