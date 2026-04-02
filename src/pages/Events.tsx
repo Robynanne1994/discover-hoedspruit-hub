@@ -124,17 +124,30 @@ const Events = () => {
   }, [filteredEvents, featuredEvents]);
 
   return (
-    <div className="min-h-screen pb-16 bg-background">
+    <div className="min-h-screen pb-20 bg-background">
       {/* Hero */}
-      <div className="relative h-[180px] overflow-hidden">
-        <img src={heroBg} alt="Events in Hoedspruit" className="w-full h-full object-cover" />
+      <div className="relative h-[200px] overflow-hidden">
+        <img
+          src={heroBg}
+          alt="Events in Hoedspruit"
+          className="w-full h-full object-cover scale-105"
+        />
         <div
           className="absolute inset-0"
-          style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }}
+          style={{
+            background:
+              "linear-gradient(to bottom, hsla(30, 20%, 15%, 0.15), hsla(30, 20%, 15%, 0.55))",
+          }}
         />
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <p
+            className="text-white/60 text-[11px] font-medium uppercase tracking-[0.2em] mb-2"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            Hello Hoedspruit
+          </p>
           <h1
-            className="text-[32px] font-semibold text-white tracking-tight"
+            className="text-[34px] font-semibold text-white tracking-tight"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             Events
@@ -143,32 +156,33 @@ const Events = () => {
       </div>
 
       {/* Search */}
-      <div className="px-5 -mt-5 relative z-10 mb-5">
-        <div className="flex items-center bg-card/95 backdrop-blur-sm rounded-full px-4 py-3 gap-3 border border-primary-hover">
-          <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+      <div className="px-5 -mt-5 relative z-10 mb-4">
+        <div className="flex items-center bg-card/95 backdrop-blur-sm rounded-full px-4 py-3 gap-3 border border-border shadow-sm">
+          <Search className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
           <input
             type="text"
             placeholder="Search events..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground placeholder:italic outline-none"
+            className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground/60 placeholder:italic outline-none"
             style={{ fontFamily: "var(--font-body)" }}
           />
         </div>
       </div>
 
       {/* Filter pills */}
-      <div className="mb-6">
-        <div className="flex gap-2 overflow-x-auto scrollbar-hide justify-center px-5 py-0.5">
+      <div className="mb-8">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-hide justify-center px-5 py-0.5">
           {filters.map((filter) => (
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
-              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors whitespace-nowrap ${
+              className={`px-3.5 py-1 rounded-full text-[11px] font-medium tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeFilter === filter.value
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-card text-foreground border border-border/60"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
+              style={{ fontFamily: "var(--font-body)" }}
             >
               {filter.label}
             </button>
@@ -178,26 +192,31 @@ const Events = () => {
 
       {isLoading ? (
         <div className="px-5 space-y-4">
-          <Skeleton className="h-5 w-32 rounded" />
-          <div className="flex gap-3.5">
-            <Skeleton className="w-[78%] aspect-[3/4] rounded-xl flex-shrink-0" />
-            <Skeleton className="w-[78%] aspect-[3/4] rounded-xl flex-shrink-0" />
+          <Skeleton className="h-5 w-24 rounded" />
+          <div className="flex gap-4">
+            <Skeleton className="w-[75%] aspect-[3/4] rounded-2xl flex-shrink-0" />
+            <Skeleton className="w-[75%] aspect-[3/4] rounded-2xl flex-shrink-0" />
           </div>
-          <Skeleton className="h-5 w-32 rounded mt-6" />
+          <Skeleton className="h-5 w-24 rounded mt-8" />
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-20 w-full rounded-xl" />
+            <Skeleton key={i} className="h-[72px] w-full rounded-xl" />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
         <div className="px-5 py-20 text-center">
-          <Calendar className="h-10 w-10 text-primary/15 mx-auto mb-5" />
+          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-5">
+            <Calendar className="h-7 w-7 text-muted-foreground/40" />
+          </div>
           <p
-            className="text-foreground font-semibold text-[20px] mb-2 tracking-tight"
+            className="text-foreground font-semibold text-[22px] mb-2 tracking-tight"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             {search ? "No matching events" : "No events right now"}
           </p>
-          <p className="text-muted-foreground text-[13px] leading-relaxed">
+          <p
+            className="text-muted-foreground text-[13px] leading-relaxed max-w-[260px] mx-auto"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
             {search
               ? "Try another search or browse upcoming events"
               : "Check back soon for what's happening in Hoedspruit"}
@@ -207,22 +226,28 @@ const Events = () => {
         <>
           {/* Featured Events */}
           {featuredEvents.length > 0 && (
-            <section className="mb-2">
-              <div className="flex items-baseline justify-between px-5 mb-5">
+            <section className="mb-10">
+              <div className="px-5 mb-4">
+                <p
+                  className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-1"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  Curated
+                </p>
                 <h2
-                  className="text-[22px] font-semibold text-foreground tracking-tight"
+                  className="text-[24px] font-semibold text-foreground tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
                   Featured
                 </h2>
               </div>
               <div className="overflow-x-auto scrollbar-hide">
-                <div className="flex gap-3.5 px-5 snap-x snap-mandatory">
+                <div className="flex gap-4 px-5 snap-x snap-mandatory pb-1">
                   {featuredEvents.map((event) => (
                     <Link
                       key={event.id}
                       to={`/events/${event.id}`}
-                      className="snap-start flex-shrink-0 w-[78%] rounded-xl overflow-hidden relative aspect-[3/4] group"
+                      className="snap-start flex-shrink-0 w-[75%] rounded-2xl overflow-hidden relative aspect-[3/4] group"
                     >
                       <img
                         src={event.image_url!}
@@ -230,22 +255,46 @@ const Events = () => {
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          background:
+                            "linear-gradient(to top, hsla(0, 0%, 0%, 0.6) 0%, hsla(0, 0%, 0%, 0.2) 40%, transparent 70%)",
+                        }}
+                      />
+                      {event.tag && (
+                        <div className="absolute top-4 left-4">
+                          <span
+                            className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/90 bg-white/15 backdrop-blur-sm rounded-full px-2.5 py-1"
+                            style={{ fontFamily: "var(--font-body)" }}
+                          >
+                            {event.tag}
+                          </span>
+                        </div>
+                      )}
                       <div className="absolute bottom-0 left-0 right-0 p-5">
-                        <p className="text-white/70 text-[12px] font-medium uppercase tracking-wide mb-1.5">
+                        <p
+                          className="text-white/65 text-[11px] font-medium uppercase tracking-[0.1em] mb-2"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
                           {formatEventDate(event.date)}
                           {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
                         </p>
                         <h3
-                          className="text-white font-semibold text-lg leading-snug mb-1"
+                          className="text-white font-semibold text-[20px] leading-tight mb-1.5 tracking-tight"
                           style={{ fontFamily: "var(--font-heading)" }}
                         >
                           {event.title}
                         </h3>
                         {event.location && (
                           <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 text-white/60" />
-                            <p className="text-white/60 text-[12px]">{event.location}</p>
+                            <MapPin className="h-3 w-3 text-white/50" />
+                            <p
+                              className="text-white/55 text-[11px]"
+                              style={{ fontFamily: "var(--font-body)" }}
+                            >
+                              {event.location.replace(/<[^>]*>/g, "")}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -258,24 +307,30 @@ const Events = () => {
 
           {/* Upcoming Events */}
           {upcomingEvents.length > 0 && (
-            <section className="px-5 py-8">
-              <div className="flex items-baseline justify-between mb-5">
+            <section className="px-5 pb-8">
+              <div className="mb-5">
+                <p
+                  className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-1"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  Coming up
+                </p>
                 <h2
-                  className="text-[22px] font-semibold text-foreground tracking-tight"
+                  className="text-[24px] font-semibold text-foreground tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
                   Upcoming
                 </h2>
               </div>
-              <div className="space-y-0">
-                {upcomingEvents.map((event, idx) => (
+              <div className="space-y-3">
+                {upcomingEvents.map((event) => (
                   <Link
                     key={event.id}
                     to={`/events/${event.id}`}
-                    className={`flex items-center gap-4 py-4 group ${idx < upcomingEvents.length - 1 ? "border-b border-border/60" : ""}`}
+                    className="flex items-center gap-3.5 p-3 rounded-xl bg-card border border-border/40 group transition-all duration-200 hover:border-border"
                   >
                     {/* Thumbnail */}
-                    <div className="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-muted">
+                    <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
                       {event.image_url ? (
                         <img
                           src={event.image_url}
@@ -285,29 +340,40 @@ const Events = () => {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Calendar className="h-5 w-5 text-muted-foreground/30" />
+                          <Calendar className="h-5 w-5 text-muted-foreground/25" />
                         </div>
                       )}
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] text-primary font-semibold uppercase tracking-wide mb-0.5">
+                      <p
+                        className="text-[10px] text-primary font-semibold uppercase tracking-[0.1em] mb-0.5"
+                        style={{ fontFamily: "var(--font-body)" }}
+                      >
                         {formatEventDate(event.date)}
                         {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
                       </p>
-                      <h4 className="text-[14px] font-medium text-foreground leading-snug line-clamp-1">
+                      <h4
+                        className="text-[14px] font-medium text-foreground leading-snug line-clamp-1 tracking-tight"
+                        style={{ fontFamily: "var(--font-heading)" }}
+                      >
                         {event.title}
                       </h4>
                       {event.location && (
-                        <p className="text-[12px] text-muted-foreground flex items-center gap-1 mt-0.5">
-                          <MapPin className="h-3 w-3 flex-shrink-0" />
-                          <span className="line-clamp-1">{event.location}</span>
+                        <p
+                          className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5"
+                          style={{ fontFamily: "var(--font-body)" }}
+                        >
+                          <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-muted-foreground/50" />
+                          <span className="line-clamp-1">
+                            {event.location.replace(/<[^>]*>/g, "")}
+                          </span>
                         </p>
                       )}
                     </div>
 
-                    <ChevronRight className="h-4 w-4 text-muted-foreground/40 flex-shrink-0" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/30 flex-shrink-0" />
                   </Link>
                 ))}
               </div>
