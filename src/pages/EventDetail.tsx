@@ -150,6 +150,7 @@ const EventDetail = () => {
   const contactPhone = (event as any).contact_phone || null;
   const galleryImages: string[] = (event as any).gallery_images ?? [];
   const bookingLink = (event as any).booking_link || null;
+  const price = (event as any).price || null;
 
   const detailRows = [
     { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
