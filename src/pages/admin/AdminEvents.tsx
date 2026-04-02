@@ -69,6 +69,45 @@ const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: 
   );
 };
 
+const EventCoverUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `events/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabase.storage.from("listing-images").upload(path, file);
+    if (error) { toast.error("Upload failed"); setUploading(false); return; }
+    const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+    onChange(data.publicUrl);
+    toast.success("Cover image uploaded");
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label>Cover Image</Label>
+      {value && (
+        <div className="relative w-full aspect-[4/3] rounded overflow-hidden border border-border">
+          <img src={value} alt="Cover" className="w-full h-full object-cover" />
+          <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={() => onChange("")}>
+            <X className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Paste image URL or upload below" />
+      <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
+      <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5">
+        {uploading ? <><ImageIcon className="h-3.5 w-3.5 animate-pulse" /> Uploading...</> : <><Upload className="h-3.5 w-3.5" /> Upload Image</>}
+      </Button>
+    </div>
+  );
+};
+
 const AdminEvents = () => {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
