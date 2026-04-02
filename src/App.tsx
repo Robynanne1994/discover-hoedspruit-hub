@@ -68,6 +68,7 @@ const App = () => (
             <Route path="/visited" element={<VisitedPlaces />} />
             <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/terms" element={<TermsPolicies />} />
+            <Route path="/terms/privacy" element={<PrivacyPolicy />} />
             <Route path="/people" element={<People />} />
             <Route path="/profile/:id" element={<UserProfile />} />
             <Route path="/profile/:id/:type" element={<FollowList />} />
