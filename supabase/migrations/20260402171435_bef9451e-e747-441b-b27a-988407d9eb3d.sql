@@ -1,0 +1,1 @@
+ALTER TABLE public.events ADD COLUMN booking_link text DEFAULT NULL;

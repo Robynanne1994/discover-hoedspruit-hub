@@ -162,6 +162,7 @@ export type Database = {
       }
       events: {
         Row: {
+          booking_link: string | null
           contact_email: string | null
           contact_phone: string | null
           created_at: string
@@ -181,6 +182,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          booking_link?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
@@ -200,6 +202,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          booking_link?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string

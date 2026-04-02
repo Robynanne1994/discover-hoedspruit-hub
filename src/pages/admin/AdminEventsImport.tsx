@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const EXPECTED_HEADERS = ["title", "description", "date", "location", "tag", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "contact_email", "contact_phone", "gallery_images"];
+const EXPECTED_HEADERS = ["title", "description", "date", "location", "tag", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "contact_email", "contact_phone", "gallery_images", "booking_link"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -97,6 +97,7 @@ const AdminEventsImport = () => {
           contact_email: row.contact_email || null,
           contact_phone: row.contact_phone || null,
           gallery_images: row.gallery_images ? row.gallery_images.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
+          booking_link: row.booking_link || null,
         };
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -139,7 +140,7 @@ const AdminEventsImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","Hoedspruit Town","Market","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example","https://instagram.com/example","info@example.com","+27 123 456 789","https://img1.jpg|https://img2.jpg"\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","Hoedspruit Town","Market","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example","https://instagram.com/example","info@example.com","+27 123 456 789","https://img1.jpg|https://img2.jpg","https://bookme.com/example"\n';
     downloadCSV(csv, "events_template.csv");
   };
 
@@ -150,7 +151,7 @@ const AdminEventsImport = () => {
     const rows = events.map((e: any) => [
       e.title, e.description ?? "", e.date, e.location ?? "",
       e.tag ?? "", e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", e.recurrence ?? "", e.google_maps_link ?? "",
-      e.social_media_link ?? "", e.contact_email ?? "", e.contact_phone ?? "", (e.gallery_images ?? []).join("|"),
+      e.social_media_link ?? "", e.contact_email ?? "", e.contact_phone ?? "", (e.gallery_images ?? []).join("|"), e.booking_link ?? "",
     ].map(escapeCSV).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
     toast.success(`Exported ${events.length} events`);

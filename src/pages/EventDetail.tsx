@@ -149,6 +149,7 @@ const EventDetail = () => {
   const contactEmail = (event as any).contact_email || null;
   const contactPhone = (event as any).contact_phone || null;
   const galleryImages: string[] = (event as any).gallery_images ?? [];
+  const bookingLink = (event as any).booking_link || null;
 
   const detailRows = [
     { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
@@ -162,6 +163,7 @@ const EventDetail = () => {
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
     contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
     socialLink ? { label: "Social Media", value: "View Profile", icon: Globe, href: socialLink } : null,
+    bookingLink ? { label: "Booking", value: "Book Now", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   return (
