@@ -58,7 +58,17 @@ const FollowList = () => {
             </Link>
           </div>
         ) : (
-          users.map((u) => <UserCard key={u.id} user={u} />)
+          <>
+            {users.map((u) => <UserCard key={u.id} user={u} />)}
+            <div className="text-center pt-6 pb-4">
+              <Link to="/people">
+                <Button className="rounded-full gap-2" variant="outline">
+                  <UserPlus className="h-4 w-4" />
+                  Find Friends
+                </Button>
+              </Link>
+            </div>
+          </>
         )}
       </div>
     </div>
