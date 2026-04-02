@@ -66,6 +66,7 @@ const App = () => (
             <Route path="/saved" element={<SavedListings />} />
             <Route path="/visited" element={<VisitedPlaces />} />
             <Route path="/account-settings" element={<AccountSettings />} />
+            <Route path="/terms" element={<TermsPolicies />} />
             <Route path="/people" element={<People />} />
             <Route path="/profile/:id" element={<UserProfile />} />
             <Route path="/profile/:id/:type" element={<FollowList />} />
