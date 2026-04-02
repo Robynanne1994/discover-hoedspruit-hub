@@ -163,6 +163,7 @@ const EventDetail = () => {
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
     contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
     socialLink ? { label: "Social Media", value: "View Profile", icon: Globe, href: socialLink } : null,
+    bookingLink ? { label: "Booking", value: "Book Now", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   return (
