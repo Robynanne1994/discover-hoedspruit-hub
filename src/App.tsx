@@ -36,6 +36,7 @@ import People from "./pages/People.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
+import AccountSettings from "./pages/AccountSettings.tsx";
 
 const queryClient = new QueryClient();
 
@@ -63,6 +64,7 @@ const App = () => (
             <Route path="/my-account" element={<MyAccount />} />
             <Route path="/saved" element={<SavedListings />} />
             <Route path="/visited" element={<VisitedPlaces />} />
+            <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/people" element={<People />} />
             <Route path="/profile/:id" element={<UserProfile />} />
             <Route path="/profile/:id/:type" element={<FollowList />} />
