@@ -1,12 +1,58 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, ExternalLink } from "lucide-react";
+import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: isFavourited } = useQuery({
+    queryKey: ["favourite", "event", id, user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("item_id", id!)
+        .eq("item_type", "event")
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user && !!id,
+  });
+
+  const toggleFavourite = useMutation({
+    mutationFn: async () => {
+      if (!user) {
+        toast.error("Please sign in to save events");
+        return;
+      }
+      if (isFavourited) {
+        await supabase
+          .from("favourites" as any)
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", id!)
+          .eq("item_type", "event");
+      } else {
+        await supabase
+          .from("favourites" as any)
+          .insert({ user_id: user.id, item_id: id!, item_type: "event" });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favourite", "event", id] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      toast.success(isFavourited ? "Removed from saved" : "Event saved!");
+    },
+  });
 
   const { data: event, isLoading } = useQuery({
     queryKey: ["event-detail", id],
@@ -181,7 +227,6 @@ const EventDetail = () => {
         </div>
       )}
 
-      {/* Actions */}
       <div className="px-5 pt-5 pb-2 flex gap-3">
         <button
           onClick={handleShare}
@@ -189,7 +234,19 @@ const EventDetail = () => {
           style={{ fontFamily: "var(--font-body)" }}
         >
           <Share2 className="h-[14px] w-[14px] text-primary/70" strokeWidth={1.5} />
-          Share Event
+          Share
+        </button>
+        <button
+          onClick={() => toggleFavourite.mutate()}
+          className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-medium transition-colors ${
+            isFavourited
+              ? "bg-primary/10 border border-primary/30 text-primary"
+              : "bg-card border border-border/40 text-foreground hover:bg-muted/50"
+          }`}
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          <Heart className={`h-[14px] w-[14px] ${isFavourited ? "fill-primary text-primary" : "text-primary/70"}`} strokeWidth={1.5} />
+          {isFavourited ? "Interested" : "Interested"}
         </button>
       </div>
     </div>
