@@ -103,6 +103,7 @@ const AdminEvents = () => {
         contact_phone: values.contact_phone || null,
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
+        price: values.price || null,
       };
       if (editing) {
         const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
