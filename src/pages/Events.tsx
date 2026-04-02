@@ -114,7 +114,7 @@ const Events = () => {
   }, [sortedEvents, activeFilter, search]);
 
   const featuredEvents = useMemo(
-    () => filteredEvents.filter((e) => e.image_url).slice(0, 2),
+    () => filteredEvents.filter((e) => e.image_url).slice(0, 4),
     [filteredEvents]
   );
 
@@ -125,9 +125,9 @@ const Events = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      {/* Hero — matches Categories/Explore */}
+      {/* Hero */}
       <section className="relative">
-        <div className="relative h-[200px] overflow-hidden">
+        <div className="relative h-[220px] overflow-hidden">
           <img
             src={heroBg}
             alt="Events in Hoedspruit"
@@ -136,18 +136,18 @@ const Events = () => {
           <div
             className="absolute inset-0"
             style={{
-              background: "linear-gradient(to bottom, hsla(30, 20%, 15%, 0.15), hsla(30, 20%, 15%, 0.55))",
+              background: "linear-gradient(to bottom, hsla(30, 20%, 12%, 0.2) 0%, hsla(30, 20%, 12%, 0.6) 100%)",
             }}
           />
-          <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
+          <div className="absolute inset-0 flex flex-col items-center justify-center pt-2">
             <p
-              className="text-white/70 text-[11px] font-medium tracking-[0.2em] uppercase mb-1.5"
+              className="text-white/50 text-[10px] font-medium tracking-[0.25em] uppercase mb-3"
               style={{ fontFamily: "var(--font-body)" }}
             >
               Hello Hoedspruit
             </p>
             <h1
-              className="text-[34px] font-semibold tracking-tight leading-[1.1] text-center text-white"
+              className="text-[38px] font-semibold tracking-tight leading-none text-white"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Events
@@ -155,16 +155,16 @@ const Events = () => {
           </div>
         </div>
 
-        {/* Search — matches Categories/Explore exactly */}
-        <div className="px-5 -mt-5 relative z-10">
+        {/* Search */}
+        <div className="px-5 -mt-6 relative z-10">
           <div className="flex items-center bg-card backdrop-blur-sm rounded-2xl px-4 py-3.5 gap-3 border border-border/60 shadow-sm">
-            <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Search className="h-4 w-4 text-muted-foreground/50 flex-shrink-0" />
             <input
               type="text"
               placeholder="Search events..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="text-[13px] flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground placeholder:italic"
+              className="text-[13px] flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground/50 placeholder:italic"
               style={{ fontFamily: "var(--font-body)" }}
             />
           </div>
@@ -172,7 +172,7 @@ const Events = () => {
       </section>
 
       {/* Filter pills */}
-      <div className="pt-5 pb-2">
+      <div className="pt-5 pb-1">
         <div className="flex gap-1.5 overflow-x-auto scrollbar-hide justify-center px-5 py-0.5">
           {filters.map((filter) => (
             <button
@@ -192,32 +192,32 @@ const Events = () => {
       </div>
 
       {isLoading ? (
-        <div className="px-5 pt-6 space-y-4">
-          <Skeleton className="h-4 w-20 rounded" />
-          <Skeleton className="h-3 w-14 rounded mb-1" />
+        <div className="px-5 pt-8 space-y-4">
+          <Skeleton className="h-3 w-12 rounded" />
+          <Skeleton className="h-5 w-24 rounded" />
           <div className="flex gap-4">
-            <Skeleton className="w-[75%] aspect-[3/4] rounded-2xl flex-shrink-0" />
-            <Skeleton className="w-[75%] aspect-[3/4] rounded-2xl flex-shrink-0" />
+            <Skeleton className="w-[72%] aspect-[3/4] rounded-2xl flex-shrink-0" />
+            <Skeleton className="w-[72%] aspect-[3/4] rounded-2xl flex-shrink-0" />
           </div>
-          <Skeleton className="h-4 w-20 rounded mt-8" />
-          <Skeleton className="h-3 w-14 rounded mb-1" />
+          <Skeleton className="h-3 w-12 rounded mt-10" />
+          <Skeleton className="h-5 w-24 rounded" />
           {[1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-[76px] w-full rounded-2xl" />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="px-5 py-20 text-center">
-          <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-5">
-            <Calendar className="h-7 w-7 text-muted-foreground/40" />
+        <div className="px-5 py-24 text-center">
+          <div className="w-16 h-16 rounded-full bg-muted/60 flex items-center justify-center mx-auto mb-6">
+            <Calendar className="h-7 w-7 text-muted-foreground/30" />
           </div>
           <p
-            className="text-foreground font-semibold text-[22px] mb-2 tracking-tight"
+            className="text-foreground font-semibold text-[24px] mb-2.5 tracking-tight"
             style={{ fontFamily: "var(--font-heading)" }}
           >
             {search ? "No matching events" : "No events right now"}
           </p>
           <p
-            className="text-muted-foreground text-[13px] leading-relaxed max-w-[260px] mx-auto"
+            className="text-muted-foreground/70 text-[13px] leading-relaxed max-w-[240px] mx-auto"
             style={{ fontFamily: "var(--font-body)" }}
           >
             {search
@@ -229,76 +229,73 @@ const Events = () => {
         <>
           {/* Featured Events */}
           {featuredEvents.length > 0 && (
-            <section className="pt-6 mb-10">
-              <div className="px-5 mb-4">
+            <section className="pt-8 mb-12">
+              <div className="px-5 mb-5">
                 <p
-                  className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-0.5"
+                  className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/70 mb-1"
                   style={{ fontFamily: "var(--font-body)" }}
                 >
                   Curated
                 </p>
                 <h2
-                  className="text-[24px] font-semibold text-foreground tracking-tight"
+                  className="text-[26px] font-semibold text-foreground tracking-tight leading-none"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
                   Featured
                 </h2>
               </div>
               <div className="overflow-x-auto scrollbar-hide">
-                <div className="flex gap-4 px-5 snap-x snap-mandatory pb-1">
+                <div className="inline-flex gap-4 px-5 snap-x snap-mandatory pb-2">
                   {featuredEvents.map((event) => (
                     <Link
                       key={event.id}
                       to={`/events/${event.id}`}
-                      className="snap-start flex-shrink-0 w-[75%] rounded-2xl overflow-hidden relative aspect-[3/4] group"
+                      className="snap-start flex-shrink-0 w-[72vw] max-w-[300px] rounded-2xl overflow-hidden relative aspect-[3/4] group active:scale-[0.98] transition-transform duration-200"
                     >
                       <img
                         src={event.image_url!}
                         alt={event.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                         loading="lazy"
                       />
                       <div
-                        className="absolute inset-0 rounded-2xl"
+                        className="absolute inset-0"
                         style={{
                           background:
-                            "linear-gradient(to top, hsla(0, 0%, 0%, 0.55) 0%, hsla(0, 0%, 0%, 0.15) 45%, transparent 70%)",
+                            "linear-gradient(to top, hsla(25, 15%, 8%, 0.7) 0%, hsla(25, 15%, 8%, 0.25) 40%, hsla(25, 15%, 8%, 0.05) 65%, transparent 100%)",
                         }}
                       />
                       {event.tag && (
-                        <div className="absolute top-4 left-4">
+                        <div className="absolute top-3.5 left-3.5">
                           <span
-                            className="text-[9px] font-semibold uppercase tracking-[0.12em] text-white/90 bg-white/15 backdrop-blur-sm rounded-full px-2.5 py-1"
+                            className="text-[8px] font-bold uppercase tracking-[0.14em] text-white bg-white/15 backdrop-blur-md rounded-full px-2.5 py-1"
                             style={{ fontFamily: "var(--font-body)" }}
                           >
                             {event.tag}
                           </span>
                         </div>
                       )}
-                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                      <div className="absolute bottom-0 left-0 right-0 p-4 pb-5">
                         <p
-                          className="text-white/60 text-[10px] font-medium uppercase tracking-[0.12em] mb-2"
+                          className="text-white/50 text-[9px] font-semibold uppercase tracking-[0.14em] mb-2"
                           style={{ fontFamily: "var(--font-body)" }}
                         >
                           {formatEventDate(event.date)}
-                          {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
+                          {event.start_time ? `  ·  ${formatTime(event.start_time)}` : ""}
                         </p>
                         <h3
-                          className="text-white font-semibold text-[20px] leading-tight mb-1.5 tracking-tight"
+                          className="text-white font-semibold text-[19px] leading-[1.2] mb-1 tracking-tight line-clamp-2"
                           style={{ fontFamily: "var(--font-heading)" }}
                         >
                           {event.title}
                         </h3>
                         {event.location && (
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 text-white/45" />
-                            <p
-                              className="text-white/50 text-[11px]"
-                              style={{ fontFamily: "var(--font-body)" }}
-                            >
-                              {event.location.replace(/<[^>]*>/g, "")}
-                            </p>
-                          </div>
+                          <p
+                            className="text-white/40 text-[10px] mt-1 line-clamp-1"
+                            style={{ fontFamily: "var(--font-body)" }}
+                          >
+                            {event.location.replace(/<[^>]*>/g, "")}
+                          </p>
                         )}
                       </div>
                     </Link>
@@ -310,16 +307,16 @@ const Events = () => {
 
           {/* Upcoming Events */}
           {upcomingEvents.length > 0 && (
-            <section className="px-5 pb-8">
+            <section className="px-5 pb-10">
               <div className="mb-5">
                 <p
-                  className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-0.5"
+                  className="text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground/70 mb-1"
                   style={{ fontFamily: "var(--font-body)" }}
                 >
                   Coming up
                 </p>
                 <h2
-                  className="text-[24px] font-semibold text-foreground tracking-tight"
+                  className="text-[26px] font-semibold text-foreground tracking-tight leading-none"
                   style={{ fontFamily: "var(--font-heading)" }}
                 >
                   Upcoming
@@ -330,53 +327,48 @@ const Events = () => {
                   <Link
                     key={event.id}
                     to={`/events/${event.id}`}
-                    className="flex items-center gap-3.5 p-3 rounded-2xl bg-card border border-border/60 group transition-all duration-200 active:scale-[0.98]"
+                    className="flex items-center gap-3.5 p-3 rounded-2xl bg-card border border-border/50 group transition-all duration-200 active:scale-[0.98]"
                   >
-                    {/* Thumbnail */}
-                    <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
+                    <div className="w-[52px] h-[52px] rounded-xl overflow-hidden flex-shrink-0 bg-muted">
                       {event.image_url ? (
                         <img
                           src={event.image_url}
                           alt={event.title}
-                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
+                          className="w-full h-full object-cover"
                           loading="lazy"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
-                          <Calendar className="h-5 w-5 text-muted-foreground/25" />
+                          <Calendar className="h-4 w-4 text-muted-foreground/20" />
                         </div>
                       )}
                     </div>
 
-                    {/* Content */}
                     <div className="flex-1 min-w-0">
                       <p
-                        className="text-[10px] text-primary font-semibold uppercase tracking-[0.1em] mb-0.5"
+                        className="text-[9px] text-primary font-bold uppercase tracking-[0.12em] mb-0.5"
                         style={{ fontFamily: "var(--font-body)" }}
                       >
                         {formatEventDate(event.date)}
-                        {event.start_time ? ` · ${formatTime(event.start_time)}` : ""}
+                        {event.start_time ? `  ·  ${formatTime(event.start_time)}` : ""}
                       </p>
                       <h4
-                        className="text-[14px] font-medium text-foreground leading-snug line-clamp-1 tracking-tight"
+                        className="text-[14px] font-semibold text-foreground leading-snug line-clamp-1 tracking-tight"
                         style={{ fontFamily: "var(--font-heading)" }}
                       >
                         {event.title}
                       </h4>
                       {event.location && (
                         <p
-                          className="text-[11px] text-muted-foreground flex items-center gap-1 mt-0.5"
+                          className="text-[10px] text-muted-foreground/70 line-clamp-1 mt-0.5"
                           style={{ fontFamily: "var(--font-body)" }}
                         >
-                          <MapPin className="h-2.5 w-2.5 flex-shrink-0 text-muted-foreground/50" />
-                          <span className="line-clamp-1">
-                            {event.location.replace(/<[^>]*>/g, "")}
-                          </span>
+                          {event.location.replace(/<[^>]*>/g, "")}
                         </p>
                       )}
                     </div>
 
-                    <ChevronRight className="h-4 w-4 text-muted-foreground/30 flex-shrink-0" />
+                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/25 flex-shrink-0" />
                   </Link>
                 ))}
               </div>
