@@ -145,7 +145,7 @@ const AdminEventsImport = () => {
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = events.map((e) => [
       e.title, e.description ?? "", e.date, e.location ?? "",
-      e.tag ?? "", e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", (e as any).recurrence ?? "",
+      e.tag ?? "", e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", (e as any).recurrence ?? "", (e as any).google_maps_link ?? "",
     ].map(escapeCSV).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
     toast.success(`Exported ${events.length} events`);
