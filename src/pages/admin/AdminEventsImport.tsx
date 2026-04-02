@@ -97,6 +97,7 @@ const AdminEventsImport = () => {
           contact_email: row.contact_email || null,
           contact_phone: row.contact_phone || null,
           gallery_images: row.gallery_images ? row.gallery_images.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
+          booking_link: row.booking_link || null,
         };
 
         const existingId = existingMap.get(title.toLowerCase());
