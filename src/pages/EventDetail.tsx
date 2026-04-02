@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, ExternalLink } from "lucide-react";
+import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
