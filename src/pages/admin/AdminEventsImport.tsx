@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const EXPECTED_HEADERS = ["title", "description", "date", "location", "tag", "image_url", "start_time", "end_time", "recurrence", "google_maps_link"];
+const EXPECTED_HEADERS = ["title", "description", "date", "location", "tag", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "contact_email", "contact_phone", "gallery_images"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
