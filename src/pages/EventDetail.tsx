@@ -144,12 +144,14 @@ const EventDetail = () => {
     ? `${formatTime(event.start_time)}${event.end_time ? ` – ${formatTime(event.end_time)}` : ""}`
     : null;
 
+  const mapsLink = (event as any).google_maps_link || null;
+
   const detailRows = [
-    { label: "Date", value: formatDate(event.date), icon: Calendar },
-    { label: "Time", value: timeDisplay, icon: Clock },
-    { label: "Venue", value: event.location, icon: MapPin },
-    { label: "Category", value: event.tag, icon: Tag },
-    { label: "Recurrence", value: event.recurrence, icon: RotateCcw },
+    { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
+    { label: "Time", value: timeDisplay, icon: Clock, href: null as string | null },
+    { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
+    { label: "Category", value: event.tag, icon: Tag, href: null as string | null },
+    { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
   ].filter((r) => r.value);
 
   return (
