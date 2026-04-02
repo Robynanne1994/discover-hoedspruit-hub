@@ -174,6 +174,7 @@ export type Database = {
           id: string
           image_url: string | null
           location: string | null
+          price: string | null
           recurrence: string | null
           social_media_link: string | null
           start_time: string | null
@@ -194,6 +195,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           location?: string | null
+          price?: string | null
           recurrence?: string | null
           social_media_link?: string | null
           start_time?: string | null
@@ -214,6 +216,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           location?: string | null
+          price?: string | null
           recurrence?: string | null
           social_media_link?: string | null
           start_time?: string | null
