@@ -92,6 +92,7 @@ const AdminEventsImport = () => {
           start_time: row.start_time || null,
           end_time: row.end_time || null,
           recurrence: row.recurrence || null,
+          google_maps_link: row.google_maps_link || null,
         };
 
         const existingId = existingMap.get(title.toLowerCase());
