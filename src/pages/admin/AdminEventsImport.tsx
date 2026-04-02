@@ -93,6 +93,10 @@ const AdminEventsImport = () => {
           end_time: row.end_time || null,
           recurrence: row.recurrence || null,
           google_maps_link: row.google_maps_link || null,
+          social_media_link: row.social_media_link || null,
+          contact_email: row.contact_email || null,
+          contact_phone: row.contact_phone || null,
+          gallery_images: row.gallery_images ? row.gallery_images.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
         };
 
         const existingId = existingMap.get(title.toLowerCase());
