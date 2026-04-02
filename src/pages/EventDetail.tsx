@@ -158,6 +158,7 @@ const EventDetail = () => {
     { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
     { label: "Category", value: event.tag, icon: Tag, href: null as string | null },
     { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
+    { label: "Price", value: price, icon: Banknote, href: null as string | null },
   ].filter((r) => r.value);
 
   const contactRows = [
