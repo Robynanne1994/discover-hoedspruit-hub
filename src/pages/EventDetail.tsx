@@ -227,7 +227,6 @@ const EventDetail = () => {
         </div>
       )}
 
-      {/* Actions */}
       <div className="px-5 pt-5 pb-2 flex gap-3">
         <button
           onClick={handleShare}
@@ -235,7 +234,19 @@ const EventDetail = () => {
           style={{ fontFamily: "var(--font-body)" }}
         >
           <Share2 className="h-[14px] w-[14px] text-primary/70" strokeWidth={1.5} />
-          Share Event
+          Share
+        </button>
+        <button
+          onClick={() => toggleFavourite.mutate()}
+          className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-medium transition-colors ${
+            isFavourited
+              ? "bg-primary/10 border border-primary/30 text-primary"
+              : "bg-card border border-border/40 text-foreground hover:bg-muted/50"
+          }`}
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          <Heart className={`h-[14px] w-[14px] ${isFavourited ? "fill-primary text-primary" : "text-primary/70"}`} strokeWidth={1.5} />
+          {isFavourited ? "Interested" : "Interested"}
         </button>
       </div>
     </div>
