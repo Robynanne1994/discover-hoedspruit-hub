@@ -147,9 +147,10 @@ const AdminEventsImport = () => {
     const { data: events } = await supabase.from("events").select("*").order("created_at", { ascending: false });
     if (!events?.length) { toast.error("No events to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
-    const rows = events.map((e) => [
+    const rows = events.map((e: any) => [
       e.title, e.description ?? "", e.date, e.location ?? "",
-      e.tag ?? "", e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", (e as any).recurrence ?? "", (e as any).google_maps_link ?? "",
+      e.tag ?? "", e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", e.recurrence ?? "", e.google_maps_link ?? "",
+      e.social_media_link ?? "", e.contact_email ?? "", e.contact_phone ?? "", (e.gallery_images ?? []).join("|"),
     ].map(escapeCSV).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
     toast.success(`Exported ${events.length} events`);
