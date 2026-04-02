@@ -166,6 +166,7 @@ export type Database = {
           date: string
           description: string | null
           end_time: string | null
+          google_maps_link: string | null
           id: string
           image_url: string | null
           location: string | null
@@ -180,6 +181,7 @@ export type Database = {
           date: string
           description?: string | null
           end_time?: string | null
+          google_maps_link?: string | null
           id?: string
           image_url?: string | null
           location?: string | null
@@ -194,6 +196,7 @@ export type Database = {
           date?: string
           description?: string | null
           end_time?: string | null
+          google_maps_link?: string | null
           id?: string
           image_url?: string | null
           location?: string | null
