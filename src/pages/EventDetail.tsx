@@ -1,8 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, ArrowRight, Calendar, Clock, MapPin, Tag, RotateCcw } from "lucide-react";
+import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, ExternalLink } from "lucide-react";
+import { toast } from "sonner";
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,14 +32,48 @@ const EventDetail = () => {
     return `${displayHour}:${String(m).padStart(2, "0")} ${ampm}`;
   };
 
+  const formatDate = (dateStr: string) => {
+    try {
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("en-ZA", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+    } catch {
+      return dateStr;
+    }
+  };
+
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: event?.title, url: shareUrl });
+      } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          await navigator.clipboard.writeText(shareUrl);
+          toast.success("Link copied!");
+        }
+      }
+    } else {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Link copied!");
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white pb-20">
-        <Skeleton className="w-full aspect-[4/3]" />
-        <div className="px-6 pt-8 space-y-4">
-          <Skeleton className="h-10 w-3/4" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-5/6" />
+      <div className="min-h-screen pb-20 bg-background">
+        <div className="px-5 pt-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-primary hover:text-foreground text-[13px] font-medium transition-colors">
+            <ChevronLeft className="h-4 w-4" /> Back
+          </button>
+        </div>
+        <div className="px-5 pt-12 flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
+          <p className="text-muted-foreground text-[13px]">Loading...</p>
         </div>
       </div>
     );
@@ -47,102 +81,117 @@ const EventDetail = () => {
 
   if (!event) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center pb-20">
-        <p className="text-neutral-400 text-sm">Event not found</p>
+      <div className="min-h-screen pb-20 bg-background">
+        <div className="px-5 pt-6">
+          <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-primary hover:text-foreground text-[13px] font-medium transition-colors">
+            <ChevronLeft className="h-4 w-4" /> Back
+          </button>
+        </div>
+        <div className="px-5 pt-20 text-center">
+          <p className="text-muted-foreground text-[14px]">Event not found.</p>
+        </div>
       </div>
     );
   }
 
+  const timeDisplay = event.start_time
+    ? `${formatTime(event.start_time)}${event.end_time ? ` – ${formatTime(event.end_time)}` : ""}`
+    : null;
+
   const detailRows = [
-    { label: "Date", value: event.date, icon: Calendar },
-    { label: "Time", value: event.start_time ? `${formatTime(event.start_time)}${event.end_time ? ` – ${formatTime(event.end_time)}` : ""}` : null, icon: Clock },
+    { label: "Date", value: formatDate(event.date), icon: Calendar },
+    { label: "Time", value: timeDisplay, icon: Clock },
     { label: "Venue", value: event.location, icon: MapPin },
     { label: "Category", value: event.tag, icon: Tag },
     { label: "Recurrence", value: event.recurrence, icon: RotateCcw },
   ].filter((r) => r.value);
 
   return (
-    <div className="min-h-screen bg-white pb-20">
+    <div className="min-h-screen pb-24 bg-background">
       {/* Back button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="fixed top-4 left-4 z-20 w-9 h-9 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center"
-      >
-        <ArrowLeft className="h-4 w-4 text-neutral-800" />
-      </button>
+      <div className="px-5 pt-6 pb-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-1.5 text-primary hover:text-foreground text-[13px] font-medium transition-colors"
+        >
+          <ChevronLeft className="h-4 w-4" /> Back
+        </button>
+      </div>
 
-      {/* Hero image */}
-      {event.image_url ? (
-        <div className="w-full aspect-[4/3] overflow-hidden">
-          <img
-            src={event.image_url}
-            alt={event.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      ) : (
-        <div className="w-full aspect-[4/3] bg-neutral-100 flex items-center justify-center">
-          <Calendar className="h-12 w-12 text-neutral-300" />
+      {/* Event image */}
+      {event.image_url && (
+        <div className="px-5 pb-6">
+          <div className="rounded-xl overflow-hidden aspect-[4/3]">
+            <img
+              src={event.image_url}
+              alt={event.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
       )}
 
       {/* Title */}
-      <div className="px-6 pt-8 pb-2">
+      <div className="px-5 pb-2">
         <h1
-          className="text-[36px] text-neutral-900 leading-[1.1] tracking-[-0.02em] font-bold"
-          style={{ fontFamily: "'Poppins', sans-serif" }}
+          className="text-[22px] font-semibold text-foreground leading-[1.2] tracking-[-0.01em]"
+          style={{ fontFamily: "var(--font-heading)" }}
         >
           {event.title}
         </h1>
       </div>
 
-      {/* Description */}
+      {/* About this event */}
       {event.description && (
-        <div className="px-6 pt-4 pb-2">
-          <h2
-            className="text-[15px] font-semibold text-neutral-900 leading-[1.3] mb-2"
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-          >
-            About this event
-          </h2>
-          <p
-            className="text-[14px] text-neutral-500 leading-[1.7] tracking-[0.01em]"
-            style={{ fontFamily: "'DM Sans', sans-serif" }}
-          >
-            {event.description}
-          </p>
+        <div className="px-5 pt-5 pb-1">
+          <div className="bg-card border border-border/40 rounded-xl px-4 py-4">
+            <h2 className="text-[13px] font-semibold text-foreground mb-2 leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+              About this event
+            </h2>
+            <p className="text-[12.5px] text-muted-foreground leading-[1.75]" style={{ fontFamily: "var(--font-body)" }}>
+              {event.description}
+            </p>
+          </div>
         </div>
       )}
 
-      {/* Detail rows */}
+      {/* Event details */}
       {detailRows.length > 0 && (
-        <div className="px-6 pt-8">
-          {detailRows.map((row, idx) => (
-            <div
-              key={row.label}
-              className={`flex items-center justify-between py-[18px] ${
-                idx < detailRows.length - 1 ? "border-b border-neutral-100" : ""
-              }`}
-            >
-              <span
-                className="text-[15px] font-medium text-neutral-900 tracking-[-0.01em]"
-                style={{ fontFamily: "'DM Sans', sans-serif" }}
+        <div className="px-5 pt-4 pb-1">
+          <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+            {detailRows.map((row, idx) => (
+              <div
+                key={row.label}
+                className={`flex items-center gap-3.5 px-4 py-3.5 ${
+                  idx < detailRows.length - 1 ? "border-b border-border/20" : ""
+                }`}
               >
-                {row.label}
-              </span>
-              <div className="flex items-center gap-2">
-                <span
-                  className="text-[13px] text-neutral-400 tracking-[-0.01em]"
-                  style={{ fontFamily: "'DM Sans', sans-serif" }}
-                >
-                  {row.value}
-                </span>
-                <ArrowRight className="h-3.5 w-3.5 text-neutral-300" />
+                <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+                    {row.label}
+                  </span>
+                  <span className="text-[13px] font-medium text-foreground leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+                    {row.value}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
+
+      {/* Actions */}
+      <div className="px-5 pt-5 pb-2 flex gap-3">
+        <button
+          onClick={handleShare}
+          className="flex-1 flex items-center justify-center gap-2 bg-card border border-border/40 rounded-xl py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors"
+          style={{ fontFamily: "var(--font-body)" }}
+        >
+          <Share2 className="h-[14px] w-[14px] text-primary/70" strokeWidth={1.5} />
+          Share Event
+        </button>
+      </div>
     </div>
   );
 };
