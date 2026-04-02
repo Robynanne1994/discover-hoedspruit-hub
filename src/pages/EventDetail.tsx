@@ -267,11 +267,10 @@ const EventDetail = () => {
                   <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
                     {row.label}
                   </span>
-                  <span className="text-[13px] font-medium leading-tight text-primary underline decoration-primary/30" style={{ fontFamily: "var(--font-body)" }}>
+                  <span className="text-[13px] font-medium leading-tight text-primary" style={{ fontFamily: "var(--font-body)" }}>
                     {row.value}
                   </span>
                 </div>
-                <ExternalLink className="h-3.5 w-3.5 text-primary/50 shrink-0" strokeWidth={1.5} />
               </a>
             ))}
           </div>
