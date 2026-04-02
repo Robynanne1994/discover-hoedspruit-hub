@@ -162,45 +162,57 @@ export type Database = {
       }
       events: {
         Row: {
+          contact_email: string | null
+          contact_phone: string | null
           created_at: string
           date: string
           description: string | null
           end_time: string | null
+          gallery_images: string[] | null
           google_maps_link: string | null
           id: string
           image_url: string | null
           location: string | null
           recurrence: string | null
+          social_media_link: string | null
           start_time: string | null
           tag: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           date: string
           description?: string | null
           end_time?: string | null
+          gallery_images?: string[] | null
           google_maps_link?: string | null
           id?: string
           image_url?: string | null
           location?: string | null
           recurrence?: string | null
+          social_media_link?: string | null
           start_time?: string | null
           tag?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           date?: string
           description?: string | null
           end_time?: string | null
+          gallery_images?: string[] | null
           google_maps_link?: string | null
           id?: string
           image_url?: string | null
           location?: string | null
           recurrence?: string | null
+          social_media_link?: string | null
           start_time?: string | null
           tag?: string | null
           title?: string
