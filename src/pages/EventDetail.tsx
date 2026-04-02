@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart, ExternalLink, Mail, Phone, Globe } from "lucide-react";
+import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart, ExternalLink, Mail, Phone, Globe, Banknote } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -150,6 +150,7 @@ const EventDetail = () => {
   const contactPhone = (event as any).contact_phone || null;
   const galleryImages: string[] = (event as any).gallery_images ?? [];
   const bookingLink = (event as any).booking_link || null;
+  const price = (event as any).price || null;
 
   const detailRows = [
     { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
@@ -157,6 +158,7 @@ const EventDetail = () => {
     { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
     { label: "Category", value: event.tag, icon: Tag, href: null as string | null },
     { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
+    { label: "Price", value: price, icon: Banknote, href: null as string | null },
   ].filter((r) => r.value);
 
   const contactRows = [

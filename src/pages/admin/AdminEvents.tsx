@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "" };
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "", price: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -103,6 +103,7 @@ const AdminEvents = () => {
         contact_phone: values.contact_phone || null,
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
+        price: values.price || null,
       };
       if (editing) {
         const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
@@ -151,6 +152,7 @@ const AdminEvents = () => {
       contact_phone: (ev as any).contact_phone ?? "",
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
+      price: (ev as any).price ?? "",
     });
     setOpen(true);
   };
@@ -188,6 +190,7 @@ const AdminEvents = () => {
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
               <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
+              <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Contact Email</Label><Input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} placeholder="info@example.com" /></div>
                 <div><Label>Contact Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} placeholder="+27 ..." /></div>
