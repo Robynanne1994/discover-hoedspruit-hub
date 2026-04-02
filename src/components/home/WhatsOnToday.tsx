@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import SectionHeader from "./SectionHeader";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -54,8 +55,9 @@ const WhatsOnToday = () => {
       <SectionHeader title="What's On" actionLabel="See all" actionHref="/events" />
       <div className="mx-5 space-y-0">
         {events.map((event, idx) => (
-          <div
+          <Link
             key={event.id}
+            to={`/events/${event.id}`}
             className={`flex items-baseline gap-5 py-4 ${idx < events.length - 1 ? "border-b border-border/60" : ""}`}
           >
             <span
@@ -77,10 +79,10 @@ const WhatsOnToday = () => {
                 {event.title}
               </span>
               {event.location && (
-                <span className="block text-[12px] mt-0.5 text-orange-800">{event.location}</span>
+                <span className="block text-[12px] mt-0.5 text-muted-foreground">{event.location}</span>
               )}
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>
