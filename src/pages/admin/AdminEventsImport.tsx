@@ -98,6 +98,7 @@ const AdminEventsImport = () => {
           contact_phone: row.contact_phone || null,
           gallery_images: row.gallery_images ? row.gallery_images.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           booking_link: row.booking_link || null,
+          price: row.price || null,
         };
 
         const existingId = existingMap.get(title.toLowerCase());
