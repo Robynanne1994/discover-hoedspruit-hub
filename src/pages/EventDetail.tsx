@@ -9,6 +9,50 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: isFavourited } = useQuery({
+    queryKey: ["favourite", "event", id, user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("item_id", id!)
+        .eq("item_type", "event")
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user && !!id,
+  });
+
+  const toggleFavourite = useMutation({
+    mutationFn: async () => {
+      if (!user) {
+        toast.error("Please sign in to save events");
+        return;
+      }
+      if (isFavourited) {
+        await supabase
+          .from("favourites" as any)
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", id!)
+          .eq("item_type", "event");
+      } else {
+        await supabase
+          .from("favourites" as any)
+          .insert({ user_id: user.id, item_id: id!, item_type: "event" });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favourite", "event", id] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      toast.success(isFavourited ? "Removed from saved" : "Event saved!");
+    },
+  });
 
   const { data: event, isLoading } = useQuery({
     queryKey: ["event-detail", id],
