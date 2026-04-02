@@ -125,59 +125,60 @@ const Events = () => {
 
   return (
     <div className="min-h-screen pb-20 bg-background">
-      {/* Hero */}
-      <div className="relative h-[200px] overflow-hidden">
-        <img
-          src={heroBg}
-          alt="Events in Hoedspruit"
-          className="w-full h-full object-cover scale-105"
-        />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(to bottom, hsla(30, 20%, 15%, 0.15), hsla(30, 20%, 15%, 0.55))",
-          }}
-        />
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <p
-            className="text-white/60 text-[11px] font-medium uppercase tracking-[0.2em] mb-2"
-            style={{ fontFamily: "var(--font-body)" }}
-          >
-            Hello Hoedspruit
-          </p>
-          <h1
-            className="text-[34px] font-semibold text-white tracking-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Events
-          </h1>
-        </div>
-      </div>
-
-      {/* Search */}
-      <div className="px-5 -mt-5 relative z-10 mb-4">
-        <div className="flex items-center bg-card/95 backdrop-blur-sm rounded-full px-4 py-3 gap-3 border border-border shadow-sm">
-          <Search className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground/60 placeholder:italic outline-none"
-            style={{ fontFamily: "var(--font-body)" }}
+      {/* Hero — matches Categories/Explore */}
+      <section className="relative">
+        <div className="relative h-[200px] overflow-hidden">
+          <img
+            src={heroBg}
+            alt="Events in Hoedspruit"
+            className="w-full h-full object-cover"
           />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: "linear-gradient(to bottom, hsla(30, 20%, 15%, 0.15), hsla(30, 20%, 15%, 0.55))",
+            }}
+          />
+          <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
+            <p
+              className="text-white/70 text-[11px] font-medium tracking-[0.2em] uppercase mb-1.5"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Hello Hoedspruit
+            </p>
+            <h1
+              className="text-[34px] font-semibold tracking-tight leading-[1.1] text-center text-white"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Events
+            </h1>
+          </div>
         </div>
-      </div>
+
+        {/* Search — matches Categories/Explore exactly */}
+        <div className="px-5 -mt-5 relative z-10">
+          <div className="flex items-center bg-card backdrop-blur-sm rounded-2xl px-4 py-3.5 gap-3 border border-border/60 shadow-sm">
+            <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <input
+              type="text"
+              placeholder="Search events..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="text-[13px] flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground placeholder:italic"
+              style={{ fontFamily: "var(--font-body)" }}
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Filter pills */}
-      <div className="mb-8">
+      <div className="pt-5 pb-2">
         <div className="flex gap-1.5 overflow-x-auto scrollbar-hide justify-center px-5 py-0.5">
           {filters.map((filter) => (
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
-              className={`px-3.5 py-1 rounded-full text-[11px] font-medium tracking-wide transition-all duration-200 whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded-full text-[11px] font-medium tracking-wide transition-all duration-200 whitespace-nowrap ${
                 activeFilter === filter.value
                   ? "bg-foreground text-background"
                   : "text-muted-foreground hover:text-foreground"
@@ -191,15 +192,17 @@ const Events = () => {
       </div>
 
       {isLoading ? (
-        <div className="px-5 space-y-4">
-          <Skeleton className="h-5 w-24 rounded" />
+        <div className="px-5 pt-6 space-y-4">
+          <Skeleton className="h-4 w-20 rounded" />
+          <Skeleton className="h-3 w-14 rounded mb-1" />
           <div className="flex gap-4">
             <Skeleton className="w-[75%] aspect-[3/4] rounded-2xl flex-shrink-0" />
             <Skeleton className="w-[75%] aspect-[3/4] rounded-2xl flex-shrink-0" />
           </div>
-          <Skeleton className="h-5 w-24 rounded mt-8" />
+          <Skeleton className="h-4 w-20 rounded mt-8" />
+          <Skeleton className="h-3 w-14 rounded mb-1" />
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-[72px] w-full rounded-xl" />
+            <Skeleton key={i} className="h-[76px] w-full rounded-2xl" />
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
@@ -226,10 +229,10 @@ const Events = () => {
         <>
           {/* Featured Events */}
           {featuredEvents.length > 0 && (
-            <section className="mb-10">
+            <section className="pt-6 mb-10">
               <div className="px-5 mb-4">
                 <p
-                  className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-1"
+                  className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-0.5"
                   style={{ fontFamily: "var(--font-body)" }}
                 >
                   Curated
@@ -256,10 +259,10 @@ const Events = () => {
                         loading="lazy"
                       />
                       <div
-                        className="absolute inset-0"
+                        className="absolute inset-0 rounded-2xl"
                         style={{
                           background:
-                            "linear-gradient(to top, hsla(0, 0%, 0%, 0.6) 0%, hsla(0, 0%, 0%, 0.2) 40%, transparent 70%)",
+                            "linear-gradient(to top, hsla(0, 0%, 0%, 0.55) 0%, hsla(0, 0%, 0%, 0.15) 45%, transparent 70%)",
                         }}
                       />
                       {event.tag && (
@@ -274,7 +277,7 @@ const Events = () => {
                       )}
                       <div className="absolute bottom-0 left-0 right-0 p-5">
                         <p
-                          className="text-white/65 text-[11px] font-medium uppercase tracking-[0.1em] mb-2"
+                          className="text-white/60 text-[10px] font-medium uppercase tracking-[0.12em] mb-2"
                           style={{ fontFamily: "var(--font-body)" }}
                         >
                           {formatEventDate(event.date)}
@@ -288,9 +291,9 @@ const Events = () => {
                         </h3>
                         {event.location && (
                           <div className="flex items-center gap-1.5">
-                            <MapPin className="h-3 w-3 text-white/50" />
+                            <MapPin className="h-3 w-3 text-white/45" />
                             <p
-                              className="text-white/55 text-[11px]"
+                              className="text-white/50 text-[11px]"
                               style={{ fontFamily: "var(--font-body)" }}
                             >
                               {event.location.replace(/<[^>]*>/g, "")}
@@ -310,7 +313,7 @@ const Events = () => {
             <section className="px-5 pb-8">
               <div className="mb-5">
                 <p
-                  className="text-[11px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-1"
+                  className="text-[10px] font-medium uppercase tracking-[0.15em] text-muted-foreground mb-0.5"
                   style={{ fontFamily: "var(--font-body)" }}
                 >
                   Coming up
@@ -322,15 +325,15 @@ const Events = () => {
                   Upcoming
                 </h2>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {upcomingEvents.map((event) => (
                   <Link
                     key={event.id}
                     to={`/events/${event.id}`}
-                    className="flex items-center gap-3.5 p-3 rounded-xl bg-card border border-border/40 group transition-all duration-200 hover:border-border"
+                    className="flex items-center gap-3.5 p-3 rounded-2xl bg-card border border-border/60 group transition-all duration-200 active:scale-[0.98]"
                   >
                     {/* Thumbnail */}
-                    <div className="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
+                    <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
                       {event.image_url ? (
                         <img
                           src={event.image_url}
