@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "" };
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "" };
 
 const AdminEvents = () => {
   const qc = useQueryClient();
@@ -63,7 +63,7 @@ const AdminEvents = () => {
 
   const openEdit = (ev: Event) => {
     setEditing(ev);
-    setForm({ title: ev.title, description: ev.description ?? "", date: ev.date, location: ev.location ?? "", tag: ev.tag ?? "", image_url: ev.image_url ?? "", start_time: (ev as any).start_time ?? "", end_time: (ev as any).end_time ?? "", recurrence: (ev as any).recurrence ?? "" });
+    setForm({ title: ev.title, description: ev.description ?? "", date: ev.date, location: ev.location ?? "", tag: ev.tag ?? "", image_url: ev.image_url ?? "", start_time: (ev as any).start_time ?? "", end_time: (ev as any).end_time ?? "", recurrence: (ev as any).recurrence ?? "", google_maps_link: (ev as any).google_maps_link ?? "" });
     setOpen(true);
   };
 
@@ -97,6 +97,7 @@ const AdminEvents = () => {
                 </select>
               </div>
               <div><Label>Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
+              <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>

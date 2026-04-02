@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart } from "lucide-react";
+import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -144,12 +144,14 @@ const EventDetail = () => {
     ? `${formatTime(event.start_time)}${event.end_time ? ` – ${formatTime(event.end_time)}` : ""}`
     : null;
 
+  const mapsLink = (event as any).google_maps_link || null;
+
   const detailRows = [
-    { label: "Date", value: formatDate(event.date), icon: Calendar },
-    { label: "Time", value: timeDisplay, icon: Clock },
-    { label: "Venue", value: event.location, icon: MapPin },
-    { label: "Category", value: event.tag, icon: Tag },
-    { label: "Recurrence", value: event.recurrence, icon: RotateCcw },
+    { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
+    { label: "Time", value: timeDisplay, icon: Clock, href: null as string | null },
+    { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
+    { label: "Category", value: event.tag, icon: Tag, href: null as string | null },
+    { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
   ].filter((r) => r.value);
 
   return (
@@ -205,24 +207,30 @@ const EventDetail = () => {
       {detailRows.length > 0 && (
         <div className="px-5 pt-4 pb-1">
           <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
-            {detailRows.map((row, idx) => (
-              <div
-                key={row.label}
-                className={`flex items-center gap-3.5 px-4 py-3.5 ${
-                  idx < detailRows.length - 1 ? "border-b border-border/20" : ""
-                }`}
-              >
-                <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
-                <div className="flex-1 min-w-0">
-                  <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
-                    {row.label}
-                  </span>
-                  <span className="text-[13px] font-medium text-foreground leading-tight" style={{ fontFamily: "var(--font-body)" }}>
-                    {row.value}
-                  </span>
-                </div>
-              </div>
-            ))}
+            {detailRows.map((row, idx) => {
+              const Wrapper = row.href ? "a" : "div";
+              const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
+              return (
+                <Wrapper
+                  key={row.label}
+                  {...wrapperProps}
+                  className={`flex items-center gap-3.5 px-4 py-3.5 ${
+                    idx < detailRows.length - 1 ? "border-b border-border/20" : ""
+                  } ${row.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}`}
+                >
+                  <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+                      {row.label}
+                    </span>
+                    <span className={`text-[13px] font-medium leading-tight ${row.href ? "text-primary underline decoration-primary/30" : "text-foreground"}`} style={{ fontFamily: "var(--font-body)" }}>
+                      {row.value}
+                    </span>
+                  </div>
+                  {row.href && <ExternalLink className="h-3.5 w-3.5 text-primary/50 shrink-0" strokeWidth={1.5} />}
+                </Wrapper>
+              );
+            })}
           </div>
         </div>
       )}

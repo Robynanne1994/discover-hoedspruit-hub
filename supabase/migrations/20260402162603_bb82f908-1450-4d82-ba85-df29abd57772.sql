@@ -1,0 +1,1 @@
+ALTER TABLE public.events ADD COLUMN google_maps_link text DEFAULT NULL;

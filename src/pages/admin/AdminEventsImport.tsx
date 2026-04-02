@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const EXPECTED_HEADERS = ["title", "description", "date", "location", "tag", "image_url", "start_time", "end_time", "recurrence"];
+const EXPECTED_HEADERS = ["title", "description", "date", "location", "tag", "image_url", "start_time", "end_time", "recurrence", "google_maps_link"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -92,6 +92,7 @@ const AdminEventsImport = () => {
           start_time: row.start_time || null,
           end_time: row.end_time || null,
           recurrence: row.recurrence || null,
+          google_maps_link: row.google_maps_link || null,
         };
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -134,7 +135,7 @@ const AdminEventsImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","Hoedspruit Town","Market","https://example.com/img.jpg","08:00","13:00","Weekly"\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","Hoedspruit Town","Market","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example"\n';
     downloadCSV(csv, "events_template.csv");
   };
 
@@ -144,7 +145,7 @@ const AdminEventsImport = () => {
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = events.map((e) => [
       e.title, e.description ?? "", e.date, e.location ?? "",
-      e.tag ?? "", e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", (e as any).recurrence ?? "",
+      e.tag ?? "", e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", (e as any).recurrence ?? "", (e as any).google_maps_link ?? "",
     ].map(escapeCSV).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
     toast.success(`Exported ${events.length} events`);
