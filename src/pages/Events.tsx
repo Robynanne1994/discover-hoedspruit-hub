@@ -216,12 +216,12 @@ const Events = () => {
                   Featured
                 </h2>
               </div>
-              <div className="flex gap-3.5 overflow-x-auto scrollbar-hide px-5 snap-x snap-mandatory">
+              <div className="flex gap-3.5 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
                 {featuredEvents.map((event, index) => (
                   <Link
                     key={event.id}
                     to={`/events/${event.id}`}
-                    className={`snap-start flex-shrink-0 w-[78%] rounded-xl overflow-hidden relative aspect-[3/4] group ${index === featuredEvents.length - 1 ? "mr-5" : ""}`}
+                    className={`snap-start flex-shrink-0 w-[78%] rounded-xl overflow-hidden relative aspect-[3/4] group ${index === 0 ? "ml-5" : ""} ${index === featuredEvents.length - 1 ? "mr-5" : ""}`}
                   >
                     <img
                       src={event.image_url!}
