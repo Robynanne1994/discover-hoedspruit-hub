@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,14 +6,68 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, FileSpreadsheet } from "lucide-react";
+import { Plus, Pencil, Trash2, FileSpreadsheet, Upload, X, Image as ImageIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "" };
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", contact_email: "", contact_phone: "", gallery_images: "" };
+
+const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const urls = value ? value.split("\n").filter(Boolean) : [];
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    const newUrls: string[] = [];
+    for (const file of Array.from(files)) {
+      const ext = file.name.split(".").pop();
+      const path = `events/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from("listing-images").upload(path, file);
+      if (error) { toast.error(`Failed: ${file.name}`); continue; }
+      const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+      newUrls.push(data.publicUrl);
+    }
+    if (newUrls.length > 0) {
+      onChange([...urls, ...newUrls].join("\n"));
+      toast.success(`${newUrls.length} image(s) uploaded`);
+    }
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = "";
+  };
+
+  const removeUrl = (index: number) => onChange(urls.filter((_, i) => i !== index).join("\n"));
+
+  return (
+    <div className="space-y-2">
+      <Label>Gallery Images</Label>
+      {urls.length > 0 && (
+        <div className="grid grid-cols-3 gap-2">
+          {urls.map((url, i) => (
+            <div key={i} className="relative aspect-[4/3] rounded overflow-hidden border border-border">
+              <img src={url} alt={`Gallery ${i + 1}`} className="w-full h-full object-cover" />
+              <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6" onClick={() => removeUrl(i)}>
+                <X className="h-3 w-3" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+      <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={2} placeholder="Paste image URLs (one per line) or upload below" className="text-xs" />
+      <div className="flex gap-2">
+        <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
+        <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5">
+          {uploading ? <><ImageIcon className="h-3.5 w-3.5 animate-pulse" /> Uploading...</> : <><Upload className="h-3.5 w-3.5" /> Upload Images</>}
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const AdminEvents = () => {
   const qc = useQueryClient();
@@ -31,12 +85,29 @@ const AdminEvents = () => {
   });
 
   const upsert = useMutation({
-    mutationFn: async (values: TablesInsert<"events">) => {
+    mutationFn: async (values: typeof form) => {
+      const galleryArr = values.gallery_images ? values.gallery_images.split("\n").filter(Boolean) : [];
+      const payload: any = {
+        title: values.title,
+        description: values.description || null,
+        date: values.date,
+        location: values.location || null,
+        tag: values.tag || null,
+        image_url: values.image_url || null,
+        start_time: values.start_time || null,
+        end_time: values.end_time || null,
+        recurrence: values.recurrence || null,
+        google_maps_link: values.google_maps_link || null,
+        social_media_link: values.social_media_link || null,
+        contact_email: values.contact_email || null,
+        contact_phone: values.contact_phone || null,
+        gallery_images: galleryArr,
+      };
       if (editing) {
-        const { error } = await supabase.from("events").update(values).eq("id", editing.id);
+        const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("events").insert(values);
+        const { error } = await supabase.from("events").insert(payload);
         if (error) throw error;
       }
     },
@@ -63,7 +134,22 @@ const AdminEvents = () => {
 
   const openEdit = (ev: Event) => {
     setEditing(ev);
-    setForm({ title: ev.title, description: ev.description ?? "", date: ev.date, location: ev.location ?? "", tag: ev.tag ?? "", image_url: ev.image_url ?? "", start_time: (ev as any).start_time ?? "", end_time: (ev as any).end_time ?? "", recurrence: (ev as any).recurrence ?? "", google_maps_link: (ev as any).google_maps_link ?? "" });
+    setForm({
+      title: ev.title,
+      description: ev.description ?? "",
+      date: ev.date,
+      location: ev.location ?? "",
+      tag: ev.tag ?? "",
+      image_url: ev.image_url ?? "",
+      start_time: ev.start_time ?? "",
+      end_time: ev.end_time ?? "",
+      recurrence: ev.recurrence ?? "",
+      google_maps_link: ev.google_maps_link ?? "",
+      social_media_link: (ev as any).social_media_link ?? "",
+      contact_email: (ev as any).contact_email ?? "",
+      contact_phone: (ev as any).contact_phone ?? "",
+      gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
+    });
     setOpen(true);
   };
 
@@ -79,11 +165,11 @@ const AdminEvents = () => {
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> Add Event</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-h-[90vh] overflow-y-auto">
             <DialogHeader><DialogTitle>{editing ? "Edit Event" : "Add Event"}</DialogTitle></DialogHeader>
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
               <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
-              <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported — e.g. &lt;a href="https://example.com"&gt;Click here&lt;/a&gt;)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
+              <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
               <div><Label>Date <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required placeholder="e.g. 22 March 2026 or Every Saturday" /></div>
               <div><Label>Location <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-4">
@@ -98,6 +184,12 @@ const AdminEvents = () => {
               </div>
               <div><Label>Image URL</Label><Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} /></div>
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
+              <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Contact Email</Label><Input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} placeholder="info@example.com" /></div>
+                <div><Label>Contact Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} placeholder="+27 ..." /></div>
+              </div>
+              <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>

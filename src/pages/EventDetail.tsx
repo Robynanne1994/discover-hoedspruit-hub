@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart, ExternalLink } from "lucide-react";
+import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart, ExternalLink, Mail, Phone, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -145,6 +145,10 @@ const EventDetail = () => {
     : null;
 
   const mapsLink = (event as any).google_maps_link || null;
+  const socialLink = (event as any).social_media_link || null;
+  const contactEmail = (event as any).contact_email || null;
+  const contactPhone = (event as any).contact_phone || null;
+  const galleryImages: string[] = (event as any).gallery_images ?? [];
 
   const detailRows = [
     { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
@@ -153,6 +157,12 @@ const EventDetail = () => {
     { label: "Category", value: event.tag, icon: Tag, href: null as string | null },
     { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
   ].filter((r) => r.value);
+
+  const contactRows = [
+    contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
+    contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
+    socialLink ? { label: "Social Media", value: "View Profile", icon: Globe, href: socialLink } : null,
+  ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   return (
     <div className="min-h-screen pb-24 bg-background">
@@ -231,6 +241,52 @@ const EventDetail = () => {
                 </Wrapper>
               );
             })}
+          </div>
+        </div>
+      )}
+
+      {/* Contact info */}
+      {contactRows.length > 0 && (
+        <div className="px-5 pt-4 pb-1">
+          <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+            {contactRows.map((row, idx) => (
+              <a
+                key={row.label}
+                href={row.href}
+                target={row.label === "Social Media" ? "_blank" : undefined}
+                rel={row.label === "Social Media" ? "noopener noreferrer" : undefined}
+                className={`flex items-center gap-3.5 px-4 py-3.5 cursor-pointer hover:bg-muted/30 transition-colors ${
+                  idx < contactRows.length - 1 ? "border-b border-border/20" : ""
+                }`}
+              >
+                <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
+                <div className="flex-1 min-w-0">
+                  <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+                    {row.label}
+                  </span>
+                  <span className="text-[13px] font-medium leading-tight text-primary underline decoration-primary/30" style={{ fontFamily: "var(--font-body)" }}>
+                    {row.value}
+                  </span>
+                </div>
+                <ExternalLink className="h-3.5 w-3.5 text-primary/50 shrink-0" strokeWidth={1.5} />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Gallery */}
+      {galleryImages.length > 0 && (
+        <div className="px-5 pt-5 pb-1">
+          <h2 className="text-[13px] font-semibold text-foreground mb-3 leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+            Gallery
+          </h2>
+          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
+            {galleryImages.map((url, i) => (
+              <div key={i} className="flex-shrink-0 w-[65%] aspect-[4/3] rounded-xl overflow-hidden">
+                <img src={url} alt={`${event.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+              </div>
+            ))}
           </div>
         </div>
       )}
