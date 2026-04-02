@@ -152,6 +152,7 @@ const AdminEvents = () => {
       contact_phone: (ev as any).contact_phone ?? "",
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
+      price: (ev as any).price ?? "",
     });
     setOpen(true);
   };
