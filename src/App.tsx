@@ -37,6 +37,7 @@ import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import AccountSettings from "./pages/AccountSettings.tsx";
+import TermsPolicies from "./pages/TermsPolicies.tsx";
 
 const queryClient = new QueryClient();
 

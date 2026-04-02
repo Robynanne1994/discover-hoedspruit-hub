@@ -83,6 +83,7 @@ const AccountSettings = () => {
       icon: FileText,
       label: "Terms & Policies",
       sub: "Our terms, privacy policy & more",
+      href: "/terms",
     },
   ];
 
