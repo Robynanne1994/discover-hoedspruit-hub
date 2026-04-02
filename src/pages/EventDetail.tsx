@@ -207,24 +207,30 @@ const EventDetail = () => {
       {detailRows.length > 0 && (
         <div className="px-5 pt-4 pb-1">
           <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
-            {detailRows.map((row, idx) => (
-              <div
-                key={row.label}
-                className={`flex items-center gap-3.5 px-4 py-3.5 ${
-                  idx < detailRows.length - 1 ? "border-b border-border/20" : ""
-                }`}
-              >
-                <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
-                <div className="flex-1 min-w-0">
-                  <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
-                    {row.label}
-                  </span>
-                  <span className="text-[13px] font-medium text-foreground leading-tight" style={{ fontFamily: "var(--font-body)" }}>
-                    {row.value}
-                  </span>
-                </div>
-              </div>
-            ))}
+            {detailRows.map((row, idx) => {
+              const Wrapper = row.href ? "a" : "div";
+              const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
+              return (
+                <Wrapper
+                  key={row.label}
+                  {...wrapperProps}
+                  className={`flex items-center gap-3.5 px-4 py-3.5 ${
+                    idx < detailRows.length - 1 ? "border-b border-border/20" : ""
+                  } ${row.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}`}
+                >
+                  <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+                      {row.label}
+                    </span>
+                    <span className={`text-[13px] font-medium leading-tight ${row.href ? "text-primary underline decoration-primary/30" : "text-foreground"}`} style={{ fontFamily: "var(--font-body)" }}>
+                      {row.value}
+                    </span>
+                  </div>
+                  {row.href && <ExternalLink className="h-3.5 w-3.5 text-primary/50 shrink-0" strokeWidth={1.5} />}
+                </Wrapper>
+              );
+            })}
           </div>
         </div>
       )}
