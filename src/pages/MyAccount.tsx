@@ -556,7 +556,7 @@ const MyAccount = () => {
           {[
             { icon: Users, label: "Find People", href: "/people" },
             { icon: Bell, label: "Notifications", action: () => {} },
-            { icon: Settings, label: "Account Settings", action: () => setActiveSection("profile") },
+            { icon: Settings, label: "Account Settings", href: "/account-settings" },
             { icon: Shield, label: "Privacy & Security" },
           ].map((item, i, arr) => {
             const Icon = item.icon;

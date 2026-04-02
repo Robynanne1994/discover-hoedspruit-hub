@@ -36,6 +36,7 @@ import People from "./pages/People.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
+import AccountSettings from "./pages/AccountSettings.tsx";
 
 const queryClient = new QueryClient();
 
