@@ -38,6 +38,7 @@ import FollowList from "./pages/FollowList.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import AccountSettings from "./pages/AccountSettings.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
             <Route path="/visited" element={<VisitedPlaces />} />
             <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/terms" element={<TermsPolicies />} />
+            <Route path="/terms/privacy" element={<PrivacyPolicy />} />
             <Route path="/people" element={<People />} />
             <Route path="/profile/:id" element={<UserProfile />} />
             <Route path="/profile/:id/:type" element={<FollowList />} />
