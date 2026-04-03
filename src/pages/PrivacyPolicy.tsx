@@ -126,7 +126,7 @@ const PrivacyPolicy = () => {
                     {part}
                   </strong>
                 ) : (
-                  <span key={i}>{part}</span>
+                  <span key={i} className="font-sans">{part}</span>
                 )
               )}
             </div>
