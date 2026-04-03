@@ -172,7 +172,7 @@ const Categories = () => {
               <Skeleton
                 key={i}
                 className="w-full"
-                style={{ height: 180, borderRadius: 16, background: "#1a1a1a" }}
+                style={{ height: 180, borderRadius: 16, background: "#f0f0f0" }}
               />
             ))}
           </div>
