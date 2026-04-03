@@ -210,7 +210,7 @@ const Categories = () => {
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-4">
                   <h3
-                    className="text-white text-[15px] font-semibold leading-snug drop-shadow-sm"
+                    className="text-white font-semibold leading-snug drop-shadow-sm font-sans text-xs"
                     style={{ fontFamily: "var(--font-heading)" }}
                   >
                     {cat.title}
