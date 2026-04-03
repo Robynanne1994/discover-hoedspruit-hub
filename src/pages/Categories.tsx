@@ -229,7 +229,7 @@ const Categories = () => {
                           height: 48,
                           borderRadius: 10,
                           overflow: "hidden",
-                          background: "#1a1a1a",
+                           background: "#f0f0f0",
                           flexShrink: 0,
                         }}
                       >
