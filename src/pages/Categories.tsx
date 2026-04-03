@@ -143,7 +143,7 @@ const Categories = () => {
           <Search
             size={18}
             strokeWidth={2}
-            style={{ color: "rgba(255,255,255,0.35)", flexShrink: 0 }}
+            style={{ color: "rgba(18,18,20,0.35)", flexShrink: 0 }}
           />
           <input
             type="text"
