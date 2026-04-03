@@ -585,6 +585,7 @@ const MyAccount = () => {
         <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
           {[
             { icon: HelpCircle, label: "Help & Support", href: "/contact" },
+            { icon: HelpCircle, label: "FAQs", href: "/faqs" },
             { icon: Info, label: "About", href: "/about" },
             { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
           ].map((item, i, arr) => {
