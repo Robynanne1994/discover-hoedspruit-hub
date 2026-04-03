@@ -11,7 +11,7 @@ const SectionHeader = ({ title, actionLabel, actionHref }: SectionHeaderProps) =
   return (
     <div className="flex items-baseline justify-between px-5 mb-5">
       <h2
-        className="text-[22px] font-semibold text-foreground tracking-tight font-sans"
+        className="tracking-tight font-sans font-extrabold text-3xl text-[#111113]"
       >
         {title}
       </h2>
