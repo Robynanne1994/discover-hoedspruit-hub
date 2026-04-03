@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Cormorant Garamond', 'Georgia', 'serif'],
-        body: ['DM Sans', 'Segoe UI', 'sans-serif'],
-        sans: ['DM Sans', 'Segoe UI', 'sans-serif'],
+        heading: ['Sora', 'Segoe UI', 'sans-serif'],
+        body: ['Manrope', 'Segoe UI', 'sans-serif'],
+        sans: ['Manrope', 'Segoe UI', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
