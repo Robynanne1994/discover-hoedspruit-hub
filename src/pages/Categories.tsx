@@ -183,7 +183,7 @@ const Categories = () => {
                 fontFamily: "var(--font-heading)",
                 fontWeight: 600,
                 fontSize: 18,
-                color: "#FFFFFF",
+                 color: "#121214",
                 marginBottom: 4,
               }}
             >
