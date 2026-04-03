@@ -291,7 +291,7 @@ const Categories = () => {
                   textTransform: "uppercase",
                   fontSize: 11,
                   fontWeight: 600,
-                  color: "rgba(255,255,255,0.4)",
+                  color: "rgba(18,18,20,0.4)",
                   letterSpacing: "1.5px",
                   marginBottom: -14,
                 }}
