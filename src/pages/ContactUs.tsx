@@ -78,7 +78,7 @@ const ContactUs = () => {
       icon: HelpCircle,
       title: "Send a message",
       subtitle: "Fill in our contact form",
-      action: () => setShowForm(true),
+      action: () => setShowForm((prev) => !prev),
     },
   ];
 
