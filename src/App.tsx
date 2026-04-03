@@ -39,6 +39,7 @@ import EventDetail from "./pages/EventDetail.tsx";
 import AccountSettings from "./pages/AccountSettings.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+import FAQs from "./pages/FAQs.tsx";
 
 const queryClient = new QueryClient();
 
