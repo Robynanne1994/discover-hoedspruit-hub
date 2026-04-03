@@ -40,6 +40,7 @@ import AccountSettings from "./pages/AccountSettings.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import FAQs from "./pages/FAQs.tsx";
+import PrivacySecurity from "./pages/PrivacySecurity.tsx";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ const App = () => (
             <Route path="/terms" element={<TermsPolicies />} />
             <Route path="/terms/privacy" element={<PrivacyPolicy />} />
             <Route path="/faqs" element={<FAQs />} />
+            <Route path="/privacy-security" element={<PrivacySecurity />} />
             <Route path="/people" element={<People />} />
             <Route path="/profile/:id" element={<UserProfile />} />
             <Route path="/profile/:id/:type" element={<FollowList />} />
