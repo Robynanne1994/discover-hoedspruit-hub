@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { Search, ArrowLeft, ArrowUpRight, MapPin } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -37,12 +37,32 @@ const Categories = () => {
     },
   });
 
+  const debouncedSearch = search.trim();
+
+  const { data: searchedListings } = useQuery({
+    queryKey: ["explore-listing-search", debouncedSearch],
+    queryFn: async () => {
+      if (!debouncedSearch) return [];
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, image_url, location")
+        .ilike("title", `%${debouncedSearch}%`)
+        .limit(10);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: debouncedSearch.length >= 2,
+  });
+
   const filteredCategories = useMemo(() => {
     if (!categories) return [];
-    if (!search.trim()) return categories;
-    const q = search.toLowerCase();
+    if (!debouncedSearch) return categories;
+    const q = debouncedSearch.toLowerCase();
     return categories.filter((c) => c.title.toLowerCase().includes(q));
-  }, [categories, search]);
+  }, [categories, debouncedSearch]);
+
+  const hasSearch = debouncedSearch.length >= 2;
+  const listingResults = hasSearch ? (searchedListings || []) : [];
 
   return (
     <div className="min-h-screen pb-[72px]" style={{ background: "#000000" }}>
