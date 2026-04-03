@@ -116,7 +116,7 @@ const PrivacyPolicy = () => {
             key={section.title}
             className="bg-card border border-border/40 rounded-xl px-4 py-4"
           >
-            <h2 className="text-[13px] font-semibold text-foreground mb-2 leading-tight">
+            <h2 className="text-[13px] font-semibold text-foreground mb-2 leading-tight font-sans">
               {section.title}
             </h2>
             <div className="text-[12px] text-muted-foreground leading-[1.7] whitespace-pre-line prose-strong:text-foreground prose-strong:font-medium">
