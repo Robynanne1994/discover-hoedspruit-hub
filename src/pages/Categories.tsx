@@ -248,7 +248,7 @@ const Categories = () => {
                           style={{
                             fontSize: 14,
                             fontWeight: 600,
-                            color: "#FFFFFF",
+                             color: "#121214",
                             margin: 0,
                             whiteSpace: "nowrap",
                             overflow: "hidden",
