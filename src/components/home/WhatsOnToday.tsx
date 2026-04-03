@@ -60,20 +60,22 @@ const WhatsOnToday = () => {
             to={`/events/${event.id}`}
             className={`flex items-baseline gap-5 py-4 ${idx < events.length - 1 ? "border-b border-border/60" : ""}`}
           >
-            <span
-              className="text-[13px] font-semibold text-primary whitespace-nowrap min-w-[60px] uppercase tracking-wide"
-              style={{ fontFamily: "var(--font-body)" }}
-            >
+            <div className="flex flex-col items-center justify-center bg-muted/60 rounded-xl min-w-[52px] w-[52px] h-[52px] shrink-0 border border-border/40">
               {(() => {
-                if (!event.date) return "TBA";
+                if (!event.date) return <span className="text-[11px] text-muted-foreground font-medium">TBA</span>;
                 const parsed = new Date(event.date);
                 if (!isNaN(parsed.getTime())) {
-                  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                  return `${parsed.getDate()} ${months[parsed.getMonth()]}`;
+                  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                  return (
+                    <>
+                      <span className="text-[18px] font-semibold text-foreground leading-none">{parsed.getDate()}</span>
+                      <span className="text-[10px] text-muted-foreground mt-0.5">{months[parsed.getMonth()]}</span>
+                    </>
+                  );
                 }
-                return event.date;
+                return <span className="text-[10px] text-muted-foreground font-medium">{event.date}</span>;
               })()}
-            </span>
+            </div>
             <div className="flex-1 min-w-0">
               <span className="text-[14px] text-foreground leading-snug">
                 {event.title}
