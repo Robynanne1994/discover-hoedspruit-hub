@@ -189,7 +189,7 @@ const Categories = () => {
             >
               No results found
             </p>
-            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
+            <p style={{ fontSize: 13, color: "rgba(18,18,20,0.45)" }}>
               Try another search term
             </p>
           </div>
