@@ -148,7 +148,7 @@ const Events = () => {
             </p>
             <h1
               className="text-[38px] font-semibold tracking-tight leading-none text-white"
-              style={{ fontFamily: "var(--font-heading)" }}
+              style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Events
             </h1>
