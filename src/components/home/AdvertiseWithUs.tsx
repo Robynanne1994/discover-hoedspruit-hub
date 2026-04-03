@@ -9,7 +9,7 @@ const AdvertiseWithUs = () => {
       <div className="rounded-2xl bg-primary/8 px-6 py-6 flex items-center gap-5 border border-border/40">
         <div className="flex-1 min-w-0">
           <h2
-            className="text-lg font-semibold text-foreground tracking-tight font-sans"
+            className="text-foreground tracking-tight font-sans text-[#111113] font-bold text-sm"
           >
             Want to be listed?
           </h2>
