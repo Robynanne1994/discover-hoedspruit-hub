@@ -6,19 +6,20 @@ const AdvertiseWithUs = () => {
 
   return (
     <section className="px-5 pt-8 pb-12">
-      <div className="rounded-xl bg-primary/8 p-8 text-center space-y-4 border border-border/60">
-        <h2
-          className="text-[22px] font-semibold text-foreground tracking-tight"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Want to be listed?
-        </h2>
-        <p className="text-muted-foreground text-[13px] leading-relaxed max-w-xs mx-auto">
-          If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
-        </p>
+      <div className="rounded-2xl bg-primary/8 px-6 py-6 flex items-center gap-5 border border-border/40">
+        <div className="flex-1 min-w-0">
+          <h2
+            className="text-lg font-semibold text-foreground tracking-tight font-sans italic"
+          >
+            Want to be listed?
+          </h2>
+          <p className="text-muted-foreground text-[12.5px] leading-relaxed mt-1">
+            If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
+          </p>
+        </div>
         <Button
           onClick={() => navigate("/contact")}
-          className="rounded-full px-8 mt-2 text-[13px] font-medium"
+          className="rounded-full px-6 text-[13px] font-medium shrink-0"
           variant="default"
         >
           Get in Touch
