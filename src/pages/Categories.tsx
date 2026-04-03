@@ -82,7 +82,7 @@ const Categories = () => {
             style={{
               fontSize: 15,
               fontWeight: 500,
-              color: "rgba(255,255,255,0.6)",
+              color: "rgba(18,18,20,0.5)",
               letterSpacing: "0.2px",
             }}
           >
