@@ -1,14 +1,13 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { Search, MapPin, Star } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Search, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import BackButton from "@/components/BackButton";
-import heroBg from "@/assets/hero-homepage.jpg";
 
 const Categories = () => {
   const [search, setSearch] = useState("");
+  const navigate = useNavigate();
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories-all"],
@@ -23,19 +22,19 @@ const Categories = () => {
     },
   });
 
-  const { data: listings } = useQuery({
-    queryKey: ["listings-search", search],
+  const { data: listingCounts } = useQuery({
+    queryKey: ["listing-counts-by-category"],
     queryFn: async () => {
-      if (!search.trim()) return [];
       const { data, error } = await supabase
-        .from("listings")
-        .select("id, title, image_url, location, google_rating")
-        .ilike("title", `%${search.trim()}%`)
-        .limit(10);
+        .from("listing_categories")
+        .select("category_id");
       if (error) throw error;
-      return data;
+      const counts: Record<string, number> = {};
+      data.forEach((row) => {
+        counts[row.category_id] = (counts[row.category_id] || 0) + 1;
+      });
+      return counts;
     },
-    enabled: search.trim().length > 0,
   });
 
   const filteredCategories = useMemo(() => {
@@ -45,182 +44,191 @@ const Categories = () => {
     return categories.filter((c) => c.title.toLowerCase().includes(q));
   }, [categories, search]);
 
-  const hasSearch = search.trim().length > 0;
-  const hasResults = filteredCategories.length > 0 || (listings && listings.length > 0);
-
   return (
-    <div className="min-h-screen pb-20 bg-background">
-      {/* Hero */}
-      <section className="relative">
-        <div className="relative h-[200px] overflow-hidden">
-          <img
-            src={heroBg}
-            alt="Hoedspruit bushveld"
-            className="w-full h-full object-cover"
+    <div className="min-h-screen pb-[72px]" style={{ background: "#000000" }}>
+      {/* Back button */}
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center"
+          style={{ gap: 6 }}
+        >
+          <ArrowLeft
+            size={18}
+            strokeWidth={2}
+            style={{ color: "rgba(255,255,255,0.6)" }}
           />
-          <div
-            className="absolute inset-0"
-            style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 15%, 0.15), hsla(30, 20%, 15%, 0.55))" }}
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.6)",
+              letterSpacing: "0.2px",
+            }}
+          >
+            Back
+          </span>
+        </button>
+      </div>
+
+      {/* Heading */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <h1
+          style={{
+            fontFamily: "var(--font-heading)",
+            textTransform: "uppercase",
+            fontWeight: 900,
+            fontSize: 40,
+            lineHeight: 1.0,
+            letterSpacing: "-0.5px",
+            color: "#FFFFFF",
+            margin: 0,
+          }}
+        >
+          EXPLORE
+          <br />
+          HOEDSPRUIT
+        </h1>
+      </div>
+
+      {/* Subtitle */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <p
+          style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontStyle: "italic",
+            fontSize: 14,
+            color: "rgba(255,255,255,0.5)",
+            letterSpacing: "0.2px",
+            lineHeight: 1.4,
+            margin: 0,
+          }}
+        >
+          Choose your adventure, tailored just for you
+        </p>
+      </div>
+
+      {/* Search bar */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        <div
+          className="flex items-center"
+          style={{
+            background: "rgba(255,255,255,0.08)",
+            border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 12,
+            padding: "12px 16px",
+            gap: 10,
+          }}
+        >
+          <Search
+            size={18}
+            strokeWidth={2}
+            style={{ color: "rgba(255,255,255,0.35)", flexShrink: 0 }}
           />
-
-          {/* Back button */}
-          <div className="absolute top-4 left-4 z-10">
-            <BackButton className="text-white/90 hover:text-white mb-0" />
-          </div>
-
-          <div className="absolute inset-0 flex flex-col items-center justify-center pt-4">
-            <p className="text-white/70 text-[11px] font-medium tracking-[0.2em] uppercase mb-1.5">
-              Hello Hoedspruit
-            </p>
-            <h1
-              className="text-[34px] font-semibold tracking-tight leading-[1.1] text-center text-white"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Explore
-            </h1>
-          </div>
+          <input
+            type="text"
+            placeholder="Search categories & listings..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              fontSize: 14,
+              color: "#FFFFFF",
+              letterSpacing: "0.2px",
+            }}
+            className="placeholder:text-[rgba(255,255,255,0.3)]"
+          />
         </div>
+      </div>
 
-        {/* Search bar */}
-        <div className="px-5 -mt-5 relative z-10">
-          <div className="flex items-center bg-card backdrop-blur-sm rounded-2xl px-4 py-3.5 gap-3 border border-border/60 shadow-sm">
-            <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-            <input
-              type="text"
-              placeholder="Search categories & listings..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="text-[13px] flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground placeholder:italic"
-              style={{ fontFamily: "var(--font-body)" }}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Listing results */}
-      {hasSearch && listings && listings.length > 0 && (
-        <section className="px-5 pt-7">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.15em] mb-3">
-            Listings
-          </p>
-          <div className="space-y-2.5">
-            {listings.map((listing) => (
-              <Link
-                key={listing.id}
-                to={`/listing/${listing.id}`}
-                className="flex items-center gap-3.5 bg-card border border-border/60 rounded-2xl p-3 active:scale-[0.98] transition-transform"
-              >
-                <div className="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-muted">
-                  {listing.image_url ? (
-                    <img
-                      src={listing.image_url}
-                      alt={listing.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-muted" />
-                  )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-[14px] font-medium text-foreground truncate">
-                    {listing.title}
-                  </h4>
-                  <div className="flex items-center gap-2.5 mt-1">
-                    {listing.google_rating && (
-                      <span className="flex items-center gap-1 text-[12px] text-muted-foreground">
-                        <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                        {listing.google_rating}
-                      </span>
-                    )}
-                    {listing.location && (
-                      <span className="flex items-center gap-1 text-[12px] text-muted-foreground truncate">
-                        <MapPin className="h-3 w-3 flex-shrink-0" />
-                        {listing.location}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Categories heading when searching */}
-      {hasSearch && filteredCategories.length > 0 && (
-        <div className="px-5 pt-7">
-          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-[0.15em] mb-3">
-            Categories
-          </p>
-        </div>
-      )}
-
-      {/* Grid */}
-      <section className={`px-5 ${hasSearch && filteredCategories.length > 0 ? "pt-0" : "pt-7"} pb-8`}>
+      {/* Category cards */}
+      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
         {isLoading ? (
-          <div className="grid grid-cols-2 gap-3">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-2xl" />
+          <div className="space-y-7">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="w-full"
+                style={{ height: 180, borderRadius: 16, background: "#1a1a1a" }}
+              />
             ))}
           </div>
-        ) : hasSearch && !hasResults ? (
-          <div className="text-center py-20">
+        ) : filteredCategories.length === 0 ? (
+          <div className="text-center" style={{ paddingTop: 80 }}>
             <p
-              className="text-foreground font-semibold text-lg mb-1"
-              style={{ fontFamily: "var(--font-heading)" }}
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontWeight: 600,
+                fontSize: 18,
+                color: "#FFFFFF",
+                marginBottom: 4,
+              }}
             >
               No results found
             </p>
-            <p className="text-muted-foreground text-[13px]">
+            <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>
               Try another search term
             </p>
           </div>
-        ) : !hasSearch && filteredCategories.length === 0 ? (
-          <div className="text-center py-20">
-            <p
-              className="text-foreground font-semibold text-lg mb-1"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Nothing to explore just yet
-            </p>
-            <p className="text-muted-foreground text-[13px]">
-              We're getting Hoedspruit ready for you
-            </p>
-          </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3">
-            {filteredCategories.map((cat) => (
-              <Link
-                key={cat.id}
-                to={`/category/${cat.id}`}
-                className="group relative rounded-2xl overflow-hidden aspect-[3/4] active:scale-[0.97] transition-transform duration-150"
-              >
-                {cat.image_url ? (
-                  <img
-                    src={cat.image_url}
-                    alt={cat.title}
-                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-muted" />
-                )}
-                <div
-                  className="absolute inset-0"
-                  style={{ background: "linear-gradient(to top, hsla(30, 15%, 10%, 0.6) 0%, hsla(30, 15%, 10%, 0.15) 45%, transparent 100%)" }}
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h3
-                    className="text-white font-semibold leading-snug drop-shadow-sm font-sans text-xs"
-                    style={{ fontFamily: "var(--font-heading)" }}
+          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            {filteredCategories.map((cat) => {
+              const count = listingCounts?.[cat.id] || 0;
+              return (
+                <Link
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  className="block active:scale-[0.98] transition-transform duration-150"
+                >
+                  <div
+                    style={{
+                      width: "100%",
+                      height: 180,
+                      borderRadius: 16,
+                      overflow: "hidden",
+                      background: "#1a1a1a",
+                    }}
                   >
-                    {cat.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+                    {cat.image_url ? (
+                      <img
+                        src={cat.image_url}
+                        alt={cat.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full" style={{ background: "#1a1a1a" }} />
+                    )}
+                  </div>
+                  <div
+                    className="flex items-center justify-between"
+                    style={{ paddingTop: 14 }}
+                  >
+                    <span
+                      style={{
+                        textTransform: "uppercase",
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: "#FFFFFF",
+                        letterSpacing: "1.5px",
+                      }}
+                    >
+                      {cat.title} ({count})
+                    </span>
+                    <ArrowUpRight
+                      size={18}
+                      strokeWidth={2}
+                      style={{ color: "#FFFFFF" }}
+                    />
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
-      </section>
+      </div>
     </div>
   );
 };
