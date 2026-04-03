@@ -337,7 +337,7 @@ const Categories = () => {
                         textTransform: "uppercase",
                         fontSize: 14,
                         fontWeight: 600,
-                        color: "#FFFFFF",
+                        color: "#121214",
                         letterSpacing: "1.5px",
                       }}
                     >
