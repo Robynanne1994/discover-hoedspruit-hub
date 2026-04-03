@@ -77,7 +77,7 @@ const AccountSettings = () => {
       icon: HelpCircle,
       label: "Help & Support",
       sub: "FAQ & contact us",
-      href: "/contact",
+      href: "/faqs",
     },
     {
       icon: FileText,
