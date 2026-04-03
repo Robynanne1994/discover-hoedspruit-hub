@@ -346,7 +346,7 @@ const Categories = () => {
                     <ArrowUpRight
                       size={18}
                       strokeWidth={2}
-                      style={{ color: "#FFFFFF" }}
+                      style={{ color: "#121214" }}
                     />
                   </div>
                 </Link>
