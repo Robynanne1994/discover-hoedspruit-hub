@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { Search, ArrowLeft, ArrowUpRight, MapPin } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -37,12 +37,32 @@ const Categories = () => {
     },
   });
 
+  const debouncedSearch = search.trim();
+
+  const { data: searchedListings } = useQuery({
+    queryKey: ["explore-listing-search", debouncedSearch],
+    queryFn: async () => {
+      if (!debouncedSearch) return [];
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, image_url, location")
+        .ilike("title", `%${debouncedSearch}%`)
+        .limit(10);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: debouncedSearch.length >= 2,
+  });
+
   const filteredCategories = useMemo(() => {
     if (!categories) return [];
-    if (!search.trim()) return categories;
-    const q = search.toLowerCase();
+    if (!debouncedSearch) return categories;
+    const q = debouncedSearch.toLowerCase();
     return categories.filter((c) => c.title.toLowerCase().includes(q));
-  }, [categories, search]);
+  }, [categories, debouncedSearch]);
+
+  const hasSearch = debouncedSearch.length >= 2;
+  const listingResults = hasSearch ? (searchedListings || []) : [];
 
   return (
     <div className="min-h-screen pb-[72px]" style={{ background: "#000000" }}>
@@ -156,7 +176,7 @@ const Categories = () => {
               />
             ))}
           </div>
-        ) : filteredCategories.length === 0 ? (
+        ) : filteredCategories.length === 0 && listingResults.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 80 }}>
             <p
               style={{
@@ -175,6 +195,112 @@ const Categories = () => {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            {/* Listing results */}
+            {listingResults.length > 0 && (
+              <div>
+                <p
+                  style={{
+                    textTransform: "uppercase",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.4)",
+                    letterSpacing: "1.5px",
+                    marginBottom: 14,
+                  }}
+                >
+                  Listings
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {listingResults.map((listing) => (
+                    <Link
+                      key={listing.id}
+                      to={`/listing/${listing.id}`}
+                      className="flex items-center active:scale-[0.98] transition-transform duration-150"
+                      style={{
+                        background: "rgba(255,255,255,0.06)",
+                        borderRadius: 12,
+                        padding: 12,
+                        gap: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: 10,
+                          overflow: "hidden",
+                          background: "#1a1a1a",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {listing.image_url ? (
+                          <img
+                            src={listing.image_url}
+                            alt={listing.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full" style={{ background: "#1a1a1a" }} />
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "#FFFFFF",
+                            margin: 0,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {listing.title}
+                        </p>
+                        {listing.location && (
+                          <p
+                            className="flex items-center"
+                            style={{
+                              fontSize: 12,
+                              color: "rgba(255,255,255,0.4)",
+                              margin: 0,
+                              marginTop: 2,
+                              gap: 4,
+                            }}
+                          >
+                            <MapPin size={11} strokeWidth={2} />
+                            {listing.location}
+                          </p>
+                        )}
+                      </div>
+                      <ArrowUpRight
+                        size={16}
+                        strokeWidth={2}
+                        style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}
+                      />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Category section label when both results exist */}
+            {listingResults.length > 0 && filteredCategories.length > 0 && (
+              <p
+                style={{
+                  textTransform: "uppercase",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.4)",
+                  letterSpacing: "1.5px",
+                  marginBottom: -14,
+                }}
+              >
+                Categories
+              </p>
+            )}
+
+            {/* Category cards */}
             {filteredCategories.map((cat) => {
               const count = listingCounts?.[cat.id] || 0;
               return (
