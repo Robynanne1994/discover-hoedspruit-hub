@@ -133,7 +133,9 @@
     @apply text-[36px] font-semibold leading-[1.15] tracking-tight;
   }
   h2 {
-    @apply text-[28px] font-semibold leading-[1.2] tracking-tight;
+    @apply text-[28px] font-black leading-[1.2] uppercase;
+    font-family: var(--font-heading);
+    letter-spacing: -0.5px;
   }
   h3 {
     @apply text-[22px] font-semibold leading-[1.25];
