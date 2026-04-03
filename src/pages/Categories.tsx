@@ -262,7 +262,7 @@ const Categories = () => {
                             className="flex items-center"
                             style={{
                               fontSize: 12,
-                              color: "rgba(255,255,255,0.4)",
+                               color: "rgba(18,18,20,0.4)",
                               margin: 0,
                               marginTop: 2,
                               gap: 4,
