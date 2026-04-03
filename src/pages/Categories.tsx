@@ -159,7 +159,7 @@ const Categories = () => {
                color: "#121214",
               letterSpacing: "0.2px",
             }}
-            className="placeholder:text-[rgba(255,255,255,0.3)]"
+            className="placeholder:text-[rgba(18,18,20,0.3)]"
           />
         </div>
       </div>
