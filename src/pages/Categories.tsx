@@ -217,8 +217,8 @@ const Categories = () => {
                       to={`/listing/${listing.id}`}
                       className="flex items-center active:scale-[0.98] transition-transform duration-150"
                       style={{
-                        background: "rgba(255,255,255,0.06)",
-                        borderRadius: 12,
+                         background: "rgba(18,18,20,0.04)",
+                         borderRadius: 12,
                         padding: 12,
                         gap: 12,
                       }}
