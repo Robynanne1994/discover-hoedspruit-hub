@@ -176,7 +176,7 @@ const Categories = () => {
               />
             ))}
           </div>
-        ) : filteredCategories.length === 0 ? (
+        ) : filteredCategories.length === 0 && listingResults.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 80 }}>
             <p
               style={{
@@ -195,6 +195,112 @@ const Categories = () => {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+            {/* Listing results */}
+            {listingResults.length > 0 && (
+              <div>
+                <p
+                  style={{
+                    textTransform: "uppercase",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    color: "rgba(255,255,255,0.4)",
+                    letterSpacing: "1.5px",
+                    marginBottom: 14,
+                  }}
+                >
+                  Listings
+                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {listingResults.map((listing) => (
+                    <Link
+                      key={listing.id}
+                      to={`/listing/${listing.id}`}
+                      className="flex items-center active:scale-[0.98] transition-transform duration-150"
+                      style={{
+                        background: "rgba(255,255,255,0.06)",
+                        borderRadius: 12,
+                        padding: 12,
+                        gap: 12,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: 10,
+                          overflow: "hidden",
+                          background: "#1a1a1a",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {listing.image_url ? (
+                          <img
+                            src={listing.image_url}
+                            alt={listing.title}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-full h-full" style={{ background: "#1a1a1a" }} />
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 600,
+                            color: "#FFFFFF",
+                            margin: 0,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          {listing.title}
+                        </p>
+                        {listing.location && (
+                          <p
+                            className="flex items-center"
+                            style={{
+                              fontSize: 12,
+                              color: "rgba(255,255,255,0.4)",
+                              margin: 0,
+                              marginTop: 2,
+                              gap: 4,
+                            }}
+                          >
+                            <MapPin size={11} strokeWidth={2} />
+                            {listing.location}
+                          </p>
+                        )}
+                      </div>
+                      <ArrowUpRight
+                        size={16}
+                        strokeWidth={2}
+                        style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}
+                      />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Category section label when both results exist */}
+            {listingResults.length > 0 && filteredCategories.length > 0 && (
+              <p
+                style={{
+                  textTransform: "uppercase",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  color: "rgba(255,255,255,0.4)",
+                  letterSpacing: "1.5px",
+                  marginBottom: -14,
+                }}
+              >
+                Categories
+              </p>
+            )}
+
+            {/* Category cards */}
             {filteredCategories.map((cat) => {
               const count = listingCounts?.[cat.id] || 0;
               return (
