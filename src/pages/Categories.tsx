@@ -76,7 +76,7 @@ const Categories = () => {
           <ArrowLeft
             size={18}
             strokeWidth={2}
-            style={{ color: "rgba(255,255,255,0.6)" }}
+            style={{ color: "rgba(18,18,20,0.5)" }}
           />
           <span
             style={{
