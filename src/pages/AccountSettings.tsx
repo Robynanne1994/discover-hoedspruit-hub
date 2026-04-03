@@ -65,13 +65,9 @@ const AccountSettings = () => {
     },
     {
       icon: ShieldCheck,
-      label: "Privacy",
-      sub: "Manage visibility & data",
-    },
-    {
-      icon: Lock,
-      label: "Security",
-      sub: "Two-factor authentication & sessions",
+      label: "Privacy & Security",
+      sub: "Manage visibility, data & protection",
+      href: "/privacy-security",
     },
     {
       icon: HelpCircle,
