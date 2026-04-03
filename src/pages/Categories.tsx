@@ -325,7 +325,7 @@ const Categories = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full" style={{ background: "#1a1a1a" }} />
+                      <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
                     )}
                   </div>
                   <div
