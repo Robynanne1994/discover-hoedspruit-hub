@@ -315,8 +315,8 @@ const Categories = () => {
                       height: 180,
                       borderRadius: 16,
                       overflow: "hidden",
-                      background: "#1a1a1a",
-                    }}
+                       background: "#f0f0f0",
+                     }}
                   >
                     {cat.image_url ? (
                       <img
