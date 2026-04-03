@@ -147,7 +147,7 @@ const Events = () => {
               Hello Hoedspruit
             </p>
             <h1
-              className="text-[38px] font-semibold tracking-tight leading-none text-white"
+              className="text-[38px] tracking-tight leading-none text-white font-sans font-medium"
               style={{ fontFamily: "'Inter Tight', sans-serif" }}
             >
               Events
