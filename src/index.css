@@ -46,8 +46,8 @@
 
     --radius: 0.625rem;
 
-    --font-heading: 'Cormorant Garamond', 'Georgia', serif;
-    --font-body: 'DM Sans', 'Segoe UI', sans-serif;
+    --font-heading: 'Sora', 'Segoe UI', sans-serif;
+    --font-body: 'Manrope', 'Segoe UI', sans-serif;
 
     --hero-overlay: linear-gradient(to bottom, hsla(30, 20%, 20%, 0.05), hsla(30, 20%, 20%, 0.35));
     --warm-glow: 0 4px 20px -6px hsla(27, 30%, 34%, 0.1);
