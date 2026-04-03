@@ -118,7 +118,7 @@ const Categories = () => {
             fontFamily: "Georgia, 'Times New Roman', serif",
             fontStyle: "italic",
             fontSize: 14,
-            color: "rgba(255,255,255,0.5)",
+            color: "rgba(18,18,20,0.45)",
             letterSpacing: "0.2px",
             lineHeight: 1.4,
             margin: 0,
