@@ -276,7 +276,7 @@ const Categories = () => {
                       <ArrowUpRight
                         size={16}
                         strokeWidth={2}
-                        style={{ color: "rgba(255,255,255,0.4)", flexShrink: 0 }}
+                        style={{ color: "rgba(18,18,20,0.4)", flexShrink: 0 }}
                       />
                     </Link>
                   ))}
