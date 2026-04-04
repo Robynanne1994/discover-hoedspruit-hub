@@ -2,11 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Camera, Loader2, ChevronDown } from "lucide-react";
+import { Camera, Loader2, ChevronDown, ArrowLeft } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const AREA_CODES = [
   { code: "+27", country: "ZA", flag: "🇿🇦" },
@@ -33,9 +33,6 @@ function parsePhone(phone: string) {
   }
   return { areaCode: "+27", number: phone.replace(/^\+?\d{1,3}\s?/, "") };
 }
-import { toast } from "sonner";
-import BackButton from "@/components/BackButton";
-
 
 interface ProfileFormProps {
   profile: {
@@ -48,62 +45,31 @@ interface ProfileFormProps {
   } | null;
 }
 
-const PhoneInput = ({ phone, onChange }: { phone: string; onChange: (v: string) => void }) => {
-  const parsed = parsePhone(phone);
-  const [areaCode, setAreaCode] = useState(parsed.areaCode);
-  const [number, setNumber] = useState(parsed.number);
-  const [open, setOpen] = useState(false);
+const inputStyle: React.CSSProperties = {
+  background: "rgba(18,18,20,0.03)",
+  border: "1px solid rgba(18,18,20,0.08)",
+  borderRadius: 12,
+  padding: "14px 16px",
+  fontSize: 15,
+  fontWeight: 500,
+  color: "#121214",
+  width: "100%",
+  outline: "none",
+};
 
-  useEffect(() => {
-    onChange(number ? `${areaCode}${number}` : "");
-  }, [areaCode, number]);
-
-  const selected = AREA_CODES.find((a) => a.code === areaCode) || AREA_CODES[0];
-
-  return (
-    <div>
-      <label className="block text-sm font-bold text-foreground mb-1.5">Phone Number</label>
-      <div className="flex gap-2">
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <button
-              type="button"
-              className="flex items-center gap-1.5 h-12 px-3 rounded-xl border border-input bg-card text-sm font-medium shrink-0 hover:bg-accent/50 transition-colors"
-            >
-              <span className="text-base">{selected.flag}</span>
-              <span>{selected.code}</span>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-1 rounded-xl" align="start">
-            {AREA_CODES.map((ac) => (
-              <button
-                key={ac.code}
-                type="button"
-                onClick={() => { setAreaCode(ac.code); setOpen(false); }}
-                className={`flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm hover:bg-accent/50 transition-colors ${ac.code === areaCode ? "bg-accent/30 font-semibold" : ""}`}
-              >
-                <span className="text-base">{ac.flag}</span>
-                <span>{ac.code}</span>
-                <span className="text-muted-foreground text-xs ml-auto">{ac.country}</span>
-              </button>
-            ))}
-          </PopoverContent>
-        </Popover>
-        <Input
-          type="tel"
-          value={number}
-          onChange={(e) => setNumber(e.target.value)}
-          placeholder="Phone number"
-          className="rounded-xl bg-card h-12 flex-1"
-        />
-      </div>
-    </div>
-  );
+const labelStyle: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 600,
+  color: "rgba(18,18,20,0.35)",
+  textTransform: "uppercase",
+  letterSpacing: 2,
+  marginBottom: 8,
+  display: "block",
 };
 
 const ProfileForm = ({ profile }: ProfileFormProps) => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -121,16 +87,11 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
     try {
       const ext = file.name.split(".").pop();
       const path = `${user.id}/avatar.${ext}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from("avatars")
-        .upload(path, file, { upsert: true });
+      const { error: uploadError } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
       if (uploadError) throw uploadError;
-
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
       const newUrl = `${urlData.publicUrl}?t=${Date.now()}`;
       setAvatarUrl(newUrl);
-
       await supabase.from("profiles").update({ avatar_url: newUrl }).eq("id", user.id);
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       toast.success("Profile photo updated!");
@@ -144,16 +105,14 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const saveProfile = useMutation({
     mutationFn: async () => {
       if (!user) return;
-      const { error } = await supabase
-        .from("profiles")
-        .upsert({
-          id: user.id,
-          display_name: displayName.trim() || null,
-          location: location.trim() || null,
-          phone: phone.trim() || null,
-          email: email.trim() || null,
-          bio: bio.trim() || null,
-        } as any);
+      const { error } = await supabase.from("profiles").upsert({
+        id: user.id,
+        display_name: displayName.trim() || null,
+        location: location.trim() || null,
+        phone: phone.trim() || null,
+        email: email.trim() || null,
+        bio: bio.trim() || null,
+      } as any);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -164,168 +123,218 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   });
 
   const initial = (displayName || user?.email || "?")[0].toUpperCase();
+  const parsed = parsePhone(phone);
 
   return (
-    <div className="min-h-screen pb-24 bg-background">
-      {/* Minimal top bar */}
-      <div className="flex items-center px-5 pt-5 pb-2">
-        <BackButton className="mb-0" />
-        <h1
-          className="flex-1 text-center text-[15px] font-semibold text-foreground tracking-tight pr-10"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Edit Profile
+    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      {/* Back button */}
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
+        </button>
+      </div>
+
+      {/* Heading */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+          EDIT PROFILE
         </h1>
       </div>
 
-      <div className="px-5 pt-4 space-y-5">
-        {/* Profile Photo Card */}
-        <div className="bg-card border border-border/50 rounded-2xl p-5 flex items-center gap-4">
-          <div className="relative shrink-0">
-            <div className="h-[72px] w-[72px] rounded-full bg-muted border-2 border-border/40 overflow-hidden flex items-center justify-center">
-              {avatarUrl ? (
-                <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
-              ) : (
-                <span
-                  className="text-xl font-semibold text-muted-foreground"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  {initial}
-                </span>
-              )}
+      {/* Subtitle */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+          Update your details and photo
+        </p>
+      </div>
+
+      {/* Avatar section */}
+      <div className="flex flex-col items-center" style={{ marginBottom: 32 }}>
+        <div className="relative">
+          <div className="overflow-hidden flex items-center justify-center" style={{ width: 80, height: 80, borderRadius: "50%", background: "rgba(18,18,20,0.06)" }}>
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Profile" className="h-full w-full object-cover" />
+            ) : (
+              <span style={{ fontFamily: "var(--font-heading)", fontSize: 28, fontWeight: 700, color: "rgba(18,18,20,0.25)" }}>{initial}</span>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => fileRef.current?.click()}
+            disabled={uploading}
+            className="absolute flex items-center justify-center active:scale-95 transition-transform"
+            style={{ bottom: -2, right: -2, width: 28, height: 28, borderRadius: "50%", background: "#121214" }}
+          >
+            {uploading ? (
+              <Loader2 style={{ width: 14, height: 14, color: "#ffffff" }} className="animate-spin" />
+            ) : (
+              <Camera style={{ width: 14, height: 14, color: "#ffffff" }} />
+            )}
+          </button>
+        </div>
+        <p style={{ fontSize: 14, fontWeight: 600, color: "rgba(18,18,20,0.4)", marginTop: 10, textAlign: "center" }}>
+          {displayName || "Your Name"}
+        </p>
+        <p style={{ fontSize: 12, color: "rgba(18,18,20,0.3)", marginTop: 4, textAlign: "center" }}>
+          Tap icon to change photo
+        </p>
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) uploadAvatar(file);
+          }}
+        />
+      </div>
+
+      {/* Form */}
+      <form
+        onSubmit={(e) => { e.preventDefault(); saveProfile.mutate(); }}
+        style={{ paddingLeft: 24, paddingRight: 24 }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+          {/* Username */}
+          <div>
+            <label style={labelStyle}>Username</label>
+            <input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              placeholder="Your name"
+              style={inputStyle}
+              onFocus={(e) => e.target.style.borderColor = "rgba(18,18,20,0.2)"}
+              onBlur={(e) => e.target.style.borderColor = "rgba(18,18,20,0.08)"}
+            />
+          </div>
+
+          {/* Email */}
+          <div>
+            <label style={labelStyle}>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              style={inputStyle}
+              onFocus={(e) => e.target.style.borderColor = "rgba(18,18,20,0.2)"}
+              onBlur={(e) => e.target.style.borderColor = "rgba(18,18,20,0.08)"}
+            />
+          </div>
+
+          {/* Location */}
+          <div>
+            <label style={labelStyle}>Location</label>
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="Hoedspruit"
+              style={inputStyle}
+              onFocus={(e) => e.target.style.borderColor = "rgba(18,18,20,0.2)"}
+              onBlur={(e) => e.target.style.borderColor = "rgba(18,18,20,0.08)"}
+            />
+          </div>
+
+          {/* Phone */}
+          <div>
+            <label style={labelStyle}>Phone Number</label>
+            <div className="flex" style={{ gap: 8 }}>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className="flex items-center shrink-0"
+                    style={{
+                      ...inputStyle,
+                      width: "auto",
+                      gap: 6,
+                      display: "flex",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <span style={{ fontSize: 16 }}>{(AREA_CODES.find((a) => a.code === parsed.areaCode) || AREA_CODES[0]).flag}</span>
+                    <span style={{ fontSize: 14, fontWeight: 500 }}>{parsed.areaCode}</span>
+                    <ChevronDown style={{ width: 14, height: 14, color: "rgba(18,18,20,0.3)" }} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-1 rounded-xl" align="start">
+                  {AREA_CODES.map((ac) => (
+                    <button
+                      key={ac.code}
+                      type="button"
+                      onClick={() => setPhone(ac.code + parsed.number)}
+                      className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm hover:bg-accent/50 transition-colors"
+                    >
+                      <span className="text-base">{ac.flag}</span>
+                      <span>{ac.code}</span>
+                      <span className="text-muted-foreground text-xs ml-auto">{ac.country}</span>
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+              <input
+                type="tel"
+                value={parsed.number}
+                onChange={(e) => setPhone(parsed.areaCode + e.target.value)}
+                placeholder="Phone number"
+                style={{ ...inputStyle, flex: 1 }}
+                onFocus={(e) => e.target.style.borderColor = "rgba(18,18,20,0.2)"}
+                onBlur={(e) => e.target.style.borderColor = "rgba(18,18,20,0.08)"}
+              />
             </div>
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              disabled={uploading}
-              className="absolute -bottom-0.5 -right-0.5 h-6 w-6 rounded-full bg-primary flex items-center justify-center shadow-sm active:scale-95 transition-transform"
-            >
-              {uploading ? (
-                <Loader2 className="h-3 w-3 text-primary-foreground animate-spin" />
-              ) : (
-                <Camera className="h-3 w-3 text-primary-foreground" />
-              )}
-            </button>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-[14px] font-semibold text-foreground truncate">{displayName || "Your Name"}</p>
-            <p className="text-[12px] text-muted-foreground mt-0.5">Tap icon to change photo</p>
+
+          {/* Bio */}
+          <div>
+            <label style={labelStyle}>Bio</label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Tell people a little about yourself..."
+              maxLength={200}
+              style={{
+                ...inputStyle,
+                minHeight: 100,
+                resize: "none",
+                fontFamily: "inherit",
+              }}
+              onFocus={(e) => e.target.style.borderColor = "rgba(18,18,20,0.2)"}
+              onBlur={(e) => e.target.style.borderColor = "rgba(18,18,20,0.08)"}
+            />
+            <p style={{ fontSize: 12, color: "rgba(18,18,20,0.3)", textAlign: "right", marginTop: 4 }}>{bio.length}/200</p>
           </div>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) uploadAvatar(file);
-            }}
-          />
         </div>
 
-        {/* Form */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            saveProfile.mutate();
-          }}
-          className="space-y-1"
-        >
-          <div className="bg-card border border-border/50 rounded-2xl overflow-hidden divide-y divide-border/40">
-            <div className="px-4 py-3.5">
-              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Username</label>
-              <Input
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="Your name"
-                className="rounded-lg bg-muted/40 border-border/30 h-10 text-[14px]"
-              />
-            </div>
-            <div className="px-4 py-3.5">
-              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Email</label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="rounded-lg bg-muted/40 border-border/30 h-10 text-[14px]"
-              />
-            </div>
-            <div className="px-4 py-3.5">
-              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Location</label>
-              <Input
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Hoedspruit"
-                className="rounded-lg bg-muted/40 border-border/30 h-10 text-[14px]"
-              />
-            </div>
-            <div className="px-4 py-3.5">
-              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Phone Number</label>
-              <div className="flex gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      className="flex items-center gap-1.5 h-10 px-2.5 rounded-lg border border-border/30 bg-muted/40 text-[13px] font-medium shrink-0 hover:bg-accent/50 transition-colors"
-                    >
-                      <span className="text-sm">{(AREA_CODES.find((a) => a.code === (parsePhone(phone).areaCode)) || AREA_CODES[0]).flag}</span>
-                      <span>{parsePhone(phone).areaCode}</span>
-                      <ChevronDown className="h-3 w-3 text-muted-foreground" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-48 p-1 rounded-xl" align="start">
-                    {AREA_CODES.map((ac) => (
-                      <button
-                        key={ac.code}
-                        type="button"
-                        onClick={() => setPhone(ac.code + parsePhone(phone).number)}
-                        className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm hover:bg-accent/50 transition-colors"
-                      >
-                        <span className="text-base">{ac.flag}</span>
-                        <span>{ac.code}</span>
-                        <span className="text-muted-foreground text-xs ml-auto">{ac.country}</span>
-                      </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-                <Input
-                  type="tel"
-                  value={parsePhone(phone).number}
-                  onChange={(e) => setPhone(parsePhone(phone).areaCode + e.target.value)}
-                  placeholder="Phone number"
-                  className="rounded-lg bg-muted/40 border-border/30 h-10 flex-1 text-[14px]"
-                />
-              </div>
-            </div>
-            <div className="px-4 py-3.5">
-              <label className="block text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-1.5">Bio</label>
-              <Textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell people a little about yourself..."
-                className="rounded-lg bg-muted/40 border-border/30 min-h-[72px] resize-none text-[14px]"
-                maxLength={200}
-              />
-              <p className="text-[11px] text-muted-foreground mt-1 text-right">{bio.length}/200</p>
-            </div>
-          </div>
-
-          <div className="pt-4">
-            <Button
-              type="submit"
-              disabled={saveProfile.isPending}
-              className="w-full rounded-xl h-11 font-semibold text-[14px]"
-            >
-              {saveProfile.isPending ? (
-                <><Loader2 className="h-4 w-4 animate-spin mr-2" /> Saving...</>
-              ) : (
-                "Save Changes"
-              )}
-            </Button>
-          </div>
-        </form>
-      </div>
+        {/* Save button */}
+        <div style={{ marginTop: 32, marginBottom: 100 }}>
+          <button
+            type="submit"
+            disabled={saveProfile.isPending}
+            className="w-full flex items-center justify-center active:scale-[0.98] transition-transform"
+            style={{
+              background: "#121214",
+              borderRadius: 12,
+              padding: 16,
+              fontSize: 15,
+              fontWeight: 700,
+              color: "#ffffff",
+              letterSpacing: "0.3px",
+              border: "none",
+              cursor: "pointer",
+              opacity: saveProfile.isPending ? 0.7 : 1,
+            }}
+          >
+            {saveProfile.isPending ? (
+              <><Loader2 style={{ width: 16, height: 16, marginRight: 8 }} className="animate-spin" /> Saving...</>
+            ) : (
+              "Save Changes"
+            )}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };
