@@ -143,7 +143,7 @@ const CategoryPage = () => {
             textTransform: "uppercase",
             fontWeight: 900,
             fontSize: 40,
-            lineHeight: 1.0,
+            lineHeight: 1,
             letterSpacing: "-0.5px",
             color: "#121214",
             margin: 0,
@@ -194,7 +194,7 @@ const CategoryPage = () => {
         </div>
       )}
 
-      {/* Other categories pills */}
+      {/* Other category pills */}
       {showCategories && otherCategories.length > 0 && (
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
           <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
@@ -265,9 +265,9 @@ const CategoryPage = () => {
       {/* Content */}
       <div style={{ paddingLeft: 24, paddingRight: 24 }}>
         {isLoading ? (
-          <div className="space-y-4">
+          <div className="space-y-5">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="w-full" style={{ height: 128, borderRadius: 16, background: "#f0f0f0" }} />
+              <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 18, background: "#f0f0f0" }} />
             ))}
           </div>
         ) : listings && listings.length > 0 ? (
@@ -298,7 +298,7 @@ const CategoryPage = () => {
               Places
             </h2>
 
-            <div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {listings.map((l) => {
                 const hasDetail = !!(
                   l.long_description ||
@@ -310,198 +310,223 @@ const CategoryPage = () => {
                 return (
                   <div
                     key={l.id}
-                    className={`relative transition-transform duration-150 ${
-                      hasDetail ? "active:scale-[0.99] cursor-pointer" : ""
-                    }`}
                     onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
+                    className={hasDetail ? "cursor-pointer active:scale-[0.99] transition-transform duration-150" : ""}
                     style={{
                       background: "rgba(18,18,20,0.04)",
                       border: "1px solid rgba(18,18,20,0.06)",
-                      borderRadius: 16,
-                      padding: 12,
-                      marginBottom: 12,
+                      borderRadius: 18,
+                      overflow: "hidden",
                     }}
                   >
-                    <div className="absolute z-10" style={{ top: 12, right: 12 }}>
-                      <FavouriteButton itemId={l.id} itemType="listing" />
-                    </div>
+                    {/* Image */}
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        height: 190,
+                        background: "#f0f0f0",
+                      }}
+                    >
+                      {l.image_url ? (
+                        <img src={l.image_url} alt={l.title} className="w-full h-full object-cover" loading="lazy" />
+                      ) : (
+                        <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
+                      )}
 
-                    <div className="flex items-start" style={{ gap: 12 }}>
+                      {/* Top-right actions */}
                       <div
+                        className="flex items-center"
                         style={{
-                          width: 88,
-                          height: 88,
-                          borderRadius: 12,
-                          overflow: "hidden",
-                          background: "#f0f0f0",
-                          flexShrink: 0,
+                          position: "absolute",
+                          top: 12,
+                          right: 12,
+                          gap: 8,
                         }}
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        {l.image_url ? (
-                          <img src={l.image_url} alt={l.title} className="w-full h-full object-cover" loading="lazy" />
-                        ) : (
-                          <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
+                        <div
+                          style={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: 999,
+                            background: "rgba(255,255,255,0.94)",
+                            border: "1px solid rgba(18,18,20,0.06)",
+                            boxShadow: "0 1px 2px rgba(18,18,20,0.06)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <FavouriteButton itemId={l.id} itemType="listing" />
+                        </div>
+
+                        {hasDetail && (
+                          <div
+                            style={{
+                              width: 40,
+                              height: 40,
+                              borderRadius: 999,
+                              background: "rgba(255,255,255,0.94)",
+                              border: "1px solid rgba(18,18,20,0.06)",
+                              boxShadow: "0 1px 2px rgba(18,18,20,0.06)",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <ChevronRight size={18} strokeWidth={2} style={{ color: "rgba(18,18,20,0.4)" }} />
+                          </div>
                         )}
                       </div>
 
-                      <div style={{ flex: 1, minWidth: 0, paddingRight: hasDetail ? 12 : 0 }}>
-                        <div className="flex items-center gap-2" style={{ marginBottom: 4 }}>
-                          {l.is_featured && (
-                            <span
-                              className="inline-flex items-center"
-                              style={{
-                                gap: 5,
-                                fontSize: 11,
-                                fontWeight: 700,
-                                color: "#121214",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.6px",
-                              }}
-                            >
-                              <Star size={12} className="fill-current" />
-                              Featured
-                            </span>
-                          )}
-                        </div>
-
-                        <h3
-                          style={{
-                            fontSize: 15,
-                            fontWeight: 700,
-                            color: "#121214",
-                            lineHeight: 1.2,
-                            margin: 0,
-                            marginBottom: 4,
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
-                          {l.title}
-                        </h3>
-
-                        {l.description && (
-                          <p
-                            className="line-clamp-2"
+                      {l.is_featured && (
+                        <div style={{ position: "absolute", left: 12, bottom: 12 }}>
+                          <span
+                            className="inline-flex items-center"
                             style={{
-                              fontSize: 12,
-                              color: "rgba(18,18,20,0.45)",
-                              lineHeight: 1.45,
-                              margin: 0,
-                              marginBottom: 8,
+                              gap: 5,
+                              background: "rgba(255,255,255,0.92)",
+                              borderRadius: 999,
+                              padding: "7px 12px",
+                              fontSize: 11,
+                              fontWeight: 700,
+                              color: "#121214",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.6px",
                             }}
                           >
-                            {l.description}
+                            <Star size={12} className="fill-current" />
+                            Featured
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Details */}
+                    <div style={{ padding: 16 }}>
+                      <h3
+                        style={{
+                          fontSize: 24,
+                          fontWeight: 700,
+                          color: "#121214",
+                          lineHeight: 1.15,
+                          margin: 0,
+                          marginBottom: 8,
+                        }}
+                      >
+                        {l.title}
+                      </h3>
+
+                      {l.description && (
+                        <p
+                          className="line-clamp-2"
+                          style={{
+                            fontSize: 14,
+                            color: "rgba(18,18,20,0.5)",
+                            lineHeight: 1.5,
+                            margin: 0,
+                            marginBottom: 14,
+                          }}
+                        >
+                          {l.description}
+                        </p>
+                      )}
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: 10,
+                        }}
+                      >
+                        {l.location && (
+                          <p
+                            className="flex items-center"
+                            style={{
+                              fontSize: 14,
+                              color: "rgba(18,18,20,0.45)",
+                              margin: 0,
+                              gap: 8,
+                            }}
+                          >
+                            <MapPin size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <span className="truncate">{l.location}</span>
                           </p>
                         )}
 
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 4,
-                          }}
-                        >
-                          {l.location && (
-                            <p
-                              className="flex items-center"
-                              style={{
-                                fontSize: 12,
-                                color: "rgba(18,18,20,0.42)",
-                                margin: 0,
-                                gap: 6,
-                              }}
-                            >
-                              <MapPin size={12} strokeWidth={2} />
-                              <span className="truncate">{l.location}</span>
-                            </p>
-                          )}
+                        {l.phone && (
+                          <a
+                            href={`tel:${l.phone}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center"
+                            style={{
+                              fontSize: 14,
+                              color: "rgba(18,18,20,0.45)",
+                              gap: 8,
+                              width: "fit-content",
+                            }}
+                          >
+                            <Phone size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <span>{l.phone}</span>
+                          </a>
+                        )}
 
-                          {l.phone && (
-                            <a
-                              href={`tel:${l.phone}`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="flex items-center"
-                              style={{
-                                fontSize: 12,
-                                color: "rgba(18,18,20,0.42)",
-                                gap: 6,
-                                width: "fit-content",
-                              }}
-                            >
-                              <Phone size={12} strokeWidth={2} />
-                              <span>{l.phone}</span>
-                            </a>
-                          )}
+                        {l.email && (
+                          <a
+                            href={`mailto:${l.email}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center"
+                            style={{
+                              fontSize: 14,
+                              color: "rgba(18,18,20,0.45)",
+                              gap: 8,
+                              width: "fit-content",
+                            }}
+                          >
+                            <Mail size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <span className="truncate">{l.email}</span>
+                          </a>
+                        )}
 
-                          {l.email && (
-                            <a
-                              href={`mailto:${l.email}`}
-                              onClick={(e) => e.stopPropagation()}
-                              className="flex items-center"
-                              style={{
-                                fontSize: 12,
-                                color: "rgba(18,18,20,0.42)",
-                                gap: 6,
-                                width: "fit-content",
-                              }}
-                            >
-                              <Mail size={12} strokeWidth={2} />
-                              <span className="truncate">{l.email}</span>
-                            </a>
-                          )}
+                        {l.website && (
+                          <a
+                            href={l.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center"
+                            style={{
+                              fontSize: 14,
+                              color: "rgba(18,18,20,0.45)",
+                              gap: 8,
+                              width: "fit-content",
+                            }}
+                          >
+                            <Globe size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <span>Website</span>
+                          </a>
+                        )}
 
-                          {l.website && (
-                            <a
-                              href={l.website}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="flex items-center"
-                              style={{
-                                fontSize: 12,
-                                color: "rgba(18,18,20,0.42)",
-                                gap: 6,
-                                width: "fit-content",
-                              }}
-                            >
-                              <Globe size={12} strokeWidth={2} />
-                              <span>Website</span>
-                            </a>
-                          )}
-
-                          {(l as any).whatsapp && (
-                            <a
-                              href={`https://wa.me/${(l as any).whatsapp.replace(/[^0-9]/g, "")}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="flex items-center"
-                              style={{
-                                fontSize: 12,
-                                color: "rgba(18,18,20,0.42)",
-                                gap: 6,
-                                width: "fit-content",
-                              }}
-                            >
-                              <MessageCircle size={12} strokeWidth={2} />
-                              <span>WhatsApp</span>
-                            </a>
-                          )}
-                        </div>
+                        {(l as any).whatsapp && (
+                          <a
+                            href={`https://wa.me/${(l as any).whatsapp.replace(/[^0-9]/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center"
+                            style={{
+                              fontSize: 14,
+                              color: "rgba(18,18,20,0.45)",
+                              gap: 8,
+                              width: "fit-content",
+                            }}
+                          >
+                            <MessageCircle size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <span>WhatsApp</span>
+                          </a>
+                        )}
                       </div>
-
-                      {hasDetail && (
-                        <ChevronRight
-                          size={16}
-                          strokeWidth={2}
-                          style={{
-                            color: "rgba(18,18,20,0.22)",
-                            flexShrink: 0,
-                            marginTop: 4,
-                          }}
-                        />
-                      )}
                     </div>
                   </div>
                 );
