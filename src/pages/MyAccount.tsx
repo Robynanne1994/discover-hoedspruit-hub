@@ -423,187 +423,136 @@ const MyAccount = () => {
     );
   }
 
-  // Main account page
+  const quickActions = [
+    { icon: Heart, label: "Saved Listings", desc: "Listings you've bookmarked", href: "/saved" },
+    { icon: MapPinCheck, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
+    { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", action: () => setActiveSection("my-events") },
+  ];
+
+  const settingsItems = [
+    { icon: Users, label: "Find People", href: "/people" },
+    { icon: Bell, label: "Notifications", action: () => {} },
+    { icon: Settings, label: "Account Settings", href: "/account-settings" },
+    { icon: Shield, label: "Privacy & Security", href: "/privacy-security" },
+  ];
+
+  const infoItems = [
+    { icon: HelpCircle, label: "Help & Support", href: "/contact" },
+    { icon: HelpCircle, label: "FAQs", href: "/faqs" },
+    { icon: Info, label: "About", href: "/about" },
+    { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
+  ];
+
+  const renderRow = (item: any, isLast: boolean) => {
+    const Icon = item.icon;
+    const content = (
+      <div className="flex items-center" style={{ gap: 14, paddingTop: 16, paddingBottom: 16, borderBottom: isLast ? "none" : "1px solid rgba(18,18,20,0.06)" }}>
+        <Icon style={{ width: 22, height: 22, strokeWidth: 1.5, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
+        <div className="flex-1 min-w-0">
+          <span style={{ fontSize: 15, fontWeight: 600, color: "#121214", display: "block" }}>{item.label}</span>
+          {item.desc && <span style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", marginTop: 2, display: "block" }}>{item.desc}</span>}
+        </div>
+        <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
+      </div>
+    );
+    if (item.href) return <Link key={item.label} to={item.href}>{content}</Link>;
+    return <button key={item.label} onClick={item.action} className="w-full text-left">{content}</button>;
+  };
+
   return (
-    <div className="min-h-screen pb-20 bg-background">
-      {/* Minimal top bar */}
-      <div className="pt-14 pb-1 px-5">
-        <h1
-          className="text-center text-[13px] font-medium text-muted-foreground uppercase tracking-[0.08em]"
-        >
-          My Account
+    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      {/* Heading */}
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+          PROFILE
         </h1>
       </div>
 
-      {/* Profile identity card */}
-      <div className="px-5 pt-4 mb-6">
-        <div className="bg-card border border-border/40 rounded-2xl px-5 py-5">
-          <div className="flex items-center gap-3.5">
-            <div className="h-[56px] w-[56px] rounded-full bg-muted border border-border/30 overflow-hidden flex items-center justify-center shrink-0">
+      {/* Subtitle */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+          Your account and settings
+        </p>
+      </div>
+
+      {/* Profile card */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
+          <div className="flex items-center" style={{ gap: 14 }}>
+            <div className="overflow-hidden flex items-center justify-center shrink-0" style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(18,18,20,0.06)" }}>
               {profileLoading ? (
                 <Skeleton className="h-full w-full rounded-full" />
               ) : profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
               ) : (
-                <UserCircle className="h-8 w-8 text-muted-foreground/25" />
+                <UserCircle style={{ width: 32, height: 32, color: "rgba(18,18,20,0.2)" }} />
               )}
             </div>
             <div className="flex-1 min-w-0">
-              {profileLoading ? (
-                <>
-                  <Skeleton className="h-5 w-28 mb-1.5" />
-                  <Skeleton className="h-3 w-36" />
-                </>
-              ) : (
-                <>
-                  <h2
-                    className="text-[18px] font-semibold text-foreground tracking-tight truncate leading-tight"
-                    style={{ fontFamily: "var(--font-heading)" }}
-                  >
-                    {profile?.display_name || user.email?.split("@")[0]}
-                  </h2>
-                  <p className="text-muted-foreground text-[12px] truncate mt-0.5">{user.email}</p>
-                </>
-              )}
+              <h2 className="truncate" style={{ fontFamily: "var(--font-heading)", fontSize: 18, fontWeight: 800, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px", lineHeight: 1.2 }}>
+                {profile?.display_name || user.email?.split("@")[0]}
+              </h2>
+              <p className="truncate" style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", marginTop: 2 }}>{user.email}</p>
             </div>
           </div>
 
-          {/* Stats + Edit row */}
-          <div className="mt-4 pt-3.5 border-t border-border/30 flex items-center justify-between">
+          <div className="flex items-center justify-between" style={{ marginTop: 16 }}>
             <FollowStats userId={user.id} />
             <button
               onClick={() => setActiveSection("profile")}
-              className="shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border/40 text-foreground text-[12px] font-medium active:scale-95 transition-transform hover:bg-muted/30"
+              className="shrink-0 flex items-center active:scale-95 transition-transform"
+              style={{ gap: 6, padding: "8px 16px", border: "1px solid rgba(18,18,20,0.15)", borderRadius: 10, background: "transparent" }}
             >
-              <Pencil className="h-3 w-3" />
-              Edit
+              <Pencil style={{ width: 14, height: 14, color: "#121214" }} />
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>Edit</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Quick actions — Saved, Visited & My Events */}
-      <div className="px-5 mb-6">
-        <div className="space-y-2">
-          <Link
-            to="/saved"
-            className="flex items-center gap-3.5 bg-card border border-border/40 rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
-          >
-            <div className="w-9 h-9 rounded-full bg-primary/8 flex items-center justify-center shrink-0">
-              <Heart className="h-4 w-4 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-[13px] font-medium text-foreground block">Saved Listings</span>
-              <span className="text-[11px] text-muted-foreground">Listings you've bookmarked</span>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/25 shrink-0" />
-          </Link>
-          <Link
-            to="/visited"
-            className="flex items-center gap-3.5 bg-card border border-border/40 rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform"
-          >
-            <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-              <MapPinCheck className="h-4 w-4 text-accent" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-[13px] font-medium text-foreground block">Visited Places</span>
-              <span className="text-[11px] text-muted-foreground">Places you've been to</span>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/25 shrink-0" />
-          </Link>
-          <button
-            onClick={() => setActiveSection("my-events")}
-            className="w-full flex items-center gap-3.5 bg-card border border-border/40 rounded-xl px-4 py-3.5 active:scale-[0.98] transition-transform text-left"
-          >
-            <div className="w-9 h-9 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
-              <Calendar className="h-4 w-4 text-accent" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-[13px] font-medium text-foreground block">My Events</span>
-              <span className="text-[11px] text-muted-foreground">Your RSVP'd and saved events</span>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground/25 shrink-0" />
-          </button>
-        </div>
+      {/* Quick actions */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        {quickActions.map((item, i) => renderRow(item, i === quickActions.length - 1))}
       </div>
 
       {/* Settings & Support */}
-      <div className="px-5 mb-5">
-        <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-[0.1em] mb-2 px-1">Settings & Support</p>
-        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
-          {[
-            { icon: Users, label: "Find People", href: "/people" },
-            { icon: Bell, label: "Notifications", action: () => {} },
-            { icon: Settings, label: "Account Settings", href: "/account-settings" },
-            { icon: Shield, label: "Privacy & Security", href: "/privacy-security" },
-          ].map((item, i, arr) => {
-            const Icon = item.icon;
-            const content = (
-              <div className={`flex items-center gap-3.5 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/20" : ""}`}>
-                <Icon className="h-[16px] w-[16px] text-primary/70" strokeWidth={1.5} />
-                <span className="flex-1 text-[13px] text-foreground">{item.label}</span>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20" />
-              </div>
-            );
-            if ('href' in item && item.href) {
-              return <Link key={item.label} to={item.href}>{content}</Link>;
-            }
-            return (
-              <button key={item.label} onClick={item.action} className="w-full text-left hover:bg-muted/20 transition-colors">
-                {content}
-              </button>
-            );
-          })}
-        </div>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          Settings & Support
+        </p>
+        {settingsItems.map((item, i) => renderRow(item, i === settingsItems.length - 1))}
       </div>
 
       {/* Info & More */}
-      <div className="px-5 mb-5">
-        <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-[0.1em] mb-2 px-1">Info & More</p>
-        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
-          {[
-            { icon: HelpCircle, label: "Help & Support", href: "/contact" },
-            { icon: HelpCircle, label: "FAQs", href: "/faqs" },
-            { icon: Info, label: "About", href: "/about" },
-            { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
-          ].map((item, i, arr) => {
-            const Icon = item.icon;
-            return (
-              <Link key={item.label} to={item.href}>
-                <div className={`flex items-center gap-3.5 px-4 py-3 ${i < arr.length - 1 ? "border-b border-border/20" : ""}`}>
-                  <Icon className="h-[16px] w-[16px] text-primary/70" strokeWidth={1.5} />
-                  <span className="flex-1 text-[13px] text-foreground">{item.label}</span>
-                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20" />
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          Info & More
+        </p>
+        {infoItems.map((item, i) => renderRow(item, i === infoItems.length - 1))}
       </div>
 
       {isAdmin && (
-        <div className="px-5 mb-5">
-          <p className="text-[10px] font-semibold text-muted-foreground/70 uppercase tracking-[0.1em] mb-2 px-1">Admin</p>
-          <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
-            <Link to="/admin">
-              <div className="flex items-center gap-3.5 px-4 py-3">
-                <LayoutDashboard className="h-[16px] w-[16px] text-primary/70" strokeWidth={1.5} />
-                <span className="flex-1 text-[13px] text-foreground">Admin Dashboard</span>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20" />
-              </div>
-            </Link>
-          </div>
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 32 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+            Admin
+          </p>
+          <Link to="/admin">
+            <div className="flex items-center" style={{ gap: 14, paddingTop: 16, paddingBottom: 16 }}>
+              <LayoutDashboard style={{ width: 22, height: 22, strokeWidth: 1.5, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
+              <span className="flex-1" style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>Admin Dashboard</span>
+              <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
+            </div>
+          </Link>
         </div>
       )}
 
       {/* Logout */}
-      <div className="px-5 mt-1 mb-8">
+      <div className="flex justify-center" style={{ marginTop: 36, marginBottom: 100 }}>
         <button
           onClick={() => { signOut(); navigate("/"); }}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-destructive/80 font-medium text-[13px] active:scale-[0.97] transition-transform hover:bg-destructive/5"
+          style={{ background: "transparent", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 12, padding: "14px 32px", fontSize: 14, fontWeight: 600, color: "rgba(18,18,20,0.4)" }}
         >
-          <LogOut className="h-4 w-4" />
-          Log Out
+          Log out
         </button>
       </div>
     </div>
