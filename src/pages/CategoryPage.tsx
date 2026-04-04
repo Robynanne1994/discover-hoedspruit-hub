@@ -2,18 +2,7 @@ import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom"
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  ArrowLeft,
-  ChevronDown,
-  ChevronRight,
-  ChevronUp,
-  Globe,
-  Mail,
-  MapPin,
-  MessageCircle,
-  Phone,
-  Star,
-} from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Globe, Mail, MapPin, MessageCircle, Phone, Star } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import { isRestaurantCategory } from "@/lib/categoryFields";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -346,21 +335,6 @@ const CategoryPage = () => {
                       >
                         <FavouriteButton itemId={l.id} itemType="listing" />
                       </div>
-
-                      {/* Chevron marker */}
-                      {hasDetail && (
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 18,
-                            right: 66,
-                            zIndex: 1,
-                            pointerEvents: "none",
-                          }}
-                        >
-                          <ChevronRight size={18} strokeWidth={2.5} style={{ color: "#FFFFFF" }} />
-                        </div>
-                      )}
 
                       {l.is_featured && (
                         <div style={{ position: "absolute", left: 12, bottom: 12 }}>
