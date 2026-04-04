@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import SectionHeader from "./SectionHeader";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import HomeSectionHeader from "./HomeSectionHeader";
 
 const WhatsOnToday = () => {
   const { data: events, isLoading } = useQuery({
@@ -17,7 +17,7 @@ const WhatsOnToday = () => {
       if (!data) return [];
 
       const now = new Date();
-      const sorted = data
+      return data
         .map((e) => {
           const parsed = new Date(e.date);
           return { ...e, parsedDate: isNaN(parsed.getTime()) ? null : parsed };
@@ -30,16 +30,14 @@ const WhatsOnToday = () => {
         })
         .filter((e) => !e.parsedDate || e.parsedDate >= new Date(now.toDateString()))
         .slice(0, 3);
-
-      return sorted;
     },
   });
 
   if (isLoading) {
     return (
-      <section className="py-8">
-        <SectionHeader title="What's On" actionLabel="See all" actionHref="/events" />
-        <div className="mx-5 space-y-4">
+      <section style={{ padding: "32px 24px 0" }}>
+        <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {[1, 2, 3].map((i) => (
             <Skeleton key={i} className="h-5 w-full rounded" />
           ))}
@@ -50,42 +48,56 @@ const WhatsOnToday = () => {
 
   if (!events?.length) return null;
 
+  const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
   return (
-    <section className="py-8">
-      <SectionHeader title="What's On" actionLabel="See all" actionHref="/events" />
-      <div className="mx-5 space-y-0">
-        {events.map((event, idx) => (
-          <Link
-            key={event.id}
-            to={`/events/${event.id}`}
-            className={`flex items-baseline gap-5 py-4 ${idx < events.length - 1 ? "border-b border-border/60" : ""}`}
-          >
-            <div className="flex flex-col items-center justify-center bg-muted/60 rounded-xl min-w-[52px] w-[52px] h-[52px] shrink-0 border border-border/40">
-              {(() => {
-                if (!event.date) return <span className="text-[11px] text-muted-foreground font-medium">TBA</span>;
-                const parsed = new Date(event.date);
-                if (!isNaN(parsed.getTime())) {
-                  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-                  return (
-                    <>
-                      <span className="text-[18px] font-semibold text-foreground leading-none">{parsed.getDate()}</span>
-                      <span className="text-[10px] text-muted-foreground mt-0.5">{months[parsed.getMonth()]}</span>
-                    </>
-                  );
-                }
-                return <span className="text-[10px] text-muted-foreground font-medium">{event.date}</span>;
-              })()}
-            </div>
-            <div className="flex-1 min-w-0">
-              <span className="text-[14px] text-foreground leading-snug">
-                {event.title}
-              </span>
-              {event.location && (
-                <span className="block text-[12px] mt-0.5 text-muted-foreground">{event.location}</span>
-              )}
-            </div>
-          </Link>
-        ))}
+    <section style={{ padding: "32px 24px 0" }}>
+      <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
+      <div>
+        {events.map((event, idx) => {
+          const parsed = event.parsedDate;
+          return (
+            <Link
+              key={event.id}
+              to={`/events/${event.id}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                padding: "14px 0",
+                borderBottom: idx < events.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                textDecoration: "none",
+              }}
+            >
+              <div style={{
+                width: 50,
+                height: 50,
+                background: "rgba(18,18,20,0.04)",
+                borderRadius: 10,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                {parsed ? (
+                  <>
+                    <span style={{ fontSize: 20, fontWeight: 800, color: "#121214", lineHeight: 1 }}>{parsed.getDate()}</span>
+                    <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 0.5 }}>{months[parsed.getMonth()]}</span>
+                  </>
+                ) : (
+                  <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", fontWeight: 500 }}>TBA</span>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
+                {event.location && (
+                  <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{event.location}</div>
+                )}
+              </div>
+            </Link>
+          );
+        })}
       </div>
     </section>
   );

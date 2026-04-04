@@ -1,19 +1,21 @@
-import SectionHeader from "./SectionHeader";
-import VenueCard from "./VenueCard";
+import HomeSectionHeader from "./HomeSectionHeader";
+import HomeListingCarousel from "./HomeListingCarousel";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const EatSection = () => {
   const { data: listings, isLoading } = useHomepageSection("eat", "%restaurant%");
-  const { data: title } = useHomepageSectionTitle("eat", "Eat in Hoedspruit");
+  const { data: title } = useHomepageSectionTitle("eat", "Where to Eat");
 
   if (isLoading) {
     return (
-      <section className="pb-6">
-        <SectionHeader title={title || "Eat in Hoedspruit"} />
-        <div className="flex gap-3 px-5">
-          <Skeleton className="w-[46%] aspect-[3/4] rounded-xl" />
-          <Skeleton className="w-[46%] aspect-[3/4] rounded-xl" />
+      <section style={{ paddingTop: 36 }}>
+        <div style={{ padding: "0 24px" }}>
+          <HomeSectionHeader title={title || "Where to Eat"} />
+        </div>
+        <div style={{ display: "flex", gap: 12, paddingLeft: 24 }}>
+          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
+          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
         </div>
       </section>
     );
@@ -22,19 +24,11 @@ const EatSection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section className="py-4">
-      <SectionHeader title={title || "Eat in Hoedspruit"} actionLabel="See all" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" />
-      <div className="grid grid-cols-2 gap-3.5 px-5">
-        {listings.map((listing) => (
-          <VenueCard
-            key={listing.id}
-            image={listing.image_url || ""}
-            name={listing.title}
-            rating={listing.google_rating || 0}
-            href={`/listing/${listing.id}`}
-          />
-        ))}
+    <section style={{ paddingTop: 36 }}>
+      <div style={{ padding: "0 24px" }}>
+        <HomeSectionHeader title={title || "Where to Eat"} actionLabel="See All" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" />
       </div>
+      <HomeListingCarousel listings={listings.slice(0, 6)} />
     </section>
   );
 };
