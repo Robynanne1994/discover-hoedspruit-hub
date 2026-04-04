@@ -228,7 +228,7 @@ const SavedListings = () => {
 
         {/* Saved cards — 2-column grid */}
         {filtered.length > 0 && (
-          <div className="grid grid-cols-2" style={{ gap: "20px 14px" }}>
+          <div className="flex flex-col" style={{ gap: 16 }}>
             {filtered.map((fav: any) => {
               const detail = fav.details;
               if (!detail) return null;
@@ -237,7 +237,7 @@ const SavedListings = () => {
 
               return (
                 <Link key={fav.id} to={`/listing/${fav.item_id}`} className="block group">
-                  <div className="relative overflow-hidden" style={{ borderRadius: 16, aspectRatio: "4/3", background: "#f0f0f0" }}>
+                  <div className="relative overflow-hidden w-full" style={{ borderRadius: 16, height: 200, background: "#f0f0f0" }}>
                     {detail.image_url ? (
                       <img
                         src={detail.image_url}
@@ -248,10 +248,8 @@ const SavedListings = () => {
                     ) : (
                       <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
                     )}
-                    {/* Gradient overlay */}
                     <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)" }} />
 
-                    {/* Heart button */}
                     <button
                       onClick={(e) => {
                         e.preventDefault();
@@ -265,11 +263,10 @@ const SavedListings = () => {
                       <Heart style={{ width: 20, height: 20, color: "#ffffff", fill: "#ffffff" }} />
                     </button>
 
-                    {/* Card content */}
-                    <div className="absolute bottom-0 left-0 right-0" style={{ padding: 12 }}>
+                    <div className="absolute bottom-0 left-0 right-0" style={{ padding: 16 }}>
                       <h3
                         className="line-clamp-2"
-                        style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}
+                        style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}
                       >
                         {detail.title}
                       </h3>
@@ -277,12 +274,12 @@ const SavedListings = () => {
                         {rating && (
                           <>
                             <Star style={{ width: 12, height: 12, color: "#E8A83E", fill: "#E8A83E", flexShrink: 0 }} />
-                            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{rating.toFixed(1)}</span>
+                            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{rating.toFixed(1)}</span>
                           </>
                         )}
-                        {rating && location && <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>·</span>}
+                        {rating && location && <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>·</span>}
                         {location && (
-                          <span className="truncate" style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{location}</span>
+                          <span className="truncate" style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{location}</span>
                         )}
                       </div>
                     </div>
