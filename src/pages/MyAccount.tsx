@@ -201,49 +201,27 @@ const MyAccount = () => {
   // Not signed in
   if (!loading && !user) {
     return (
-      <div className="min-h-screen pb-16 bg-background">
-        <div className="relative h-[180px] overflow-hidden">
-          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }} />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <h1
-              className="text-[32px] font-semibold text-white tracking-tight"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Profile
-            </h1>
-          </div>
+      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>PROFILE</h1>
         </div>
-        <div className="px-5 pt-12 text-center">
-          <h2
-            className="text-[22px] font-semibold text-foreground mb-2 tracking-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Welcome to Hello Hoedspruit
-          </h2>
-          <p className="text-muted-foreground text-[13px] leading-relaxed mb-8 max-w-xs mx-auto">
-            Sign in to access your profile, saved listings, and events.
-          </p>
-          <Link to="/auth">
-            <Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button>
-          </Link>
+        <div className="text-center" style={{ paddingTop: 60 }}>
+          <UserCircle style={{ width: 48, height: 48, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>Welcome to Hello Hoedspruit</h3>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", maxWidth: 260, margin: "0 auto 24px" }}>Sign in to access your profile, saved listings, and events.</p>
+          <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button></Link>
         </div>
       </div>
     );
   }
 
-  // Loading state
   if (loading || !user) {
     return (
-      <div className="min-h-screen pb-16 bg-background">
-        <div className="relative h-[180px] overflow-hidden">
-          <img src={heroBg} alt="Hoedspruit" className="w-full h-full object-cover" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, hsla(30, 20%, 20%, 0.1), hsla(30, 20%, 20%, 0.45))" }} />
-        </div>
-        <div className="px-5 -mt-12 relative z-10 flex flex-col items-center">
-          <Skeleton className="h-20 w-20 rounded-full mb-3" />
-          <Skeleton className="h-5 w-36 mb-2" />
-          <Skeleton className="h-4 w-48" />
+      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+          <Skeleton className="h-10 w-48 mb-4" />
+          <Skeleton className="h-4 w-40 mb-7" />
+          <Skeleton className="h-28 w-full rounded-[16px] mb-6" />
         </div>
       </div>
     );
