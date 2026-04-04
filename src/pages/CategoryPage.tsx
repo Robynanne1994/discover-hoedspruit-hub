@@ -395,7 +395,7 @@ const CategoryPage = () => {
                         style={{
                           display: "flex",
                           flexDirection: "column",
-                          gap: 10,
+                          gap: 6,
                         }}
                       >
                         {l.location && (
@@ -408,7 +408,7 @@ const CategoryPage = () => {
                               gap: 8,
                             }}
                           >
-                            <MapPin size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <MapPin size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
                             <span className="truncate">{l.location}</span>
                           </p>
                         )}
@@ -425,7 +425,7 @@ const CategoryPage = () => {
                               width: "fit-content",
                             }}
                           >
-                            <Phone size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <Phone size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
                             <span>{l.phone}</span>
                           </a>
                         )}
@@ -442,7 +442,7 @@ const CategoryPage = () => {
                               width: "fit-content",
                             }}
                           >
-                            <Mail size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <Mail size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
                             <span className="truncate">{l.email}</span>
                           </a>
                         )}
@@ -461,7 +461,7 @@ const CategoryPage = () => {
                               width: "fit-content",
                             }}
                           >
-                            <Globe size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <Globe size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
                             <span>Website</span>
                           </a>
                         )}
@@ -480,7 +480,7 @@ const CategoryPage = () => {
                               width: "fit-content",
                             }}
                           >
-                            <MessageCircle size={15} strokeWidth={2} style={{ flexShrink: 0 }} />
+                            <MessageCircle size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
                             <span>WhatsApp</span>
                           </a>
                         )}
