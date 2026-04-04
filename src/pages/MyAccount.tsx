@@ -493,6 +493,11 @@ const MyAccount = () => {
                 {profile?.display_name || user.email?.split("@")[0]}
               </h2>
               <p className="truncate" style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", marginTop: 2 }}>{user.email}</p>
+              {profile?.bio && (
+                <p style={{ fontSize: 13, color: "rgba(18,18,20,0.5)", marginTop: 8, lineHeight: 1.4, fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                  {profile.bio}
+                </p>
+              )}
             </div>
           </div>
 
