@@ -327,8 +327,8 @@ const CategoryPage = () => {
                       <div
                         style={{
                           position: "absolute",
-                          top: 8,
-                          right: 8,
+                          top: 6,
+                          right: 6,
                           zIndex: 2,
                         }}
                         onClick={(e) => e.stopPropagation()}
