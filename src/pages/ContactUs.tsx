@@ -1,18 +1,20 @@
 import { useState } from "react";
-import { Mail, Phone, MessageCircle, HelpCircle, ChevronRight, Send, Check, Loader2 } from "lucide-react";
-import BackButton from "@/components/BackButton";
+import { Mail, Phone, MessageCircle, HelpCircle, ChevronRight, Send, Check, Loader2, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import BottomNav from "@/components/BottomNav";
 
 const CONTACT_EMAIL = "hellohoedspruit@gmail.com";
 const CONTACT_PHONE = "+27 72 123 4567";
 const WHATSAPP = "https://wa.me/27721234567";
 
 const ContactUs = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -83,185 +85,279 @@ const ContactUs = () => {
   ];
 
   return (
-    <div className="min-h-screen pb-24 bg-background">
+    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
       {/* Back button */}
-      <div className="pt-4 px-4">
-        <BackButton />
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+          }}
+        >
+          <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>
+            Back
+          </span>
+        </button>
       </div>
 
-      {/* Header */}
-      <div className="pt-2 pb-6 px-5 text-center">
-        <h1
-          className="text-2xl font-bold text-foreground tracking-tight"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Contact
+      {/* Heading */}
+      <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24 }}>
+        <h1 style={{
+          fontSize: 40,
+          fontWeight: 900,
+          lineHeight: 0.95,
+          letterSpacing: -0.5,
+          color: "#121214",
+          textTransform: "uppercase",
+          margin: 0,
+        }}>
+          GET IN<br />TOUCH
         </h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          Have questions? We're here to help!
+      </div>
+
+      {/* Subtitle */}
+      <div style={{ marginTop: 12, paddingLeft: 24, paddingRight: 24 }}>
+        <p style={{
+          fontSize: 14,
+          color: "rgba(18,18,20,0.4)",
+          letterSpacing: 0.2,
+          lineHeight: 1.4,
+          fontStyle: "italic",
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          margin: 0,
+        }}>
+          Questions, feedback or local advice
         </p>
       </div>
 
-      <div className="px-5">
-        {/* Contact options card */}
-        <div className="bg-card border border-border/60 rounded-2xl overflow-hidden mb-6">
-          {contactOptions.map((opt, i) => {
-            const Icon = opt.icon;
-            const inner = (
-              <div className="flex items-center gap-4 px-5 py-4">
-                <div className="w-10 h-10 rounded-full bg-muted/50 flex items-center justify-center shrink-0">
-                  <Icon className="h-[18px] w-[18px] text-foreground/70" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="text-sm font-semibold text-foreground"
-                    style={{ fontFamily: "var(--font-heading)" }}
-                  >
-                    {opt.title}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                    {opt.subtitle}
-                  </p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground/50 shrink-0" />
+      {/* Contact options */}
+      <div style={{ marginTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+        {contactOptions.map((opt, i) => {
+          const Icon = opt.icon;
+          const inner = (
+            <div style={{
+              display: "flex",
+              alignItems: "center",
+              padding: "16px 0",
+              borderBottom: i < contactOptions.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+            }}>
+              <div style={{
+                width: 44,
+                height: 44,
+                borderRadius: "50%",
+                background: "rgba(18,18,20,0.04)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}>
+                <Icon size={22} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />
               </div>
-            );
+              <div style={{ flex: 1, minWidth: 0, marginLeft: 14 }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>{opt.title}</div>
+                <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", marginTop: 2 }}>{opt.subtitle}</div>
+              </div>
+              <ChevronRight size={16} strokeWidth={2} color="rgba(18,18,20,0.2)" />
+            </div>
+          );
 
-            const divider = i < contactOptions.length - 1 && (
-              <div className="mx-5 border-b border-border/40" />
-            );
-
-            if (opt.action) {
-              return (
-                <div key={opt.title}>
-                  <button
-                    onClick={opt.action}
-                    className="w-full text-left active:bg-muted/30 transition-colors"
-                  >
-                    {inner}
-                  </button>
-                  {divider}
-                </div>
-              );
-            }
-
+          if (opt.action) {
             return (
-              <div key={opt.title}>
-                <a
-                  href={opt.href}
-                  target={opt.external ? "_blank" : undefined}
-                  rel={opt.external ? "noopener noreferrer" : undefined}
-                  className="block active:bg-muted/30 transition-colors"
-                >
-                  {inner}
-                </a>
-                {divider}
-              </div>
+              <button
+                key={opt.title}
+                onClick={opt.action}
+                style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: 0 }}
+              >
+                {inner}
+              </button>
             );
-          })}
-        </div>
+          }
 
-        {/* Contact form (shown on demand) */}
-        {showForm && (
-          <div className="mb-6">
-            <h2
-              className="text-lg font-bold text-foreground mb-4"
-              style={{ fontFamily: "var(--font-heading)" }}
+          return (
+            <a
+              key={opt.title}
+              href={opt.href}
+              target={opt.external ? "_blank" : undefined}
+              rel={opt.external ? "noopener noreferrer" : undefined}
+              style={{ display: "block", textDecoration: "none", color: "inherit" }}
             >
-              Send us a message
-            </h2>
+              {inner}
+            </a>
+          );
+        })}
+      </div>
 
-            {submitted ? (
-              <div className="bg-card border border-border/60 rounded-2xl p-8 text-center">
-                <div className="w-14 h-14 rounded-full bg-secondary/15 flex items-center justify-center mx-auto mb-4">
-                  <Check className="h-7 w-7 text-secondary" />
-                </div>
-                <h3
-                  className="font-bold text-lg text-foreground mb-2"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  Thanks for reaching out
-                </h3>
-                <p className="text-muted-foreground text-sm mb-5">
-                  We've received your message and will get back to you soon.
-                </p>
-                <Button
-                  variant="outline"
-                  className="rounded-full"
-                  onClick={() => setSubmitted(false)}
-                >
-                  Send Another Message
-                </Button>
+      {/* Contact form */}
+      {showForm && (
+        <div style={{ marginTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, color: "#121214", marginBottom: 16 }}>
+            Send us a message
+          </h2>
+
+          {submitted ? (
+            <div style={{
+              background: "rgba(18,18,20,0.03)",
+              border: "1px solid rgba(18,18,20,0.06)",
+              borderRadius: 16,
+              padding: 32,
+              textAlign: "center",
+            }}>
+              <div style={{
+                width: 56,
+                height: 56,
+                borderRadius: "50%",
+                background: "rgba(18,18,20,0.08)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "0 auto 16px",
+              }}>
+                <Check size={28} color="#121214" />
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-3">
-                <div>
-                  <Input
-                    placeholder="Name"
-                    value={name}
-                    onChange={(e) => {
-                      setName(e.target.value);
-                      if (errors.name) setErrors((p) => ({ ...p, name: "" }));
-                    }}
-                    className={`rounded-xl bg-card h-12 ${errors.name ? "border-destructive" : ""}`}
-                  />
-                  {errors.name && <p className="text-destructive text-xs mt-1">{errors.name}</p>}
-                </div>
-                <div>
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      if (errors.email) setErrors((p) => ({ ...p, email: "" }));
-                    }}
-                    className={`rounded-xl bg-card h-12 ${errors.email ? "border-destructive" : ""}`}
-                  />
-                  {errors.email && <p className="text-destructive text-xs mt-1">{errors.email}</p>}
-                </div>
-                <div>
-                  <Textarea
-                    placeholder="How can we help?"
-                    value={message}
-                    onChange={(e) => {
-                      setMessage(e.target.value);
-                      if (errors.message) setErrors((p) => ({ ...p, message: "" }));
-                    }}
-                    rows={5}
-                    className={`rounded-xl bg-card ${errors.message ? "border-destructive" : ""}`}
-                  />
-                  {errors.message && (
-                    <p className="text-destructive text-xs mt-1">{errors.message}</p>
-                  )}
-                </div>
-                <Button
-                  type="submit"
-                  className="w-full rounded-xl h-12 gap-2"
-                  disabled={submitForm.isPending}
-                >
-                  {submitForm.isPending ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" /> Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-4 w-4" /> Send Message
-                    </>
-                  )}
-                </Button>
-              </form>
-            )}
-          </div>
-        )}
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#121214", marginBottom: 8 }}>
+                Thanks for reaching out
+              </h3>
+              <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 20 }}>
+                We've received your message and will get back to you soon.
+              </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                style={{
+                  background: "none",
+                  border: "1px solid rgba(18,18,20,0.15)",
+                  borderRadius: 12,
+                  padding: "10px 24px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#121214",
+                  cursor: "pointer",
+                }}
+              >
+                Send Another Message
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div>
+                <input
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => { setName(e.target.value); if (errors.name) setErrors((p) => ({ ...p, name: "" })); }}
+                  style={{
+                    width: "100%",
+                    background: "rgba(18,18,20,0.03)",
+                    border: errors.name ? "1px solid #ef4444" : "1px solid rgba(18,18,20,0.08)",
+                    borderRadius: 12,
+                    padding: "14px 16px",
+                    fontSize: 15,
+                    color: "#121214",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
+                {errors.name && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.name}</p>}
+              </div>
+              <div>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors((p) => ({ ...p, email: "" })); }}
+                  style={{
+                    width: "100%",
+                    background: "rgba(18,18,20,0.03)",
+                    border: errors.email ? "1px solid #ef4444" : "1px solid rgba(18,18,20,0.08)",
+                    borderRadius: 12,
+                    padding: "14px 16px",
+                    fontSize: 15,
+                    color: "#121214",
+                    outline: "none",
+                    boxSizing: "border-box",
+                  }}
+                />
+                {errors.email && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.email}</p>}
+              </div>
+              <div>
+                <textarea
+                  placeholder="How can we help?"
+                  value={message}
+                  onChange={(e) => { setMessage(e.target.value); if (errors.message) setErrors((p) => ({ ...p, message: "" })); }}
+                  rows={5}
+                  style={{
+                    width: "100%",
+                    background: "rgba(18,18,20,0.03)",
+                    border: errors.message ? "1px solid #ef4444" : "1px solid rgba(18,18,20,0.08)",
+                    borderRadius: 12,
+                    padding: "14px 16px",
+                    fontSize: 15,
+                    color: "#121214",
+                    outline: "none",
+                    resize: "vertical",
+                    boxSizing: "border-box",
+                    fontFamily: "inherit",
+                  }}
+                />
+                {errors.message && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.message}</p>}
+              </div>
+              <button
+                type="submit"
+                disabled={submitForm.isPending}
+                style={{
+                  width: "100%",
+                  background: "#121214",
+                  borderRadius: 12,
+                  padding: 16,
+                  border: "none",
+                  color: "#ffffff",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  opacity: submitForm.isPending ? 0.6 : 1,
+                }}
+              >
+                {submitForm.isPending ? (
+                  <><Loader2 size={16} className="animate-spin" /> Sending...</>
+                ) : (
+                  <><Send size={16} /> Send Message</>
+                )}
+              </button>
+            </form>
+          )}
+        </div>
+      )}
 
-        {/* Supporting message */}
-        <div className="bg-card border border-border/60 rounded-2xl p-6 text-center mb-6">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            We're just a message away. Whether you have questions, feedback, or need local advice — we'd love to hear from you.
+      {/* Supportive message */}
+      <div style={{ marginTop: 32, paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
+        <div style={{
+          background: "rgba(18,18,20,0.03)",
+          border: "1px solid rgba(18,18,20,0.06)",
+          borderRadius: 16,
+          padding: 24,
+        }}>
+          <p style={{
+            fontSize: 14,
+            color: "rgba(18,18,20,0.4)",
+            lineHeight: 1.6,
+            textAlign: "center",
+            margin: 0,
+          }}>
+            We're just a message away. Whether you have questions, feedback, or need local advice, we'd love to hear from you.
           </p>
         </div>
       </div>
+
+      <BottomNav />
     </div>
   );
 };
