@@ -1,29 +1,72 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
 
 const AdvertiseWithUs = () => {
   const navigate = useNavigate();
 
   return (
-    <section className="px-5 pt-8 pb-12">
-      <div className="rounded-2xl bg-primary/8 px-6 py-6 flex items-center gap-5 border border-border/40">
-        <div className="flex-1 min-w-0">
-          <h2
-            className="text-foreground tracking-tight font-sans text-[#111113] font-bold text-sm"
-          >
-            Want to be listed?
-          </h2>
-          <p className="text-muted-foreground text-[12.5px] leading-relaxed mt-1">
+    <section style={{ padding: "36px 16px 100px" }}>
+      <div style={{
+        background: "#121214",
+        borderRadius: 20,
+        padding: "32px 24px",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        {/* Decorative circles */}
+        <div style={{
+          position: "absolute",
+          top: -20,
+          right: -20,
+          width: 120,
+          height: 120,
+          borderRadius: "50%",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }} />
+        <div style={{
+          position: "absolute",
+          top: -40,
+          right: -40,
+          width: 180,
+          height: 180,
+          borderRadius: "50%",
+          border: "1px solid rgba(255,255,255,0.04)",
+        }} />
+
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 10 }}>
+            FOR BUSINESSES
+          </div>
+          <div style={{ fontWeight: 900, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 10 }}>
+            WANT TO BE LISTED?
+          </div>
+          <p style={{
+            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontStyle: "italic",
+            fontSize: 13,
+            color: "rgba(255,255,255,0.45)",
+            lineHeight: 1.5,
+            marginBottom: 22,
+          }}>
             If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
           </p>
+          <button
+            onClick={() => navigate("/contact")}
+            style={{
+              background: "#ffffff",
+              borderRadius: 10,
+              padding: "12px 22px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              border: "none",
+              cursor: "pointer",
+            }}
+          >
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#121214", letterSpacing: 0.3 }}>Get in Touch</span>
+            <ArrowUpRight size={14} color="#121214" strokeWidth={2.5} />
+          </button>
         </div>
-        <Button
-          onClick={() => navigate("/contact")}
-          className="rounded-full px-6 text-[13px] font-medium shrink-0"
-          variant="default"
-        >
-          Get in Touch
-        </Button>
       </div>
     </section>
   );

@@ -1,5 +1,4 @@
 import HomeHero from "@/components/home/HomeHero";
-import FeaturedCarousel from "@/components/home/FeaturedCarousel";
 import WhatsOnToday from "@/components/home/WhatsOnToday";
 import EatSection from "@/components/home/EatSection";
 import StaySection from "@/components/home/StaySection";
@@ -9,9 +8,8 @@ import AdvertiseWithUs from "@/components/home/AdvertiseWithUs";
 
 const Index = () => {
   return (
-    <div className="min-h-screen pb-16 bg-background">
+    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 80 }}>
       <HomeHero />
-      <FeaturedCarousel />
       <WhatsOnToday />
       <EatSection />
       <StaySection />

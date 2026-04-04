@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Search, Heart, Calendar, User } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Home", href: "/", icon: Home },
@@ -16,38 +15,35 @@ const BottomNav = () => {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+      style={{
+        background: "#ffffff",
+        borderTop: "1px solid rgba(18,18,20,0.08)",
+        height: 72,
+      }}
     >
-      <div className="absolute inset-0 bg-card border-t border-border/50" />
-      <div
-        className="relative flex items-center justify-around h-14"
-      >
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%" }}>
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
               ? location.pathname === "/"
               : location.pathname.startsWith(item.href);
           const Icon = item.icon;
+          const color = isActive ? "#121214" : "rgba(18,18,20,0.35)";
 
           return (
             <Link
               key={item.label}
               to={item.href}
-              className="flex-1 flex justify-center py-1.5"
+              style={{ flex: 1, display: "flex", justifyContent: "center", textDecoration: "none" }}
             >
-              <div
-                className={cn(
-                  "flex flex-col items-center gap-0.5 font-medium transition-colors text-[10px]",
-                  isActive ? "text-primary" : "text-muted-foreground"
-                )}
-              >
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
                 <Icon
-                  className={cn(
-                    "h-[18px] w-[18px]",
-                    isActive && item.icon === Heart && "fill-primary"
-                  )}
+                  size={22}
+                  color={color}
                   strokeWidth={isActive ? 2 : 1.5}
+                  fill={isActive && item.icon === Heart ? color : "none"}
                 />
-                <span>{item.label}</span>
+                <span style={{ fontSize: 10, fontWeight: 500, color }}>{item.label}</span>
               </div>
             </Link>
           );

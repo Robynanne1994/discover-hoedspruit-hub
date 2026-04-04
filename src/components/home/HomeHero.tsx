@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { Search, Sun, Cloud, CloudRain, CloudSnow, CloudLightning, CloudDrizzle, Cloudy, MapPin, CalendarDays, FolderOpen, Loader2 } from "lucide-react";
 import { Calendar, UtensilsCrossed, Compass, Home, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import heroFallback from "@/assets/hero-homepage.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 
@@ -28,18 +27,6 @@ const getWeatherIcon = (code: number) => {
 
 const HomeHero = () => {
   const [query, setQuery] = useState("");
-
-  const { data: heroImageUrl } = useQuery({
-    queryKey: ["site-content", "hero-image"],
-    queryFn: async () => {
-      const { data } = await supabase.from("site_content").select("content").eq("section", "hero").maybeSingle();
-      const c = data?.content as { image_url?: string } | null;
-      return c?.image_url || null;
-    },
-    staleTime: 5 * 60 * 1000,
-  });
-
-  const heroBg = heroImageUrl || heroFallback;
   const [focused, setFocused] = useState(false);
   const [temp, setTemp] = useState<number | null>(null);
   const [weatherCode, setWeatherCode] = useState<number>(0);
@@ -107,100 +94,122 @@ const HomeHero = () => {
 
   const showDropdown = focused && query.trim().length > 0;
 
-  const WeatherIcon = getWeatherIcon(weatherCode);
-
   return (
     <>
-      <section className="relative pb-6">
-        <div className="relative h-[240px] overflow-hidden">
-          <img
-            src={heroBg}
-            alt="Hoedspruit bushveld sunrise"
-            className="w-full h-full object-cover"
-            width={1080}
-            height={720}
-          />
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-5 px-5">
-            <div className="w-full max-w-md">
-              <div ref={containerRef} className="relative">
-                <div className="flex items-center w-full bg-card/95 backdrop-blur-sm rounded-full px-4 py-3 gap-3 border border-border/40">
-                  <Search className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-                  <input
-                    ref={inputRef}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onFocus={() => setFocused(true)}
-                    placeholder="Search places, events, activities..."
-                    className="text-[13px] flex-1 bg-transparent outline-none placeholder:text-muted-foreground text-foreground placeholder:italic"
-                    style={{ fontFamily: "var(--font-body)" }}
-                  />
-                  {isFetching && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground flex-shrink-0" />}
-                  <div className="flex items-center gap-1.5 flex-shrink-0 pl-2 border-l border-border/40">
-                    <WeatherIcon className="h-3.5 w-3.5 text-accent" />
-                    <span className="text-[11px] font-medium text-foreground">
-                      {temp !== null ? `${temp}°C` : "—"}
-                    </span>
-                  </div>
-                </div>
-              </div>
+      {/* Hero area */}
+      <div style={{ background: "#f5f3ef", padding: "48px 24px 28px" }}>
+        <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          WELCOME TO
+        </div>
+        <h1 style={{ fontWeight: 900, fontSize: 44, lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", textTransform: "uppercase", marginBottom: 12 }}>
+          HELLO<br />HOEDSPRUIT
+        </h1>
+        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginBottom: 20 }}>
+          Your local guide to the bushveld
+        </p>
+
+        {/* Search bar */}
+        <div ref={containerRef}>
+          <div style={{
+            background: "#ffffff",
+            border: "1px solid rgba(18,18,20,0.1)",
+            borderRadius: 12,
+            padding: "10px 14px",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}>
+            <Search size={16} strokeWidth={2} color="rgba(18,18,20,0.3)" style={{ flexShrink: 0 }} />
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => setFocused(true)}
+              placeholder="Search places, events, activities..."
+              style={{
+                flex: 1,
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontSize: 13,
+                color: "#121214",
+                letterSpacing: 0.2,
+              }}
+            />
+            {isFetching && <Loader2 size={16} className="animate-spin" color="rgba(18,18,20,0.3)" style={{ flexShrink: 0 }} />}
+            <div style={{ borderLeft: "1px solid rgba(18,18,20,0.08)", paddingLeft: 8, flexShrink: 0 }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.45)" }}>
+                {temp !== null ? `${temp}°C` : "—"}
+              </span>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Category pills */}
-        <div className="mt-4 relative z-10">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide pl-5 pr-8">
-            {categories.map((cat) => {
-              const Icon = cat.icon;
-              return (
-                <Link
-                  key={cat.label}
-                  to={cat.href}
-                  className="flex items-center gap-1.5 px-3.5 py-2 bg-card rounded-full border border-border/60 whitespace-nowrap transition-all active:scale-95"
-                >
-                  <Icon className="h-3.5 w-3.5 text-primary" />
-                  <span className="text-[12px] font-medium text-foreground">{cat.label}</span>
-                </Link>
-              );
-            })}
-          </div>
+      {/* Category pills */}
+      <div style={{ paddingTop: 18, paddingLeft: 24, overflowX: "auto" }} className="scrollbar-hide">
+        <div style={{ display: "flex", gap: 10 }}>
+          {categories.map((cat) => {
+            const Icon = cat.icon;
+            return (
+              <Link
+                key={cat.label}
+                to={cat.href}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "10px 16px",
+                  background: "rgba(18,18,20,0.04)",
+                  border: "1px solid rgba(18,18,20,0.08)",
+                  borderRadius: 10,
+                  whiteSpace: "nowrap",
+                  textDecoration: "none",
+                }}
+              >
+                <Icon size={15} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />
+                <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(18,18,20,0.6)" }}>{cat.label}</span>
+              </Link>
+            );
+          })}
         </div>
-      </section>
+      </div>
 
+      {/* Search dropdown */}
       {showDropdown && (
         <div
           ref={dropdownRef}
           className="fixed left-0 right-0 z-[100] px-5"
           style={{ top: containerRef.current ? containerRef.current.getBoundingClientRect().bottom + 8 : 200 }}
         >
-          <div className="bg-card rounded-xl border border-border/60 overflow-hidden max-h-[60vh] overflow-y-auto shadow-warm">
+          <div style={{ background: "#ffffff", borderRadius: 12, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto", boxShadow: "0 8px 30px rgba(0,0,0,0.12)" }}>
             {!isFetching && !hasResults && (
-              <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">
+              <div style={{ padding: "32px 16px", textAlign: "center", fontSize: 13, color: "rgba(18,18,20,0.4)" }}>
                 No results for "{query}"
               </div>
             )}
 
             {results?.categories && results.categories.length > 0 && (
-              <div className="p-2">
-                <p className="px-2 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Categories</p>
+              <div style={{ padding: 8 }}>
+                <p style={{ padding: "6px 8px", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Categories</p>
                 {results.categories.map((cat) => (
-                  <button key={cat.id} onClick={() => goTo(`/category/${cat.id}`)} className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg hover:bg-muted transition-colors">
-                    <FolderOpen className="h-4 w-4 text-primary shrink-0" />
-                    <span className="text-[13px] text-foreground">{cat.title}</span>
+                  <button key={cat.id} onClick={() => goTo(`/category/${cat.id}`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
+                    <FolderOpen size={16} color="rgba(18,18,20,0.3)" />
+                    <span style={{ fontSize: 13, color: "#121214" }}>{cat.title}</span>
                   </button>
                 ))}
               </div>
             )}
 
             {results?.listings && results.listings.length > 0 && (
-              <div className="p-2">
-                <p className="px-2 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Listings</p>
+              <div style={{ padding: 8 }}>
+                <p style={{ padding: "6px 8px", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Listings</p>
                 {results.listings.map((listing) => (
-                  <button key={listing.id} onClick={() => goTo(`/listing/${listing.id}`)} className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg hover:bg-muted transition-colors">
-                    <MapPin className="h-4 w-4 text-primary shrink-0" />
-                    <div className="min-w-0">
-                      <span className="text-[13px] text-foreground block truncate">{listing.title}</span>
-                      {listing.location && <span className="text-[11px] text-muted-foreground truncate block">{listing.location}</span>}
+                  <button key={listing.id} onClick={() => goTo(`/listing/${listing.id}`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
+                    <MapPin size={16} color="rgba(18,18,20,0.3)" />
+                    <div>
+                      <span style={{ fontSize: 13, color: "#121214", display: "block" }}>{listing.title}</span>
+                      {listing.location && <span style={{ fontSize: 11, color: "rgba(18,18,20,0.35)", display: "block" }}>{listing.location}</span>}
                     </div>
                   </button>
                 ))}
@@ -208,14 +217,14 @@ const HomeHero = () => {
             )}
 
             {results?.events && results.events.length > 0 && (
-              <div className="p-2">
-                <p className="px-2 py-1.5 text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Events</p>
+              <div style={{ padding: 8 }}>
+                <p style={{ padding: "6px 8px", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Events</p>
                 {results.events.map((event) => (
-                  <button key={event.id} onClick={() => goTo(`/events`)} className="flex items-center gap-3 w-full text-left px-3 py-2.5 rounded-lg hover:bg-muted transition-colors">
-                    <CalendarDays className="h-4 w-4 text-primary shrink-0" />
-                    <div className="min-w-0">
-                      <span className="text-[13px] text-foreground block truncate">{event.title}</span>
-                      {event.location && <span className="text-[11px] text-muted-foreground truncate block">{event.location}</span>}
+                  <button key={event.id} onClick={() => goTo(`/events`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
+                    <CalendarDays size={16} color="rgba(18,18,20,0.3)" />
+                    <div>
+                      <span style={{ fontSize: 13, color: "#121214", display: "block" }}>{event.title}</span>
+                      {event.location && <span style={{ fontSize: 11, color: "rgba(18,18,20,0.35)", display: "block" }}>{event.location}</span>}
                     </div>
                   </button>
                 ))}
