@@ -5,14 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Star, MapPin } from "lucide-react";
-import BackButton from "@/components/BackButton";
+import { Heart, Star, ArrowLeft, Search } from "lucide-react";
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [activeFilter, setActiveFilter] = useState("All");
+  const [search, setSearch] = useState("");
 
   const { data: favourites, isLoading } = useQuery({
     queryKey: ["saved-listings-page", user?.id],
@@ -86,30 +86,44 @@ const SavedListings = () => {
 
   const filterOptions = ["All", ...dynamicCategories];
 
-  const filtered = favourites?.filter((f: any) => {
+  const filtered = (favourites?.filter((f: any) => {
     if (activeFilter === "All") return true;
     return (f.details?.categoryNames || []).some(
       (c: string) => c.toLowerCase() === activeFilter.toLowerCase()
     );
-  }) || [];
+  }) || []).filter((f: any) => {
+    if (!search.trim()) return true;
+    return f.details?.title?.toLowerCase().includes(search.toLowerCase());
+  });
+
+  const savedCount = favourites?.length || 0;
+
+  const backButton = (
+    <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+        <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
+        <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
+      </button>
+    </div>
+  );
 
   // Not signed in
   if (!loading && !user) {
     return (
-      <div className="min-h-screen pb-16 bg-background">
-        <div className="px-5 pt-5">
-          <BackButton />
+      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+        {backButton}
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+            SAVED
+          </h1>
         </div>
-        <div className="px-5 pt-16 text-center">
-          <Heart className="h-10 w-10 mx-auto text-primary/20 mb-5" />
-          <h2
-            className="text-[22px] font-semibold text-foreground mb-2 tracking-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Sign in to see your saved listings
-          </h2>
-          <p className="text-muted-foreground text-[13px] leading-relaxed mb-8 max-w-xs mx-auto">
-            Save your favourite places in Hoedspruit and find them all here.
+        <div className="text-center" style={{ paddingTop: 60 }}>
+          <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>
+            Sign in to see saved
+          </h3>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center", maxWidth: 260, margin: "0 auto 24px" }}>
+            Save your favourite places and find them all here
           </p>
           <Link to="/auth">
             <Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button>
@@ -122,146 +136,162 @@ const SavedListings = () => {
   // Loading state
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen pb-16 bg-background">
-        <div className="px-5 pt-5">
-          <BackButton />
-        </div>
-        <div className="px-5 pt-4 space-y-4">
-          <Skeleton className="h-4 w-40" />
-          <div className="flex gap-2">
-            {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-7 w-20 rounded-full" />
-            ))}
+      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+        {backButton}
+        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+          <Skeleton className="h-10 w-48 mb-4" />
+          <Skeleton className="h-4 w-40 mb-6" />
+          <Skeleton className="h-12 w-full rounded-[14px] mb-5" />
+          <div className="flex gap-2 mb-7">
+            {[1, 2, 3].map((i) => <Skeleton key={i} className="h-9 w-20 rounded-[10px]" />)}
           </div>
-          <div className="grid grid-cols-2 gap-3.5">
-            {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="aspect-[3/4] rounded-xl" />
-            ))}
+          <div className="grid grid-cols-2 gap-x-[14px] gap-y-5">
+            {[1, 2, 3, 4].map((i) => <Skeleton key={i} className="aspect-[4/3] rounded-[16px]" />)}
           </div>
         </div>
       </div>
     );
   }
 
-  const savedCount = favourites?.length || 0;
-
   return (
-    <div className="min-h-screen pb-16 bg-background">
-      <div className="px-5 pt-5">
-        <BackButton />
+    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      {backButton}
+
+      {/* Heading */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+          SAVED
+        </h1>
       </div>
 
-      <div className="px-5 pt-4">
-        {/* Saved count */}
-        <p className="text-muted-foreground text-[13px] mb-4">
-          {savedCount} saved listing{savedCount !== 1 ? "s" : ""}
+      {/* Subtitle */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+          {savedCount} {savedCount === 1 ? "place" : "places"} saved for later
         </p>
+      </div>
 
-        {/* Filter pills */}
-        {filterOptions.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto pb-5 scrollbar-hide -mx-5 px-5">
+      {/* Search bar */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
+        <div className="flex items-center" style={{ background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)", borderRadius: 14, padding: "14px 16px", gap: 10 }}>
+          <Search style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
+          <input
+            type="text"
+            placeholder="Search saved places..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 bg-transparent outline-none"
+            style={{ fontSize: 14, color: "#121214", letterSpacing: "0.2px" }}
+          />
+        </div>
+      </div>
+
+      {/* Filter pills */}
+      {filterOptions.length > 1 && (
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+          <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
             {filterOptions.map((filter) => (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
-                className={`whitespace-nowrap px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-colors shrink-0 ${
-                  activeFilter === filter
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-card border border-border/60 text-foreground"
-                }`}
+                className="whitespace-nowrap"
+                style={{
+                  background: activeFilter === filter ? "#121214" : "rgba(18,18,20,0.04)",
+                  border: activeFilter === filter ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
+                  borderRadius: 10,
+                  padding: "9px 18px",
+                  fontSize: 13,
+                  fontWeight: activeFilter === filter ? 600 : 500,
+                  color: activeFilter === filter ? "#ffffff" : "rgba(18,18,20,0.5)",
+                }}
               >
                 {filter}
               </button>
             ))}
           </div>
-        )}
+        </div>
+      )}
 
+      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
         {/* Empty state */}
         {filtered.length === 0 && (
-          <div className="text-center py-20">
-            <Heart className="h-10 w-10 mx-auto text-primary/15 mb-5" />
-            <h3
-              className="text-[20px] font-semibold text-foreground mb-2 tracking-tight"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              {activeFilter === "All" ? "No saved listings yet" : `No saved ${activeFilter.toLowerCase()}`}
+          <div className="text-center" style={{ paddingTop: 60 }}>
+            <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>
+              Nothing saved yet
             </h3>
-            <p className="text-muted-foreground text-[13px] mb-8 max-w-xs mx-auto leading-relaxed">
-              Save your favourite places in Hoedspruit and find them here
+            <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>
+              Tap the heart on any listing to save it here
             </p>
-            <Link to="/categories">
-              <Button className="rounded-full px-8 text-[13px] font-medium" variant="outline">
-                Explore Hoedspruit
-              </Button>
-            </Link>
           </div>
         )}
 
-        {/* Saved cards — 2-column grid matching homepage */}
-        <div className="grid grid-cols-2 gap-3.5">
-          {filtered.map((fav: any) => {
-            const detail = fav.details;
-            if (!detail) return null;
-            const rating = detail.google_rating ? Number(detail.google_rating) : null;
-            const location = detail.location;
-            const link = `/listing/${fav.item_id}`;
+        {/* Saved cards — 2-column grid */}
+        {filtered.length > 0 && (
+          <div className="grid grid-cols-2" style={{ gap: "20px 14px" }}>
+            {filtered.map((fav: any) => {
+              const detail = fav.details;
+              if (!detail) return null;
+              const rating = detail.google_rating ? Number(detail.google_rating) : null;
+              const location = detail.location;
 
-            return (
-              <Link key={fav.id} to={link} className="block group">
-                <div className="relative rounded-xl overflow-hidden aspect-[3/4]">
-                  {detail.image_url ? (
-                    <img
-                      src={detail.image_url}
-                      alt={detail.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-muted flex items-center justify-center">
-                      <MapPin className="h-6 w-6 text-muted-foreground/30" />
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+              return (
+                <Link key={fav.id} to={`/listing/${fav.item_id}`} className="block group">
+                  <div className="relative overflow-hidden" style={{ borderRadius: 16, aspectRatio: "4/3", background: "#f0f0f0" }}>
+                    {detail.image_url ? (
+                      <img
+                        src={detail.image_url}
+                        alt={detail.title}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
+                    )}
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)" }} />
 
-                  {/* Remove button */}
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type });
-                    }}
-                    className="absolute top-2.5 right-2.5 bg-card/90 backdrop-blur-sm rounded-full p-1.5 hover:bg-card transition-colors active:scale-95"
-                    aria-label="Remove from saved"
-                  >
-                    <Heart className="h-3.5 w-3.5 fill-primary text-primary" />
-                  </button>
-
-                  {/* Card content */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3.5">
-                    <h3
-                      className="text-[13px] font-medium text-white leading-snug line-clamp-2 drop-shadow-sm mb-1"
-                      style={{ fontFamily: "var(--font-body)" }}
+                    {/* Heart button */}
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type });
+                      }}
+                      className="absolute flex items-center justify-center"
+                      style={{ top: 12, right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.25)" }}
+                      aria-label="Remove from saved"
                     >
-                      {detail.title}
-                    </h3>
-                    <div className="flex items-center gap-1.5">
-                      {rating && (
-                        <div className="flex items-center gap-1">
-                          <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
-                          <span className="text-[11px] text-white/85 font-medium">{rating.toFixed(1)}</span>
-                        </div>
-                      )}
-                      {rating && location && <span className="text-white/40 text-[10px]">·</span>}
-                      {location && (
-                        <span className="text-[11px] text-white/70 truncate">{location}</span>
-                      )}
+                      <Heart style={{ width: 20, height: 20, color: "#ffffff", fill: "#ffffff" }} />
+                    </button>
+
+                    {/* Card content */}
+                    <div className="absolute bottom-0 left-0 right-0" style={{ padding: 12 }}>
+                      <h3
+                        className="line-clamp-2"
+                        style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}
+                      >
+                        {detail.title}
+                      </h3>
+                      <div className="flex items-center" style={{ gap: 4 }}>
+                        {rating && (
+                          <>
+                            <Star style={{ width: 12, height: 12, color: "#E8A83E", fill: "#E8A83E", flexShrink: 0 }} />
+                            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{rating.toFixed(1)}</span>
+                          </>
+                        )}
+                        {rating && location && <span style={{ fontSize: 12, color: "rgba(255,255,255,0.5)" }}>·</span>}
+                        {location && (
+                          <span className="truncate" style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{location}</span>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
