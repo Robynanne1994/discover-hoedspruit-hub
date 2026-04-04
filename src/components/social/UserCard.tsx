@@ -15,30 +15,74 @@ const UserCard = ({ user }: UserCardProps) => {
   return (
     <Link
       to={`/profile/${user.id}`}
-      className="flex items-center gap-4 bg-card border border-border/60 rounded-xl p-4 active:scale-[0.98] transition-all hover:border-border"
+      className="flex items-center active:scale-[0.98] transition-transform duration-200"
+      style={{
+        gap: 14,
+        padding: 16,
+        borderRadius: 16,
+        background: "rgba(18,18,20,0.03)",
+        border: "1px solid rgba(18,18,20,0.06)",
+      }}
     >
-      <div className="h-12 w-12 rounded-full bg-muted/60 overflow-hidden flex items-center justify-center shrink-0 ring-1 ring-border/40">
+      <div
+        className="shrink-0 overflow-hidden flex items-center justify-center"
+        style={{
+          width: 52,
+          height: 52,
+          borderRadius: 999,
+          background: "rgba(18,18,20,0.04)",
+          border: "1px solid rgba(18,18,20,0.06)",
+        }}
+      >
         {user.avatar_url ? (
-          <img src={user.avatar_url} alt="" className="h-full w-full object-cover" />
+          <img src={user.avatar_url} alt={user.display_name || "User"} className="h-full w-full object-cover" />
         ) : (
-          <UserCircle className="h-7 w-7 text-muted-foreground/30" />
+          <UserCircle
+            style={{
+              width: 28,
+              height: 28,
+              color: "rgba(18,18,20,0.18)",
+            }}
+          />
         )}
       </div>
+
       <div className="flex-1 min-w-0">
         <p
-          className="text-sm font-semibold text-foreground truncate"
-          style={{ fontFamily: "var(--font-heading)" }}
+          style={{
+            fontSize: 18,
+            fontWeight: 700,
+            color: "#121214",
+            lineHeight: 1.15,
+            margin: 0,
+            letterSpacing: "-0.2px",
+          }}
+          className="truncate"
         >
           {user.display_name || "User"}
         </p>
+
         {user.location && (
-          <p className="text-xs text-muted-foreground/70 flex items-center gap-1 mt-1">
-            <MapPin className="h-3 w-3" />
+          <p
+            className="flex items-center truncate"
+            style={{
+              gap: 4,
+              fontSize: 12,
+              color: "rgba(18,18,20,0.4)",
+              margin: 0,
+              marginTop: 6,
+              lineHeight: 1.3,
+            }}
+          >
+            <MapPin size={12} strokeWidth={2} />
             <span className="truncate">{user.location}</span>
           </p>
         )}
       </div>
-      <FollowButton targetUserId={user.id} size="sm" />
+
+      <div className="shrink-0">
+        <FollowButton targetUserId={user.id} size="sm" />
+      </div>
     </Link>
   );
 };
