@@ -1,10 +1,23 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Calendar, Clock, MapPin, Tag, RotateCcw, Share2, ChevronLeft, Heart, ExternalLink, Mail, Phone, Globe, Banknote } from "lucide-react";
+import {
+  Calendar,
+  Clock,
+  MapPin,
+  Tag,
+  RotateCcw,
+  Share2,
+  ChevronLeft,
+  Heart,
+  ExternalLink,
+  Mail,
+  Phone,
+  Globe,
+  Banknote,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,6 +29,7 @@ const EventDetail = () => {
     queryKey: ["favourite", "event", id, user?.id],
     queryFn: async () => {
       if (!user) return false;
+
       const { data } = await supabase
         .from("favourites" as any)
         .select("id")
@@ -23,6 +37,7 @@ const EventDetail = () => {
         .eq("item_id", id!)
         .eq("item_type", "event")
         .maybeSingle();
+
       return !!data;
     },
     enabled: !!user && !!id,
@@ -34,6 +49,7 @@ const EventDetail = () => {
         toast.error("Please sign in to save events");
         return;
       }
+
       if (isFavourited) {
         await supabase
           .from("favourites" as any)
@@ -42,9 +58,7 @@ const EventDetail = () => {
           .eq("item_id", id!)
           .eq("item_type", "event");
       } else {
-        await supabase
-          .from("favourites" as any)
-          .insert({ user_id: user.id, item_id: id!, item_type: "event" });
+        await supabase.from("favourites" as any).insert({ user_id: user.id, item_id: id!, item_type: "event" });
       }
     },
     onSuccess: () => {
@@ -57,11 +71,8 @@ const EventDetail = () => {
   const { data: event, isLoading } = useQuery({
     queryKey: ["event-detail", id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("events")
-        .select("*")
-        .eq("id", id!)
-        .single();
+      const { data, error } = await supabase.from("events").select("*").eq("id", id!).single();
+
       if (error) throw error;
       return data;
     },
@@ -94,9 +105,13 @@ const EventDetail = () => {
 
   const handleShare = async () => {
     const shareUrl = window.location.href;
+
     if (navigator.share) {
       try {
-        await navigator.share({ title: event?.title, url: shareUrl });
+        await navigator.share({
+          title: event?.title,
+          url: shareUrl,
+        });
       } catch (err) {
         if ((err as Error).name !== "AbortError") {
           await navigator.clipboard.writeText(shareUrl);
@@ -111,15 +126,38 @@ const EventDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-20 bg-background">
-        <div className="px-5 pt-6">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-primary hover:text-foreground text-[13px] font-medium transition-colors">
-            <ChevronLeft className="h-4 w-4" /> Back
+      <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
+        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+          <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+            <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
+            <span
+              style={{
+                fontSize: 15,
+                fontWeight: 500,
+                color: "rgba(18,18,20,0.45)",
+                letterSpacing: "0.2px",
+              }}
+            >
+              Back
+            </span>
           </button>
         </div>
-        <div className="px-5 pt-12 flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
-          <p className="text-muted-foreground text-[13px]">Loading...</p>
+
+        <div
+          className="flex flex-col items-center justify-center"
+          style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}
+        >
+          <div
+            className="animate-pulse"
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 9999,
+              background: "rgba(18,18,20,0.06)",
+              marginBottom: 14,
+            }}
+          />
+          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)" }}>Loading event...</p>
         </div>
       </div>
     );
@@ -127,14 +165,38 @@ const EventDetail = () => {
 
   if (!event) {
     return (
-      <div className="min-h-screen pb-20 bg-background">
-        <div className="px-5 pt-6">
-          <button onClick={() => navigate(-1)} className="flex items-center gap-1.5 text-primary hover:text-foreground text-[13px] font-medium transition-colors">
-            <ChevronLeft className="h-4 w-4" /> Back
+      <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
+        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+          <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+            <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
+            <span
+              style={{
+                fontSize: 15,
+                fontWeight: 500,
+                color: "rgba(18,18,20,0.45)",
+                letterSpacing: "0.2px",
+              }}
+            >
+              Back
+            </span>
           </button>
         </div>
-        <div className="px-5 pt-20 text-center">
-          <p className="text-muted-foreground text-[14px]">Event not found.</p>
+
+        <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 80, textAlign: "center" }}>
+          <p
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontWeight: 700,
+              fontSize: 22,
+              color: "#121214",
+              marginBottom: 8,
+            }}
+          >
+            Event not found
+          </p>
+          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.45)", lineHeight: 1.5 }}>
+            This event may have been removed or is no longer available.
+          </p>
         </div>
       </div>
     );
@@ -159,161 +221,416 @@ const EventDetail = () => {
     { label: "Category", value: event.tag, icon: Tag, href: null as string | null },
     { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
     { label: "Price", value: price, icon: Banknote, href: null as string | null },
-  ].filter((r) => r.value);
+  ].filter((row) => row.value);
 
   const contactRows = [
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
-    contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
+    contactPhone
+      ? {
+          label: "Phone",
+          value: contactPhone,
+          icon: Phone,
+          href: `tel:${contactPhone.replace(/\s/g, "")}`,
+        }
+      : null,
     socialLink ? { label: "Social Media", value: "View Profile", icon: Globe, href: socialLink } : null,
     bookingLink ? { label: "Booking", value: "Book Now", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
+  const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
+    <div style={{ marginBottom: 14 }}>
+      <p
+        style={{
+          fontSize: 11,
+          fontWeight: 600,
+          color: "rgba(18,18,20,0.3)",
+          textTransform: "uppercase",
+          letterSpacing: 2.2,
+          marginBottom: 6,
+        }}
+      >
+        {eyebrow}
+      </p>
+      <h2
+        style={{
+          fontFamily: "var(--font-heading)",
+          fontWeight: 900,
+          fontSize: 20,
+          lineHeight: 1,
+          letterSpacing: "-0.3px",
+          color: "#121214",
+          textTransform: "uppercase",
+          margin: 0,
+        }}
+      >
+        {title}
+      </h2>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen pb-24 bg-background">
+    <div className="min-h-screen pb-28" style={{ background: "#FFFFFF" }}>
       {/* Back button */}
-      <div className="px-5 pt-6 pb-4">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-1.5 text-primary hover:text-foreground text-[13px] font-medium transition-colors"
-        >
-          <ChevronLeft className="h-4 w-4" /> Back
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
+        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+          <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 500,
+              color: "rgba(18,18,20,0.45)",
+              letterSpacing: "0.2px",
+            }}
+          >
+            Back
+          </span>
         </button>
       </div>
 
-      {/* Event image */}
+      {/* Hero Image */}
       {event.image_url && (
-        <div className="px-5 pb-6">
-          <div className="rounded-xl overflow-hidden aspect-[4/3]">
-            <img
-              src={event.image_url}
-              alt={event.title}
-              className="w-full h-full object-cover"
-            />
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 22 }}>
+          <div
+            style={{
+              width: "100%",
+              overflow: "hidden",
+              borderRadius: 16,
+              background: "#f0f0f0",
+              aspectRatio: "4 / 3",
+            }}
+          >
+            <img src={event.image_url} alt={event.title} className="w-full h-full object-cover" />
           </div>
         </div>
       )}
 
       {/* Title */}
-      <div className="px-5 pb-2">
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        {event.tag && (
+          <p
+            style={{
+              fontSize: 11,
+              fontWeight: 600,
+              color: "rgba(18,18,20,0.3)",
+              textTransform: "uppercase",
+              letterSpacing: 2.2,
+              marginBottom: 10,
+            }}
+          >
+            {event.tag}
+          </p>
+        )}
+
         <h1
-          className="text-[22px] font-semibold text-foreground leading-[1.2] tracking-[-0.01em]"
-          style={{ fontFamily: "var(--font-heading)" }}
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontWeight: 900,
+            fontSize: 34,
+            lineHeight: 0.98,
+            letterSpacing: "-0.6px",
+            color: "#121214",
+            margin: 0,
+            textTransform: "uppercase",
+          }}
         >
           {event.title}
         </h1>
+
+        {(event.date || timeDisplay) && (
+          <p
+            style={{
+              marginTop: 14,
+              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontStyle: "italic",
+              fontSize: 14,
+              color: "rgba(18,18,20,0.42)",
+              lineHeight: 1.45,
+              letterSpacing: "0.15px",
+            }}
+          >
+            {formatDate(event.date)}
+            {timeDisplay ? ` · ${timeDisplay}` : ""}
+          </p>
+        )}
       </div>
 
-      {/* About this event */}
+      {/* About */}
       {event.description && (
-        <div className="px-5 pt-5 pb-1">
-          <div className="bg-card border border-border/40 rounded-xl px-4 py-4">
-            <h2 className="text-[13px] font-semibold text-foreground mb-2 leading-tight" style={{ fontFamily: "var(--font-body)" }}>
-              About this event
-            </h2>
-            <p className="text-[12.5px] text-muted-foreground leading-[1.75]" style={{ fontFamily: "var(--font-body)" }}>
+        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
+          <SectionLabel eyebrow="Overview" title="About" />
+          <div
+            style={{
+              background: "rgba(18,18,20,0.03)",
+              border: "1px solid rgba(18,18,20,0.06)",
+              borderRadius: 16,
+              padding: 20,
+            }}
+          >
+            <p
+              style={{
+                margin: 0,
+                fontSize: 15,
+                color: "rgba(18,18,20,0.58)",
+                lineHeight: 1.85,
+                letterSpacing: "0.1px",
+              }}
+            >
               {event.description}
             </p>
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Event details */}
+      {/* Details */}
       {detailRows.length > 0 && (
-        <div className="px-5 pt-4 pb-1">
-          <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
+          <SectionLabel eyebrow="Event info" title="Details" />
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(18,18,20,0.06)",
+              borderRadius: 16,
+              overflow: "hidden",
+            }}
+          >
             {detailRows.map((row, idx) => {
               const Wrapper = row.href ? "a" : "div";
-              const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
+              const wrapperProps = row.href
+                ? {
+                    href: row.href,
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  }
+                : {};
+
               return (
                 <Wrapper
                   key={row.label}
                   {...wrapperProps}
-                  className={`flex items-center gap-3.5 px-4 py-3.5 ${
-                    idx < detailRows.length - 1 ? "border-b border-border/20" : ""
-                  } ${row.href ? "cursor-pointer hover:bg-muted/30 transition-colors" : ""}`}
+                  className={row.href ? "transition-colors hover:bg-[rgba(18,18,20,0.02)]" : ""}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 14,
+                    padding: "18px 18px",
+                    borderBottom: idx < detailRows.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                    textDecoration: "none",
+                  }}
                 >
-                  <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+                  <div
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: 10,
+                      background: "rgba(18,18,20,0.04)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <row.icon style={{ width: 16, height: 16, color: "rgba(18,18,20,0.42)" }} strokeWidth={1.8} />
+                  </div>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p
+                      style={{
+                        fontSize: 12,
+                        color: "rgba(18,18,20,0.38)",
+                        margin: 0,
+                        marginBottom: 4,
+                        lineHeight: 1.2,
+                      }}
+                    >
                       {row.label}
-                    </span>
-                    <span className={`text-[13px] font-medium leading-tight ${row.href ? "text-primary" : "text-foreground"}`} style={{ fontFamily: "var(--font-body)" }}>
+                    </p>
+                    <p
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 500,
+                        color: row.href ? "#121214" : "#121214",
+                        lineHeight: 1.4,
+                        margin: 0,
+                        wordBreak: "break-word",
+                      }}
+                    >
                       {row.value}
-                    </span>
+                    </p>
                   </div>
                 </Wrapper>
               );
             })}
           </div>
-        </div>
+        </section>
       )}
 
-      {/* Contact info */}
+      {/* Contact */}
       {contactRows.length > 0 && (
-        <div className="px-5 pt-4 pb-1">
-          <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
+          <SectionLabel eyebrow="Reach out" title="Contact" />
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: "1px solid rgba(18,18,20,0.06)",
+              borderRadius: 16,
+              overflow: "hidden",
+            }}
+          >
             {contactRows.map((row, idx) => (
               <a
                 key={row.label}
                 href={row.href}
-                target={row.label === "Social Media" ? "_blank" : undefined}
-                rel={row.label === "Social Media" ? "noopener noreferrer" : undefined}
-                className={`flex items-center gap-3.5 px-4 py-3.5 cursor-pointer hover:bg-muted/30 transition-colors ${
-                  idx < contactRows.length - 1 ? "border-b border-border/20" : ""
-                }`}
+                target={row.label === "Social Media" || row.label === "Booking" ? "_blank" : undefined}
+                rel={row.label === "Social Media" || row.label === "Booking" ? "noopener noreferrer" : undefined}
+                className="transition-colors hover:bg-[rgba(18,18,20,0.02)]"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                  padding: "18px 18px",
+                  borderBottom: idx < contactRows.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                  textDecoration: "none",
+                }}
               >
-                <row.icon className="h-[15px] w-[15px] text-primary/70 shrink-0" strokeWidth={1.5} />
-                <div className="flex-1 min-w-0">
-                  <span className="text-[11px] text-muted-foreground block leading-tight" style={{ fontFamily: "var(--font-body)" }}>
+                <div
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 10,
+                    background: "rgba(18,18,20,0.04)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <row.icon style={{ width: 16, height: 16, color: "rgba(18,18,20,0.42)" }} strokeWidth={1.8} />
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p
+                    style={{
+                      fontSize: 12,
+                      color: "rgba(18,18,20,0.38)",
+                      margin: 0,
+                      marginBottom: 4,
+                      lineHeight: 1.2,
+                    }}
+                  >
                     {row.label}
-                  </span>
-                  <span className="text-[13px] font-medium leading-tight text-primary" style={{ fontFamily: "var(--font-body)" }}>
+                  </p>
+                  <p
+                    style={{
+                      fontSize: 15,
+                      fontWeight: 500,
+                      color: "#121214",
+                      lineHeight: 1.4,
+                      margin: 0,
+                      wordBreak: "break-word",
+                    }}
+                  >
                     {row.value}
-                  </span>
+                  </p>
                 </div>
               </a>
             ))}
           </div>
-        </div>
+        </section>
       )}
 
       {/* Gallery */}
       {galleryImages.length > 0 && (
-        <div className="px-5 pt-5 pb-1">
-          <h2 className="text-[13px] font-semibold text-foreground mb-3 leading-tight" style={{ fontFamily: "var(--font-body)" }}>
-            Gallery
-          </h2>
-          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide pb-1">
-            {galleryImages.map((url, i) => (
-              <div key={i} className="flex-shrink-0 w-[65%] aspect-[4/3] rounded-xl overflow-hidden">
-                <img src={url} alt={`${event.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
-              </div>
-            ))}
+        <section style={{ marginBottom: 36 }}>
+          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
+            <SectionLabel eyebrow="Moments" title="Gallery" />
           </div>
-        </div>
+
+          <div className="overflow-x-auto scrollbar-hide">
+            <div
+              className="inline-flex"
+              style={{
+                gap: 12,
+                paddingLeft: 24,
+                paddingRight: 24,
+                paddingBottom: 4,
+              }}
+            >
+              {galleryImages.map((url, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 220,
+                    aspectRatio: "4 / 3",
+                    borderRadius: 16,
+                    overflow: "hidden",
+                    background: "#f0f0f0",
+                    flexShrink: 0,
+                  }}
+                >
+                  <img
+                    src={url}
+                    alt={`${event.title} ${i + 1}`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
 
-      <div className="px-5 pt-5 pb-2 flex gap-3">
-        <button
-          onClick={handleShare}
-          className="flex-1 flex items-center justify-center gap-2 bg-card border border-border/40 rounded-xl py-3 text-[13px] font-medium text-foreground hover:bg-muted/50 transition-colors"
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          <Share2 className="h-[14px] w-[14px] text-primary/70" strokeWidth={1.5} />
-          Share
-        </button>
-        <button
-          onClick={() => toggleFavourite.mutate()}
-          className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 text-[13px] font-medium transition-colors ${
-            isFavourited
-              ? "bg-primary/10 border border-primary/30 text-primary"
-              : "bg-card border border-border/40 text-foreground hover:bg-muted/50"
-          }`}
-          style={{ fontFamily: "var(--font-body)" }}
-        >
-          <Heart className={`h-[14px] w-[14px] ${isFavourited ? "fill-primary text-primary" : "text-primary/70"}`} strokeWidth={1.5} />
-          {isFavourited ? "Interested" : "Interested"}
-        </button>
+      {/* Actions */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, paddingBottom: 8 }}>
+        <div className="flex" style={{ gap: 12 }}>
+          <button
+            onClick={handleShare}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1,
+              gap: 8,
+              height: 54,
+              borderRadius: 14,
+              background: "rgba(18,18,20,0.04)",
+              border: "1px solid rgba(18,18,20,0.08)",
+              color: "#121214",
+              fontSize: 15,
+              fontWeight: 500,
+              letterSpacing: "0.1px",
+            }}
+          >
+            <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.9} />
+            Share
+          </button>
+
+          <button
+            onClick={() => toggleFavourite.mutate()}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1,
+              gap: 8,
+              height: 54,
+              borderRadius: 14,
+              background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
+              border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
+              color: isFavourited ? "#FFFFFF" : "#121214",
+              fontSize: 15,
+              fontWeight: 500,
+              letterSpacing: "0.1px",
+            }}
+          >
+            <Heart
+              style={{
+                width: 16,
+                height: 16,
+                color: isFavourited ? "#FFFFFF" : "rgba(18,18,20,0.5)",
+                fill: isFavourited ? "#FFFFFF" : "transparent",
+              }}
+              strokeWidth={1.9}
+            />
+            Interested
+          </button>
+        </div>
       </div>
     </div>
   );
