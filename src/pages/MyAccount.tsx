@@ -38,7 +38,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import heroBg from "@/assets/hero-homepage.jpg";
+import { ArrowLeft } from "lucide-react";
 
 type ActiveSection = null | "profile" | "favourites" | "collections" | "been-here" | "reviews" | "my-events";
 
