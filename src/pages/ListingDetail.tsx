@@ -22,6 +22,7 @@ import {
   ShoppingBag,
   Check,
   Wifi,
+  Ban,
   MessageCircle,
   Pencil,
   ChevronLeft,
@@ -31,21 +32,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-const COLORS = {
-  bg: "#F7F2EA",
-  surface: "#FFFDF8",
-  text: "#121214",
-  primary: "#7C5C3B",
-  accent: "#D98F39",
-  green: "#6E8B63",
-  border: "rgba(18,18,20,0.08)",
-  borderSoft: "rgba(18,18,20,0.06)",
-  muted: "rgba(18,18,20,0.46)",
-  mutedSoft: "rgba(18,18,20,0.32)",
-};
-
-const cardShadow = "0 8px 30px rgba(18,18,20,0.04)";
 
 const ListingDetail = () => {
   const { isAdmin } = useAuth();
@@ -57,7 +43,6 @@ const ListingDetail = () => {
     queryKey: ["listing-detail", id],
     queryFn: async () => {
       const { data, error } = await supabase.from("listings").select("*").eq("id", id!).single();
-
       if (error) throw error;
       return data;
     },
@@ -68,13 +53,9 @@ const ListingDetail = () => {
     queryKey: ["listing-detail-categories", id],
     queryFn: async () => {
       const { data: junctions } = await supabase.from("listing_categories").select("category_id").eq("listing_id", id!);
-
       if (!junctions || junctions.length === 0) return [];
-
       const catIds = junctions.map((j: any) => j.category_id);
-
       const { data: cats } = await supabase.from("categories").select("id, title").in("id", catIds);
-
       return cats ?? [];
     },
     enabled: !!id,
@@ -82,41 +63,18 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: COLORS.bg }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
-          <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-            <ChevronLeft
-              style={{
-                width: 18,
-                height: 18,
-                color: COLORS.muted,
-                strokeWidth: 2.2,
-              }}
-            />
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 500,
-                color: COLORS.muted,
-                letterSpacing: "0.2px",
-              }}
-            >
-              Back
-            </span>
+      <div className="min-h-screen pb-20 bg-background">
+        <div className="px-5 pt-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" /> Back
           </button>
         </div>
-
-        <div className="flex flex-col items-center justify-center" style={{ paddingTop: 120, gap: 14 }}>
-          <div
-            className="animate-pulse"
-            style={{
-              width: 54,
-              height: 54,
-              borderRadius: 999,
-              background: "rgba(18,18,20,0.06)",
-            }}
-          />
-          <p style={{ fontSize: 14, color: COLORS.muted }}>Loading listing…</p>
+        <div className="px-5 pt-12 flex flex-col items-center gap-3">
+          <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
+          <p className="text-muted-foreground text-[13px]">Loading...</p>
         </div>
       </div>
     );
@@ -124,63 +82,18 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: COLORS.bg }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
-          <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-            <ChevronLeft
-              style={{
-                width: 18,
-                height: 18,
-                color: COLORS.muted,
-                strokeWidth: 2.2,
-              }}
-            />
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 500,
-                color: COLORS.muted,
-                letterSpacing: "0.2px",
-              }}
-            >
-              Back
-            </span>
+      <div className="min-h-screen pb-20 bg-background">
+        <div className="px-5 pt-6">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" /> Back
           </button>
         </div>
-
-        <div className="text-center" style={{ paddingTop: 120, paddingInline: 24 }}>
-          <p
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontSize: 24,
-              lineHeight: 1,
-              fontWeight: 800,
-              color: COLORS.text,
-              textTransform: "uppercase",
-              letterSpacing: "-0.4px",
-              marginBottom: 10,
-            }}
-          >
-            Listing not found
-          </p>
-          <p
-            style={{
-              fontSize: 14,
-              color: COLORS.muted,
-              lineHeight: 1.6,
-              marginBottom: 18,
-            }}
-          >
-            This place may have been removed or is no longer available.
-          </p>
-          <Link
-            to="/"
-            style={{
-              fontSize: 14,
-              fontWeight: 600,
-              color: COLORS.primary,
-            }}
-          >
+        <div className="px-5 pt-20 text-center">
+          <p className="text-muted-foreground text-[14px] mb-4">Listing not found.</p>
+          <Link to="/" className="text-primary hover:underline text-[13px] font-medium">
             Back to Home
           </Link>
         </div>
@@ -188,19 +101,16 @@ const ListingDetail = () => {
     );
   }
 
-  const isListingRestaurant = listingCategories?.some((cat: any) => isRestaurantCategory(cat.title)) ?? false;
-  const isListingShopping = listingCategories?.some((cat: any) => isShoppingCategory(cat.title)) ?? false;
-  const isListingAccommodation = listingCategories?.some((cat: any) => isAccommodationCategory(cat.title)) ?? false;
-
+  const firstCategory = listingCategories && listingCategories.length > 0 ? listingCategories[0] : null;
+  const isListingRestaurant = listingCategories?.some((cat) => isRestaurantCategory(cat.title)) ?? false;
+  const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
+  const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
-
-  const hasGallery = !!galleryImages?.length;
-  const hasHours = !!openingHours && Object.values(openingHours).some((v) => !!v);
-
+  const hasGallery = galleryImages && galleryImages.length > 0;
+  const hasHours = openingHours && Object.values(openingHours).some((v) => v);
   const showAttributes = isListingRestaurant && ((listing as any).show_attributes as boolean);
-
   const goodForKids = (listing as any).good_for_kids as boolean | null;
   const petsAllowed = (listing as any).pets_allowed as boolean | null;
   const wheelchairFriendly = (listing as any).wheelchair_friendly as boolean | null;
@@ -222,13 +132,16 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
+  // Kids & Family accordion items
   const kidsItems = [
     { label: "Good for Kids", value: goodForKids },
     { label: "Kids Playground", value: kidsPlayground },
     { label: "Kids Menu", value: kidsMenu },
     { label: "High Chairs", value: highChairs },
   ].filter((item) => item.value === true);
+  const hasKidsInfo = kidsItems.length > 0;
 
+  // Accessibility accordion items
   const accessibilityItems = [
     { label: "Wheelchair Friendly", value: wheelchairFriendly },
     { label: "Wheelchair-accessible Car Park", value: wheelchairCarPark },
@@ -236,40 +149,41 @@ const ListingDetail = () => {
     { label: "Wheelchair-accessible Seating", value: wheelchairSeating },
     { label: "Wheelchair-accessible Toilet", value: wheelchairToilet },
   ].filter((item) => item.value === true);
+  const hasAccessibilityInfo = accessibilityItems.length > 0;
 
+  // Amenities accordion items
   const amenitiesItems = [
     { label: "Toilet", value: hasToilet },
     { label: "Wi-Fi", value: hasWifi },
     { label: "Free Wi-Fi", value: hasFreeWifi },
   ].filter((item) => item.value === true);
+  const hasAmenitiesInfo = amenitiesItems.length > 0;
 
+  // Service options
   const hasSitDown = serviceType?.includes("Sit down") || serviceType?.includes("Dine-in") || false;
   const hasTakeaway = serviceType?.includes("Takeaway") || serviceType?.includes("Take away") || false;
   const hasDelivery = serviceType?.includes("Delivery") || false;
-
   const serviceItems = [
     ...(hasSitDown ? [{ label: "Sit down", available: true }] : []),
     ...(hasTakeaway ? [{ label: "Takeaway", available: true }] : []),
     { label: "Delivery", available: hasDelivery },
   ];
+  const hasServiceInfo = hasSitDown || hasTakeaway || true;
 
+  // Seating
   const seatingItems = [
     ...(seating?.includes("Bar seating") ? [{ label: "Bar seating" }] : []),
     ...(seating?.includes("Indoor seating") ? [{ label: "Indoor seating" }] : []),
     ...(seating?.includes("Outdoor seating") ? [{ label: "Outdoor seating" }] : []),
   ];
-
-  const diningDetails: { label: string; value: string }[] = [];
-  if (cuisine?.length) diningDetails.push({ label: "Cuisine", value: cuisine.join(", ") });
-  if (vibe?.length) diningDetails.push({ label: "Vibe", value: vibe.join(", ") });
-  if (meal?.length) diningDetails.push({ label: "Meal types", value: meal.join(", ") });
-
-  const hasDiningInfo = diningDetails.length > 0;
-  const hasServiceInfo = serviceItems.length > 0;
-  const hasKidsInfo = kidsItems.length > 0;
-  const hasAccessibilityInfo = accessibilityItems.length > 0;
-  const hasAmenitiesInfo = amenitiesItems.length > 0;
   const hasSeatingInfo = seatingItems.length > 0;
+
+  // Dining details accordion
+  const diningDetails: { label: string; value: string }[] = [];
+  if (cuisine && cuisine.length > 0) diningDetails.push({ label: "Cuisine", value: cuisine.join(", ") });
+  if (vibe && vibe.length > 0) diningDetails.push({ label: "Vibe", value: vibe.join(", ") });
+  if (meal && meal.length > 0) diningDetails.push({ label: "Meal types", value: meal.join(", ") });
+  const hasDiningInfo = diningDetails.length > 0;
 
   const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
   const priceName =
@@ -283,331 +197,125 @@ const ListingDetail = () => {
             ? "Fine Dining"
             : null;
 
-  const topPills: {
-    icon: React.ReactNode;
-    label: string;
-    tone?: "warm" | "green" | "neutral";
-  }[] = [];
-
+  // Top quick-scan pills (max 3-4 most important)
+  const topPills: { icon: React.ReactNode; label: string; variant: "positive" | "muted" }[] = [];
   if (showAttributes) {
-    if (goodForKids) {
-      topPills.push({
-        icon: <Baby className="h-3.5 w-3.5" />,
-        label: "Good for Kids",
-        tone: "warm",
-      });
-    }
-    if (petsAllowed) {
-      topPills.push({
-        icon: <PawPrint className="h-3.5 w-3.5" />,
-        label: "Pets Allowed",
-        tone: "green",
-      });
-    }
-    if (smokingAllowed) {
-      topPills.push({
-        icon: <Cigarette className="h-3.5 w-3.5" />,
-        label: "Smoking Allowed",
-        tone: "neutral",
-      });
-    }
-    if (wheelchairFriendly) {
-      topPills.push({
-        icon: <Accessibility className="h-3.5 w-3.5" />,
-        label: "Wheelchair Friendly",
-        tone: "green",
-      });
-    }
+    if (goodForKids === true)
+      topPills.push({ icon: <Baby className="h-3 w-3" />, label: "Good for Kids", variant: "positive" });
+    if (petsAllowed === true)
+      topPills.push({ icon: <PawPrint className="h-3 w-3" />, label: "Pets Allowed", variant: "positive" });
+    if (smokingAllowed === true)
+      topPills.push({ icon: <Cigarette className="h-3 w-3" />, label: "Smoking Allowed", variant: "positive" });
+    if (wheelchairFriendly === true)
+      topPills.push({ icon: <Accessibility className="h-3 w-3" />, label: "Wheelchair Friendly", variant: "positive" });
   }
 
-  const hasContactInfo =
-    !!listing.location || !!listing.phone || !!listing.email || !!listing.website || !!(listing as any).whatsapp;
+  // Pill helper
+  const Pill = ({
+    children,
+    variant = "neutral",
+  }: {
+    children: React.ReactNode;
+    variant?: "neutral" | "positive" | "muted";
+  }) => {
+    const base = "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide";
+    const styles = {
+      neutral: "bg-card border border-border/50 text-foreground",
+      positive: "bg-primary/6 text-primary border border-primary/12",
+      muted: "bg-muted/40 text-muted-foreground border border-border/30 line-through opacity-50",
+    };
+    return <span className={`${base} ${styles[variant]}`}>{children}</span>;
+  };
+
+  const SectionHeading = ({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) => (
+    <h2
+      className="text-[18px] font-semibold text-foreground tracking-tight mb-4 flex items-center gap-2.5"
+      style={{ fontFamily: "var(--font-heading)" }}
+    >
+      {icon && <span className="text-primary/50">{icon}</span>}
+      {children}
+    </h2>
+  );
 
   const handleWhatToKnow = () => {
     whatToKnowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-    <p
-      style={{
-        fontSize: 11,
-        fontWeight: 600,
-        color: COLORS.mutedSoft,
-        textTransform: "uppercase",
-        letterSpacing: "2px",
-        marginBottom: 8,
-      }}
-    >
-      {children}
-    </p>
-  );
+  const hasContactInfo =
+    listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
 
-  const SectionHeading = ({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) => (
-    <div style={{ marginBottom: 18 }}>
-      <h2
-        className="flex items-center"
-        style={{
-          gap: 10,
-          fontFamily: "var(--font-heading)",
-          fontWeight: 800,
-          fontSize: 22,
-          lineHeight: 1,
-          letterSpacing: "-0.3px",
-          color: COLORS.text,
-          textTransform: "uppercase",
-          margin: 0,
-        }}
-      >
-        {icon && <span style={{ color: "rgba(124,92,59,0.45)" }}>{icon}</span>}
-        {children}
-      </h2>
-    </div>
-  );
-
-  const Pill = ({
-    children,
-    tone = "neutral",
-    muted = false,
-  }: {
-    children: React.ReactNode;
-    tone?: "neutral" | "warm" | "green";
-    muted?: boolean;
-  }) => {
-    const styles =
-      tone === "warm"
-        ? {
-            background: "rgba(217,143,57,0.10)",
-            border: "1px solid rgba(217,143,57,0.16)",
-            color: COLORS.primary,
-          }
-        : tone === "green"
-          ? {
-              background: "rgba(110,139,99,0.10)",
-              border: "1px solid rgba(110,139,99,0.18)",
-              color: COLORS.green,
-            }
-          : {
-              background: "rgba(18,18,20,0.04)",
-              border: `1px solid ${COLORS.border}`,
-              color: COLORS.text,
-            };
-
-    return (
-      <span
-        className="inline-flex items-center"
-        style={{
-          gap: 6,
-          borderRadius: 999,
-          padding: "8px 12px",
-          fontSize: 12,
-          fontWeight: 500,
-          letterSpacing: "0.15px",
-          lineHeight: 1,
-          opacity: muted ? 0.55 : 1,
-          textDecoration: muted ? "line-through" : "none",
-          ...styles,
-        }}
-      >
-        {children}
-      </span>
-    );
-  };
-
-  const InfoRow = ({ icon, children, href }: { icon: React.ReactNode; children: React.ReactNode; href?: string }) => {
-    const content = (
-      <div
-        className="flex items-center"
-        style={{
-          gap: 14,
-          padding: "18px 20px",
-          color: COLORS.primary,
-          fontSize: 14,
-          lineHeight: 1.45,
-        }}
-      >
-        <span style={{ color: "rgba(124,92,59,0.55)", flexShrink: 0 }}>{icon}</span>
-        <span style={{ minWidth: 0, wordBreak: "break-word" }}>{children}</span>
-      </div>
-    );
-
-    if (href) {
-      return (
-        <a
-          href={href}
-          target={href.startsWith("tel:") || href.startsWith("mailto:") ? undefined : "_blank"}
-          rel={href.startsWith("tel:") || href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-          className="block transition-opacity active:scale-[0.99]"
-          style={{ textDecoration: "none" }}
-        >
-          {content}
-        </a>
-      );
-    }
-
-    return content;
-  };
-
-  const accordionTriggerClass = "px-5 py-4 hover:no-underline [&[data-state=open]>svg]:rotate-180";
+  // Grouped accordion trigger style
+  const triggerClass =
+    "bg-card px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline";
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: COLORS.bg }}>
+    <div className="min-h-screen pb-20 bg-background">
+      {/* Hero image */}
       {listing.image_url ? (
         <div className="relative">
-          <div
-            className="relative overflow-hidden"
-            style={{ height: 312, borderBottomLeftRadius: 28, borderBottomRightRadius: 28 }}
-          >
+          <div className="relative h-[320px] overflow-hidden">
             <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
-            <div
-              className="absolute inset-0"
-              style={{
-                background: "linear-gradient(to top, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.10) 42%, rgba(0,0,0,0.05) 100%)",
-              }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-black/20" />
           </div>
-
           <button
             onClick={() => navigate(-1)}
-            className="absolute left-5 active:scale-[0.97] transition-transform"
-            style={{
-              top: 48,
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: "rgba(255,253,248,0.92)",
-              backdropFilter: "blur(10px)",
-              border: "1px solid rgba(18,18,20,0.06)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-            }}
+            className="absolute top-5 left-5 z-10 bg-card/90 backdrop-blur-md rounded-full p-2.5 active:scale-95 transition-all shadow-sm"
           >
-            <ChevronLeft style={{ width: 18, height: 18, color: COLORS.text, strokeWidth: 2.2 }} />
+            <ChevronLeft className="h-4 w-4 text-foreground" />
           </button>
-
           {isAdmin && (
             <button
               onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
-              className="absolute right-5 active:scale-[0.97] transition-transform"
-              style={{
-                top: 48,
-                width: 40,
-                height: 40,
-                borderRadius: 999,
-                background: "rgba(255,253,248,0.92)",
-                backdropFilter: "blur(10px)",
-                border: "1px solid rgba(18,18,20,0.06)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              }}
+              className="absolute top-5 right-5 z-10 bg-card/90 backdrop-blur-md rounded-full p-2.5 active:scale-95 transition-all shadow-sm"
               title="Edit listing"
             >
-              <Pencil style={{ width: 16, height: 16, color: COLORS.text }} />
+              <Pencil className="h-4 w-4 text-foreground" />
             </button>
           )}
         </div>
       ) : (
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
-          <div className="flex items-center justify-between">
-            <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-              <ChevronLeft
-                style={{
-                  width: 18,
-                  height: 18,
-                  color: COLORS.muted,
-                  strokeWidth: 2.2,
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 15,
-                  fontWeight: 500,
-                  color: COLORS.muted,
-                  letterSpacing: "0.2px",
-                }}
-              >
-                Back
-              </span>
+        <div className="px-5 pt-6 flex items-center justify-between">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" /> Back
+          </button>
+          {isAdmin && (
+            <button
+              onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
+              className="p-2.5 rounded-full bg-primary/8 text-primary"
+              title="Edit listing"
+            >
+              <Pencil className="h-4 w-4" />
             </button>
-
-            {isAdmin && (
-              <button
-                onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
-                className="active:scale-[0.97] transition-transform"
-                style={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 999,
-                  border: `1px solid ${COLORS.border}`,
-                  background: COLORS.surface,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                title="Edit listing"
-              >
-                <Pencil style={{ width: 16, height: 16, color: COLORS.primary }} />
-              </button>
-            )}
-          </div>
+          )}
         </div>
       )}
 
-      <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 22, paddingBottom: 40 }}>
-        <div style={{ marginBottom: 24 }}>
+      <div className="px-5 pt-6 pb-10">
+        {/* Title & identity */}
+        <div className="mb-5">
           {listing.is_featured && (
-            <p
-              className="flex items-center"
-              style={{
-                gap: 6,
-                fontSize: 11,
-                fontWeight: 700,
-                color: COLORS.accent,
-                textTransform: "uppercase",
-                letterSpacing: "1.8px",
-                marginBottom: 10,
-              }}
-            >
-              <Star style={{ width: 12, height: 12, fill: "currentColor" }} />
-              Featured
-            </p>
+            <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-accent uppercase tracking-[0.08em] mb-2.5">
+              <Star className="h-3 w-3 fill-current" /> Featured
+            </span>
           )}
-
           <h1
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 900,
-              fontSize: 36,
-              lineHeight: 0.98,
-              letterSpacing: "-0.6px",
-              color: COLORS.text,
-              textTransform: "uppercase",
-              margin: 0,
-            }}
+            className="text-[26px] font-semibold text-foreground leading-[1.15] tracking-tight"
+            style={{ fontFamily: "var(--font-heading)" }}
           >
             {listing.title}
           </h1>
 
+          {/* Categories */}
           {listingCategories && listingCategories.length > 0 && (
-            <div className="flex flex-wrap" style={{ gap: 8, marginTop: 16 }}>
-              {listingCategories.map((cat: any) => (
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {listingCategories.map((cat) => (
                 <Link
                   key={cat.id}
                   to={`/category/${cat.id}`}
-                  className="transition-transform active:scale-[0.98]"
-                  style={{
-                    borderRadius: 999,
-                    background: "rgba(18,18,20,0.04)",
-                    border: `1px solid ${COLORS.border}`,
-                    padding: "8px 12px",
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: COLORS.muted,
-                    textDecoration: "none",
-                  }}
+                  className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/6 text-primary border border-primary/12 hover:bg-primary/12 transition-colors"
                 >
                   {cat.title}
                 </Link>
@@ -615,210 +323,184 @@ const ListingDetail = () => {
             </div>
           )}
 
-          {((listing as any).google_rating != null || showAttributes || topPills.length > 0) && (
-            <div style={{ marginTop: 16 }}>
-              {(listing as any).google_rating != null && (
-                <div className="flex items-center flex-wrap" style={{ gap: 8, marginBottom: 12 }}>
-                  <div className="flex items-center" style={{ gap: 2 }}>
+          {/* Google rating */}
+          {(listing as any).google_rating != null && (
+            <div className="flex items-center gap-2 mt-3">
+              {(listing as any).google_reviews_url ? (
+                <a
+                  href={(listing as any).google_reviews_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                >
+                  <div className="flex items-center gap-0.5">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
-                        style={{
-                          width: 14,
-                          height: 14,
-                          color: star <= Math.round((listing as any).google_rating) ? "#D98F39" : "rgba(18,18,20,0.14)",
-                          fill: star <= Math.round((listing as any).google_rating) ? "#D98F39" : "none",
-                        }}
+                        className={`h-3.5 w-3.5 ${star <= Math.round((listing as any).google_rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/20"}`}
                       />
                     ))}
                   </div>
-
-                  <span
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: COLORS.text,
-                    }}
-                  >
-                    {(listing as any).google_rating}
-                  </span>
-
+                  <span className="text-[13px] font-medium text-foreground">{(listing as any).google_rating}</span>
                   {(listing as any).google_reviews_count != null && (
-                    <>
-                      {(listing as any).google_reviews_url ? (
-                        <a
-                          href={(listing as any).google_reviews_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            fontSize: 13,
-                            color: COLORS.muted,
-                            textDecoration: "underline",
-                          }}
-                        >
-                          ({(listing as any).google_reviews_count} reviews)
-                        </a>
-                      ) : (
-                        <span style={{ fontSize: 13, color: COLORS.muted }}>
-                          ({(listing as any).google_reviews_count} reviews)
-                        </span>
-                      )}
-                    </>
+                    <span className="text-[12px] text-muted-foreground underline">
+                      ({(listing as any).google_reviews_count} reviews)
+                    </span>
                   )}
-                </div>
+                </a>
+              ) : (
+                <>
+                  <div className="flex items-center gap-0.5">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-3.5 w-3.5 ${star <= Math.round((listing as any).google_rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/20"}`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-[13px] font-medium text-foreground">{(listing as any).google_rating}</span>
+                  {(listing as any).google_reviews_count != null && (
+                    <span className="text-[12px] text-muted-foreground">
+                      ({(listing as any).google_reviews_count} reviews)
+                    </span>
+                  )}
+                </>
               )}
+            </div>
+          )}
 
-              {showAttributes && priceLabel && (
-                <p
-                  className="flex items-center"
-                  style={{
-                    gap: 6,
-                    fontSize: 13,
-                    color: COLORS.muted,
-                    marginBottom: topPills.length > 0 ? 12 : 0,
-                  }}
-                >
-                  <DollarSign
-                    style={{
-                      width: 14,
-                      height: 14,
-                      color: "rgba(124,92,59,0.55)",
-                    }}
-                  />
-                  <span style={{ color: COLORS.text, fontWeight: 600 }}>{priceLabel}</span>
-                  {priceName && <span>· {priceName}</span>}
-                </p>
-              )}
-
-              {topPills.length > 0 && (
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
-                  {topPills.slice(0, 4).map((pill) => (
-                    <Pill key={pill.label} tone={pill.tone ?? "neutral"}>
-                      {pill.icon}
-                      {pill.label}
-                    </Pill>
-                  ))}
-                </div>
-              )}
+          {/* Price level inline */}
+          {showAttributes && priceLabel && (
+            <div className="flex items-center gap-1.5 mt-3 text-[13px] text-muted-foreground">
+              <DollarSign className="h-3.5 w-3.5 text-primary/60" />
+              <span className="font-semibold text-foreground">{priceLabel}</span>
+              {priceName && <span>· {priceName}</span>}
             </div>
           )}
         </div>
 
-        <div style={{ marginBottom: 28 }}>
+        {/* Actions */}
+        <div className="mb-7">
           <ListingActions listingId={listing.id} onWhatToKnow={handleWhatToKnow} />
         </div>
 
+        {/* Quick-scan pills (max 3-4) */}
+        {topPills.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-7">
+            {topPills.slice(0, 4).map((pill) => (
+              <Pill key={pill.label} variant={pill.variant}>
+                {pill.icon} {pill.label}
+              </Pill>
+            ))}
+          </div>
+        )}
+
+        {/* Grouped contact details block — no heading */}
         {hasContactInfo && (
           <div
-            style={{
-              background: COLORS.surface,
-              border: `1px solid ${COLORS.border}`,
-              borderRadius: 24,
-              overflow: "hidden",
-              boxShadow: cardShadow,
-              marginBottom: 34,
-            }}
+            className="bg-card rounded-2xl border border-border/50 mb-8 overflow-hidden"
+            style={{ boxShadow: "var(--card-shadow)" }}
           >
-            <div style={{ borderTop: "none" }}>
-              {listing.location && (
-                <div style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                  <InfoRow
-                    icon={<MapPin style={{ width: 22, height: 22 }} />}
-                    href={(listing as any).google_maps_link || undefined}
+            <div className="divide-y divide-border/30">
+              {listing.location &&
+                ((listing as any).google_maps_link ? (
+                  <a
+                    href={(listing as any).google_maps_link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
                   >
-                    {listing.location}
-                  </InfoRow>
-                </div>
-              )}
-
+                    <MapPin className="h-[18px] w-[18px] text-primary/50 shrink-0" />
+                    <span className="leading-snug">{listing.location}</span>
+                  </a>
+                ) : (
+                  <div className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground">
+                    <MapPin className="h-[18px] w-[18px] text-primary/50 shrink-0" />
+                    <span className="leading-snug">{listing.location}</span>
+                  </div>
+                ))}
               {listing.phone && (
-                <div style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                  <InfoRow icon={<Phone style={{ width: 22, height: 22 }} />} href={`tel:${listing.phone}`}>
-                    {listing.phone}
-                  </InfoRow>
-                </div>
-              )}
-
-              {listing.email && (
-                <div style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                  <InfoRow icon={<Mail style={{ width: 22, height: 22 }} />} href={`mailto:${listing.email}`}>
-                    {listing.email}
-                  </InfoRow>
-                </div>
-              )}
-
-              {listing.website && (
-                <div style={{ borderBottom: (listing as any).whatsapp ? `1px solid ${COLORS.borderSoft}` : "none" }}>
-                  <InfoRow icon={<Globe style={{ width: 22, height: 22 }} />} href={listing.website}>
-                    Website
-                  </InfoRow>
-                </div>
-              )}
-
-              {(listing as any).whatsapp && (
-                <InfoRow
-                  icon={<MessageCircle style={{ width: 22, height: 22 }} />}
-                  href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, "")}`}
+                <a
+                  href={`tel:${listing.phone}`}
+                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
                 >
-                  WhatsApp
-                </InfoRow>
+                  <Phone className="h-[18px] w-[18px] text-primary/50 shrink-0" /> {listing.phone}
+                </a>
+              )}
+              {listing.email && (
+                <a
+                  href={`mailto:${listing.email}`}
+                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
+                >
+                  <Mail className="h-[18px] w-[18px] text-primary/50 shrink-0" /> {listing.email}
+                </a>
+              )}
+              {listing.website && (
+                <a
+                  href={listing.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
+                >
+                  <Globe className="h-[18px] w-[18px] text-primary/50 shrink-0" /> Website
+                </a>
+              )}
+              {(listing as any).whatsapp && (
+                <a
+                  href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
+                >
+                  <MessageCircle className="h-[18px] w-[18px] text-primary/50 shrink-0" /> WhatsApp
+                </a>
               )}
             </div>
           </div>
         )}
 
+        {/* Restaurant attributes */}
         {showAttributes && (
-          <section style={{ marginBottom: 34 }}>
-            <SectionLabel>Snapshot</SectionLabel>
+          <div className="mb-8">
             <SectionHeading>Details</SectionHeading>
-
-            <div className="flex flex-wrap" style={{ gap: 8 }}>
+            <div className="flex flex-wrap gap-2">
               {priceLabel && (
-                <Pill tone="warm">
-                  <DollarSign className="h-3.5 w-3.5" />
-                  {priceLabel}
-                  {priceName && <span style={{ color: COLORS.muted }}>· {priceName}</span>}
+                <Pill>
+                  <DollarSign className="h-3 w-3 text-primary" />
+                  <span className="font-semibold">{priceLabel}</span>
+                  {priceName && <span className="text-muted-foreground">· {priceName}</span>}
                 </Pill>
               )}
-
-              {meal?.length ? (
+              {meal && meal.length > 0 && (
                 <Pill>
-                  <UtensilsCrossed className="h-3.5 w-3.5" />
-                  {meal.join(", ")}
+                  <UtensilsCrossed className="h-3 w-3 text-primary" /> {meal.join(", ")}
                 </Pill>
-              ) : null}
-
-              {vibe?.length ? (
+              )}
+              {vibe && vibe.length > 0 && (
                 <Pill>
-                  <Palette className="h-3.5 w-3.5" />
-                  {vibe.join(", ")}
+                  <Palette className="h-3 w-3 text-primary" /> {vibe.join(", ")}
                 </Pill>
-              ) : null}
-
-              {cuisine?.length ? (
+              )}
+              {cuisine && cuisine.length > 0 && (
                 <Pill>
-                  <ChefHat className="h-3.5 w-3.5" />
-                  {cuisine.join(", ")}
+                  <ChefHat className="h-3 w-3 text-primary" /> {cuisine.join(", ")}
                 </Pill>
-              ) : null}
-
-              {seating?.length ? (
+              )}
+              {seating && seating.length > 0 && (
                 <Pill>
-                  <Armchair className="h-3.5 w-3.5" />
-                  {seating.join(", ")}
+                  <Armchair className="h-3 w-3 text-primary" /> {seating.join(", ")}
                 </Pill>
-              ) : null}
-
-              {serviceType?.length ? (
+              )}
+              {serviceType && serviceType.length > 0 && (
                 <Pill>
-                  <ShoppingBag className="h-3.5 w-3.5" />
-                  {serviceType.join(", ")}
+                  <ShoppingBag className="h-3 w-3 text-primary" /> {serviceType.join(", ")}
                 </Pill>
-              ) : null}
+              )}
             </div>
-          </section>
+          </div>
         )}
 
+        {/* Shopping attributes */}
         {isListingShopping &&
           (() => {
             const airCon = (listing as any).air_conditioned as boolean | null;
@@ -846,237 +528,157 @@ const ListingDetail = () => {
             ].filter((item) => item.value === true);
 
             const hasAnyShopInfo =
-              boolItems.length > 0 || !!paymentMethods?.length || !!shopType || !!prodCats?.length || !!priceRng;
-
+              boolItems.length > 0 ||
+              (paymentMethods && paymentMethods.length > 0) ||
+              shopType ||
+              (prodCats && prodCats.length > 0) ||
+              priceRng;
             if (!hasAnyShopInfo) return null;
 
             return (
-              <section style={{ marginBottom: 34 }}>
-                <SectionLabel>Snapshot</SectionLabel>
+              <div className="mb-8">
                 <SectionHeading>Details</SectionHeading>
-
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
-                  {shopType ? (
+                <div className="flex flex-wrap gap-2">
+                  {shopType && (
                     <Pill>
-                      <ShoppingBag className="h-3.5 w-3.5" />
-                      {shopType}
+                      <ShoppingBag className="h-3 w-3 text-primary" /> {shopType}
                     </Pill>
-                  ) : null}
-
-                  {priceRng ? (
-                    <Pill tone="warm">
-                      <DollarSign className="h-3.5 w-3.5" />
-                      {priceRng}
+                  )}
+                  {priceRng && (
+                    <Pill>
+                      <DollarSign className="h-3 w-3 text-primary" /> {priceRng}
                     </Pill>
-                  ) : null}
-
+                  )}
                   {boolItems.map((item) => (
-                    <Pill key={item.label} tone="green">
-                      <Check className="h-3.5 w-3.5" />
-                      {item.label}
+                    <Pill key={item.label} variant="positive">
+                      <Check className="h-3 w-3" /> {item.label}
                     </Pill>
                   ))}
-
-                  {paymentMethods?.length ? (
+                  {paymentMethods && paymentMethods.length > 0 && (
                     <Pill>
-                      <span style={{ color: COLORS.muted }}>Payment:</span>
-                      {paymentMethods.join(", ")}
+                      <span className="text-muted-foreground">Payment:</span> {paymentMethods.join(", ")}
                     </Pill>
-                  ) : null}
-
-                  {prodCats?.length ? (
+                  )}
+                  {prodCats && prodCats.length > 0 && (
                     <Pill>
-                      <span style={{ color: COLORS.muted }}>Products:</span>
-                      {prodCats.join(", ")}
+                      <span className="text-muted-foreground">Products:</span> {prodCats.join(", ")}
                     </Pill>
-                  ) : null}
+                  )}
                 </div>
-              </section>
+              </div>
             );
           })()}
 
+        {/* Accommodation attributes */}
         {isListingAccommodation &&
           (() => {
-            const accomPetsAllowed = (listing as any).pets_allowed as boolean | null;
+            const petsAllowed = (listing as any).pets_allowed as boolean | null;
             const amenities = (listing as any).amenities as string[] | null;
             const sleeps = (listing as any).sleeps as number | null;
             const priceRng = (listing as any).price_range as string | null;
             const kmFromTown = (listing as any).km_from_town as string | null;
 
             const hasAnyAccomInfo =
-              accomPetsAllowed != null || !!amenities?.length || sleeps != null || !!priceRng || !!kmFromTown;
-
+              petsAllowed != null || (amenities && amenities.length > 0) || sleeps != null || priceRng || kmFromTown;
             if (!hasAnyAccomInfo) return null;
 
             return (
-              <section style={{ marginBottom: 34 }}>
-                <SectionLabel>Snapshot</SectionLabel>
+              <div className="mb-8">
                 <SectionHeading>Details</SectionHeading>
-
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
-                  {accomPetsAllowed != null && (
-                    <Pill tone={accomPetsAllowed ? "green" : "neutral"} muted={!accomPetsAllowed}>
-                      <PawPrint className="h-3.5 w-3.5" />
-                      {accomPetsAllowed ? "Pets Allowed" : "No Pets"}
+                <div className="flex flex-wrap gap-2">
+                  {petsAllowed != null && (
+                    <Pill variant={petsAllowed ? "positive" : "neutral"}>
+                      <PawPrint className="h-3 w-3" /> {petsAllowed ? "Pets Allowed" : "No Pets"}
                     </Pill>
                   )}
-
                   {sleeps != null && (
                     <Pill>
-                      <span style={{ color: COLORS.muted }}>Sleeps:</span>
-                      {sleeps}
+                      <span className="text-muted-foreground">Sleeps:</span> {sleeps}
                     </Pill>
                   )}
-
                   {priceRng && (
-                    <Pill tone="warm">
-                      <DollarSign className="h-3.5 w-3.5" />
-                      {priceRng}
+                    <Pill>
+                      <DollarSign className="h-3 w-3 text-primary" /> {priceRng}
                     </Pill>
                   )}
-
                   {kmFromTown && (
                     <Pill>
-                      <MapPin className="h-3.5 w-3.5" />
-                      {kmFromTown} km from town
+                      <MapPin className="h-3 w-3 text-primary" /> {kmFromTown} km from town
                     </Pill>
                   )}
-
-                  {amenities?.length
-                    ? amenities.map((a) => (
-                        <Pill key={a} tone="green">
-                          <Check className="h-3.5 w-3.5" />
-                          {a}
-                        </Pill>
-                      ))
-                    : null}
+                  {amenities &&
+                    amenities.length > 0 &&
+                    amenities.map((a) => (
+                      <Pill key={a} variant="positive">
+                        <Check className="h-3 w-3" /> {a}
+                      </Pill>
+                    ))}
                 </div>
-              </section>
+              </div>
             );
           })()}
 
+        {/* Description */}
         {listing.description && !longDescription && (
-          <section style={{ marginBottom: 34 }}>
-            <SectionLabel>Story</SectionLabel>
+          <div className="mb-8">
             <SectionHeading>About</SectionHeading>
-            <p
-              style={{
-                fontSize: 16,
-                lineHeight: 1.75,
-                color: COLORS.primary,
-                margin: 0,
-              }}
-            >
-              {listing.description}
-            </p>
-          </section>
+            <p className="text-muted-foreground text-[14px] leading-[1.75] text-left">{listing.description}</p>
+          </div>
         )}
 
+        {/* Long description */}
         {longDescription && (
-          <section style={{ marginBottom: 34 }}>
-            <SectionLabel>Story</SectionLabel>
+          <div className="mb-8">
             <SectionHeading>About</SectionHeading>
-
-            <div style={{ display: "grid", gap: 14 }}>
-              {longDescription
-                .split("\n")
-                .filter((paragraph) => paragraph.trim())
-                .map((paragraph, i) => (
-                  <p
-                    key={i}
-                    style={{
-                      fontSize: 16,
-                      lineHeight: 1.78,
-                      color: COLORS.primary,
-                      margin: 0,
-                    }}
-                  >
-                    {paragraph}
-                  </p>
-                ))}
-            </div>
-          </section>
+            {longDescription.split("\n").map((paragraph, i) => (
+              <p key={i} className="text-foreground/75 text-[14px] leading-[1.8] mb-3 last:mb-0 text-left">
+                {paragraph}
+              </p>
+            ))}
+          </div>
         )}
 
+        {/* Gallery */}
         {hasGallery && (
-          <section style={{ marginBottom: 34 }}>
-            <SectionLabel>Moments</SectionLabel>
+          <div className="mb-8">
             <SectionHeading>Gallery</SectionHeading>
-
-            <div className="grid grid-cols-2" style={{ gap: 10 }}>
-              {galleryImages!.map((url, i) => (
-                <div
-                  key={i}
-                  style={{
-                    aspectRatio: "3 / 4",
-                    borderRadius: 18,
-                    overflow: "hidden",
-                    background: "rgba(18,18,20,0.06)",
-                  }}
-                >
+            <div className="grid grid-cols-2 gap-2.5">
+              {galleryImages.map((url, i) => (
+                <div key={i} className="rounded-xl overflow-hidden aspect-[3/4]">
                   <img src={url} alt={`${listing.title} gallery ${i + 1}`} className="w-full h-full object-cover" />
                 </div>
               ))}
             </div>
-          </section>
+          </div>
         )}
 
+        {/* What to Know anchor */}
         <div ref={whatToKnowRef} className="scroll-mt-4" />
 
+        {/* Opening hours */}
         {hasHours && (
-          <section style={{ marginBottom: 34 }}>
-            <SectionLabel>Plan your visit</SectionLabel>
-            <SectionHeading icon={<Clock className="h-5 w-5" />}>Hours</SectionHeading>
-
+          <div className="mb-8">
+            <SectionHeading icon={<Clock className="h-4 w-4" />}>Hours</SectionHeading>
             <div
-              style={{
-                background: COLORS.surface,
-                border: `1px solid ${COLORS.border}`,
-                borderRadius: 24,
-                overflow: "hidden",
-                boxShadow: cardShadow,
-              }}
+              className="bg-card rounded-2xl border border-border/50 overflow-hidden"
+              style={{ boxShadow: "var(--card-shadow)" }}
             >
-              {DAY_LABELS.map((day, index) => {
-                const value = openingHours?.[day.toLowerCase()] || "";
-                const isLast = index === DAY_LABELS.length - 1;
-
-                return (
-                  <div
-                    key={day}
-                    className="flex items-center justify-between"
-                    style={{
-                      padding: "18px 20px",
-                      borderBottom: isLast ? "none" : `1px solid ${COLORS.borderSoft}`,
-                      gap: 16,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 500,
-                        color: COLORS.text,
-                      }}
-                    >
-                      {day}
-                    </span>
-
-                    <span
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 400,
-                        color: value ? COLORS.muted : COLORS.primary,
-                      }}
-                    >
-                      {value || "Closed"}
-                    </span>
-                  </div>
-                );
-              })}
+              <div className="divide-y divide-border/30">
+                {DAY_LABELS.map((day) => {
+                  const value = openingHours[day.toLowerCase()] || "";
+                  return (
+                    <div key={day} className="flex justify-between px-4 py-3 text-[13px]">
+                      <span className="font-medium text-foreground">{day}</span>
+                      <span className="text-muted-foreground">{value || "Closed"}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </section>
+          </div>
         )}
 
+        {/* Grouped accordion sections — no gaps, one connected block */}
         {isListingRestaurant &&
           (hasDiningInfo ||
             hasServiceInfo ||
@@ -1084,315 +686,126 @@ const ListingDetail = () => {
             hasAccessibilityInfo ||
             hasAmenitiesInfo ||
             hasSeatingInfo) && (
-            <section style={{ marginBottom: 12 }}>
+            <div className="mb-8">
               <div
-                style={{
-                  background: COLORS.surface,
-                  border: `1px solid ${COLORS.border}`,
-                  borderRadius: 24,
-                  overflow: "hidden",
-                  boxShadow: cardShadow,
-                }}
+                className="bg-card rounded-2xl border border-border/50 overflow-hidden"
+                style={{ boxShadow: "var(--card-shadow)" }}
               >
                 <Accordion type="single" collapsible>
                   {hasDiningInfo && (
-                    <AccordionItem value="dining" style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                      <AccordionTrigger className={accordionTriggerClass}>
-                        <span
-                          className="flex items-center"
-                          style={{
-                            gap: 10,
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: COLORS.text,
-                          }}
-                        >
-                          <UtensilsCrossed
-                            style={{
-                              width: 18,
-                              height: 18,
-                              color: "rgba(124,92,59,0.55)",
-                            }}
-                          />
-                          Dining Details
+                    <AccordionItem value="dining" className="border-b border-border/30 last:border-b-0">
+                      <AccordionTrigger className={triggerClass}>
+                        <span className="flex items-center gap-2.5">
+                          <ChefHat className="h-4 w-4 text-primary/50" /> Dining Details
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent style={{ padding: "0 20px 18px 20px" }}>
-                        <div style={{ display: "grid", gap: 12 }}>
-                          {diningDetails.map((item) => (
-                            <div key={item.label}>
-                              <p
-                                style={{
-                                  fontSize: 11,
-                                  fontWeight: 600,
-                                  color: COLORS.mutedSoft,
-                                  textTransform: "uppercase",
-                                  letterSpacing: "1.5px",
-                                  marginBottom: 4,
-                                }}
-                              >
-                                {item.label}
-                              </p>
-                              <p
-                                style={{
-                                  fontSize: 14,
-                                  lineHeight: 1.6,
-                                  color: COLORS.primary,
-                                  margin: 0,
-                                }}
-                              >
-                                {item.value}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
+                      <AccordionContent className="px-4 pb-4 pt-3 space-y-3">
+                        {diningDetails.map((item) => (
+                          <div key={item.label} className="flex items-start gap-2.5 text-[13px]">
+                            <span className="font-medium text-foreground min-w-[80px]">{item.label}</span>
+                            <span className="text-muted-foreground">{item.value}</span>
+                          </div>
+                        ))}
                       </AccordionContent>
                     </AccordionItem>
                   )}
 
                   {hasServiceInfo && (
-                    <AccordionItem value="service" style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                      <AccordionTrigger className={accordionTriggerClass}>
-                        <span
-                          className="flex items-center"
-                          style={{
-                            gap: 10,
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: COLORS.text,
-                          }}
-                        >
-                          <ShoppingBag
-                            style={{
-                              width: 18,
-                              height: 18,
-                              color: "rgba(124,92,59,0.55)",
-                            }}
-                          />
-                          Service Options
+                    <AccordionItem value="service" className="border-b border-border/30 last:border-b-0">
+                      <AccordionTrigger className={triggerClass}>
+                        <span className="flex items-center gap-2.5">
+                          <ShoppingBag className="h-4 w-4 text-primary/50" /> Service Options
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent style={{ padding: "0 20px 18px 20px" }}>
-                        <div style={{ display: "grid", gap: 10 }}>
-                          {serviceItems.map((item) => (
-                            <div
-                              key={item.label}
-                              className="flex items-center"
-                              style={{
-                                gap: 10,
-                                fontSize: 14,
-                                color: item.available ? COLORS.text : COLORS.muted,
-                                opacity: item.available ? 1 : 0.6,
-                              }}
-                            >
-                              <Check
-                                style={{
-                                  width: 16,
-                                  height: 16,
-                                  color: item.available ? COLORS.green : COLORS.mutedSoft,
-                                  flexShrink: 0,
-                                }}
-                              />
-                              <span
-                                style={{
-                                  textDecoration: item.available ? "none" : "line-through",
-                                }}
-                              >
-                                {item.label}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
+                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                        {serviceItems.map((item) => (
+                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                            {item.available ? (
+                              <Check className="h-3.5 w-3.5 text-primary" />
+                            ) : (
+                              <Ban className="h-3.5 w-3.5 text-destructive" />
+                            )}
+                            <span className={item.available ? "" : "text-muted-foreground"}>{item.label}</span>
+                          </div>
+                        ))}
                       </AccordionContent>
                     </AccordionItem>
                   )}
 
                   {hasSeatingInfo && (
-                    <AccordionItem value="seating" style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                      <AccordionTrigger className={accordionTriggerClass}>
-                        <span
-                          className="flex items-center"
-                          style={{
-                            gap: 10,
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: COLORS.text,
-                          }}
-                        >
-                          <Armchair
-                            style={{
-                              width: 18,
-                              height: 18,
-                              color: "rgba(124,92,59,0.55)",
-                            }}
-                          />
-                          Seating
+                    <AccordionItem value="seating" className="border-b border-border/30 last:border-b-0">
+                      <AccordionTrigger className={triggerClass}>
+                        <span className="flex items-center gap-2.5">
+                          <Armchair className="h-4 w-4 text-primary/50" /> Seating
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent style={{ padding: "0 20px 18px 20px" }}>
-                        <div style={{ display: "grid", gap: 10 }}>
-                          {seatingItems.map((item) => (
-                            <div
-                              key={item.label}
-                              className="flex items-center"
-                              style={{ gap: 10, fontSize: 14, color: COLORS.text }}
-                            >
-                              <Check
-                                style={{
-                                  width: 16,
-                                  height: 16,
-                                  color: COLORS.green,
-                                  flexShrink: 0,
-                                }}
-                              />
-                              <span>{item.label}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                        {seatingItems.map((item) => (
+                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                            <Check className="h-3.5 w-3.5 text-primary" />
+                            <span>{item.label}</span>
+                          </div>
+                        ))}
                       </AccordionContent>
                     </AccordionItem>
                   )}
 
                   {hasAmenitiesInfo && (
-                    <AccordionItem value="amenities" style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                      <AccordionTrigger className={accordionTriggerClass}>
-                        <span
-                          className="flex items-center"
-                          style={{
-                            gap: 10,
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: COLORS.text,
-                          }}
-                        >
-                          <Wifi
-                            style={{
-                              width: 18,
-                              height: 18,
-                              color: "rgba(124,92,59,0.55)",
-                            }}
-                          />
-                          Amenities
+                    <AccordionItem value="amenities" className="border-b border-border/30 last:border-b-0">
+                      <AccordionTrigger className={triggerClass}>
+                        <span className="flex items-center gap-2.5">
+                          <Wifi className="h-4 w-4 text-primary/50" /> Amenities
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent style={{ padding: "0 20px 18px 20px" }}>
-                        <div style={{ display: "grid", gap: 10 }}>
-                          {amenitiesItems.map((item) => (
-                            <div
-                              key={item.label}
-                              className="flex items-center"
-                              style={{ gap: 10, fontSize: 14, color: COLORS.text }}
-                            >
-                              <Check
-                                style={{
-                                  width: 16,
-                                  height: 16,
-                                  color: COLORS.green,
-                                  flexShrink: 0,
-                                }}
-                              />
-                              <span>{item.label}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                        {amenitiesItems.map((item) => (
+                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                            <Check className="h-3.5 w-3.5 text-primary" />
+                            <span>{item.label}</span>
+                          </div>
+                        ))}
                       </AccordionContent>
                     </AccordionItem>
                   )}
 
                   {hasKidsInfo && (
-                    <AccordionItem value="kids" style={{ borderBottom: `1px solid ${COLORS.borderSoft}` }}>
-                      <AccordionTrigger className={accordionTriggerClass}>
-                        <span
-                          className="flex items-center"
-                          style={{
-                            gap: 10,
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: COLORS.text,
-                          }}
-                        >
-                          <Baby
-                            style={{
-                              width: 18,
-                              height: 18,
-                              color: "rgba(124,92,59,0.55)",
-                            }}
-                          />
-                          Kids & Family
+                    <AccordionItem value="kids" className="border-b border-border/30 last:border-b-0">
+                      <AccordionTrigger className={triggerClass}>
+                        <span className="flex items-center gap-2.5">
+                          <Baby className="h-4 w-4 text-primary/50" /> Kids & Family
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent style={{ padding: "0 20px 18px 20px" }}>
-                        <div style={{ display: "grid", gap: 10 }}>
-                          {kidsItems.map((item) => (
-                            <div
-                              key={item.label}
-                              className="flex items-center"
-                              style={{ gap: 10, fontSize: 14, color: COLORS.text }}
-                            >
-                              <Check
-                                style={{
-                                  width: 16,
-                                  height: 16,
-                                  color: COLORS.green,
-                                  flexShrink: 0,
-                                }}
-                              />
-                              <span>{item.label}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                        {kidsItems.map((item) => (
+                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                            <Check className="h-3.5 w-3.5 text-primary" />
+                            <span>{item.label}</span>
+                          </div>
+                        ))}
                       </AccordionContent>
                     </AccordionItem>
                   )}
 
                   {hasAccessibilityInfo && (
-                    <AccordionItem value="accessibility" style={{ borderBottom: "none" }}>
-                      <AccordionTrigger className={accordionTriggerClass}>
-                        <span
-                          className="flex items-center"
-                          style={{
-                            gap: 10,
-                            fontSize: 15,
-                            fontWeight: 600,
-                            color: COLORS.text,
-                          }}
-                        >
-                          <Accessibility
-                            style={{
-                              width: 18,
-                              height: 18,
-                              color: "rgba(124,92,59,0.55)",
-                            }}
-                          />
-                          Accessibility
+                    <AccordionItem value="accessibility" className="border-b border-border/30 last:border-b-0">
+                      <AccordionTrigger className={triggerClass}>
+                        <span className="flex items-center gap-2.5">
+                          <Accessibility className="h-4 w-4 text-primary/50" /> Accessibility
                         </span>
                       </AccordionTrigger>
-                      <AccordionContent style={{ padding: "0 20px 18px 20px" }}>
-                        <div style={{ display: "grid", gap: 10 }}>
-                          {accessibilityItems.map((item) => (
-                            <div
-                              key={item.label}
-                              className="flex items-center"
-                              style={{ gap: 10, fontSize: 14, color: COLORS.text }}
-                            >
-                              <Check
-                                style={{
-                                  width: 16,
-                                  height: 16,
-                                  color: COLORS.green,
-                                  flexShrink: 0,
-                                }}
-                              />
-                              <span>{item.label}</span>
-                            </div>
-                          ))}
-                        </div>
+                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
+                        {accessibilityItems.map((item) => (
+                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
+                            <Check className="h-3.5 w-3.5 text-primary" />
+                            <span>{item.label}</span>
+                          </div>
+                        ))}
                       </AccordionContent>
                     </AccordionItem>
                   )}
                 </Accordion>
               </div>
-            </section>
+            </div>
           )}
       </div>
     </div>
