@@ -334,51 +334,33 @@ const CategoryPage = () => {
                         <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
                       )}
 
-                      {/* Top-right actions */}
+                      {/* Heart */}
                       <div
-                        className="flex items-center"
                         style={{
                           position: "absolute",
                           top: 12,
                           right: 12,
-                          gap: 8,
+                          zIndex: 2,
                         }}
                         onClick={(e) => e.stopPropagation()}
                       >
+                        <FavouriteButton itemId={l.id} itemType="listing" />
+                      </div>
+
+                      {/* Chevron marker */}
+                      {hasDetail && (
                         <div
                           style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 999,
-                            background: "rgba(255,255,255,0.94)",
-                            border: "1px solid rgba(18,18,20,0.06)",
-                            boxShadow: "0 1px 2px rgba(18,18,20,0.06)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
+                            position: "absolute",
+                            top: 18,
+                            right: 66,
+                            zIndex: 1,
+                            pointerEvents: "none",
                           }}
                         >
-                          <FavouriteButton itemId={l.id} itemType="listing" />
+                          <ChevronRight size={18} strokeWidth={2.5} style={{ color: "#FFFFFF" }} />
                         </div>
-
-                        {hasDetail && (
-                          <div
-                            style={{
-                              width: 40,
-                              height: 40,
-                              borderRadius: 999,
-                              background: "rgba(255,255,255,0.94)",
-                              border: "1px solid rgba(18,18,20,0.06)",
-                              boxShadow: "0 1px 2px rgba(18,18,20,0.06)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <ChevronRight size={18} strokeWidth={2} style={{ color: "rgba(18,18,20,0.4)" }} />
-                          </div>
-                        )}
-                      </div>
+                      )}
 
                       {l.is_featured && (
                         <div style={{ position: "absolute", left: 12, bottom: 12 }}>
@@ -407,12 +389,14 @@ const CategoryPage = () => {
                     <div style={{ padding: 16 }}>
                       <h3
                         style={{
-                          fontSize: 24,
-                          fontWeight: 700,
+                          fontFamily: "var(--font-heading)",
+                          fontWeight: 900,
+                          fontSize: 28,
+                          lineHeight: 0.98,
+                          letterSpacing: "-0.4px",
                           color: "#121214",
-                          lineHeight: 1.15,
                           margin: 0,
-                          marginBottom: 8,
+                          marginBottom: 10,
                         }}
                       >
                         {l.title}
