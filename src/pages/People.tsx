@@ -13,12 +13,9 @@ const People = () => {
   const [search, setSearch] = useState("");
 
   const { data: users, isLoading } = useQuery({
-    queryKey: ["people-search", search],
+    queryKey: ["people-search", search, user?.id],
     queryFn: async () => {
-      let query = supabase
-        .from("profiles")
-        .select("id, display_name, avatar_url, location")
-        .order("display_name");
+      let query = supabase.from("profiles").select("id, display_name, avatar_url, location").order("display_name");
 
       if (search.trim()) {
         query = query.ilike("display_name", `%${search.trim()}%`);
@@ -28,85 +25,157 @@ const People = () => {
         query = query.neq("id", user.id);
       }
 
-      const { data } = await query.limit(30);
+      const { data, error } = await query.limit(30);
+      if (error) throw error;
       return data || [];
     },
-    enabled: true,
   });
 
   return (
-    <div className="min-h-screen pb-24 bg-background">
-      {/* Header */}
-      <div className="bg-background border-b border-border/60">
-        <div className="px-5 pt-14 pb-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors mb-5"
+    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      {/* Back button */}
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+          <ArrowLeft size={18} strokeWidth={2} style={{ color: "rgba(18,18,20,0.4)" }} />
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 500,
+              color: "rgba(18,18,20,0.4)",
+              letterSpacing: "0.2px",
+            }}
           >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm">Back</span>
-          </button>
+            Back
+          </span>
+        </button>
+      </div>
 
-          <h1
-            className="text-2xl font-semibold text-foreground tracking-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Find People
-          </h1>
-          <p className="text-sm text-muted-foreground mt-1.5">
-            Connect with people exploring Hoedspruit
-          </p>
-        </div>
+      {/* Heading */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <h1
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontWeight: 900,
+            fontSize: 40,
+            lineHeight: 0.95,
+            letterSpacing: "-0.5px",
+            color: "#121214",
+            textTransform: "uppercase",
+            margin: 0,
+          }}
+        >
+          FIND
+          <br />
+          PEOPLE
+        </h1>
+      </div>
 
-        {/* Search */}
-        <div className="px-5 pb-5">
-          <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground/60" />
-            <input
-              type="text"
-              placeholder="Search by name..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full h-11 pl-11 pr-4 rounded-xl bg-card border border-border/80 text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
-            />
-          </div>
+      {/* Subtitle */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <p
+          style={{
+            fontFamily: "'Georgia', 'Times New Roman', serif",
+            fontStyle: "italic",
+            fontSize: 14,
+            color: "rgba(18,18,20,0.4)",
+            letterSpacing: "0.2px",
+            lineHeight: 1.4,
+            margin: 0,
+          }}
+        >
+          Connect with people exploring Hoedspruit
+        </p>
+      </div>
+
+      {/* Search bar */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <div
+          className="flex items-center"
+          style={{
+            background: "rgba(18,18,20,0.04)",
+            border: "1px solid rgba(18,18,20,0.08)",
+            borderRadius: 14,
+            padding: "14px 16px",
+            gap: 10,
+          }}
+        >
+          <Search size={18} strokeWidth={2} style={{ color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 bg-transparent outline-none"
+            style={{
+              fontSize: 14,
+              color: "#121214",
+              letterSpacing: "0.2px",
+            }}
+          />
         </div>
       </div>
 
       {/* Content */}
-      <div className="px-5 pt-5">
+      <div style={{ paddingLeft: 24, paddingRight: 24, paddingBottom: 40 }}>
         {isLoading ? (
           <div className="space-y-3">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="flex items-center gap-4 bg-card border border-border/60 rounded-xl p-4">
+              <div
+                key={i}
+                className="flex items-center"
+                style={{
+                  gap: 14,
+                  padding: 16,
+                  borderRadius: 16,
+                  background: "rgba(18,18,20,0.03)",
+                  border: "1px solid rgba(18,18,20,0.06)",
+                }}
+              >
                 <Skeleton className="h-12 w-12 rounded-full" />
                 <div className="flex-1">
-                  <Skeleton className="h-4 w-28 mb-2" />
-                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-4 w-28 mb-2 rounded" />
+                  <Skeleton className="h-3 w-20 rounded" />
                 </div>
-                <Skeleton className="h-8 w-20 rounded-full" />
+                <Skeleton className="h-9 w-24 rounded-full" />
               </div>
             ))}
           </div>
         ) : !users?.length ? (
-          <div className="flex flex-col items-center justify-center py-24 px-6">
-            <div className="h-16 w-16 rounded-full bg-muted/60 flex items-center justify-center mb-5">
-              <Users className="h-7 w-7 text-muted-foreground/40" />
-            </div>
-            <p
-              className="text-base font-semibold text-foreground mb-1.5"
-              style={{ fontFamily: "var(--font-heading)" }}
+          <div className="text-center" style={{ paddingTop: 80 }}>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+              style={{ background: "rgba(18,18,20,0.04)" }}
             >
-              {search ? "No matching profiles" : "No people yet"}
+              <Users size={28} style={{ color: "rgba(18,18,20,0.2)" }} />
+            </div>
+
+            <p
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontWeight: 900,
+                fontSize: 24,
+                color: "#121214",
+                marginBottom: 10,
+                letterSpacing: "-0.5px",
+              }}
+            >
+              {search ? "No matching people" : "No people yet"}
             </p>
-            <p className="text-sm text-muted-foreground/70 text-center max-w-[240px]">
-              {search
-                ? "Try searching with a different name"
-                : "People you can follow will appear here"}
+
+            <p
+              style={{
+                fontSize: 13,
+                color: "rgba(18,18,20,0.4)",
+                lineHeight: 1.5,
+                maxWidth: 240,
+                margin: "0 auto",
+              }}
+            >
+              {search ? "Try another search term" : "People you can follow will appear here"}
             </p>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {users.map((u) => (
               <UserCard key={u.id} user={u} />
             ))}
