@@ -41,6 +41,7 @@ import TermsPolicies from "./pages/TermsPolicies.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import FAQs from "./pages/FAQs.tsx";
 import PrivacySecurity from "./pages/PrivacySecurity.tsx";
+import Feedback from "./pages/Feedback.tsx";
 
 const queryClient = new QueryClient();
 
