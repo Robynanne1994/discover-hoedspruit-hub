@@ -16,7 +16,6 @@ import {
   Calendar,
   Bell,
   Settings,
-  Shield,
   HelpCircle,
   Info,
   LogOut,
@@ -27,6 +26,10 @@ import {
   LayoutDashboard,
   Megaphone,
   Users,
+  MessageSquare,
+  Mail,
+  FileText,
+  MapPin,
 } from "lucide-react";
 import ProfileForm from "@/components/profile/ProfileForm";
 import FollowStats from "@/components/social/FollowStats";
