@@ -237,24 +237,25 @@ const ListingDetail = () => {
   const accordionSections: AccSection[] = [];
 
   if (isListingRestaurant) {
-    if (hasDiningInfo) {
+    // Kids
+    if (hasKidsInfo) {
       accordionSections.push({
-        key: "dining", icon: <ChefHat size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Dining Details",
+        key: "kids", icon: <Baby size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Kids",
         content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {diningDetails.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13 }}>
-                <span style={{ fontWeight: 600, color: "#121214", minWidth: 80 }}>{item.label}</span>
-                <span style={{ color: "rgba(18,18,20,0.5)" }}>{item.value}</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {kidsItems.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{item.label}</span>
               </div>
             ))}
           </div>
         ),
       });
     }
+    // Services
     if (hasServiceInfo) {
       accordionSections.push({
-        key: "service", icon: <ShoppingBag size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Service Options",
+        key: "service", icon: <ShoppingBag size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Services",
         content: (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {serviceItems.map((item) => (
@@ -267,20 +268,22 @@ const ListingDetail = () => {
         ),
       });
     }
-    if (hasSeatingInfo) {
+    // Cuisines
+    if (cuisine && cuisine.length > 0) {
       accordionSections.push({
-        key: "seating", icon: <Armchair size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Seating",
+        key: "cuisines", icon: <ChefHat size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Cuisines",
         content: (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {seatingItems.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{item.label}</span>
+            {cuisine.map((c) => (
+              <div key={c} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{c}</span>
               </div>
             ))}
           </div>
         ),
       });
     }
+    // Amenities
     if (hasAmenitiesInfo) {
       accordionSections.push({
         key: "amenities", icon: <Wifi size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Amenities",
@@ -295,20 +298,22 @@ const ListingDetail = () => {
         ),
       });
     }
-    if (hasKidsInfo) {
+    // Meals
+    if (meal && meal.length > 0) {
       accordionSections.push({
-        key: "kids", icon: <Baby size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Kids & Family",
+        key: "meals", icon: <UtensilsCrossed size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Meals",
         content: (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {kidsItems.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{item.label}</span>
+            {meal.map((m) => (
+              <div key={m} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{m}</span>
               </div>
             ))}
           </div>
         ),
       });
     }
+    // Accessibility
     if (hasAccessibilityInfo) {
       accordionSections.push({
         key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Accessibility",
