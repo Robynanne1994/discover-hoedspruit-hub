@@ -428,22 +428,32 @@ const MyAccount = () => {
 
   const quickActions = [
     { icon: Heart, label: "Saved Listings", desc: "Listings you've bookmarked", href: "/saved" },
-    { icon: MapPinCheck, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
+    { icon: MapPin, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
     { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", href: "/saved?tab=events" },
   ];
 
-  const settingsItems = [
+  const socialItems = [
     { icon: Users, label: "Find People", href: "/people" },
-    { icon: Bell, label: "Notifications", action: () => {} },
-    { icon: Settings, label: "Account Settings", href: "/account-settings" },
-    { icon: Shield, label: "Privacy & Security", href: "/privacy-security" },
+  ];
+
+  const preferencesItems = [
+    { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", action: () => {} },
+  ];
+
+  const supportItems = [
+    { icon: HelpCircle, label: "Help & FAQs", desc: "Answers to common questions", href: "/faqs" },
+    { icon: MessageSquare, label: "Give Us Feedback", desc: "Tell us how we can improve", href: "/feedback" },
+    { icon: Mail, label: "Contact", desc: "Get in touch with us", href: "/contact" },
   ];
 
   const infoItems = [
-    { icon: HelpCircle, label: "Help & Support", href: "/contact" },
-    { icon: HelpCircle, label: "FAQs", href: "/faqs" },
     { icon: Info, label: "About", href: "/about" },
     { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
+    { icon: FileText, label: "Terms & Policies", href: "/terms" },
+  ];
+
+  const accountItems = [
+    { icon: Settings, label: "Account Settings", desc: "Manage your account details", href: "/account-settings" },
   ];
 
   const renderRow = (item: any, isLast: boolean) => {
