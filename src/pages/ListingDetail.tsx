@@ -1,43 +1,27 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import ListingActions from "@/components/listing/ListingActions";
 import {
-  MapPin,
-  Phone,
-  Mail,
-  Globe,
-  Star,
-  Clock,
-  Baby,
-  PawPrint,
-  Accessibility,
-  DollarSign,
-  UtensilsCrossed,
-  Palette,
-  ChefHat,
-  Armchair,
-  Cigarette,
-  ShoppingBag,
-  Check,
-  Wifi,
-  Ban,
-  MessageCircle,
-  Pencil,
-  ChevronLeft,
+  MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility,
+  DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, Cigarette,
+  ShoppingBag, Check, Wifi, Ban, MessageCircle, Pencil, ArrowLeft,
+  Heart, Share2, CheckCircle, ChevronDown,
 } from "lucide-react";
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
+import BottomNav from "@/components/BottomNav";
+import { toast } from "sonner";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const ListingDetail = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const whatToKnowRef = useRef<HTMLDivElement>(null);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -61,20 +45,90 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
+  // Favourite state
+  const { data: isFavourited } = useQuery({
+    queryKey: ["favourite", "listing", id, user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data } = await supabase.from("favourites").select("id").eq("user_id", user.id).eq("item_id", id!).eq("item_type", "listing").maybeSingle();
+      return !!data;
+    },
+    enabled: !!user && !!id,
+  });
+
+  const toggleFavourite = useMutation({
+    mutationFn: async () => {
+      if (!user) return;
+      if (isFavourited) {
+        await supabase.from("favourites").delete().eq("user_id", user.id).eq("item_id", id!).eq("item_type", "listing");
+      } else {
+        await supabase.from("favourites").insert({ user_id: user.id, item_id: id!, item_type: "listing" });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favourite", "listing", id] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
+      toast.success(isFavourited ? "Removed from saved" : "Saved!");
+    },
+  });
+
+  // Visited state
+  const { data: isVisited } = useQuery({
+    queryKey: ["been-here", id, user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data } = await supabase.from("been_here").select("id").eq("user_id", user.id).eq("listing_id", id!).maybeSingle();
+      return !!data;
+    },
+    enabled: !!user && !!id,
+  });
+
+  const toggleVisited = useMutation({
+    mutationFn: async () => {
+      if (!user) return;
+      if (isVisited) {
+        await supabase.from("been_here").delete().eq("user_id", user.id).eq("listing_id", id!);
+      } else {
+        await supabase.from("been_here").insert({ user_id: user.id, listing_id: id! });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["been-here", id] });
+      queryClient.invalidateQueries({ queryKey: ["been-here"] });
+      toast.success(isVisited ? "Removed from visited" : "Marked as visited!");
+    },
+  });
+
+  const requireAuth = () => {
+    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
+    return false;
+  };
+
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: listing?.title || "", url: shareUrl }); } catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
+        }
+      }
+    } else {
+      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-20 bg-background">
-        <div className="px-5 pt-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" /> Back
+      <div style={{ minHeight: "100vh", background: "#ffffff" }}>
+        <div style={{ padding: "52px 24px 0" }}>
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "rgba(18,18,20,0.4)", fontSize: 15, fontWeight: 500 }}>
+            <ArrowLeft size={18} strokeWidth={2} /> Back
           </button>
         </div>
-        <div className="px-5 pt-12 flex flex-col items-center gap-3">
-          <div className="w-12 h-12 rounded-full bg-muted animate-pulse" />
-          <p className="text-muted-foreground text-[13px]">Loading...</p>
+        <div style={{ padding: "48px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.04)", animation: "pulse 2s infinite" }} />
+          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)" }}>Loading...</p>
         </div>
       </div>
     );
@@ -82,20 +136,15 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div className="min-h-screen pb-20 bg-background">
-        <div className="px-5 pt-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" /> Back
+      <div style={{ minHeight: "100vh", background: "#ffffff" }}>
+        <div style={{ padding: "52px 24px 0" }}>
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "rgba(18,18,20,0.4)", fontSize: 15, fontWeight: 500 }}>
+            <ArrowLeft size={18} strokeWidth={2} /> Back
           </button>
         </div>
-        <div className="px-5 pt-20 text-center">
-          <p className="text-muted-foreground text-[14px] mb-4">Listing not found.</p>
-          <Link to="/" className="text-primary hover:underline text-[13px] font-medium">
-            Back to Home
-          </Link>
+        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 16 }}>Listing not found.</p>
+          <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>Back to Home</Link>
         </div>
       </div>
     );
@@ -132,7 +181,6 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
-  // Kids & Family accordion items
   const kidsItems = [
     { label: "Good for Kids", value: goodForKids },
     { label: "Kids Playground", value: kidsPlayground },
@@ -141,7 +189,6 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasKidsInfo = kidsItems.length > 0;
 
-  // Accessibility accordion items
   const accessibilityItems = [
     { label: "Wheelchair Friendly", value: wheelchairFriendly },
     { label: "Wheelchair-accessible Car Park", value: wheelchairCarPark },
@@ -151,7 +198,6 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasAccessibilityInfo = accessibilityItems.length > 0;
 
-  // Amenities accordion items
   const amenitiesItems = [
     { label: "Toilet", value: hasToilet },
     { label: "Wi-Fi", value: hasWifi },
@@ -159,7 +205,6 @@ const ListingDetail = () => {
   ].filter((item) => item.value === true);
   const hasAmenitiesInfo = amenitiesItems.length > 0;
 
-  // Service options
   const hasSitDown = serviceType?.includes("Sit down") || serviceType?.includes("Dine-in") || false;
   const hasTakeaway = serviceType?.includes("Takeaway") || serviceType?.includes("Take away") || false;
   const hasDelivery = serviceType?.includes("Delivery") || false;
@@ -170,7 +215,6 @@ const ListingDetail = () => {
   ];
   const hasServiceInfo = hasSitDown || hasTakeaway || true;
 
-  // Seating
   const seatingItems = [
     ...(seating?.includes("Bar seating") ? [{ label: "Bar seating" }] : []),
     ...(seating?.includes("Indoor seating") ? [{ label: "Indoor seating" }] : []),
@@ -178,636 +222,446 @@ const ListingDetail = () => {
   ];
   const hasSeatingInfo = seatingItems.length > 0;
 
-  // Dining details accordion
   const diningDetails: { label: string; value: string }[] = [];
   if (cuisine && cuisine.length > 0) diningDetails.push({ label: "Cuisine", value: cuisine.join(", ") });
   if (vibe && vibe.length > 0) diningDetails.push({ label: "Vibe", value: vibe.join(", ") });
   if (meal && meal.length > 0) diningDetails.push({ label: "Meal types", value: meal.join(", ") });
   const hasDiningInfo = diningDetails.length > 0;
 
-  const priceLabel = priceLevel ? "$".repeat(priceLevel) : null;
-  const priceName =
-    priceLevel === 1
-      ? "Budget"
-      : priceLevel === 2
-        ? "Moderate"
-        : priceLevel === 3
-          ? "Upscale"
-          : priceLevel === 4
-            ? "Fine Dining"
-            : null;
+  const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
 
-  // Top quick-scan pills (max 3-4 most important)
-  const topPills: { icon: React.ReactNode; label: string; variant: "positive" | "muted" }[] = [];
-  if (showAttributes) {
-    if (goodForKids === true)
-      topPills.push({ icon: <Baby className="h-3 w-3" />, label: "Good for Kids", variant: "positive" });
-    if (petsAllowed === true)
-      topPills.push({ icon: <PawPrint className="h-3 w-3" />, label: "Pets Allowed", variant: "positive" });
-    if (smokingAllowed === true)
-      topPills.push({ icon: <Cigarette className="h-3 w-3" />, label: "Smoking Allowed", variant: "positive" });
-    if (wheelchairFriendly === true)
-      topPills.push({ icon: <Accessibility className="h-3 w-3" />, label: "Wheelchair Friendly", variant: "positive" });
+  const descriptionText = longDescription || listing.description;
+
+  // Build accordion sections
+  type AccSection = { key: string; icon: React.ReactNode; title: string; content: React.ReactNode };
+  const accordionSections: AccSection[] = [];
+
+  if (isListingRestaurant) {
+    if (hasDiningInfo) {
+      accordionSections.push({
+        key: "dining", icon: <ChefHat size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Dining Details",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {diningDetails.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "flex-start", gap: 10, fontSize: 13 }}>
+                <span style={{ fontWeight: 600, color: "#121214", minWidth: 80 }}>{item.label}</span>
+                <span style={{ color: "rgba(18,18,20,0.5)" }}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
+    if (hasServiceInfo) {
+      accordionSections.push({
+        key: "service", icon: <ShoppingBag size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Service Options",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {serviceItems.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: item.available ? "#121214" : "rgba(18,18,20,0.35)" }}>
+                {item.available ? <Check size={14} color="#121214" /> : <Ban size={14} color="rgba(18,18,20,0.3)" />}
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
+    if (hasSeatingInfo) {
+      accordionSections.push({
+        key: "seating", icon: <Armchair size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Seating",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {seatingItems.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
+    if (hasAmenitiesInfo) {
+      accordionSections.push({
+        key: "amenities", icon: <Wifi size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Amenities",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {amenitiesItems.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
+    if (hasKidsInfo) {
+      accordionSections.push({
+        key: "kids", icon: <Baby size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Kids & Family",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {kidsItems.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
+    if (hasAccessibilityInfo) {
+      accordionSections.push({
+        key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Accessibility",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {accessibilityItems.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
   }
 
-  // Pill helper
-  const Pill = ({
-    children,
-    variant = "neutral",
-  }: {
-    children: React.ReactNode;
-    variant?: "neutral" | "positive" | "muted";
-  }) => {
-    const base = "inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-medium tracking-wide";
-    const styles = {
-      neutral: "bg-card border border-border/50 text-foreground",
-      positive: "bg-primary/6 text-primary border border-primary/12",
-      muted: "bg-muted/40 text-muted-foreground border border-border/30 line-through opacity-50",
-    };
-    return <span className={`${base} ${styles[variant]}`}>{children}</span>;
+  const toggleAccordion = (key: string) => {
+    setOpenAccordion(openAccordion === key ? null : key);
   };
 
-  const SectionHeading = ({ children, icon }: { children: React.ReactNode; icon?: React.ReactNode }) => (
-    <h2
-      className="text-[18px] font-semibold text-foreground tracking-tight mb-4 flex items-center gap-2.5"
-      style={{ fontFamily: "var(--font-heading)" }}
-    >
-      {icon && <span className="text-primary/50">{icon}</span>}
-      {children}
-    </h2>
-  );
-
-  const handleWhatToKnow = () => {
-    whatToKnowRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const circleBtn: React.CSSProperties = {
+    width: 38, height: 38, borderRadius: "50%", background: "#ffffff",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    border: "none", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
   };
-
-  const hasContactInfo =
-    listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
-
-  // Grouped accordion trigger style
-  const triggerClass =
-    "bg-card px-4 py-3.5 text-[13px] font-medium text-foreground hover:bg-muted/30 transition-colors hover:no-underline";
 
   return (
-    <div className="min-h-screen pb-20 bg-background">
+    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
       {/* Hero image */}
       {listing.image_url ? (
-        <div className="relative">
-          <div className="relative h-[320px] overflow-hidden">
-            <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-black/20" />
+        <div style={{ position: "relative" }}>
+          <div style={{ height: 280, overflow: "hidden" }}>
+            <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
-          <button
-            onClick={() => navigate(-1)}
-            className="absolute top-5 left-5 z-10 bg-card/90 backdrop-blur-md rounded-full p-2.5 active:scale-95 transition-all shadow-sm"
-          >
-            <ChevronLeft className="h-4 w-4 text-foreground" />
+          {/* Back button */}
+          <button onClick={() => navigate(-1)} style={{ ...circleBtn, position: "absolute", top: 48, left: 20, zIndex: 10 }}>
+            <ArrowLeft size={18} strokeWidth={2} color="#121214" />
           </button>
-          {isAdmin && (
-            <button
-              onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
-              className="absolute top-5 right-5 z-10 bg-card/90 backdrop-blur-md rounded-full p-2.5 active:scale-95 transition-all shadow-sm"
-              title="Edit listing"
-            >
-              <Pencil className="h-4 w-4 text-foreground" />
+          {/* Save & Share buttons */}
+          <div style={{ position: "absolute", top: 48, right: 20, zIndex: 10, display: "flex", gap: 10 }}>
+            <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} style={circleBtn}>
+              <Heart size={18} strokeWidth={1.5} color="#121214" fill={isFavourited ? "#121214" : "none"} />
             </button>
-          )}
+            <button onClick={handleShare} style={circleBtn}>
+              <Share2 size={18} strokeWidth={1.5} color="#121214" />
+            </button>
+            {isAdmin && (
+              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={circleBtn} title="Edit listing">
+                <Pencil size={18} strokeWidth={1.5} color="#121214" />
+              </button>
+            )}
+          </div>
         </div>
       ) : (
-        <div className="px-5 pt-6 flex items-center justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-[13px] font-medium transition-colors"
-          >
-            <ChevronLeft className="h-4 w-4" /> Back
+        <div style={{ padding: "48px 20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <button onClick={() => navigate(-1)} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }}>
+            <ArrowLeft size={18} strokeWidth={2} color="#121214" />
           </button>
-          {isAdmin && (
-            <button
-              onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
-              className="p-2.5 rounded-full bg-primary/8 text-primary"
-              title="Edit listing"
-            >
-              <Pencil className="h-4 w-4" />
+          <div style={{ display: "flex", gap: 10 }}>
+            <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }}>
+              <Heart size={18} strokeWidth={1.5} color="#121214" fill={isFavourited ? "#121214" : "none"} />
             </button>
-          )}
+            <button onClick={handleShare} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }}>
+              <Share2 size={18} strokeWidth={1.5} color="#121214" />
+            </button>
+            {isAdmin && (
+              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }} title="Edit listing">
+                <Pencil size={18} strokeWidth={1.5} color="#121214" />
+              </button>
+            )}
+          </div>
         </div>
       )}
 
-      <div className="px-5 pt-6 pb-10">
-        {/* Title & identity */}
-        <div className="mb-5">
-          {listing.is_featured && (
-            <span className="inline-flex items-center gap-1.5 text-[10px] font-semibold text-accent uppercase tracking-[0.08em] mb-2.5">
-              <Star className="h-3 w-3 fill-current" /> Featured
-            </span>
-          )}
-          <h1
-            className="text-[26px] font-semibold text-foreground leading-[1.15] tracking-tight"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            {listing.title}
-          </h1>
+      <div style={{ padding: "24px 24px 0" }}>
+        {/* Category label */}
+        {firstCategory && (
+          <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 8 }}>
+            {firstCategory.title}
+          </div>
+        )}
 
-          {/* Categories */}
-          {listingCategories && listingCategories.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {listingCategories.map((cat) => (
-                <Link
-                  key={cat.id}
-                  to={`/category/${cat.id}`}
-                  className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-primary/6 text-primary border border-primary/12 hover:bg-primary/12 transition-colors"
-                >
-                  {cat.title}
-                </Link>
+        {/* Title */}
+        <h1 style={{ fontWeight: 900, fontSize: 32, color: "#121214", lineHeight: 1.0, letterSpacing: -0.3, marginBottom: 14 }}>
+          {listing.title}
+        </h1>
+
+        {/* Star rating */}
+        {(listing as any).google_rating != null && (
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
+            <div style={{ display: "flex", gap: 2 }}>
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star
+                  key={s}
+                  size={14}
+                  fill={s <= Math.round((listing as any).google_rating) ? "#E8A83E" : "none"}
+                  color={s <= Math.round((listing as any).google_rating) ? "#E8A83E" : "rgba(18,18,20,0.15)"}
+                  strokeWidth={s <= Math.round((listing as any).google_rating) ? 0 : 1.5}
+                />
               ))}
             </div>
-          )}
-
-          {/* Google rating */}
-          {(listing as any).google_rating != null && (
-            <div className="flex items-center gap-2 mt-3">
-              {(listing as any).google_reviews_url ? (
-                <a
-                  href={(listing as any).google_reviews_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-                >
-                  <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-3.5 w-3.5 ${star <= Math.round((listing as any).google_rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/20"}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-[13px] font-medium text-foreground">{(listing as any).google_rating}</span>
-                  {(listing as any).google_reviews_count != null && (
-                    <span className="text-[12px] text-muted-foreground underline">
-                      ({(listing as any).google_reviews_count} reviews)
-                    </span>
-                  )}
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#121214" }}>{(listing as any).google_rating}</span>
+            {(listing as any).google_reviews_count != null && (
+              (listing as any).google_reviews_url ? (
+                <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", textDecoration: "none" }}>
+                  ({(listing as any).google_reviews_count} reviews)
                 </a>
               ) : (
-                <>
-                  <div className="flex items-center gap-0.5">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`h-3.5 w-3.5 ${star <= Math.round((listing as any).google_rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/20"}`}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-[13px] font-medium text-foreground">{(listing as any).google_rating}</span>
-                  {(listing as any).google_reviews_count != null && (
-                    <span className="text-[12px] text-muted-foreground">
-                      ({(listing as any).google_reviews_count} reviews)
-                    </span>
-                  )}
-                </>
-              )}
-            </div>
-          )}
+                <span style={{ fontSize: 13, color: "rgba(18,18,20,0.35)" }}>({(listing as any).google_reviews_count} reviews)</span>
+              )
+            )}
+          </div>
+        )}
 
-          {/* Price level inline */}
-          {showAttributes && priceLabel && (
-            <div className="flex items-center gap-1.5 mt-3 text-[13px] text-muted-foreground">
-              <DollarSign className="h-3.5 w-3.5 text-primary/60" />
-              <span className="font-semibold text-foreground">{priceLabel}</span>
-              {priceName && <span>· {priceName}</span>}
-            </div>
-          )}
+        {/* Action buttons row */}
+        <div style={{ display: "flex", gap: 10, marginBottom: 28 }}>
+          {[
+            { label: isFavourited ? "Saved" : "Save", icon: <Heart size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" fill={isFavourited ? "rgba(18,18,20,0.4)" : "none"} />, onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); } },
+            { label: "Share", icon: <Share2 size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />, onClick: handleShare },
+            { label: isVisited ? "Visited" : "Visited", icon: <CheckCircle size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" fill={isVisited ? "rgba(18,18,20,0.4)" : "none"} />, onClick: () => { if (!requireAuth()) toggleVisited.mutate(); } },
+          ].map((btn) => (
+            <button
+              key={btn.label}
+              onClick={btn.onClick}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
+                borderRadius: 10, padding: "10px 16px", cursor: "pointer",
+                fontSize: 13, fontWeight: 600, color: "rgba(18,18,20,0.6)",
+              }}
+            >
+              {btn.icon} {btn.label}
+            </button>
+          ))}
         </div>
 
-        {/* Actions */}
-        <div className="mb-7">
-          <ListingActions listingId={listing.id} onWhatToKnow={handleWhatToKnow} />
-        </div>
-
-        {/* Quick-scan pills (max 3-4) */}
-        {topPills.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-7">
-            {topPills.slice(0, 4).map((pill) => (
-              <Pill key={pill.label} variant={pill.variant}>
-                {pill.icon} {pill.label}
-              </Pill>
+        {/* Contact details block */}
+        {hasContactInfo && (
+          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", marginBottom: 28 }}>
+            {[
+              listing.location && {
+                icon: <MapPin size={18} strokeWidth={1.5} color="#121214" />,
+                text: listing.location,
+                href: (listing as any).google_maps_link || undefined,
+                external: true,
+              },
+              listing.phone && {
+                icon: <Phone size={18} strokeWidth={1.5} color="#121214" />,
+                text: listing.phone,
+                href: `tel:${listing.phone}`,
+              },
+              listing.email && {
+                icon: <Mail size={18} strokeWidth={1.5} color="#121214" />,
+                text: listing.email,
+                href: `mailto:${listing.email}`,
+              },
+              listing.website && {
+                icon: <Globe size={18} strokeWidth={1.5} color="#121214" />,
+                text: "Website",
+                href: listing.website,
+                external: true,
+              },
+              (listing as any).whatsapp && {
+                icon: <MessageCircle size={18} strokeWidth={1.5} color="#121214" />,
+                text: "WhatsApp",
+                href: `https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, "")}`,
+                external: true,
+              },
+            ].filter(Boolean).map((row: any, i, arr) => (
+              <a
+                key={i}
+                href={row.href}
+                target={row.external ? "_blank" : undefined}
+                rel={row.external ? "noopener noreferrer" : undefined}
+                style={{
+                  display: "flex", alignItems: "center", gap: 12,
+                  padding: "14px 16px",
+                  borderBottom: i < arr.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                  textDecoration: "none", cursor: row.href ? "pointer" : "default",
+                }}
+              >
+                {row.icon}
+                <span style={{ fontSize: 14, color: "rgba(18,18,20,0.4)" }}>{row.text}</span>
+              </a>
             ))}
           </div>
         )}
 
-        {/* Grouped contact details block — no heading */}
-        {hasContactInfo && (
-          <div
-            className="bg-card rounded-2xl border border-border/50 mb-8 overflow-hidden"
-            style={{ boxShadow: "var(--card-shadow)" }}
-          >
-            <div className="divide-y divide-border/30">
-              {listing.location &&
-                ((listing as any).google_maps_link ? (
-                  <a
-                    href={(listing as any).google_maps_link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
+        {/* About section */}
+        {descriptionText && (
+          <div style={{ marginBottom: 28 }}>
+            <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>About</h2>
+            {(longDescription || listing.description || "").split("\n").map((paragraph: string, i: number) => (
+              <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.6)", lineHeight: 1.7, marginBottom: 12 }}>{paragraph}</p>
+            ))}
+          </div>
+        )}
+
+        {/* Accordion sections */}
+        {accordionSections.length > 0 && (
+          <div style={{ marginBottom: 28 }}>
+            {accordionSections.map((section, i) => {
+              const isOpen = openAccordion === section.key;
+              return (
+                <div
+                  key={section.key}
+                  style={{
+                    background: "rgba(18,18,20,0.03)",
+                    border: "1px solid rgba(18,18,20,0.06)",
+                    borderRadius: 16,
+                    marginBottom: i < accordionSections.length - 1 ? 10 : 0,
+                    overflow: "hidden",
+                  }}
+                >
+                  <button
+                    onClick={() => toggleAccordion(section.key)}
+                    style={{
+                      width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                      padding: 16, background: "none", border: "none", cursor: "pointer",
+                    }}
                   >
-                    <MapPin className="h-[18px] w-[18px] text-primary/50 shrink-0" />
-                    <span className="leading-snug">{listing.location}</span>
-                  </a>
-                ) : (
-                  <div className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground">
-                    <MapPin className="h-[18px] w-[18px] text-primary/50 shrink-0" />
-                    <span className="leading-snug">{listing.location}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      {section.icon}
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>{section.title}</span>
+                    </div>
+                    <ChevronDown
+                      size={16} strokeWidth={2} color="rgba(18,18,20,0.3)"
+                      style={{ transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div style={{ padding: "0 16px 16px 16px" }}>
+                      {section.content}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Shopping attributes as accordion-style cards */}
+        {isListingShopping && (() => {
+          const airCon = (listing as any).air_conditioned as boolean | null;
+          const paymentMethods = (listing as any).payment_methods as string[] | null;
+          const deliveryAvail = (listing as any).delivery_available as boolean | null;
+          const clickCollect = (listing as any).click_and_collect as boolean | null;
+          const orderOnline = (listing as any).order_online as boolean | null;
+          const parkingAvail = (listing as any).parking_available as boolean | null;
+          const shopWheelchair = (listing as any).wheelchair_friendly as boolean | null;
+          const localProds = (listing as any).local_products as boolean | null;
+          const shopType = (listing as any).shop_type as string | null;
+          const curioGifts = (listing as any).curio_or_gifts as boolean | null;
+          const prodCats = (listing as any).product_categories as string[] | null;
+          const priceRng = (listing as any).price_range as string | null;
+
+          const items = [
+            shopType && `Type: ${shopType}`,
+            priceRng && `Price: ${priceRng}`,
+            airCon && "Air Conditioned",
+            deliveryAvail && "Delivery Available",
+            clickCollect && "Click & Collect",
+            orderOnline && "Order Online",
+            parkingAvail && "Parking Available",
+            shopWheelchair && "Wheelchair Friendly",
+            localProds && "Local Products",
+            curioGifts && "Curio / Gifts",
+            paymentMethods && paymentMethods.length > 0 && `Payment: ${paymentMethods.join(", ")}`,
+            prodCats && prodCats.length > 0 && `Products: ${prodCats.join(", ")}`,
+          ].filter(Boolean) as string[];
+
+          if (items.length === 0) return null;
+
+          return (
+            <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, marginBottom: 28 }}>
+              <h3 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>Details</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {items.map((item) => (
+                  <div key={item} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                    <Check size={14} color="#121214" /> <span>{item}</span>
                   </div>
                 ))}
-              {listing.phone && (
-                <a
-                  href={`tel:${listing.phone}`}
-                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
-                >
-                  <Phone className="h-[18px] w-[18px] text-primary/50 shrink-0" /> {listing.phone}
-                </a>
-              )}
-              {listing.email && (
-                <a
-                  href={`mailto:${listing.email}`}
-                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
-                >
-                  <Mail className="h-[18px] w-[18px] text-primary/50 shrink-0" /> {listing.email}
-                </a>
-              )}
-              {listing.website && (
-                <a
-                  href={listing.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
-                >
-                  <Globe className="h-[18px] w-[18px] text-primary/50 shrink-0" /> Website
-                </a>
-              )}
-              {(listing as any).whatsapp && (
-                <a
-                  href={`https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3.5 px-4 py-3.5 text-[13px] text-muted-foreground hover:text-primary hover:bg-muted/30 transition-colors"
-                >
-                  <MessageCircle className="h-[18px] w-[18px] text-primary/50 shrink-0" /> WhatsApp
-                </a>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Restaurant attributes */}
-        {showAttributes && (
-          <div className="mb-8">
-            <SectionHeading>Details</SectionHeading>
-            <div className="flex flex-wrap gap-2">
-              {priceLabel && (
-                <Pill>
-                  <DollarSign className="h-3 w-3 text-primary" />
-                  <span className="font-semibold">{priceLabel}</span>
-                  {priceName && <span className="text-muted-foreground">· {priceName}</span>}
-                </Pill>
-              )}
-              {meal && meal.length > 0 && (
-                <Pill>
-                  <UtensilsCrossed className="h-3 w-3 text-primary" /> {meal.join(", ")}
-                </Pill>
-              )}
-              {vibe && vibe.length > 0 && (
-                <Pill>
-                  <Palette className="h-3 w-3 text-primary" /> {vibe.join(", ")}
-                </Pill>
-              )}
-              {cuisine && cuisine.length > 0 && (
-                <Pill>
-                  <ChefHat className="h-3 w-3 text-primary" /> {cuisine.join(", ")}
-                </Pill>
-              )}
-              {seating && seating.length > 0 && (
-                <Pill>
-                  <Armchair className="h-3 w-3 text-primary" /> {seating.join(", ")}
-                </Pill>
-              )}
-              {serviceType && serviceType.length > 0 && (
-                <Pill>
-                  <ShoppingBag className="h-3 w-3 text-primary" /> {serviceType.join(", ")}
-                </Pill>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Shopping attributes */}
-        {isListingShopping &&
-          (() => {
-            const airCon = (listing as any).air_conditioned as boolean | null;
-            const paymentMethods = (listing as any).payment_methods as string[] | null;
-            const deliveryAvail = (listing as any).delivery_available as boolean | null;
-            const clickCollect = (listing as any).click_and_collect as boolean | null;
-            const orderOnline = (listing as any).order_online as boolean | null;
-            const parkingAvail = (listing as any).parking_available as boolean | null;
-            const shopWheelchair = (listing as any).wheelchair_friendly as boolean | null;
-            const localProds = (listing as any).local_products as boolean | null;
-            const shopType = (listing as any).shop_type as string | null;
-            const curioGifts = (listing as any).curio_or_gifts as boolean | null;
-            const prodCats = (listing as any).product_categories as string[] | null;
-            const priceRng = (listing as any).price_range as string | null;
-
-            const boolItems = [
-              { label: "Air Conditioned", value: airCon },
-              { label: "Delivery Available", value: deliveryAvail },
-              { label: "Click & Collect", value: clickCollect },
-              { label: "Order Online", value: orderOnline },
-              { label: "Parking Available", value: parkingAvail },
-              { label: "Wheelchair Friendly", value: shopWheelchair },
-              { label: "Local Products", value: localProds },
-              { label: "Curio / Gifts", value: curioGifts },
-            ].filter((item) => item.value === true);
-
-            const hasAnyShopInfo =
-              boolItems.length > 0 ||
-              (paymentMethods && paymentMethods.length > 0) ||
-              shopType ||
-              (prodCats && prodCats.length > 0) ||
-              priceRng;
-            if (!hasAnyShopInfo) return null;
-
-            return (
-              <div className="mb-8">
-                <SectionHeading>Details</SectionHeading>
-                <div className="flex flex-wrap gap-2">
-                  {shopType && (
-                    <Pill>
-                      <ShoppingBag className="h-3 w-3 text-primary" /> {shopType}
-                    </Pill>
-                  )}
-                  {priceRng && (
-                    <Pill>
-                      <DollarSign className="h-3 w-3 text-primary" /> {priceRng}
-                    </Pill>
-                  )}
-                  {boolItems.map((item) => (
-                    <Pill key={item.label} variant="positive">
-                      <Check className="h-3 w-3" /> {item.label}
-                    </Pill>
-                  ))}
-                  {paymentMethods && paymentMethods.length > 0 && (
-                    <Pill>
-                      <span className="text-muted-foreground">Payment:</span> {paymentMethods.join(", ")}
-                    </Pill>
-                  )}
-                  {prodCats && prodCats.length > 0 && (
-                    <Pill>
-                      <span className="text-muted-foreground">Products:</span> {prodCats.join(", ")}
-                    </Pill>
-                  )}
-                </div>
               </div>
-            );
-          })()}
+            </div>
+          );
+        })()}
 
         {/* Accommodation attributes */}
-        {isListingAccommodation &&
-          (() => {
-            const petsAllowed = (listing as any).pets_allowed as boolean | null;
-            const amenities = (listing as any).amenities as string[] | null;
-            const sleeps = (listing as any).sleeps as number | null;
-            const priceRng = (listing as any).price_range as string | null;
-            const kmFromTown = (listing as any).km_from_town as string | null;
+        {isListingAccommodation && (() => {
+          const petsAllowedAccom = (listing as any).pets_allowed as boolean | null;
+          const amenities = (listing as any).amenities as string[] | null;
+          const sleeps = (listing as any).sleeps as number | null;
+          const priceRng = (listing as any).price_range as string | null;
+          const kmFromTown = (listing as any).km_from_town as string | null;
 
-            const hasAnyAccomInfo =
-              petsAllowed != null || (amenities && amenities.length > 0) || sleeps != null || priceRng || kmFromTown;
-            if (!hasAnyAccomInfo) return null;
+          const items = [
+            petsAllowedAccom && "Pets Allowed",
+            sleeps != null && `Sleeps: ${sleeps}`,
+            priceRng && `Price: ${priceRng}`,
+            kmFromTown && `${kmFromTown} km from town`,
+            ...(amenities || []),
+          ].filter(Boolean) as string[];
 
-            return (
-              <div className="mb-8">
-                <SectionHeading>Details</SectionHeading>
-                <div className="flex flex-wrap gap-2">
-                  {petsAllowed != null && (
-                    <Pill variant={petsAllowed ? "positive" : "neutral"}>
-                      <PawPrint className="h-3 w-3" /> {petsAllowed ? "Pets Allowed" : "No Pets"}
-                    </Pill>
-                  )}
-                  {sleeps != null && (
-                    <Pill>
-                      <span className="text-muted-foreground">Sleeps:</span> {sleeps}
-                    </Pill>
-                  )}
-                  {priceRng && (
-                    <Pill>
-                      <DollarSign className="h-3 w-3 text-primary" /> {priceRng}
-                    </Pill>
-                  )}
-                  {kmFromTown && (
-                    <Pill>
-                      <MapPin className="h-3 w-3 text-primary" /> {kmFromTown} km from town
-                    </Pill>
-                  )}
-                  {amenities &&
-                    amenities.length > 0 &&
-                    amenities.map((a) => (
-                      <Pill key={a} variant="positive">
-                        <Check className="h-3 w-3" /> {a}
-                      </Pill>
-                    ))}
-                </div>
+          if (items.length === 0) return null;
+
+          return (
+            <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, marginBottom: 28 }}>
+              <h3 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>Details</h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {items.map((item) => (
+                  <div key={item} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                    <Check size={14} color="#121214" /> <span>{item}</span>
+                  </div>
+                ))}
               </div>
-            );
-          })()}
-
-        {/* Description */}
-        {listing.description && !longDescription && (
-          <div className="mb-8">
-            <SectionHeading>About</SectionHeading>
-            <p className="text-muted-foreground text-[14px] leading-[1.75] text-left">{listing.description}</p>
-          </div>
-        )}
-
-        {/* Long description */}
-        {longDescription && (
-          <div className="mb-8">
-            <SectionHeading>About</SectionHeading>
-            {longDescription.split("\n").map((paragraph, i) => (
-              <p key={i} className="text-foreground/75 text-[14px] leading-[1.8] mb-3 last:mb-0 text-left">
-                {paragraph}
-              </p>
-            ))}
-          </div>
-        )}
-
-        {/* Gallery */}
-        {hasGallery && (
-          <div className="mb-8">
-            <SectionHeading>Gallery</SectionHeading>
-            <div className="grid grid-cols-2 gap-2.5">
-              {galleryImages.map((url, i) => (
-                <div key={i} className="rounded-xl overflow-hidden aspect-[3/4]">
-                  <img src={url} alt={`${listing.title} gallery ${i + 1}`} className="w-full h-full object-cover" />
-                </div>
-              ))}
             </div>
-          </div>
-        )}
+          );
+        })()}
 
-        {/* What to Know anchor */}
-        <div ref={whatToKnowRef} className="scroll-mt-4" />
-
-        {/* Opening hours */}
+        {/* Hours section */}
+        <div ref={whatToKnowRef} />
         {hasHours && (
-          <div className="mb-8">
-            <SectionHeading icon={<Clock className="h-4 w-4" />}>Hours</SectionHeading>
-            <div
-              className="bg-card rounded-2xl border border-border/50 overflow-hidden"
-              style={{ boxShadow: "var(--card-shadow)" }}
-            >
-              <div className="divide-y divide-border/30">
-                {DAY_LABELS.map((day) => {
-                  const value = openingHours[day.toLowerCase()] || "";
-                  return (
-                    <div key={day} className="flex justify-between px-4 py-3 text-[13px]">
-                      <span className="font-medium text-foreground">{day}</span>
-                      <span className="text-muted-foreground">{value || "Closed"}</span>
-                    </div>
-                  );
-                })}
-              </div>
+          <div style={{ marginBottom: 100 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
+              <Clock size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />
+              <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
+            </div>
+            <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+              {DAY_LABELS.map((day, i) => {
+                const value = openingHours[day.toLowerCase()] || "";
+                const isClosed = !value || value.toLowerCase() === "closed";
+                return (
+                  <div
+                    key={day}
+                    style={{
+                      display: "flex", justifyContent: "space-between", padding: "13px 16px",
+                      borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                    }}
+                  >
+                    <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{day}</span>
+                    <span style={{ fontSize: 14, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
 
-        {/* Grouped accordion sections — no gaps, one connected block */}
-        {isListingRestaurant &&
-          (hasDiningInfo ||
-            hasServiceInfo ||
-            hasKidsInfo ||
-            hasAccessibilityInfo ||
-            hasAmenitiesInfo ||
-            hasSeatingInfo) && (
-            <div className="mb-8">
-              <div
-                className="bg-card rounded-2xl border border-border/50 overflow-hidden"
-                style={{ boxShadow: "var(--card-shadow)" }}
-              >
-                <Accordion type="single" collapsible>
-                  {hasDiningInfo && (
-                    <AccordionItem value="dining" className="border-b border-border/30 last:border-b-0">
-                      <AccordionTrigger className={triggerClass}>
-                        <span className="flex items-center gap-2.5">
-                          <ChefHat className="h-4 w-4 text-primary/50" /> Dining Details
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4 pt-3 space-y-3">
-                        {diningDetails.map((item) => (
-                          <div key={item.label} className="flex items-start gap-2.5 text-[13px]">
-                            <span className="font-medium text-foreground min-w-[80px]">{item.label}</span>
-                            <span className="text-muted-foreground">{item.value}</span>
-                          </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
-
-                  {hasServiceInfo && (
-                    <AccordionItem value="service" className="border-b border-border/30 last:border-b-0">
-                      <AccordionTrigger className={triggerClass}>
-                        <span className="flex items-center gap-2.5">
-                          <ShoppingBag className="h-4 w-4 text-primary/50" /> Service Options
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
-                        {serviceItems.map((item) => (
-                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                            {item.available ? (
-                              <Check className="h-3.5 w-3.5 text-primary" />
-                            ) : (
-                              <Ban className="h-3.5 w-3.5 text-destructive" />
-                            )}
-                            <span className={item.available ? "" : "text-muted-foreground"}>{item.label}</span>
-                          </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
-
-                  {hasSeatingInfo && (
-                    <AccordionItem value="seating" className="border-b border-border/30 last:border-b-0">
-                      <AccordionTrigger className={triggerClass}>
-                        <span className="flex items-center gap-2.5">
-                          <Armchair className="h-4 w-4 text-primary/50" /> Seating
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
-                        {seatingItems.map((item) => (
-                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                            <Check className="h-3.5 w-3.5 text-primary" />
-                            <span>{item.label}</span>
-                          </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
-
-                  {hasAmenitiesInfo && (
-                    <AccordionItem value="amenities" className="border-b border-border/30 last:border-b-0">
-                      <AccordionTrigger className={triggerClass}>
-                        <span className="flex items-center gap-2.5">
-                          <Wifi className="h-4 w-4 text-primary/50" /> Amenities
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
-                        {amenitiesItems.map((item) => (
-                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                            <Check className="h-3.5 w-3.5 text-primary" />
-                            <span>{item.label}</span>
-                          </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
-
-                  {hasKidsInfo && (
-                    <AccordionItem value="kids" className="border-b border-border/30 last:border-b-0">
-                      <AccordionTrigger className={triggerClass}>
-                        <span className="flex items-center gap-2.5">
-                          <Baby className="h-4 w-4 text-primary/50" /> Kids & Family
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
-                        {kidsItems.map((item) => (
-                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                            <Check className="h-3.5 w-3.5 text-primary" />
-                            <span>{item.label}</span>
-                          </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
-
-                  {hasAccessibilityInfo && (
-                    <AccordionItem value="accessibility" className="border-b border-border/30 last:border-b-0">
-                      <AccordionTrigger className={triggerClass}>
-                        <span className="flex items-center gap-2.5">
-                          <Accessibility className="h-4 w-4 text-primary/50" /> Accessibility
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4 pt-3 space-y-2.5">
-                        {accessibilityItems.map((item) => (
-                          <div key={item.label} className="flex items-center gap-2.5 text-[13px] text-foreground">
-                            <Check className="h-3.5 w-3.5 text-primary" />
-                            <span>{item.label}</span>
-                          </div>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  )}
-                </Accordion>
-              </div>
-            </div>
-          )}
+        {/* If no hours, add bottom margin */}
+        {!hasHours && <div style={{ marginBottom: 100 }} />}
       </div>
+
+      <BottomNav />
     </div>
   );
 };
