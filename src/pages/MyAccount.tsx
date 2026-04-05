@@ -426,7 +426,7 @@ const MyAccount = () => {
   const quickActions = [
     { icon: Heart, label: "Saved Listings", desc: "Listings you've bookmarked", href: "/saved" },
     { icon: MapPinCheck, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
-    { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", action: () => setActiveSection("my-events") },
+    { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", href: "/saved?tab=events" },
   ];
 
   const settingsItems = [
