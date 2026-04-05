@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Shield,
   Lock,
@@ -13,8 +13,8 @@ import {
   Users,
   FileText,
   Mail,
+  ArrowLeft,
 } from "lucide-react";
-import BackButton from "@/components/BackButton";
 
 const collectItems = [
   { icon: User, title: "Account Information", desc: "Name, email, profile details, and login information you choose to provide." },
@@ -51,178 +51,188 @@ const securityChecks = [
   "Reasonable steps to protect information from misuse, loss, or unauthorised access",
 ];
 
+const dataSharingTexts = [
+  "We may use trusted service providers to support hosting, analytics, security, communication, or app functionality.",
+  "Listings may link to external websites, Google Maps, Google Business Profiles, WhatsApp, social platforms, or booking services.",
+  "When you leave Hello Hoedspruit, the privacy and security practices of those third parties apply.",
+  "We do not sell personal data.",
+];
+
+const communityTexts = [
+  "Features like following other users, saving places, marking places as visited, and engaging with events store activity to support those features and personalise your experience.",
+  "If you submit listings, event details, profile content, or messages, this content may be reviewed, stored, and displayed where relevant within the app.",
+  "Please only share information you are comfortable submitting.",
+];
+
+const cardStyle: React.CSSProperties = {
+  background: "rgba(18,18,20,0.03)",
+  border: "1px solid rgba(18,18,20,0.06)",
+  borderRadius: 16,
+  overflow: "hidden",
+};
+
+const rowBorder: React.CSSProperties = {
+  borderBottom: "1px solid rgba(18,18,20,0.06)",
+};
+
 const PrivacySecurity = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen pb-24 bg-background">
-      {/* Top bar */}
-      <div className="pt-14 pb-1 px-5 relative">
-        <div className="absolute left-5 top-14">
-          <BackButton className="text-primary mb-0" />
-        </div>
-        <h1 className="text-center text-[13px] font-medium text-muted-foreground uppercase tracking-[0.08em]">
-          Privacy & Security
+    <div className="min-h-screen" style={{ background: "#ffffff" }}>
+      {/* Back button */}
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
+        </button>
+      </div>
+
+      {/* Heading */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+          PRIVACY &<br />SECURITY
         </h1>
       </div>
 
+      {/* Subtitle */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+          How we handle your information
+        </p>
+      </div>
+
       {/* Intro card */}
-      <div className="px-5 pt-6 mb-5">
-        <div className="bg-card border border-border/40 rounded-2xl px-5 py-5">
-          <div className="flex items-start gap-3.5">
-            <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
-              <Shield className="h-5 w-5 text-primary" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="text-[16px] font-semibold text-foreground tracking-tight font-sans leading-tight">
-                Your Privacy Matters
-              </h2>
-              <p className="text-[12.5px] text-muted-foreground mt-1.5 leading-relaxed">
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <div className="flex items-start" style={{ gap: 12 }}>
+            <Shield style={{ width: 22, height: 22, strokeWidth: 1.5, color: "#121214", flexShrink: 0, marginTop: 2 }} />
+            <div>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#121214", marginBottom: 8 }}>Your Privacy Matters</h2>
+              <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.6 }}>
                 We only collect what we need to make Hello Hoedspruit useful, safe, and easy to use. We do not sell your personal data.
               </p>
             </div>
           </div>
-          <p className="text-[11px] text-muted-foreground/70 mt-3.5 pt-3 border-t border-border/20 leading-relaxed">
-            You stay in control of your account, saved places, and communication preferences.
-          </p>
         </div>
+      </div>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", lineHeight: 1.5 }}>
+          You stay in control of your account, saved places, and communication preferences.
+        </p>
       </div>
 
       {/* What We Collect */}
       <Section title="What We Collect">
-        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+        <div style={cardStyle}>
           {collectItems.map((item, i) => {
             const Icon = item.icon;
             return (
-              <div
-                key={item.title}
-                className={`flex items-start gap-3.5 px-4 py-3.5 ${i < collectItems.length - 1 ? "border-b border-border/20" : ""}`}
-              >
-                <Icon className="h-4 w-4 text-primary/70 shrink-0 mt-0.5" strokeWidth={1.5} />
-                <div className="flex-1 min-w-0">
-                  <span className="text-[13px] font-medium text-foreground block leading-tight">{item.title}</span>
-                  <span className="text-[11px] text-muted-foreground leading-relaxed">{item.desc}</span>
+              <div key={item.title} className="flex items-start" style={{ padding: 16, gap: 12, ...(i < collectItems.length - 1 ? rowBorder : {}) }}>
+                <Icon style={{ width: 20, height: 20, strokeWidth: 1.5, color: "#121214", flexShrink: 0, marginTop: 1 }} />
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", marginBottom: 3 }}>{item.title}</div>
+                  <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.5 }}>{item.desc}</div>
                 </div>
               </div>
             );
           })}
         </div>
-        <p className="text-[11px] text-muted-foreground/60 mt-2.5 px-1 leading-relaxed">
+        <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", lineHeight: 1.5, marginTop: 8 }}>
           We only collect information that helps run, improve, and protect the app experience.
         </p>
       </Section>
 
       {/* How We Use Information */}
       <Section title="How We Use Information">
-        <div className="bg-card border border-border/40 rounded-xl px-4 py-3.5">
-          <ul className="space-y-2.5">
-            {useItems.map((item) => (
-              <li key={item} className="flex items-start gap-2.5">
-                <Check className="h-3.5 w-3.5 text-primary/60 shrink-0 mt-0.5" strokeWidth={2} />
-                <span className="text-[12px] text-muted-foreground leading-relaxed">{item}</span>
-              </li>
-            ))}
-          </ul>
+        <div style={cardStyle}>
+          {useItems.map((item, i) => (
+            <div key={i} className="flex items-start" style={{ padding: "12px 16px", gap: 10, ...(i < useItems.length - 1 ? rowBorder : {}) }}>
+              <Check style={{ width: 16, height: 16, color: "#121214", flexShrink: 0, marginTop: 1 }} />
+              <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.5 }}>{item}</span>
+            </div>
+          ))}
         </div>
       </Section>
 
-      {/* Your Choices and Controls */}
+      {/* Your Choices & Controls */}
       <Section title="Your Choices & Controls">
-        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+        <div style={cardStyle}>
           {controlItems.map((item, i) => (
-            <div
-              key={item.title}
-              className={`flex items-center gap-3.5 px-4 py-3.5 ${i < controlItems.length - 1 ? "border-b border-border/20" : ""}`}
-            >
-              <div className="flex-1 min-w-0">
-                <span className="text-[13px] font-medium text-foreground block leading-tight">{item.title}</span>
-                <span className="text-[11px] text-muted-foreground leading-relaxed">{item.desc}</span>
+            <div key={item.title} className="flex items-start" style={{ padding: 16, gap: 12, ...(i < controlItems.length - 1 ? rowBorder : {}) }}>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", marginBottom: 3 }}>{item.title}</div>
+                <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.5 }}>{item.desc}</div>
               </div>
             </div>
           ))}
         </div>
-        <p className="text-[11px] text-muted-foreground/60 mt-2.5 px-1 leading-relaxed">
+        <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", lineHeight: 1.5, marginTop: 8 }}>
           Choose what you hear from us and how your information is used where controls are available.
         </p>
       </Section>
 
-      {/* Data Sharing */}
+      {/* Data Sharing & Third Parties */}
       <Section title="Data Sharing & Third Parties">
-        <div className="bg-card border border-border/40 rounded-xl px-4 py-4 space-y-3">
-          {[
-            "We may use trusted service providers to support hosting, analytics, security, communication, or app functionality.",
-            "Listings may link to external websites, Google Maps, Google Business Profiles, WhatsApp, social platforms, or booking services.",
-            "When you leave Hello Hoedspruit, the privacy and security practices of those third parties apply.",
-            "We do not sell personal data.",
-          ].map((text, i) => (
-            <p key={i} className="text-[12px] text-muted-foreground leading-relaxed">
-              {text}
-            </p>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          {dataSharingTexts.map((text, i) => (
+            <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, marginBottom: i < dataSharingTexts.length - 1 ? 14 : 0 }}>{text}</p>
           ))}
         </div>
       </Section>
 
       {/* Security */}
       <Section title="Security">
-        <div className="bg-card border border-border/40 rounded-xl px-4 py-4">
-          <div className="flex items-center gap-2.5 mb-3">
-            <Shield className="h-4 w-4 text-primary/70" strokeWidth={1.5} />
-            <span className="text-[13px] font-medium text-foreground">How we protect your data</span>
-          </div>
-          <ul className="space-y-2.5">
-            {securityChecks.map((item) => (
-              <li key={item} className="flex items-start gap-2.5">
-                <Check className="h-3.5 w-3.5 text-primary/60 shrink-0 mt-0.5" strokeWidth={2} />
-                <span className="text-[12px] text-muted-foreground leading-relaxed">{item}</span>
-              </li>
-            ))}
-          </ul>
+        <div style={cardStyle}>
+          {securityChecks.map((item, i) => (
+            <div key={i} className="flex items-start" style={{ padding: "12px 16px", gap: 10, ...(i < securityChecks.length - 1 ? rowBorder : {}) }}>
+              <Check style={{ width: 16, height: 16, color: "#121214", flexShrink: 0, marginTop: 1 }} />
+              <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.5 }}>{item}</span>
+            </div>
+          ))}
         </div>
-        <p className="text-[11px] text-muted-foreground/60 mt-2.5 px-1 leading-relaxed">
+        <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", lineHeight: 1.5, marginTop: 8 }}>
           No digital system can ever be guaranteed 100% secure, but we take privacy and security seriously and follow sensible best practices.
         </p>
       </Section>
 
-      {/* Community & User Content */}
+      {/* Community, Listings & User Content */}
       <Section title="Community, Listings & User Content">
-        <div className="bg-card border border-border/40 rounded-xl px-4 py-4 space-y-3">
-          <p className="text-[12px] text-muted-foreground leading-relaxed">
-            Features like following other users, saving places, marking places as visited, and engaging with events store activity to support those features and personalise your experience.
-          </p>
-          <p className="text-[12px] text-muted-foreground leading-relaxed">
-            If you submit listings, event details, profile content, or messages, this content may be reviewed, stored, and displayed where relevant within the app.
-          </p>
-          <p className="text-[12px] text-muted-foreground leading-relaxed">
-            Please only share information you are comfortable submitting.
-          </p>
+        <div style={{ ...cardStyle, padding: 20 }}>
+          {communityTexts.map((text, i) => (
+            <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, marginBottom: i < communityTexts.length - 1 ? 14 : 0 }}>{text}</p>
+          ))}
         </div>
       </Section>
 
       {/* Children's Privacy */}
       <Section title="Children's Privacy">
-        <div className="bg-card border border-border/40 rounded-xl px-4 py-3.5">
-          <p className="text-[12px] text-muted-foreground leading-relaxed">
+        <div style={{ ...cardStyle, padding: 20 }}>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7 }}>
             Hello Hoedspruit is not intended for young children without appropriate supervision.
           </p>
         </div>
       </Section>
 
       {/* Policy Links */}
-      <div className="px-5 mb-6">
-        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
+        <div style={cardStyle}>
           {[
             { icon: FileText, label: "Read Full Privacy Policy", href: "/terms/privacy" },
             { icon: FileText, label: "View Terms & Policies", href: "/terms" },
             { icon: Mail, label: "Contact Us About Privacy", href: "/contact" },
-          ].map((item, i) => {
+          ].map((item, i, arr) => {
             const Icon = item.icon;
             return (
               <Link
                 key={item.label}
                 to={item.href}
-                className={`flex items-center gap-3.5 px-4 py-3.5 hover:bg-muted/20 transition-colors ${i < 2 ? "border-b border-border/20" : ""}`}
+                className="flex items-center"
+                style={{ padding: 16, gap: 12, ...(i < arr.length - 1 ? rowBorder : {}) }}
               >
-                <Icon className="h-4 w-4 text-primary/70 shrink-0" strokeWidth={1.5} />
-                <span className="text-[13px] font-medium text-foreground flex-1">{item.label}</span>
-                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20 shrink-0" />
+                <Icon style={{ width: 20, height: 20, strokeWidth: 1.5, color: "#121214", flexShrink: 0 }} />
+                <span style={{ fontSize: 15, fontWeight: 600, color: "#121214", flex: 1 }}>{item.label}</span>
+                <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
               </Link>
             );
           })}
@@ -233,8 +243,8 @@ const PrivacySecurity = () => {
 };
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div className="px-5 mb-5">
-    <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.08em] mb-2.5 px-1">
+  <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+    <h3 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
       {title}
     </h3>
     {children}
