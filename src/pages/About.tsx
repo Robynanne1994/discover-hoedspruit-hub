@@ -80,12 +80,11 @@ const About = () => {
       {/* Value cards grid */}
       <div style={{ padding: "0 24px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {values.map((item) => (
-          <div key={item.title} style={{ ...cardStyle, padding: 20 }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
+          <div key={item.title} style={{ ...cardStyle, padding: "20px 12px 18px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
               <item.icon size={22} strokeWidth={1.5} color="#121214" />
             </div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#121214", marginBottom: 6 }}>{item.title}</div>
-            <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.5 }}>{item.description}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#121214", whiteSpace: "nowrap" }}>{item.title}</div>
           </div>
         ))}
       </div>
