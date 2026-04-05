@@ -328,6 +328,36 @@ const ListingDetail = () => {
         ),
       });
     }
+    // Seating
+    if (hasSeatingInfo) {
+      accordionSections.push({
+        key: "seating", icon: <Armchair size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Seating",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {seatingItems.map((item) => (
+              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
+    // Vibe
+    if (vibe && vibe.length > 0) {
+      accordionSections.push({
+        key: "vibe", icon: <Palette size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Vibe",
+        content: (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {vibe.map((v) => (
+              <div key={v} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                <Check size={14} color="#121214" /> <span>{v}</span>
+              </div>
+            ))}
+          </div>
+        ),
+      });
+    }
   }
 
   const toggleAccordion = (key: string) => {
