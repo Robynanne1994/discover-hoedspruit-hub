@@ -75,6 +75,7 @@ const App = () => (
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/privacy-security" element={<PrivacySecurity />} />
             <Route path="/people" element={<People />} />
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="/profile/:id" element={<UserProfile />} />
             <Route path="/profile/:id/:type" element={<FollowList />} />
             <Route path="/admin" element={<AdminLayout />}>
