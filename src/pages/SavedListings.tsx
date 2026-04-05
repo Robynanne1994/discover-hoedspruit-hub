@@ -12,7 +12,10 @@ const SavedListings = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [primaryTab, setPrimaryTab] = useState<"listings" | "events">("listings");
+  const [searchParams] = useSearchParams();
+  const [primaryTab, setPrimaryTab] = useState<"listings" | "events">(() => {
+    return searchParams.get("tab") === "events" ? "events" : "listings";
+  });
   const [listingFilter, setListingFilter] = useState("All");
   const [eventFilter, setEventFilter] = useState("All");
   const [search, setSearch] = useState("");
