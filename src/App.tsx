@@ -41,6 +41,7 @@ import TermsPolicies from "./pages/TermsPolicies.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import FAQs from "./pages/FAQs.tsx";
 import PrivacySecurity from "./pages/PrivacySecurity.tsx";
+import Feedback from "./pages/Feedback.tsx";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,7 @@ const App = () => (
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/privacy-security" element={<PrivacySecurity />} />
             <Route path="/people" element={<People />} />
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="/profile/:id" element={<UserProfile />} />
             <Route path="/profile/:id/:type" element={<FollowList />} />
             <Route path="/admin" element={<AdminLayout />}>

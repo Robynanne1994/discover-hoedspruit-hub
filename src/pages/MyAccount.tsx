@@ -16,7 +16,6 @@ import {
   Calendar,
   Bell,
   Settings,
-  Shield,
   HelpCircle,
   Info,
   LogOut,
@@ -27,6 +26,10 @@ import {
   LayoutDashboard,
   Megaphone,
   Users,
+  MessageSquare,
+  Mail,
+  FileText,
+  MapPin,
 } from "lucide-react";
 import ProfileForm from "@/components/profile/ProfileForm";
 import FollowStats from "@/components/social/FollowStats";
@@ -425,22 +428,32 @@ const MyAccount = () => {
 
   const quickActions = [
     { icon: Heart, label: "Saved Listings", desc: "Listings you've bookmarked", href: "/saved" },
-    { icon: MapPinCheck, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
+    { icon: MapPin, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
     { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", href: "/saved?tab=events" },
   ];
 
-  const settingsItems = [
+  const socialItems = [
     { icon: Users, label: "Find People", href: "/people" },
-    { icon: Bell, label: "Notifications", action: () => {} },
-    { icon: Settings, label: "Account Settings", href: "/account-settings" },
-    { icon: Shield, label: "Privacy & Security", href: "/privacy-security" },
+  ];
+
+  const preferencesItems = [
+    { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", action: () => {} },
+  ];
+
+  const supportItems = [
+    { icon: HelpCircle, label: "Help & FAQs", desc: "Answers to common questions", href: "/faqs" },
+    { icon: MessageSquare, label: "Give Us Feedback", desc: "Tell us how we can improve", href: "/feedback" },
+    { icon: Mail, label: "Contact", desc: "Get in touch with us", href: "/contact" },
   ];
 
   const infoItems = [
-    { icon: HelpCircle, label: "Help & Support", href: "/contact" },
-    { icon: HelpCircle, label: "FAQs", href: "/faqs" },
     { icon: Info, label: "About", href: "/about" },
     { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
+    { icon: FileText, label: "Terms & Policies", href: "/terms" },
+  ];
+
+  const accountItems = [
+    { icon: Settings, label: "Account Settings", desc: "Manage your account details", href: "/account-settings" },
   ];
 
   const renderRow = (item: any, isLast: boolean) => {
@@ -516,28 +529,52 @@ const MyAccount = () => {
       </div>
 
       {/* Quick actions */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 24, marginBottom: 32 }}>
         {quickActions.map((item, i) => renderRow(item, i === quickActions.length - 1))}
       </div>
 
-      {/* Settings & Support */}
+      {/* Social */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Settings & Support
+          Social
         </p>
-        {settingsItems.map((item, i) => renderRow(item, i === settingsItems.length - 1))}
+        {socialItems.map((item, i) => renderRow(item, i === socialItems.length - 1))}
       </div>
 
-      {/* Info & More */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+      {/* Preferences */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Info & More
+          Preferences
+        </p>
+        {preferencesItems.map((item, i) => renderRow(item, i === preferencesItems.length - 1))}
+      </div>
+
+      {/* Support */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          Support
+        </p>
+        {supportItems.map((item, i) => renderRow(item, i === supportItems.length - 1))}
+      </div>
+
+      {/* Info */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          Info
         </p>
         {infoItems.map((item, i) => renderRow(item, i === infoItems.length - 1))}
       </div>
 
+      {/* Account */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          Account
+        </p>
+        {accountItems.map((item, i) => renderRow(item, i === accountItems.length - 1))}
+      </div>
+
       {isAdmin && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 32 }}>
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
           <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
             Admin
           </p>
@@ -555,9 +592,11 @@ const MyAccount = () => {
       <div className="flex justify-center" style={{ marginTop: 36, marginBottom: 100 }}>
         <button
           onClick={() => { signOut(); navigate("/"); }}
-          style={{ background: "transparent", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 12, padding: "14px 32px", fontSize: 14, fontWeight: 600, color: "rgba(18,18,20,0.4)" }}
+          className="flex items-center"
+          style={{ gap: 8, background: "transparent", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 12, padding: "14px 32px" }}
         >
-          Log out
+          <LogOut style={{ width: 16, height: 16, strokeWidth: 1.5, color: "rgba(18,18,20,0.4)" }} />
+          <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(18,18,20,0.4)" }}>Log out</span>
         </button>
       </div>
     </div>
