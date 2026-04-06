@@ -437,7 +437,7 @@ const MyAccount = () => {
   ];
 
   const preferencesItems = [
-    { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", action: () => {} },
+    { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", href: "/notifications" },
   ];
 
   const supportItems = [
