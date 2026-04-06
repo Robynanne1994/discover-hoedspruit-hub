@@ -485,7 +485,7 @@ const ListingDetail = () => {
                     background: "rgba(18,18,20,0.03)",
                     border: "1px solid rgba(18,18,20,0.06)",
                     borderRadius: 16,
-                    marginBottom: i < accordionSections.length - 1 ? 10 : 0,
+                    marginBottom: 0,
                     overflow: "hidden",
                   }}
                 >
