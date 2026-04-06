@@ -206,7 +206,7 @@ const ListingDetail = () => {
       { label: "Accessible parking", value: wheelchairCarPark },
     ].filter(f => f.value != null) as BoolField[];
     if (accessFields.length > 0) {
-      accordionSections.push({ key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Accessibility", fields: accessFields });
+      accordionSections.push({ key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="#121214" />, title: "Accessibility", fields: accessFields });
     }
 
     const kidsFields: BoolField[] = [
