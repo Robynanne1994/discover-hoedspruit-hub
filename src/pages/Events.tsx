@@ -201,21 +201,21 @@ const Events = () => {
       </div>
 
       {/* Filter pills */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
+      <div className="overflow-x-auto scrollbar-hide" style={{ paddingLeft: 24, marginBottom: 32 }}>
+        <div className="flex" style={{ gap: 8, paddingRight: 24 }}>
           {filters.map((filter) => (
             <button
               key={filter.value}
               onClick={() => setActiveFilter(filter.value)}
               className="whitespace-nowrap"
               style={{
-                background: activeFilter === filter.value ? "#121214" : "rgba(18,18,20,0.04)",
-                border: activeFilter === filter.value ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-                borderRadius: 10,
-                padding: "9px 18px",
-                fontSize: 13,
-                fontWeight: activeFilter === filter.value ? 600 : 500,
-                color: activeFilter === filter.value ? "#ffffff" : "rgba(18,18,20,0.5)",
+                background: activeFilter === filter.value ? "#121214" : "rgba(18,18,20,0.05)",
+                border: "none",
+                borderRadius: 20,
+                padding: "7px 16px",
+                fontSize: 12,
+                fontWeight: 600,
+                color: activeFilter === filter.value ? "#ffffff" : "rgba(18,18,20,0.55)",
               }}
             >
               {filter.label}
