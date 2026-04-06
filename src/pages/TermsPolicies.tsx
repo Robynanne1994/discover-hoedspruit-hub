@@ -3,10 +3,10 @@ import BottomNav from "@/components/BottomNav";
 import { ArrowLeft, FileText, Shield, Cookie, BookOpen, ChevronRight } from "lucide-react";
 
 const policyRows = [
-  { icon: FileText, label: "Terms of Use", sub: "Our terms governing your use of Hello Hoedspruit", href: "/terms/use" },
-  { icon: Shield, label: "Privacy Policy", sub: "How we collect, use, and protect your data", href: "/terms/privacy" },
-  { icon: Cookie, label: "Cookie Policy", sub: "How we use cookies on the Hello Hoedspruit app", href: "/terms/cookies" },
-  { icon: BookOpen, label: "Content Guidelines", sub: "Our standards for what is shared in the community", href: "/terms/content" },
+  { icon: FileText, label: "Terms of Use", sub: "Our terms governing your use of Hello Hoedspruit", href: "/terms-of-use" },
+  { icon: Shield, label: "Privacy Policy", sub: "How we collect, use, and protect your data", href: "/privacy-policy" },
+  { icon: Cookie, label: "Cookie Policy", sub: "How we use cookies on the Hello Hoedspruit app", href: "/cookie-policy" },
+  { icon: BookOpen, label: "Content Guidelines", sub: "Our standards for what is shared in the community", href: "/content-guidelines" },
 ];
 
 const TermsPolicies = () => {
