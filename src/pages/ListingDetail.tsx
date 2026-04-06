@@ -483,9 +483,11 @@ const ListingDetail = () => {
                   key={section.key}
                   style={{
                     background: "rgba(18,18,20,0.03)",
-                    border: "1px solid rgba(18,18,20,0.06)",
-                    borderRadius: 16,
-                    marginBottom: 0,
+                    borderLeft: "1px solid rgba(18,18,20,0.06)",
+                    borderRight: "1px solid rgba(18,18,20,0.06)",
+                    borderTop: "1px solid rgba(18,18,20,0.06)",
+                    borderBottom: i === accordionSections.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                    borderRadius: i === 0 ? "16px 16px 0 0" : i === accordionSections.length - 1 ? "0 0 16px 16px" : 0,
                     overflow: "hidden",
                   }}
                 >
