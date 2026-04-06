@@ -77,6 +77,10 @@ const App = () => (
             <Route path="/account-settings" element={<AccountSettings />} />
             <Route path="/terms" element={<TermsPolicies />} />
             <Route path="/terms/privacy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-use" element={<TermsOfUse />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/content-guidelines" element={<ContentGuidelines />} />
             <Route path="/faqs" element={<FAQs />} />
             <Route path="/privacy-security" element={<PrivacySecurity />} />
             <Route path="/people" element={<People />} />
