@@ -242,7 +242,7 @@ const ListingDetail = () => {
     if (meal && meal.length > 0) mealTextField.push({ label: "Meals served", value: meal.join(", ") });
     const allSvcFields = [...svcFields.filter(f => f.value !== null), ...mealTextField];
     if (allSvcFields.length > 0) {
-      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Service Options", fields: allSvcFields });
+      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Service Options", fields: allSvcFields });
     }
   }
 
