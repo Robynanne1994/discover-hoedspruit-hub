@@ -19,13 +19,13 @@ import GalleryUpload from "@/components/admin/GalleryUpload";
 
 type Listing = Tables<"listings">;
 
-const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "public_holidays"];
 
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic"];
 const CUISINE_OPTIONS = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
-const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away"];
+const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away", "Delivery"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Other"];
 const AMENITIES_OPTIONS = ["Braai", "Swimming Pool", "Wifi", "Aircon"];
@@ -422,7 +422,7 @@ const AdminListings = () => {
                   <div className="space-y-2 mt-1">
                     {DAY_LABELS.map((day) => (
                       <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
-                        <span className="text-sm text-muted-foreground capitalize">{day}</span>
+                        <span className="text-sm text-muted-foreground capitalize">{day === "public_holidays" ? "Public Holidays" : day}</span>
                         <Input
                           value={form.opening_hours[day] ?? ""}
                           onChange={(e) => setForm({ ...form, opening_hours: { ...form.opening_hours, [day]: e.target.value } })}

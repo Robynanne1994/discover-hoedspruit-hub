@@ -13,7 +13,7 @@ import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } fro
 import BottomNav from "@/components/BottomNav";
 import { toast } from "sonner";
 
-const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Public Holidays"];
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
@@ -206,7 +206,7 @@ const ListingDetail = () => {
       { label: "Accessible parking", value: wheelchairCarPark },
     ].filter(f => f.value != null) as BoolField[];
     if (accessFields.length > 0) {
-      accordionSections.push({ key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Accessibility", fields: accessFields });
+      accordionSections.push({ key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="#121214" />, title: "Accessibility", fields: accessFields });
     }
 
     const kidsFields: BoolField[] = [
@@ -216,25 +216,33 @@ const ListingDetail = () => {
       { label: "Playground", value: kidsPlayground },
     ].filter(f => f.value != null) as BoolField[];
     if (kidsFields.length > 0) {
-      accordionSections.push({ key: "kids", icon: <Users size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Kids & Family", fields: kidsFields });
+      accordionSections.push({ key: "kids", icon: <Users size={18} strokeWidth={1.5} color="#121214" />, title: "Kids & Family", fields: kidsFields });
     }
 
     const amenFields: (BoolField)[] = [
       { label: "Toilets", value: hasToilet },
       { label: "Wi-Fi", value: hasWifi },
       { label: "Free Wi-Fi", value: hasFreeWifi },
-      { label: "Smoking allowed", value: smokingAllowed },
+      { label: "Smoking section", value: smokingAllowed },
       { label: "Pets allowed", value: petsAllowed },
     ].filter(f => f.value != null) as BoolField[];
     if (amenFields.length > 0) {
-      accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Amenities", fields: amenFields });
+      accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Amenities", fields: amenFields });
     }
 
-    const svcFields: TextField[] = [];
-    if (serviceType && serviceType.length > 0) svcFields.push({ label: "Service type", value: serviceType.join(", ") });
-    if (meal && meal.length > 0) svcFields.push({ label: "Meals served", value: meal.join(", ") });
-    if (svcFields.length > 0) {
-      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Service Options", fields: svcFields });
+    // Service Options: show as booleans for dine-in/takeaway/delivery, always show all
+    const serviceArr = serviceType || [];
+    const svcFields: BoolField[] = [
+      { label: "Dine-in", value: serviceArr.some(s => /sit\s*down|dine/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
+      { label: "Takeaway", value: serviceArr.some(s => /take\s*away|takeaway/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
+      { label: "Delivery", value: serviceArr.some(s => /deliver/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
+    ];
+    // Also add meals as a text field if available
+    const mealTextField: TextField[] = [];
+    if (meal && meal.length > 0) mealTextField.push({ label: "Meals served", value: meal.join(", ") });
+    const allSvcFields = [...svcFields.filter(f => f.value !== null), ...mealTextField];
+    if (allSvcFields.length > 0) {
+      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Service Options", fields: allSvcFields });
     }
   }
 
@@ -339,26 +347,57 @@ const ListingDetail = () => {
           </div>
         )}
 
-        {/* Action buttons row */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 28 }}>
-          {[
-            { label: isFavourited ? "Saved" : "Save", icon: <Heart size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" fill={isFavourited ? "rgba(18,18,20,0.4)" : "none"} />, onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); } },
-            { label: "Share", icon: <Share2 size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />, onClick: handleShare },
-            { label: isVisited ? "Visited" : "Visited", icon: <CheckCircle size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" fill={isVisited ? "rgba(18,18,20,0.4)" : "none"} />, onClick: () => { if (!requireAuth()) toggleVisited.mutate(); } },
-          ].map((btn) => (
-            <button
-              key={btn.label}
-              onClick={btn.onClick}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
-                borderRadius: 10, padding: "10px 16px", cursor: "pointer",
-                fontSize: 13, fontWeight: 600, color: "rgba(18,18,20,0.6)",
-              }}
-            >
-              {btn.icon} {btn.label}
-            </button>
-          ))}
+        {/* Action buttons row - matching events page style */}
+        <div style={{ display: "flex", gap: 12, marginBottom: 28 }}>
+          <button
+            onClick={handleShare}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
+              color: "#121214", fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.9} />
+            Share
+          </button>
+          <button
+            onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
+              border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
+              color: isFavourited ? "#FFFFFF" : "#121214",
+              fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            <Heart
+              style={{ width: 16, height: 16, color: isFavourited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isFavourited ? "#FFFFFF" : "transparent" }}
+              strokeWidth={1.9}
+            />
+            {isFavourited ? "Saved" : "Save"}
+          </button>
+          <button
+            onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              background: isVisited ? "#121214" : "rgba(18,18,20,0.04)",
+              border: isVisited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
+              color: isVisited ? "#FFFFFF" : "#121214",
+              fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            <CheckCircle
+              style={{ width: 16, height: 16, color: isVisited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isVisited ? "#FFFFFF" : "transparent" }}
+              strokeWidth={1.9}
+            />
+            Visited
+          </button>
         </div>
 
         {/* Quick-scan pills */}
@@ -412,7 +451,7 @@ const ListingDetail = () => {
                 rel={row.external ? "noopener noreferrer" : undefined}
                 style={{
                   display: "flex", alignItems: "center", gap: 12,
-                  padding: "14px 16px",
+                  padding: "10px 16px",
                   borderBottom: i < arr.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                   textDecoration: "none", cursor: row.href ? "pointer" : "default",
                 }}
@@ -571,24 +610,25 @@ const ListingDetail = () => {
         <div ref={whatToKnowRef} />
         {hasHours && (
           <div style={{ marginBottom: 100 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-              <Clock size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <Clock size={18} strokeWidth={1.5} color="#121214" />
               <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
             </div>
             <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
               {DAY_LABELS.map((day, i) => {
-                const value = openingHours[day.toLowerCase()] || "";
+                const key = day === "Public Holidays" ? "public_holidays" : day.toLowerCase();
+                const value = openingHours[key] || "";
                 const isClosed = !value || value.toLowerCase() === "closed";
                 return (
                   <div
                     key={day}
                     style={{
-                      display: "flex", justifyContent: "space-between", padding: "13px 16px",
+                      display: "flex", justifyContent: "space-between", padding: "9px 16px",
                       borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                     }}
                   >
-                    <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{day}</span>
-                    <span style={{ fontSize: 14, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>{day}</span>
+                    <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
                   </div>
                 );
               })}
