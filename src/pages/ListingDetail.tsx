@@ -610,24 +610,25 @@ const ListingDetail = () => {
         <div ref={whatToKnowRef} />
         {hasHours && (
           <div style={{ marginBottom: 100 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-              <Clock size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+              <Clock size={18} strokeWidth={1.5} color="#121214" />
               <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
             </div>
             <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
               {DAY_LABELS.map((day, i) => {
-                const value = openingHours[day.toLowerCase()] || "";
+                const key = day === "Public Holidays" ? "public_holidays" : day.toLowerCase();
+                const value = openingHours[key] || "";
                 const isClosed = !value || value.toLowerCase() === "closed";
                 return (
                   <div
                     key={day}
                     style={{
-                      display: "flex", justifyContent: "space-between", padding: "13px 16px",
+                      display: "flex", justifyContent: "space-between", padding: "9px 16px",
                       borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                     }}
                   >
-                    <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{day}</span>
-                    <span style={{ fontSize: 14, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>{day}</span>
+                    <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
                   </div>
                 );
               })}
