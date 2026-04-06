@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   MapPin, Phone, Mail, Globe, Star, Clock, Accessibility,
-  Check, Minus, Wifi, MessageCircle, Pencil, ArrowLeft,
+  Check, Minus, X, Wifi, MessageCircle, Pencil, ArrowLeft,
   Heart, Share2, CheckCircle, ChevronDown, Users, Coffee, ClipboardList,
   ShoppingBag,
 } from "lucide-react";
