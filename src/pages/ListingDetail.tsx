@@ -347,26 +347,57 @@ const ListingDetail = () => {
           </div>
         )}
 
-        {/* Action buttons row */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 28 }}>
-          {[
-            { label: isFavourited ? "Saved" : "Save", icon: <Heart size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" fill={isFavourited ? "rgba(18,18,20,0.4)" : "none"} />, onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); } },
-            { label: "Share", icon: <Share2 size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />, onClick: handleShare },
-            { label: isVisited ? "Visited" : "Visited", icon: <CheckCircle size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" fill={isVisited ? "rgba(18,18,20,0.4)" : "none"} />, onClick: () => { if (!requireAuth()) toggleVisited.mutate(); } },
-          ].map((btn) => (
-            <button
-              key={btn.label}
-              onClick={btn.onClick}
-              style={{
-                display: "inline-flex", alignItems: "center", gap: 6,
-                background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
-                borderRadius: 10, padding: "10px 16px", cursor: "pointer",
-                fontSize: 13, fontWeight: 600, color: "rgba(18,18,20,0.6)",
-              }}
-            >
-              {btn.icon} {btn.label}
-            </button>
-          ))}
+        {/* Action buttons row - matching events page style */}
+        <div style={{ display: "flex", gap: 12, marginBottom: 28 }}>
+          <button
+            onClick={handleShare}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
+              color: "#121214", fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.9} />
+            Share
+          </button>
+          <button
+            onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
+              border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
+              color: isFavourited ? "#FFFFFF" : "#121214",
+              fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            <Heart
+              style={{ width: 16, height: 16, color: isFavourited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isFavourited ? "#FFFFFF" : "transparent" }}
+              strokeWidth={1.9}
+            />
+            {isFavourited ? "Saved" : "Save"}
+          </button>
+          <button
+            onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
+            className="flex items-center justify-center transition-colors"
+            style={{
+              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              background: isVisited ? "#121214" : "rgba(18,18,20,0.04)",
+              border: isVisited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
+              color: isVisited ? "#FFFFFF" : "#121214",
+              fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            <CheckCircle
+              style={{ width: 16, height: 16, color: isVisited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isVisited ? "#FFFFFF" : "transparent" }}
+              strokeWidth={1.9}
+            />
+            Visited
+          </button>
         </div>
 
         {/* Quick-scan pills */}
