@@ -331,9 +331,9 @@ const Categories = () => {
                       <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
                     )}
                   </div>
-                  <div
+                   <div
                     className="flex items-center justify-between"
-                    style={{ paddingTop: 14 }}
+                    style={{ paddingTop: 10 }}
                   >
                     <span
                       style={{
@@ -344,7 +344,7 @@ const Categories = () => {
                         letterSpacing: "1.5px",
                       }}
                     >
-                      {cat.title} ({count})
+                      {cat.title} <span style={{ fontWeight: 400, color: "rgba(18,18,20,0.35)", fontSize: 13 }}>({count})</span>
                     </span>
                     <ArrowUpRight
                       size={18}
