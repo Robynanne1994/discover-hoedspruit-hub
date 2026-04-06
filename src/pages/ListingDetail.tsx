@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   MapPin, Phone, Mail, Globe, Star, Clock, Accessibility,
-  Check, Minus, Wifi, MessageCircle, Pencil, ArrowLeft,
+  Check, Minus, X, Wifi, MessageCircle, Pencil, ArrowLeft,
   Heart, Share2, CheckCircle, ChevronDown, Users, Coffee, ClipboardList,
   ShoppingBag,
 } from "lucide-react";
@@ -347,35 +347,35 @@ const ListingDetail = () => {
           </div>
         )}
 
-        {/* Action buttons row - matching events page style */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 28 }}>
+        {/* Action buttons row */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 28 }}>
           <button
             onClick={handleShare}
             className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              flex: 1, gap: 6, height: 40, borderRadius: 10,
               background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
-              color: "#121214", fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              color: "#121214", fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
               cursor: "pointer",
             }}
           >
-            <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.9} />
+            <Share2 style={{ width: 14, height: 14, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.9} />
             Share
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
             className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              flex: 1, gap: 6, height: 40, borderRadius: 10,
               background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
               border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
               color: isFavourited ? "#FFFFFF" : "#121214",
-              fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
               cursor: "pointer",
             }}
           >
             <Heart
-              style={{ width: 16, height: 16, color: isFavourited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isFavourited ? "#FFFFFF" : "transparent" }}
+              style={{ width: 14, height: 14, color: isFavourited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isFavourited ? "#FFFFFF" : "transparent" }}
               strokeWidth={1.9}
             />
             {isFavourited ? "Saved" : "Save"}
@@ -384,16 +384,16 @@ const ListingDetail = () => {
             onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
             className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 8, height: 54, borderRadius: 14,
+              flex: 1, gap: 6, height: 40, borderRadius: 10,
               background: isVisited ? "#121214" : "rgba(18,18,20,0.04)",
               border: isVisited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
               color: isVisited ? "#FFFFFF" : "#121214",
-              fontSize: 15, fontWeight: 500, letterSpacing: "0.1px",
+              fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
               cursor: "pointer",
             }}
           >
             <CheckCircle
-              style={{ width: 16, height: 16, color: isVisited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isVisited ? "#FFFFFF" : "transparent" }}
+              style={{ width: 14, height: 14, color: isVisited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isVisited ? "#FFFFFF" : "transparent" }}
               strokeWidth={1.9}
             />
             Visited
@@ -513,7 +513,7 @@ const ListingDetail = () => {
                           <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
                             <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
                             {isBool ? (
-                              field.value ? <Check size={14} color="#2d8a4e" /> : <Minus size={14} color="rgba(18,18,20,0.2)" />
+                              field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
                             ) : (
                               <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
                             )}
