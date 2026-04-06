@@ -238,6 +238,9 @@ const ListingDetail = () => {
     }
   }
 
+  const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
+  const descriptionText = longDescription || listing.description;
+
   const toggleAccordion = (key: string) => {
     setOpenAccordion(openAccordion === key ? null : key);
   };
