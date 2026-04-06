@@ -361,6 +361,17 @@ const ListingDetail = () => {
           ))}
         </div>
 
+        {/* Quick-scan pills */}
+        {showQuickPills && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+            {quickPills.slice(0, 4).map((pill, i) => (
+              <span key={i} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
+                {pill.label}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Contact details block */}
         {hasContactInfo && (
           <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", marginBottom: 28 }}>
