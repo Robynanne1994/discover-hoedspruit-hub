@@ -65,7 +65,7 @@ const Categories = () => {
   const listingResults = hasSearch ? (searchedListings || []) : [];
 
   return (
-    <div className="min-h-screen pb-[72px]" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen pb-[100px]" style={{ background: "#FFFFFF" }}>
       {/* Back button */}
       <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button
