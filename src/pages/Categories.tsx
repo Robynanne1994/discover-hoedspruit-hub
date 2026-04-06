@@ -133,17 +133,17 @@ const Categories = () => {
         <div
           className="flex items-center"
           style={{
-            background: "rgba(18,18,20,0.05)",
-            border: "1px solid rgba(18,18,20,0.1)",
-            borderRadius: 12,
-            padding: "12px 16px",
-            gap: 10,
+            background: "#ffffff",
+            border: "2px solid #121214",
+            borderRadius: 14,
+            padding: "11px 14px",
+            gap: 8,
           }}
         >
           <Search
-            size={18}
+            size={16}
             strokeWidth={2}
-            style={{ color: "rgba(18,18,20,0.35)", flexShrink: 0 }}
+            style={{ color: "#121214", flexShrink: 0 }}
           />
           <input
             type="text"
@@ -155,11 +155,14 @@ const Categories = () => {
               background: "transparent",
               border: "none",
               outline: "none",
-              fontSize: 14,
-               color: "#121214",
-              letterSpacing: "0.2px",
+              fontSize: 13,
+              color: "#121214",
+              letterSpacing: "0.1px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
-            className="placeholder:text-[rgba(18,18,20,0.3)]"
+            className="placeholder:text-[rgba(18,18,20,0.35)]"
           />
         </div>
       </div>
