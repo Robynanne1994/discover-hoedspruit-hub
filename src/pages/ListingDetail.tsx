@@ -3,10 +3,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility,
-  DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, Cigarette,
-  ShoppingBag, Check, Wifi, Ban, MessageCircle, Pencil, ArrowLeft,
-  Heart, Share2, CheckCircle, ChevronDown,
+  MapPin, Phone, Mail, Globe, Star, Clock, Accessibility,
+  Check, Minus, Wifi, MessageCircle, Pencil, ArrowLeft,
+  Heart, Share2, CheckCircle, ChevronDown, Users, Coffee, ClipboardList,
+  ShoppingBag,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
@@ -181,184 +181,65 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
-  const kidsItems = [
-    { label: "Good for Kids", value: goodForKids },
-    { label: "Kids Playground", value: kidsPlayground },
-    { label: "Kids Menu", value: kidsMenu },
-    { label: "High Chairs", value: highChairs },
-  ].filter((item) => item.value === true);
-  const hasKidsInfo = kidsItems.length > 0;
+  // Quick-scan pills for restaurants
+  const quickPills: { label: string }[] = [];
+  if (isListingRestaurant) {
+    if (cuisine && cuisine.length > 0) quickPills.push({ label: cuisine.join(", ") });
+    if (vibe && vibe.length > 0) quickPills.push({ label: vibe.join(", ") });
+    if (priceLevel) quickPills.push({ label: "R".repeat(priceLevel) });
+    if (seating && seating.length > 0) quickPills.push({ label: seating.map(s => s.replace(" seating", "")).join(" & ") });
+  }
+  const showQuickPills = quickPills.length > 0;
 
-  const accessibilityItems = [
-    { label: "Wheelchair Friendly", value: wheelchairFriendly },
-    { label: "Wheelchair-accessible Car Park", value: wheelchairCarPark },
-    { label: "Wheelchair-accessible Entrance", value: wheelchairEntrance },
-    { label: "Wheelchair-accessible Seating", value: wheelchairSeating },
-    { label: "Wheelchair-accessible Toilet", value: wheelchairToilet },
-  ].filter((item) => item.value === true);
-  const hasAccessibilityInfo = accessibilityItems.length > 0;
-
-  const amenitiesItems = [
-    { label: "Toilet", value: hasToilet },
-    { label: "Wi-Fi", value: hasWifi },
-    { label: "Free Wi-Fi", value: hasFreeWifi },
-  ].filter((item) => item.value === true);
-  const hasAmenitiesInfo = amenitiesItems.length > 0;
-
-  const hasSitDown = serviceType?.includes("Sit down") || serviceType?.includes("Dine-in") || false;
-  const hasTakeaway = serviceType?.includes("Takeaway") || serviceType?.includes("Take away") || false;
-  const hasDelivery = serviceType?.includes("Delivery") || false;
-  const serviceItems = [
-    ...(hasSitDown ? [{ label: "Sit down", available: true }] : []),
-    ...(hasTakeaway ? [{ label: "Takeaway", available: true }] : []),
-    { label: "Delivery", available: hasDelivery },
-  ];
-  const hasServiceInfo = hasSitDown || hasTakeaway || true;
-
-  const seatingItems = [
-    ...(seating?.includes("Bar seating") ? [{ label: "Bar seating" }] : []),
-    ...(seating?.includes("Indoor seating") ? [{ label: "Indoor seating" }] : []),
-    ...(seating?.includes("Outdoor seating") ? [{ label: "Outdoor seating" }] : []),
-  ];
-  const hasSeatingInfo = seatingItems.length > 0;
-
-  const diningDetails: { label: string; value: string }[] = [];
-  if (cuisine && cuisine.length > 0) diningDetails.push({ label: "Cuisine", value: cuisine.join(", ") });
-  if (vibe && vibe.length > 0) diningDetails.push({ label: "Vibe", value: vibe.join(", ") });
-  if (meal && meal.length > 0) diningDetails.push({ label: "Meal types", value: meal.join(", ") });
-  const hasDiningInfo = diningDetails.length > 0;
-
-  const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
-
-  const descriptionText = longDescription || listing.description;
-
-  // Build accordion sections
-  type AccSection = { key: string; icon: React.ReactNode; title: string; content: React.ReactNode };
+  // Build accordion sections for restaurants
+  type BoolField = { label: string; value: boolean | null };
+  type TextField = { label: string; value: string | null };
+  type AccSection = { key: string; icon: React.ReactNode; title: string; fields: (BoolField | TextField)[] };
   const accordionSections: AccSection[] = [];
 
   if (isListingRestaurant) {
-    // Kids
-    if (hasKidsInfo) {
-      accordionSections.push({
-        key: "kids", icon: <Baby size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Kids",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {kidsItems.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{item.label}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
+    const accessFields: BoolField[] = [
+      { label: "Wheelchair friendly", value: wheelchairFriendly },
+      { label: "Accessible entrance", value: wheelchairEntrance },
+      { label: "Accessible seating", value: wheelchairSeating },
+      { label: "Accessible toilet", value: wheelchairToilet },
+      { label: "Accessible parking", value: wheelchairCarPark },
+    ].filter(f => f.value != null) as BoolField[];
+    if (accessFields.length > 0) {
+      accordionSections.push({ key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Accessibility", fields: accessFields });
     }
-    // Services
-    if (hasServiceInfo) {
-      accordionSections.push({
-        key: "service", icon: <ShoppingBag size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Services",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {serviceItems.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: item.available ? "#121214" : "rgba(18,18,20,0.35)" }}>
-                {item.available ? <Check size={14} color="#121214" /> : <Ban size={14} color="rgba(18,18,20,0.3)" />}
-                <span>{item.label}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
+
+    const kidsFields: BoolField[] = [
+      { label: "Good for kids", value: goodForKids },
+      { label: "Kids menu", value: kidsMenu },
+      { label: "High chairs", value: highChairs },
+      { label: "Playground", value: kidsPlayground },
+    ].filter(f => f.value != null) as BoolField[];
+    if (kidsFields.length > 0) {
+      accordionSections.push({ key: "kids", icon: <Users size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Kids & Family", fields: kidsFields });
     }
-    // Cuisines
-    if (cuisine && cuisine.length > 0) {
-      accordionSections.push({
-        key: "cuisines", icon: <ChefHat size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Cuisines",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {cuisine.map((c) => (
-              <div key={c} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{c}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
+
+    const amenFields: (BoolField)[] = [
+      { label: "Toilets", value: hasToilet },
+      { label: "Wi-Fi", value: hasWifi },
+      { label: "Free Wi-Fi", value: hasFreeWifi },
+      { label: "Smoking allowed", value: smokingAllowed },
+      { label: "Pets allowed", value: petsAllowed },
+    ].filter(f => f.value != null) as BoolField[];
+    if (amenFields.length > 0) {
+      accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Amenities", fields: amenFields });
     }
-    // Amenities
-    if (hasAmenitiesInfo) {
-      accordionSections.push({
-        key: "amenities", icon: <Wifi size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Amenities",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {amenitiesItems.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{item.label}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
-    }
-    // Meals
-    if (meal && meal.length > 0) {
-      accordionSections.push({
-        key: "meals", icon: <UtensilsCrossed size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Meals",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {meal.map((m) => (
-              <div key={m} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{m}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
-    }
-    // Accessibility
-    if (hasAccessibilityInfo) {
-      accordionSections.push({
-        key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Accessibility",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {accessibilityItems.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{item.label}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
-    }
-    // Seating
-    if (hasSeatingInfo) {
-      accordionSections.push({
-        key: "seating", icon: <Armchair size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Seating",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {seatingItems.map((item) => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{item.label}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
-    }
-    // Vibe
-    if (vibe && vibe.length > 0) {
-      accordionSections.push({
-        key: "vibe", icon: <Palette size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Vibe",
-        content: (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {vibe.map((v) => (
-              <div key={v} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                <Check size={14} color="#121214" /> <span>{v}</span>
-              </div>
-            ))}
-          </div>
-        ),
-      });
+
+    const svcFields: TextField[] = [];
+    if (serviceType && serviceType.length > 0) svcFields.push({ label: "Service type", value: serviceType.join(", ") });
+    if (meal && meal.length > 0) svcFields.push({ label: "Meals served", value: meal.join(", ") });
+    if (svcFields.length > 0) {
+      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Service Options", fields: svcFields });
     }
   }
+
+  const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
+  const descriptionText = longDescription || listing.description;
 
   const toggleAccordion = (key: string) => {
     setOpenAccordion(openAccordion === key ? null : key);
@@ -480,6 +361,17 @@ const ListingDetail = () => {
           ))}
         </div>
 
+        {/* Quick-scan pills */}
+        {showQuickPills && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+            {quickPills.slice(0, 4).map((pill, i) => (
+              <span key={i} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
+                {pill.label}
+              </span>
+            ))}
+          </div>
+        )}
+
         {/* Contact details block */}
         {hasContactInfo && (
           <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", marginBottom: 28 }}>
@@ -575,8 +467,20 @@ const ListingDetail = () => {
                     />
                   </button>
                   {isOpen && (
-                    <div style={{ padding: "0 16px 16px 16px" }}>
-                      {section.content}
+                    <div style={{ borderTop: "1px solid rgba(18,18,20,0.06)", marginTop: 12, padding: "12px 16px 16px 16px" }}>
+                      {section.fields.map((field, fi) => {
+                        const isBool = typeof field.value === "boolean";
+                        return (
+                          <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
+                            <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
+                            {isBool ? (
+                              field.value ? <Check size={14} color="#2d8a4e" /> : <Minus size={14} color="rgba(18,18,20,0.2)" />
+                            ) : (
+                              <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
