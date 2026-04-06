@@ -582,6 +582,54 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          community_activity: boolean
+          community_followers: boolean
+          events_new: boolean
+          events_reminders: boolean
+          events_updates: boolean
+          hh_app_updates: boolean
+          hh_tips: boolean
+          id: string
+          listings_new: boolean
+          listings_updates: boolean
+          push_enabled: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          community_activity?: boolean
+          community_followers?: boolean
+          events_new?: boolean
+          events_reminders?: boolean
+          events_updates?: boolean
+          hh_app_updates?: boolean
+          hh_tips?: boolean
+          id?: string
+          listings_new?: boolean
+          listings_updates?: boolean
+          push_enabled?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          community_activity?: boolean
+          community_followers?: boolean
+          events_new?: boolean
+          events_reminders?: boolean
+          events_updates?: boolean
+          hh_app_updates?: boolean
+          hh_tips?: boolean
+          id?: string
+          listings_new?: boolean
+          listings_updates?: boolean
+          push_enabled?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
