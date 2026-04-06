@@ -609,7 +609,7 @@ const ListingDetail = () => {
         {/* Hours section */}
         <div ref={whatToKnowRef} />
         {hasHours && (
-          <div style={{ marginBottom: 100 }}>
+          <div style={{ marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
               <Clock size={18} strokeWidth={1.5} color="#121214" />
               <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
