@@ -227,7 +227,7 @@ const ListingDetail = () => {
       { label: "Pets allowed", value: petsAllowed },
     ].filter(f => f.value != null) as BoolField[];
     if (amenFields.length > 0) {
-      accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Amenities", fields: amenFields });
+      accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Amenities", fields: amenFields });
     }
 
     // Service Options: show as booleans for dine-in/takeaway/delivery, always show all
