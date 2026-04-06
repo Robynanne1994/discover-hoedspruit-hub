@@ -43,12 +43,7 @@ const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
             ) : (
               <div style={{ width: "100%", height: "100%", background: "#f0f0f0" }} />
             )}
-            <div style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
-            }} />
-            <div style={{ position: "absolute", bottom: 14, left: 14, right: 14 }}>
+            <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.55)", padding: "12px 14px" }}>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}>
                 {listing.title}
               </div>
