@@ -230,11 +230,19 @@ const ListingDetail = () => {
       accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Amenities", fields: amenFields });
     }
 
-    const svcFields: TextField[] = [];
-    if (serviceType && serviceType.length > 0) svcFields.push({ label: "Service type", value: serviceType.join(", ") });
-    if (meal && meal.length > 0) svcFields.push({ label: "Meals served", value: meal.join(", ") });
-    if (svcFields.length > 0) {
-      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Service Options", fields: svcFields });
+    // Service Options: show as booleans for dine-in/takeaway/delivery, always show all
+    const serviceArr = serviceType || [];
+    const svcFields: BoolField[] = [
+      { label: "Dine-in", value: serviceArr.some(s => /sit\s*down|dine/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
+      { label: "Takeaway", value: serviceArr.some(s => /take\s*away|takeaway/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
+      { label: "Delivery", value: serviceArr.some(s => /deliver/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
+    ];
+    // Also add meals as a text field if available
+    const mealTextField: TextField[] = [];
+    if (meal && meal.length > 0) mealTextField.push({ label: "Meals served", value: meal.join(", ") });
+    const allSvcFields = [...svcFields.filter(f => f.value !== null), ...mealTextField];
+    if (allSvcFields.length > 0) {
+      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Service Options", fields: allSvcFields });
     }
   }
 
