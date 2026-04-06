@@ -632,7 +632,7 @@ const ListingDetail = () => {
                     }}
                   >
                     <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>{day}</span>
-                    <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
+                    <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)", fontStyle: isPublicHoliday && !rawValue ? "italic" : "normal" }}>{value || "Closed"}</span>
                   </div>
                 );
               })}
