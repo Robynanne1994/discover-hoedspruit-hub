@@ -1,88 +1,62 @@
-import { Link } from "react-router-dom";
-import BackButton from "@/components/BackButton";
+import { Link, useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
-import {
-  FileText,
-  Shield,
-  Cookie,
-  BookOpen,
-  ChevronRight,
-} from "lucide-react";
+import { ArrowLeft, FileText, Shield, Cookie, BookOpen, ChevronRight } from "lucide-react";
 
 const policyRows = [
-  {
-    icon: FileText,
-    label: "Terms of Use",
-    sub: "Our terms governing your use of Hello Hoedspruit",
-    href: "/terms/use",
-  },
-  {
-    icon: Shield,
-    label: "Privacy Policy",
-    sub: "How we collect, use, and protect your data",
-    href: "/terms/privacy",
-  },
-  {
-    icon: Cookie,
-    label: "Cookie Policy",
-    sub: "How we use cookies on the Hello Hoedspruit app",
-    href: "/terms/cookies",
-  },
-  {
-    icon: BookOpen,
-    label: "Content Guidelines",
-    sub: "Our standards for what is shared in the community",
-    href: "/terms/content",
-  },
+  { icon: FileText, label: "Terms of Use", sub: "Our terms governing your use of Hello Hoedspruit", href: "/terms/use" },
+  { icon: Shield, label: "Privacy Policy", sub: "How we collect, use, and protect your data", href: "/terms/privacy" },
+  { icon: Cookie, label: "Cookie Policy", sub: "How we use cookies on the Hello Hoedspruit app", href: "/terms/cookies" },
+  { icon: BookOpen, label: "Content Guidelines", sub: "Our standards for what is shared in the community", href: "/terms/content" },
 ];
 
 const TermsPolicies = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="min-h-screen pb-20 bg-background">
-      {/* Top bar */}
-      <div className="pt-14 pb-1 px-5 relative">
-        <div className="absolute left-5 top-14">
-          <BackButton className="text-primary mb-0" />
-        </div>
-        <h1 className="text-center text-[13px] font-medium text-muted-foreground uppercase tracking-[0.08em]">
-          Terms & Policies
-        </h1>
+    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
+      {/* Back button */}
+      <div style={{ paddingTop: 52, paddingLeft: 24 }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+        >
+          <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
+        </button>
       </div>
 
-      {/* Intro */}
-      <div className="px-5 pt-6 pb-2">
-        <p className="text-[13px] text-muted-foreground leading-relaxed text-center">
-          Review the policies that govern your experience on Hello Hoedspruit.
+      {/* Heading */}
+      <div style={{ padding: "28px 24px 0" }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", margin: 0 }}>
+          Terms & Policies
+        </h1>
+        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 0 }}>
+          Review the policies that govern your experience
         </p>
       </div>
 
-      {/* Policy list */}
-      <div className="px-5 mt-4">
-        <div className="bg-card border border-border/40 rounded-xl overflow-hidden">
+      {/* Policy rows */}
+      <div style={{ padding: "32px 24px 0" }}>
+        <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
           {policyRows.map((item, i) => {
             const Icon = item.icon;
             return (
-              <Link key={item.label} to={item.href}>
+              <Link key={item.label} to={item.href} style={{ textDecoration: "none" }}>
                 <div
-                  className={`flex items-center gap-3.5 px-4 py-3.5 hover:bg-muted/20 transition-colors ${
-                    i < policyRows.length - 1
-                      ? "border-b border-border/20"
-                      : ""
-                  }`}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "16px 20px",
+                    borderBottom: i < policyRows.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                    cursor: "pointer",
+                  }}
                 >
-                  <Icon
-                    className="h-[16px] w-[16px] text-primary/70 shrink-0"
-                    strokeWidth={1.5}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[13px] font-medium text-foreground block leading-tight">
-                      {item.label}
-                    </span>
-                    <span className="text-[11px] text-muted-foreground leading-tight">
-                      {item.sub}
-                    </span>
+                  <Icon size={22} strokeWidth={1.5} color="#121214" style={{ flexShrink: 0 }} />
+                  <div style={{ flex: 1, marginLeft: 14, paddingRight: 12 }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", marginBottom: 3 }}>{item.label}</div>
+                    <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", lineHeight: 1.4 }}>{item.sub}</div>
                   </div>
-                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/20 shrink-0" />
+                  <ChevronRight size={16} strokeWidth={2} color="rgba(18,18,20,0.2)" style={{ flexShrink: 0 }} />
                 </div>
               </Link>
             );
