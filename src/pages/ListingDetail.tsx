@@ -636,8 +636,22 @@ const ListingDetail = () => {
           </div>
         )}
 
-        {/* If no hours, add bottom margin */}
-        {!hasHours && <div style={{ marginBottom: 100 }} />}
+        {/* Suggest an Edit */}
+        <div style={{ marginTop: hasHours ? 0 : 24, marginBottom: 100 }}>
+          <a
+            href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              width: "100%", padding: "14px 0", borderRadius: 12,
+              background: "rgba(18,18,20,0.05)", border: "1px solid rgba(18,18,20,0.08)",
+              fontSize: 14, fontWeight: 600, color: "#121214", letterSpacing: "0.2px",
+              textDecoration: "none", cursor: "pointer",
+            }}
+          >
+            <Pencil size={15} strokeWidth={2} color="#121214" />
+            Suggest an Edit
+          </a>
+        </div>
       </div>
 
       <BottomNav />
