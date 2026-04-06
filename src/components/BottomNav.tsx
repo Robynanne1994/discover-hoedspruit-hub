@@ -16,7 +16,7 @@ const BottomNav = () => {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
       style={{
-        background: "#1e1e22",
+        background: "#48484a",
         borderRadius: "20px 20px 0 0",
         height: 74,
         padding: "0 20px 8px 20px",
