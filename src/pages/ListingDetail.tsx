@@ -483,9 +483,11 @@ const ListingDetail = () => {
                   key={section.key}
                   style={{
                     background: "rgba(18,18,20,0.03)",
-                    border: "1px solid rgba(18,18,20,0.06)",
-                    borderRadius: 16,
-                    marginBottom: i < accordionSections.length - 1 ? 10 : 0,
+                    borderLeft: "1px solid rgba(18,18,20,0.06)",
+                    borderRight: "1px solid rgba(18,18,20,0.06)",
+                    borderTop: "1px solid rgba(18,18,20,0.06)",
+                    borderBottom: i === accordionSections.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                    borderRadius: i === 0 ? "16px 16px 0 0" : i === accordionSections.length - 1 ? "0 0 16px 16px" : 0,
                     overflow: "hidden",
                   }}
                 >
@@ -609,7 +611,7 @@ const ListingDetail = () => {
         {/* Hours section */}
         <div ref={whatToKnowRef} />
         {hasHours && (
-          <div style={{ marginBottom: 100 }}>
+          <div style={{ marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
               <Clock size={18} strokeWidth={1.5} color="#121214" />
               <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
@@ -637,7 +639,7 @@ const ListingDetail = () => {
         )}
 
         {/* Suggest an Edit */}
-        <div style={{ marginTop: hasHours ? 0 : 24, marginBottom: 100 }}>
+        <div style={{ marginTop: 8, marginBottom: 100 }}>
           <a
             href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
             style={{
