@@ -152,27 +152,42 @@ const HomeHero = () => {
 
       {/* Category pills */}
       <div style={{ paddingTop: 18, paddingLeft: 24, overflowX: "auto" }} className="scrollbar-hide">
-        <div style={{ display: "flex", gap: 10 }}>
+        <div style={{ display: "flex", gap: 8 }}>
           {categories.map((cat) => {
             const Icon = cat.icon;
             return (
               <Link
                 key={cat.label}
                 to={cat.href}
+                className="group active:bg-[#121214]"
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 6,
-                  padding: "10px 16px",
-                  background: "rgba(18,18,20,0.04)",
-                  border: "1px solid rgba(18,18,20,0.08)",
-                  borderRadius: 10,
+                  gap: 5,
+                  padding: "7px 14px 7px 8px",
+                  background: "rgba(18,18,20,0.05)",
+                  border: "none",
+                  borderRadius: 20,
                   whiteSpace: "nowrap",
                   textDecoration: "none",
                 }}
               >
-                <Icon size={15} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />
-                <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(18,18,20,0.6)" }}>{cat.label}</span>
+                <span
+                  className="group-active:bg-[rgba(255,255,255,0.15)]"
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    background: "rgba(18,18,20,0.08)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon size={11} strokeWidth={2} className="group-active:text-white" color="rgba(18,18,20,0.5)" />
+                </span>
+                <span className="group-active:text-white" style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>{cat.label}</span>
               </Link>
             );
           })}
