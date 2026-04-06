@@ -619,7 +619,9 @@ const ListingDetail = () => {
             <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
               {DAY_LABELS.map((day, i) => {
                 const key = day === "Public Holidays" ? "public_holidays" : day.toLowerCase();
-                const value = openingHours[key] || "";
+                const rawValue = openingHours[key] || "";
+                const isPublicHoliday = day === "Public Holidays";
+                const value = isPublicHoliday && !rawValue ? "Hours might differ" : rawValue;
                 const isClosed = !value || value.toLowerCase() === "closed";
                 return (
                   <div
@@ -630,7 +632,7 @@ const ListingDetail = () => {
                     }}
                   >
                     <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>{day}</span>
-                    <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
+                    <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)", fontStyle: isPublicHoliday && !rawValue ? "italic" : "normal" }}>{value || "Closed"}</span>
                   </div>
                 );
               })}
