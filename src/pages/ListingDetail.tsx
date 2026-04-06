@@ -223,7 +223,7 @@ const ListingDetail = () => {
       { label: "Toilets", value: hasToilet },
       { label: "Wi-Fi", value: hasWifi },
       { label: "Free Wi-Fi", value: hasFreeWifi },
-      { label: "Smoking allowed", value: smokingAllowed },
+      { label: "Smoking section", value: smokingAllowed },
       { label: "Pets allowed", value: petsAllowed },
     ].filter(f => f.value != null) as BoolField[];
     if (amenFields.length > 0) {
