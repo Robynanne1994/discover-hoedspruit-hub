@@ -513,7 +513,7 @@ const ListingDetail = () => {
                           <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
                             <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
                             {isBool ? (
-                              field.value ? <Check size={14} color="#2d8a4e" /> : <Minus size={14} color="rgba(18,18,20,0.2)" />
+                              field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
                             ) : (
                               <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
                             )}
