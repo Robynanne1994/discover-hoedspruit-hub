@@ -112,14 +112,14 @@ const HomeHero = () => {
         <div ref={containerRef}>
           <div style={{
             background: "#ffffff",
-            border: "1px solid rgba(18,18,20,0.1)",
-            borderRadius: 12,
-            padding: "10px 14px",
+            border: "2px solid #121214",
+            borderRadius: 14,
+            padding: "11px 14px",
             display: "flex",
             alignItems: "center",
             gap: 8,
           }}>
-            <Search size={16} strokeWidth={2} color="rgba(18,18,20,0.3)" style={{ flexShrink: 0 }} />
+            <Search size={16} strokeWidth={2} color="#121214" style={{ flexShrink: 0 }} />
             <input
               ref={inputRef}
               value={query}
@@ -133,12 +133,16 @@ const HomeHero = () => {
                 background: "transparent",
                 fontSize: 13,
                 color: "#121214",
-                letterSpacing: 0.2,
+                letterSpacing: 0.1,
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             />
             {isFetching && <Loader2 size={16} className="animate-spin" color="rgba(18,18,20,0.3)" style={{ flexShrink: 0 }} />}
-            <div style={{ borderLeft: "1px solid rgba(18,18,20,0.08)", paddingLeft: 8, flexShrink: 0 }}>
-              <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.45)" }}>
+            <div style={{ borderLeft: "1px solid rgba(18,18,20,0.1)", paddingLeft: 8, flexShrink: 0, display: "flex", alignItems: "center", gap: 5 }}>
+              {(() => { const WeatherIcon = getWeatherIcon(weatherCode); return <WeatherIcon size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />; })()}
+              <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.5)" }}>
                 {temp !== null ? `${temp}°C` : "—"}
               </span>
             </div>
