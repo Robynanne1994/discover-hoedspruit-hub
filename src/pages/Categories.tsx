@@ -65,7 +65,7 @@ const Categories = () => {
   const listingResults = hasSearch ? (searchedListings || []) : [];
 
   return (
-    <div className="min-h-screen pb-[72px]" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen pb-[100px]" style={{ background: "#FFFFFF" }}>
       {/* Back button */}
       <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button
@@ -331,9 +331,9 @@ const Categories = () => {
                       <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
                     )}
                   </div>
-                  <div
+                   <div
                     className="flex items-center justify-between"
-                    style={{ paddingTop: 14 }}
+                    style={{ paddingTop: 10 }}
                   >
                     <span
                       style={{
@@ -344,7 +344,7 @@ const Categories = () => {
                         letterSpacing: "1.5px",
                       }}
                     >
-                      {cat.title} ({count})
+                      {cat.title} <span style={{ fontWeight: 400, color: "rgba(18,18,20,0.35)", fontSize: 13 }}>({count})</span>
                     </span>
                     <ArrowUpRight
                       size={18}
