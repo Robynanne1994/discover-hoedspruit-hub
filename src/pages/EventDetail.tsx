@@ -127,7 +127,7 @@ const EventDetail = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
           <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
             <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
             <span
@@ -166,7 +166,7 @@ const EventDetail = () => {
   if (!event) {
     return (
       <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
           <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
             <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
             <span
@@ -271,7 +271,7 @@ const EventDetail = () => {
   return (
     <div className="min-h-screen pb-28" style={{ background: "#FFFFFF" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
           <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
           <span
