@@ -467,8 +467,20 @@ const ListingDetail = () => {
                     />
                   </button>
                   {isOpen && (
-                    <div style={{ padding: "0 16px 16px 16px" }}>
-                      {section.content}
+                    <div style={{ borderTop: "1px solid rgba(18,18,20,0.06)", marginTop: 12, padding: "12px 16px 16px 16px" }}>
+                      {section.fields.map((field, fi) => {
+                        const isBool = typeof field.value === "boolean";
+                        return (
+                          <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
+                            <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
+                            {isBool ? (
+                              field.value ? <Check size={14} color="#2d8a4e" /> : <Minus size={14} color="rgba(18,18,20,0.2)" />
+                            ) : (
+                              <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
