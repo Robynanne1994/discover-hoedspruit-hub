@@ -34,7 +34,7 @@ const People = () => {
   return (
     <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
           <ArrowLeft size={18} strokeWidth={2} style={{ color: "rgba(18,18,20,0.4)" }} />
           <span

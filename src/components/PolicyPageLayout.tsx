@@ -53,7 +53,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 52, paddingLeft: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24 }}>
         <button
           onClick={() => navigate("/terms")}
           style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}

@@ -87,7 +87,7 @@ const ContactUs = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
         <button
           onClick={() => navigate(-1)}
           style={{

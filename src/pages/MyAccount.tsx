@@ -205,7 +205,7 @@ const MyAccount = () => {
   if (!loading && !user) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
           <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>PROFILE</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
@@ -221,7 +221,7 @@ const MyAccount = () => {
   if (loading || !user) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-10 w-48 mb-4" />
           <Skeleton className="h-4 w-40 mb-7" />
           <Skeleton className="h-28 w-full rounded-[16px] mb-6" />
@@ -475,7 +475,7 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
       {/* Heading */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
           PROFILE
         </h1>

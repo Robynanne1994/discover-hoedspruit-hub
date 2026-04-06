@@ -49,7 +49,7 @@ const AccountSettings = () => {
   if (loading || !user) {
     return (
       <div style={{ minHeight: "100vh", background: "#ffffff" }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
             <Skeleton className="h-10 w-48" />
@@ -91,7 +91,7 @@ const AccountSettings = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}

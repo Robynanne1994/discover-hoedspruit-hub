@@ -59,7 +59,7 @@ const VisitedPlaces = () => {
   if (!loading && !user) {
     return (
       <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
             <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
@@ -83,7 +83,7 @@ const VisitedPlaces = () => {
   if (loading || isLoading) {
     return (
       <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
-        <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
             <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
@@ -106,7 +106,7 @@ const VisitedPlaces = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
         <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
           <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
           <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>

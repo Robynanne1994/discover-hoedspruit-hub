@@ -195,7 +195,7 @@ const Notifications = () => {
   return (
     <div style={{ background: "#ffffff", minHeight: "100vh", paddingBottom: 100 }}>
       {/* Back */}
-      <div style={{ paddingTop: 52, paddingLeft: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 24 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
