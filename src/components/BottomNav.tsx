@@ -16,9 +16,10 @@ const BottomNav = () => {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
       style={{
-        background: "#ffffff",
-        borderTop: "1px solid rgba(18,18,20,0.08)",
-        height: 72,
+        background: "#1e1e22",
+        borderRadius: "20px 20px 0 0",
+        height: 74,
+        padding: "0 20px 8px 20px",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%" }}>
@@ -28,7 +29,7 @@ const BottomNav = () => {
               ? location.pathname === "/"
               : location.pathname.startsWith(item.href);
           const Icon = item.icon;
-          const color = isActive ? "#121214" : "rgba(18,18,20,0.35)";
+          const color = isActive ? "#ffffff" : "rgba(255,255,255,0.4)";
 
           return (
             <Link
