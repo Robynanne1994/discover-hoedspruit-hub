@@ -216,7 +216,7 @@ const ListingDetail = () => {
       { label: "Playground", value: kidsPlayground },
     ].filter(f => f.value != null) as BoolField[];
     if (kidsFields.length > 0) {
-      accordionSections.push({ key: "kids", icon: <Users size={18} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />, title: "Kids & Family", fields: kidsFields });
+      accordionSections.push({ key: "kids", icon: <Users size={18} strokeWidth={1.5} color="#121214" />, title: "Kids & Family", fields: kidsFields });
     }
 
     const amenFields: (BoolField)[] = [
