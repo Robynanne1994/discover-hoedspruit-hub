@@ -3,10 +3,10 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  MapPin, Phone, Mail, Globe, Star, Clock, Baby, PawPrint, Accessibility,
-  DollarSign, UtensilsCrossed, Palette, ChefHat, Armchair, Cigarette,
-  ShoppingBag, Check, Wifi, Ban, MessageCircle, Pencil, ArrowLeft,
-  Heart, Share2, CheckCircle, ChevronDown,
+  MapPin, Phone, Mail, Globe, Star, Clock, Accessibility,
+  Check, Minus, Wifi, MessageCircle, Pencil, ArrowLeft,
+  Heart, Share2, CheckCircle, ChevronDown, Users, Coffee, ClipboardList,
+  ShoppingBag,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
