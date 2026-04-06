@@ -451,7 +451,7 @@ const ListingDetail = () => {
                 rel={row.external ? "noopener noreferrer" : undefined}
                 style={{
                   display: "flex", alignItems: "center", gap: 12,
-                  padding: "14px 16px",
+                  padding: "10px 16px",
                   borderBottom: i < arr.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                   textDecoration: "none", cursor: row.href ? "pointer" : "default",
                 }}
