@@ -83,7 +83,7 @@ const AdminBulkEdit = () => {
         for (const col of COLUMNS) {
           payload[col.key] = row[col.key];
         }
-        const { error } = await supabase.from("listings").update(payload).eq("id", row.id);
+        const { error } = await supabase.from("listings").update(payload as any).eq("id", row.id);
         if (error) throw error;
       }
       toast.success(`${dirtyRows.length} listing(s) saved`);
