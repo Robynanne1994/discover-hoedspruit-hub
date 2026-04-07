@@ -141,7 +141,7 @@ const AdminArticles = () => {
         slug: generateSlug(row.title),
         excerpt: row.excerpt || null,
         body: row.body,
-        image_url: row.image_url || null,
+        ...(row.image_url ? { image_url: row.image_url } : { image_url: null }),
         category: row.category || "news",
         author: row.author || "Hello Hoedspruit",
         read_time: row.read_time ? parseInt(row.read_time) : null,

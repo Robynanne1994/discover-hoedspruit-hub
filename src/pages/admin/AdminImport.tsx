@@ -236,10 +236,11 @@ const AdminImport = () => {
           }
         }
 
+        const isUpdate = !!existingMap.get(title.toLowerCase());
         const payload: Record<string, any> = {
           title,
           description: row.description || null,
-          image_url: row.image_url || null,
+          ...(row.image_url ? { image_url: row.image_url } : (!isUpdate ? { image_url: null } : {})),
           location: row.location || null,
           phone: row.phone || null,
           email: row.email || null,
@@ -252,7 +253,7 @@ const AdminImport = () => {
           category_id: resolvedCatIds[0] || null,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
           long_description: row.long_description || null,
-          gallery_images: galleryImages,
+          ...(galleryImages && galleryImages.length > 0 ? { gallery_images: galleryImages } : (!isUpdate ? { gallery_images: null } : {})),
           opening_hours: openingHours,
         };
 
