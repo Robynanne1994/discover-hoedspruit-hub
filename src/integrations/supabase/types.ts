@@ -725,6 +725,59 @@ export type Database = {
         }
         Relationships: []
       }
+      specials: {
+        Row: {
+          business_id: string | null
+          business_name: string
+          created_at: string
+          deal_label: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          sort_order: number
+          title: string
+          updated_at: string
+          valid_until: string | null
+        }
+        Insert: {
+          business_id?: string | null
+          business_name: string
+          created_at?: string
+          deal_label: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          sort_order?: number
+          title: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Update: {
+          business_id?: string | null
+          business_name?: string
+          created_at?: string
+          deal_label?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          sort_order?: number
+          title?: string
+          updated_at?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specials_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subcategories: {
         Row: {
           category_id: string
