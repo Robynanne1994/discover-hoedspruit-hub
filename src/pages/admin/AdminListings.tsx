@@ -674,29 +674,44 @@ const AdminListings = () => {
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="text-sm font-medium text-foreground">Accommodation Fields</p>
 
-                    <div className="flex items-center gap-2">
-                      <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
-                      <Label>Pets Allowed</Label>
-                    </div>
+                    <div className="space-y-3">
+                      {[
+                        { label: "Restaurant", key: "has_restaurant" as const },
+                        { label: "Bar", key: "has_bar" as const },
+                        { label: "Room Service", key: "has_room_service" as const },
+                        { label: "Breakfast", key: "has_breakfast" as const },
+                      ].map(({ label, key }) => (
+                        <div key={key} className="flex items-center gap-2">
+                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
+                          <Label>{label}</Label>
+                        </div>
+                      ))}
 
-                    <div>
-                      <Label>Amenities</Label>
-                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                      <div className="flex flex-wrap gap-2">
-                        {AMENITIES_OPTIONS.map((opt) => {
-                          const selected = form.amenities.includes(opt);
-                          return (
-                            <button
-                              key={opt}
-                              type="button"
-                              onClick={() => setForm({ ...form, amenities: selected ? form.amenities.filter((v) => v !== opt) : [...form.amenities, opt] })}
-                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
-                            >
-                              {opt}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      {form.has_breakfast === true && (
+                        <div className="ml-6 flex items-center gap-2">
+                          <Switch checked={form.breakfast_included === true} onCheckedChange={(v) => setForm({ ...form, breakfast_included: v })} />
+                          <Label>{form.breakfast_included ? "Breakfast Included (Free)" : "Breakfast Paid"}</Label>
+                        </div>
+                      )}
+
+                      {[
+                        { label: "Swimming Pool", key: "has_swimming_pool" as const },
+                        { label: "Laundry Service", key: "has_laundry" as const },
+                        { label: "Child Friendly", key: "child_friendly" as const },
+                        { label: "Spa", key: "has_spa" as const },
+                        { label: "Fitness Centre", key: "has_fitness_centre" as const },
+                        { label: "Airport Shuttle", key: "has_airport_shuttle" as const },
+                        { label: "Aircon", key: "has_aircon" as const },
+                        { label: "Wi-Fi", key: "has_wifi_accom" as const },
+                        { label: "Free Parking", key: "has_free_parking" as const },
+                        { label: "Secure Parking", key: "has_secure_parking" as const },
+                        { label: "Pets Allowed", key: "pets_allowed" as const },
+                      ].map(({ label, key }) => (
+                        <div key={key} className="flex items-center gap-2">
+                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
+                          <Label>{label}</Label>
+                        </div>
+                      ))}
                     </div>
 
                     <div>
