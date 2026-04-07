@@ -92,14 +92,14 @@ const SpecialsSection = () => {
                 </div>
 
                 {/* Content */}
-                <div style={{ padding: "14px 16px" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}>
+                <div style={{ padding: "14px 16px", background: "#ffffff" }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginBottom: 4 }}>
                     {special.title}
                   </div>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.45)", marginBottom: 8 }}>
+                  <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginBottom: 8 }}>
                     {special.business_name}
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.3)" }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)" }}>
                     {special.valid_until
                       ? `Valid until ${format(new Date(special.valid_until), "d MMM yyyy")}`
                       : "Ongoing"}
