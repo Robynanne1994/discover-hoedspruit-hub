@@ -279,11 +279,11 @@ const ListingDetail = () => {
             <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
           {/* Back button */}
-          <button onClick={() => navigate(-1)} style={{ ...circleBtn, position: "absolute", top: 48, left: 20, zIndex: 10 }}>
+          <button onClick={() => navigate(-1)} style={{ ...circleBtn, position: "absolute", top: 16, left: 20, zIndex: 10 }}>
             <ArrowLeft size={18} strokeWidth={2} color="#121214" />
           </button>
           {/* Save & Share buttons */}
-          <div style={{ position: "absolute", top: 48, right: 20, zIndex: 10, display: "flex", gap: 10 }}>
+          <div style={{ position: "absolute", top: 16, right: 20, zIndex: 10, display: "flex", gap: 10 }}>
             <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} style={circleBtn}>
               <Heart size={18} strokeWidth={1.5} color="#121214" fill={isFavourited ? "#121214" : "none"} />
             </button>
