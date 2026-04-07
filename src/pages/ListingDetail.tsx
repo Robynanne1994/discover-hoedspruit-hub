@@ -640,35 +640,146 @@ const ListingDetail = () => {
           );
         })()}
 
-        {/* Accommodation attributes */}
+        {/* Accommodation accordion sections */}
         {isListingAccommodation && (() => {
-          const petsAllowedAccom = (listing as any).pets_allowed as boolean | null;
-          const amenities = (listing as any).amenities as string[] | null;
-          const sleeps = (listing as any).sleeps as number | null;
-          const priceRng = (listing as any).price_range as string | null;
-          const kmFromTown = (listing as any).km_from_town as string | null;
+          const l = listing as any;
+          type BoolField = { label: string; value: boolean | null };
+          type TextField = { label: string; value: string | null };
+          type AccomSection = { key: string; icon: React.ReactNode; title: string; fields: (BoolField | TextField)[] };
+          const accomSections: AccomSection[] = [];
 
-          const items = [
-            petsAllowedAccom && "Pets Allowed",
+          // Food & Drink
+          const foodFields: BoolField[] = [
+            { label: "Restaurant", value: l.has_restaurant },
+            { label: "Bar", value: l.has_bar },
+            { label: "Room Service", value: l.has_room_service },
+            { label: "Breakfast", value: l.has_breakfast },
+          ].filter(f => f.value != null) as BoolField[];
+          if (l.has_breakfast && l.breakfast_included != null) {
+            foodFields.push({ label: l.breakfast_included ? "Breakfast Included" : "Breakfast Paid", value: true });
+          }
+          if (foodFields.length > 0) accomSections.push({ key: "accom-food", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Food & Drink", fields: foodFields });
+
+          // Children
+          const childFields: BoolField[] = [
+            { label: "Child Friendly", value: l.child_friendly },
+          ].filter(f => f.value != null) as BoolField[];
+          if (childFields.length > 0) accomSections.push({ key: "accom-children", icon: <Users size={18} strokeWidth={1.5} color="#121214" />, title: "Children", fields: childFields });
+
+          // Transport
+          const transportFields: BoolField[] = [
+            { label: "Airport Shuttle", value: l.has_airport_shuttle },
+            { label: "Free Parking", value: l.has_free_parking },
+            { label: "Secure Parking", value: l.has_secure_parking },
+          ].filter(f => f.value != null) as BoolField[];
+          if (transportFields.length > 0) accomSections.push({ key: "accom-transport", icon: <Navigation size={18} strokeWidth={1.5} color="#121214" />, title: "Transport", fields: transportFields });
+
+          // Wellness
+          const wellnessFields: BoolField[] = [
+            { label: "Spa", value: l.has_spa },
+            { label: "Fitness Centre", value: l.has_fitness_centre },
+            { label: "Swimming Pool", value: l.has_swimming_pool },
+          ].filter(f => f.value != null) as BoolField[];
+          if (wellnessFields.length > 0) accomSections.push({ key: "accom-wellness", icon: <Heart size={18} strokeWidth={1.5} color="#121214" />, title: "Wellness", fields: wellnessFields });
+
+          // Rooms
+          const roomFields: BoolField[] = [
+            { label: "Aircon", value: l.has_aircon },
+            { label: "Laundry Service", value: l.has_laundry },
+          ].filter(f => f.value != null) as BoolField[];
+          if (roomFields.length > 0) accomSections.push({ key: "accom-rooms", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Rooms", fields: roomFields });
+
+          // Internet
+          const internetFields: BoolField[] = [
+            { label: "Wi-Fi", value: l.has_wifi_accom },
+          ].filter(f => f.value != null) as BoolField[];
+          if (internetFields.length > 0) accomSections.push({ key: "accom-internet", icon: <Wifi size={18} strokeWidth={1.5} color="#121214" />, title: "Internet", fields: internetFields });
+
+          // Pets
+          const petFields: BoolField[] = [
+            { label: "Pet Friendly", value: l.pets_allowed },
+          ].filter(f => f.value != null) as BoolField[];
+          if (petFields.length > 0) accomSections.push({ key: "accom-pets", icon: <Heart size={18} strokeWidth={1.5} color="#121214" />, title: "Pets", fields: petFields });
+
+          // General info pills
+          const sleeps = l.sleeps as number | null;
+          const priceRng = l.price_range as string | null;
+          const kmFromTown = l.km_from_town as string | null;
+          const infoItems = [
             sleeps != null && `Sleeps: ${sleeps}`,
             priceRng && `Price: ${priceRng}`,
             kmFromTown && `${kmFromTown} km from town`,
-            ...(amenities || []),
           ].filter(Boolean) as string[];
 
-          if (items.length === 0) return null;
+          if (accomSections.length === 0 && infoItems.length === 0) return null;
 
           return (
-            <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, marginBottom: 28 }}>
-              <h3 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>Details</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {items.map((item) => (
-                  <div key={item} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
-                    <Check size={14} color="#121214" /> <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <>
+              {infoItems.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+                  {infoItems.map((item) => (
+                    <span key={item} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {accomSections.length > 0 && (
+                <div style={{ marginBottom: 28 }}>
+                  {accomSections.map((section, i) => {
+                    const isOpen = openAccordion === section.key;
+                    return (
+                      <div
+                        key={section.key}
+                        style={{
+                          background: "rgba(18,18,20,0.03)",
+                          borderLeft: "1px solid rgba(18,18,20,0.06)",
+                          borderRight: "1px solid rgba(18,18,20,0.06)",
+                          borderTop: "1px solid rgba(18,18,20,0.06)",
+                          borderBottom: i === accomSections.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                          borderRadius: i === 0 ? "16px 16px 0 0" : i === accomSections.length - 1 ? "0 0 16px 16px" : 0,
+                          overflow: "hidden",
+                        }}
+                      >
+                        <button
+                          onClick={() => toggleAccordion(section.key)}
+                          style={{
+                            width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                            padding: 16, background: "none", border: "none", cursor: "pointer",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                            {section.icon}
+                            <span style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>{section.title}</span>
+                          </div>
+                          <ChevronDown
+                            size={16} strokeWidth={2} color="rgba(18,18,20,0.3)"
+                            style={{ transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                          />
+                        </button>
+                        {isOpen && (
+                          <div style={{ borderTop: "1px solid rgba(18,18,20,0.06)", marginTop: 12, padding: "12px 16px 16px 16px" }}>
+                            {section.fields.map((field, fi) => {
+                              const isBool = typeof field.value === "boolean";
+                              return (
+                                <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
+                                  <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
+                                  {isBool ? (
+                                    field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
+                                  ) : (
+                                    <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
           );
         })()}
 
