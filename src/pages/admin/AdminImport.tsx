@@ -154,7 +154,8 @@ const AdminImport = () => {
         `${s.category_id}::${s.title.toLowerCase()}`, s.id
       ]));
 
-      const results = { created: 0, updated: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const csvTitles = new Set<string>();
 
       // Only match against listings in this category
       const { data: catJunctions } = await supabase
