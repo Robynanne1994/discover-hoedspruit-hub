@@ -53,14 +53,14 @@ const LowdownSection = () => {
       {/* Two smaller cards */}
       <div style={{ display: "flex", gap: 12 }}>
         {rest.map((article: any) => (
-          <Link key={article.id} to={`/headlines/${article.slug}`} style={{ flex: 1, textDecoration: "none", display: "block" }}>
-            <div style={{ borderRadius: 16, overflow: "hidden", background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)" }}>
-              <div style={{ width: "100%", height: 100, background: "#f0f0f0" }}>
+          <Link key={article.id} to={`/headlines/${article.slug}`} style={{ flex: 1, textDecoration: "none", display: "flex" }}>
+            <div style={{ borderRadius: 16, overflow: "hidden", background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", display: "flex", flexDirection: "column", width: "100%" }}>
+              <div style={{ width: "100%", height: 100, background: "#f0f0f0", flexShrink: 0 }}>
                 {article.image_url && <img src={article.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
               </div>
-              <div style={{ padding: "10px 12px" }}>
+              <div style={{ padding: "10px 12px", flex: 1, display: "flex", flexDirection: "column" }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: "0.5px" }}>{article.category}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginTop: 3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden" }}>{article.title}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginTop: 3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden", minHeight: "2.4em" }}>{article.title}</div>
               </div>
             </div>
           </Link>
