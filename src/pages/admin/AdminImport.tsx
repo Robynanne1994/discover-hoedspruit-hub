@@ -589,7 +589,7 @@ const AdminImport = () => {
               Expected columns: {csvHeaders.join(", ")}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Matching listings by title will be updated, new ones created. No deletions.
+              Listings are matched by title (case-insensitive). Missing listings will be deleted.
             </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
