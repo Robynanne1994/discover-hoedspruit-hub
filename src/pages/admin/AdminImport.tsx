@@ -72,7 +72,7 @@ const AdminImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
   const { data: categories } = useQuery({
@@ -154,7 +154,8 @@ const AdminImport = () => {
         `${s.category_id}::${s.title.toLowerCase()}`, s.id
       ]));
 
-      const results = { created: 0, updated: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const csvTitles = new Set<string>();
 
       // Only match against listings in this category
       const { data: catJunctions } = await supabase
@@ -174,6 +175,7 @@ const AdminImport = () => {
           results.errors.push(`Row ${i + 2}: Missing title, skipped`);
           continue;
         }
+        csvTitles.add(title.toLowerCase());
 
         // Resolve additional categories from CSV (pipe-separated), always include selected category
         const catField = row.categories?.trim() || "";
@@ -349,13 +351,25 @@ const AdminImport = () => {
         }
       }
 
+      // Delete listings in this category that are not in the CSV
+      for (const [existingTitle, existingId] of existingMap) {
+        if (!csvTitles.has(existingTitle)) {
+          // Delete junction rows first
+          await supabase.from("listing_categories").delete().eq("listing_id", existingId);
+          await supabase.from("listing_subcategories").delete().eq("listing_id", existingId);
+          const { error } = await supabase.from("listings").delete().eq("id", existingId);
+          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
+          else results.deleted++;
+        }
+      }
+
       return results;
     },
     onSuccess: (results) => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated`);
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
     },
     onError: (e) => toast.error(e.message),
   });
@@ -575,7 +589,7 @@ const AdminImport = () => {
               Expected columns: {csvHeaders.join(", ")}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Matching listings by title will be updated, new ones created. No deletions.
+              Listings are matched by title (case-insensitive). Missing listings will be deleted.
             </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
@@ -632,6 +646,10 @@ const AdminImport = () => {
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle className="h-4 w-4 text-blue-600" />
                 <span className="text-foreground"><strong>{importResult.updated}</strong> updated</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-4 w-4 text-destructive" />
+                <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
             </div>
             {importResult.errors.length > 0 && (
