@@ -301,10 +301,24 @@ const AdminImport = () => {
         // Only include accommodation fields if importing for an accommodation category
         if (isAccommodation) {
           payload.pets_allowed = parseBool(row.pets_allowed);
-          payload.amenities = parseArray(row.amenities) ?? [];
           payload.sleeps = row.sleeps ? parseInt(row.sleeps, 10) || null : null;
           payload.price_range = row.price_range || null;
           payload.km_from_town = row.km_from_town || null;
+          payload.has_restaurant = parseBool(row.has_restaurant);
+          payload.has_bar = parseBool(row.has_bar);
+          payload.has_room_service = parseBool(row.has_room_service);
+          payload.has_breakfast = parseBool(row.has_breakfast);
+          payload.breakfast_included = parseBool(row.breakfast_included);
+          payload.has_swimming_pool = parseBool(row.has_swimming_pool);
+          payload.has_laundry = parseBool(row.has_laundry);
+          payload.child_friendly = parseBool(row.child_friendly);
+          payload.has_spa = parseBool(row.has_spa);
+          payload.has_fitness_centre = parseBool(row.has_fitness_centre);
+          payload.has_airport_shuttle = parseBool(row.has_airport_shuttle);
+          payload.has_aircon = parseBool(row.has_aircon);
+          payload.has_wifi_accom = parseBool(row.has_wifi_accom);
+          payload.has_free_parking = parseBool(row.has_free_parking);
+          payload.has_secure_parking = parseBool(row.has_secure_parking);
         }
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -472,6 +486,21 @@ const AdminImport = () => {
         amenities: (l.amenities ?? []).join("|"),
         sleeps: l.sleeps == null ? "" : String(l.sleeps),
         km_from_town: l.km_from_town ?? "",
+        has_restaurant: l.has_restaurant == null ? "" : String(l.has_restaurant),
+        has_bar: l.has_bar == null ? "" : String(l.has_bar),
+        has_room_service: l.has_room_service == null ? "" : String(l.has_room_service),
+        has_breakfast: l.has_breakfast == null ? "" : String(l.has_breakfast),
+        breakfast_included: l.breakfast_included == null ? "" : String(l.breakfast_included),
+        has_swimming_pool: l.has_swimming_pool == null ? "" : String(l.has_swimming_pool),
+        has_laundry: l.has_laundry == null ? "" : String(l.has_laundry),
+        child_friendly: l.child_friendly == null ? "" : String(l.child_friendly),
+        has_spa: l.has_spa == null ? "" : String(l.has_spa),
+        has_fitness_centre: l.has_fitness_centre == null ? "" : String(l.has_fitness_centre),
+        has_airport_shuttle: l.has_airport_shuttle == null ? "" : String(l.has_airport_shuttle),
+        has_aircon: l.has_aircon == null ? "" : String(l.has_aircon),
+        has_wifi_accom: l.has_wifi_accom == null ? "" : String(l.has_wifi_accom),
+        has_free_parking: l.has_free_parking == null ? "" : String(l.has_free_parking),
+        has_secure_parking: l.has_secure_parking == null ? "" : String(l.has_secure_parking),
       };
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");

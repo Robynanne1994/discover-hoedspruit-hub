@@ -446,6 +446,7 @@ const AdminListings = () => {
                   onChange={(val) => setForm({ ...form, gallery_images: val })}
                 />
 
+                {!isAccommodationType && (
                 <div>
                   <Label>Opening Hours</Label>
                   <div className="space-y-2 mt-1">
@@ -461,6 +462,7 @@ const AdminListings = () => {
                     ))}
                   </div>
                 </div>
+                )}
 
                 {isRestaurantType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
