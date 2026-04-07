@@ -188,6 +188,21 @@ const AdminListings = () => {
         amenities: values.amenities,
         sleeps: values.sleeps,
         km_from_town: values.km_from_town || null,
+        has_restaurant: values.has_restaurant,
+        has_bar: values.has_bar,
+        has_room_service: values.has_room_service,
+        has_breakfast: values.has_breakfast,
+        breakfast_included: values.breakfast_included,
+        has_swimming_pool: values.has_swimming_pool,
+        has_laundry: values.has_laundry,
+        child_friendly: values.child_friendly,
+        has_spa: values.has_spa,
+        has_fitness_centre: values.has_fitness_centre,
+        has_airport_shuttle: values.has_airport_shuttle,
+        has_aircon: values.has_aircon,
+        has_wifi_accom: values.has_wifi_accom,
+        has_free_parking: values.has_free_parking,
+        has_secure_parking: values.has_secure_parking,
       };
 
       let listingId: string;
@@ -297,6 +312,21 @@ const AdminListings = () => {
       amenities: (l as any).amenities ?? [],
       sleeps: (l as any).sleeps ?? null,
       km_from_town: (l as any).km_from_town ?? "",
+      has_restaurant: (l as any).has_restaurant ?? null,
+      has_bar: (l as any).has_bar ?? null,
+      has_room_service: (l as any).has_room_service ?? null,
+      has_breakfast: (l as any).has_breakfast ?? null,
+      breakfast_included: (l as any).breakfast_included ?? null,
+      has_swimming_pool: (l as any).has_swimming_pool ?? null,
+      has_laundry: (l as any).has_laundry ?? null,
+      child_friendly: (l as any).child_friendly ?? null,
+      has_spa: (l as any).has_spa ?? null,
+      has_fitness_centre: (l as any).has_fitness_centre ?? null,
+      has_airport_shuttle: (l as any).has_airport_shuttle ?? null,
+      has_aircon: (l as any).has_aircon ?? null,
+      has_wifi_accom: (l as any).has_wifi_accom ?? null,
+      has_free_parking: (l as any).has_free_parking ?? null,
+      has_secure_parking: (l as any).has_secure_parking ?? null,
     });
     setOpen(true);
   };
