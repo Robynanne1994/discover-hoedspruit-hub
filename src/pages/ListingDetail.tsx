@@ -539,53 +539,78 @@ const ListingDetail = () => {
 
         {/* Accordion sections */}
         {accordionSections.length > 0 && (
-          <div style={{ marginBottom: 28 }}>
-            {accordionSections.map((section, i) => {
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 28 }}>
+            {accordionSections.map((section) => {
               const isOpen = openAccordion === section.key;
               return (
                 <div
                   key={section.key}
                   style={{
-                    background: "rgba(18,18,20,0.03)",
-                    borderLeft: "1px solid rgba(18,18,20,0.06)",
-                    borderRight: "1px solid rgba(18,18,20,0.06)",
-                    borderTop: "1px solid rgba(18,18,20,0.06)",
-                    borderBottom: i === accordionSections.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                    borderRadius: i === 0 ? "16px 16px 0 0" : i === accordionSections.length - 1 ? "0 0 16px 16px" : 0,
+                    background: "#ffffff",
+                    border: "1px solid rgba(18,18,20,0.08)",
+                    borderRadius: 14,
                     overflow: "hidden",
+                    boxShadow: isOpen ? "0 4px 16px rgba(18,18,20,0.06)" : "0 1px 3px rgba(18,18,20,0.03)",
+                    transition: "box-shadow 0.25s ease",
                   }}
                 >
                   <button
                     onClick={() => toggleAccordion(section.key)}
                     style={{
                       width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-                      padding: 16, background: "none", border: "none", cursor: "pointer",
+                      padding: "14px 16px", background: "none", border: "none", cursor: "pointer",
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      {section.icon}
-                      <span style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>{section.title}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                      <div style={{
+                        width: 36, height: 36, borderRadius: 10,
+                        background: "linear-gradient(135deg, rgba(123,139,111,0.12), rgba(184,145,106,0.12))",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        flexShrink: 0,
+                      }}>
+                        {section.icon}
+                      </div>
+                      <div style={{ textAlign: "left" }}>
+                        <span style={{ fontSize: 14, fontWeight: 700, color: "#121214", letterSpacing: 0.2 }}>{section.title}</span>
+                        {!isOpen && (
+                          <div style={{ fontSize: 11, color: "rgba(18,18,20,0.35)", marginTop: 1 }}>
+                            {section.fields.filter(f => typeof f.value === "boolean" ? f.value : true).length} item{section.fields.filter(f => typeof f.value === "boolean" ? f.value : true).length !== 1 ? "s" : ""}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <ChevronDown
-                      size={16} strokeWidth={2} color="rgba(18,18,20,0.3)"
-                      style={{ transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-                    />
+                    <div style={{
+                      width: 28, height: 28, borderRadius: "50%",
+                      background: isOpen ? "#121214" : "rgba(18,18,20,0.05)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      transition: "all 0.25s ease",
+                    }}>
+                      <ChevronDown
+                        size={14} strokeWidth={2.5}
+                        color={isOpen ? "#ffffff" : "rgba(18,18,20,0.4)"}
+                        style={{ transition: "transform 0.25s ease", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                      />
+                    </div>
                   </button>
                   {isOpen && (
-                    <div style={{ borderTop: "1px solid rgba(18,18,20,0.06)", marginTop: 12, padding: "12px 16px 16px 16px" }}>
-                      {section.fields.map((field, fi) => {
-                        const isBool = typeof field.value === "boolean";
-                        return (
-                          <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
-                            <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
-                            {isBool ? (
-                              field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
-                            ) : (
-                              <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
-                            )}
-                          </div>
-                        );
-                      })}
+                    <div style={{ padding: "0 16px 14px 16px" }}>
+                      <div style={{ background: "rgba(18,18,20,0.02)", borderRadius: 10, padding: "4px 0" }}>
+                        {section.fields.map((field, fi) => {
+                          const isBool = typeof field.value === "boolean";
+                          return (
+                            <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 14px", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
+                              <span style={{ fontSize: 13, color: "rgba(18,18,20,0.55)", fontWeight: 500 }}>{field.label}</span>
+                              {isBool ? (
+                                field.value
+                                  ? <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(45,138,78,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}><Check size={12} color="#2d8a4e" strokeWidth={3} /></div>
+                                  : <div style={{ width: 22, height: 22, borderRadius: "50%", background: "rgba(226,75,74,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}><X size={12} color="#E24B4A" strokeWidth={3} /></div>
+                              ) : (
+                                <span style={{ fontSize: 13, fontWeight: 700, color: "#121214" }}>{field.value}</span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   )}
                 </div>
