@@ -727,45 +727,81 @@ export type Database = {
       }
       specials: {
         Row: {
+          booking_link: string | null
+          booking_required: boolean
           business_id: string | null
           business_name: string
+          category: string | null
+          contact_phone: string | null
+          contact_whatsapp: string | null
           created_at: string
+          day_of_week: string[] | null
           deal_label: string
           description: string | null
           id: string
           image_url: string | null
           is_active: boolean
+          original_price: string | null
+          price: string | null
+          promo_code: string | null
           sort_order: number
+          special_type: string | null
+          terms: string | null
           title: string
           updated_at: string
+          valid_from: string | null
           valid_until: string | null
         }
         Insert: {
+          booking_link?: string | null
+          booking_required?: boolean
           business_id?: string | null
           business_name: string
+          category?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
           created_at?: string
+          day_of_week?: string[] | null
           deal_label: string
           description?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          original_price?: string | null
+          price?: string | null
+          promo_code?: string | null
           sort_order?: number
+          special_type?: string | null
+          terms?: string | null
           title: string
           updated_at?: string
+          valid_from?: string | null
           valid_until?: string | null
         }
         Update: {
+          booking_link?: string | null
+          booking_required?: boolean
           business_id?: string | null
           business_name?: string
+          category?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
           created_at?: string
+          day_of_week?: string[] | null
           deal_label?: string
           description?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          original_price?: string | null
+          price?: string | null
+          promo_code?: string | null
           sort_order?: number
+          special_type?: string | null
+          terms?: string | null
           title?: string
           updated_at?: string
+          valid_from?: string | null
           valid_until?: string | null
         }
         Relationships: [
