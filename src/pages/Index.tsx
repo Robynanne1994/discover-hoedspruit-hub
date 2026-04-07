@@ -5,6 +5,7 @@ import EatSection from "@/components/home/EatSection";
 import StaySection from "@/components/home/StaySection";
 import ShopSection from "@/components/home/ShopSection";
 import DoSection from "@/components/home/DoSection";
+import LowdownSection from "@/components/home/LowdownSection";
 import AdvertiseWithUs from "@/components/home/AdvertiseWithUs";
 
 const Index = () => {
@@ -17,6 +18,7 @@ const Index = () => {
       <StaySection />
       <ShopSection />
       <DoSection />
+      <LowdownSection />
       <AdvertiseWithUs />
     </div>
   );
