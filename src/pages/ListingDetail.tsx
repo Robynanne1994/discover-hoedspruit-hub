@@ -22,6 +22,7 @@ const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const whatToKnowRef = useRef<HTMLDivElement>(null);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [aboutExpanded, setAboutExpanded] = useState(false);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -464,14 +465,29 @@ const ListingDetail = () => {
         )}
 
         {/* About section */}
-        {descriptionText && (
-          <div style={{ marginBottom: 28 }}>
-            <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>About</h2>
-            {(longDescription || listing.description || "").split("\n").map((paragraph: string, i: number) => (
-              <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.6)", lineHeight: 1.7, marginBottom: 12 }}>{paragraph}</p>
-            ))}
-          </div>
-        )}
+        {descriptionText && (() => {
+          const paragraphs = (longDescription || listing.description || "").split("\n").filter(Boolean);
+          return (
+            <div style={{ marginBottom: 28 }}>
+              <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>About</h2>
+              <div style={{
+                ...(!aboutExpanded ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
+              }}>
+                {paragraphs.map((paragraph: string, i: number) => (
+                  <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.6)", lineHeight: 1.7, marginBottom: 12 }}>{paragraph}</p>
+                ))}
+              </div>
+              {paragraphs.join(" ").length > 150 && (
+                <button
+                  onClick={() => setAboutExpanded(!aboutExpanded)}
+                  style={{ fontSize: 13, fontWeight: 600, color: "#121214", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 4 }}
+                >
+                  {aboutExpanded ? "Show less" : "Read more"}
+                </button>
+              )}
+            </div>
+          );
+        })()}
 
         {/* Accordion sections */}
         {accordionSections.length > 0 && (
