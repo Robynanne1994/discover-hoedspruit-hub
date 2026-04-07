@@ -310,7 +310,7 @@ const AdminImport = () => {
         let listingId: string | null = null;
 
         if (existingId) {
-          const { error } = await supabase.from("listings").update(payload).eq("id", existingId);
+          const { error } = await supabase.from("listings").update(payload as any).eq("id", existingId);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
           else { results.updated++; listingId = existingId; }
         } else {
