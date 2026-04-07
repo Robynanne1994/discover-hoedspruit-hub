@@ -175,6 +175,7 @@ const AdminImport = () => {
           results.errors.push(`Row ${i + 2}: Missing title, skipped`);
           continue;
         }
+        csvTitles.add(title.toLowerCase());
 
         // Resolve additional categories from CSV (pipe-separated), always include selected category
         const catField = row.categories?.trim() || "";
