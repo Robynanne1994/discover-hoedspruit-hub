@@ -19,6 +19,7 @@ import AdminEventsImport from "./pages/admin/AdminEventsImport.tsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.tsx";
 import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
+import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
@@ -98,6 +99,7 @@ const App = () => (
               <Route path="events" element={<AdminEvents />} />
               <Route path="events/import" element={<AdminEventsImport />} />
               <Route path="specials" element={<AdminSpecials />} />
+              <Route path="specials/import" element={<AdminSpecialsImport />} />
               <Route path="content" element={<AdminContent />} />
               <Route path="import" element={<AdminImport />} />
             </Route>
