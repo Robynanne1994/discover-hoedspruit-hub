@@ -6,7 +6,7 @@ import {
   MapPin, Phone, Mail, Globe, Star, Clock, Accessibility,
   Check, Minus, X, Wifi, MessageCircle, Pencil, ArrowLeft,
   Heart, Share2, CheckCircle, ChevronDown, Users, Coffee, ClipboardList,
-  ShoppingBag,
+  ShoppingBag, Navigation,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
@@ -410,6 +410,44 @@ const ListingDetail = () => {
             Visited
           </button>
         </div>
+
+        {/* Call Now & Directions buttons */}
+        {(listing.phone || (listing as any).google_maps_link) && (
+          <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+            {listing.phone && (
+              <a
+                href={`tel:${listing.phone}`}
+                className="flex items-center justify-center"
+                style={{
+                  flex: 1, gap: 8, height: 44, borderRadius: 12,
+                  background: "#7B8B6F", color: "#FFFFFF",
+                  fontSize: 13, fontWeight: 600, textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <Phone style={{ width: 16, height: 16 }} strokeWidth={1.8} />
+                Call Now
+              </a>
+            )}
+            {(listing as any).google_maps_link && (
+              <a
+                href={(listing as any).google_maps_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center"
+                style={{
+                  flex: 1, gap: 8, height: 44, borderRadius: 12,
+                  background: "#B8916A", color: "#FFFFFF",
+                  fontSize: 13, fontWeight: 600, textDecoration: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <Navigation style={{ width: 16, height: 16 }} strokeWidth={1.8} />
+                Directions
+              </a>
+            )}
+          </div>
+        )}
 
         {/* Quick-scan pills */}
         {showQuickPills && (
