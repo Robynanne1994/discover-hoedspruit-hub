@@ -28,10 +28,9 @@ const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit Down", "Take Away", "Delivery"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Other"];
-const AMENITIES_OPTIONS = ["Braai", "Swimming Pool", "Wifi", "Aircon"];
 const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -189,6 +188,21 @@ const AdminListings = () => {
         amenities: values.amenities,
         sleeps: values.sleeps,
         km_from_town: values.km_from_town || null,
+        has_restaurant: values.has_restaurant,
+        has_bar: values.has_bar,
+        has_room_service: values.has_room_service,
+        has_breakfast: values.has_breakfast,
+        breakfast_included: values.breakfast_included,
+        has_swimming_pool: values.has_swimming_pool,
+        has_laundry: values.has_laundry,
+        child_friendly: values.child_friendly,
+        has_spa: values.has_spa,
+        has_fitness_centre: values.has_fitness_centre,
+        has_airport_shuttle: values.has_airport_shuttle,
+        has_aircon: values.has_aircon,
+        has_wifi_accom: values.has_wifi_accom,
+        has_free_parking: values.has_free_parking,
+        has_secure_parking: values.has_secure_parking,
       };
 
       let listingId: string;
@@ -298,6 +312,21 @@ const AdminListings = () => {
       amenities: (l as any).amenities ?? [],
       sleeps: (l as any).sleeps ?? null,
       km_from_town: (l as any).km_from_town ?? "",
+      has_restaurant: (l as any).has_restaurant ?? null,
+      has_bar: (l as any).has_bar ?? null,
+      has_room_service: (l as any).has_room_service ?? null,
+      has_breakfast: (l as any).has_breakfast ?? null,
+      breakfast_included: (l as any).breakfast_included ?? null,
+      has_swimming_pool: (l as any).has_swimming_pool ?? null,
+      has_laundry: (l as any).has_laundry ?? null,
+      child_friendly: (l as any).child_friendly ?? null,
+      has_spa: (l as any).has_spa ?? null,
+      has_fitness_centre: (l as any).has_fitness_centre ?? null,
+      has_airport_shuttle: (l as any).has_airport_shuttle ?? null,
+      has_aircon: (l as any).has_aircon ?? null,
+      has_wifi_accom: (l as any).has_wifi_accom ?? null,
+      has_free_parking: (l as any).has_free_parking ?? null,
+      has_secure_parking: (l as any).has_secure_parking ?? null,
     });
     setOpen(true);
   };
@@ -417,6 +446,7 @@ const AdminListings = () => {
                   onChange={(val) => setForm({ ...form, gallery_images: val })}
                 />
 
+                {!isAccommodationType && (
                 <div>
                   <Label>Opening Hours</Label>
                   <div className="space-y-2 mt-1">
@@ -432,6 +462,7 @@ const AdminListings = () => {
                     ))}
                   </div>
                 </div>
+                )}
 
                 {isRestaurantType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
@@ -645,29 +676,44 @@ const AdminListings = () => {
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
                     <p className="text-sm font-medium text-foreground">Accommodation Fields</p>
 
-                    <div className="flex items-center gap-2">
-                      <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
-                      <Label>Pets Allowed</Label>
-                    </div>
+                    <div className="space-y-3">
+                      {[
+                        { label: "Restaurant", key: "has_restaurant" as const },
+                        { label: "Bar", key: "has_bar" as const },
+                        { label: "Room Service", key: "has_room_service" as const },
+                        { label: "Breakfast", key: "has_breakfast" as const },
+                      ].map(({ label, key }) => (
+                        <div key={key} className="flex items-center gap-2">
+                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
+                          <Label>{label}</Label>
+                        </div>
+                      ))}
 
-                    <div>
-                      <Label>Amenities</Label>
-                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                      <div className="flex flex-wrap gap-2">
-                        {AMENITIES_OPTIONS.map((opt) => {
-                          const selected = form.amenities.includes(opt);
-                          return (
-                            <button
-                              key={opt}
-                              type="button"
-                              onClick={() => setForm({ ...form, amenities: selected ? form.amenities.filter((v) => v !== opt) : [...form.amenities, opt] })}
-                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
-                            >
-                              {opt}
-                            </button>
-                          );
-                        })}
-                      </div>
+                      {form.has_breakfast === true && (
+                        <div className="ml-6 flex items-center gap-2">
+                          <Switch checked={form.breakfast_included === true} onCheckedChange={(v) => setForm({ ...form, breakfast_included: v })} />
+                          <Label>{form.breakfast_included ? "Breakfast Included (Free)" : "Breakfast Paid"}</Label>
+                        </div>
+                      )}
+
+                      {[
+                        { label: "Swimming Pool", key: "has_swimming_pool" as const },
+                        { label: "Laundry Service", key: "has_laundry" as const },
+                        { label: "Child Friendly", key: "child_friendly" as const },
+                        { label: "Spa", key: "has_spa" as const },
+                        { label: "Fitness Centre", key: "has_fitness_centre" as const },
+                        { label: "Airport Shuttle", key: "has_airport_shuttle" as const },
+                        { label: "Aircon", key: "has_aircon" as const },
+                        { label: "Wi-Fi", key: "has_wifi_accom" as const },
+                        { label: "Free Parking", key: "has_free_parking" as const },
+                        { label: "Secure Parking", key: "has_secure_parking" as const },
+                        { label: "Pets Allowed", key: "pets_allowed" as const },
+                      ].map(({ label, key }) => (
+                        <div key={key} className="flex items-center gap-2">
+                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
+                          <Label>{label}</Label>
+                        </div>
+                      ))}
                     </div>
 
                     <div>
