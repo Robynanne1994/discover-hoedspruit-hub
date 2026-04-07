@@ -82,13 +82,15 @@ const AdminEventsImport = () => {
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
         csvTitles.add(title.toLowerCase());
 
-        const payload = {
+        const isUpdate = !!existingMap.get(title.toLowerCase());
+        const galleryArr = row.gallery_images ? row.gallery_images.split("|").map((s: string) => s.trim()).filter(Boolean) : [];
+        const payload: Record<string, any> = {
           title,
           description: row.description || null,
           date: row.date || "",
           location: row.location || null,
           tag: row.tag || null,
-          image_url: row.image_url || null,
+          ...(row.image_url ? { image_url: row.image_url } : (!isUpdate ? { image_url: null } : {})),
           start_time: row.start_time || null,
           end_time: row.end_time || null,
           recurrence: row.recurrence || null,
@@ -96,7 +98,7 @@ const AdminEventsImport = () => {
           social_media_link: row.social_media_link || null,
           contact_email: row.contact_email || null,
           contact_phone: row.contact_phone || null,
-          gallery_images: row.gallery_images ? row.gallery_images.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
+          ...(galleryArr.length > 0 ? { gallery_images: galleryArr } : (!isUpdate ? { gallery_images: [] } : {})),
           booking_link: row.booking_link || null,
           price: row.price || null,
         };

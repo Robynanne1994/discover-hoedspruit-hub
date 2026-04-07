@@ -88,12 +88,13 @@ const AdminSpecialsImport = () => {
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
         csvTitles.add(title.toLowerCase());
 
+        const isUpdate = !!existingMap.get(title.toLowerCase());
         const payload: Record<string, any> = {
           title,
           deal_label: row.deal_label || "Special",
           business_name: row.business_name || "",
           description: row.description || null,
-          image_url: row.image_url || null,
+          ...(row.image_url ? { image_url: row.image_url } : (!isUpdate ? { image_url: null } : {})),
           special_type: row.special_type || null,
           day_of_week: row.day_of_week ? row.day_of_week.split("|").map((s: string) => s.trim().toLowerCase()).filter(Boolean) : null,
           valid_from: row.valid_from || null,
