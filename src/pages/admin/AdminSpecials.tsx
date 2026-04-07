@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
@@ -21,6 +22,18 @@ interface Special {
   valid_until: string | null;
   is_active: boolean;
   sort_order: number;
+  special_type: string | null;
+  day_of_week: string[] | null;
+  valid_from: string | null;
+  price: string | null;
+  original_price: string | null;
+  booking_required: boolean;
+  booking_link: string | null;
+  promo_code: string | null;
+  contact_phone: string | null;
+  contact_whatsapp: string | null;
+  terms: string | null;
+  category: string | null;
 }
 
 const emptyForm: Omit<Special, "id"> = {
@@ -33,7 +46,44 @@ const emptyForm: Omit<Special, "id"> = {
   valid_until: null,
   is_active: true,
   sort_order: 0,
+  special_type: null,
+  day_of_week: null,
+  valid_from: null,
+  price: null,
+  original_price: null,
+  booking_required: false,
+  booking_link: null,
+  promo_code: null,
+  contact_phone: null,
+  contact_whatsapp: null,
+  terms: null,
+  category: null,
 };
+
+const SPECIAL_TYPES = [
+  { value: "daily", label: "Daily Special" },
+  { value: "weekly", label: "Weekly Special" },
+  { value: "monthly", label: "Monthly Special" },
+  { value: "seasonal", label: "Seasonal Special" },
+  { value: "ongoing", label: "Ongoing" },
+];
+
+const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+
+const CATEGORIES = [
+  { value: "restaurant", label: "Restaurant" },
+  { value: "accommodation", label: "Accommodation" },
+  { value: "activity", label: "Activity" },
+  { value: "wellness", label: "Wellness" },
+  { value: "shopping", label: "Shopping" },
+  { value: "other", label: "Other" },
+];
+
+const GroupLabel = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 2, marginTop: 24, marginBottom: 12 }}>
+    {children}
+  </div>
+);
 
 const AdminSpecials = () => {
   const qc = useQueryClient();
@@ -113,7 +163,30 @@ const AdminSpecials = () => {
       valid_until: s.valid_until,
       is_active: s.is_active,
       sort_order: s.sort_order,
+      special_type: s.special_type,
+      day_of_week: s.day_of_week,
+      valid_from: s.valid_from,
+      price: s.price,
+      original_price: s.original_price,
+      booking_required: s.booking_required,
+      booking_link: s.booking_link,
+      promo_code: s.promo_code,
+      contact_phone: s.contact_phone,
+      contact_whatsapp: s.contact_whatsapp,
+      terms: s.terms,
+      category: s.category,
     });
+  };
+
+  const toggleDay = (day: string) => {
+    const current = form.day_of_week || [];
+    if (day === "all") {
+      setForm({ ...form, day_of_week: current.includes("all") ? [] : ["all"] });
+      return;
+    }
+    const without = current.filter((d) => d !== "all");
+    const updated = without.includes(day) ? without.filter((d) => d !== day) : [...without, day];
+    setForm({ ...form, day_of_week: updated.length ? updated : null });
   };
 
   const showForm = creating;
@@ -159,16 +232,93 @@ const AdminSpecials = () => {
             <Label>Image</Label>
             <ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => setForm({ ...form, image_url: url })} />
           </div>
-          <div><Label>Valid Until (leave empty for ongoing)</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => setForm({ ...form, valid_until: e.target.value || null })} /></div>
-          <div className="flex items-center gap-3">
-            <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
-            <Label>Active</Label>
-          </div>
-          <div><Label>Sort Order</Label><Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} /></div>
 
-          <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.deal_label || !form.business_name}>
-            {editing ? "Update Special" : "Create Special"}
-          </Button>
+          <GroupLabel>Type &amp; Timing</GroupLabel>
+          <div>
+            <Label>Special Type</Label>
+            <select
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={form.special_type || ""}
+              onChange={(e) => setForm({ ...form, special_type: e.target.value || null })}
+            >
+              <option value="">— Select —</option>
+              {SPECIAL_TYPES.map((t) => (
+                <option key={t.value} value={t.value}>{t.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {(form.special_type === "daily" || form.special_type === "weekly") && (
+            <div>
+              <Label className="mb-2 block">Day(s) of Week</Label>
+              <div className="flex flex-wrap gap-3">
+                <label className="flex items-center gap-1.5 text-sm">
+                  <Checkbox
+                    checked={(form.day_of_week || []).includes("all")}
+                    onCheckedChange={() => toggleDay("all")}
+                  />
+                  All
+                </label>
+                {DAYS.map((day) => (
+                  <label key={day} className="flex items-center gap-1.5 text-sm capitalize">
+                    <Checkbox
+                      checked={(form.day_of_week || []).includes(day)}
+                      onCheckedChange={() => toggleDay(day)}
+                      disabled={(form.day_of_week || []).includes("all")}
+                    />
+                    {day}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div><Label>Valid From (optional)</Label><Input type="date" value={form.valid_from || ""} onChange={(e) => setForm({ ...form, valid_from: e.target.value || null })} /></div>
+          <div><Label>Valid Until (leave empty for ongoing)</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => setForm({ ...form, valid_until: e.target.value || null })} /></div>
+
+          <GroupLabel>Pricing</GroupLabel>
+          <div><Label>Deal Price (e.g. R145, R450pp)</Label><Input placeholder="R" value={form.price || ""} onChange={(e) => setForm({ ...form, price: e.target.value || null })} /></div>
+          <div><Label>Original Price (optional, for showing savings)</Label><Input placeholder="R" value={form.original_price || ""} onChange={(e) => setForm({ ...form, original_price: e.target.value || null })} /></div>
+
+          <GroupLabel>Booking</GroupLabel>
+          <div className="flex items-center gap-3">
+            <Switch checked={form.booking_required} onCheckedChange={(v) => setForm({ ...form, booking_required: v })} />
+            <Label>Booking required</Label>
+          </div>
+          <div><Label>Booking Link (optional)</Label><Input placeholder="https://" value={form.booking_link || ""} onChange={(e) => setForm({ ...form, booking_link: e.target.value || null })} /></div>
+          <div><Label>Promo Code (optional)</Label><Input placeholder="e.g. WINTER2026" value={form.promo_code || ""} onChange={(e) => setForm({ ...form, promo_code: e.target.value || null })} /></div>
+
+          <GroupLabel>Contact</GroupLabel>
+          <div><Label>Contact Phone (optional)</Label><Input value={form.contact_phone || ""} onChange={(e) => setForm({ ...form, contact_phone: e.target.value || null })} /></div>
+          <div><Label>WhatsApp (optional)</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => setForm({ ...form, contact_whatsapp: e.target.value || null })} /></div>
+
+          <GroupLabel>Other</GroupLabel>
+          <div><Label>Terms & Conditions (optional)</Label><Textarea placeholder="e.g. T's & C's apply. Sit down only." value={form.terms || ""} onChange={(e) => setForm({ ...form, terms: e.target.value || null })} style={{ minHeight: 80 }} /></div>
+          <div>
+            <Label>Category</Label>
+            <select
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={form.category || ""}
+              onChange={(e) => setForm({ ...form, category: e.target.value || null })}
+            >
+              <option value="">— Select —</option>
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="border-t border-border pt-4 mt-4 space-y-4">
+            <div className="flex items-center gap-3">
+              <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
+              <Label>Active</Label>
+            </div>
+            <div><Label>Sort Order</Label><Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} /></div>
+
+            <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.deal_label || !form.business_name}>
+              {editing ? "Update Special" : "Create Special"}
+            </Button>
+          </div>
         </div>
       )}
 
