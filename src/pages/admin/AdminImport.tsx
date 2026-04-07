@@ -350,6 +350,18 @@ const AdminImport = () => {
         }
       }
 
+      // Delete listings in this category that are not in the CSV
+      for (const [existingTitle, existingId] of existingMap) {
+        if (!csvTitles.has(existingTitle)) {
+          // Delete junction rows first
+          await supabase.from("listing_categories").delete().eq("listing_id", existingId);
+          await supabase.from("listing_subcategories").delete().eq("listing_id", existingId);
+          const { error } = await supabase.from("listings").delete().eq("id", existingId);
+          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
+          else results.deleted++;
+        }
+      }
+
       return results;
     },
     onSuccess: (results) => {
