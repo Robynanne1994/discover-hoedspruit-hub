@@ -19,6 +19,9 @@ import AdminEventsImport from "./pages/admin/AdminEventsImport.tsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.tsx";
 import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
+import AdminArticles from "./pages/admin/AdminArticles.tsx";
+import Headlines from "./pages/Headlines.tsx";
+import ArticleDetail from "./pages/ArticleDetail.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
@@ -71,6 +74,8 @@ const App = () => (
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/advertise" element={<Advertise />} />
+            <Route path="/headlines" element={<Headlines />} />
+            <Route path="/headlines/:slug" element={<ArticleDetail />} />
             <Route path="/directories" element={<Directories />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-account" element={<MyAccount />} />
@@ -100,6 +105,7 @@ const App = () => (
               <Route path="events/import" element={<AdminEventsImport />} />
               <Route path="specials" element={<AdminSpecials />} />
               <Route path="specials/import" element={<AdminSpecialsImport />} />
+              <Route path="articles" element={<AdminArticles />} />
               <Route path="content" element={<AdminContent />} />
               <Route path="import" element={<AdminImport />} />
             </Route>

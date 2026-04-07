@@ -30,6 +30,7 @@ import {
   Mail,
   FileText,
   MapPin,
+  Newspaper,
 } from "lucide-react";
 import ProfileForm from "@/components/profile/ProfileForm";
 import FollowStats from "@/components/social/FollowStats";
@@ -447,6 +448,7 @@ const MyAccount = () => {
   ];
 
   const infoItems = [
+    { icon: Newspaper, label: "Hoedspruit Headlines", href: "/headlines" },
     { icon: Info, label: "About", href: "/about" },
     { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
     { icon: FileText, label: "Terms & Policies", href: "/terms" },
