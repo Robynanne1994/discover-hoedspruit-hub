@@ -131,11 +131,13 @@ const CategoryPage = () => {
             fontFamily: "var(--font-heading)",
             textTransform: "uppercase",
             fontWeight: 900,
-            fontSize: 40,
+            fontSize: "clamp(28px, 8vw, 40px)",
             lineHeight: 1,
             letterSpacing: "-0.5px",
             color: "#121214",
             margin: 0,
+            wordBreak: "break-word",
+            overflowWrap: "break-word",
           }}
         >
           {categoryTitle}
