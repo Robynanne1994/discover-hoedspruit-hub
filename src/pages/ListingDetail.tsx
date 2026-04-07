@@ -232,10 +232,10 @@ const ListingDetail = () => {
     }
 
     if (seating && seating.length > 0) {
-      const seatingFields: BoolField[] = ["Indoor", "Outdoor", "Bar", "Terrace", "Rooftop", "Garden", "Poolside"].map(opt => ({
-        label: opt,
-        value: seating.some(s => s.toLowerCase().includes(opt.toLowerCase())) ? true : false,
-      })).filter(f => f.value === true || seating.length > 0);
+      const seatingFields: BoolField[] = seating.map(s => ({
+        label: s.replace(/ seating$/i, ""),
+        value: true,
+      }));
       if (seatingFields.length > 0) {
         accordionSections.push({ key: "seating", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Seating", fields: seatingFields });
       }
