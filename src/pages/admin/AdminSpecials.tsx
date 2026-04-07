@@ -9,7 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
-import { Plus, Pencil, Trash2, X } from "lucide-react";
+import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Special {
   id: string;
@@ -196,9 +197,16 @@ const AdminSpecials = () => {
       <div className="flex items-center justify-between mb-8">
         <h1 className="font-heading text-3xl font-bold text-foreground">Specials</h1>
         {!showForm && (
-          <Button onClick={() => { setCreating(true); setForm(emptyForm); }}>
-            <Plus className="h-4 w-4 mr-2" /> Add Special
-          </Button>
+          <div className="flex gap-2">
+            <Link to="/admin/specials/import">
+              <Button variant="outline" className="gap-2">
+                <FileSpreadsheet className="h-4 w-4" /> Import / Export
+              </Button>
+            </Link>
+            <Button onClick={() => { setCreating(true); setForm(emptyForm); }}>
+              <Plus className="h-4 w-4 mr-2" /> Add Special
+            </Button>
+          </div>
         )}
       </div>
 
