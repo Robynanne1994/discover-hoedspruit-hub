@@ -105,11 +105,11 @@ const AdminEventsImport = () => {
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
-          const { error } = await supabase.from("events").update(payload).eq("id", existingId);
+          const { error } = await supabase.from("events").update(payload as any).eq("id", existingId);
           if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
           else results.updated++;
         } else {
-          const { error } = await supabase.from("events").insert(payload);
+          const { error } = await supabase.from("events").insert(payload as any);
           if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
           else results.created++;
         }
