@@ -31,7 +31,7 @@ const LowdownSection = () => {
   return (
     <div style={{ paddingTop: 36, paddingLeft: 24, paddingRight: 24 }}>
       {/* Header */}
-      <HomeSectionHeader title="Lowveld Lowdown" actionLabel="See All" actionHref="/headlines" />
+      <HomeSectionHeader title="Lowveld Lowdown" />
 
       {/* Featured card */}
       <Link to={`/headlines/${featured.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 14 }}>
@@ -65,6 +65,11 @@ const LowdownSection = () => {
             </div>
           </Link>
         ))}
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
+        <Link to="/headlines" style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.5px", textDecoration: "none" }}>
+          READ ALL &gt;
+        </Link>
       </div>
     </div>
   );
