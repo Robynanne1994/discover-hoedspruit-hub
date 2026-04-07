@@ -93,7 +93,7 @@ const SpecialsSection = () => {
 
                 {/* Content */}
                 <div style={{ padding: "14px 16px", background: "#ffffff" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginBottom: 4 }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginBottom: 4, minHeight: "2.4em", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {special.title}
                   </div>
                   <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginBottom: 8 }}>
