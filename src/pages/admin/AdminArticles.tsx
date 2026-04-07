@@ -164,7 +164,7 @@ const AdminArticles = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Articles</h1>
+        <h1 className="text-2xl font-bold">The Lowveld Lowdown</h1>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={handleExport}><FileSpreadsheet className="h-4 w-4 mr-1" />Export</Button>
           <Label htmlFor="csv-import" className="cursor-pointer">

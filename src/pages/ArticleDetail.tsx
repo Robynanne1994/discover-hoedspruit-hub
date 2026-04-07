@@ -142,7 +142,7 @@ const ArticleDetail = () => {
         {/* Related */}
         {related.length > 0 && (
           <div style={{ marginTop: 32 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 18 }}>More from the headlines</div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 18 }}>More from the Lowdown</div>
             {related.map((r: any, i: number) => (
               <Link key={r.id} to={`/headlines/${r.slug}`}>
                 <div className="flex" style={{ gap: 14, paddingTop: 16, paddingBottom: 16, borderBottom: i < related.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none" }}>

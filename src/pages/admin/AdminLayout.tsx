@@ -10,7 +10,7 @@ const navItems = [
   { label: "Listings", path: "/admin/listings", icon: List },
   { label: "Events", path: "/admin/events", icon: Calendar },
   { label: "Specials", path: "/admin/specials", icon: Tag },
-  { label: "Articles", path: "/admin/articles", icon: Newspaper },
+  { label: "Lowveld Lowdown", path: "/admin/articles", icon: Newspaper },
   { label: "Site Content", path: "/admin/content", icon: FileText },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];

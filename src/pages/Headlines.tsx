@@ -59,14 +59,14 @@ const Headlines = () => {
       {/* Title */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase", fontFamily: "var(--font-heading)" }}>
-          HOEDSPRUIT<br />HEADLINES
+          THE LOWVELD<br />LOWDOWN
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
-          News, stories and local updates from Hoedspruit
+          News, stories and local updates from the Lowveld
         </p>
       </div>
 
