@@ -188,7 +188,7 @@ const ListingDetail = () => {
     if (cuisine && cuisine.length > 0) quickPills.push({ label: cuisine.join(", ") });
     if (vibe && vibe.length > 0) quickPills.push({ label: vibe.join(", ") });
     if (priceLevel) quickPills.push({ label: "R".repeat(priceLevel) });
-    if (seating && seating.length > 0) quickPills.push({ label: seating.map(s => s.replace(" seating", "")).join(" & ") });
+    
   }
   const showQuickPills = quickPills.length > 0;
 
@@ -229,6 +229,16 @@ const ListingDetail = () => {
     ].filter(f => f.value != null) as BoolField[];
     if (amenFields.length > 0) {
       accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Amenities", fields: amenFields });
+    }
+
+    if (seating && seating.length > 0) {
+      const seatingFields: BoolField[] = ["Indoor", "Outdoor", "Bar", "Terrace", "Rooftop", "Garden", "Poolside"].map(opt => ({
+        label: opt,
+        value: seating.some(s => s.toLowerCase().includes(opt.toLowerCase())) ? true : false,
+      })).filter(f => f.value === true || seating.length > 0);
+      if (seatingFields.length > 0) {
+        accordionSections.push({ key: "seating", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Seating", fields: seatingFields });
+      }
     }
 
     // Service Options: show as booleans for dine-in/takeaway/delivery, always show all
