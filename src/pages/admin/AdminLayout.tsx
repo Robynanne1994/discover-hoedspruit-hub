@@ -1,6 +1,6 @@
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { LayoutDashboard, List, Calendar, FolderOpen, FileText, LogOut, Upload, Home, Tag } from "lucide-react";
+import { LayoutDashboard, List, Calendar, FolderOpen, FileText, LogOut, Upload, Home, Tag, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { label: "Listings", path: "/admin/listings", icon: List },
   { label: "Events", path: "/admin/events", icon: Calendar },
   { label: "Specials", path: "/admin/specials", icon: Tag },
+  { label: "Articles", path: "/admin/articles", icon: Newspaper },
   { label: "Site Content", path: "/admin/content", icon: FileText },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
