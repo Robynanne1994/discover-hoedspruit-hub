@@ -448,7 +448,7 @@ const MyAccount = () => {
   ];
 
   const infoItems = [
-    { icon: Newspaper, label: "Hoedspruit Headlines", href: "/headlines" },
+    { icon: Newspaper, label: "The Lowveld Lowdown", href: "/headlines" },
     { icon: Info, label: "About", href: "/about" },
     { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
     { icon: FileText, label: "Terms & Policies", href: "/terms" },
