@@ -286,7 +286,7 @@ const CategoryPage = () => {
                 marginBottom: 18,
               }}
             >
-              Places
+              FAVOURITES
             </h2>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
