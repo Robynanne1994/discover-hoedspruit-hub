@@ -521,10 +521,10 @@ const MyAccount = () => {
             <button
               onClick={() => setActiveSection("profile")}
               className="shrink-0 flex items-center active:scale-95 transition-transform"
-              style={{ gap: 6, padding: "8px 16px", border: "1px solid rgba(18,18,20,0.15)", borderRadius: 10, background: "transparent" }}
+              style={{ gap: 4, padding: "4px 10px", border: "none", borderRadius: 8, background: "transparent" }}
             >
-              <Pencil style={{ width: 14, height: 14, color: "#121214" }} />
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>Edit</span>
+              <Pencil style={{ width: 12, height: 12, color: "rgba(18,18,20,0.3)" }} />
+              <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(18,18,20,0.3)" }}>Edit</span>
             </button>
           </div>
         </div>
