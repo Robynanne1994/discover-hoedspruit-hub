@@ -98,9 +98,6 @@ const HomeHero = () => {
     <>
       {/* Hero area */}
       <div style={{ background: "#f5f3ef", padding: "48px 24px 28px" }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          WELCOME TO
-        </div>
         <h1 style={{ fontWeight: 900, fontSize: 44, lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", textTransform: "uppercase", marginBottom: 12 }}>
           HELLO<br />HOEDSPRUIT
         </h1>
