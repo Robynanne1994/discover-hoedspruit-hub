@@ -51,7 +51,7 @@ const WhatsOnToday = () => {
   const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
   return (
-    <section style={{ padding: "32px 24px 0" }}>
+    <section style={{ padding: "32px 24px 24px" }}>
       <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
       <div>
         {events.map((event, idx) => {
