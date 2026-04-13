@@ -102,7 +102,7 @@ const CategoryPage = () => {
   };
 
   const categoryTitle = category?.title || "Category";
-  const categoryDescription = category?.description || "Discover places, experiences and local favourites.";
+  const categoryDescription = category?.description || "Discover local cafés, great meals and favourite places to eat.";
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
 
   return (
