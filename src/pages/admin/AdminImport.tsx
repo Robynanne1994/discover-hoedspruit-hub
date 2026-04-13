@@ -6,7 +6,9 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
+import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
+
+const ALL_CATEGORIES_VALUE = "__all__";
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -91,9 +93,10 @@ const AdminImport = () => {
     },
   });
 
+  const isAllCategories = selectedCategoryId === ALL_CATEGORIES_VALUE;
   const selectedCategory = categories?.find((c) => c.id === selectedCategoryId);
-  const selectedCategoryTitle = selectedCategory?.title ?? null;
-  const csvHeaders = getCSVHeadersForCategory(selectedCategoryTitle);
+  const selectedCategoryTitle = isAllCategories ? null : (selectedCategory?.title ?? null);
+  const csvHeaders = isAllCategories ? [...UNIVERSAL_FIELDS] : getCSVHeadersForCategory(selectedCategoryTitle);
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
   const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
   const isAccommodation = selectedCategoryTitle ? isAccommodationCategory(selectedCategoryTitle) : false;
@@ -120,24 +123,18 @@ const AdminImport = () => {
         toast.error("CSV must have a 'title' column");
         return;
       }
-      // Warn if restaurant columns found in non-restaurant import
-      if (!isRestaurant) {
-        const extraCols = result.headers.filter((h) => restaurantFieldSet.has(h));
-        if (extraCols.length > 0) {
-          toast.warning(`Restaurant-only columns found and will be ignored: ${extraCols.join(", ")}`);
+      if (!isAllCategories) {
+        if (!isRestaurant) {
+          const extraCols = result.headers.filter((h) => restaurantFieldSet.has(h));
+          if (extraCols.length > 0) toast.warning(`Restaurant-only columns found and will be ignored: ${extraCols.join(", ")}`);
         }
-      }
-      // Warn if shopping columns found in non-shopping import
-      if (!isShopping) {
-        const extraCols = result.headers.filter((h) => shoppingFieldSet.has(h));
-        if (extraCols.length > 0) {
-          toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
+        if (!isShopping) {
+          const extraCols = result.headers.filter((h) => shoppingFieldSet.has(h));
+          if (extraCols.length > 0) toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
         }
-      }
-      if (!isAccommodation) {
-        const extraCols = result.headers.filter((h) => accommodationFieldSet.has(h));
-        if (extraCols.length > 0) {
-          toast.warning(`Accommodation-only columns found and will be ignored: ${extraCols.join(", ")}`);
+        if (!isAccommodation) {
+          const extraCols = result.headers.filter((h) => accommodationFieldSet.has(h));
+          if (extraCols.length > 0) toast.warning(`Accommodation-only columns found and will be ignored: ${extraCols.join(", ")}`);
         }
       }
       setParsed(result);
@@ -147,7 +144,7 @@ const AdminImport = () => {
 
   const importMutation = useMutation({
     mutationFn: async () => {
-      if (!parsed || !categories || !selectedCategoryId) throw new Error("No data or category selected");
+      if (!parsed || !categories) throw new Error("No data");
 
       const catMap = new Map(categories.map((c) => [c.title.toLowerCase(), c.id]));
       const subMap = new Map((subcategories ?? []).map((s) => [
@@ -157,16 +154,21 @@ const AdminImport = () => {
       const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
       const csvTitles = new Set<string>();
 
-      // Only match against listings in this category
-      const { data: catJunctions } = await supabase
-        .from("listing_categories")
-        .select("listing_id")
-        .eq("category_id", selectedCategoryId);
-      const categoryListingIds = new Set((catJunctions ?? []).map((j) => j.listing_id));
-
-      const { data: existing } = await supabase.from("listings").select("id, title");
-      const existingInCategory = (existing ?? []).filter((l) => categoryListingIds.has(l.id));
-      const existingMap = new Map(existingInCategory.map((l) => [l.title.toLowerCase(), l.id]));
+      // Build existing listings map
+      let existingMap: Map<string, string>;
+      if (isAllCategories) {
+        const { data: existing } = await supabase.from("listings").select("id, title");
+        existingMap = new Map((existing ?? []).map((l) => [l.title.toLowerCase(), l.id]));
+      } else {
+        const { data: catJunctions } = await supabase
+          .from("listing_categories")
+          .select("listing_id")
+          .eq("category_id", selectedCategoryId);
+        const categoryListingIds = new Set((catJunctions ?? []).map((j) => j.listing_id));
+        const { data: existing } = await supabase.from("listings").select("id, title");
+        const existingInCategory = (existing ?? []).filter((l) => categoryListingIds.has(l.id));
+        existingMap = new Map(existingInCategory.map((l) => [l.title.toLowerCase(), l.id]));
+      }
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
@@ -177,16 +179,20 @@ const AdminImport = () => {
         }
         csvTitles.add(title.toLowerCase());
 
-        // Resolve additional categories from CSV (pipe-separated), always include selected category
+        // Resolve categories from CSV
         const catField = row.categories?.trim() || "";
         const catNames = catField ? catField.split("|").map((s) => s.trim()).filter(Boolean) : [];
-        const resolvedCatIds: string[] = [selectedCategoryId];
+        const resolvedCatIds: string[] = [];
+
+        if (!isAllCategories) {
+          resolvedCatIds.push(selectedCategoryId);
+        }
 
         for (const catName of catNames) {
           let catId = catMap.get(catName.toLowerCase()) ?? null;
-          if (catId && catId !== selectedCategoryId) {
-            resolvedCatIds.push(catId);
-          } else if (!catId) {
+          if (catId) {
+            if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
+          } else {
             const { data: newCat, error: catErr } = await supabase
               .from("categories").insert({ title: catName }).select("id").single();
             if (!catErr && newCat) {
@@ -206,7 +212,7 @@ const AdminImport = () => {
             const subId = subMap.get(key);
             if (subId) { resolvedSubIds.push(subId); found = true; break; }
           }
-          if (!found) {
+          if (!found && resolvedCatIds.length > 0) {
             const { data: newSub, error: subErr } = await supabase
               .from("subcategories").insert({ title: subName, category_id: resolvedCatIds[0] }).select("id").single();
             if (!subErr && newSub) {
@@ -239,6 +245,8 @@ const AdminImport = () => {
         }
 
         const isUpdate = !!existingMap.get(title.toLowerCase());
+
+        // Build payload - universal fields only for "all categories" mode
         const payload: Record<string, any> = {
           title,
           description: row.description || null,
@@ -256,71 +264,74 @@ const AdminImport = () => {
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
           long_description: row.long_description || null,
           ...(galleryImages && galleryImages.length > 0 ? { gallery_images: galleryImages } : (!isUpdate ? { gallery_images: null } : {})),
-          opening_hours: openingHours,
+          opening_hours: isAllCategories && isUpdate && !row.opening_hours ? undefined : openingHours,
         };
 
-        // Only include restaurant fields if importing for a restaurant category
-        if (isRestaurant) {
-          payload.good_for_kids = parseBool(row.good_for_kids);
-          payload.pets_allowed = parseBool(row.pets_allowed);
-          payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
-          payload.price_level = row.price_level ? parseInt(row.price_level, 10) || null : null;
-          payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
-          payload.meal = parseArray(row.meal) ?? [];
-          payload.vibe = parseArray(row.vibe) ?? [];
-          payload.cuisine = parseArray(row.cuisine) ?? [];
-          payload.seating = parseArray(row.seating) ?? [];
-          payload.kids_playground = parseBool(row.kids_playground);
-          payload.smoking_allowed = parseBool(row.smoking_allowed);
-          payload.service_type = parseArray(row.service_type) ?? [];
-          payload.kids_menu = parseBool(row.kids_menu);
-          payload.high_chairs = parseBool(row.high_chairs);
-          payload.wheelchair_car_park = parseBool(row.wheelchair_car_park);
-          payload.wheelchair_entrance = parseBool(row.wheelchair_entrance);
-          payload.wheelchair_seating = parseBool(row.wheelchair_seating);
-          payload.wheelchair_toilet = parseBool(row.wheelchair_toilet);
-          payload.has_toilet = parseBool(row.has_toilet);
-          payload.has_wifi = parseBool(row.has_wifi);
-          payload.has_free_wifi = parseBool(row.has_free_wifi);
-        }
+        // Remove undefined keys
+        Object.keys(payload).forEach(k => { if (payload[k] === undefined) delete payload[k]; });
 
-        // Only include shopping fields if importing for a shopping category
-        if (isShopping) {
-          payload.air_conditioned = parseBool(row.air_conditioned);
-          payload.payment_methods = parseArray(row.payment_methods) ?? [];
-          payload.delivery_available = parseBool(row.delivery_available);
-          payload.click_and_collect = parseBool(row.click_and_collect);
-          payload.order_online = parseBool(row.order_online);
-          payload.parking_available = parseBool(row.parking_available);
-          payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
-          payload.local_products = parseBool(row.local_products);
-          payload.shop_type = row.shop_type || null;
-          payload.curio_or_gifts = parseBool(row.curio_or_gifts);
-          payload.product_categories = parseArray(row.product_categories) ?? [];
-          payload.price_range = row.price_range || null;
-        }
+        // Only include category-specific fields when NOT in "all categories" mode
+        if (!isAllCategories) {
+          if (isRestaurant) {
+            payload.good_for_kids = parseBool(row.good_for_kids);
+            payload.pets_allowed = parseBool(row.pets_allowed);
+            payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
+            payload.price_level = row.price_level ? parseInt(row.price_level, 10) || null : null;
+            payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
+            payload.meal = parseArray(row.meal) ?? [];
+            payload.vibe = parseArray(row.vibe) ?? [];
+            payload.cuisine = parseArray(row.cuisine) ?? [];
+            payload.seating = parseArray(row.seating) ?? [];
+            payload.kids_playground = parseBool(row.kids_playground);
+            payload.smoking_allowed = parseBool(row.smoking_allowed);
+            payload.service_type = parseArray(row.service_type) ?? [];
+            payload.kids_menu = parseBool(row.kids_menu);
+            payload.high_chairs = parseBool(row.high_chairs);
+            payload.wheelchair_car_park = parseBool(row.wheelchair_car_park);
+            payload.wheelchair_entrance = parseBool(row.wheelchair_entrance);
+            payload.wheelchair_seating = parseBool(row.wheelchair_seating);
+            payload.wheelchair_toilet = parseBool(row.wheelchair_toilet);
+            payload.has_toilet = parseBool(row.has_toilet);
+            payload.has_wifi = parseBool(row.has_wifi);
+            payload.has_free_wifi = parseBool(row.has_free_wifi);
+          }
 
-        // Only include accommodation fields if importing for an accommodation category
-        if (isAccommodation) {
-          payload.pets_allowed = parseBool(row.pets_allowed);
-          payload.sleeps = row.sleeps ? parseInt(row.sleeps, 10) || null : null;
-          payload.price_range = row.price_range || null;
-          payload.km_from_town = row.km_from_town || null;
-          payload.has_restaurant = parseBool(row.has_restaurant);
-          payload.has_bar = parseBool(row.has_bar);
-          payload.has_room_service = parseBool(row.has_room_service);
-          payload.has_breakfast = parseBool(row.has_breakfast);
-          payload.breakfast_included = parseBool(row.breakfast_included);
-          payload.has_swimming_pool = parseBool(row.has_swimming_pool);
-          payload.has_laundry = parseBool(row.has_laundry);
-          payload.child_friendly = parseBool(row.child_friendly);
-          payload.has_spa = parseBool(row.has_spa);
-          payload.has_fitness_centre = parseBool(row.has_fitness_centre);
-          payload.has_airport_shuttle = parseBool(row.has_airport_shuttle);
-          payload.has_aircon = parseBool(row.has_aircon);
-          payload.has_wifi_accom = parseBool(row.has_wifi_accom);
-          payload.has_free_parking = parseBool(row.has_free_parking);
-          payload.has_secure_parking = parseBool(row.has_secure_parking);
+          if (isShopping) {
+            payload.air_conditioned = parseBool(row.air_conditioned);
+            payload.payment_methods = parseArray(row.payment_methods) ?? [];
+            payload.delivery_available = parseBool(row.delivery_available);
+            payload.click_and_collect = parseBool(row.click_and_collect);
+            payload.order_online = parseBool(row.order_online);
+            payload.parking_available = parseBool(row.parking_available);
+            payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
+            payload.local_products = parseBool(row.local_products);
+            payload.shop_type = row.shop_type || null;
+            payload.curio_or_gifts = parseBool(row.curio_or_gifts);
+            payload.product_categories = parseArray(row.product_categories) ?? [];
+            payload.price_range = row.price_range || null;
+          }
+
+          if (isAccommodation) {
+            payload.pets_allowed = parseBool(row.pets_allowed);
+            payload.sleeps = row.sleeps ? parseInt(row.sleeps, 10) || null : null;
+            payload.price_range = row.price_range || null;
+            payload.km_from_town = row.km_from_town || null;
+            payload.has_restaurant = parseBool(row.has_restaurant);
+            payload.has_bar = parseBool(row.has_bar);
+            payload.has_room_service = parseBool(row.has_room_service);
+            payload.has_breakfast = parseBool(row.has_breakfast);
+            payload.breakfast_included = parseBool(row.breakfast_included);
+            payload.has_swimming_pool = parseBool(row.has_swimming_pool);
+            payload.has_laundry = parseBool(row.has_laundry);
+            payload.child_friendly = parseBool(row.child_friendly);
+            payload.has_spa = parseBool(row.has_spa);
+            payload.has_fitness_centre = parseBool(row.has_fitness_centre);
+            payload.has_airport_shuttle = parseBool(row.has_airport_shuttle);
+            payload.has_aircon = parseBool(row.has_aircon);
+            payload.has_wifi_accom = parseBool(row.has_wifi_accom);
+            payload.has_free_parking = parseBool(row.has_free_parking);
+            payload.has_secure_parking = parseBool(row.has_secure_parking);
+          }
         }
 
         const existingId = existingMap.get(title.toLowerCase());
@@ -337,12 +348,14 @@ const AdminImport = () => {
         }
 
         if (listingId) {
+          // Sync categories junction
           await supabase.from("listing_categories").delete().eq("listing_id", listingId);
           if (resolvedCatIds.length > 0) {
             const catRows = resolvedCatIds.map((catId) => ({ listing_id: listingId!, category_id: catId }));
             await supabase.from("listing_categories").insert(catRows);
           }
 
+          // Sync subcategories junction
           await supabase.from("listing_subcategories").delete().eq("listing_id", listingId);
           if (resolvedSubIds.length > 0) {
             const junctionRows = resolvedSubIds.map((subId) => ({ listing_id: listingId!, subcategory_id: subId }));
@@ -351,10 +364,9 @@ const AdminImport = () => {
         }
       }
 
-      // Delete listings in this category that are not in the CSV
+      // Delete listings not in CSV
       for (const [existingTitle, existingId] of existingMap) {
         if (!csvTitles.has(existingTitle)) {
-          // Delete junction rows first
           await supabase.from("listing_categories").delete().eq("listing_id", existingId);
           await supabase.from("listing_subcategories").delete().eq("listing_id", existingId);
           const { error } = await supabase.from("listings").delete().eq("id", existingId);
@@ -391,7 +403,7 @@ const AdminImport = () => {
     }
     const headers = csvHeaders;
     const csv = headers.join(",") + "\n";
-    const safeName = (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+    const safeName = isAllCategories ? "all_listings" : (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
     downloadCSV(csv, `${safeName}_template.csv`);
     toast.success("Template downloaded");
   };
@@ -402,19 +414,26 @@ const AdminImport = () => {
       return;
     }
 
-    // Get listings in selected category
-    const { data: catJunctions } = await supabase
-      .from("listing_categories").select("listing_id").eq("category_id", selectedCategoryId);
-    const listingIds = (catJunctions ?? []).map((j) => j.listing_id);
-    if (listingIds.length === 0) {
-      toast.error("No listings in this category");
-      return;
+    let listings: any[] | null;
+
+    if (isAllCategories) {
+      const { data } = await supabase.from("listings").select("*");
+      listings = data;
+    } else {
+      const { data: catJunctions } = await supabase
+        .from("listing_categories").select("listing_id").eq("category_id", selectedCategoryId);
+      const listingIds = (catJunctions ?? []).map((j) => j.listing_id);
+      if (listingIds.length === 0) {
+        toast.error("No listings in this category");
+        return;
+      }
+      const { data } = await supabase.from("listings").select("*").in("id", listingIds);
+      listings = data;
     }
 
-    const { data: listings } = await supabase.from("listings").select("*").in("id", listingIds);
     if (!listings?.length) { toast.error("No listings to export"); return; }
 
-    // Fetch junctions
+    // Fetch junctions for categories & subcategories
     const { data: allCatJunction } = await supabase.from("listing_categories").select("listing_id, category_id");
     const catNameMap = new Map((categories ?? []).map((c) => [c.id, c.title]));
     const listingCatMap = new Map<string, string[]>();
@@ -520,7 +539,7 @@ const AdminImport = () => {
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
     });
 
-    const safeName = (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+    const safeName = isAllCategories ? "all_listings" : (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
     downloadCSV(headers.join(",") + "\n" + rows.join("\n") + "\n", `${safeName}_export.csv`);
     toast.success(`Exported ${listings.length} listings`);
   };
@@ -531,6 +550,8 @@ const AdminImport = () => {
     setImportResult(null);
     if (fileRef.current) fileRef.current.value = "";
   };
+
+  const displayLabel = isAllCategories ? "All Categories (Universal)" : selectedCategoryTitle;
 
   return (
     <div>
@@ -547,6 +568,7 @@ const AdminImport = () => {
               <SelectValue placeholder="Choose a category..." />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value={ALL_CATEGORIES_VALUE}>All Categories (Universal Fields)</SelectItem>
               {categories?.map((cat) => (
                 <SelectItem key={cat.id} value={cat.id}>{cat.title}</SelectItem>
               ))}
@@ -554,7 +576,9 @@ const AdminImport = () => {
           </Select>
           {selectedCategoryId && (
             <p className="text-xs text-muted-foreground mt-2">
-              {isRestaurant
+              {isAllCategories
+                ? "This export/import uses universal fields only across ALL listings. Category-specific fields (restaurant, shopping, accommodation) are preserved during updates."
+                : isRestaurant
                 ? "This export/import will include universal + restaurant-specific fields."
                 : isShopping
                 ? "This export/import will include universal + shopping-specific fields."
@@ -569,7 +593,7 @@ const AdminImport = () => {
         {selectedCategoryId && (
           <div className="flex flex-wrap gap-2">
             <Button variant="outline" onClick={downloadListings} className="gap-2">
-              <FileSpreadsheet className="h-4 w-4" /> Export {selectedCategoryTitle} Listings
+              <FileSpreadsheet className="h-4 w-4" /> Export {displayLabel} Listings
             </Button>
             <Button variant="outline" onClick={downloadTemplate} className="gap-2">
               <FileSpreadsheet className="h-4 w-4" /> Download Template
@@ -589,7 +613,9 @@ const AdminImport = () => {
               Expected columns: {csvHeaders.join(", ")}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Listings are matched by title (case-insensitive). Missing listings will be deleted.
+              {isAllCategories
+                ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields are preserved."
+                : "Listings are matched by title (case-insensitive). Missing listings will be deleted."}
             </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
@@ -600,7 +626,7 @@ const AdminImport = () => {
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <p className="text-sm text-muted-foreground">
-                <strong className="text-foreground">{parsed.rows.length}</strong> rows found for <strong className="text-foreground">{selectedCategoryTitle}</strong>.
+                <strong className="text-foreground">{parsed.rows.length}</strong> rows found{!isAllCategories && <> for <strong className="text-foreground">{selectedCategoryTitle}</strong></>}.
               </p>
               <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending} className="gap-2">
                 {importMutation.isPending ? "Importing..." : "Import All"}
@@ -613,7 +639,13 @@ const AdminImport = () => {
                   <tr>
                     <th className="p-2 text-left text-muted-foreground font-medium">#</th>
                     {parsed.headers.map((h) => (
-                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) || (accommodationFieldSet.has(h) && !isAccommodation) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"}`}>{h}</th>
+                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${
+                        !isAllCategories && (
+                          (restaurantFieldSet.has(h) && !isRestaurant) ||
+                          (shoppingFieldSet.has(h) && !isShopping) ||
+                          (accommodationFieldSet.has(h) && !isAccommodation)
+                        ) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"
+                      }`}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -622,7 +654,13 @@ const AdminImport = () => {
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
                       {parsed.headers.map((h) => (
-                        <td key={h} className={`p-2 max-w-[200px] truncate ${(restaurantFieldSet.has(h) && !isRestaurant) || (shoppingFieldSet.has(h) && !isShopping) || (accommodationFieldSet.has(h) && !isAccommodation) ? "text-muted-foreground/40" : "text-foreground"}`}>{row[h] || "—"}</td>
+                        <td key={h} className={`p-2 max-w-[200px] truncate ${
+                          !isAllCategories && (
+                            (restaurantFieldSet.has(h) && !isRestaurant) ||
+                            (shoppingFieldSet.has(h) && !isShopping) ||
+                            (accommodationFieldSet.has(h) && !isAccommodation)
+                          ) ? "text-muted-foreground/40" : "text-foreground"
+                        }`}>{row[h] || "—"}</td>
                       ))}
                     </tr>
                   ))}
