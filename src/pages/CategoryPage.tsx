@@ -273,7 +273,7 @@ const CategoryPage = () => {
                 marginBottom: 6,
               }}
             >
-              Curated
+              LOCAL
             </p>
             <h2
               style={{
