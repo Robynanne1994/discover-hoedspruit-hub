@@ -363,7 +363,7 @@ const CategoryPage = () => {
             </h2>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {listings.map((l) => {
+              {filteredListings.map((l) => {
                 const hasDetail = !!(
                   l.long_description ||
                   (l.gallery_images && l.gallery_images.length > 0) ||
