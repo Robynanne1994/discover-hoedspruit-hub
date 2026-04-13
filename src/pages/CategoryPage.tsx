@@ -334,7 +334,7 @@ const CategoryPage = () => {
               <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 18, background: "#f0f0f0" }} />
             ))}
           </div>
-        ) : listings && listings.length > 0 ? (
+        ) : filteredListings && filteredListings.length > 0 ? (
           <div>
             <p
               style={{
