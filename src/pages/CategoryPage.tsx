@@ -2,7 +2,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ChevronDown, ChevronUp, Globe, Mail, MapPin, MessageCircle, Phone, Star, SlidersHorizontal, X } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Globe, Mail, MapPin, MessageCircle, Phone, Star, SlidersHorizontal } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { Skeleton } from "@/components/ui/skeleton";
