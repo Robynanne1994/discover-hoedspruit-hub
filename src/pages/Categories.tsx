@@ -67,7 +67,7 @@ const Categories = () => {
   return (
     <div className="min-h-screen pb-[100px]" style={{ background: "#FFFFFF" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button
           onClick={() => navigate(-1)}
           className="flex items-center"
