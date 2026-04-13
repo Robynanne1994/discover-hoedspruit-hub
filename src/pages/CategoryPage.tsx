@@ -228,97 +228,103 @@ const CategoryPage = () => {
         </p>
       </div>
 
-      {/* Other categories toggle */}
-      {otherCategories.length > 0 && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
-          <button onClick={() => setShowCategories((v) => !v)} className="flex items-center" style={{ gap: 8 }}>
-            <span
-              style={{
-                fontSize: 11,
-                fontWeight: 600,
-                color: "rgba(18,18,20,0.4)",
-                textTransform: "uppercase",
-                letterSpacing: "1.5px",
-              }}
-            >
-              Other Categories
+      {/* Filter dropdown */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <button
+          onClick={() => setShowFilters((v) => !v)}
+          className="flex items-center"
+          style={{ gap: 8 }}
+        >
+          <SlidersHorizontal size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.5)" }} />
+          <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "1.5px" }}>
+            Filter
+          </span>
+          {activeFilterCount > 0 && (
+            <span style={{ background: "#121214", color: "#fff", borderRadius: 999, width: 18, height: 18, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700 }}>
+              {activeFilterCount}
             </span>
-            {showCategories ? (
-              <ChevronUp size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.35)" }} />
-            ) : (
-              <ChevronDown size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.35)" }} />
-            )}
-          </button>
-        </div>
-      )}
+          )}
+          {showFilters ? <ChevronUp size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.35)" }} /> : <ChevronDown size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.35)" }} />}
+        </button>
 
-      {/* Other category pills */}
-      {showCategories && otherCategories.length > 0 && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-          <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
-            {otherCategories.map((cat) => (
-              <Link
-                key={cat.id}
-                to={`/category/${cat.id}`}
-                className="whitespace-nowrap"
-                style={{
-                  background: "rgba(18,18,20,0.04)",
-                  border: "1px solid rgba(18,18,20,0.08)",
-                  borderRadius: 10,
-                  padding: "9px 16px",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "rgba(18,18,20,0.55)",
-                }}
-              >
-                {cat.title}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Subcategory pills */}
-      {subcategories && subcategories.length > 0 && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-          <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
-            <button
-              onClick={() => handleSubFilter(null)}
-              className="whitespace-nowrap"
-              style={{
-                background: !activeSubId ? "#121214" : "rgba(18,18,20,0.04)",
-                border: !activeSubId ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-                borderRadius: 10,
-                padding: "9px 18px",
-                fontSize: 13,
-                fontWeight: !activeSubId ? 600 : 500,
-                color: !activeSubId ? "#ffffff" : "rgba(18,18,20,0.5)",
-              }}
-            >
-              All
-            </button>
-
-            {subcategories.map((sub) => (
-              <button
-                key={sub.id}
-                onClick={() => handleSubFilter(sub.id)}
-                className="whitespace-nowrap"
-                style={{
-                  background: activeSubId === sub.id ? "#121214" : "rgba(18,18,20,0.04)",
-                  border: activeSubId === sub.id ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-                  borderRadius: 10,
-                  padding: "9px 18px",
-                  fontSize: 13,
-                  fontWeight: activeSubId === sub.id ? 600 : 500,
-                  color: activeSubId === sub.id ? "#ffffff" : "rgba(18,18,20,0.5)",
-                }}
-              >
-                {sub.title}
+        {showFilters && (
+          <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+            {activeFilterCount > 0 && (
+              <button onClick={clearAllFilters} style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.5)", textDecoration: "underline", alignSelf: "flex-start" }}>
+                Clear all filters
               </button>
-            ))}
+            )}
+
+            {subcategories && subcategories.length > 0 && (
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Category</p>
+                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                  <button onClick={() => handleSubFilter(null)} style={{ background: !activeSubId ? "#121214" : "rgba(18,18,20,0.04)", border: !activeSubId ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: !activeSubId ? 600 : 500, color: !activeSubId ? "#ffffff" : "rgba(18,18,20,0.5)" }}>All</button>
+                  {subcategories.map((sub) => (
+                    <button key={sub.id} onClick={() => handleSubFilter(sub.id)} style={{ background: activeSubId === sub.id ? "#121214" : "rgba(18,18,20,0.04)", border: activeSubId === sub.id ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: activeSubId === sub.id ? 600 : 500, color: activeSubId === sub.id ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{sub.title}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isRestaurant && (
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Cuisine</p>
+                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                  {CUISINE_OPTIONS.map((c) => (
+                    <button key={c} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} style={{ background: filterCuisine.includes(c) ? "#121214" : "rgba(18,18,20,0.04)", border: filterCuisine.includes(c) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterCuisine.includes(c) ? 600 : 500, color: filterCuisine.includes(c) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{c}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isRestaurant && (
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Vibe</p>
+                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                  {VIBE_OPTIONS.map((v) => (
+                    <button key={v} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} style={{ background: filterVibe.includes(v) ? "#121214" : "rgba(18,18,20,0.04)", border: filterVibe.includes(v) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterVibe.includes(v) ? 600 : 500, color: filterVibe.includes(v) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{v}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isRestaurant && (
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Meal</p>
+                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                  {MEAL_OPTIONS.map((m) => (
+                    <button key={m} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} style={{ background: filterMeal.includes(m) ? "#121214" : "rgba(18,18,20,0.04)", border: filterMeal.includes(m) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterMeal.includes(m) ? 600 : 500, color: filterMeal.includes(m) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{m}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {isRestaurant && (
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Seating</p>
+                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                  {SEATING_OPTIONS.map((s) => (
+                    <button key={s} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} style={{ background: filterSeating.includes(s) ? "#121214" : "rgba(18,18,20,0.04)", border: filterSeating.includes(s) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterSeating.includes(s) ? 600 : 500, color: filterSeating.includes(s) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{s}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Amenities</p>
+              <div className="flex flex-wrap" style={{ gap: 8 }}>
+                {(isRestaurant || isAccom) && (
+                  <button onClick={() => setFilterChildFriendly(!filterChildFriendly)} style={{ background: filterChildFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterChildFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterChildFriendly ? 600 : 500, color: filterChildFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Child Friendly</button>
+                )}
+                <button onClick={() => setFilterPetFriendly(!filterPetFriendly)} style={{ background: filterPetFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterPetFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterPetFriendly ? 600 : 500, color: filterPetFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Pet Friendly</button>
+                <button onClick={() => setFilterWheelchair(!filterWheelchair)} style={{ background: filterWheelchair ? "#121214" : "rgba(18,18,20,0.04)", border: filterWheelchair ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterWheelchair ? 600 : 500, color: filterWheelchair ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Wheelchair Accessible</button>
+                <button onClick={() => setFilterWifi(!filterWifi)} style={{ background: filterWifi ? "#121214" : "rgba(18,18,20,0.04)", border: filterWifi ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterWifi ? 600 : 500, color: filterWifi ? "#ffffff" : "rgba(18,18,20,0.5)" }}>WiFi</button>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {/* Content */}
       <div style={{ paddingLeft: 24, paddingRight: 24 }}>
