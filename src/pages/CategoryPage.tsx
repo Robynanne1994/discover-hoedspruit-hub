@@ -2,17 +2,30 @@ import { useParams, Link, useNavigate, useSearchParams } from "react-router-dom"
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ChevronDown, ChevronUp, Globe, Mail, MapPin, MessageCircle, Phone, Star } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Globe, Mail, MapPin, MessageCircle, Phone, Star, SlidersHorizontal, X } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
-import { isRestaurantCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian"];
+const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy"];
+const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner"];
+const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
-  const [showCategories, setShowCategories] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterCuisine, setFilterCuisine] = useState<string[]>([]);
+  const [filterVibe, setFilterVibe] = useState<string[]>([]);
+  const [filterMeal, setFilterMeal] = useState<string[]>([]);
+  const [filterSeating, setFilterSeating] = useState<string[]>([]);
+  const [filterChildFriendly, setFilterChildFriendly] = useState(false);
+  const [filterPetFriendly, setFilterPetFriendly] = useState(false);
+  const [filterWheelchair, setFilterWheelchair] = useState(false);
+  const [filterWifi, setFilterWifi] = useState(false);
 
   const { data: category } = useQuery({
     queryKey: ["category", id],
