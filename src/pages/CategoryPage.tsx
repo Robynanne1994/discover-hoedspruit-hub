@@ -104,8 +104,6 @@ const CategoryPage = () => {
     enabled: !!id,
   });
 
-  const otherCategories = useMemo(() => (allCategories || []).filter((cat) => cat.id !== id), [allCategories, id]);
-
   const handleSubFilter = (subId: string | null) => {
     if (subId) {
       setSearchParams({ sub: subId });
@@ -114,9 +112,65 @@ const CategoryPage = () => {
     }
   };
 
+  const activeFilterCount = [
+    activeSubId ? 1 : 0,
+    filterCuisine.length > 0 ? 1 : 0,
+    filterVibe.length > 0 ? 1 : 0,
+    filterMeal.length > 0 ? 1 : 0,
+    filterSeating.length > 0 ? 1 : 0,
+    filterChildFriendly ? 1 : 0,
+    filterPetFriendly ? 1 : 0,
+    filterWheelchair ? 1 : 0,
+    filterWifi ? 1 : 0,
+  ].reduce((a, b) => a + b, 0);
+
+  const clearAllFilters = () => {
+    setSearchParams({});
+    setFilterCuisine([]);
+    setFilterVibe([]);
+    setFilterMeal([]);
+    setFilterSeating([]);
+    setFilterChildFriendly(false);
+    setFilterPetFriendly(false);
+    setFilterWheelchair(false);
+    setFilterWifi(false);
+  };
+
+  const toggleArrayFilter = (arr: string[], val: string, setter: (v: string[]) => void) => {
+    setter(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]);
+  };
+
   const categoryTitle = category?.title || "Category";
   const categoryDescription = category?.description || "Discover local cafés, great meals and favourite places to eat.";
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
+  const isAccom = category ? isAccommodationCategory(category.title) : false;
+
+  const filteredListings = useMemo(() => {
+    if (!listings) return [];
+    return listings.filter(l => {
+      if (filterCuisine.length > 0) {
+        const lc = (l.cuisine || []).map(c => c.toLowerCase());
+        if (!filterCuisine.some(c => lc.includes(c.toLowerCase()))) return false;
+      }
+      if (filterVibe.length > 0) {
+        const lv = (l.vibe || []).map(v => v.toLowerCase());
+        if (!filterVibe.some(v => lv.includes(v.toLowerCase()))) return false;
+      }
+      if (filterMeal.length > 0) {
+        const lm = (l.meal || []).map(m => m.toLowerCase());
+        if (!filterMeal.some(m => lm.includes(m.toLowerCase()))) return false;
+      }
+      if (filterSeating.length > 0) {
+        const ls = (l.seating || []).map(s => s.toLowerCase());
+        if (!filterSeating.some(s => ls.includes(s.toLowerCase()))) return false;
+      }
+      if (filterChildFriendly && !l.good_for_kids && !l.child_friendly) return false;
+      if (filterPetFriendly && !l.pets_allowed) return false;
+      if (filterWheelchair && !l.wheelchair_friendly) return false;
+      if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
+      return true;
+    });
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi]);
 
   return (
     <div className="min-h-screen pb-[72px]" style={{ background: "#FFFFFF" }}>
