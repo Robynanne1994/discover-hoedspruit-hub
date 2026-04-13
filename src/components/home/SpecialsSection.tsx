@@ -47,9 +47,6 @@ const SpecialsSection = () => {
       {/* Header */}
       <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 18 }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>
-            Hottest deals
-          </div>
           <h2 style={{ fontWeight: 900, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
             Specials
           </h2>
