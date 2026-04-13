@@ -52,6 +52,7 @@ import FAQs from "./pages/FAQs.tsx";
 import PrivacySecurity from "./pages/PrivacySecurity.tsx";
 import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
+import Specials from "./pages/Specials.tsx";
 
 const queryClient = new QueryClient();
 
@@ -76,6 +77,7 @@ const App = () => (
             <Route path="/advertise" element={<Advertise />} />
             <Route path="/headlines" element={<Headlines />} />
             <Route path="/headlines/:slug" element={<ArticleDetail />} />
+            <Route path="/specials" element={<Specials />} />
             <Route path="/directories" element={<Directories />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/my-account" element={<MyAccount />} />
