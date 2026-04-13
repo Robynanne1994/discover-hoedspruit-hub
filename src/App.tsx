@@ -52,6 +52,7 @@ import FAQs from "./pages/FAQs.tsx";
 import PrivacySecurity from "./pages/PrivacySecurity.tsx";
 import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
+import Specials from "./pages/Specials.tsx";
 
 const queryClient = new QueryClient();
 

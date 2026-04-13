@@ -54,9 +54,9 @@ const SpecialsSection = () => {
             Specials
           </h2>
         </div>
-        <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1.5, cursor: "pointer" }}>
+        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
           See All ›
-        </span>
+        </Link>
       </div>
 
       {/* Carousel */}
