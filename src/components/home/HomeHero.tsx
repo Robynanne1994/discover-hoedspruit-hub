@@ -7,9 +7,9 @@ import { useQuery } from "@tanstack/react-query";
 
 const categories = [
   { label: "Events", icon: Calendar, href: "/events" },
-  { label: "Restaurants", icon: UtensilsCrossed, href: "/categories" },
-  { label: "Activities", icon: Compass, href: "/categories" },
-  { label: "Lodges", icon: Home, href: "/categories" },
+  { label: "Restaurants", icon: UtensilsCrossed, href: "/category/c867119f-8ca9-45a7-870e-6671f028748c" },
+  { label: "Activities", icon: Compass, href: "/category/4dc26115-569e-4af7-868a-9f783f8a38eb" },
+  { label: "Lodges", icon: Home, href: "/category/cef1c5ad-b199-41c9-bc8a-5834703a953a" },
   { label: "Specials", icon: Sparkles, href: "/categories" },
 ];
 
