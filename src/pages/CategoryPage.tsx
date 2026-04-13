@@ -38,15 +38,6 @@ const CategoryPage = () => {
     enabled: !!id,
   });
 
-  const { data: allCategories } = useQuery({
-    queryKey: ["all-categories"],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("categories").select("id, title").order("sort_order");
-
-      if (error) throw error;
-      return data;
-    },
-  });
 
   const { data: subcategories } = useQuery({
     queryKey: ["subcategories", id],
