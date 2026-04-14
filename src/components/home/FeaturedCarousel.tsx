@@ -34,7 +34,7 @@ const FeaturedCarousel = () => {
     return (
       <section className="pb-6">
         <SectionHeader title="Featured" />
-        <div className="flex gap-4 px-5">
+        <div className="flex gap-4 px-6">
           <Skeleton className="flex-shrink-0 w-[78%] aspect-[3/4] rounded-xl" />
           <Skeleton className="flex-shrink-0 w-[78%] aspect-[3/4] rounded-xl" />
         </div>

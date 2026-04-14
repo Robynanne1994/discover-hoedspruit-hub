@@ -135,7 +135,7 @@ const EventsCalendar = () => {
           {/* Calendar */}
           <div className="bg-card border border-border rounded-2xl overflow-hidden mb-6">
             {/* Month navigation */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
               <Button
                 variant="ghost"
                 size="icon"

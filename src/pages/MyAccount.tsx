@@ -240,7 +240,7 @@ const MyAccount = () => {
   if (activeSection) {
     return (
       <div className="min-h-screen pb-16 bg-background">
-        <div className="px-5 pt-5">
+        <div className="px-6 pt-5">
           <button
             onClick={() => setActiveSection(null)}
             className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium"
@@ -249,7 +249,7 @@ const MyAccount = () => {
           </button>
         </div>
 
-        <div className="px-5 pt-6 pb-8">
+        <div className="px-6 pt-6 pb-8">
           <h1
             className="text-[26px] font-semibold text-foreground tracking-tight mb-6"
             style={{ fontFamily: "var(--font-heading)" }}
