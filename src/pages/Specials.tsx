@@ -234,7 +234,7 @@ const Specials = () => {
                       }}
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <FavouriteButton itemId={s.id} itemType="special" />
+                      <FavouriteButton itemId={s.id} itemType="listing" />
                     </div>
 
                     {/* Deal label pill */}
