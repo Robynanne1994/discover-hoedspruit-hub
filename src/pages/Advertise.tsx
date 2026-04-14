@@ -191,9 +191,9 @@ const Advertise = () => {
               width: "100%", background: "#121214", borderRadius: 12, padding: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, border: "none", cursor: "pointer", opacity: submitForm.isPending ? 0.6 : 1,
             }}>
               {submitForm.isPending ? (
-                <><Loader2 size={16} color="#ffffff" className="animate-spin" /> <span style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", letterSpacing: 0.3 }}>Sending...</span></>
+                <><Loader2 size={16} color="#ffffff" className="animate-spin" /> <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", letterSpacing: 0.3 }}>Sending...</span></>
               ) : (
-                <><Send size={16} color="#ffffff" /> <span style={{ fontSize: 15, fontWeight: 700, color: "#ffffff", letterSpacing: 0.3 }}>Send Enquiry</span></>
+                <><Send size={16} color="#ffffff" /> <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", letterSpacing: 0.3 }}>Send Enquiry</span></>
               )}
             </button>
           </form>

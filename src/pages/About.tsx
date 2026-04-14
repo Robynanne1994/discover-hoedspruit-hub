@@ -101,7 +101,7 @@ const About = () => {
               If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
             </p>
             <button onClick={() => navigate("/advertise")} style={{ background: "#ffffff", borderRadius: 10, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
               <ArrowUpRight size={14} color="#121214" strokeWidth={2.5} />
             </button>
           </div>
