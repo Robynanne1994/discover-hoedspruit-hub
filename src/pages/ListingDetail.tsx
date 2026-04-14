@@ -186,7 +186,7 @@ const ListingDetail = () => {
   const quickPills: { label: string }[] = [];
   if (isListingRestaurant) {
     // cuisine moved to its own accordion
-    if (vibe && vibe.length > 0) quickPills.push({ label: vibe.join(", ") });
+    // vibe moved to its own accordion
     if (priceLevel) quickPills.push({ label: "R".repeat(priceLevel) });
     
   }
