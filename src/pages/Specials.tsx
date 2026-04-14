@@ -225,7 +225,7 @@ const Specials = () => {
                     )}
 
                     {/* Heart */}
-                    <FavouriteButton itemId={s.id} itemType="listing" />
+                    <FavouriteButton itemId={s.id} itemType="special" />
 
                     {/* Deal label pill */}
                     <div style={{ position: "absolute", left: 8, top: 8 }}>

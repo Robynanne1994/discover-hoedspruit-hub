@@ -1,25 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Star, ArrowLeft, Search, Calendar, ChevronRight } from "lucide-react";
+import { Heart, Star, ArrowLeft, Search, Calendar, ChevronRight, Tag } from "lucide-react";
 import { format, parseISO, isFuture, isPast } from "date-fns";
+
+type PrimaryTab = "listings" | "events" | "specials";
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
-  const [primaryTab, setPrimaryTab] = useState<"listings" | "events">(() => {
-    return searchParams.get("tab") === "events" ? "events" : "listings";
+  const [primaryTab, setPrimaryTab] = useState<PrimaryTab>(() => {
+    const tab = searchParams.get("tab");
+    if (tab === "events") return "events";
+    if (tab === "specials") return "specials";
+    return "listings";
   });
   const [listingFilter, setListingFilter] = useState("All");
   const [eventFilter, setEventFilter] = useState("All");
+  const [specialFilter, setSpecialFilter] = useState("All");
   const [search, setSearch] = useState("");
 
+  // Fetch saved listings
   const { data: favourites, isLoading } = useQuery({
     queryKey: ["saved-listings-page", user?.id],
     queryFn: async () => {
@@ -65,6 +72,7 @@ const SavedListings = () => {
     enabled: !!user,
   });
 
+  // Fetch saved events
   const { data: savedEvents, isLoading: eventsLoading } = useQuery({
     queryKey: ["saved-events-page", user?.id],
     queryFn: async () => {
@@ -92,6 +100,34 @@ const SavedListings = () => {
     enabled: !!user,
   });
 
+  // Fetch saved specials
+  const { data: savedSpecials, isLoading: specialsLoading } = useQuery({
+    queryKey: ["saved-specials-page", user?.id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("*")
+        .eq("user_id", user!.id)
+        .eq("item_type", "special")
+        .order("created_at", { ascending: false });
+      if (!favs || favs.length === 0) return [];
+
+      const specialIds = favs.map((f) => f.item_id);
+      const { data: specials } = await supabase
+        .from("specials")
+        .select("*")
+        .in("id", specialIds);
+
+      const specialsMap = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
+
+      return favs.map((f) => ({
+        ...f,
+        details: specialsMap[f.item_id],
+      })).filter((f) => f.details);
+    },
+    enabled: !!user,
+  });
+
   const removeFavourite = useMutation({
     mutationFn: async (fav: { item_id: string; item_type: string }) => {
       await supabase
@@ -104,6 +140,7 @@ const SavedListings = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
       queryClient.invalidateQueries({ queryKey: ["saved-events-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-specials-page"] });
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
       queryClient.invalidateQueries({ queryKey: ["favourite"] });
     },
@@ -127,6 +164,16 @@ const SavedListings = () => {
       if (f.details?.tag) tags.add(f.details.tag);
     });
     return Array.from(tags).sort();
+  })();
+
+  // Special type filters
+  const specialTypes = (() => {
+    if (!savedSpecials || savedSpecials.length === 0) return [];
+    const types = new Set<string>();
+    savedSpecials.forEach((f: any) => {
+      if (f.details?.special_type) types.add(f.details.special_type);
+    });
+    return Array.from(types).sort();
   })();
 
   // Filter listings
@@ -157,11 +204,31 @@ const SavedListings = () => {
     return true;
   }) || []);
 
-  // Counts
-  const activeCount = primaryTab === "listings" ? filteredListings.length : filteredEvents.length;
+  // Filter specials
+  const filteredSpecials = (savedSpecials?.filter((f: any) => {
+    const d = f.details;
+    if (!d) return false;
+    if (specialFilter !== "All") {
+      if (d.special_type !== specialFilter) return false;
+    }
+    if (search.trim()) {
+      if (!d.title?.toLowerCase().includes(search.toLowerCase())) return false;
+    }
+    return true;
+  }) || []);
+
+  // Counts & subtitle
+  const activeCount = primaryTab === "listings"
+    ? filteredListings.length
+    : primaryTab === "events"
+      ? filteredEvents.length
+      : filteredSpecials.length;
+
   const subtitleText = primaryTab === "listings"
     ? `${activeCount} ${activeCount === 1 ? "place" : "places"} saved for later`
-    : `${activeCount} ${activeCount === 1 ? "event" : "events"} saved`;
+    : primaryTab === "events"
+      ? `${activeCount} ${activeCount === 1 ? "event" : "events"} saved`
+      : `${activeCount} ${activeCount === 1 ? "special" : "specials"} saved`;
 
   const backButton = (
     <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
@@ -189,7 +256,7 @@ const SavedListings = () => {
     );
   }
 
-  if (loading || isLoading || eventsLoading) {
+  if (loading || isLoading || eventsLoading || specialsLoading) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
         {backButton}
@@ -216,6 +283,31 @@ const SavedListings = () => {
 
   const listingFilterOptions = ["All", ...listingCategories];
   const eventFilterOptions = ["All", "Upcoming", "Past", ...eventTags];
+  const specialFilterOptions = ["All", ...specialTypes];
+
+  const searchPlaceholder = primaryTab === "listings"
+    ? "Search saved places..."
+    : primaryTab === "events"
+      ? "Search saved events..."
+      : "Search saved specials...";
+
+  const currentFilterOptions = primaryTab === "listings"
+    ? listingFilterOptions
+    : primaryTab === "events"
+      ? eventFilterOptions
+      : specialFilterOptions;
+
+  const activeFilter = primaryTab === "listings"
+    ? listingFilter
+    : primaryTab === "events"
+      ? eventFilter
+      : specialFilter;
+
+  const setActiveFilter = (filter: string) => {
+    if (primaryTab === "listings") setListingFilter(filter);
+    else if (primaryTab === "events") setEventFilter(filter);
+    else setSpecialFilter(filter);
+  };
 
   return (
     <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
@@ -235,7 +327,7 @@ const SavedListings = () => {
           <Search style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
           <input
             type="text"
-            placeholder={primaryTab === "listings" ? "Search saved places..." : "Search saved events..."}
+            placeholder={searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-transparent outline-none"
@@ -247,8 +339,9 @@ const SavedListings = () => {
       {/* Primary toggle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 20, marginBottom: 16 }}>
         <div className="flex" style={{ gap: 10 }}>
-          {(["listings", "events"] as const).map((tab) => {
+          {(["listings", "events", "specials"] as const).map((tab) => {
             const active = primaryTab === tab;
+            const label = tab === "listings" ? "Listings" : tab === "events" ? "Events" : "Specials";
             return (
               <button
                 key={tab}
@@ -265,7 +358,7 @@ const SavedListings = () => {
                   textAlign: "center",
                 }}
               >
-                {tab === "listings" ? "Listings" : "Events"}
+                {label}
               </button>
             );
           })}
@@ -273,23 +366,22 @@ const SavedListings = () => {
       </div>
 
       {/* Secondary filters */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
-        <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
-          {(primaryTab === "listings" ? listingFilterOptions : eventFilterOptions).map((filter) => {
-            const activeFilter = primaryTab === "listings" ? listingFilter : eventFilter;
-            return (
+      {currentFilterOptions.length > 1 && (
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
+          <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
+            {currentFilterOptions.map((filter) => (
               <button
                 key={filter}
-                onClick={() => primaryTab === "listings" ? setListingFilter(filter) : setEventFilter(filter)}
+                onClick={() => setActiveFilter(filter)}
                 className="whitespace-nowrap"
                 style={pillStyle(activeFilter === filter)}
               >
                 {filter}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <div style={{ paddingLeft: 24, paddingRight: 24 }}>
         {/* Listings view */}
@@ -400,6 +492,67 @@ const SavedListings = () => {
                           {evt.title}
                         </p>
                         {evt.location && <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{evt.location}</p>}
+                      </div>
+                      <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Specials view */}
+        {primaryTab === "specials" && (
+          <>
+            {filteredSpecials.length === 0 && (
+              <div className="text-center" style={{ paddingTop: 60 }}>
+                <Tag style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>No specials saved yet</h3>
+                <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>Save specials from the specials page to keep track of them here</p>
+              </div>
+            )}
+            {filteredSpecials.length > 0 && (
+              <div className="flex flex-col">
+                {filteredSpecials.map((fav: any, idx: number) => {
+                  const sp = fav.details;
+                  if (!sp) return null;
+                  let validLabel = "Ongoing";
+                  if (sp.valid_until) {
+                    try {
+                      validLabel = `Valid until ${format(new Date(sp.valid_until), "d MMM yyyy")}`;
+                    } catch { validLabel = "Ongoing"; }
+                  }
+
+                  return (
+                    <Link
+                      key={fav.id}
+                      to={`/specials/${fav.item_id}`}
+                      className="flex items-center"
+                      style={{
+                        gap: 14,
+                        paddingTop: 14,
+                        paddingBottom: 14,
+                        borderBottom: idx < filteredSpecials.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                      }}
+                    >
+                      <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, position: "relative" }}>
+                        {sp.image_url ? (
+                          <img src={sp.image_url} alt={sp.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          <div className="flex items-center justify-center w-full h-full">
+                            <Tag style={{ width: 22, height: 22, color: "rgba(18,18,20,0.2)" }} />
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                          {sp.deal_label} · {sp.business_name}
+                        </p>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {sp.title}
+                        </p>
+                        <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{validLabel}</p>
                       </div>
                       <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
                     </Link>
