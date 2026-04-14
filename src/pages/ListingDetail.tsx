@@ -241,19 +241,21 @@ const ListingDetail = () => {
       }
     }
 
-    // Service Options: show as booleans for dine-in/takeaway/delivery, always show all
+    // Service Options: show as booleans for dine-in/takeaway/delivery
     const serviceArr = serviceType || [];
     const svcFields: BoolField[] = [
       { label: "Dine-in", value: serviceArr.some(s => /sit\s*down|dine/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
       { label: "Takeaway", value: serviceArr.some(s => /take\s*away|takeaway/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
       { label: "Delivery", value: serviceArr.some(s => /deliver/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
-    ];
-    // Also add meals as a text field if available
-    const mealTextField: TextField[] = [];
-    if (meal && meal.length > 0) mealTextField.push({ label: "Meals served", value: meal.join(", ") });
-    const allSvcFields = [...svcFields.filter(f => f.value !== null), ...mealTextField];
-    if (allSvcFields.length > 0) {
-      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Service Options", fields: allSvcFields });
+    ].filter(f => f.value !== null) as BoolField[];
+    if (svcFields.length > 0) {
+      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Service Options", fields: svcFields });
+    }
+
+    // Meals Served: each meal as a boolean check item
+    if (meal && meal.length > 0) {
+      const mealFields: BoolField[] = meal.map(m => ({ label: m, value: true }));
+      accordionSections.push({ key: "meals", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Meals Served", fields: mealFields });
     }
   }
 
