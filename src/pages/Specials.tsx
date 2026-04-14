@@ -20,7 +20,7 @@ const Specials = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
       {/* Header */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 20 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
         <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#2b2420", textDecoration: "none", fontSize: 15, fontWeight: 500, marginBottom: 16 }}>
           <ArrowLeft size={20} />
           Back
@@ -34,7 +34,7 @@ const Specials = () => {
       </div>
 
       {/* Grid */}
-      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 16 }}>
         {isLoading && (
           <div style={{ textAlign: "center", padding: 40, color: "rgba(18,18,20,0.4)" }}>Loading...</div>
         )}
