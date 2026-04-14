@@ -151,7 +151,7 @@ const ArticleDetail = () => {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>{r.category}</div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden" }}>{r.title}</div>
+                    <div style={{ fontSize: 15, fontFamily: "var(--font-heading)", fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden" }}>{r.title}</div>
                     <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)" }}>{formatDate(r.published_at)} · {r.read_time || 3} min read</div>
                   </div>
                 </div>

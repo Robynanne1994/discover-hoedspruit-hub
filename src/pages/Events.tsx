@@ -469,7 +469,7 @@ const Events = () => {
                       <h4
                         style={{
                           fontSize: 15,
-                          fontWeight: 700,
+                          fontFamily: "var(--font-heading)", fontWeight: 700,
                           color: "#2b2420",
                           lineHeight: 1.2,
                           marginBottom: 3,

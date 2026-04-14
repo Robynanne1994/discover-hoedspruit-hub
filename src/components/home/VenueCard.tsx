@@ -27,8 +27,7 @@ const VenueCard = ({ image, name, rating, href }: VenueCardProps) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-3.5">
           <h4
-            className="font-medium text-[13px] text-white leading-snug line-clamp-2 drop-shadow-sm"
-            style={{ fontFamily: "var(--font-body)" }}
+            className="font-medium text-[13px] text-white leading-snug line-clamp-2 drop-shadow-sm font-heading"
           >
             {name}
           </h4>
