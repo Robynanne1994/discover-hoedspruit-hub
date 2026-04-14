@@ -6,7 +6,7 @@ import { toast } from "sonner";
 
 interface FavouriteButtonProps {
   itemId: string;
-  itemType: "listing" | "event";
+  itemType: "listing" | "event" | "special";
 }
 
 const FavouriteButton = ({ itemId, itemType }: FavouriteButtonProps) => {
