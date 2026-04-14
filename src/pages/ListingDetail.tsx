@@ -437,7 +437,7 @@ const ListingDetail = () => {
                 className="flex items-center justify-center"
                 style={{
                   flex: 1, gap: 8, height: 44, borderRadius: 12,
-                  background: "#B8916A", color: "#FFFFFF",
+                  background: "#715a3d", color: "#FFFFFF",
                   fontSize: 13, fontWeight: 600, textDecoration: "none",
                   cursor: "pointer",
                 }}
