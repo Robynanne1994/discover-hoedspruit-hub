@@ -6,19 +6,19 @@
 
 @layer base {
   :root {
-    --background: 38 30% 96%;
+    --background: 0 0% 100%;
     --foreground: 25 20% 14%;
 
-    --card: 40 25% 98%;
+    --card: 37 39% 94%;
     --card-foreground: 25 20% 14%;
 
-    --popover: 40 25% 98%;
+    --popover: 0 0% 100%;
     --popover-foreground: 25 20% 14%;
 
     --primary: 27 30% 34%;
     --primary-foreground: 40 25% 98%;
     --primary-hover: 27 30% 26%;
-    --primary-tint: 38 30% 94%;
+    --primary-tint: 37 39% 94%;
 
     --secondary: 90 8% 52%;
     --secondary-foreground: 40 25% 98%;
@@ -41,7 +41,7 @@
     --info: 203 30% 44%;
 
     --border: 35 15% 88%;
-    --input: 40 25% 98%;
+    --input: 0 0% 100%;
     --ring: 27 30% 34%;
 
     --radius: 0.625rem;
@@ -53,7 +53,7 @@
     --warm-glow: 0 4px 20px -6px hsla(27, 30%, 34%, 0.1);
     --card-shadow: 0 1px 4px -1px hsla(0, 0%, 0%, 0.04);
 
-    --sidebar-background: 38 22% 93%;
+    --sidebar-background: 37 39% 94%;
     --sidebar-foreground: 25 20% 14%;
     --sidebar-primary: 27 30% 34%;
     --sidebar-primary-foreground: 40 25% 98%;
