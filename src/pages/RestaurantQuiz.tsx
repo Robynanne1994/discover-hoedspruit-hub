@@ -55,7 +55,7 @@ const RestaurantQuiz = () => {
                   className={`relative overflow-hidden border-2 transition-all duration-200 ${
                     quiz.comingSoon
                       ? "opacity-60 cursor-default border-border"
-                      : "cursor-pointer border-border hover:border-primary hover:shadow-xl hover:-translate-y-1"
+                      : "cursor-pointer border-border hover:border-primary hover:shadow-warm hover:-translate-y-1"
                   }`}
                   onClick={() => !quiz.comingSoon && setActiveQuiz(quiz.id as QuizType)}
                 >

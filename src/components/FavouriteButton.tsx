@@ -61,7 +61,7 @@ const FavouriteButton = ({ itemId, itemType }: FavouriteButtonProps) => {
         e.preventDefault();
         toggle.mutate();
       }}
-      className="absolute top-2 right-2 z-10 bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm hover:bg-white transition-colors"
+      className="absolute top-2 right-2 z-10 bg-white/80 backdrop-blur-sm rounded-full p-1.5 hover:bg-white transition-colors"
       aria-label={isFavourited ? "Remove from favourites" : "Add to favourites"}
     >
       <Heart

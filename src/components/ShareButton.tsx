@@ -40,7 +40,7 @@ const ShareButton = ({ title, text, url }: ShareButtonProps) => {
   return (
     <button
       onClick={handleShare}
-      className="absolute top-2 right-10 z-10 bg-white/80 backdrop-blur-sm rounded-full p-1.5 shadow-sm hover:bg-white transition-colors"
+      className="absolute top-2 right-10 z-10 bg-white/80 backdrop-blur-sm rounded-full p-1.5 hover:bg-white transition-colors"
       aria-label="Share"
     >
       <Share2 className="h-4 w-4 text-muted-foreground" />

@@ -157,7 +157,7 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
       <Progress value={progress} className="mb-8 h-2" />
 
       {!showResults ? (
-        <Card className="border-2 border-border shadow-lg">
+        <Card className="border-2 border-border shadow-card">
           <CardContent className="p-8 text-center">
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
               <currentQuestion.icon className="w-8 h-8 text-primary" />
@@ -224,7 +224,7 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
           <div className="space-y-4">
             {filteredListings.map((listing) => (
               <Link key={listing.id} to={`/listing/${listing.id}`}>
-                <Card className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer border border-border">
+                <Card className="overflow-hidden hover:shadow-card transition-shadow cursor-pointer border border-border">
                   <div className="flex">
                     {listing.image_url && (
                       <div className="w-28 h-28 flex-shrink-0">
