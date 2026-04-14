@@ -94,7 +94,7 @@ const People = () => {
           style={{
             background: "rgba(18,18,20,0.04)",
             border: "1px solid rgba(18,18,20,0.08)",
-            borderRadius: 14,
+            borderRadius: 9999,
             padding: "14px 16px",
             gap: 10,
           }}

@@ -88,7 +88,7 @@ const FAQs = () => {
 
       {/* Search */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <div className="flex items-center" style={{ background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)", borderRadius: 14, padding: "14px 16px", gap: 10 }}>
+        <div className="flex items-center" style={{ background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "14px 16px", gap: 10 }}>
           <Search style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
           <input
             type="text"
@@ -164,7 +164,7 @@ const FAQs = () => {
       {/* CTA card */}
       {!isLoading && (
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
-          <div style={{ background: "#121214", borderRadius: 20, padding: "32px 24px", position: "relative", overflow: "hidden" }}>
+          <div style={{ background: "#121214", borderRadius: 16, padding: "32px 24px", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
             <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
             <div style={{ position: "relative", zIndex: 1 }}>
@@ -177,7 +177,7 @@ const FAQs = () => {
               <Link
                 to="/contact"
                 className="inline-flex items-center"
-                style={{ background: "#ffffff", borderRadius: 10, padding: "12px 22px", gap: 8 }}
+                style={{ background: "#ffffff", borderRadius: 9999, padding: "12px 22px", gap: 8 }}
               >
                 <span style={{ fontSize: 14, fontWeight: 700, color: "#2b2420", letterSpacing: "0.3px" }}>Contact Us</span>
                 <ArrowUpRight style={{ width: 14, height: 14, color: "#2b2420", strokeWidth: 2.5 }} />

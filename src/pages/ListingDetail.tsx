@@ -364,7 +364,7 @@ const ListingDetail = () => {
             onClick={handleShare}
             className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 6, height: 40, borderRadius: 10,
+              flex: 1, gap: 6, height: 40, borderRadius: 9999,
               background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
               color: "#2b2420", fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
               cursor: "pointer",
@@ -377,7 +377,7 @@ const ListingDetail = () => {
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
             className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 6, height: 40, borderRadius: 10,
+              flex: 1, gap: 6, height: 40, borderRadius: 9999,
               background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
               border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
               color: isFavourited ? "#FFFFFF" : "#121214",
@@ -395,7 +395,7 @@ const ListingDetail = () => {
             onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
             className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 6, height: 40, borderRadius: 10,
+              flex: 1, gap: 6, height: 40, borderRadius: 9999,
               background: isVisited ? "#121214" : "rgba(18,18,20,0.04)",
               border: isVisited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
               color: isVisited ? "#FFFFFF" : "#121214",
@@ -419,7 +419,7 @@ const ListingDetail = () => {
                 href={`tel:${listing.phone}`}
                 className="flex items-center justify-center"
                 style={{
-                  flex: 1, gap: 8, height: 44, borderRadius: 12,
+                  flex: 1, gap: 8, height: 44, borderRadius: 9999,
                   background: "#7B8B6F", color: "#FFFFFF",
                   fontSize: 13, fontWeight: 600, textDecoration: "none",
                   cursor: "pointer",
@@ -436,7 +436,7 @@ const ListingDetail = () => {
                 rel="noopener noreferrer"
                 className="flex items-center justify-center"
                 style={{
-                  flex: 1, gap: 8, height: 44, borderRadius: 12,
+                  flex: 1, gap: 8, height: 44, borderRadius: 9999,
                   background: "#715a3d", color: "#FFFFFF",
                   fontSize: 13, fontWeight: 600, textDecoration: "none",
                   cursor: "pointer",
@@ -453,7 +453,7 @@ const ListingDetail = () => {
         {showQuickPills && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
             {quickPills.slice(0, 4).map((pill, i) => (
-              <span key={i} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
+              <span key={i} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 9999, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
                 {pill.label}
               </span>
             ))}
@@ -718,7 +718,7 @@ const ListingDetail = () => {
               {infoItems.length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
                   {infoItems.map((item) => (
-                    <span key={item} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
+                    <span key={item} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 9999, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
                       {item}
                     </span>
                   ))}
@@ -821,7 +821,7 @@ const ListingDetail = () => {
             href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
             style={{
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              width: "100%", padding: "14px 0", borderRadius: 12,
+              width: "100%", padding: "14px 0", borderRadius: 9999,
               background: "rgba(18,18,20,0.05)", border: "1px solid rgba(18,18,20,0.08)",
               fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: "0.2px",
               textDecoration: "none", cursor: "pointer",

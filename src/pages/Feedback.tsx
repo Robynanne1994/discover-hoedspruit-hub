@@ -46,7 +46,7 @@ const Feedback = () => {
     width: "100%",
     background: "rgba(18,18,20,0.03)",
     border: "1px solid rgba(18,18,20,0.08)",
-    borderRadius: 12,
+    borderRadius: 16,
     padding: "14px 16px",
     fontSize: 15,
     fontWeight: 500,
@@ -88,7 +88,7 @@ const Feedback = () => {
               style={{
                 background: type === t ? "#121214" : "rgba(18,18,20,0.04)",
                 border: type === t ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-                borderRadius: 10,
+                borderRadius: 9999,
                 padding: "9px 18px",
                 fontSize: 13,
                 fontWeight: type === t ? 600 : 500,
@@ -133,7 +133,7 @@ const Feedback = () => {
           style={{
             width: "100%",
             background: "#121214",
-            borderRadius: 12,
+            borderRadius: 16,
             padding: 16,
             fontSize: 15,
             fontWeight: 700,

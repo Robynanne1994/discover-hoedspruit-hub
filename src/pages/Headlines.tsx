@@ -72,7 +72,7 @@ const Headlines = () => {
 
       {/* Search */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
-        <div className="flex items-center" style={{ background: "#ffffff", border: "2px solid #121214", borderRadius: 14, padding: "11px 14px", gap: 8 }}>
+        <div className="flex items-center" style={{ background: "#ffffff", border: "2px solid #121214", borderRadius: 9999, padding: "11px 14px", gap: 8 }}>
           <Search style={{ width: 16, height: 16, strokeWidth: 2, color: "#2b2420", flexShrink: 0 }} />
           <input
             value={search}
@@ -91,7 +91,7 @@ const Headlines = () => {
             onClick={() => setActiveCategory(cat)}
             style={{
               background: activeCategory === cat ? "#121214" : "rgba(18,18,20,0.05)",
-              borderRadius: 20,
+              borderRadius: 9999,
               padding: "7px 16px",
               fontSize: 12,
               fontWeight: 600,
@@ -148,7 +148,7 @@ const Headlines = () => {
         {filtered.map((article: any, i: number) => (
           <Link key={article.id} to={`/headlines/${article.slug}`}>
             <div className="flex" style={{ gap: 14, paddingTop: 16, paddingBottom: 16, borderBottom: i < filtered.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none" }}>
-              <div style={{ width: 90, height: 90, borderRadius: 12, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ width: 90, height: 90, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                 {article.image_url ? (
                   <img src={article.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (

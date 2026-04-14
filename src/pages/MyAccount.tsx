@@ -597,7 +597,7 @@ const MyAccount = () => {
         <button
           onClick={() => { signOut(); navigate("/"); }}
           className="flex items-center"
-          style={{ gap: 8, background: "transparent", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 12, padding: "14px 32px" }}
+          style={{ gap: 8, background: "transparent", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 9999, padding: "14px 32px" }}
         >
           <LogOut style={{ width: 16, height: 16, strokeWidth: 1.5, color: "rgba(18,18,20,0.4)" }} />
           <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(18,18,20,0.4)" }}>Log out</span>
