@@ -2,6 +2,7 @@ import { useParams, Link } from "react-router-dom";
 import { useFollowersList, useFollowingList } from "@/hooks/useFollows";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Users, UserPlus } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import UserCard from "@/components/social/UserCard";
 import BackButton from "@/components/BackButton";
 
@@ -16,144 +17,58 @@ const FollowList = () => {
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
 
   return (
-    <div className="min-h-screen bg-background" style={{ paddingBottom: 100 }}>
-      {/* Header */}
+    <div className="min-h-screen pb-20 bg-background">
       <div className="sticky top-0 z-30 bg-background/95 backdrop-blur-md border-b border-border">
-        <div style={{ padding: "12px 24px 0" }}>
+        <div className="px-4 pt-3">
           <BackButton className="mb-0" />
         </div>
-        <div style={{ padding: "8px 24px 14px" }}>
-          <h1
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontSize: 28,
-              fontWeight: 800,
-              color: "#2b2420",
-              letterSpacing: "-0.5px",
-              lineHeight: 1.1,
-              margin: 0,
-              textTransform: "uppercase",
-            }}
-          >
+        <div className="px-4 pt-2 pb-3">
+          <h1 className="text-xl font-bold text-foreground" style={{ fontFamily: "var(--font-heading)" }}>
             {isFollowers ? "Followers" : "Following"}
           </h1>
         </div>
       </div>
 
-      {/* Content */}
-      <div style={{ padding: "20px 24px 0" }}>
+      <div className="px-4 pt-4 space-y-2">
         {isLoading ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
-                  padding: 16,
-                  borderRadius: 16,
-                  background: "#f5f0e8",
-                }}
-              >
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="flex-1">
-                  <Skeleton className="h-4 w-28 mb-1.5" />
-                  <Skeleton className="h-3 w-20" />
-                </div>
-                <Skeleton className="h-8 w-20 rounded-full" />
+          Array.from({ length: 5 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3 bg-card border border-border rounded-xl p-3">
+              <Skeleton className="h-12 w-12 rounded-full" />
+              <div className="flex-1">
+                <Skeleton className="h-4 w-28 mb-1" />
+                <Skeleton className="h-3 w-20" />
               </div>
-            ))}
-          </div>
-        ) : !users?.length ? (
-          <div style={{ textAlign: "center", paddingTop: 64, paddingBottom: 32 }}>
-            <div
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: 999,
-                background: "#f5f0e8",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "0 auto 16px",
-              }}
-            >
-              <Users style={{ width: 32, height: 32, color: "#B8916A" }} />
+              <Skeleton className="h-7 w-20 rounded-full" />
             </div>
-            <p
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#2b2420",
-                margin: "0 0 6px",
-              }}
-            >
+          ))
+        ) : !users?.length ? (
+          <div className="text-center py-16">
+            <Users className="h-12 w-12 mx-auto text-muted-foreground/30 mb-3" />
+            <p className="text-muted-foreground text-sm font-medium mb-1">
               {isFollowers ? "No followers yet" : "Not following anyone yet"}
             </p>
-            <p
-              style={{
-                fontFamily: "var(--font-body)",
-                fontSize: 13,
-                color: "#827b75",
-                margin: "0 0 24px",
-                lineHeight: 1.5,
-              }}
-            >
+            <p className="text-muted-foreground/60 text-xs mb-5">
               {isFollowers ? "Share your profile to get followers" : "Discover people in the community"}
             </p>
             <Link to="/people">
-              <button
-                style={{
-                  fontFamily: "var(--font-body)",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  color: "#fff",
-                  background: "#715a3d",
-                  border: "none",
-                  borderRadius: 9999,
-                  padding: "10px 24px",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8,
-                  cursor: "pointer",
-                }}
-              >
-                <UserPlus style={{ width: 16, height: 16 }} />
+              <Button className="rounded-full gap-2">
+                <UserPlus className="h-4 w-4" />
                 Find Friends
-              </button>
+              </Button>
             </Link>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {users.map((u) => (
-              <UserCard key={u.id} user={u} />
-            ))}
-            <div style={{ textAlign: "center", paddingTop: 24, paddingBottom: 16 }}>
+          <>
+            {users.map((u) => <UserCard key={u.id} user={u} />)}
+            <div className="text-center pt-6 pb-4">
               <Link to="/people">
-                <button
-                  style={{
-                    fontFamily: "var(--font-body)",
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#715a3d",
-                    background: "transparent",
-                    border: "1.5px solid #715a3d",
-                    borderRadius: 9999,
-                    padding: "10px 24px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 8,
-                    cursor: "pointer",
-                  }}
-                >
-                  <UserPlus style={{ width: 16, height: 16 }} />
+                <Button className="rounded-full gap-2" variant="outline">
+                  <UserPlus className="h-4 w-4" />
                   Find Friends
-                </button>
+                </Button>
               </Link>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
