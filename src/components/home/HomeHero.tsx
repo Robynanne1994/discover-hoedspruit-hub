@@ -97,7 +97,7 @@ const HomeHero = () => {
   return (
     <>
       {/* Hero area */}
-      <div style={{ background: "#f5f3ef", padding: "48px 24px 28px" }}>
+      <div style={{ background: "#f5f0e8", padding: "48px 24px 28px" }}>
         <h1 style={{ fontWeight: 900, fontSize: 44, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", marginBottom: 12 }}>
           HELLO<br />HOEDSPRUIT
         </h1>
