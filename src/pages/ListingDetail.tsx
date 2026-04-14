@@ -835,19 +835,19 @@ const ListingDetail = () => {
         })()}
 
         {/* Suggest an Edit */}
-        <div style={{ marginTop: 8, marginBottom: 48 }}>
+        <div style={{ marginTop: 8, marginBottom: 48, display: "flex", justifyContent: "center" }}>
           <a
             href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              width: "100%", padding: "14px 0", borderRadius: 9999,
-              background: "rgba(18,18,20,0.05)", border: "1px solid rgba(18,18,20,0.08)",
-              fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: "0.2px",
+              display: "inline-flex", alignItems: "center", gap: 6,
+              padding: "6px 16px", borderRadius: 9999,
+              fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.45)",
               textDecoration: "none", cursor: "pointer",
+              letterSpacing: "0.1px",
             }}
           >
-            <Pencil size={15} strokeWidth={2} color="#121214" />
-            Suggest an Edit
+            <Pencil size={12} strokeWidth={1.5} color="rgba(18,18,20,0.35)" />
+            Suggest an edit
           </a>
         </div>
       </div>
