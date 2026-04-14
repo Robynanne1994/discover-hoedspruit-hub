@@ -432,7 +432,7 @@ const MyAccount = () => {
     { icon: Heart, label: "Saved Listings", desc: "Listings you've bookmarked", href: "/saved" },
     { icon: MapPin, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
     { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", href: "/saved?tab=events" },
-    { icon: Tag, label: "Specials", desc: "The hottest deals in Hoedspruit", href: "/specials" },
+    { icon: Tag, label: "Specials", desc: "Your saved specials and deals", href: "/saved?tab=specials" },
   ];
 
   const socialItems = [
