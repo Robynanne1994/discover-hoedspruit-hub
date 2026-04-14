@@ -80,7 +80,7 @@ const About = () => {
       {/* Value cards grid */}
       <div style={{ padding: "0 24px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {values.map((item) => (
-          <div key={item.title} style={{ ...cardStyle, padding: "20px 12px 18px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+          <div key={item.title} style={{ ...cardStyle, padding: "16px 16px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
             <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
               <item.icon size={22} strokeWidth={1.5} color="#121214" />
             </div>
@@ -90,7 +90,7 @@ const About = () => {
       </div>
 
       {/* CTA card */}
-      <div style={{ padding: "0 16px", marginBottom: 100 }}>
+      <div style={{ padding: "0 24px", marginBottom: 100 }}>
         <div style={{ background: "#121214", borderRadius: 20, padding: "32px 24px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
           <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />

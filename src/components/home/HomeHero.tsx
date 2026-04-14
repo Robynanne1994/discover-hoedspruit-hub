@@ -195,7 +195,7 @@ const HomeHero = () => {
       {showDropdown && (
         <div
           ref={dropdownRef}
-          className="fixed left-0 right-0 z-[100] px-5"
+          className="fixed left-0 right-0 z-[100] px-6"
           style={{ top: containerRef.current ? containerRef.current.getBoundingClientRect().bottom + 8 : 200 }}
         >
           <div style={{ background: "#ffffff", borderRadius: 12, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto", boxShadow: "0 8px 30px rgba(0,0,0,0.12)" }}>

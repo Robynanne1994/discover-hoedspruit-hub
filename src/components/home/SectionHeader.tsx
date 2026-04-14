@@ -9,7 +9,7 @@ interface SectionHeaderProps {
 
 const SectionHeader = ({ title, actionLabel, actionHref }: SectionHeaderProps) => {
   return (
-    <div className="flex items-baseline justify-between px-5 mb-5">
+    <div className="flex items-baseline justify-between px-6 mb-5">
       <h2
         className="tracking-tight font-sans font-extrabold text-3xl text-[#2b2420]"
       >

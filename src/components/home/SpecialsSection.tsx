@@ -42,7 +42,7 @@ const SpecialsSection = () => {
   return (
     <div style={{ background: "#121214", width: "100%", paddingTop: 28, paddingBottom: 28 }}>
       {/* Header */}
-      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 18 }}>
+      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
           <h2 style={{ fontWeight: 900, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
             Specials

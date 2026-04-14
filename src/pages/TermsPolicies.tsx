@@ -46,7 +46,7 @@ const TermsPolicies = () => {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    padding: "16px 20px",
+                    padding: "16px 16px",
                     borderBottom: i < policyRows.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                     cursor: "pointer",
                   }}

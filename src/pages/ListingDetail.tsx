@@ -298,7 +298,7 @@ const ListingDetail = () => {
           </div>
         </div>
       ) : (
-        <div style={{ padding: "48px 20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button onClick={() => navigate(-1)} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }}>
             <ArrowLeft size={18} strokeWidth={2} color="#121214" />
           </button>

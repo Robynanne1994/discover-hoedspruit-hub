@@ -83,7 +83,7 @@ const ToggleRow = ({ title, description, checked, onChange, disabled, isLast }: 
   <div
     onClick={disabled ? undefined : onChange}
     style={{
-      padding: "16px 20px",
+      padding: "16px 16px",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
@@ -223,7 +223,7 @@ const Notifications = () => {
             background: "rgba(18,18,20,0.03)",
             border: "1px solid rgba(18,18,20,0.06)",
             borderRadius: 16,
-            padding: "18px 20px",
+            padding: "16px 16px",
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
@@ -263,7 +263,7 @@ const Notifications = () => {
 
       {/* Note */}
       <div style={{ padding: "0 24px", marginBottom: 100 }}>
-        <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, textAlign: "center" }}>
+        <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, textAlign: "center" }}>
           <span style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", lineHeight: 1.5 }}>
             Changes are saved automatically. You can update these at any time.
           </span>

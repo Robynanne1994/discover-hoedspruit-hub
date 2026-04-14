@@ -239,7 +239,7 @@ const CategoryPage = () => {
         </button>
 
         {showFilters && (
-          <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 16 }}>
             {activeFilterCount > 0 && (
               <button onClick={clearAllFilters} style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.5)", textDecoration: "underline", alignSelf: "flex-start" }}>
                 Clear all filters

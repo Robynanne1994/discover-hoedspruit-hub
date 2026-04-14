@@ -155,7 +155,7 @@ const Feedback = () => {
           background: "rgba(18,18,20,0.03)",
           border: "1px solid rgba(18,18,20,0.06)",
           borderRadius: 16,
-          padding: 20,
+          padding: 16,
           textAlign: "center" as const,
         }}>
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.6 }}>

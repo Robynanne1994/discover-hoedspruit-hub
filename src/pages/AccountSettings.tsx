@@ -117,7 +117,7 @@ const AccountSettings = () => {
 
       {/* Profile card */}
       <div style={{ padding: "0 24px", marginTop: 28 }}>
-        <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, display: "flex", alignItems: "center", gap: 14 }}>
+        <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "rgba(18,18,20,0.06)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             {profileLoading ? (
               <Skeleton className="h-full w-full rounded-full" />

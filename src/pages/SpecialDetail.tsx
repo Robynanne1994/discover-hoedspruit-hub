@@ -191,7 +191,7 @@ const SpecialDetail = () => {
       {special.description && (
         <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
           <SectionLabel eyebrow="Overview" title="About this deal" />
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
+          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
             <p style={{ margin: 0, fontSize: 15, color: "rgba(18,18,20,0.58)", lineHeight: 1.85, letterSpacing: "0.1px" }}>{special.description}</p>
           </div>
         </section>
@@ -226,7 +226,7 @@ const SpecialDetail = () => {
         <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
           <SectionLabel eyebrow="Redeem" title="Promo Code" />
           <div
-            style={{ background: "rgba(18,18,20,0.03)", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "18px 20px", textAlign: "center", cursor: "pointer" }}
+            style={{ background: "rgba(18,18,20,0.03)", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "16px 16px", textAlign: "center", cursor: "pointer" }}
             onClick={() => { navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }}
           >
             <p style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 22, letterSpacing: 3, color: "#2b2420", margin: 0 }}>{special.promo_code}</p>
@@ -239,7 +239,7 @@ const SpecialDetail = () => {
       {special.terms && (
         <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
           <SectionLabel eyebrow="Fine print" title="Terms & Conditions" />
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
+          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
             <p style={{ margin: 0, fontSize: 13, color: "rgba(18,18,20,0.5)", lineHeight: 1.7 }}>{special.terms}</p>
           </div>
         </section>

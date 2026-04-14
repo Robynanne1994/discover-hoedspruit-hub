@@ -89,7 +89,7 @@ const PrivacyPolicy = () => {
   return (
     <div className="min-h-screen pb-20 bg-background">
       {/* Top bar */}
-      <div className="pt-14 pb-1 px-5 relative">
+      <div className="pt-14 pb-1 px-6 relative">
         <div className="absolute left-5 top-14">
           <BackButton className="text-primary mb-0" />
         </div>
@@ -99,7 +99,7 @@ const PrivacyPolicy = () => {
       </div>
 
       {/* Intro */}
-      <div className="px-5 pt-6 pb-4">
+      <div className="px-6 pt-6 pb-4">
         <p className="text-[13px] text-muted-foreground leading-relaxed text-center">
           Last updated: 1 April 2026
         </p>
@@ -110,7 +110,7 @@ const PrivacyPolicy = () => {
       </div>
 
       {/* Sections */}
-      <div className="px-5 space-y-4 mt-2">
+      <div className="px-6 space-y-4 mt-2">
         {sections.map((section) => (
           <div
             key={section.title}
@@ -134,7 +134,7 @@ const PrivacyPolicy = () => {
         ))}
       </div>
 
-      <div className="px-5 mt-6 mb-4">
+      <div className="px-6 mt-6 mb-4">
         <p className="text-[11px] text-muted-foreground/60 text-center leading-relaxed">
           © {new Date().getFullYear()} Hello Hoedspruit. All rights reserved.
         </p>
