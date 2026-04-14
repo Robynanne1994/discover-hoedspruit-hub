@@ -225,17 +225,7 @@ const Specials = () => {
                     )}
 
                     {/* Heart */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 4,
-                        right: 4,
-                        zIndex: 2,
-                      }}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <FavouriteButton itemId={s.id} itemType="listing" />
-                    </div>
+                    <FavouriteButton itemId={s.id} itemType="listing" />
 
                     {/* Deal label pill */}
                     <div style={{ position: "absolute", left: 8, top: 8 }}>
