@@ -44,7 +44,7 @@ const BottomNav = () => {
                   strokeWidth={isActive ? 2 : 1.5}
                   fill={isActive && item.icon === Heart ? color : "none"}
                 />
-                <span style={{ fontSize: 10, fontWeight: 500, color }}>{item.label}</span>
+                <span style={{ fontFamily: "var(--font-heading)", fontSize: 10, fontWeight: 500, color }}>{item.label}</span>
               </div>
             </Link>
           );
