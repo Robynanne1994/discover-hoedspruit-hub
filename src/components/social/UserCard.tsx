@@ -20,18 +20,18 @@ const UserCard = ({ user }: UserCardProps) => {
         gap: 14,
         padding: 16,
         borderRadius: 16,
-        background: "rgba(18,18,20,0.03)",
-        border: "1px solid rgba(18,18,20,0.06)",
+        background: "#f5f0e8",
+        textDecoration: "none",
       }}
     >
       <div
         className="shrink-0 overflow-hidden flex items-center justify-center"
         style={{
-          width: 52,
-          height: 52,
+          width: 50,
+          height: 50,
           borderRadius: 999,
-          background: "rgba(18,18,20,0.04)",
-          border: "1px solid rgba(18,18,20,0.06)",
+          background: "rgba(255,255,255,0.6)",
+          border: "2px solid rgba(113,90,61,0.15)",
         }}
       >
         {user.avatar_url ? (
@@ -39,9 +39,9 @@ const UserCard = ({ user }: UserCardProps) => {
         ) : (
           <UserCircle
             style={{
-              width: 28,
-              height: 28,
-              color: "rgba(18,18,20,0.18)",
+              width: 26,
+              height: 26,
+              color: "#B8916A",
             }}
           />
         )}
@@ -49,15 +49,16 @@ const UserCard = ({ user }: UserCardProps) => {
 
       <div className="flex-1 min-w-0">
         <p
+          className="truncate"
           style={{
-            fontSize: 18,
+            fontFamily: "var(--font-heading)",
+            fontSize: 15,
             fontWeight: 700,
             color: "#2b2420",
-            lineHeight: 1.15,
+            lineHeight: 1.2,
             margin: 0,
             letterSpacing: "-0.2px",
           }}
-          className="truncate"
         >
           {user.display_name || "User"}
         </p>
@@ -67,14 +68,15 @@ const UserCard = ({ user }: UserCardProps) => {
             className="flex items-center truncate"
             style={{
               gap: 4,
+              fontFamily: "var(--font-body)",
               fontSize: 12,
-              color: "rgba(18,18,20,0.4)",
+              color: "#827b75",
               margin: 0,
-              marginTop: 6,
+              marginTop: 4,
               lineHeight: 1.3,
             }}
           >
-            <MapPin size={12} strokeWidth={2} />
+            <MapPin size={11} strokeWidth={2} />
             <span className="truncate">{user.location}</span>
           </p>
         )}
