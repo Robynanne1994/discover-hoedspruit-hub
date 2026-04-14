@@ -207,7 +207,7 @@ const SavedListings = () => {
   const pillStyle = (active: boolean) => ({
     background: active ? "#121214" : "rgba(18,18,20,0.04)",
     border: active ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-    borderRadius: 10,
+    borderRadius: 9999,
     padding: "9px 18px",
     fontSize: 13,
     fontWeight: active ? 600 : 500,
@@ -231,7 +231,7 @@ const SavedListings = () => {
 
       {/* Search */}
       <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-        <div className="flex items-center" style={{ background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)", borderRadius: 14, padding: "14px 16px", gap: 10 }}>
+        <div className="flex items-center" style={{ background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "14px 16px", gap: 10 }}>
           <Search style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
           <input
             type="text"
@@ -257,7 +257,7 @@ const SavedListings = () => {
                   flex: 1,
                   background: active ? "#121214" : "rgba(18,18,20,0.04)",
                   border: active ? "none" : "1px solid rgba(18,18,20,0.08)",
-                  borderRadius: 10,
+                  borderRadius: 9999,
                   padding: 10,
                   fontSize: 14,
                   fontWeight: active ? 700 : 600,
@@ -383,7 +383,7 @@ const SavedListings = () => {
                         borderBottom: idx < filteredEvents.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                       }}
                     >
-                      <div style={{ width: 60, height: 60, borderRadius: 12, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
+                      <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
                         {evt.image_url ? (
                           <img src={evt.image_url} alt={evt.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         ) : (

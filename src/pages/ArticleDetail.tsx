@@ -119,7 +119,7 @@ const ArticleDetail = () => {
       <div style={{ padding: "0 24px" }}>
         {/* Category badge */}
         <div style={{ marginTop: 20, marginBottom: 14 }}>
-          <span style={{ display: "inline-block", background: "rgba(18,18,20,0.05)", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)", textTransform: "uppercase" }}>{article.category}</span>
+          <span style={{ display: "inline-block", background: "rgba(18,18,20,0.05)", borderRadius: 9999, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)", textTransform: "uppercase" }}>{article.category}</span>
         </div>
 
         {/* Title */}
@@ -146,7 +146,7 @@ const ArticleDetail = () => {
             {related.map((r: any, i: number) => (
               <Link key={r.id} to={`/headlines/${r.slug}`}>
                 <div className="flex" style={{ gap: 14, paddingTop: 16, paddingBottom: 16, borderBottom: i < related.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none" }}>
-                  <div style={{ width: 90, height: 90, borderRadius: 12, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div style={{ width: 90, height: 90, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     {r.image_url ? <img src={r.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <Newspaper style={{ width: 28, height: 28, color: "rgba(18,18,20,0.15)" }} />}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>

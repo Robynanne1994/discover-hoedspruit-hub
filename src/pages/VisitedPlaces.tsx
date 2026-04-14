@@ -70,7 +70,7 @@ const VisitedPlaces = () => {
           <h2 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Sign in to see your visited places</h2>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 24 }}>Mark places you've been to and keep track of your adventures.</p>
           <Link to="/auth" style={{ textDecoration: "none" }}>
-            <button style={{ background: "#121214", color: "#fff", border: "none", borderRadius: 12, padding: "14px 32px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
+            <button style={{ background: "#121214", color: "#fff", border: "none", borderRadius: 9999, padding: "14px 32px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
               Sign In / Create Account
             </button>
           </Link>
@@ -134,7 +134,7 @@ const VisitedPlaces = () => {
           alignItems: "center",
           background: "rgba(18,18,20,0.04)",
           border: "1px solid rgba(18,18,20,0.08)",
-          borderRadius: 14,
+          borderRadius: 16,
           padding: "14px 16px",
           gap: 10,
         }}>

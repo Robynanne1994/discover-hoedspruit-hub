@@ -179,7 +179,7 @@ const Events = () => {
           style={{
             background: "rgba(18,18,20,0.04)",
             border: "1px solid rgba(18,18,20,0.08)",
-            borderRadius: 14,
+            borderRadius: 9999,
             padding: "14px 16px",
             gap: 10,
           }}
@@ -211,7 +211,7 @@ const Events = () => {
               style={{
                 background: activeFilter === filter.value ? "#121214" : "rgba(18,18,20,0.05)",
                 border: "none",
-                borderRadius: 20,
+                borderRadius: 9999,
                 padding: "7px 16px",
                 fontSize: 12,
                 fontWeight: 600,
@@ -336,7 +336,7 @@ const Events = () => {
                           <span
                             style={{
                               background: "rgba(255,255,255,0.9)",
-                              borderRadius: 8,
+                              borderRadius: 16,
                               padding: "5px 12px",
                               fontSize: 11,
                               fontWeight: 700,
@@ -436,7 +436,7 @@ const Events = () => {
                   >
                     <div
                       className="flex-shrink-0 overflow-hidden"
-                      style={{ width: 60, height: 60, borderRadius: 12, background: "#f0f0f0" }}
+                      style={{ width: 60, height: 60, borderRadius: 16, background: "#f0f0f0" }}
                     >
                       {event.image_url ? (
                         <img

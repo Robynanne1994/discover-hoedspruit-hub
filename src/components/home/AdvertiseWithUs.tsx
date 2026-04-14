@@ -8,7 +8,7 @@ const AdvertiseWithUs = () => {
     <section style={{ padding: "36px 16px 40px" }}>
       <div style={{
         background: "#121214",
-        borderRadius: 20,
+        borderRadius: 16,
         padding: "32px 24px",
         position: "relative",
         overflow: "hidden",
@@ -54,7 +54,7 @@ const AdvertiseWithUs = () => {
             onClick={() => navigate("/contact")}
             style={{
               background: "#ffffff",
-              borderRadius: 10,
+              borderRadius: 9999,
               padding: "12px 22px",
               display: "inline-flex",
               alignItems: "center",

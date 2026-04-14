@@ -73,7 +73,7 @@ const WhatsOnToday = () => {
                 width: 50,
                 height: 50,
                 background: "rgba(18,18,20,0.04)",
-                borderRadius: 10,
+                borderRadius: 16,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",

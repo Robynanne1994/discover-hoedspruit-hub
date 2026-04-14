@@ -126,7 +126,7 @@ const SpecialDetail = () => {
         className={href ? "transition-colors hover:bg-[rgba(18,18,20,0.02)]" : ""}
         style={{ display: "flex", alignItems: "center", gap: 14, padding: "18px 18px", borderBottom: isLast ? "none" : "1px solid rgba(18,18,20,0.06)", textDecoration: "none" }}
       >
-        <div style={{ width: 34, height: 34, borderRadius: 10, background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <div style={{ width: 34, height: 34, borderRadius: 16, background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Icon style={{ width: 16, height: 16, color: "rgba(18,18,20,0.42)" }} strokeWidth={1.8} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -153,7 +153,7 @@ const SpecialDetail = () => {
       {/* Title */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: 1.5, background: "#121214", borderRadius: 6, padding: "3px 10px" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: 1.5, background: "#121214", borderRadius: 8, padding: "3px 10px" }}>
             {special.deal_label}
           </span>
         </div>
@@ -171,7 +171,7 @@ const SpecialDetail = () => {
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28, display: "flex", gap: 10 }}>
         <button
           onClick={handleShare}
-          style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, background: "transparent", cursor: "pointer" }}
+          style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 9999, background: "transparent", cursor: "pointer" }}
         >
           <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.8} />
           <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420" }}>Share</span>
@@ -179,7 +179,7 @@ const SpecialDetail = () => {
         {special.business_id && (
           <Link
             to={`/listing/${special.business_id}`}
-            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", background: "#121214", borderRadius: 14, textDecoration: "none" }}
+            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", background: "#121214", borderRadius: 9999, textDecoration: "none" }}
           >
             <Store style={{ width: 16, height: 16, color: "#FFFFFF" }} strokeWidth={1.8} />
             <span style={{ fontSize: 14, fontWeight: 600, color: "#FFFFFF" }}>View Business</span>
