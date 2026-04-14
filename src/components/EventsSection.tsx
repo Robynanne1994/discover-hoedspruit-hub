@@ -39,7 +39,7 @@ const EventsSection = () => {
                 {events.slice(0, 8).map((event) => (
                   <CarouselItem key={event.id} className="pl-2 basis-1/2">
                     <a href="/events" className="group block">
-                      <div className="relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
+                      <div className="relative rounded-2xl overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
                         {event.image_url ? (
                           <img src={event.image_url} alt={event.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         ) : (

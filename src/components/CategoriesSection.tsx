@@ -70,7 +70,7 @@ const CategoriesSection = () => {
                 return (
                   <CarouselItem key={cat.id} className="pl-2 basis-1/2">
                     <Link to={`/category/${cat.id}`} className="group block">
-                      <div className="relative rounded-sm overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
+                      <div className="relative rounded-2xl overflow-hidden aspect-square shadow-card hover:shadow-warm transition-all duration-300">
                         <img src={img} alt={cat.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       </div>
                       <div className="pt-1.5 px-0.5">

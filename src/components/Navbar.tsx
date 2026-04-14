@@ -104,7 +104,7 @@ const Navbar = () => {
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${exploreOpen ? "rotate-180" : ""}`} />
               </button>
               {exploreOpen &&
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-2xl shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                   {categories?.map((cat) =>
                 <Link
                   key={cat.id}
@@ -129,7 +129,7 @@ const Navbar = () => {
                 <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${eventsOpen ? "rotate-180" : ""}`} />
               </button>
               {eventsOpen &&
-              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-lg shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-56 bg-card border border-border rounded-2xl shadow-lg py-2 animate-in fade-in slide-in-from-top-2 duration-200">
                   <button
                   className="block w-full text-left px-4 py-2.5 text-sm font-medium text-primary-foreground hover:bg-accent/50 transition-colors"
                   onClick={() => {setEventsOpen(false);goToEvents();}}>

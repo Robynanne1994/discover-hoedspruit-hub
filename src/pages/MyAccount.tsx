@@ -274,7 +274,7 @@ const MyAccount = () => {
                   {favourites.filter((f: any) => f.item_type === "listing").map((fav: any) => (
                     <div key={fav.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
                       {fav.details?.image_url && (
-                        <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                        <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-2xl object-cover" />
                       )}
                       <div className="flex-1 min-w-0">
                         <Link to={`/listing/${fav.item_id}`} className="font-medium text-[14px] hover:text-primary truncate block">
@@ -304,7 +304,7 @@ const MyAccount = () => {
                   {savedEvents.map((fav: any) => (
                     <div key={fav.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
                       {fav.details?.image_url && (
-                        <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />
+                        <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-2xl object-cover" />
                       )}
                       <div className="flex-1 min-w-0">
                         <Link to="/events" className="font-medium text-[14px] hover:text-primary truncate block">
@@ -357,8 +357,8 @@ const MyAccount = () => {
                       ) : (
                         <div className="space-y-2">
                           {col.collection_items.map((item: any) => (
-                            <div key={item.id} className="flex items-center gap-3 bg-background rounded-lg p-2">
-                              {item.listings?.image_url && <img src={item.listings.image_url} alt="" className="w-10 h-10 rounded-lg object-cover" />}
+                            <div key={item.id} className="flex items-center gap-3 bg-background rounded-2xl p-2">
+                              {item.listings?.image_url && <img src={item.listings.image_url} alt="" className="w-10 h-10 rounded-2xl object-cover" />}
                               <Link to={`/listing/${item.listings?.id}`} className="text-[12px] font-medium hover:text-primary truncate flex-1">{item.listings?.title}</Link>
                               <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 text-muted-foreground" onClick={() => removeFromCollection.mutate(item.id)}>
                                 <Trash2 className="h-3 w-3" />
@@ -385,7 +385,7 @@ const MyAccount = () => {
                 <div className="space-y-2.5">
                   {beenHere.map((bh: any) => (
                     <div key={bh.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
-                      {bh.listings?.image_url && <img src={bh.listings.image_url} alt="" className="w-14 h-14 rounded-lg object-cover" />}
+                      {bh.listings?.image_url && <img src={bh.listings.image_url} alt="" className="w-14 h-14 rounded-2xl object-cover" />}
                       <Link to={`/listing/${bh.listings?.id}`} className="font-medium text-[14px] hover:text-primary truncate flex-1">{bh.listings?.title}</Link>
                       <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground" onClick={() => removeBeenHere.mutate(bh.id)}>
                         <Trash2 className="h-4 w-4" />
