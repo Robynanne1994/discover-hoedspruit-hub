@@ -801,35 +801,44 @@ const ListingDetail = () => {
 
         {/* Hours section */}
         <div ref={whatToKnowRef} />
-        {hasHours && (
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-              <Clock size={18} strokeWidth={1.5} color="#121214" />
-              <h2 style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
+        {hasHours && (() => {
+          const saToday = getSADate();
+          const holidayCheck = isSAPublicHoliday(saToday);
+          return (
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <Clock size={18} strokeWidth={1.5} color="#121214" />
+                <h2 style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
+              </div>
+              {holidayCheck.isHoliday && (
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "8px 12px", background: "#fef3c7", borderRadius: 10, border: "1px solid #fde68a" }}>
+                  <span style={{ fontSize: 13, color: "#92400e" }}>
+                    <strong>Public holiday</strong> — Hours might differ
+                  </span>
+                </div>
+              )}
+              <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+                {DAY_LABELS.map((day, i) => {
+                  const key = day.toLowerCase();
+                  const value = openingHours[key] || "";
+                  const isClosed = !value || value.toLowerCase() === "closed";
+                  return (
+                    <div
+                      key={day}
+                      style={{
+                        display: "flex", justifyContent: "space-between", padding: "9px 16px",
+                        borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                      }}
+                    >
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>{day}</span>
+                      <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
-              {DAY_LABELS.map((day, i) => {
-                const key = day === "Public Holidays" ? "public_holidays" : day.toLowerCase();
-                const rawValue = openingHours[key] || "";
-                const isPublicHoliday = day === "Public Holidays";
-                const value = isPublicHoliday && !rawValue ? "Hours might differ" : rawValue;
-                const isClosed = !value || value.toLowerCase() === "closed";
-                return (
-                  <div
-                    key={day}
-                    style={{
-                      display: "flex", justifyContent: "space-between", padding: "9px 16px",
-                      borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                    }}
-                  >
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>{day}</span>
-                    <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)", fontStyle: isPublicHoliday && !rawValue ? "italic" : "normal" }}>{value || "Closed"}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Suggest an Edit */}
         <div style={{ marginTop: 8, marginBottom: 48 }}>
