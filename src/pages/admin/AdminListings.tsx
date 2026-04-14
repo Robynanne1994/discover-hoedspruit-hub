@@ -19,7 +19,7 @@ import GalleryUpload from "@/components/admin/GalleryUpload";
 
 type Listing = Tables<"listings">;
 
-const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "public_holidays"];
+const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic"];
@@ -452,7 +452,7 @@ const AdminListings = () => {
                   <div className="space-y-2 mt-1">
                     {DAY_LABELS.map((day) => (
                       <div key={day} className="grid grid-cols-[100px_1fr] gap-2 items-center">
-                        <span className="text-sm text-muted-foreground capitalize">{day === "public_holidays" ? "Public Holidays" : day}</span>
+                        <span className="text-sm text-muted-foreground capitalize">{day}</span>
                         <Input
                           value={form.opening_hours[day] ?? ""}
                           onChange={(e) => setForm({ ...form, opening_hours: { ...form.opening_hours, [day]: e.target.value } })}
