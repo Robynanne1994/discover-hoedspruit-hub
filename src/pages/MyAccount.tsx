@@ -506,10 +506,9 @@ const MyAccount = () => {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="truncate" style={{ fontFamily: "var(--font-heading)", fontSize: 18, fontWeight: 800, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", lineHeight: 1.2 }}>
+              <h2 className="truncate" style={{ fontFamily: "var(--font-heading)", fontSize: 15, fontWeight: 700, color: "#2b2420", letterSpacing: "0.3px", lineHeight: 1.2 }}>
                 {profile?.display_name || user.email?.split("@")[0]}
               </h2>
-              <p className="truncate" style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", marginTop: 2 }}>{user.email}</p>
               {profile?.bio && (
                 <p style={{ fontSize: 13, color: "rgba(18,18,20,0.5)", marginTop: 8, lineHeight: 1.4, fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif" }}>
                   {profile.bio}
