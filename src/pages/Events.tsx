@@ -228,7 +228,7 @@ const Events = () => {
         <div className="px-6 space-y-4">
           <Skeleton className="h-3 w-12 rounded" />
           <Skeleton className="h-5 w-24 rounded" />
-          <div className="flex gap-4">
+          <div className="flex gap-3">
             <Skeleton className="w-[280px] h-[320px] rounded-2xl flex-shrink-0" />
             <Skeleton className="w-[280px] h-[320px] rounded-2xl flex-shrink-0" />
           </div>

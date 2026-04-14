@@ -213,7 +213,7 @@ const Categories = () => {
                 >
                   Listings
                 </p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   {listingResults.map((listing) => (
                     <Link
                       key={listing.id}
