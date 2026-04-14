@@ -5,9 +5,10 @@ import BottomNav from "@/components/BottomNav";
 import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AuthProvider } from "@/hooks/useAuth";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
+import Welcome from "./pages/Welcome.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
@@ -56,6 +57,19 @@ import Specials from "./pages/Specials.tsx";
 
 const queryClient = new QueryClient();
 
+const AuthGate = ({ children }: { children: React.ReactNode }) => {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "hsl(38, 30%, 96%)" }}>
+        <div className="animate-pulse text-primary font-heading font-bold text-xl">Hello Hoedspruit</div>
+      </div>
+    );
+  }
+  if (!user) return <Welcome />;
+  return <>{children}</>;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -63,58 +77,60 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/categories" element={<Categories />} />
-            <Route path="/quiz" element={<RestaurantQuiz />} />
-            <Route path="/category/:id" element={<CategoryPage />} />
-            <Route path="/listing/:id" element={<ListingDetail />} />
-            <Route path="/contact" element={<ContactUs />} />
-            <Route path="/events" element={<Events />} />
-            <Route path="/events/calendar" element={<EventsCalendar />} />
-            <Route path="/events/:id" element={<EventDetail />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/advertise" element={<Advertise />} />
-            <Route path="/headlines" element={<Headlines />} />
-            <Route path="/headlines/:slug" element={<ArticleDetail />} />
-            <Route path="/specials" element={<Specials />} />
-            <Route path="/directories" element={<Directories />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/my-account" element={<MyAccount />} />
-            <Route path="/saved" element={<SavedListings />} />
-            <Route path="/visited" element={<VisitedPlaces />} />
-            <Route path="/account-settings" element={<AccountSettings />} />
-            <Route path="/terms" element={<TermsPolicies />} />
-            <Route path="/terms/privacy" element={<PrivacyPolicy />} />
-            <Route path="/terms-of-use" element={<TermsOfUse />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-            <Route path="/cookie-policy" element={<CookiePolicy />} />
-            <Route path="/content-guidelines" element={<ContentGuidelines />} />
-            <Route path="/faqs" element={<FAQs />} />
-            <Route path="/privacy-security" element={<PrivacySecurity />} />
-            <Route path="/people" element={<People />} />
-            <Route path="/feedback" element={<Feedback />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/profile/:id" element={<UserProfile />} />
-            <Route path="/profile/:id/:type" element={<FollowList />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminDashboard />} />
-              <Route path="homepage" element={<AdminHomepage />} />
-              <Route path="categories" element={<AdminCategories />} />
-              <Route path="listings" element={<AdminListings />} />
-              <Route path="listings/bulk-edit" element={<AdminBulkEdit />} />
-              <Route path="events" element={<AdminEvents />} />
-              <Route path="events/import" element={<AdminEventsImport />} />
-              <Route path="specials" element={<AdminSpecials />} />
-              <Route path="specials/import" element={<AdminSpecialsImport />} />
-              <Route path="articles" element={<AdminArticles />} />
-              <Route path="content" element={<AdminContent />} />
-              <Route path="import" element={<AdminImport />} />
-            </Route>
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ScrollToTop />
-          <BottomNav />
+          <AuthGate>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/categories" element={<Categories />} />
+              <Route path="/quiz" element={<RestaurantQuiz />} />
+              <Route path="/category/:id" element={<CategoryPage />} />
+              <Route path="/listing/:id" element={<ListingDetail />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/events" element={<Events />} />
+              <Route path="/events/calendar" element={<EventsCalendar />} />
+              <Route path="/events/:id" element={<EventDetail />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/advertise" element={<Advertise />} />
+              <Route path="/headlines" element={<Headlines />} />
+              <Route path="/headlines/:slug" element={<ArticleDetail />} />
+              <Route path="/specials" element={<Specials />} />
+              <Route path="/directories" element={<Directories />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/my-account" element={<MyAccount />} />
+              <Route path="/saved" element={<SavedListings />} />
+              <Route path="/visited" element={<VisitedPlaces />} />
+              <Route path="/account-settings" element={<AccountSettings />} />
+              <Route path="/terms" element={<TermsPolicies />} />
+              <Route path="/terms/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-use" element={<TermsOfUse />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
+              <Route path="/content-guidelines" element={<ContentGuidelines />} />
+              <Route path="/faqs" element={<FAQs />} />
+              <Route path="/privacy-security" element={<PrivacySecurity />} />
+              <Route path="/people" element={<People />} />
+              <Route path="/feedback" element={<Feedback />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route path="/profile/:id" element={<UserProfile />} />
+              <Route path="/profile/:id/:type" element={<FollowList />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminDashboard />} />
+                <Route path="homepage" element={<AdminHomepage />} />
+                <Route path="categories" element={<AdminCategories />} />
+                <Route path="listings" element={<AdminListings />} />
+                <Route path="listings/bulk-edit" element={<AdminBulkEdit />} />
+                <Route path="events" element={<AdminEvents />} />
+                <Route path="events/import" element={<AdminEventsImport />} />
+                <Route path="specials" element={<AdminSpecials />} />
+                <Route path="specials/import" element={<AdminSpecialsImport />} />
+                <Route path="articles" element={<AdminArticles />} />
+                <Route path="content" element={<AdminContent />} />
+                <Route path="import" element={<AdminImport />} />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <ScrollToTop />
+            <BottomNav />
+          </AuthGate>
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
