@@ -244,7 +244,7 @@ const Specials = () => {
                         style={{
                           gap: 5,
                           background: "rgba(255,255,255,0.92)",
-                          borderRadius: 999,
+                          borderRadius: 8,
                           padding: "7px 12px",
                           fontSize: 11,
                           fontWeight: 600,
