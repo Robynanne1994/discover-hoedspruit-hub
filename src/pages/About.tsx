@@ -30,7 +30,7 @@ const About = () => {
 
       {/* Heading */}
       <div style={{ padding: "0 24px", marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
           ABOUT HELLO HOEDSPRUIT
         </h1>
       </div>
@@ -56,7 +56,7 @@ const About = () => {
       {/* Founder section heading */}
       <div style={{ padding: "0 24px", marginBottom: 16 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>THE STORY</div>
-        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>MEET THE FOUNDER</h2>
+        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>MEET THE FOUNDER</h2>
       </div>
 
       {/* Founder story */}
@@ -74,7 +74,7 @@ const About = () => {
 
       {/* Values heading */}
       <div style={{ padding: "0 24px", marginBottom: 18 }}>
-        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>WHAT WE STAND FOR</h2>
+        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>WHAT WE STAND FOR</h2>
       </div>
 
       {/* Value cards grid */}
@@ -84,7 +84,7 @@ const About = () => {
             <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
               <item.icon size={22} strokeWidth={1.5} color="#121214" />
             </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#121214", whiteSpace: "nowrap" }}>{item.title}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#2b2420", whiteSpace: "nowrap" }}>{item.title}</div>
           </div>
         ))}
       </div>
@@ -101,7 +101,7 @@ const About = () => {
               If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
             </p>
             <button onClick={() => navigate("/advertise")} style={{ background: "#ffffff", borderRadius: 10, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>
-              <span style={{ fontSize: 14, fontWeight: 700, color: "#121214", letterSpacing: 0.3 }}>Get in Touch</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
               <ArrowUpRight size={14} color="#121214" strokeWidth={2.5} />
             </button>
           </div>

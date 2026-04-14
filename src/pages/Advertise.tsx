@@ -28,7 +28,7 @@ const inputStyle: React.CSSProperties = {
   padding: "14px 16px",
   fontSize: 15,
   fontWeight: 500,
-  color: "#121214",
+  color: "#2b2420",
   outline: "none",
   fontFamily: "inherit",
 };
@@ -87,7 +87,7 @@ const Advertise = () => {
 
       {/* Heading */}
       <div style={{ padding: "0 24px", marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
           REACH THE HOEDSPRUIT COMMUNITY
         </h1>
       </div>
@@ -106,7 +106,7 @@ const Advertise = () => {
             <div key={item.title} style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 14, borderBottom: i < BENEFITS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none" }}>
               <item.icon size={22} strokeWidth={1.5} color="#121214" style={{ flexShrink: 0, marginTop: 1 }} />
               <div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: "#121214", marginBottom: 3 }}>{item.title}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", marginBottom: 3 }}>{item.title}</div>
                 <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.4 }}>{item.description}</div>
               </div>
             </div>
@@ -132,7 +132,7 @@ const Advertise = () => {
 
       {/* Form heading */}
       <div style={{ padding: "0 24px", marginBottom: 20 }}>
-        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>GET IN TOUCH</h2>
+        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>GET IN TOUCH</h2>
       </div>
 
       {/* Form or success */}
@@ -142,9 +142,9 @@ const Advertise = () => {
             <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.06)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
               <Check size={22} strokeWidth={2} color="#121214" />
             </div>
-            <div style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", marginBottom: 8 }}>Thanks for your interest!</div>
+            <div style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", marginBottom: 8 }}>Thanks for your interest!</div>
             <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", lineHeight: 1.5, marginBottom: 20 }}>We've received your enquiry and will be in touch soon.</p>
-            <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 600, color: "#121214", cursor: "pointer" }}>
+            <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 600, color: "#2b2420", cursor: "pointer" }}>
               Send Another Enquiry
             </button>
           </div>
@@ -205,7 +205,7 @@ const Advertise = () => {
         <div style={{ ...cardStyle, padding: 24, textAlign: "center" }}>
           <Mail size={22} strokeWidth={1.5} color="#121214" style={{ margin: "0 auto 10px", display: "block" }} />
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", margin: "0 0 4px" }}>Or email us directly at</p>
-          <a href="mailto:hellohoedspruit@gmail.com" style={{ fontSize: 14, fontWeight: 600, color: "#121214", textDecoration: "none" }}>
+          <a href="mailto:hellohoedspruit@gmail.com" style={{ fontSize: 14, fontWeight: 600, color: "#2b2420", textDecoration: "none" }}>
             hellohoedspruit@gmail.com
           </a>
         </div>

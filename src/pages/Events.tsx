@@ -148,7 +148,7 @@ const Events = () => {
             fontSize: 40,
             lineHeight: 0.95,
             letterSpacing: "-0.5px",
-            color: "#121214",
+            color: "#2b2420",
             textTransform: "uppercase",
           }}
         >
@@ -193,7 +193,7 @@ const Events = () => {
             className="flex-1 bg-transparent outline-none"
             style={{
               fontSize: 14,
-              color: "#121214",
+              color: "#2b2420",
               letterSpacing: "0.2px",
             }}
           />
@@ -251,7 +251,7 @@ const Events = () => {
               fontFamily: "var(--font-heading)",
               fontWeight: 900,
               fontSize: 24,
-              color: "#121214",
+              color: "#2b2420",
               marginBottom: 10,
               letterSpacing: "-0.5px",
             }}
@@ -295,7 +295,7 @@ const Events = () => {
                     fontFamily: "var(--font-heading)",
                     fontWeight: 900,
                     fontSize: 22,
-                    color: "#121214",
+                    color: "#2b2420",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
                   }}
@@ -340,7 +340,7 @@ const Events = () => {
                               padding: "5px 12px",
                               fontSize: 11,
                               fontWeight: 700,
-                              color: "#121214",
+                              color: "#2b2420",
                               textTransform: "uppercase",
                               letterSpacing: "0.5px",
                             }}
@@ -413,7 +413,7 @@ const Events = () => {
                     fontFamily: "var(--font-heading)",
                     fontWeight: 900,
                     fontSize: 22,
-                    color: "#121214",
+                    color: "#2b2420",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
                   }}
@@ -470,7 +470,7 @@ const Events = () => {
                         style={{
                           fontSize: 15,
                           fontWeight: 700,
-                          color: "#121214",
+                          color: "#2b2420",
                           lineHeight: 1.2,
                           marginBottom: 3,
                           whiteSpace: "nowrap",

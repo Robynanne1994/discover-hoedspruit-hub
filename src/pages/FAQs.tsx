@@ -74,7 +74,7 @@ const FAQs = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
           HOW CAN WE<br />HELP?
         </h1>
       </div>
@@ -96,7 +96,7 @@ const FAQs = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-transparent outline-none"
-            style={{ fontSize: 14, color: "#121214", letterSpacing: "0.2px" }}
+            style={{ fontSize: 14, color: "#2b2420", letterSpacing: "0.2px" }}
           />
         </div>
       </div>
@@ -136,7 +136,7 @@ const FAQs = () => {
                     className="w-full flex items-center justify-between text-left"
                     style={{ padding: 16 }}
                   >
-                    <span style={{ fontSize: 15, fontWeight: 600, color: "#121214", lineHeight: 1.3, flex: 1, paddingRight: 12 }}>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.3, flex: 1, paddingRight: 12 }}>
                       {item.question}
                     </span>
                     <ChevronDown
@@ -179,8 +179,8 @@ const FAQs = () => {
                 className="inline-flex items-center"
                 style={{ background: "#ffffff", borderRadius: 10, padding: "12px 22px", gap: 8 }}
               >
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#121214", letterSpacing: "0.3px" }}>Contact Us</span>
-                <ArrowUpRight style={{ width: 14, height: 14, color: "#121214", strokeWidth: 2.5 }} />
+                <span style={{ fontSize: 14, fontWeight: 700, color: "#2b2420", letterSpacing: "0.3px" }}>Contact Us</span>
+                <ArrowUpRight style={{ width: 14, height: 14, color: "#2b2420", strokeWidth: 2.5 }} />
               </Link>
             </div>
           </div>

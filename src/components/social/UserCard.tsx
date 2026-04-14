@@ -52,7 +52,7 @@ const UserCard = ({ user }: UserCardProps) => {
           style={{
             fontSize: 18,
             fontWeight: 700,
-            color: "#121214",
+            color: "#2b2420",
             lineHeight: 1.15,
             margin: 0,
             letterSpacing: "-0.2px",

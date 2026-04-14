@@ -177,11 +177,11 @@ const SavedListings = () => {
       <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>SAVED</h1>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>Sign in to see saved</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Sign in to see saved</h3>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center", maxWidth: 260, margin: "0 auto 24px" }}>Save your favourite places and find them all here</p>
           <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button></Link>
         </div>
@@ -222,7 +222,7 @@ const SavedListings = () => {
       {backButton}
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>SAVED</h1>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
       </div>
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
@@ -239,7 +239,7 @@ const SavedListings = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-transparent outline-none"
-            style={{ fontSize: 14, color: "#121214", letterSpacing: "0.2px" }}
+            style={{ fontSize: 14, color: "#2b2420", letterSpacing: "0.2px" }}
           />
         </div>
       </div>
@@ -298,7 +298,7 @@ const SavedListings = () => {
             {filteredListings.length === 0 && (
               <div className="text-center" style={{ paddingTop: 60 }}>
                 <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>Nothing saved yet</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Nothing saved yet</h3>
                 <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>Tap the heart on any listing to save it here</p>
               </div>
             )}
@@ -354,7 +354,7 @@ const SavedListings = () => {
             {filteredEvents.length === 0 && (
               <div className="text-center" style={{ paddingTop: 60 }}>
                 <Calendar style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>No events saved yet</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>No events saved yet</h3>
                 <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>Save events from the events page to keep track of them here</p>
               </div>
             )}
@@ -396,7 +396,7 @@ const SavedListings = () => {
                         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
                           {dateLabel}{timeLabel}
                         </p>
-                        <p style={{ fontSize: 15, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <p style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {evt.title}
                         </p>
                         {evt.location && <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{evt.location}</p>}

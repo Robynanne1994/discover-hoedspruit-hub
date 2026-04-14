@@ -192,7 +192,7 @@ const CategoryPage = () => {
             fontSize: "clamp(28px, 8vw, 40px)",
             lineHeight: 1,
             letterSpacing: "-0.5px",
-            color: "#121214",
+            color: "#2b2420",
             margin: 0,
             wordBreak: "break-word",
             overflowWrap: "break-word",
@@ -344,7 +344,7 @@ const CategoryPage = () => {
                 fontFamily: "var(--font-heading)",
                 fontWeight: 900,
                 fontSize: 22,
-                color: "#121214",
+                color: "#2b2420",
                 textTransform: "uppercase",
                 letterSpacing: "0.5px",
                 marginBottom: 18,
@@ -413,7 +413,7 @@ const CategoryPage = () => {
                               padding: "7px 12px",
                               fontSize: 11,
                               fontWeight: 700,
-                              color: "#121214",
+                              color: "#2b2420",
                               textTransform: "uppercase",
                               letterSpacing: "0.6px",
                             }}
@@ -434,7 +434,7 @@ const CategoryPage = () => {
                           fontSize: 28,
                           lineHeight: 0.98,
                           letterSpacing: "-0.4px",
-                          color: "#121214",
+                          color: "#2b2420",
                           margin: 0,
                           marginBottom: 10,
                         }}
@@ -564,7 +564,7 @@ const CategoryPage = () => {
                 fontFamily: "var(--font-heading)",
                 fontWeight: 600,
                 fontSize: 18,
-                color: "#121214",
+                color: "#2b2420",
                 marginBottom: 4,
               }}
             >

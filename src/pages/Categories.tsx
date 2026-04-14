@@ -101,7 +101,7 @@ const Categories = () => {
             fontSize: 40,
             lineHeight: 1.0,
             letterSpacing: "-0.5px",
-             color: "#121214",
+             color: "#2b2420",
             margin: 0,
           }}
         >
@@ -143,7 +143,7 @@ const Categories = () => {
           <Search
             size={16}
             strokeWidth={2}
-            style={{ color: "#121214", flexShrink: 0 }}
+            style={{ color: "#2b2420", flexShrink: 0 }}
           />
           <input
             type="text"
@@ -156,7 +156,7 @@ const Categories = () => {
               border: "none",
               outline: "none",
               fontSize: 13,
-              color: "#121214",
+              color: "#2b2420",
               letterSpacing: "0.1px",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -186,7 +186,7 @@ const Categories = () => {
                 fontFamily: "var(--font-heading)",
                 fontWeight: 600,
                 fontSize: 18,
-                 color: "#121214",
+                 color: "#2b2420",
                 marginBottom: 4,
               }}
             >
@@ -251,7 +251,7 @@ const Categories = () => {
                           style={{
                             fontSize: 14,
                             fontWeight: 600,
-                             color: "#121214",
+                             color: "#2b2420",
                             margin: 0,
                             whiteSpace: "nowrap",
                             overflow: "hidden",
@@ -340,7 +340,7 @@ const Categories = () => {
                         textTransform: "uppercase",
                         fontSize: 14,
                         fontWeight: 600,
-                        color: "#121214",
+                        color: "#2b2420",
                         letterSpacing: "1.5px",
                       }}
                     >
@@ -349,7 +349,7 @@ const Categories = () => {
                     <ArrowUpRight
                       size={18}
                       strokeWidth={2}
-                      style={{ color: "#121214" }}
+                      style={{ color: "#2b2420" }}
                     />
                   </div>
                 </Link>

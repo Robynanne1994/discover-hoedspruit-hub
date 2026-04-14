@@ -90,7 +90,7 @@ const PrivacySecurity = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
           PRIVACY &<br />SECURITY
         </h1>
       </div>
@@ -106,9 +106,9 @@ const PrivacySecurity = () => {
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
         <div style={{ ...cardStyle, padding: 20 }}>
           <div className="flex items-start" style={{ gap: 12 }}>
-            <Shield style={{ width: 22, height: 22, strokeWidth: 1.5, color: "#121214", flexShrink: 0, marginTop: 2 }} />
+            <Shield style={{ width: 22, height: 22, strokeWidth: 1.5, color: "#2b2420", flexShrink: 0, marginTop: 2 }} />
             <div>
-              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#121214", marginBottom: 8 }}>Your Privacy Matters</h2>
+              <h2 style={{ fontSize: 16, fontWeight: 700, color: "#2b2420", marginBottom: 8 }}>Your Privacy Matters</h2>
               <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.6 }}>
                 We only collect what we need to make Hello Hoedspruit useful, safe, and easy to use. We do not sell your personal data.
               </p>
@@ -129,9 +129,9 @@ const PrivacySecurity = () => {
             const Icon = item.icon;
             return (
               <div key={item.title} className="flex items-start" style={{ padding: 16, gap: 12, ...(i < collectItems.length - 1 ? rowBorder : {}) }}>
-                <Icon style={{ width: 20, height: 20, strokeWidth: 1.5, color: "#121214", flexShrink: 0, marginTop: 1 }} />
+                <Icon style={{ width: 20, height: 20, strokeWidth: 1.5, color: "#2b2420", flexShrink: 0, marginTop: 1 }} />
                 <div>
-                  <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", marginBottom: 3 }}>{item.title}</div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", marginBottom: 3 }}>{item.title}</div>
                   <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.5 }}>{item.desc}</div>
                 </div>
               </div>
@@ -148,7 +148,7 @@ const PrivacySecurity = () => {
         <div style={cardStyle}>
           {useItems.map((item, i) => (
             <div key={i} className="flex items-start" style={{ padding: "12px 16px", gap: 10, ...(i < useItems.length - 1 ? rowBorder : {}) }}>
-              <Check style={{ width: 16, height: 16, color: "#121214", flexShrink: 0, marginTop: 1 }} />
+              <Check style={{ width: 16, height: 16, color: "#2b2420", flexShrink: 0, marginTop: 1 }} />
               <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.5 }}>{item}</span>
             </div>
           ))}
@@ -161,7 +161,7 @@ const PrivacySecurity = () => {
           {controlItems.map((item, i) => (
             <div key={item.title} className="flex items-start" style={{ padding: 16, gap: 12, ...(i < controlItems.length - 1 ? rowBorder : {}) }}>
               <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", marginBottom: 3 }}>{item.title}</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", marginBottom: 3 }}>{item.title}</div>
                 <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.5 }}>{item.desc}</div>
               </div>
             </div>
@@ -186,7 +186,7 @@ const PrivacySecurity = () => {
         <div style={cardStyle}>
           {securityChecks.map((item, i) => (
             <div key={i} className="flex items-start" style={{ padding: "12px 16px", gap: 10, ...(i < securityChecks.length - 1 ? rowBorder : {}) }}>
-              <Check style={{ width: 16, height: 16, color: "#121214", flexShrink: 0, marginTop: 1 }} />
+              <Check style={{ width: 16, height: 16, color: "#2b2420", flexShrink: 0, marginTop: 1 }} />
               <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.5 }}>{item}</span>
             </div>
           ))}
@@ -230,8 +230,8 @@ const PrivacySecurity = () => {
                 className="flex items-center"
                 style={{ padding: 16, gap: 12, ...(i < arr.length - 1 ? rowBorder : {}) }}
               >
-                <Icon style={{ width: 20, height: 20, strokeWidth: 1.5, color: "#121214", flexShrink: 0 }} />
-                <span style={{ fontSize: 15, fontWeight: 600, color: "#121214", flex: 1 }}>{item.label}</span>
+                <Icon style={{ width: 20, height: 20, strokeWidth: 1.5, color: "#2b2420", flexShrink: 0 }} />
+                <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", flex: 1 }}>{item.label}</span>
                 <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
               </Link>
             );

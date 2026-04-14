@@ -52,7 +52,7 @@ const inputStyle: React.CSSProperties = {
   padding: "14px 16px",
   fontSize: 15,
   fontWeight: 500,
-  color: "#121214",
+  color: "#2b2420",
   width: "100%",
   outline: "none",
 };
@@ -137,7 +137,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
           EDIT PROFILE
         </h1>
       </div>

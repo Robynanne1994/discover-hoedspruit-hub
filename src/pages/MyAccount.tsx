@@ -208,11 +208,11 @@ const MyAccount = () => {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>PROFILE</h1>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>PROFILE</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <UserCircle style={{ width: 48, height: 48, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>Welcome to Hello Hoedspruit</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Welcome to Hello Hoedspruit</h3>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", maxWidth: 260, margin: "0 auto 24px" }}>Sign in to access your profile, saved listings, and events.</p>
           <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button></Link>
         </div>
@@ -466,7 +466,7 @@ const MyAccount = () => {
       <div className="flex items-center" style={{ gap: 14, paddingTop: 16, paddingBottom: 16, borderBottom: isLast ? "none" : "1px solid rgba(18,18,20,0.06)" }}>
         <Icon style={{ width: 22, height: 22, strokeWidth: 1.5, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
         <div className="flex-1 min-w-0">
-          <span style={{ fontSize: 15, fontWeight: 600, color: "#121214", display: "block" }}>{item.label}</span>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", display: "block" }}>{item.label}</span>
           {item.desc && <span style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", marginTop: 2, display: "block" }}>{item.desc}</span>}
         </div>
         <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
@@ -480,7 +480,7 @@ const MyAccount = () => {
     <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
       {/* Heading */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
           PROFILE
         </h1>
       </div>
@@ -506,7 +506,7 @@ const MyAccount = () => {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="truncate" style={{ fontFamily: "var(--font-heading)", fontSize: 18, fontWeight: 800, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px", lineHeight: 1.2 }}>
+              <h2 className="truncate" style={{ fontFamily: "var(--font-heading)", fontSize: 18, fontWeight: 800, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", lineHeight: 1.2 }}>
                 {profile?.display_name || user.email?.split("@")[0]}
               </h2>
               <p className="truncate" style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", marginTop: 2 }}>{user.email}</p>
@@ -585,7 +585,7 @@ const MyAccount = () => {
           <Link to="/admin">
             <div className="flex items-center" style={{ gap: 14, paddingTop: 16, paddingBottom: 16 }}>
               <LayoutDashboard style={{ width: 22, height: 22, strokeWidth: 1.5, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
-              <span className="flex-1" style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>Admin Dashboard</span>
+              <span className="flex-1" style={{ fontSize: 15, fontWeight: 600, color: "#2b2420" }}>Admin Dashboard</span>
               <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
             </div>
           </Link>

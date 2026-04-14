@@ -21,11 +21,11 @@ const Specials = () => {
     <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
       {/* Header */}
       <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 20 }}>
-        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#121214", textDecoration: "none", fontSize: 15, fontWeight: 500, marginBottom: 16 }}>
+        <Link to="/" style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#2b2420", textDecoration: "none", fontSize: 15, fontWeight: 500, marginBottom: 16 }}>
           <ArrowLeft size={20} />
           Back
         </Link>
-        <h1 style={{ fontWeight: 900, fontSize: 28, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
+        <h1 style={{ fontWeight: 900, fontSize: 28, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
           Specials
         </h1>
         <p style={{ fontSize: 13, color: "rgba(18,18,20,0.5)", marginTop: 4 }}>
@@ -52,7 +52,7 @@ const Specials = () => {
                   position: "absolute", top: 10, left: 10,
                   background: "#ffffff", borderRadius: 8, padding: "4px 10px",
                 }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5 }}>
                     {special.deal_label}
                   </span>
                 </div>
@@ -60,7 +60,7 @@ const Specials = () => {
 
               {/* Content */}
               <div style={{ padding: "14px 16px", background: "#ffffff" }}>
-                <div style={{ fontSize: 16, fontWeight: 700, color: "#121214", lineHeight: 1.3, marginBottom: 4 }}>
+                <div style={{ fontSize: 16, fontWeight: 700, color: "#2b2420", lineHeight: 1.3, marginBottom: 4 }}>
                   {special.title}
                 </div>
                 <div style={{ fontSize: 13, color: "rgba(18,18,20,0.5)", marginBottom: 6 }}>
