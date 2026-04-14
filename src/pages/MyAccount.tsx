@@ -31,6 +31,7 @@ import {
   FileText,
   MapPin,
   Newspaper,
+  Tag,
 } from "lucide-react";
 import ProfileForm from "@/components/profile/ProfileForm";
 import FollowStats from "@/components/social/FollowStats";
@@ -431,6 +432,7 @@ const MyAccount = () => {
     { icon: Heart, label: "Saved Listings", desc: "Listings you've bookmarked", href: "/saved" },
     { icon: MapPin, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
     { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", href: "/saved?tab=events" },
+    { icon: Tag, label: "Specials", desc: "The hottest deals in Hoedspruit", href: "/specials" },
   ];
 
   const socialItems = [
