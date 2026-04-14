@@ -412,7 +412,7 @@ const CategoryPage = () => {
                               borderRadius: 999,
                               padding: "7px 12px",
                               fontSize: 11,
-                              fontFamily: "var(--font-heading)", fontWeight: 700,
+                              fontWeight: 600,
                               color: "#2b2420",
                               textTransform: "uppercase",
                               letterSpacing: "0.6px",
