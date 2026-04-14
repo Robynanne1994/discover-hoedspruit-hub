@@ -90,7 +90,7 @@ const WhatsOnToday = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
                 {event.location && (
                   <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{event.location}</div>
                 )}
