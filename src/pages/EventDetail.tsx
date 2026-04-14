@@ -188,7 +188,7 @@ const EventDetail = () => {
               fontFamily: "var(--font-heading)",
               fontWeight: 700,
               fontSize: 22,
-              color: "#121214",
+              color: "#2b2420",
               marginBottom: 8,
             }}
           >
@@ -258,7 +258,7 @@ const EventDetail = () => {
           fontSize: 20,
           lineHeight: 1,
           letterSpacing: "-0.3px",
-          color: "#121214",
+          color: "#2b2420",
           textTransform: "uppercase",
           margin: 0,
         }}
@@ -328,7 +328,7 @@ const EventDetail = () => {
             fontSize: 34,
             lineHeight: 0.98,
             letterSpacing: "-0.6px",
-            color: "#121214",
+            color: "#2b2420",
             margin: 0,
             textTransform: "uppercase",
           }}
@@ -448,7 +448,7 @@ const EventDetail = () => {
                       style={{
                         fontSize: 15,
                         fontWeight: 500,
-                        color: row.href ? "#121214" : "#121214",
+                        color: row.href ? "#2b2420" : "#2b2420",
                         lineHeight: 1.4,
                         margin: 0,
                         wordBreak: "break-word",
@@ -523,7 +523,7 @@ const EventDetail = () => {
                     style={{
                       fontSize: 15,
                       fontWeight: 500,
-                      color: "#121214",
+                      color: "#2b2420",
                       lineHeight: 1.4,
                       margin: 0,
                       wordBreak: "break-word",
@@ -593,7 +593,7 @@ const EventDetail = () => {
               borderRadius: 14,
               background: "rgba(18,18,20,0.04)",
               border: "1px solid rgba(18,18,20,0.08)",
-              color: "#121214",
+              color: "#2b2420",
               fontSize: 15,
               fontWeight: 500,
               letterSpacing: "0.1px",
@@ -613,7 +613,7 @@ const EventDetail = () => {
               borderRadius: 14,
               background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
               border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-              color: isFavourited ? "#FFFFFF" : "#121214",
+              color: isFavourited ? "#FFFFFF" : "#2b2420",
               fontSize: 15,
               fontWeight: 500,
               letterSpacing: "0.1px",

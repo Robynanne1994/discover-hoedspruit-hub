@@ -145,7 +145,7 @@ const ListingDetail = () => {
         </div>
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 16 }}>Listing not found.</p>
-          <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>Back to Home</Link>
+          <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>Back to Home</Link>
         </div>
       </div>
     );
@@ -327,7 +327,7 @@ const ListingDetail = () => {
         )}
 
         {/* Title */}
-        <h1 style={{ fontWeight: 900, fontSize: 32, color: "#121214", lineHeight: 1.0, letterSpacing: -0.3, marginBottom: 14 }}>
+        <h1 style={{ fontWeight: 900, fontSize: 32, color: "#2b2420", lineHeight: 1.0, letterSpacing: -0.3, marginBottom: 14 }}>
           {listing.title}
         </h1>
 
@@ -345,7 +345,7 @@ const ListingDetail = () => {
                 />
               ))}
             </div>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#121214" }}>{(listing as any).google_rating}</span>
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#2b2420" }}>{(listing as any).google_rating}</span>
             {(listing as any).google_reviews_count != null && (
               (listing as any).google_reviews_url ? (
                 <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", textDecoration: "none" }}>
@@ -366,7 +366,7 @@ const ListingDetail = () => {
             style={{
               flex: 1, gap: 6, height: 40, borderRadius: 10,
               background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
-              color: "#121214", fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
+              color: "#2b2420", fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
               cursor: "pointer",
             }}
           >
@@ -517,7 +517,7 @@ const ListingDetail = () => {
           const paragraphs = (longDescription || listing.description || "").split("\n").filter(Boolean);
           return (
             <div style={{ marginBottom: 28 }}>
-              <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>About</h2>
+              <h2 style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>About</h2>
               <div style={{
                 ...(!aboutExpanded ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
               }}>
@@ -528,7 +528,7 @@ const ListingDetail = () => {
               {paragraphs.join(" ").length > 150 && (
                 <button
                   onClick={() => setAboutExpanded(!aboutExpanded)}
-                  style={{ fontSize: 13, fontWeight: 600, color: "#121214", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 4 }}
+                  style={{ fontSize: 13, fontWeight: 600, color: "#2b2420", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 4 }}
                 >
                   {aboutExpanded ? "Show less" : "Read more"}
                 </button>
@@ -564,7 +564,7 @@ const ListingDetail = () => {
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       {section.icon}
-                      <span style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>{section.title}</span>
+                      <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420" }}>{section.title}</span>
                     </div>
                     <ChevronDown
                       size={16} strokeWidth={2} color="rgba(18,18,20,0.3)"
@@ -581,7 +581,7 @@ const ListingDetail = () => {
                             {isBool ? (
                               field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
                             ) : (
-                              <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
+                              <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420" }}>{field.value}</span>
                             )}
                           </div>
                         );
@@ -628,10 +628,10 @@ const ListingDetail = () => {
 
           return (
             <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, marginBottom: 28 }}>
-              <h3 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>Details</h3>
+              <h3 style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>Details</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {items.map((item) => (
-                  <div key={item} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#121214" }}>
+                  <div key={item} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#2b2420" }}>
                     <Check size={14} color="#121214" /> <span>{item}</span>
                   </div>
                 ))}
@@ -750,7 +750,7 @@ const ListingDetail = () => {
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                             {section.icon}
-                            <span style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>{section.title}</span>
+                            <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420" }}>{section.title}</span>
                           </div>
                           <ChevronDown
                             size={16} strokeWidth={2} color="rgba(18,18,20,0.3)"
@@ -767,7 +767,7 @@ const ListingDetail = () => {
                                   {isBool ? (
                                     field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
                                   ) : (
-                                    <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>{field.value}</span>
+                                    <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420" }}>{field.value}</span>
                                   )}
                                 </div>
                               );
@@ -789,7 +789,7 @@ const ListingDetail = () => {
           <div style={{ marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
               <Clock size={18} strokeWidth={1.5} color="#121214" />
-              <h2 style={{ fontWeight: 900, fontSize: 18, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
+              <h2 style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
             </div>
             <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
               {DAY_LABELS.map((day, i) => {
@@ -806,7 +806,7 @@ const ListingDetail = () => {
                       borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                     }}
                   >
-                    <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>{day}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>{day}</span>
                     <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)", fontStyle: isPublicHoliday && !rawValue ? "italic" : "normal" }}>{value || "Closed"}</span>
                   </div>
                 );
@@ -823,7 +823,7 @@ const ListingDetail = () => {
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               width: "100%", padding: "14px 0", borderRadius: 12,
               background: "rgba(18,18,20,0.05)", border: "1px solid rgba(18,18,20,0.08)",
-              fontSize: 14, fontWeight: 600, color: "#121214", letterSpacing: "0.2px",
+              fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: "0.2px",
               textDecoration: "none", cursor: "pointer",
             }}
           >

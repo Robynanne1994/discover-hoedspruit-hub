@@ -12,9 +12,9 @@ const renderMarkdown = (text: string) => {
   while (i < lines.length) {
     const line = lines[i];
     if (line.startsWith("## ")) {
-      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 900, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(3)}</h2>);
+      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 900, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(3)}</h2>);
     } else if (line.startsWith("# ")) {
-      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 900, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(2)}</h2>);
+      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 900, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(2)}</h2>);
     } else if (line.startsWith("- ") || line.startsWith("* ")) {
       const items: string[] = [];
       while (i < lines.length && (lines[i].startsWith("- ") || lines[i].startsWith("* "))) {
@@ -41,8 +41,8 @@ const renderMarkdown = (text: string) => {
 
 const inlineFormat = (text: string) => {
   return text
-    .replace(/\*\*(.+?)\*\*/g, '<strong style="font-weight:700;color:#121214">$1</strong>')
-    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color:#121214;font-weight:600;text-decoration:underline" target="_blank" rel="noopener">$1</a>');
+    .replace(/\*\*(.+?)\*\*/g, '<strong style="font-weight:700;color:#2b2420">$1</strong>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" style="color:#2b2420;font-weight:600;text-decoration:underline" target="_blank" rel="noopener">$1</a>');
 };
 
 const ArticleDetail = () => {
@@ -109,10 +109,10 @@ const ArticleDetail = () => {
       <div style={{ position: "relative", width: "100%", height: 280, background: "#f0f0f0" }}>
         {article.image_url && <img src={article.image_url} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
         <button onClick={() => navigate("/headlines")} style={{ position: "absolute", top: 48, left: 20, width: 38, height: 38, borderRadius: "50%", background: "#ffffff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "#121214" }} />
+          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "#2b2420" }} />
         </button>
         <button onClick={handleShare} style={{ position: "absolute", top: 48, right: 20, width: 38, height: 38, borderRadius: "50%", background: "#ffffff", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Share2 style={{ width: 18, height: 18, strokeWidth: 1.5, color: "#121214" }} />
+          <Share2 style={{ width: 18, height: 18, strokeWidth: 1.5, color: "#2b2420" }} />
         </button>
       </div>
 
@@ -123,7 +123,7 @@ const ArticleDetail = () => {
         </div>
 
         {/* Title */}
-        <h1 style={{ fontWeight: 900, fontSize: 28, color: "#121214", lineHeight: 1.1, letterSpacing: "-0.3px", marginBottom: 14 }}>{article.title}</h1>
+        <h1 style={{ fontWeight: 900, fontSize: 28, color: "#2b2420", lineHeight: 1.1, letterSpacing: "-0.3px", marginBottom: 14 }}>{article.title}</h1>
 
         {/* Meta */}
         <div className="flex items-center flex-wrap" style={{ gap: 12, marginBottom: 8 }}>
@@ -151,7 +151,7 @@ const ArticleDetail = () => {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>{r.category}</div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden" }}>{r.title}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 6, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden" }}>{r.title}</div>
                     <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)" }}>{formatDate(r.published_at)} · {r.read_time || 3} min read</div>
                   </div>
                 </div>

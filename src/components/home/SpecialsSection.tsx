@@ -79,7 +79,7 @@ const SpecialsSection = () => {
                     position: "absolute", top: 10, left: 10,
                     background: "#ffffff", borderRadius: 8, padding: "4px 10px",
                   }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, color: "#121214", textTransform: "uppercase", letterSpacing: 0.5 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5 }}>
                       {special.deal_label}
                     </span>
                   </div>
@@ -87,7 +87,7 @@ const SpecialsSection = () => {
 
                 {/* Content */}
                 <div style={{ padding: "14px 16px", background: "#ffffff" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginBottom: 4, minHeight: "2.4em", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 4, minHeight: "2.4em", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {special.title}
                   </div>
                   <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginBottom: 8 }}>

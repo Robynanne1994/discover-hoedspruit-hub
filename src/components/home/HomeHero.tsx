@@ -98,7 +98,7 @@ const HomeHero = () => {
     <>
       {/* Hero area */}
       <div style={{ background: "#f5f3ef", padding: "48px 24px 28px" }}>
-        <h1 style={{ fontWeight: 900, fontSize: 44, lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", textTransform: "uppercase", marginBottom: 12 }}>
+        <h1 style={{ fontWeight: 900, fontSize: 44, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", marginBottom: 12 }}>
           HELLO<br />HOEDSPRUIT
         </h1>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginBottom: 20 }}>
@@ -129,7 +129,7 @@ const HomeHero = () => {
                 outline: "none",
                 background: "transparent",
                 fontSize: 13,
-                color: "#121214",
+                color: "#2b2420",
                 letterSpacing: 0.1,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
@@ -211,7 +211,7 @@ const HomeHero = () => {
                 {results.categories.map((cat) => (
                   <button key={cat.id} onClick={() => goTo(`/category/${cat.id}`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
                     <FolderOpen size={16} color="rgba(18,18,20,0.3)" />
-                    <span style={{ fontSize: 13, color: "#121214" }}>{cat.title}</span>
+                    <span style={{ fontSize: 13, color: "#2b2420" }}>{cat.title}</span>
                   </button>
                 ))}
               </div>
@@ -224,7 +224,7 @@ const HomeHero = () => {
                   <button key={listing.id} onClick={() => goTo(`/listing/${listing.id}`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
                     <MapPin size={16} color="rgba(18,18,20,0.3)" />
                     <div>
-                      <span style={{ fontSize: 13, color: "#121214", display: "block" }}>{listing.title}</span>
+                      <span style={{ fontSize: 13, color: "#2b2420", display: "block" }}>{listing.title}</span>
                       {listing.location && <span style={{ fontSize: 11, color: "rgba(18,18,20,0.35)", display: "block" }}>{listing.location}</span>}
                     </div>
                   </button>
@@ -239,7 +239,7 @@ const HomeHero = () => {
                   <button key={event.id} onClick={() => goTo(`/events`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
                     <CalendarDays size={16} color="rgba(18,18,20,0.3)" />
                     <div>
-                      <span style={{ fontSize: 13, color: "#121214", display: "block" }}>{event.title}</span>
+                      <span style={{ fontSize: 13, color: "#2b2420", display: "block" }}>{event.title}</span>
                       {event.location && <span style={{ fontSize: 11, color: "rgba(18,18,20,0.35)", display: "block" }}>{event.location}</span>}
                     </div>
                   </button>

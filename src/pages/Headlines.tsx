@@ -58,7 +58,7 @@ const Headlines = () => {
 
       {/* Title */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase", fontFamily: "var(--font-heading)" }}>
+        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase", fontFamily: "var(--font-heading)" }}>
           THE LOWVELD<br />LOWDOWN
         </h1>
       </div>
@@ -73,12 +73,12 @@ const Headlines = () => {
       {/* Search */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
         <div className="flex items-center" style={{ background: "#ffffff", border: "2px solid #121214", borderRadius: 14, padding: "11px 14px", gap: 8 }}>
-          <Search style={{ width: 16, height: 16, strokeWidth: 2, color: "#121214", flexShrink: 0 }} />
+          <Search style={{ width: 16, height: 16, strokeWidth: 2, color: "#2b2420", flexShrink: 0 }} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search articles..."
-            style={{ border: "none", outline: "none", background: "transparent", fontSize: 13, color: "#121214", width: "100%", whiteSpace: "nowrap" }}
+            style={{ border: "none", outline: "none", background: "transparent", fontSize: 13, color: "#2b2420", width: "100%", whiteSpace: "nowrap" }}
           />
         </div>
       </div>
@@ -111,7 +111,7 @@ const Headlines = () => {
       {showFeatured && (
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>Latest</div>
-          <div style={{ fontWeight: 900, fontSize: 22, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 18 }}>Featured</div>
+          <div style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 18 }}>Featured</div>
 
           <Link to={`/headlines/${featured.slug}`}>
             <div style={{ borderRadius: 16, overflow: "hidden", position: "relative" }}>
@@ -121,7 +121,7 @@ const Headlines = () => {
                 ) : null}
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)" }} />
                 <div style={{ position: "absolute", top: 14, left: 14, background: "#ffffff", borderRadius: 8, padding: "4px 10px" }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
                 </div>
                 <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
                   <div style={{ fontWeight: 900, fontSize: 20, color: "#ffffff", lineHeight: 1.1, marginBottom: 6 }}>{featured.title}</div>
@@ -138,7 +138,7 @@ const Headlines = () => {
       {/* Recent */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>More Stories</div>
-        <div style={{ fontWeight: 900, fontSize: 22, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px" }}>Recent</div>
+        <div style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px" }}>Recent</div>
       </div>
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
@@ -158,7 +158,7 @@ const Headlines = () => {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>{article.category}</div>
                 <div style={{
-                  fontSize: 15, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginBottom: 6,
+                  fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 6,
                   display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden"
                 }}>{article.title}</div>
                 <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)" }}>

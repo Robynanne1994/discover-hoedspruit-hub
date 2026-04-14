@@ -114,7 +114,7 @@ const ContactUs = () => {
           fontWeight: 900,
           lineHeight: 0.95,
           letterSpacing: -0.5,
-          color: "#121214",
+          color: "#2b2420",
           textTransform: "uppercase",
           margin: 0,
         }}>
@@ -161,7 +161,7 @@ const ContactUs = () => {
                 <Icon size={22} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />
               </div>
               <div style={{ flex: 1, minWidth: 0, marginLeft: 14 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#121214" }}>{opt.title}</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#2b2420" }}>{opt.title}</div>
                 <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", marginTop: 2 }}>{opt.subtitle}</div>
               </div>
               <ChevronRight size={16} strokeWidth={2} color="rgba(18,18,20,0.2)" />
@@ -197,7 +197,7 @@ const ContactUs = () => {
       {/* Contact form */}
       {showForm && (
         <div style={{ marginTop: 32, paddingLeft: 24, paddingRight: 24 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, color: "#121214", marginBottom: 16 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 800, color: "#2b2420", marginBottom: 16 }}>
             Send us a message
           </h2>
 
@@ -221,7 +221,7 @@ const ContactUs = () => {
               }}>
                 <Check size={28} color="#121214" />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#121214", marginBottom: 8 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#2b2420", marginBottom: 8 }}>
                 Thanks for reaching out
               </h3>
               <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 20 }}>
@@ -236,7 +236,7 @@ const ContactUs = () => {
                   padding: "10px 24px",
                   fontSize: 14,
                   fontWeight: 600,
-                  color: "#121214",
+                  color: "#2b2420",
                   cursor: "pointer",
                 }}
               >
@@ -257,7 +257,7 @@ const ContactUs = () => {
                     borderRadius: 12,
                     padding: "14px 16px",
                     fontSize: 15,
-                    color: "#121214",
+                    color: "#2b2420",
                     outline: "none",
                     boxSizing: "border-box",
                   }}
@@ -277,7 +277,7 @@ const ContactUs = () => {
                     borderRadius: 12,
                     padding: "14px 16px",
                     fontSize: 15,
-                    color: "#121214",
+                    color: "#2b2420",
                     outline: "none",
                     boxSizing: "border-box",
                   }}
@@ -297,7 +297,7 @@ const ContactUs = () => {
                     borderRadius: 12,
                     padding: "14px 16px",
                     fontSize: 15,
-                    color: "#121214",
+                    color: "#2b2420",
                     outline: "none",
                     resize: "vertical",
                     boxSizing: "border-box",

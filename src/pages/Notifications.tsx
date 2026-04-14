@@ -92,7 +92,7 @@ const ToggleRow = ({ title, description, checked, onChange, disabled, isLast }: 
     }}
   >
     <div style={{ flex: 1, paddingRight: 12 }}>
-      <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", marginBottom: 3 }}>{title}</div>
+      <div style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", marginBottom: 3 }}>{title}</div>
       <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", lineHeight: 1.4 }}>{description}</div>
     </div>
     <ToggleSwitch checked={checked} />
@@ -207,7 +207,7 @@ const Notifications = () => {
 
       {/* Heading */}
       <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", margin: 0 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
           NOTIFICATIONS
         </h1>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 32 }}>
@@ -231,7 +231,7 @@ const Notifications = () => {
           }}
         >
           <div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#121214", marginBottom: 4 }}>Push notifications</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#2b2420", marginBottom: 4 }}>Push notifications</div>
             <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)" }}>Master switch for all notifications</div>
           </div>
           <ToggleSwitch checked={masterEnabled} size="large" />

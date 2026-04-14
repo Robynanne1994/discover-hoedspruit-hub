@@ -40,7 +40,7 @@ const LowdownSection = () => {
             {featured.image_url && <img src={featured.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)" }} />
             <div style={{ position: "absolute", top: 12, left: 12, background: "#ffffff", borderRadius: 8, padding: "4px 10px" }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#121214", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
+              <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
             </div>
             <div style={{ position: "absolute", bottom: 14, left: 14, right: 14 }}>
               <div style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", lineHeight: 1.15, marginBottom: 4 }}>{featured.title}</div>
@@ -60,7 +60,7 @@ const LowdownSection = () => {
               </div>
               <div style={{ padding: "10px 12px", flex: 1, display: "flex", flexDirection: "column" }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: "0.5px" }}>{article.category}</div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: "#121214", lineHeight: 1.2, marginTop: 3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden", minHeight: "2.4em" }}>{article.title}</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginTop: 3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden", minHeight: "2.4em" }}>{article.title}</div>
               </div>
             </div>
           </Link>

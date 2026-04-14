@@ -82,7 +82,7 @@ const WhatsOnToday = () => {
               }}>
                 {parsed ? (
                   <>
-                    <span style={{ fontSize: 20, fontWeight: 800, color: "#121214", lineHeight: 1 }}>{parsed.getDate()}</span>
+                    <span style={{ fontSize: 20, fontWeight: 800, color: "#2b2420", lineHeight: 1 }}>{parsed.getDate()}</span>
                     <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 0.5 }}>{months[parsed.getMonth()]}</span>
                   </>
                 ) : (
@@ -90,7 +90,7 @@ const WhatsOnToday = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
+                <div style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
                 {event.location && (
                   <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{event.location}</div>
                 )}

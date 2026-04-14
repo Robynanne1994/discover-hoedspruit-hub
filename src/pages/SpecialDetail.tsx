@@ -75,7 +75,7 @@ const SpecialDetail = () => {
       <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
         <BackButton />
         <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 80, textAlign: "center" }}>
-          <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 22, color: "#121214", marginBottom: 8 }}>Special not found</p>
+          <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 22, color: "#2b2420", marginBottom: 8 }}>Special not found</p>
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.45)", lineHeight: 1.5 }}>This special may have ended or been removed.</p>
         </div>
       </div>
@@ -113,7 +113,7 @@ const SpecialDetail = () => {
   const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
     <div style={{ marginBottom: 14 }}>
       <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 2.2, marginBottom: 6 }}>{eyebrow}</p>
-      <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 20, lineHeight: 1, letterSpacing: "-0.3px", color: "#121214", textTransform: "uppercase", margin: 0 }}>{title}</h2>
+      <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 20, lineHeight: 1, letterSpacing: "-0.3px", color: "#2b2420", textTransform: "uppercase", margin: 0 }}>{title}</h2>
     </div>
   );
 
@@ -131,7 +131,7 @@ const SpecialDetail = () => {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{ fontSize: 12, color: "rgba(18,18,20,0.38)", margin: 0, marginBottom: 4, lineHeight: 1.2 }}>{label}</p>
-          <p style={{ fontSize: 15, fontWeight: 500, color: "#121214", lineHeight: 1.4, margin: 0, wordBreak: "break-word" }}>{value}</p>
+          <p style={{ fontSize: 15, fontWeight: 500, color: "#2b2420", lineHeight: 1.4, margin: 0, wordBreak: "break-word" }}>{value}</p>
         </div>
       </Wrapper>
     );
@@ -158,7 +158,7 @@ const SpecialDetail = () => {
           </span>
         </div>
 
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 34, lineHeight: 0.98, letterSpacing: "-0.6px", color: "#121214", margin: 0, textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 34, lineHeight: 0.98, letterSpacing: "-0.6px", color: "#2b2420", margin: 0, textTransform: "uppercase" }}>
           {special.title}
         </h1>
 
@@ -174,7 +174,7 @@ const SpecialDetail = () => {
           style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, background: "transparent", cursor: "pointer" }}
         >
           <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.8} />
-          <span style={{ fontSize: 14, fontWeight: 600, color: "#121214" }}>Share</span>
+          <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420" }}>Share</span>
         </button>
         {special.business_id && (
           <Link
@@ -229,7 +229,7 @@ const SpecialDetail = () => {
             style={{ background: "rgba(18,18,20,0.03)", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "18px 20px", textAlign: "center", cursor: "pointer" }}
             onClick={() => { navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }}
           >
-            <p style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 22, letterSpacing: 3, color: "#121214", margin: 0 }}>{special.promo_code}</p>
+            <p style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 22, letterSpacing: 3, color: "#2b2420", margin: 0 }}>{special.promo_code}</p>
             <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginTop: 6 }}>Tap to copy</p>
           </div>
         </section>

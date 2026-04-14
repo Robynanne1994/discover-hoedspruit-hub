@@ -67,7 +67,7 @@ const VisitedPlaces = () => {
         </div>
         <div style={{ paddingTop: 80, textAlign: "center", paddingLeft: 24, paddingRight: 24 }}>
           <MapPin size={48} strokeWidth={1.5} color="rgba(18,18,20,0.15)" style={{ margin: "0 auto" }} />
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>Sign in to see your visited places</h2>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Sign in to see your visited places</h2>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 24 }}>Mark places you've been to and keep track of your adventures.</p>
           <Link to="/auth" style={{ textDecoration: "none" }}>
             <button style={{ background: "#121214", color: "#fff", border: "none", borderRadius: 12, padding: "14px 32px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}>
@@ -115,7 +115,7 @@ const VisitedPlaces = () => {
 
       {/* Heading */}
       <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
           VISITED<br />PLACES
         </h1>
       </div>
@@ -150,7 +150,7 @@ const VisitedPlaces = () => {
               border: "none",
               outline: "none",
               fontSize: 14,
-              color: "#121214",
+              color: "#2b2420",
               letterSpacing: 0.2,
             }}
           />
@@ -162,7 +162,7 @@ const VisitedPlaces = () => {
         {visitedCount === 0 ? (
           <div style={{ textAlign: "center", paddingTop: 60 }}>
             <MapPin size={48} strokeWidth={1.5} color="rgba(18,18,20,0.15)" style={{ margin: "0 auto" }} />
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#121214", marginTop: 16, marginBottom: 8 }}>No places visited yet</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>No places visited yet</h3>
             <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>
               Tap 'Visited' on any listing to track where you've been
             </p>

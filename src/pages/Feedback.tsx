@@ -50,7 +50,7 @@ const Feedback = () => {
     padding: "14px 16px",
     fontSize: 15,
     fontWeight: 500,
-    color: "#121214",
+    color: "#2b2420",
     outline: "none",
     transition: "border-color 0.2s",
   };
@@ -67,7 +67,7 @@ const Feedback = () => {
 
       {/* Heading */}
       <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#121214", textTransform: "uppercase" as const }}>
+        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" as const }}>
           GIVE US<br />FEEDBACK
         </h1>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4, marginTop: 12 }}>

@@ -59,7 +59,7 @@ const People = () => {
             fontSize: 40,
             lineHeight: 0.95,
             letterSpacing: "-0.5px",
-            color: "#121214",
+            color: "#2b2420",
             textTransform: "uppercase",
             margin: 0,
           }}
@@ -108,7 +108,7 @@ const People = () => {
             className="flex-1 bg-transparent outline-none"
             style={{
               fontSize: 14,
-              color: "#121214",
+              color: "#2b2420",
               letterSpacing: "0.2px",
             }}
           />
@@ -154,7 +154,7 @@ const People = () => {
                 fontFamily: "var(--font-heading)",
                 fontWeight: 900,
                 fontSize: 24,
-                color: "#121214",
+                color: "#2b2420",
                 marginBottom: 10,
                 letterSpacing: "-0.5px",
               }}

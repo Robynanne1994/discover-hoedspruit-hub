@@ -27,7 +27,7 @@ const TermsPolicies = () => {
 
       {/* Heading */}
       <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", margin: 0 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
           Terms & Policies
         </h1>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 0 }}>
@@ -53,7 +53,7 @@ const TermsPolicies = () => {
                 >
                   <Icon size={22} strokeWidth={1.5} color="#121214" style={{ flexShrink: 0 }} />
                   <div style={{ flex: 1, marginLeft: 14, paddingRight: 12 }}>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: "#121214", marginBottom: 3 }}>{item.label}</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", marginBottom: 3 }}>{item.label}</div>
                     <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", lineHeight: 1.4 }}>{item.sub}</div>
                   </div>
                   <ChevronRight size={16} strokeWidth={2} color="rgba(18,18,20,0.2)" style={{ flexShrink: 0 }} />

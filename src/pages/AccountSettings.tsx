@@ -75,7 +75,7 @@ const AccountSettings = () => {
       >
         <Icon style={{ width: 22, height: 22, flexShrink: 0 }} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />
         <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: "#121214", lineHeight: 1.3 }}>{item.label}</span>
+          <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.3 }}>{item.label}</span>
           <span style={{ display: "block", fontSize: 12, color: "rgba(18,18,20,0.35)", marginTop: 2, lineHeight: 1.3 }}>{item.desc}</span>
         </div>
         <ChevronRight style={{ width: 16, height: 16, flexShrink: 0 }} strokeWidth={2} color="rgba(18,18,20,0.2)" />
@@ -103,7 +103,7 @@ const AccountSettings = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#121214", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Sora', sans-serif)" }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Sora', sans-serif)" }}>
           ACCOUNT<br />SETTINGS
         </h1>
       </div>
@@ -128,7 +128,7 @@ const AccountSettings = () => {
             )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#121214", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <div style={{ fontSize: 16, fontWeight: 800, color: "#2b2420", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {profileLoading ? <Skeleton className="h-5 w-28" /> : (profile?.display_name || user.email?.split("@")[0])}
             </div>
             <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -140,7 +140,7 @@ const AccountSettings = () => {
             style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", border: "1px solid rgba(18,18,20,0.15)", borderRadius: 10, background: "transparent", flexShrink: 0, textDecoration: "none" }}
           >
             <Pencil style={{ width: 14, height: 14 }} color="#121214" />
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#121214" }}>Edit</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>Edit</span>
           </Link>
         </div>
       </div>
