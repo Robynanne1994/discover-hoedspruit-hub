@@ -448,7 +448,7 @@ const EventDetail = () => {
                       style={{
                         fontSize: 15,
                         fontWeight: 500,
-                        color: row.href ? "#121214" : "#121214",
+                        color: row.href ? "#2b2420" : "#2b2420",
                         lineHeight: 1.4,
                         margin: 0,
                         wordBreak: "break-word",
@@ -613,7 +613,7 @@ const EventDetail = () => {
               borderRadius: 14,
               background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
               border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-              color: isFavourited ? "#FFFFFF" : "#121214",
+              color: isFavourited ? "#FFFFFF" : "#2b2420",
               fontSize: 15,
               fontWeight: 500,
               letterSpacing: "0.1px",
