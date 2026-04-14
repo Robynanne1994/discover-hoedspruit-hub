@@ -19,7 +19,7 @@ import GalleryUpload from "@/components/admin/GalleryUpload";
 
 type Listing = Tables<"listings">;
 
-const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday", "public_holidays"];
+const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic"];

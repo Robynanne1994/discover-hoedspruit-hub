@@ -13,7 +13,9 @@ import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } fro
 import BottomNav from "@/components/BottomNav";
 import { toast } from "sonner";
 
-const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Public Holidays"];
+import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
+
+const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
