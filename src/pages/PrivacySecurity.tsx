@@ -104,7 +104,7 @@ const PrivacySecurity = () => {
 
       {/* Intro card */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
-        <div style={{ ...cardStyle, padding: 16 }}>
+        <div style={{ ...cardStyle, padding: 16, boxShadow: "var(--card-shadow)" }}>
           <div className="flex items-start" style={{ gap: 12 }}>
             <Shield style={{ width: 22, height: 22, strokeWidth: 1.5, color: "#2b2420", flexShrink: 0, marginTop: 2 }} />
             <div>
@@ -174,7 +174,7 @@ const PrivacySecurity = () => {
 
       {/* Data Sharing & Third Parties */}
       <Section title="Data Sharing & Third Parties">
-        <div style={{ ...cardStyle, padding: 16 }}>
+        <div style={{ ...cardStyle, padding: 16, boxShadow: "var(--card-shadow)" }}>
           {dataSharingTexts.map((text, i) => (
             <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, marginBottom: i < dataSharingTexts.length - 1 ? 14 : 0 }}>{text}</p>
           ))}
@@ -198,7 +198,7 @@ const PrivacySecurity = () => {
 
       {/* Community, Listings & User Content */}
       <Section title="Community, Listings & User Content">
-        <div style={{ ...cardStyle, padding: 16 }}>
+        <div style={{ ...cardStyle, padding: 16, boxShadow: "var(--card-shadow)" }}>
           {communityTexts.map((text, i) => (
             <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, marginBottom: i < communityTexts.length - 1 ? 14 : 0 }}>{text}</p>
           ))}
@@ -207,7 +207,7 @@ const PrivacySecurity = () => {
 
       {/* Children's Privacy */}
       <Section title="Children's Privacy">
-        <div style={{ ...cardStyle, padding: 16 }}>
+        <div style={{ ...cardStyle, padding: 16, boxShadow: "var(--card-shadow)" }}>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7 }}>
             Hello Hoedspruit is not intended for young children without appropriate supervision.
           </p>

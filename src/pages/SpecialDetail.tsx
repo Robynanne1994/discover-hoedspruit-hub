@@ -191,7 +191,7 @@ const SpecialDetail = () => {
       {special.description && (
         <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
           <SectionLabel eyebrow="Overview" title="About this deal" />
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
+          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, boxShadow: "var(--card-shadow)" }}>
             <p style={{ margin: 0, fontSize: 15, color: "rgba(18,18,20,0.58)", lineHeight: 1.85, letterSpacing: "0.1px" }}>{special.description}</p>
           </div>
         </section>
@@ -239,7 +239,7 @@ const SpecialDetail = () => {
       {special.terms && (
         <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
           <SectionLabel eyebrow="Fine print" title="Terms & Conditions" />
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
+          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, boxShadow: "var(--card-shadow)" }}>
             <p style={{ margin: 0, fontSize: 13, color: "rgba(18,18,20,0.5)", lineHeight: 1.7 }}>{special.terms}</p>
           </div>
         </section>

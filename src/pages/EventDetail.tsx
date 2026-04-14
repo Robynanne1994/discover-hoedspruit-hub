@@ -363,7 +363,7 @@ const EventDetail = () => {
               background: "rgba(18,18,20,0.03)",
               border: "1px solid rgba(18,18,20,0.06)",
               borderRadius: 16,
-              padding: 16,
+              padding: 16, boxShadow: "var(--card-shadow)",
             }}
           >
             <p
