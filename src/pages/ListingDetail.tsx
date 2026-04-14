@@ -185,7 +185,7 @@ const ListingDetail = () => {
   // Quick-scan pills for restaurants
   const quickPills: { label: string }[] = [];
   if (isListingRestaurant) {
-    if (cuisine && cuisine.length > 0) quickPills.push({ label: cuisine.join(", ") });
+    // cuisine moved to its own accordion
     if (vibe && vibe.length > 0) quickPills.push({ label: vibe.join(", ") });
     if (priceLevel) quickPills.push({ label: "R".repeat(priceLevel) });
     
@@ -256,6 +256,12 @@ const ListingDetail = () => {
     if (meal && meal.length > 0) {
       const mealFields: BoolField[] = meal.map(m => ({ label: m, value: true }));
       accordionSections.push({ key: "meals", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Meals Served", fields: mealFields });
+    }
+
+    // Cuisine: each cuisine type as a check item
+    if (cuisine && cuisine.length > 0) {
+      const cuisineFields: BoolField[] = cuisine.map(c => ({ label: c, value: true }));
+      accordionSections.push({ key: "cuisine", icon: <ShoppingBag size={18} strokeWidth={1.5} color="#121214" />, title: "Cuisine", fields: cuisineFields });
     }
   }
 
