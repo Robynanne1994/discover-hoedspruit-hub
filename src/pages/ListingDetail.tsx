@@ -298,20 +298,14 @@ const ListingDetail = () => {
           <button onClick={() => navigate(-1)} style={{ ...circleBtn, position: "absolute", top: 16, left: 20, zIndex: 10 }}>
             <ArrowLeft size={18} strokeWidth={2} color="#121214" />
           </button>
-          {/* Save & Share buttons */}
-          <div style={{ position: "absolute", top: 16, right: 20, zIndex: 10, display: "flex", gap: 10 }}>
-            <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} style={circleBtn}>
-              <Heart size={18} strokeWidth={1.5} color="#121214" fill={isFavourited ? "#121214" : "none"} />
-            </button>
-            <button onClick={handleShare} style={circleBtn}>
-              <Share2 size={18} strokeWidth={1.5} color="#121214" />
-            </button>
-            {isAdmin && (
+          {/* Admin edit button */}
+          {isAdmin && (
+            <div style={{ position: "absolute", top: 16, right: 20, zIndex: 10 }}>
               <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={circleBtn} title="Edit listing">
                 <Pencil size={18} strokeWidth={1.5} color="#121214" />
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       ) : (
         <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
