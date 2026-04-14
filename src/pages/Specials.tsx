@@ -80,12 +80,10 @@ const Specials = () => {
             </div>
           );
 
-          return special.business_id ? (
-            <Link key={special.id} to={`/listing/${special.business_id}`} style={{ textDecoration: "none" }}>
+          return (
+            <Link key={special.id} to={`/specials/${special.id}`} style={{ textDecoration: "none" }}>
               {content}
             </Link>
-          ) : (
-            <div key={special.id}>{content}</div>
           );
         })}
         {!isLoading && specials?.length === 0 && (
