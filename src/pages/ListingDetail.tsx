@@ -186,7 +186,7 @@ const ListingDetail = () => {
   const quickPills: { label: string }[] = [];
   if (isListingRestaurant) {
     // cuisine moved to its own accordion
-    if (vibe && vibe.length > 0) quickPills.push({ label: vibe.join(", ") });
+    // vibe moved to its own accordion
     if (priceLevel) quickPills.push({ label: "R".repeat(priceLevel) });
     
   }
@@ -262,6 +262,12 @@ const ListingDetail = () => {
     if (cuisine && cuisine.length > 0) {
       const cuisineFields: BoolField[] = cuisine.map(c => ({ label: c, value: true }));
       accordionSections.push({ key: "cuisine", icon: <ShoppingBag size={18} strokeWidth={1.5} color="#121214" />, title: "Cuisine", fields: cuisineFields });
+    }
+
+    // Vibe: each vibe as a check item
+    if (vibe && vibe.length > 0) {
+      const vibeFields: BoolField[] = vibe.map(v => ({ label: v, value: true }));
+      accordionSections.push({ key: "vibe", icon: <Star size={18} strokeWidth={1.5} color="#121214" />, title: "Vibe", fields: vibeFields });
     }
   }
 
