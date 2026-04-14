@@ -76,7 +76,7 @@ const SpecialsSection = () => {
                     <div style={{ width: "100%", height: "100%", background: "rgba(255,255,255,0.06)" }} />
                   )}
                   <div style={{
-                    position: "absolute", top: 10, left: 10,
+                    position: "absolute", top: 8, left: 8,
                     background: "#ffffff", borderRadius: 8, padding: "2px 10px",
                   }}>
                     <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5 }}>
