@@ -19,7 +19,7 @@ const CategoryPills = () => {
             <Link
               key={cat.label}
               to={cat.href}
-              className="flex items-center gap-1.5 px-3 py-2 bg-card rounded-full border border-border/50 shadow-sm whitespace-nowrap transition-all active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2 bg-card rounded-full border border-border/50 shadow-card whitespace-nowrap transition-all active:scale-95"
             >
               <Icon className="h-3.5 w-3.5 text-primary" />
               <span className="text-xs font-medium text-foreground">{cat.label}</span>

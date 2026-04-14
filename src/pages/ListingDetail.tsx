@@ -267,7 +267,7 @@ const ListingDetail = () => {
   const circleBtn: React.CSSProperties = {
     width: 38, height: 38, borderRadius: "50%", background: "#ffffff",
     display: "flex", alignItems: "center", justifyContent: "center",
-    border: "none", cursor: "pointer", boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+    border: "none", cursor: "pointer", boxShadow: "var(--card-shadow)",
   };
 
   return (

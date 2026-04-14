@@ -198,7 +198,7 @@ const HomeHero = () => {
           className="fixed left-0 right-0 z-[100] px-6"
           style={{ top: containerRef.current ? containerRef.current.getBoundingClientRect().bottom + 8 : 200 }}
         >
-          <div style={{ background: "#ffffff", borderRadius: 16, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto", boxShadow: "0 8px 30px rgba(0,0,0,0.12)" }}>
+          <div style={{ background: "#ffffff", borderRadius: 16, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto", boxShadow: "var(--card-shadow)" }}>
             {!isFetching && !hasResults && (
               <div style={{ padding: "32px 16px", textAlign: "center", fontSize: 13, color: "rgba(18,18,20,0.4)" }}>
                 No results for "{query}"
