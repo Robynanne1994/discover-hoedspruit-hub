@@ -44,7 +44,7 @@ const About = () => {
 
       {/* Founder photo */}
       <div style={{ padding: "0 24px", marginBottom: 28 }}>
-        <div style={{ borderRadius: 20, overflow: "hidden", height: 320 }}>
+        <div style={{ borderRadius: 16, overflow: "hidden", height: 320 }}>
           <img
             src="https://media.licdn.com/dms/image/v2/D4D03AQEovnKgk_KDnw/profile-displayphoto-crop_800_800/B4DZxSzIvCJcAM-/0/1770915663825?e=1775692800&v=beta&t=cqieS2K8_BvM9SoPttQVDEJWbBVERBzXXdwEie_hLnk"
             alt="Robyn Dawes — Founder of Hello Hoedspruit"
@@ -91,7 +91,7 @@ const About = () => {
 
       {/* CTA card */}
       <div style={{ padding: "0 24px", marginBottom: 100 }}>
-        <div style={{ background: "#121214", borderRadius: 20, padding: "32px 24px", position: "relative", overflow: "hidden" }}>
+        <div style={{ background: "#121214", borderRadius: 16, padding: "32px 24px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
           <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
           <div style={{ position: "relative", zIndex: 1 }}>
@@ -100,7 +100,7 @@ const About = () => {
             <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22, marginTop: 0 }}>
               If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
             </p>
-            <button onClick={() => navigate("/advertise")} style={{ background: "#ffffff", borderRadius: 10, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>
+            <button onClick={() => navigate("/advertise")} style={{ background: "#ffffff", borderRadius: 9999, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
               <ArrowUpRight size={14} color="#121214" strokeWidth={2.5} />
             </button>

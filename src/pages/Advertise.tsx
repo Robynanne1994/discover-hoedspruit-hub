@@ -24,7 +24,7 @@ const inputStyle: React.CSSProperties = {
   width: "100%",
   background: "rgba(18,18,20,0.03)",
   border: "1px solid rgba(18,18,20,0.08)",
-  borderRadius: 12,
+  borderRadius: 16,
   padding: "14px 16px",
   fontSize: 15,
   fontWeight: 500,
@@ -116,7 +116,7 @@ const Advertise = () => {
 
       {/* Why card */}
       <div style={{ padding: "0 24px", marginBottom: 36 }}>
-        <div style={{ background: "#121214", borderRadius: 20, padding: "28px 24px", position: "relative", overflow: "hidden" }}>
+        <div style={{ background: "#121214", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
           <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
           <div style={{ position: "relative", zIndex: 1 }}>
@@ -144,7 +144,7 @@ const Advertise = () => {
             </div>
             <div style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", marginBottom: 8 }}>Thanks for your interest!</div>
             <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", lineHeight: 1.5, marginBottom: 20 }}>We've received your enquiry and will be in touch soon.</p>
-            <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 10, padding: "10px 20px", fontSize: 13, fontWeight: 600, color: "#2b2420", cursor: "pointer" }}>
+            <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 9999, padding: "10px 20px", fontSize: 13, fontWeight: 600, color: "#2b2420", cursor: "pointer" }}>
               Send Another Enquiry
             </button>
           </div>
@@ -188,7 +188,7 @@ const Advertise = () => {
             </div>
             {/* Submit */}
             <button type="submit" disabled={submitForm.isPending} style={{
-              width: "100%", background: "#121214", borderRadius: 12, padding: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, border: "none", cursor: "pointer", opacity: submitForm.isPending ? 0.6 : 1,
+              width: "100%", background: "#121214", borderRadius: 9999, padding: 16, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, border: "none", cursor: "pointer", opacity: submitForm.isPending ? 0.6 : 1,
             }}>
               {submitForm.isPending ? (
                 <><Loader2 size={16} color="#ffffff" className="animate-spin" /> <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", letterSpacing: 0.3 }}>Sending...</span></>

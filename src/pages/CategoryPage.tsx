@@ -250,9 +250,9 @@ const CategoryPage = () => {
               <div>
                 <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Category</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
-                  <button onClick={() => handleSubFilter(null)} style={{ background: !activeSubId ? "#121214" : "rgba(18,18,20,0.04)", border: !activeSubId ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: !activeSubId ? 600 : 500, color: !activeSubId ? "#ffffff" : "rgba(18,18,20,0.5)" }}>All</button>
+                  <button onClick={() => handleSubFilter(null)} style={{ background: !activeSubId ? "#121214" : "rgba(18,18,20,0.04)", border: !activeSubId ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: !activeSubId ? 600 : 500, color: !activeSubId ? "#ffffff" : "rgba(18,18,20,0.5)" }}>All</button>
                   {subcategories.map((sub) => (
-                    <button key={sub.id} onClick={() => handleSubFilter(sub.id)} style={{ background: activeSubId === sub.id ? "#121214" : "rgba(18,18,20,0.04)", border: activeSubId === sub.id ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: activeSubId === sub.id ? 600 : 500, color: activeSubId === sub.id ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{sub.title}</button>
+                    <button key={sub.id} onClick={() => handleSubFilter(sub.id)} style={{ background: activeSubId === sub.id ? "#121214" : "rgba(18,18,20,0.04)", border: activeSubId === sub.id ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: activeSubId === sub.id ? 600 : 500, color: activeSubId === sub.id ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{sub.title}</button>
                   ))}
                 </div>
               </div>
@@ -263,7 +263,7 @@ const CategoryPage = () => {
                 <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Cuisine</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {CUISINE_OPTIONS.map((c) => (
-                    <button key={c} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} style={{ background: filterCuisine.includes(c) ? "#121214" : "rgba(18,18,20,0.04)", border: filterCuisine.includes(c) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterCuisine.includes(c) ? 600 : 500, color: filterCuisine.includes(c) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{c}</button>
+                    <button key={c} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} style={{ background: filterCuisine.includes(c) ? "#121214" : "rgba(18,18,20,0.04)", border: filterCuisine.includes(c) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterCuisine.includes(c) ? 600 : 500, color: filterCuisine.includes(c) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{c}</button>
                   ))}
                 </div>
               </div>
@@ -274,7 +274,7 @@ const CategoryPage = () => {
                 <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Vibe</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {VIBE_OPTIONS.map((v) => (
-                    <button key={v} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} style={{ background: filterVibe.includes(v) ? "#121214" : "rgba(18,18,20,0.04)", border: filterVibe.includes(v) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterVibe.includes(v) ? 600 : 500, color: filterVibe.includes(v) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{v}</button>
+                    <button key={v} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} style={{ background: filterVibe.includes(v) ? "#121214" : "rgba(18,18,20,0.04)", border: filterVibe.includes(v) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterVibe.includes(v) ? 600 : 500, color: filterVibe.includes(v) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{v}</button>
                   ))}
                 </div>
               </div>
@@ -285,7 +285,7 @@ const CategoryPage = () => {
                 <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Meal</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {MEAL_OPTIONS.map((m) => (
-                    <button key={m} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} style={{ background: filterMeal.includes(m) ? "#121214" : "rgba(18,18,20,0.04)", border: filterMeal.includes(m) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterMeal.includes(m) ? 600 : 500, color: filterMeal.includes(m) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{m}</button>
+                    <button key={m} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} style={{ background: filterMeal.includes(m) ? "#121214" : "rgba(18,18,20,0.04)", border: filterMeal.includes(m) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterMeal.includes(m) ? 600 : 500, color: filterMeal.includes(m) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{m}</button>
                   ))}
                 </div>
               </div>
@@ -296,7 +296,7 @@ const CategoryPage = () => {
                 <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Seating</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {SEATING_OPTIONS.map((s) => (
-                    <button key={s} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} style={{ background: filterSeating.includes(s) ? "#121214" : "rgba(18,18,20,0.04)", border: filterSeating.includes(s) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterSeating.includes(s) ? 600 : 500, color: filterSeating.includes(s) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{s}</button>
+                    <button key={s} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} style={{ background: filterSeating.includes(s) ? "#121214" : "rgba(18,18,20,0.04)", border: filterSeating.includes(s) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterSeating.includes(s) ? 600 : 500, color: filterSeating.includes(s) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{s}</button>
                   ))}
                 </div>
               </div>
@@ -306,11 +306,11 @@ const CategoryPage = () => {
               <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Amenities</p>
               <div className="flex flex-wrap" style={{ gap: 8 }}>
                 {(isRestaurant || isAccom) && (
-                  <button onClick={() => setFilterChildFriendly(!filterChildFriendly)} style={{ background: filterChildFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterChildFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterChildFriendly ? 600 : 500, color: filterChildFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Child Friendly</button>
+                  <button onClick={() => setFilterChildFriendly(!filterChildFriendly)} style={{ background: filterChildFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterChildFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterChildFriendly ? 600 : 500, color: filterChildFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Child Friendly</button>
                 )}
-                <button onClick={() => setFilterPetFriendly(!filterPetFriendly)} style={{ background: filterPetFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterPetFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterPetFriendly ? 600 : 500, color: filterPetFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Pet Friendly</button>
-                <button onClick={() => setFilterWheelchair(!filterWheelchair)} style={{ background: filterWheelchair ? "#121214" : "rgba(18,18,20,0.04)", border: filterWheelchair ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterWheelchair ? 600 : 500, color: filterWheelchair ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Wheelchair Accessible</button>
-                <button onClick={() => setFilterWifi(!filterWifi)} style={{ background: filterWifi ? "#121214" : "rgba(18,18,20,0.04)", border: filterWifi ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 10, padding: "8px 16px", fontSize: 12, fontWeight: filterWifi ? 600 : 500, color: filterWifi ? "#ffffff" : "rgba(18,18,20,0.5)" }}>WiFi</button>
+                <button onClick={() => setFilterPetFriendly(!filterPetFriendly)} style={{ background: filterPetFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterPetFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterPetFriendly ? 600 : 500, color: filterPetFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Pet Friendly</button>
+                <button onClick={() => setFilterWheelchair(!filterWheelchair)} style={{ background: filterWheelchair ? "#121214" : "rgba(18,18,20,0.04)", border: filterWheelchair ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterWheelchair ? 600 : 500, color: filterWheelchair ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Wheelchair Accessible</button>
+                <button onClick={() => setFilterWifi(!filterWifi)} style={{ background: filterWifi ? "#121214" : "rgba(18,18,20,0.04)", border: filterWifi ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterWifi ? 600 : 500, color: filterWifi ? "#ffffff" : "rgba(18,18,20,0.5)" }}>WiFi</button>
               </div>
             </div>
           </div>
@@ -322,7 +322,7 @@ const CategoryPage = () => {
         {isLoading ? (
           <div className="space-y-5">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 18, background: "#f0f0f0" }} />
+              <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 16, background: "#f0f0f0" }} />
             ))}
           </div>
         ) : filteredListings && filteredListings.length > 0 ? (
@@ -370,7 +370,7 @@ const CategoryPage = () => {
                     style={{
                       background: "rgba(18,18,20,0.04)",
                       border: "1px solid rgba(18,18,20,0.06)",
-                      borderRadius: 18,
+                      borderRadius: 16,
                       overflow: "hidden",
                     }}
                   >

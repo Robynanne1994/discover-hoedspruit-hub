@@ -110,7 +110,7 @@ const HomeHero = () => {
           <div style={{
             background: "#ffffff",
             border: "2px solid #121214",
-            borderRadius: 14,
+            borderRadius: 9999,
             padding: "11px 14px",
             display: "flex",
             alignItems: "center",
@@ -164,7 +164,7 @@ const HomeHero = () => {
                   padding: "7px 14px 7px 8px",
                   background: "rgba(18,18,20,0.05)",
                   border: "none",
-                  borderRadius: 20,
+                  borderRadius: 9999,
                   whiteSpace: "nowrap",
                   textDecoration: "none",
                 }}
@@ -198,7 +198,7 @@ const HomeHero = () => {
           className="fixed left-0 right-0 z-[100] px-6"
           style={{ top: containerRef.current ? containerRef.current.getBoundingClientRect().bottom + 8 : 200 }}
         >
-          <div style={{ background: "#ffffff", borderRadius: 12, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto", boxShadow: "0 8px 30px rgba(0,0,0,0.12)" }}>
+          <div style={{ background: "#ffffff", borderRadius: 16, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto", boxShadow: "0 8px 30px rgba(0,0,0,0.12)" }}>
             {!isFetching && !hasResults && (
               <div style={{ padding: "32px 16px", textAlign: "center", fontSize: 13, color: "rgba(18,18,20,0.4)" }}>
                 No results for "{query}"

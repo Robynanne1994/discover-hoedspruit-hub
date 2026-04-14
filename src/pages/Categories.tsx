@@ -135,7 +135,7 @@ const Categories = () => {
           style={{
             background: "#ffffff",
             border: "2px solid #121214",
-            borderRadius: 14,
+            borderRadius: 9999,
             padding: "11px 14px",
             gap: 8,
           }}
@@ -221,7 +221,7 @@ const Categories = () => {
                       className="flex items-center active:scale-[0.98] transition-transform duration-150"
                       style={{
                          background: "rgba(18,18,20,0.04)",
-                         borderRadius: 12,
+                         borderRadius: 16,
                         padding: 12,
                         gap: 12,
                       }}
@@ -230,7 +230,7 @@ const Categories = () => {
                         style={{
                           width: 48,
                           height: 48,
-                          borderRadius: 10,
+                          borderRadius: 16,
                           overflow: "hidden",
                            background: "#f0f0f0",
                           flexShrink: 0,

@@ -48,7 +48,7 @@ interface ProfileFormProps {
 const inputStyle: React.CSSProperties = {
   background: "rgba(18,18,20,0.03)",
   border: "1px solid rgba(18,18,20,0.08)",
-  borderRadius: 12,
+  borderRadius: 16,
   padding: "14px 16px",
   fontSize: 15,
   fontWeight: 500,
@@ -316,7 +316,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
             className="w-full flex items-center justify-center active:scale-[0.98] transition-transform"
             style={{
               background: "#121214",
-              borderRadius: 12,
+              borderRadius: 16,
               padding: 16,
               fontSize: 15,
               fontWeight: 700,

@@ -137,7 +137,7 @@ const AccountSettings = () => {
           </div>
           <Link
             to="/my-account"
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", border: "1px solid rgba(18,18,20,0.15)", borderRadius: 10, background: "transparent", flexShrink: 0, textDecoration: "none" }}
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", border: "1px solid rgba(18,18,20,0.15)", borderRadius: 9999, background: "transparent", flexShrink: 0, textDecoration: "none" }}
           >
             <Pencil style={{ width: 14, height: 14 }} color="#121214" />
             <span style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>Edit</span>
@@ -154,7 +154,7 @@ const AccountSettings = () => {
       <div style={{ display: "flex", justifyContent: "center", marginTop: 36 }}>
         <button
           onClick={() => { signOut(); navigate("/"); }}
-          style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 32px", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 12, background: "transparent", cursor: "pointer" }}
+          style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 32px", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 9999, background: "transparent", cursor: "pointer" }}
         >
           <LogOut style={{ width: 16, height: 16 }} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />
           <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(18,18,20,0.4)" }}>Log out</span>
