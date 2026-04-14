@@ -368,7 +368,7 @@ const Events = () => {
                           style={{
                             fontFamily: "var(--font-heading)",
                             fontSize: 18,
-                            fontFamily: "var(--font-heading)", fontWeight: 700,
+                            fontWeight: 700,
                             color: "#ffffff",
                             lineHeight: 1.2,
                             marginBottom: 4,
