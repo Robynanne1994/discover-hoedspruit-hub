@@ -32,14 +32,11 @@ const SpecialsSection = () => {
   if (!specials || specials.length === 0) return null;
 
   const CardWrapper = ({ special, children }: { special: Special; children: React.ReactNode }) => {
-    if (special.business_id) {
-      return (
-        <Link to={`/listing/${special.business_id}`} style={{ textDecoration: "none", flexShrink: 0 }}>
-          {children}
-        </Link>
-      );
-    }
-    return <div style={{ flexShrink: 0 }}>{children}</div>;
+    return (
+      <Link to={`/specials/${special.id}`} style={{ textDecoration: "none", flexShrink: 0 }}>
+        {children}
+      </Link>
+    );
   };
 
   return (
