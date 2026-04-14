@@ -830,7 +830,7 @@ const ListingDetail = () => {
         )}
 
         {/* Suggest an Edit */}
-        <div style={{ marginTop: 8, marginBottom: 100 }}>
+        <div style={{ marginTop: 8, marginBottom: 48 }}>
           <a
             href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
             style={{
