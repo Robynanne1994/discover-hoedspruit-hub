@@ -238,7 +238,7 @@ const Specials = () => {
                     </div>
 
                     {/* Deal label pill */}
-                    <div style={{ <div style={{ position: "absolute", left: 8, top: 8 }}> }}>
+                    <div style={{ position: "absolute", left: 8, top: 8 }}>
                       <span
                         className="inline-flex items-center"
                         style={{
