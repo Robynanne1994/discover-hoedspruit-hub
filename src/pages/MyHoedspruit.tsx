@@ -105,6 +105,7 @@ const MyHoedspruit = () => {
       href: "/visited",
       bg: "#f5f0e8",
       flex: 5,
+      bgImage: visitedBgData || undefined,
     },
     {
       label: "Coming\nSoon",
