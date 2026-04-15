@@ -206,7 +206,7 @@ const MyAccount = () => {
   // Not signed in
   if (!loading && !user) {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
           <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>PROFILE</h1>
         </div>
@@ -222,7 +222,7 @@ const MyAccount = () => {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-10 w-48 mb-4" />
           <Skeleton className="h-4 w-40 mb-7" />
@@ -470,17 +470,17 @@ const MyAccount = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       {/* Heading */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
           PROFILE
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           Your account and settings
         </p>
       </div>
@@ -499,11 +499,11 @@ const MyAccount = () => {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="truncate" style={{ fontFamily: "var(--font-heading)", fontSize: 15, fontWeight: 700, color: "#2b2420", letterSpacing: "0.3px", lineHeight: 1.2 }}>
+              <h2 className="truncate" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 15, fontWeight: 700, color: "#2b2420", letterSpacing: "0.3px", lineHeight: 1.2 }}>
                 {profile?.display_name || user.email?.split("@")[0]}
               </h2>
               {profile?.bio && (
-                <p style={{ fontSize: 13, color: "rgba(18,18,20,0.5)", marginTop: 8, lineHeight: 1.4, fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif" }}>
+                <p style={{ fontSize: 13, color: "rgba(18,18,20,0.5)", marginTop: 8, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   {profile.bio}
                 </p>
               )}
