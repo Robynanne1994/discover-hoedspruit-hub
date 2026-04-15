@@ -13,10 +13,10 @@ const DoSection = () => {
   if (isLoading) {
     return (
       <section style={{ paddingTop: 36 }}>
-        <div style={{ padding: "0 24px" }}>
+        <div style={{ padding: "0 12px" }}>
           <HomeSectionHeader title={title || "What to Do"} />
         </div>
-        <div style={{ display: "flex", gap: 12, paddingLeft: 24 }}>
+        <div style={{ display: "flex", gap: 12, paddingLeft: 4 }}>
           <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
           <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
         </div>
@@ -28,7 +28,7 @@ const DoSection = () => {
 
   return (
     <section style={{ paddingTop: 36 }}>
-      <div style={{ padding: "0 24px" }}>
+      <div style={{ padding: "0 12px" }}>
         <HomeSectionHeader title={title || "What to Do"} actionLabel="See All" actionHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb" />
       </div>
       <HomeListingCarousel listings={listings.slice(0, 6)} />
