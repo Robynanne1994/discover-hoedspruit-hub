@@ -40,9 +40,9 @@ const SpecialsSection = () => {
   };
 
   return (
-    <div style={{ width: "100%", paddingTop: 28, paddingBottom: 28 }}>
+    <div style={{ width: "100%", paddingTop: 80, paddingBottom: 80 }}>
       {/* Header */}
-      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
+      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
           <h2 style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 42, color: "#1A1A1A", letterSpacing: -1, lineHeight: 1.1, margin: 0 }}>
             Specials

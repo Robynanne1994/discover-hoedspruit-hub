@@ -9,7 +9,7 @@ const StaySection = () => {
 
   if (isLoading) {
     return (
-      <section style={{ paddingTop: 36 }}>
+      <section style={{ paddingTop: 80, paddingBottom: 80 }}>
         <div style={{ padding: "0 24px" }}>
           <HomeSectionHeader title={title || "Where to Stay"} />
         </div>
@@ -24,7 +24,7 @@ const StaySection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section style={{ paddingTop: 36 }}>
+    <section style={{ paddingTop: 80, paddingBottom: 80 }}>
       <div style={{ padding: "0 24px" }}>
         <HomeSectionHeader title={title || "Where to Stay"} actionLabel="See All" actionHref="/category/cef1c5ad-b199-41c9-bc8a-5834703a953a" />
       </div>
