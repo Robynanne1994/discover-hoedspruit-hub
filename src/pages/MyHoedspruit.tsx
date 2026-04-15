@@ -178,7 +178,6 @@ const MyHoedspruit = () => {
       </div>
     );
   };
-  };
 
   return (
     <div style={{ background: "#ffffff", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
