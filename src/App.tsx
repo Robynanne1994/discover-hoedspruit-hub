@@ -53,6 +53,7 @@ import FAQs from "./pages/FAQs.tsx";
 import PrivacySecurity from "./pages/PrivacySecurity.tsx";
 import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
+import MyHoedspruit from "./pages/MyHoedspruit.tsx";
 import Specials from "./pages/Specials.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
 
@@ -98,6 +99,7 @@ const App = () => (
               <Route path="/directories" element={<Directories />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/my-account" element={<MyAccount />} />
+              <Route path="/my-hoedspruit" element={<MyHoedspruit />} />
               <Route path="/saved" element={<SavedListings />} />
               <Route path="/visited" element={<VisitedPlaces />} />
               <Route path="/account-settings" element={<AccountSettings />} />
