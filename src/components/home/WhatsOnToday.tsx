@@ -35,7 +35,7 @@ const WhatsOnToday = () => {
 
   if (isLoading) {
     return (
-      <section style={{ padding: "32px 12px 0" }}>
+      <section style={{ padding: "32px 14px 0" }}>
         <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {[1, 2, 3].map((i) => (
@@ -51,7 +51,7 @@ const WhatsOnToday = () => {
   const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
   return (
-    <section style={{ padding: "32px 12px 24px" }}>
+    <section style={{ padding: "32px 14px 24px" }}>
       <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
       <div>
         {events.map((event, idx) => {

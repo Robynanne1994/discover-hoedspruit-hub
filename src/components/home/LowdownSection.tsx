@@ -29,8 +29,9 @@ const LowdownSection = () => {
   };
 
   return (
-    <div style={{ paddingTop: 36, paddingLeft: 12, paddingRight: 12 }}>
+    <div style={{ paddingTop: 36 }}>
       {/* Header */}
+      <div style={{ paddingLeft: 14, paddingRight: 14 }}>
       <HomeSectionHeader title="Lowveld Lowdown" />
 
       {/* Featured card */}

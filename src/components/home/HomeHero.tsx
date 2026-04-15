@@ -97,7 +97,7 @@ const HomeHero = () => {
   return (
     <>
       {/* Hero area */}
-      <div style={{ background: "#f5f0e8", padding: "48px 12px 28px" }}>
+      <div style={{ background: "#f5f0e8", padding: "48px 14px 28px" }}>
         <h1 style={{ fontWeight: 900, fontSize: 44, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", marginBottom: 12 }}>
           HELLO<br />HOEDSPRUIT
         </h1>
@@ -148,7 +148,7 @@ const HomeHero = () => {
       </div>
 
       {/* Category pills */}
-      <div style={{ paddingTop: 18, paddingLeft: 12, overflowX: "auto" }} className="scrollbar-hide">
+      <div style={{ paddingTop: 18, paddingLeft: 14, overflowX: "auto" }} className="scrollbar-hide">
         <div style={{ display: "flex", gap: 8 }}>
           {categories.map((cat) => {
             const Icon = cat.icon;
