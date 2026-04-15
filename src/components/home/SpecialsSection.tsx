@@ -55,7 +55,7 @@ const SpecialsSection = () => {
 
       {/* Carousel */}
       <div style={{ overflowX: "auto", paddingLeft: 4 }} className="scrollbar-hide">
-        <div style={{ display: "flex", gap: 12 }}>
+        <div style={{ display: "flex", gap: 4 }}>
           {specials.map((special, idx) => (
             <CardWrapper key={special.id} special={special}>
               <div
