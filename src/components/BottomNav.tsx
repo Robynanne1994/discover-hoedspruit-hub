@@ -4,7 +4,7 @@ import { Home, Search, Heart, Calendar, User } from "lucide-react";
 const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/categories", icon: Search },
-  { label: "Saved", href: "/saved", icon: Heart },
+  { label: "Saved", href: "/my-hoedspruit", icon: Heart },
   { label: "Events", href: "/events", icon: Calendar },
   { label: "Profile", href: "/my-account", icon: User },
 ];
