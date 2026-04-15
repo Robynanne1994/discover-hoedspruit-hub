@@ -4,13 +4,18 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import BackButton from "@/components/BackButton";
-import { Json } from "@/integrations/supabase/types";
+
+interface CardConfig {
+  image_url?: string;
+  text_color?: "dark" | "white";
+}
+
+type CardsConfig = Record<string, CardConfig>;
 
 const MyHoedspruit = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch counts
   const { data: savedListingsCount = 0 } = useQuery({
     queryKey: ["favourites-count", "listing", user?.id],
     queryFn: async () => {
@@ -62,22 +67,27 @@ const MyHoedspruit = () => {
     enabled: !!user,
   });
 
-  // Fetch visited card background image
-  const { data: visitedBgData } = useQuery({
-    queryKey: ["site-content", "my-hoedspruit-visited-bg"],
+  // Fetch all card configs
+  const { data: cardsConfig = {} as CardsConfig } = useQuery({
+    queryKey: ["site-content", "my-hoedspruit-cards"],
     queryFn: async () => {
       const { data } = await supabase
         .from("site_content")
         .select("content")
-        .eq("section", "my-hoedspruit-visited-bg")
+        .eq("section", "my-hoedspruit-cards")
         .maybeSingle();
-      const content = data?.content as { image_url?: string } | null;
-      return content?.image_url || null;
+      if (data?.content && typeof data.content === "object" && !Array.isArray(data.content)) {
+        return data.content as CardsConfig;
+      }
+      return {} as CardsConfig;
     },
   });
 
+  const getCardConfig = (key: string): CardConfig => cardsConfig[key] || {};
+
   const cards = [
     {
+      key: "saved-listings",
       label: "Saved\nListings",
       count: savedListingsCount,
       href: "/saved",
@@ -85,6 +95,7 @@ const MyHoedspruit = () => {
       flex: 5,
     },
     {
+      key: "my-events",
       label: "My\nEvents",
       count: savedEventsCount,
       href: "/saved?tab=events",
@@ -92,22 +103,24 @@ const MyHoedspruit = () => {
       flex: 3,
     },
     {
+      key: "saved-specials",
       label: "Saved\nSpecials",
       count: savedSpecialsCount,
       href: "/saved?tab=specials",
       bg: "#715a3d",
-      color: "#ffffff",
+      defaultColor: "#ffffff",
       flex: 4,
     },
     {
+      key: "visited-places",
       label: "Visited\nPlaces",
       count: visitedCount,
       href: "/visited",
       bg: "#f5f0e8",
       flex: 5,
-      bgImage: visitedBgData || undefined,
     },
     {
+      key: "coming-soon",
       label: "Coming\nSoon",
       count: null,
       href: null,
@@ -116,93 +129,36 @@ const MyHoedspruit = () => {
     },
   ];
 
-  // Masonry: split into 2 columns
   const leftCards = [cards[0], cards[2], cards[4]];
   const rightCards = [cards[1], cards[3]];
 
   const renderCard = (card: typeof cards[0], index: number) => {
     const isClickable = !!card.href;
-    const hasBgImage = !!card.bgImage;
-    const textColor = hasBgImage ? "#ffffff" : (card.color || "#2b2420");
-    const countColor = hasBgImage ? "rgba(255,255,255,0.7)" : (card.color ? "rgba(255,255,255,0.6)" : "rgba(18,18,20,0.35)");
-    const arrowColor = hasBgImage ? "rgba(255,255,255,0.6)" : (card.color ? "rgba(255,255,255,0.5)" : "rgba(18,18,20,0.25)");
+    const cfg = getCardConfig(card.key);
+    const hasBgImage = !!cfg.image_url;
 
-    const cardContent = (
-      <>
-        {/* Background image */}
-        {hasBgImage && (
-          <img
-            src={card.bgImage}
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-        )}
-        {/* Dark overlay for text readability */}
-        {hasBgImage && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)",
-            }}
-          />
-        )}
+    // Text color logic: admin setting > card default > dark
+    let textColor: string;
+    let countColor: string;
+    let arrowColor: string;
 
-        {/* Count top-left */}
-        <div
-          style={{
-            position: "absolute",
-            top: 16,
-            left: 16,
-            fontSize: 13,
-            fontWeight: 500,
-            color: countColor,
-            fontFamily: "var(--font-body)",
-            zIndex: 1,
-          }}
-        >
-          {card.count !== null ? `(${card.count})` : ""}
-        </div>
-
-        {/* Arrow top-right */}
-        {isClickable && (
-          <div style={{ position: "absolute", top: 14, right: 14, zIndex: 1 }}>
-            <ArrowUpRight
-              style={{
-                width: 18,
-                height: 18,
-                strokeWidth: 2,
-                color: arrowColor,
-              }}
-            />
-          </div>
-        )}
-
-        {/* Label bottom-left */}
-        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, zIndex: 1 }}>
-          <h3
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 800,
-              fontSize: 26,
-              lineHeight: 1.05,
-              color: textColor,
-              textTransform: "uppercase",
-              letterSpacing: "-0.3px",
-              whiteSpace: "pre-line",
-            }}
-          >
-            {card.label}
-          </h3>
-        </div>
-      </>
-    );
+    if (cfg.text_color === "white" || (hasBgImage && !cfg.text_color)) {
+      textColor = "#ffffff";
+      countColor = "rgba(255,255,255,0.7)";
+      arrowColor = "rgba(255,255,255,0.6)";
+    } else if (cfg.text_color === "dark") {
+      textColor = "#2b2420";
+      countColor = "rgba(18,18,20,0.35)";
+      arrowColor = "rgba(18,18,20,0.25)";
+    } else if (card.defaultColor === "#ffffff") {
+      textColor = "#ffffff";
+      countColor = "rgba(255,255,255,0.6)";
+      arrowColor = "rgba(255,255,255,0.5)";
+    } else {
+      textColor = "#2b2420";
+      countColor = "rgba(18,18,20,0.35)";
+      arrowColor = "rgba(18,18,20,0.25)";
+    }
 
     return (
       <div
@@ -219,18 +175,58 @@ const MyHoedspruit = () => {
           cursor: isClickable ? "pointer" : "default",
         }}
       >
-        {cardContent}
+        {hasBgImage && (
+          <img
+            src={cfg.image_url}
+            alt=""
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        )}
+        {hasBgImage && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)",
+            }}
+          />
+        )}
+
+        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 13, fontWeight: 500, color: countColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
+          {card.count !== null ? `(${card.count})` : ""}
+        </div>
+
+        {isClickable && (
+          <div style={{ position: "absolute", top: 14, right: 14, zIndex: 1 }}>
+            <ArrowUpRight style={{ width: 18, height: 18, strokeWidth: 2, color: arrowColor }} />
+          </div>
+        )}
+
+        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, zIndex: 1 }}>
+          <h3
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontWeight: 800,
+              fontSize: 26,
+              lineHeight: 1.05,
+              color: textColor,
+              textTransform: "uppercase",
+              letterSpacing: "-0.3px",
+              whiteSpace: "pre-line",
+            }}
+          >
+            {card.label}
+          </h3>
+        </div>
       </div>
     );
   };
 
   return (
     <div style={{ background: "#ffffff", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-      {/* Header */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
         <BackButton />
       </div>
-
       <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <h1
           style={{
@@ -245,25 +241,10 @@ const MyHoedspruit = () => {
           My Hoedspruit
         </h1>
       </div>
-
-      {/* Bento grid - fills remaining space */}
-      <div
-        style={{
-          paddingLeft: 16,
-          paddingRight: 16,
-          paddingBottom: 84,
-          display: "flex",
-          gap: 10,
-          flex: 1,
-          minHeight: 0,
-        }}
-      >
-        {/* Left column */}
+      <div style={{ paddingLeft: 16, paddingRight: 16, paddingBottom: 84, display: "flex", gap: 10, flex: 1, minHeight: 0 }}>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
           {leftCards.map((card, i) => renderCard(card, i))}
         </div>
-
-        {/* Right column */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
           {rightCards.map((card, i) => renderCard(card, i + leftCards.length))}
         </div>
