@@ -7,9 +7,12 @@ import BackButton from "@/components/BackButton";
 
 interface CardConfig {
   image_url?: string;
-  text_color?: "dark" | "white";
+  text_color?: string;
   icon_color?: string;
+  count_color?: string;
   bg_color?: string;
+  text_transform?: "none" | "uppercase" | "capitalize";
+  text_size?: number;
 }
 
 type CardsConfig = Record<string, CardConfig>;
@@ -69,7 +72,6 @@ const MyHoedspruit = () => {
     enabled: !!user,
   });
 
-  // Fetch all card configs
   const { data: cardsConfig = {} as CardsConfig } = useQuery({
     queryKey: ["site-content", "my-hoedspruit-cards"],
     queryFn: async () => {
@@ -88,42 +90,11 @@ const MyHoedspruit = () => {
   const getCardConfig = (key: string): CardConfig => cardsConfig[key] || {};
 
   const cards = [
-    {
-      key: "saved-listings",
-      label: "Saved\nListings",
-      count: savedListingsCount,
-      href: "/saved",
-      bg: "#f5f0e8",
-    },
-    {
-      key: "my-events",
-      label: "My\nEvents",
-      count: savedEventsCount,
-      href: "/saved?tab=events",
-      bg: "#ffffff",
-    },
-    {
-      key: "saved-specials",
-      label: "Saved\nSpecials",
-      count: savedSpecialsCount,
-      href: "/saved?tab=specials",
-      bg: "#715a3d",
-      defaultColor: "#ffffff",
-    },
-    {
-      key: "visited-places",
-      label: "Visited\nPlaces",
-      count: visitedCount,
-      href: "/visited",
-      bg: "#f5f0e8",
-    },
-    {
-      key: "coming-soon",
-      label: "",
-      count: null,
-      href: null,
-      bg: "#ffffff",
-    },
+    { key: "saved-listings", label: "Saved\nListings", count: savedListingsCount, href: "/saved", bg: "#f5f0e8", defaultTextColor: "#2b2420" },
+    { key: "my-events", label: "My\nEvents", count: savedEventsCount, href: "/saved?tab=events", bg: "#ffffff", defaultTextColor: "#2b2420" },
+    { key: "saved-specials", label: "Saved\nSpecials", count: savedSpecialsCount, href: "/saved?tab=specials", bg: "#715a3d", defaultTextColor: "#ffffff" },
+    { key: "visited-places", label: "Visited\nPlaces", count: visitedCount, href: "/visited", bg: "#f5f0e8", defaultTextColor: "#2b2420" },
+    { key: "coming-soon", label: "", count: null, href: null, bg: "#ffffff", defaultTextColor: "#2b2420" },
   ];
 
   const leftCards = [cards[0], cards[2]];
@@ -135,21 +106,18 @@ const MyHoedspruit = () => {
     const hasBgImage = !!cfg.image_url;
     const cardBg = cfg.bg_color || card.bg;
 
-    // Text color logic for label
-    let textColor: string;
-    if (cfg.text_color === "white" || (hasBgImage && !cfg.text_color)) {
-      textColor = "#ffffff";
-    } else if (cfg.text_color === "dark") {
-      textColor = "#2b2420";
-    } else if (card.defaultColor === "#ffffff") {
-      textColor = "#ffffff";
-    } else {
-      textColor = "#2b2420";
-    }
+    // Text color: admin hex > default per card
+    const textColor = cfg.text_color || card.defaultTextColor;
 
-    // Icon/count color: admin override > derived from text color
-    const iconColor = cfg.icon_color || (textColor === "#ffffff" ? "rgba(255,255,255,0.7)" : "rgba(18,18,20,0.4)");
+    // Icon and count colors: separate overrides
+    const defaultSubtle = textColor === "#ffffff" ? "rgba(255,255,255,0.7)" : "rgba(18,18,20,0.4)";
+    const iconColor = cfg.icon_color || defaultSubtle;
+    const countColor = cfg.count_color || defaultSubtle;
     const arrowColor = cfg.icon_color || (textColor === "#ffffff" ? "rgba(255,255,255,0.65)" : "rgba(18,18,20,0.3)");
+
+    // Text transform & size
+    const textTransform = cfg.text_transform || "uppercase";
+    const textSize = cfg.text_size || 26;
 
     return (
       <div
@@ -167,23 +135,13 @@ const MyHoedspruit = () => {
         }}
       >
         {hasBgImage && (
-          <img
-            src={cfg.image_url}
-            alt=""
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-          />
+          <img src={cfg.image_url} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
         )}
         {hasBgImage && (
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)",
-            }}
-          />
+          <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)" }} />
         )}
 
-        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 15, fontWeight: 700, color: iconColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
+        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 15, fontWeight: 700, color: countColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
           {card.count !== null ? `(${card.count})` : ""}
         </div>
 
@@ -198,10 +156,10 @@ const MyHoedspruit = () => {
             style={{
               fontFamily: "var(--font-heading)",
               fontWeight: 800,
-              fontSize: 26,
+              fontSize: textSize,
               lineHeight: 1.05,
               color: textColor,
-              textTransform: "uppercase",
+              textTransform: textTransform as any,
               letterSpacing: "-0.3px",
               whiteSpace: "pre-line",
             }}
