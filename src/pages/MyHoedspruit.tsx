@@ -108,18 +108,8 @@ const MyHoedspruit = () => {
     const isClickable = !!card.href;
     const textColor = card.color || "#2b2420";
 
-    const inner = (
-      <div
-        key={index}
-        className="relative overflow-hidden"
-        style={{
-          background: card.bg,
-          borderRadius: 16,
-          flex: card.flex,
-          border: "1px solid rgba(18,18,20,0.06)",
-          cursor: isClickable ? "pointer" : "default",
-        }}
-      >
+    const cardContent = (
+      <>
         {/* Count top-left */}
         <div
           style={{
@@ -137,13 +127,7 @@ const MyHoedspruit = () => {
 
         {/* Arrow top-right */}
         {isClickable && (
-          <div
-            style={{
-              position: "absolute",
-              top: 14,
-              right: 14,
-            }}
-          >
+          <div style={{ position: "absolute", top: 14, right: 14 }}>
             <ArrowUpRight
               style={{
                 width: 18,
@@ -156,14 +140,7 @@ const MyHoedspruit = () => {
         )}
 
         {/* Label bottom-left */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 16,
-            left: 16,
-            right: 16,
-          }}
-        >
+        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
           <h3
             style={{
               fontFamily: "var(--font-heading)",
@@ -179,21 +156,28 @@ const MyHoedspruit = () => {
             {card.label}
           </h3>
         </div>
-      </div>
+      </>
     );
 
-    if (isClickable) {
-      return (
-        <div
-          key={index}
-          onClick={() => navigate(card.href!)}
-          className="active:scale-[0.98] transition-transform"
-        >
-          {inner}
-        </div>
-      );
-    }
-    return <div key={index}>{inner}</div>;
+    return (
+      <div
+        key={index}
+        onClick={isClickable ? () => navigate(card.href!) : undefined}
+        className={isClickable ? "active:scale-[0.98] transition-transform" : ""}
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          background: card.bg,
+          borderRadius: 16,
+          flex: card.flex,
+          border: "1px solid rgba(18,18,20,0.06)",
+          cursor: isClickable ? "pointer" : "default",
+        }}
+      >
+        {cardContent}
+      </div>
+    );
+  };
   };
 
   return (
