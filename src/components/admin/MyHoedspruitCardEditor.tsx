@@ -122,6 +122,8 @@ const CardRow = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [urlInput, setUrlInput] = useState("");
+  const [iconColorInput, setIconColorInput] = useState(config.icon_color || "");
+  const [bgColorInput, setBgColorInput] = useState(config.bg_color || "");
 
   const textColor = config.text_color || "dark";
   const hasImage = !!config.image_url;
