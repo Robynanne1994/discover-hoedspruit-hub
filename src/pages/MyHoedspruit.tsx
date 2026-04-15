@@ -165,7 +165,7 @@ const MyHoedspruit = () => {
           overflow: "hidden",
           background: card.bg,
           borderRadius: 16,
-          flex: card.flex,
+          flex: 1,
           border: hasBgImage ? "none" : "1px solid rgba(18,18,20,0.06)",
           cursor: isClickable ? "pointer" : "default",
         }}
