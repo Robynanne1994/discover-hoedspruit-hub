@@ -18,6 +18,8 @@ const CARD_KEYS = [
 interface CardConfig {
   image_url?: string;
   text_color?: "dark" | "white";
+  icon_color?: string;
+  bg_color?: string;
 }
 
 type CardsConfig = Record<string, CardConfig>;
