@@ -35,7 +35,7 @@ const WhatsOnToday = () => {
 
   if (isLoading) {
     return (
-      <section style={{ padding: "32px 24px 0" }}>
+      <section style={{ padding: "80px 24px" }}>
         <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {[1, 2, 3].map((i) => (
