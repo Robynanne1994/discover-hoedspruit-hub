@@ -8,6 +8,8 @@ import BackButton from "@/components/BackButton";
 interface CardConfig {
   image_url?: string;
   text_color?: "dark" | "white";
+  icon_color?: string;
+  bg_color?: string;
 }
 
 type CardsConfig = Record<string, CardConfig>;
