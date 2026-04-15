@@ -191,11 +191,11 @@ const MyHoedspruit = () => {
         </h1>
       </div>
       <div style={{ paddingLeft: 16, paddingRight: 16, paddingBottom: 84, display: "flex", gap: 4, flex: 1, minHeight: 0 }}>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
           {renderCard(leftCards[0], 0, 2)}
           {renderCard(leftCards[1], 1)}
         </div>
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
           {rightCards.map((card, i) => renderCard(card, i + leftCards.length))}
         </div>
       </div>
