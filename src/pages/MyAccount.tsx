@@ -435,10 +435,6 @@ const MyAccount = () => {
     { icon: Tag, label: "Specials", desc: "Your saved specials and deals", href: "/saved?tab=specials" },
   ];
 
-  const socialItems = [
-    { icon: Users, label: "Find People", href: "/people" },
-  ];
-
   const preferencesItems = [
     { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", href: "/notifications" },
   ];
@@ -536,13 +532,6 @@ const MyAccount = () => {
         {quickActions.map((item, i) => renderRow(item, i === quickActions.length - 1))}
       </div>
 
-      {/* Social */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Social
-        </p>
-        {socialItems.map((item, i) => renderRow(item, i === socialItems.length - 1))}
-      </div>
 
       {/* Preferences */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
