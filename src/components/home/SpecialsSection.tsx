@@ -44,11 +44,11 @@ const SpecialsSection = () => {
       {/* Header */}
       <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
+          <h2 style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 42, color: "#1A1A1A", letterSpacing: -1, lineHeight: 1.1, margin: 0 }}>
             Specials
           </h2>
         </div>
-        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(43,36,32,0.4)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
+        <Link to="/specials" style={{ fontSize: 11, fontWeight: 500, color: "rgba(43,36,32,0.35)", textTransform: "uppercase", letterSpacing: 1, textDecoration: "none" }}>
           See All ›
         </Link>
       </div>
