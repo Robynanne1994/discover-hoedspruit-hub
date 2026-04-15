@@ -40,15 +40,15 @@ const SpecialsSection = () => {
   };
 
   return (
-    <div style={{ background: "#121214", width: "100%", paddingTop: 28, paddingBottom: 28 }}>
+    <div style={{ width: "100%", paddingTop: 28, paddingBottom: 28 }}>
       {/* Header */}
       <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontWeight: 900, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
+          <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
             Specials
           </h2>
         </div>
-        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
+        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(43,36,32,0.4)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
           See All ›
         </Link>
       </div>
