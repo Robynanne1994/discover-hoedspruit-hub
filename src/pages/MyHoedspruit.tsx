@@ -92,7 +92,6 @@ const MyHoedspruit = () => {
       count: savedListingsCount,
       href: "/saved",
       bg: "#f5f0e8",
-      flex: 5,
     },
     {
       key: "my-events",
@@ -100,7 +99,6 @@ const MyHoedspruit = () => {
       count: savedEventsCount,
       href: "/saved?tab=events",
       bg: "#ffffff",
-      flex: 3,
     },
     {
       key: "saved-specials",
@@ -109,7 +107,6 @@ const MyHoedspruit = () => {
       href: "/saved?tab=specials",
       bg: "#715a3d",
       defaultColor: "#ffffff",
-      flex: 4,
     },
     {
       key: "visited-places",
@@ -117,7 +114,6 @@ const MyHoedspruit = () => {
       count: visitedCount,
       href: "/visited",
       bg: "#f5f0e8",
-      flex: 5,
     },
     {
       key: "coming-soon",
@@ -125,14 +121,13 @@ const MyHoedspruit = () => {
       count: null,
       href: null,
       bg: "#ffffff",
-      flex: 3,
     },
   ];
 
-  const leftCards = [cards[0], cards[2], cards[4]];
-  const rightCards = [cards[1], cards[3]];
+  const leftCards = [cards[0], cards[2]];
+  const rightCards = [cards[1], cards[3], cards[4]];
 
-  const renderCard = (card: typeof cards[0], index: number) => {
+  const renderCard = (card: typeof cards[0], index: number, flexOverride?: number) => {
     const isClickable = !!card.href;
     const cfg = getCardConfig(card.key);
     const hasBgImage = !!cfg.image_url;
@@ -170,7 +165,7 @@ const MyHoedspruit = () => {
           overflow: "hidden",
           background: card.bg,
           borderRadius: 16,
-          flex: card.flex,
+          flex: flexOverride ?? 1,
           border: hasBgImage ? "none" : "1px solid rgba(18,18,20,0.06)",
           cursor: isClickable ? "pointer" : "default",
         }}
@@ -243,7 +238,8 @@ const MyHoedspruit = () => {
       </div>
       <div style={{ paddingLeft: 16, paddingRight: 16, paddingBottom: 84, display: "flex", gap: 10, flex: 1, minHeight: 0 }}>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
-          {leftCards.map((card, i) => renderCard(card, i))}
+          {renderCard(leftCards[0], 0, 2)}
+          {renderCard(leftCards[1], 1)}
         </div>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
           {rightCards.map((card, i) => renderCard(card, i + leftCards.length))}
