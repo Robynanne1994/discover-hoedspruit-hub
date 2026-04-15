@@ -189,7 +189,7 @@ const MyHoedspruit = () => {
 
         {isClickable && (
           <div style={{ position: "absolute", top: 14, right: 14, zIndex: 1 }}>
-            <ArrowUpRight style={{ width: 18, height: 18, strokeWidth: 2, color: arrowColor }} />
+            <ArrowUpRight style={{ width: 22, height: 22, strokeWidth: 2.5, color: arrowColor }} />
           </div>
         )}
 
