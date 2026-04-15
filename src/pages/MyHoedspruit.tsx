@@ -183,7 +183,7 @@ const MyHoedspruit = () => {
           />
         )}
 
-        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 13, fontWeight: 500, color: countColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
+        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 15, fontWeight: 700, color: iconColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
           {card.count !== null ? `(${card.count})` : ""}
         </div>
 
