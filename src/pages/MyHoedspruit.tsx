@@ -92,7 +92,6 @@ const MyHoedspruit = () => {
       count: savedListingsCount,
       href: "/saved",
       bg: "#f5f0e8",
-      flex: 5,
     },
     {
       key: "my-events",
@@ -100,7 +99,6 @@ const MyHoedspruit = () => {
       count: savedEventsCount,
       href: "/saved?tab=events",
       bg: "#ffffff",
-      flex: 3,
     },
     {
       key: "saved-specials",
@@ -109,7 +107,6 @@ const MyHoedspruit = () => {
       href: "/saved?tab=specials",
       bg: "#715a3d",
       defaultColor: "#ffffff",
-      flex: 4,
     },
     {
       key: "visited-places",
@@ -117,7 +114,6 @@ const MyHoedspruit = () => {
       count: visitedCount,
       href: "/visited",
       bg: "#f5f0e8",
-      flex: 5,
     },
     {
       key: "coming-soon",
@@ -125,7 +121,6 @@ const MyHoedspruit = () => {
       count: null,
       href: null,
       bg: "#ffffff",
-      flex: 3,
     },
   ];
 
