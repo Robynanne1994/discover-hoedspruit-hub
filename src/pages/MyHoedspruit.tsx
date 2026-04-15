@@ -141,17 +141,17 @@ const MyHoedspruit = () => {
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)" }} />
         )}
 
-        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 15, fontWeight: 700, color: countColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
+        <div style={{ position: "absolute", top: 12, left: 12, fontSize: 15, fontWeight: 700, color: countColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
           {card.count !== null ? `(${card.count})` : ""}
         </div>
 
         {isClickable && (
-          <div style={{ position: "absolute", top: 14, right: 14, zIndex: 1 }}>
+          <div style={{ position: "absolute", top: 12, right: 12, zIndex: 1 }}>
             <ArrowUpRight style={{ width: 22, height: 22, strokeWidth: 2.5, color: arrowColor }} />
           </div>
         )}
 
-        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, zIndex: 1 }}>
+        <div style={{ position: "absolute", bottom: 12, left: 12, right: 12, zIndex: 1 }}>
           <h3
             style={{
               fontFamily: "var(--font-heading)",
