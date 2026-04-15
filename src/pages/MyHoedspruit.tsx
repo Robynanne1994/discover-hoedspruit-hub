@@ -155,7 +155,7 @@ const MyHoedspruit = () => {
           <h3
             style={{
               fontFamily: "var(--font-heading)",
-              fontWeight: 800,
+              fontWeight: 500,
               fontSize: textSize,
               lineHeight: 1.05,
               color: textColor,
