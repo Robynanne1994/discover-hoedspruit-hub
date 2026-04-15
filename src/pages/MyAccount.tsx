@@ -572,7 +572,7 @@ const MyAccount = () => {
       )}
 
       {/* Logout */}
-      <div className="flex justify-center" style={{ marginTop: 18, marginBottom: 100 }}>
+      <div className="flex justify-center" style={{ marginTop: 18, marginBottom: 50 }}>
         <button
           onClick={() => { signOut(); navigate("/"); }}
           className="flex items-center"
