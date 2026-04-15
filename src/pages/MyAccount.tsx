@@ -524,42 +524,36 @@ const MyAccount = () => {
         </div>
       </div>
 
-      {/* Quick actions */}
+      {/* My Hoedspruit */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 24, marginBottom: 32 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          My Hoedspruit
+        </p>
         {quickActions.map((item, i) => renderRow(item, i === quickActions.length - 1))}
       </div>
 
-
-      {/* Preferences */}
+      {/* Settings */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Preferences
+          Settings
         </p>
-        {preferencesItems.map((item, i) => renderRow(item, i === preferencesItems.length - 1))}
+        {settingsItems.map((item, i) => renderRow(item, i === settingsItems.length - 1))}
       </div>
 
-      {/* Support */}
+      {/* Get in Touch */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Support
+          Get in Touch
         </p>
-        {supportItems.map((item, i) => renderRow(item, i === supportItems.length - 1))}
+        {getInTouchItems.map((item, i) => renderRow(item, i === getInTouchItems.length - 1))}
       </div>
 
-      {/* Info */}
+      {/* More */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Info
+          More
         </p>
-        {infoItems.map((item, i) => renderRow(item, i === infoItems.length - 1))}
-      </div>
-
-      {/* Account */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Account
-        </p>
-        {accountItems.map((item, i) => renderRow(item, i === accountItems.length - 1))}
+        {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1))}
       </div>
 
       {isAdmin && (
