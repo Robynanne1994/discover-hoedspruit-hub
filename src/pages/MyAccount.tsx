@@ -529,7 +529,7 @@ const MyAccount = () => {
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
           My Hoedspruit
         </p>
-        {quickActions.map((item, i) => renderRow(item, i === quickActions.length - 1))}
+        {renderRow({ icon: Heart, label: "My Hoedspruit", desc: "Your saved content and visited places", href: "/my-hoedspruit" }, true)}
       </div>
 
       {/* Settings */}
