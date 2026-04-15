@@ -115,7 +115,7 @@ const MyHoedspruit = () => {
         style={{
           background: card.bg,
           borderRadius: 16,
-          height: card.height,
+          flex: card.flex,
           border: "1px solid rgba(18,18,20,0.06)",
           cursor: isClickable ? "pointer" : "default",
         }}
@@ -197,13 +197,13 @@ const MyHoedspruit = () => {
   };
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "#ffffff" }}>
+    <div style={{ background: "#ffffff", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
         <BackButton />
       </div>
 
-      <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <h1
           style={{
             fontFamily: "var(--font-heading)",
@@ -218,13 +218,16 @@ const MyHoedspruit = () => {
         </h1>
       </div>
 
-      {/* Bento grid */}
+      {/* Bento grid - fills remaining space */}
       <div
         style={{
           paddingLeft: 16,
           paddingRight: 16,
+          paddingBottom: 84,
           display: "flex",
           gap: 10,
+          flex: 1,
+          minHeight: 0,
         }}
       >
         {/* Left column */}
