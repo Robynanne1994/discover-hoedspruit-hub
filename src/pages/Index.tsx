@@ -10,7 +10,7 @@ import AdvertiseWithUs from "@/components/home/AdvertiseWithUs";
 
 const Index = () => {
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 80 }}>
+    <div style={{ minHeight: "100vh", background: "#FAF8F3", paddingBottom: 80 }}>
       <HomeHero />
       <WhatsOnToday />
       <SpecialsSection />
