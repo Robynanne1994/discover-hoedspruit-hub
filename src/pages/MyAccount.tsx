@@ -435,10 +435,6 @@ const MyAccount = () => {
     { icon: Tag, label: "Specials", desc: "Your saved specials and deals", href: "/saved?tab=specials" },
   ];
 
-  const socialItems = [
-    { icon: Users, label: "Find People", href: "/people" },
-  ];
-
   const preferencesItems = [
     { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", href: "/notifications" },
   ];
