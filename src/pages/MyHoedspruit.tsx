@@ -124,8 +124,8 @@ const MyHoedspruit = () => {
     },
   ];
 
-  const leftCards = [cards[0], cards[2], cards[4]];
-  const rightCards = [cards[1], cards[3]];
+  const leftCards = [cards[0], cards[2]];
+  const rightCards = [cards[1], cards[3], cards[4]];
 
   const renderCard = (card: typeof cards[0], index: number) => {
     const isClickable = !!card.href;
