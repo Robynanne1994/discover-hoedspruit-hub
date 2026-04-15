@@ -28,7 +28,7 @@ const EatSection = () => {
       <div style={{ padding: "0 24px" }}>
         <HomeSectionHeader title={title || "Where to Eat"} actionLabel="See All" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" />
       </div>
-      <HomeListingCarousel listings={listings.slice(0, 6)} />
+      <HomeListingCarousel listings={listings.slice(0, 6)} variant="text-below" />
     </section>
   );
 };

@@ -25,50 +25,69 @@ const LowdownSection = () => {
   const rest = articles.filter((a: any) => a.id !== featured.id).slice(0, 2);
 
   const fmtDate = (d: string) => {
-    try { return format(new Date(d), "d MMM"); } catch { return d; }
+    try { return format(new Date(d), "d MMM yyyy"); } catch { return d; }
   };
+
+  const ArticleCard = ({ article, large }: { article: any; large?: boolean }) => (
+    <Link to={`/headlines/${article.slug}`} style={{ textDecoration: "none", display: "block", flex: large ? undefined : 1 }}>
+      <div style={{ borderRadius: 20, overflow: "hidden", background: "#ffffff" }}>
+        <div style={{ width: "100%", aspectRatio: "4/3", background: "#f0f0f0" }}>
+          {article.image_url && (
+            <img src={article.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+          )}
+        </div>
+        <div style={{ padding: large ? "14px 16px 16px" : "10px 12px 14px" }}>
+          <div style={{
+            fontSize: 10,
+            fontWeight: 700,
+            color: "#827b75",
+            textTransform: "uppercase",
+            letterSpacing: 1.2,
+            marginBottom: 6,
+          }}>
+            NEWS
+          </div>
+          <div style={{
+            fontFamily: "'Sora', sans-serif",
+            fontSize: large ? 18 : 15,
+            fontWeight: 600,
+            color: "#2b2420",
+            lineHeight: 1.25,
+            marginBottom: 8,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical" as any,
+            overflow: "hidden",
+          }}>
+            {article.title}
+          </div>
+          <div style={{ fontSize: 13, color: "#827b75", fontWeight: 400 }}>
+            {fmtDate(article.published_at)} · {article.read_time || 3} min read
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
 
   return (
     <div style={{ paddingTop: 48, paddingBottom: 48, paddingLeft: 24, paddingRight: 24 }}>
-      {/* Header */}
       <HomeSectionHeader title="Lowveld Lowdown" />
 
       {/* Featured card */}
-      <Link to={`/headlines/${featured.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 14 }}>
-        <div style={{ borderRadius: 16, overflow: "hidden", position: "relative" }}>
-          <div style={{ width: "100%", height: 160, background: "#f0f0f0", position: "relative" }}>
-            {featured.image_url && <img src={featured.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)" }} />
-            <div style={{ position: "absolute", top: 12, left: 12, background: "#ffffff", borderRadius: 8, padding: "4px 10px" }}>
-              <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
-            </div>
-            <div style={{ position: "absolute", bottom: 14, left: 14, right: 14 }}>
-              <div style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", lineHeight: 1.15, marginBottom: 4 }}>{featured.title}</div>
-              <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>{fmtDate(featured.published_at)} · {featured.read_time || 3} min read</div>
-            </div>
-          </div>
-        </div>
-      </Link>
+      <div style={{ marginBottom: 14 }}>
+        <ArticleCard article={featured} large />
+      </div>
 
       {/* Two smaller cards */}
       <div style={{ display: "flex", gap: 12 }}>
         {rest.map((article: any) => (
-          <Link key={article.id} to={`/headlines/${article.slug}`} style={{ flex: 1, textDecoration: "none", display: "flex" }}>
-            <div style={{ borderRadius: 16, overflow: "hidden", background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", display: "flex", flexDirection: "column", width: "100%" }}>
-              <div style={{ width: "100%", height: 100, background: "#f0f0f0", flexShrink: 0 }}>
-                {article.image_url && <img src={article.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-              </div>
-              <div style={{ padding: "10px 12px", flex: 1, display: "flex", flexDirection: "column" }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: "0.5px" }}>{article.category}</div>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: 13, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginTop: 3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden", minHeight: "2.4em" }}>{article.title}</div>
-              </div>
-            </div>
-          </Link>
+          <ArticleCard key={article.id} article={article} />
         ))}
       </div>
+
       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14 }}>
-        <Link to="/headlines" style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.5px", textDecoration: "none" }}>
-          READ ALL &gt;
+        <Link to="/headlines" style={{ fontSize: 11, fontWeight: 500, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, textDecoration: "none" }}>
+          See All ›
         </Link>
       </div>
     </div>
