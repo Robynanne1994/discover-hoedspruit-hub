@@ -294,6 +294,69 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
   );
 };
 
+const VisitedCardBgEditor = () => {
+  const queryClient = useQueryClient();
+  const [imageUrl, setImageUrl] = useState("");
+
+  const { data: currentUrl } = useQuery({
+    queryKey: ["site-content", "my-hoedspruit-visited-bg"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", "my-hoedspruit-visited-bg")
+        .maybeSingle();
+      const content = data?.content as { image_url?: string } | null;
+      return content?.image_url || "";
+    },
+  });
+
+  const saveMutation = useMutation({
+    mutationFn: async (url: string) => {
+      const { data: existing } = await supabase
+        .from("site_content")
+        .select("id")
+        .eq("section", "my-hoedspruit-visited-bg")
+        .maybeSingle();
+
+      if (existing) {
+        await supabase
+          .from("site_content")
+          .update({ content: { image_url: url } as unknown as import("@/integrations/supabase/types").Json })
+          .eq("section", "my-hoedspruit-visited-bg");
+      } else {
+        await supabase
+          .from("site_content")
+          .insert({ section: "my-hoedspruit-visited-bg", content: { image_url: url } as unknown as import("@/integrations/supabase/types").Json });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["site-content", "my-hoedspruit-visited-bg"] });
+      toast.success("Visited card background updated");
+    },
+  });
+
+  return (
+    <div className="border rounded-lg p-4 space-y-3">
+      <h3 className="font-semibold">Visited Places Card Background</h3>
+      <p className="text-sm text-muted-foreground">Set a background image for the "Visited Places" card on the My Hoedspruit page.</p>
+      {currentUrl && (
+        <img src={currentUrl} alt="Current background" className="w-32 h-20 object-cover rounded" />
+      )}
+      <div className="flex gap-2">
+        <Input
+          placeholder="Paste image URL..."
+          value={imageUrl}
+          onChange={(e) => setImageUrl(e.target.value)}
+        />
+        <Button onClick={() => saveMutation.mutate(imageUrl)} disabled={!imageUrl.trim()}>
+          Save
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const AdminHomepage = () => {
   return (
     <div className="space-y-6">
@@ -304,6 +367,11 @@ const AdminHomepage = () => {
       {SECTIONS.map((section) => (
         <SectionEditor key={section.key} sectionKey={section.key} label={section.label} categorySearch={section.categorySearch} />
       ))}
+      
+      <div>
+        <h2 className="text-xl font-bold mt-8 mb-4">My Hoedspruit Page</h2>
+        <VisitedCardBgEditor />
+      </div>
     </div>
   );
 };
