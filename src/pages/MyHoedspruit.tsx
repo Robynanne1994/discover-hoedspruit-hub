@@ -210,7 +210,7 @@ const MyHoedspruit = () => {
         </div>
 
         {/* Bottom full-width card */}
-        <div style={{ flex: 2, minHeight: 0 }}>
+        <div style={{ flex: 2, minHeight: 0, display: "flex" }}>
           <BentoCard card={bottomCard} />
         </div>
       </div>
