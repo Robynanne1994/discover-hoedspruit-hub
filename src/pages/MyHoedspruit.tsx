@@ -214,7 +214,7 @@ const MyHoedspruit = () => {
   };
 
   return (
-    <div style={{ background: "#ffffff", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ background: "#ebebeb", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
         <BackButton />
       </div>
