@@ -62,6 +62,20 @@ const MyHoedspruit = () => {
     enabled: !!user,
   });
 
+  // Fetch visited card background image
+  const { data: visitedBgData } = useQuery({
+    queryKey: ["site-content", "my-hoedspruit-visited-bg"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", "my-hoedspruit-visited-bg")
+        .maybeSingle();
+      const content = data?.content as { image_url?: string } | null;
+      return content?.image_url || null;
+    },
+  });
+
   const cards = [
     {
       label: "Saved\nListings",
