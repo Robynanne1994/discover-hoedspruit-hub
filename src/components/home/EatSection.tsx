@@ -9,7 +9,7 @@ const EatSection = () => {
 
   if (isLoading) {
     return (
-      <section style={{ paddingTop: 80, paddingBottom: 80 }}>
+      <section style={{ paddingTop: 48, paddingBottom: 48 }}>
         <div style={{ padding: "0 24px" }}>
           <HomeSectionHeader title={title || "Where to Eat"} />
         </div>
@@ -24,7 +24,7 @@ const EatSection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section style={{ paddingTop: 80, paddingBottom: 80 }}>
+    <section style={{ paddingTop: 48, paddingBottom: 48 }}>
       <div style={{ padding: "0 24px" }}>
         <HomeSectionHeader title={title || "Where to Eat"} actionLabel="See All" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" />
       </div>

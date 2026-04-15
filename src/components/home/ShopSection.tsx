@@ -9,7 +9,7 @@ const ShopSection = () => {
 
   if (isLoading) {
     return (
-      <section style={{ paddingTop: 80, paddingBottom: 80 }}>
+      <section style={{ paddingTop: 48, paddingBottom: 48 }}>
         <div style={{ padding: "0 24px" }}>
           <HomeSectionHeader title={title || "Where to Shop"} />
         </div>
@@ -24,7 +24,7 @@ const ShopSection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section style={{ paddingTop: 80, paddingBottom: 80 }}>
+    <section style={{ paddingTop: 48, paddingBottom: 48 }}>
       <div style={{ padding: "0 24px" }}>
         <HomeSectionHeader title={title || "Where to Shop"} actionLabel="See All" actionHref="/category/7b335bd5-3ce9-4ecd-92bd-3735804402b8" />
       </div>

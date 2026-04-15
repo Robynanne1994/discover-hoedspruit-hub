@@ -40,7 +40,7 @@ const SpecialsSection = () => {
   };
 
   return (
-    <div style={{ width: "100%", paddingTop: 80, paddingBottom: 80 }}>
+    <div style={{ width: "100%", paddingTop: 48, paddingBottom: 48 }}>
       {/* Header */}
       <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 }}>
         <div>
