@@ -103,7 +103,7 @@ const AccountSettings = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Sora', sans-serif)" }}>
+        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Helvetica Neue', sans-serif)" }}>
           ACCOUNT<br />SETTINGS
         </h1>
       </div>

@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Sora', 'Segoe UI', 'sans-serif'],
+        heading: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
         body: ['Manrope', 'Segoe UI', 'sans-serif'],
         sans: ['Manrope', 'Segoe UI', 'sans-serif'],
       },
