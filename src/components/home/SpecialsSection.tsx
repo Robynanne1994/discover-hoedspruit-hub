@@ -64,7 +64,8 @@ const SpecialsSection = () => {
                   flexShrink: 0,
                   borderRadius: 16,
                   overflow: "hidden",
-                  background: "rgba(255,255,255,0.08)",
+                  background: "#ffffff",
+                  boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
                   marginRight: idx === specials.length - 1 ? 24 : 0,
                 }}
               >
