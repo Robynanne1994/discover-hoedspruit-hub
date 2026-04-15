@@ -5,11 +5,92 @@ import { useNavigate } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import BackButton from "@/components/BackButton";
 
+interface CardData {
+  label: string;
+  count: number | null;
+  href: string | null;
+  bg: string;
+  color?: string;
+  flex: number;
+}
+
+const BentoCard = ({ card, onClick }: { card: CardData; onClick?: () => void }) => {
+  const isClickable = !!card.href;
+  const textColor = card.color || "#2b2420";
+  const mutedColor = card.color
+    ? "rgba(255,255,255,0.5)"
+    : "rgba(113,90,61,0.35)";
+
+  return (
+    <div
+      onClick={onClick}
+      className={isClickable ? "active:scale-[0.97] transition-transform" : ""}
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        background: card.bg,
+        borderRadius: 22,
+        flex: card.flex,
+        minHeight: 0,
+        cursor: isClickable ? "pointer" : "default",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 14,
+          left: 14,
+          fontSize: 12,
+          fontWeight: 400,
+          color: mutedColor,
+          fontFamily: "var(--font-body)",
+        }}
+      >
+        {card.count !== null ? `(${card.count})` : ""}
+      </span>
+
+      {isClickable && (
+        <ArrowUpRight
+          style={{
+            position: "absolute",
+            top: 14,
+            right: 14,
+            width: 16,
+            height: 16,
+            strokeWidth: 1.5,
+            color: mutedColor,
+          }}
+        />
+      )}
+
+      {card.label && (
+        <h3
+          style={{
+            position: "absolute",
+            bottom: 14,
+            left: 14,
+            right: 14,
+            fontFamily: "var(--font-heading)",
+            fontWeight: 800,
+            fontSize: 28,
+            lineHeight: 1,
+            color: textColor,
+            textTransform: "uppercase",
+            letterSpacing: "-0.5px",
+            whiteSpace: "pre-line",
+          }}
+        >
+          {card.label}
+        </h3>
+      )}
+    </div>
+  );
+};
+
 const MyHoedspruit = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Fetch counts
   const { data: savedListingsCount = 0 } = useQuery({
     queryKey: ["favourites-count", "listing", user?.id],
     queryFn: async () => {
@@ -61,137 +142,36 @@ const MyHoedspruit = () => {
     enabled: !!user,
   });
 
-  const cards = [
-    {
-      label: "Saved\nListings",
-      count: savedListingsCount,
-      href: "/saved",
-      bg: "#f5f0e8",
-      flex: 5,
-    },
-    {
-      label: "My\nEvents",
-      count: savedEventsCount,
-      href: "/saved?tab=events",
-      bg: "#ffffff",
-      flex: 3,
-    },
-    {
-      label: "Saved\nSpecials",
-      count: savedSpecialsCount,
-      href: "/saved?tab=specials",
-      bg: "#715a3d",
-      color: "#ffffff",
-      flex: 4,
-    },
-    {
-      label: "Visited\nPlaces",
-      count: visitedCount,
-      href: "/visited",
-      bg: "#f5f0e8",
-      flex: 5,
-    },
-    {
-      label: "Coming\nSoon",
-      count: null,
-      href: null,
-      bg: "#ffffff",
-      flex: 3,
-    },
+  // Left col: Saved Listings (short, flex 3) → Saved Specials (tall, flex 5)
+  // Right col: My Events (tall, flex 5) → Visited Places (short, flex 3)
+  const leftCards: CardData[] = [
+    { label: "Saved\nListings", count: savedListingsCount, href: "/saved", bg: "#f5f0e8", flex: 3 },
+    { label: "Saved\nSpecials", count: savedSpecialsCount, href: "/saved?tab=specials", bg: "#715a3d", color: "#ffffff", flex: 5 },
   ];
-
-  // Masonry: split into 2 columns
-  const leftCards = [cards[0], cards[2], cards[4]];
-  const rightCards = [cards[1], cards[3]];
-
-  const renderCard = (card: typeof cards[0], index: number) => {
-    const isClickable = !!card.href;
-    const textColor = card.color || "#2b2420";
-
-    const cardContent = (
-      <>
-        {/* Count top-left */}
-        <div
-          style={{
-            position: "absolute",
-            top: 16,
-            left: 16,
-            fontSize: 13,
-            fontWeight: 500,
-            color: card.color ? "rgba(255,255,255,0.6)" : "rgba(18,18,20,0.35)",
-            fontFamily: "var(--font-body)",
-          }}
-        >
-          {card.count !== null ? `(${card.count})` : ""}
-        </div>
-
-        {/* Arrow top-right */}
-        {isClickable && (
-          <div style={{ position: "absolute", top: 14, right: 14 }}>
-            <ArrowUpRight
-              style={{
-                width: 18,
-                height: 18,
-                strokeWidth: 2,
-                color: card.color ? "rgba(255,255,255,0.5)" : "rgba(18,18,20,0.25)",
-              }}
-            />
-          </div>
-        )}
-
-        {/* Label bottom-left */}
-        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
-          <h3
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 800,
-              fontSize: 26,
-              lineHeight: 1.05,
-              color: textColor,
-              textTransform: "uppercase",
-              letterSpacing: "-0.3px",
-              whiteSpace: "pre-line",
-            }}
-          >
-            {card.label}
-          </h3>
-        </div>
-      </>
-    );
-
-    return (
-      <div
-        key={index}
-        onClick={isClickable ? () => navigate(card.href!) : undefined}
-        className={isClickable ? "active:scale-[0.98] transition-transform" : ""}
-        style={{
-          position: "relative",
-          overflow: "hidden",
-          background: card.bg,
-          borderRadius: 16,
-          flex: card.flex,
-          border: "1px solid rgba(18,18,20,0.06)",
-          cursor: isClickable ? "pointer" : "default",
-        }}
-      >
-        {cardContent}
-      </div>
-    );
+  const rightCards: CardData[] = [
+    { label: "My\nEvents", count: savedEventsCount, href: "/saved?tab=events", bg: "#ffffff", flex: 5 },
+    { label: "Visited\nPlaces", count: visitedCount, href: "/visited", bg: "#f5f0e8", flex: 3 },
+  ];
+  const bottomCard: CardData = {
+    label: "",
+    count: null,
+    href: null,
+    bg: "#ffffff",
+    flex: 1,
   };
 
   return (
     <div style={{ background: "#ffffff", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ padding: "12px 14px 0" }}>
         <BackButton />
       </div>
-
-      <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      <div style={{ padding: "4px 14px 8px" }}>
         <h1
           style={{
             fontFamily: "var(--font-heading)",
             fontWeight: 900,
-            fontSize: 34,
+            fontSize: 32,
             lineHeight: 1,
             letterSpacing: "-0.5px",
             color: "#2b2420",
@@ -201,26 +181,37 @@ const MyHoedspruit = () => {
         </h1>
       </div>
 
-      {/* Bento grid - fills remaining space */}
+      {/* Bento grid */}
       <div
         style={{
-          paddingLeft: 16,
-          paddingRight: 16,
-          paddingBottom: 84,
-          display: "flex",
-          gap: 10,
+          padding: "0 10px",
+          paddingBottom: 82,
           flex: 1,
           minHeight: 0,
+          display: "flex",
+          flexDirection: "column",
+          gap: 8,
         }}
       >
-        {/* Left column */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
-          {leftCards.map((card, i) => renderCard(card, i))}
+        {/* Top masonry section */}
+        <div style={{ display: "flex", gap: 8, flex: 7, minHeight: 0 }}>
+          {/* Left column */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, minHeight: 0 }}>
+            {leftCards.map((card, i) => (
+              <BentoCard key={i} card={card} onClick={card.href ? () => navigate(card.href!) : undefined} />
+            ))}
+          </div>
+          {/* Right column */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, minHeight: 0 }}>
+            {rightCards.map((card, i) => (
+              <BentoCard key={i} card={card} onClick={card.href ? () => navigate(card.href!) : undefined} />
+            ))}
+          </div>
         </div>
 
-        {/* Right column */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 10 }}>
-          {rightCards.map((card, i) => renderCard(card, i + leftCards.length))}
+        {/* Bottom full-width card */}
+        <div style={{ flex: 2, minHeight: 0 }}>
+          <BentoCard card={bottomCard} />
         </div>
       </div>
     </div>
