@@ -54,7 +54,7 @@ const LowdownSection = () => {
         </Link>
 
         {/* Two smaller cards */}
-        <div style={{ display: "flex", gap: 12 }}>
+        <div style={{ display: "flex", gap: 4 }}>
           {rest.map((article: any) => (
             <Link key={article.id} to={`/headlines/${article.slug}`} style={{ flex: 1, textDecoration: "none", display: "flex" }}>
               <div style={{ borderRadius: 16, overflow: "hidden", background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", display: "flex", flexDirection: "column", width: "100%" }}>

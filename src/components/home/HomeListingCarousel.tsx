@@ -15,7 +15,7 @@ interface HomeListingCarouselProps {
 const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
   return (
     <div style={{ overflowX: "auto", paddingLeft: 4 }} className="scrollbar-hide">
-      <div style={{ display: "flex", gap: 12 }}>
+      <div style={{ display: "flex", gap: 4 }}>
         {listings.map((listing, idx) => (
           <Link
             key={listing.id}

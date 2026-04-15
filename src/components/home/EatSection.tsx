@@ -13,7 +13,7 @@ const EatSection = () => {
         <div style={{ padding: "0 14px" }}>
           <HomeSectionHeader title={title || "Where to Eat"} />
         </div>
-        <div style={{ display: "flex", gap: 12, paddingLeft: 4 }}>
+        <div style={{ display: "flex", gap: 4, paddingLeft: 4 }}>
           <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
           <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
         </div>
