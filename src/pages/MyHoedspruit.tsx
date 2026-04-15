@@ -176,15 +176,15 @@ const MyHoedspruit = () => {
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
         <BackButton />
       </div>
-      <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
         <h1
           style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 400,
-            fontSize: 34,
+            fontSize: 53,
             lineHeight: 1,
             letterSpacing: "0.01em",
-            color: "#2b2420",
+            color: "#020202",
           }}
         >
           My Hoedspruit
