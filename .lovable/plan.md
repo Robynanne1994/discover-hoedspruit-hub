@@ -1,10 +1,8 @@
 
 
-## Plan: Remove "Social" section from Profile page
+## Plan: Rename "Specials" to "Saved Specials" in MY HOEDSPRUIT section
 
-**What changes:**
-- In `src/pages/MyAccount.tsx`, remove the `socialItems` array definition (~lines 438-440)
-- Remove the "Social" section rendering block (~lines 539-545) which includes the "Social" heading and the "Find People" row
+In `src/pages/MyAccount.tsx`, change the label for the Specials item in the quick actions / "My Hoedspruit" array from `"Specials"` to `"Saved Specials"`.
 
-This is a straightforward deletion of ~10 lines. No other files affected.
+Single line change, single file.
 
