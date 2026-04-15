@@ -29,7 +29,7 @@ const LowdownSection = () => {
   };
 
   return (
-    <div style={{ paddingTop: 80, paddingBottom: 80, paddingLeft: 24, paddingRight: 24 }}>
+    <div style={{ paddingTop: 48, paddingBottom: 48, paddingLeft: 24, paddingRight: 24 }}>
       {/* Header */}
       <HomeSectionHeader title="Lowveld Lowdown" />
 
