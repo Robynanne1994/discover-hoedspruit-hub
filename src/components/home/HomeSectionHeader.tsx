@@ -8,7 +8,7 @@ interface HomeSectionHeaderProps {
 
 const HomeSectionHeader = ({ title, actionLabel, actionHref }: HomeSectionHeaderProps) => {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20, marginTop: 18 }}>
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 }}>
       <h2 style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 42, color: "#1A1A1A", letterSpacing: -1, lineHeight: 1.1 }}>
         {title}
       </h2>
