@@ -18,6 +18,8 @@ const CARD_KEYS = [
 interface CardConfig {
   image_url?: string;
   text_color?: "dark" | "white";
+  icon_color?: string;
+  bg_color?: string;
 }
 
 type CardsConfig = Record<string, CardConfig>;
@@ -120,6 +122,8 @@ const CardRow = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [urlInput, setUrlInput] = useState("");
+  const [iconColorInput, setIconColorInput] = useState(config.icon_color || "");
+  const [bgColorInput, setBgColorInput] = useState(config.bg_color || "");
 
   const textColor = config.text_color || "dark";
   const hasImage = !!config.image_url;
@@ -239,6 +243,59 @@ const CardRow = ({
         >
           Save
         </Button>
+      </div>
+
+      <div className="flex gap-2 items-center flex-wrap">
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-muted-foreground whitespace-nowrap">Icon/Count color:</span>
+          <Input
+            placeholder="#hex"
+            value={iconColorInput}
+            onChange={(e) => setIconColorInput(e.target.value)}
+            className="h-8 text-xs w-24"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 text-xs"
+            onClick={() => {
+              if (iconColorInput.trim()) {
+                onUpdateCard(cardKey, { icon_color: iconColorInput.trim() });
+              } else {
+                const { icon_color, ...rest } = config;
+                onUpdateCard(cardKey, rest);
+              }
+            }}
+            disabled={isSaving}
+          >
+            Set
+          </Button>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-muted-foreground whitespace-nowrap">Card BG:</span>
+          <Input
+            placeholder="#hex"
+            value={bgColorInput}
+            onChange={(e) => setBgColorInput(e.target.value)}
+            className="h-8 text-xs w-24"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 text-xs"
+            onClick={() => {
+              if (bgColorInput.trim()) {
+                onUpdateCard(cardKey, { bg_color: bgColorInput.trim() });
+              } else {
+                const { bg_color, ...rest } = config;
+                onUpdateCard(cardKey, rest);
+              }
+            }}
+            disabled={isSaving}
+          >
+            Set
+          </Button>
+        </div>
       </div>
     </div>
   );

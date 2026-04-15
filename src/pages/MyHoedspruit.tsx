@@ -8,6 +8,8 @@ import BackButton from "@/components/BackButton";
 interface CardConfig {
   image_url?: string;
   text_color?: "dark" | "white";
+  icon_color?: string;
+  bg_color?: string;
 }
 
 type CardsConfig = Record<string, CardConfig>;
@@ -131,29 +133,23 @@ const MyHoedspruit = () => {
     const isClickable = !!card.href;
     const cfg = getCardConfig(card.key);
     const hasBgImage = !!cfg.image_url;
+    const cardBg = cfg.bg_color || card.bg;
 
-    // Text color logic: admin setting > card default > dark
+    // Text color logic for label
     let textColor: string;
-    let countColor: string;
-    let arrowColor: string;
-
     if (cfg.text_color === "white" || (hasBgImage && !cfg.text_color)) {
       textColor = "#ffffff";
-      countColor = "rgba(255,255,255,0.7)";
-      arrowColor = "rgba(255,255,255,0.6)";
     } else if (cfg.text_color === "dark") {
       textColor = "#2b2420";
-      countColor = "rgba(18,18,20,0.35)";
-      arrowColor = "rgba(18,18,20,0.25)";
     } else if (card.defaultColor === "#ffffff") {
       textColor = "#ffffff";
-      countColor = "rgba(255,255,255,0.6)";
-      arrowColor = "rgba(255,255,255,0.5)";
     } else {
       textColor = "#2b2420";
-      countColor = "rgba(18,18,20,0.35)";
-      arrowColor = "rgba(18,18,20,0.25)";
     }
+
+    // Icon/count color: admin override > derived from text color
+    const iconColor = cfg.icon_color || (textColor === "#ffffff" ? "rgba(255,255,255,0.7)" : "rgba(18,18,20,0.4)");
+    const arrowColor = cfg.icon_color || (textColor === "#ffffff" ? "rgba(255,255,255,0.65)" : "rgba(18,18,20,0.3)");
 
     return (
       <div
@@ -163,7 +159,7 @@ const MyHoedspruit = () => {
         style={{
           position: "relative",
           overflow: "hidden",
-          background: card.bg,
+          background: cardBg,
           borderRadius: 16,
           flex: flexOverride ?? 1,
           border: hasBgImage ? "none" : "1px solid rgba(18,18,20,0.06)",
@@ -187,13 +183,13 @@ const MyHoedspruit = () => {
           />
         )}
 
-        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 13, fontWeight: 500, color: countColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
+        <div style={{ position: "absolute", top: 16, left: 16, fontSize: 15, fontWeight: 700, color: iconColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
           {card.count !== null ? `(${card.count})` : ""}
         </div>
 
         {isClickable && (
           <div style={{ position: "absolute", top: 14, right: 14, zIndex: 1 }}>
-            <ArrowUpRight style={{ width: 18, height: 18, strokeWidth: 2, color: arrowColor }} />
+            <ArrowUpRight style={{ width: 22, height: 22, strokeWidth: 2.5, color: arrowColor }} />
           </div>
         )}
 
