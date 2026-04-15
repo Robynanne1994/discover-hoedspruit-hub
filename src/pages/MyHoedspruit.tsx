@@ -67,14 +67,14 @@ const MyHoedspruit = () => {
       count: savedListingsCount,
       href: "/saved",
       bg: "#f5f0e8",
-      height: 220,
+      flex: 5,
     },
     {
       label: "My\nEvents",
       count: savedEventsCount,
       href: "/saved?tab=events",
       bg: "#ffffff",
-      height: 170,
+      flex: 3,
     },
     {
       label: "Saved\nSpecials",
@@ -82,21 +82,21 @@ const MyHoedspruit = () => {
       href: "/saved?tab=specials",
       bg: "#715a3d",
       color: "#ffffff",
-      height: 200,
+      flex: 4,
     },
     {
       label: "Visited\nPlaces",
       count: visitedCount,
       href: "/visited",
       bg: "#f5f0e8",
-      height: 190,
+      flex: 5,
     },
     {
       label: "Coming\nSoon",
       count: null,
       href: null,
       bg: "#ffffff",
-      height: 180,
+      flex: 3,
     },
   ];
 
@@ -108,18 +108,8 @@ const MyHoedspruit = () => {
     const isClickable = !!card.href;
     const textColor = card.color || "#2b2420";
 
-    const inner = (
-      <div
-        key={index}
-        className="relative overflow-hidden"
-        style={{
-          background: card.bg,
-          borderRadius: 16,
-          height: card.height,
-          border: "1px solid rgba(18,18,20,0.06)",
-          cursor: isClickable ? "pointer" : "default",
-        }}
-      >
+    const cardContent = (
+      <>
         {/* Count top-left */}
         <div
           style={{
@@ -137,13 +127,7 @@ const MyHoedspruit = () => {
 
         {/* Arrow top-right */}
         {isClickable && (
-          <div
-            style={{
-              position: "absolute",
-              top: 14,
-              right: 14,
-            }}
-          >
+          <div style={{ position: "absolute", top: 14, right: 14 }}>
             <ArrowUpRight
               style={{
                 width: 18,
@@ -156,14 +140,7 @@ const MyHoedspruit = () => {
         )}
 
         {/* Label bottom-left */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 16,
-            left: 16,
-            right: 16,
-          }}
-        >
+        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
           <h3
             style={{
               fontFamily: "var(--font-heading)",
@@ -179,31 +156,37 @@ const MyHoedspruit = () => {
             {card.label}
           </h3>
         </div>
-      </div>
+      </>
     );
 
-    if (isClickable) {
-      return (
-        <div
-          key={index}
-          onClick={() => navigate(card.href!)}
-          className="active:scale-[0.98] transition-transform"
-        >
-          {inner}
-        </div>
-      );
-    }
-    return <div key={index}>{inner}</div>;
+    return (
+      <div
+        key={index}
+        onClick={isClickable ? () => navigate(card.href!) : undefined}
+        className={isClickable ? "active:scale-[0.98] transition-transform" : ""}
+        style={{
+          position: "relative",
+          overflow: "hidden",
+          background: card.bg,
+          borderRadius: 16,
+          flex: card.flex,
+          border: "1px solid rgba(18,18,20,0.06)",
+          cursor: isClickable ? "pointer" : "default",
+        }}
+      >
+        {cardContent}
+      </div>
+    );
   };
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "#ffffff" }}>
+    <div style={{ background: "#ffffff", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
         <BackButton />
       </div>
 
-      <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <h1
           style={{
             fontFamily: "var(--font-heading)",
@@ -218,13 +201,16 @@ const MyHoedspruit = () => {
         </h1>
       </div>
 
-      {/* Bento grid */}
+      {/* Bento grid - fills remaining space */}
       <div
         style={{
           paddingLeft: 16,
           paddingRight: 16,
+          paddingBottom: 84,
           display: "flex",
           gap: 10,
+          flex: 1,
+          minHeight: 0,
         }}
       >
         {/* Left column */}
