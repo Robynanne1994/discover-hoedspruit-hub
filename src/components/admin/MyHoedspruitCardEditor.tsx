@@ -244,6 +244,59 @@ const CardRow = ({
           Save
         </Button>
       </div>
+
+      <div className="flex gap-2 items-center flex-wrap">
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-muted-foreground whitespace-nowrap">Icon/Count color:</span>
+          <Input
+            placeholder="#hex"
+            value={iconColorInput}
+            onChange={(e) => setIconColorInput(e.target.value)}
+            className="h-8 text-xs w-24"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 text-xs"
+            onClick={() => {
+              if (iconColorInput.trim()) {
+                onUpdateCard(cardKey, { icon_color: iconColorInput.trim() });
+              } else {
+                const { icon_color, ...rest } = config;
+                onUpdateCard(cardKey, rest);
+              }
+            }}
+            disabled={isSaving}
+          >
+            Set
+          </Button>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-muted-foreground whitespace-nowrap">Card BG:</span>
+          <Input
+            placeholder="#hex"
+            value={bgColorInput}
+            onChange={(e) => setBgColorInput(e.target.value)}
+            className="h-8 text-xs w-24"
+          />
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-8 text-xs"
+            onClick={() => {
+              if (bgColorInput.trim()) {
+                onUpdateCard(cardKey, { bg_color: bgColorInput.trim() });
+              } else {
+                const { bg_color, ...rest } = config;
+                onUpdateCard(cardKey, rest);
+              }
+            }}
+            disabled={isSaving}
+          >
+            Set
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
