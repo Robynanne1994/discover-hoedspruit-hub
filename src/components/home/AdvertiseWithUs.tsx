@@ -63,7 +63,7 @@ const AdvertiseWithUs = () => {
               cursor: "pointer",
             }}
           >
-            <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
+            <span className="text-secondary-foreground font-sans" style={{ fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
             <ArrowUpRight size={14} color="#121214" strokeWidth={2.5} />
           </button>
         </div>
