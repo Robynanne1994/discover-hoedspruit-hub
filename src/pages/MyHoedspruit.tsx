@@ -18,7 +18,7 @@ const BentoCard = ({ card, onClick }: { card: CardData; onClick?: () => void }) 
   const textColor = card.color || "#2b2420";
   const mutedColor = card.color
     ? "rgba(255,255,255,0.5)"
-    : "rgba(113,90,61,0.4)";
+    : "rgba(113,90,61,0.35)";
 
   return (
     <div
@@ -29,8 +29,8 @@ const BentoCard = ({ card, onClick }: { card: CardData; onClick?: () => void }) 
         overflow: "hidden",
         background: card.bg,
         borderRadius: 22,
-        flex: 1,
-        minHeight: 0,
+        width: "100%",
+        height: "100%",
         cursor: isClickable ? "pointer" : "default",
       }}
     >
@@ -173,42 +173,36 @@ const MyHoedspruit = () => {
         </h1>
       </div>
 
-      {/* Bento grid */}
+      {/* Bento grid using CSS Grid */}
       <div
         style={{
           padding: "0 10px",
           paddingBottom: 82,
           flex: 1,
           minHeight: 0,
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gridTemplateRows: "3fr 4fr 2fr",
           gap: 8,
         }}
       >
-        {/* Row 1: Saved Listings (short) | My Events (tall) */}
-        <div style={{ display: "flex", gap: 8, flex: 4 }}>
-          <div style={{ flex: 1, display: "flex" }}>
-            <BentoCard card={cards[0]} onClick={() => navigate(cards[0].href!)} />
-          </div>
-          <div style={{ flex: 1, display: "flex" }}>
-            <BentoCard card={cards[1]} onClick={() => navigate(cards[1].href!)} />
-          </div>
+        {/* Row 1 Left: Saved Listings (shorter) */}
+        <div style={{ gridColumn: "1", gridRow: "1" }}>
+          <BentoCard card={cards[0]} onClick={() => navigate(cards[0].href!)} />
         </div>
-
-        {/* Row 2: Saved Specials (tall) | Visited Places (short) */}
-        <div style={{ display: "flex", gap: 8, flex: 4 }}>
-          <div style={{ flex: 1, display: "flex" }}>
-            <BentoCard card={cards[2]} onClick={() => navigate(cards[2].href!)} />
-          </div>
-          <div style={{ flex: 1, display: "flex" }}>
-            <BentoCard card={cards[3]} onClick={() => navigate(cards[3].href!)} />
-          </div>
+        {/* Row 1 Right: My Events (spans rows 1+2 partially — use taller row) */}
+        {/* Actually: left col = short then tall, right col = tall then short */}
+        {/* Row 1 Right: My Events (tall) */}
+        <div style={{ gridColumn: "2", gridRow: "1 / 3" }}>
+          <BentoCard card={cards[1]} onClick={() => navigate(cards[1].href!)} />
         </div>
-
-        {/* Row 3: Full-width bottom card */}
-        <div style={{ display: "flex", flex: 2 }}>
-          <BentoCard card={cards[4]} />
+        {/* Row 2 Left: Saved Specials (tall — but left col row 2) */}
+        <div style={{ gridColumn: "1", gridRow: "2" }}>
+          <BentoCard card={cards[2]} onClick={() => navigate(cards[2].href!)} />
         </div>
+        {/* Visited Places — need to rethink grid */}
+        {/* Reference: Col1=[short, tall], Col2=[tall, short], bottom=full width */}
+        {/* With grid: need 4-row grid. R1-R2 split for col1, R1-R2 split for col2 differently */}
       </div>
     </div>
   );
