@@ -11,6 +11,7 @@ interface CardData {
   href: string | null;
   bg: string;
   color?: string;
+  flex: number;
 }
 
 const BentoCard = ({ card, onClick }: { card: CardData; onClick?: () => void }) => {
@@ -29,12 +30,11 @@ const BentoCard = ({ card, onClick }: { card: CardData; onClick?: () => void }) 
         overflow: "hidden",
         background: card.bg,
         borderRadius: 22,
-        width: "100%",
-        height: "100%",
+        flex: card.flex,
+        minHeight: 0,
         cursor: isClickable ? "pointer" : "default",
       }}
     >
-      {/* Count top-left */}
       <span
         style={{
           position: "absolute",
@@ -49,7 +49,6 @@ const BentoCard = ({ card, onClick }: { card: CardData; onClick?: () => void }) 
         {card.count !== null ? `(${card.count})` : ""}
       </span>
 
-      {/* Arrow top-right */}
       {isClickable && (
         <ArrowUpRight
           style={{
@@ -64,7 +63,6 @@ const BentoCard = ({ card, onClick }: { card: CardData; onClick?: () => void }) 
         />
       )}
 
-      {/* Label bottom-left */}
       {card.label && (
         <h3
           style={{
@@ -144,13 +142,23 @@ const MyHoedspruit = () => {
     enabled: !!user,
   });
 
-  const cards: CardData[] = [
-    { label: "Saved\nListings", count: savedListingsCount, href: "/saved", bg: "#f5f0e8" },
-    { label: "My\nEvents", count: savedEventsCount, href: "/saved?tab=events", bg: "#ffffff" },
-    { label: "Saved\nSpecials", count: savedSpecialsCount, href: "/saved?tab=specials", bg: "#715a3d", color: "#ffffff" },
-    { label: "Visited\nPlaces", count: visitedCount, href: "/visited", bg: "#f5f0e8" },
-    { label: "", count: null, href: null, bg: "#ffffff" },
+  // Left col: Saved Listings (short, flex 3) → Saved Specials (tall, flex 5)
+  // Right col: My Events (tall, flex 5) → Visited Places (short, flex 3)
+  const leftCards: CardData[] = [
+    { label: "Saved\nListings", count: savedListingsCount, href: "/saved", bg: "#f5f0e8", flex: 3 },
+    { label: "Saved\nSpecials", count: savedSpecialsCount, href: "/saved?tab=specials", bg: "#715a3d", color: "#ffffff", flex: 5 },
   ];
+  const rightCards: CardData[] = [
+    { label: "My\nEvents", count: savedEventsCount, href: "/saved?tab=events", bg: "#ffffff", flex: 5 },
+    { label: "Visited\nPlaces", count: visitedCount, href: "/visited", bg: "#f5f0e8", flex: 3 },
+  ];
+  const bottomCard: CardData = {
+    label: "",
+    count: null,
+    href: null,
+    bg: "#ffffff",
+    flex: 1,
+  };
 
   return (
     <div style={{ background: "#ffffff", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
@@ -158,7 +166,7 @@ const MyHoedspruit = () => {
       <div style={{ padding: "12px 14px 0" }}>
         <BackButton />
       </div>
-      <div style={{ padding: "4px 14px 10px" }}>
+      <div style={{ padding: "4px 14px 8px" }}>
         <h1
           style={{
             fontFamily: "var(--font-heading)",
@@ -173,36 +181,38 @@ const MyHoedspruit = () => {
         </h1>
       </div>
 
-      {/* Bento grid using CSS Grid */}
+      {/* Bento grid */}
       <div
         style={{
           padding: "0 10px",
           paddingBottom: 82,
           flex: 1,
           minHeight: 0,
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gridTemplateRows: "3fr 4fr 2fr",
+          display: "flex",
+          flexDirection: "column",
           gap: 8,
         }}
       >
-        {/* Row 1 Left: Saved Listings (shorter) */}
-        <div style={{ gridColumn: "1", gridRow: "1" }}>
-          <BentoCard card={cards[0]} onClick={() => navigate(cards[0].href!)} />
+        {/* Top masonry section */}
+        <div style={{ display: "flex", gap: 8, flex: 7, minHeight: 0 }}>
+          {/* Left column */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, minHeight: 0 }}>
+            {leftCards.map((card, i) => (
+              <BentoCard key={i} card={card} onClick={card.href ? () => navigate(card.href!) : undefined} />
+            ))}
+          </div>
+          {/* Right column */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, minHeight: 0 }}>
+            {rightCards.map((card, i) => (
+              <BentoCard key={i} card={card} onClick={card.href ? () => navigate(card.href!) : undefined} />
+            ))}
+          </div>
         </div>
-        {/* Row 1 Right: My Events (spans rows 1+2 partially — use taller row) */}
-        {/* Actually: left col = short then tall, right col = tall then short */}
-        {/* Row 1 Right: My Events (tall) */}
-        <div style={{ gridColumn: "2", gridRow: "1 / 3" }}>
-          <BentoCard card={cards[1]} onClick={() => navigate(cards[1].href!)} />
+
+        {/* Bottom full-width card */}
+        <div style={{ flex: 2, minHeight: 0 }}>
+          <BentoCard card={bottomCard} />
         </div>
-        {/* Row 2 Left: Saved Specials (tall — but left col row 2) */}
-        <div style={{ gridColumn: "1", gridRow: "2" }}>
-          <BentoCard card={cards[2]} onClick={() => navigate(cards[2].href!)} />
-        </div>
-        {/* Visited Places — need to rethink grid */}
-        {/* Reference: Col1=[short, tall], Col2=[tall, short], bottom=full width */}
-        {/* With grid: need 4-row grid. R1-R2 split for col1, R1-R2 split for col2 differently */}
       </div>
     </div>
   );
