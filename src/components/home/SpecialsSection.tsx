@@ -40,15 +40,15 @@ const SpecialsSection = () => {
   };
 
   return (
-    <div style={{ background: "#121214", width: "100%", paddingTop: 28, paddingBottom: 28 }}>
+    <div style={{ width: "100%", paddingTop: 28, paddingBottom: 28 }}>
       {/* Header */}
       <div style={{ padding: "0 14px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontWeight: 900, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
+          <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
             Specials
           </h2>
         </div>
-        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
+        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
           See All ›
         </Link>
       </div>
@@ -86,14 +86,14 @@ const SpecialsSection = () => {
                 </div>
 
                 {/* Content */}
-                <div style={{ padding: "14px 16px", background: "#ffffff" }}>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 4, minHeight: "2.4em", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                <div style={{ padding: "14px 16px", background: "#d2d2d2" }}>
+                  <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 15, fontWeight: 400, color: "#2b2420", lineHeight: 1.2, marginBottom: 4, letterSpacing: "0.01em", minHeight: "2.4em", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                     {special.title}
                   </div>
-                  <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginBottom: 8 }}>
+                  <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, fontWeight: 400, color: "rgba(18,18,20,0.4)", marginBottom: 8, letterSpacing: "0.01em" }}>
                     {special.business_name}
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)" }}>
+                  <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 11, fontWeight: 400, color: "rgba(18,18,20,0.3)", letterSpacing: "0.01em" }}>
                     {special.valid_until
                       ? `Valid until ${format(new Date(special.valid_until), "d MMM yyyy")}`
                       : "Ongoing"}
