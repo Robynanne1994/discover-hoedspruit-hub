@@ -67,14 +67,14 @@ const MyHoedspruit = () => {
       count: savedListingsCount,
       href: "/saved",
       bg: "#f5f0e8",
-      height: 220,
+      flex: 5,
     },
     {
       label: "My\nEvents",
       count: savedEventsCount,
       href: "/saved?tab=events",
       bg: "#ffffff",
-      height: 170,
+      flex: 3,
     },
     {
       label: "Saved\nSpecials",
@@ -82,21 +82,21 @@ const MyHoedspruit = () => {
       href: "/saved?tab=specials",
       bg: "#715a3d",
       color: "#ffffff",
-      height: 200,
+      flex: 4,
     },
     {
       label: "Visited\nPlaces",
       count: visitedCount,
       href: "/visited",
       bg: "#f5f0e8",
-      height: 190,
+      flex: 5,
     },
     {
       label: "Coming\nSoon",
       count: null,
       href: null,
       bg: "#ffffff",
-      height: 180,
+      flex: 3,
     },
   ];
 
