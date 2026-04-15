@@ -159,7 +159,7 @@ const MyHoedspruit = () => {
         style={{
           position: "relative",
           overflow: "hidden",
-          background: card.bg,
+          background: cardBg,
           borderRadius: 16,
           flex: flexOverride ?? 1,
           border: hasBgImage ? "none" : "1px solid rgba(18,18,20,0.06)",
