@@ -190,7 +190,7 @@ const MyHoedspruit = () => {
           My Hoedspruit
         </h1>
       </div>
-      <div style={{ paddingLeft: 16, paddingRight: 16, paddingBottom: 84, display: "flex", gap: 4, flex: 1, minHeight: 0 }}>
+      <div style={{ paddingLeft: 4, paddingRight: 4, paddingBottom: 84, display: "flex", gap: 4, flex: 1, minHeight: 0 }}>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
           {renderCard(leftCards[0], 0, 2)}
           {renderCard(leftCards[1], 1)}
