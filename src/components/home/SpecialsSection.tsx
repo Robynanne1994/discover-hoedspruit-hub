@@ -40,15 +40,15 @@ const SpecialsSection = () => {
   };
 
   return (
-    <div style={{ width: "100%", paddingTop: 48, paddingBottom: 48 }}>
+    <div style={{ background: "#121214", width: "100%", paddingTop: 28, paddingBottom: 28 }}>
       {/* Header */}
-      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 24 }}>
+      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
-          <h2 style={{ fontFamily: "'Sora', sans-serif", fontWeight: 700, fontSize: 42, color: "#1A1A1A", letterSpacing: -1, lineHeight: 1.1, margin: 0 }}>
+          <h2 style={{ fontWeight: 900, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>
             Specials
           </h2>
         </div>
-        <Link to="/specials" style={{ fontSize: 11, fontWeight: 500, color: "rgba(43,36,32,0.35)", textTransform: "uppercase", letterSpacing: 1, textDecoration: "none" }}>
+        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
           See All ›
         </Link>
       </div>
@@ -64,8 +64,7 @@ const SpecialsSection = () => {
                   flexShrink: 0,
                   borderRadius: 16,
                   overflow: "hidden",
-                  background: "#ffffff",
-                  boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                  background: "rgba(255,255,255,0.08)",
                   marginRight: idx === specials.length - 1 ? 24 : 0,
                 }}
               >

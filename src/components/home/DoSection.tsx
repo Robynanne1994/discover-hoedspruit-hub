@@ -12,7 +12,7 @@ const DoSection = () => {
 
   if (isLoading) {
     return (
-      <section style={{ paddingTop: 48, paddingBottom: 48 }}>
+      <section style={{ paddingTop: 36 }}>
         <div style={{ padding: "0 24px" }}>
           <HomeSectionHeader title={title || "What to Do"} />
         </div>
@@ -27,7 +27,7 @@ const DoSection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section style={{ paddingTop: 48, paddingBottom: 48 }}>
+    <section style={{ paddingTop: 36 }}>
       <div style={{ padding: "0 24px" }}>
         <HomeSectionHeader title={title || "What to Do"} actionLabel="See All" actionHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb" />
       </div>

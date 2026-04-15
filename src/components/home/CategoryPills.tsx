@@ -6,35 +6,23 @@ const categories = [
   { label: "Restaurants", icon: UtensilsCrossed, href: "/categories" },
   { label: "Activities", icon: Compass, href: "/categories" },
   { label: "Lodges", icon: Home, href: "/categories" },
-  { label: "Specials", icon: Sparkles, href: "/specials" },
+  { label: "Specials", icon: Sparkles, href: "/categories" },
 ];
 
 const CategoryPills = () => {
   return (
-    <section style={{ padding: "12px 16px 8px" }}>
-      <div style={{ display: "flex", gap: 8, overflowX: "auto" }} className="scrollbar-hide">
+    <section className="px-4 pt-3 pb-2">
+      <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5">
         {categories.map((cat) => {
           const Icon = cat.icon;
           return (
             <Link
               key={cat.label}
               to={cat.href}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                padding: "10px 18px",
-                background: "#F2EEE5",
-                borderRadius: 9999,
-                whiteSpace: "nowrap",
-                textDecoration: "none",
-                flexShrink: 0,
-              }}
+              className="flex items-center gap-1.5 px-3 py-2 bg-card rounded-full border border-border/50 shadow-card whitespace-nowrap transition-all active:scale-95"
             >
-              <Icon size={16} color="#1A1A1A" strokeWidth={1.8} />
-              <span style={{ fontFamily: "var(--font-body)", fontSize: 13, fontWeight: 500, color: "#1A1A1A" }}>
-                {cat.label}
-              </span>
+              <Icon className="h-3.5 w-3.5 text-primary" />
+              <span className="text-xs font-medium text-foreground">{cat.label}</span>
             </Link>
           );
         })}
