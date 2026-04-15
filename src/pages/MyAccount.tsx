@@ -435,25 +435,22 @@ const MyAccount = () => {
     { icon: Tag, label: "Saved Specials", desc: "Your saved specials and deals", href: "/saved?tab=specials" },
   ];
 
-  const preferencesItems = [
+  const settingsItems = [
+    { icon: Settings, label: "Account Settings", desc: "Manage your account details", href: "/account-settings" },
     { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", href: "/notifications" },
   ];
 
-  const supportItems = [
-    { icon: HelpCircle, label: "Help & FAQs", desc: "Answers to common questions", href: "/faqs" },
-    { icon: MessageSquare, label: "Give Us Feedback", desc: "Tell us how we can improve", href: "/feedback" },
+  const getInTouchItems = [
     { icon: Mail, label: "Contact", desc: "Get in touch with us", href: "/contact" },
+    { icon: Megaphone, label: "Advertise with Us", desc: "Promote your business", href: "/advertise" },
+    { icon: MessageSquare, label: "Give Us Feedback", desc: "Tell us how we can improve", href: "/feedback" },
   ];
 
-  const infoItems = [
-    { icon: Newspaper, label: "The Lowveld Lowdown", href: "/headlines" },
+  const moreItems = [
     { icon: Info, label: "About", href: "/about" },
-    { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
+    { icon: Newspaper, label: "The Lowveld Lowdown", href: "/headlines" },
+    { icon: HelpCircle, label: "Help & FAQs", href: "/faqs" },
     { icon: FileText, label: "Terms & Policies", href: "/terms" },
-  ];
-
-  const accountItems = [
-    { icon: Settings, label: "Account Settings", desc: "Manage your account details", href: "/account-settings" },
   ];
 
   const renderRow = (item: any, isLast: boolean) => {
@@ -527,42 +524,36 @@ const MyAccount = () => {
         </div>
       </div>
 
-      {/* Quick actions */}
+      {/* My Hoedspruit */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 24, marginBottom: 32 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+          My Hoedspruit
+        </p>
         {quickActions.map((item, i) => renderRow(item, i === quickActions.length - 1))}
       </div>
 
-
-      {/* Preferences */}
+      {/* Settings */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Preferences
+          Settings
         </p>
-        {preferencesItems.map((item, i) => renderRow(item, i === preferencesItems.length - 1))}
+        {settingsItems.map((item, i) => renderRow(item, i === settingsItems.length - 1))}
       </div>
 
-      {/* Support */}
+      {/* Get in Touch */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Support
+          Get in Touch
         </p>
-        {supportItems.map((item, i) => renderRow(item, i === supportItems.length - 1))}
+        {getInTouchItems.map((item, i) => renderRow(item, i === getInTouchItems.length - 1))}
       </div>
 
-      {/* Info */}
+      {/* More */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Info
+          More
         </p>
-        {infoItems.map((item, i) => renderRow(item, i === infoItems.length - 1))}
-      </div>
-
-      {/* Account */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Account
-        </p>
-        {accountItems.map((item, i) => renderRow(item, i === accountItems.length - 1))}
+        {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1))}
       </div>
 
       {isAdmin && (
