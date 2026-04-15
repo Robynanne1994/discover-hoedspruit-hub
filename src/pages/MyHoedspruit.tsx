@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { Json } from "@/integrations/supabase/types";
 
 const MyHoedspruit = () => {
   const { user } = useAuth();
