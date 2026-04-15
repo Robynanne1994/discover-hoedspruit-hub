@@ -435,25 +435,22 @@ const MyAccount = () => {
     { icon: Tag, label: "Saved Specials", desc: "Your saved specials and deals", href: "/saved?tab=specials" },
   ];
 
-  const preferencesItems = [
+  const settingsItems = [
+    { icon: Settings, label: "Account Settings", desc: "Manage your account details", href: "/account-settings" },
     { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", href: "/notifications" },
   ];
 
-  const supportItems = [
-    { icon: HelpCircle, label: "Help & FAQs", desc: "Answers to common questions", href: "/faqs" },
-    { icon: MessageSquare, label: "Give Us Feedback", desc: "Tell us how we can improve", href: "/feedback" },
+  const getInTouchItems = [
     { icon: Mail, label: "Contact", desc: "Get in touch with us", href: "/contact" },
+    { icon: Megaphone, label: "Advertise with Us", desc: "Promote your business", href: "/advertise" },
+    { icon: MessageSquare, label: "Give Us Feedback", desc: "Tell us how we can improve", href: "/feedback" },
   ];
 
-  const infoItems = [
-    { icon: Newspaper, label: "The Lowveld Lowdown", href: "/headlines" },
+  const moreItems = [
     { icon: Info, label: "About", href: "/about" },
-    { icon: Megaphone, label: "Advertise with Us", href: "/advertise" },
+    { icon: Newspaper, label: "The Lowveld Lowdown", href: "/headlines" },
+    { icon: HelpCircle, label: "Help & FAQs", href: "/faqs" },
     { icon: FileText, label: "Terms & Policies", href: "/terms" },
-  ];
-
-  const accountItems = [
-    { icon: Settings, label: "Account Settings", desc: "Manage your account details", href: "/account-settings" },
   ];
 
   const renderRow = (item: any, isLast: boolean) => {
