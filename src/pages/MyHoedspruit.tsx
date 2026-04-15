@@ -133,29 +133,23 @@ const MyHoedspruit = () => {
     const isClickable = !!card.href;
     const cfg = getCardConfig(card.key);
     const hasBgImage = !!cfg.image_url;
+    const cardBg = cfg.bg_color || card.bg;
 
-    // Text color logic: admin setting > card default > dark
+    // Text color logic for label
     let textColor: string;
-    let countColor: string;
-    let arrowColor: string;
-
     if (cfg.text_color === "white" || (hasBgImage && !cfg.text_color)) {
       textColor = "#ffffff";
-      countColor = "rgba(255,255,255,0.7)";
-      arrowColor = "rgba(255,255,255,0.6)";
     } else if (cfg.text_color === "dark") {
       textColor = "#2b2420";
-      countColor = "rgba(18,18,20,0.35)";
-      arrowColor = "rgba(18,18,20,0.25)";
     } else if (card.defaultColor === "#ffffff") {
       textColor = "#ffffff";
-      countColor = "rgba(255,255,255,0.6)";
-      arrowColor = "rgba(255,255,255,0.5)";
     } else {
       textColor = "#2b2420";
-      countColor = "rgba(18,18,20,0.35)";
-      arrowColor = "rgba(18,18,20,0.25)";
     }
+
+    // Icon/count color: admin override > derived from text color
+    const iconColor = cfg.icon_color || (textColor === "#ffffff" ? "rgba(255,255,255,0.7)" : "rgba(18,18,20,0.4)");
+    const arrowColor = cfg.icon_color || (textColor === "#ffffff" ? "rgba(255,255,255,0.65)" : "rgba(18,18,20,0.3)");
 
     return (
       <div
