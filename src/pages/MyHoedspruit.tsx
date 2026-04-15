@@ -141,7 +141,7 @@ const MyHoedspruit = () => {
           <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)" }} />
         )}
 
-        <div style={{ position: "absolute", top: 12, left: 12, fontSize: 15, fontWeight: 700, color: countColor, fontFamily: "var(--font-body)", zIndex: 1 }}>
+        <div style={{ position: "absolute", top: 12, left: 12, fontSize: 15, fontWeight: 400, color: countColor, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", zIndex: 1 }}>
           {card.count !== null ? `(${card.count})` : ""}
         </div>
 
@@ -154,13 +154,13 @@ const MyHoedspruit = () => {
         <div style={{ position: "absolute", bottom: 12, left: 12, right: 12, zIndex: 1 }}>
           <h3
             style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 500,
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontWeight: 400,
               fontSize: textSize,
-              lineHeight: 1.05,
+              lineHeight: 1,
               color: textColor,
               textTransform: textTransform as any,
-              letterSpacing: "-0.3px",
+              letterSpacing: "0.01em",
               whiteSpace: "pre-line",
             }}
           >
@@ -172,25 +172,25 @@ const MyHoedspruit = () => {
   };
 
   return (
-    <div style={{ background: "#ebebeb", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div style={{ background: "#ebebeb", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden", maxHeight: "100dvh" }}>
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
         <BackButton />
       </div>
       <div style={{ paddingTop: 8, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <h1
           style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 900,
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontWeight: 400,
             fontSize: 34,
             lineHeight: 1,
-            letterSpacing: "-0.5px",
+            letterSpacing: "0.01em",
             color: "#2b2420",
           }}
         >
           My Hoedspruit
         </h1>
       </div>
-      <div style={{ paddingLeft: 4, paddingRight: 4, paddingBottom: 84, display: "flex", gap: 4, flex: 1, minHeight: 0 }}>
+      <div style={{ paddingLeft: 4, paddingRight: 4, paddingBottom: 84, display: "flex", gap: 4, flex: "0 1 calc(100% - 140px)", minHeight: 0 }}>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
           {renderCard(leftCards[0], 0, 2)}
           {renderCard(leftCards[1], 1)}
