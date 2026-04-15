@@ -122,10 +122,38 @@ const MyHoedspruit = () => {
 
   const renderCard = (card: typeof cards[0], index: number) => {
     const isClickable = !!card.href;
-    const textColor = card.color || "#2b2420";
+    const hasBgImage = !!card.bgImage;
+    const textColor = hasBgImage ? "#ffffff" : (card.color || "#2b2420");
+    const countColor = hasBgImage ? "rgba(255,255,255,0.7)" : (card.color ? "rgba(255,255,255,0.6)" : "rgba(18,18,20,0.35)");
+    const arrowColor = hasBgImage ? "rgba(255,255,255,0.6)" : (card.color ? "rgba(255,255,255,0.5)" : "rgba(18,18,20,0.25)");
 
     const cardContent = (
       <>
+        {/* Background image */}
+        {hasBgImage && (
+          <img
+            src={card.bgImage}
+            alt=""
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        )}
+        {/* Dark overlay for text readability */}
+        {hasBgImage && (
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)",
+            }}
+          />
+        )}
+
         {/* Count top-left */}
         <div
           style={{
@@ -134,8 +162,9 @@ const MyHoedspruit = () => {
             left: 16,
             fontSize: 13,
             fontWeight: 500,
-            color: card.color ? "rgba(255,255,255,0.6)" : "rgba(18,18,20,0.35)",
+            color: countColor,
             fontFamily: "var(--font-body)",
+            zIndex: 1,
           }}
         >
           {card.count !== null ? `(${card.count})` : ""}
@@ -143,20 +172,20 @@ const MyHoedspruit = () => {
 
         {/* Arrow top-right */}
         {isClickable && (
-          <div style={{ position: "absolute", top: 14, right: 14 }}>
+          <div style={{ position: "absolute", top: 14, right: 14, zIndex: 1 }}>
             <ArrowUpRight
               style={{
                 width: 18,
                 height: 18,
                 strokeWidth: 2,
-                color: card.color ? "rgba(255,255,255,0.5)" : "rgba(18,18,20,0.25)",
+                color: arrowColor,
               }}
             />
           </div>
         )}
 
         {/* Label bottom-left */}
-        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
+        <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, zIndex: 1 }}>
           <h3
             style={{
               fontFamily: "var(--font-heading)",
@@ -186,7 +215,7 @@ const MyHoedspruit = () => {
           background: card.bg,
           borderRadius: 16,
           flex: card.flex,
-          border: "1px solid rgba(18,18,20,0.06)",
+          border: hasBgImage ? "none" : "1px solid rgba(18,18,20,0.06)",
           cursor: isClickable ? "pointer" : "default",
         }}
       >
