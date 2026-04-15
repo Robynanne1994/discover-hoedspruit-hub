@@ -117,7 +117,7 @@ const MyHoedspruit = () => {
     },
     {
       key: "coming-soon",
-      label: "Coming\nSoon",
+      label: "",
       count: null,
       href: null,
       bg: "#ffffff",
