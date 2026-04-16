@@ -8,7 +8,7 @@ import {
   Tag,
   RotateCcw,
   Share2,
-  ChevronLeft,
+  ArrowLeft,
   Heart,
   ExternalLink,
   Mail,
@@ -18,6 +18,26 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+
+const pressStyle = { transition: "transform 0.12s ease" };
+const pressHandlers = {
+  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.97)"; },
+  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
+  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
+};
+
+const BackBtn = ({ navigate }: { navigate: ReturnType<typeof useNavigate> }) => (
+  <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+    <button
+      onClick={() => navigate(-1)}
+      className="flex items-center"
+      style={{ gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+    >
+      <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+      <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420" }}>Back</span>
+    </button>
+  </div>
+);
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -29,7 +49,6 @@ const EventDetail = () => {
     queryKey: ["favourite", "event", id, user?.id],
     queryFn: async () => {
       if (!user) return false;
-
       const { data } = await supabase
         .from("favourites" as any)
         .select("id")
@@ -37,7 +56,6 @@ const EventDetail = () => {
         .eq("item_id", id!)
         .eq("item_type", "event")
         .maybeSingle();
-
       return !!data;
     },
     enabled: !!user && !!id,
@@ -45,18 +63,9 @@ const EventDetail = () => {
 
   const toggleFavourite = useMutation({
     mutationFn: async () => {
-      if (!user) {
-        toast.error("Please sign in to save events");
-        return;
-      }
-
+      if (!user) { toast.error("Please sign in to save events"); return; }
       if (isFavourited) {
-        await supabase
-          .from("favourites" as any)
-          .delete()
-          .eq("user_id", user.id)
-          .eq("item_id", id!)
-          .eq("item_type", "event");
+        await supabase.from("favourites" as any).delete().eq("user_id", user.id).eq("item_id", id!).eq("item_type", "event");
       } else {
         await supabase.from("favourites" as any).insert({ user_id: user.id, item_id: id!, item_type: "event" });
       }
@@ -72,7 +81,6 @@ const EventDetail = () => {
     queryKey: ["event-detail", id],
     queryFn: async () => {
       const { data, error } = await supabase.from("events").select("*").eq("id", id!).single();
-
       if (error) throw error;
       return data;
     },
@@ -92,72 +100,27 @@ const EventDetail = () => {
   const formatDate = (dateStr: string) => {
     try {
       const date = new Date(dateStr);
-      return date.toLocaleDateString("en-ZA", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-    } catch {
-      return dateStr;
-    }
+      return date.toLocaleDateString("en-ZA", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    } catch { return dateStr; }
   };
 
   const handleShare = async () => {
     const shareUrl = window.location.href;
-
     if (navigator.share) {
-      try {
-        await navigator.share({
-          title: event?.title,
-          url: shareUrl,
-        });
-      } catch (err) {
-        if ((err as Error).name !== "AbortError") {
-          await navigator.clipboard.writeText(shareUrl);
-          toast.success("Link copied!");
-        }
-      }
-    } else {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("Link copied!");
-    }
+      try { await navigator.share({ title: event?.title, url: shareUrl }); }
+      catch (err) { if ((err as Error).name !== "AbortError") { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } }
+    } else { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); }
   };
+
+  const pageStyle = { background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
-        <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-          <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-            <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 500,
-                color: "rgba(18,18,20,0.45)",
-                letterSpacing: "0.2px",
-              }}
-            >
-              Back
-            </span>
-          </button>
-        </div>
-
-        <div
-          className="flex flex-col items-center justify-center"
-          style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}
-        >
-          <div
-            className="animate-pulse"
-            style={{
-              width: 48,
-              height: 48,
-              borderRadius: 9999,
-              background: "rgba(18,18,20,0.06)",
-              marginBottom: 14,
-            }}
-          />
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)" }}>Loading event...</p>
+      <div className="min-h-screen" style={pageStyle}>
+        <BackBtn navigate={navigate} />
+        <div className="flex flex-col items-center justify-center" style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
+          <div className="animate-pulse" style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.06)", marginBottom: 14 }} />
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.55)" }}>Loading event...</p>
         </div>
       </div>
     );
@@ -165,38 +128,11 @@ const EventDetail = () => {
 
   if (!event) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
-        <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-          <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-            <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 500,
-                color: "rgba(18,18,20,0.45)",
-                letterSpacing: "0.2px",
-              }}
-            >
-              Back
-            </span>
-          </button>
-        </div>
-
+      <div className="min-h-screen" style={pageStyle}>
+        <BackBtn navigate={navigate} />
         <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 80, textAlign: "center" }}>
-          <p
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: 22,
-              color: "#2b2420",
-              marginBottom: 8,
-            }}
-          >
-            Event not found
-          </p>
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.45)", lineHeight: 1.5 }}>
-            This event may have been removed or is no longer available.
-          </p>
+          <p style={{ fontWeight: 400, fontSize: 22, color: "#020202", marginBottom: 8 }}>Event not found</p>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.55)", lineHeight: 1.5 }}>This event may have been removed or is no longer available.</p>
         </div>
       </div>
     );
@@ -225,156 +161,103 @@ const EventDetail = () => {
 
   const contactRows = [
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
-    contactPhone
-      ? {
-          label: "Phone",
-          value: contactPhone,
-          icon: Phone,
-          href: `tel:${contactPhone.replace(/\s/g, "")}`,
-        }
-      : null,
+    contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
     socialLink ? { label: "Social Media", value: "View Profile", icon: Globe, href: socialLink } : null,
     bookingLink ? { label: "Booking", value: "Book Now", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
-    <div style={{ marginBottom: 14 }}>
-      <p
-        style={{
-          fontSize: 11,
-          fontWeight: 600,
-          color: "rgba(18,18,20,0.3)",
-          textTransform: "uppercase",
-          letterSpacing: 2.2,
-          marginBottom: 6,
-        }}
-      >
+    <div style={{ marginBottom: 12 }}>
+      <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1.3, marginBottom: 4, margin: 0 }}>
         {eyebrow}
       </p>
-      <h2
-        style={{
-          fontFamily: "var(--font-heading)",
-          fontWeight: 400,
-          fontSize: 20,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
-          color: "#2b2420",
-          textTransform: "uppercase",
-          margin: 0,
-        }}
-      >
+      <h2 style={{ fontWeight: 400, fontSize: 26, lineHeight: 1.15, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0 }}>
         {title}
       </h2>
     </div>
   );
 
+  const renderDetailCard = (rows: typeof detailRows, isContact = false) => (
+    <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: "4px 0", overflow: "hidden" }}>
+      {rows.map((row, idx) => {
+        const Wrapper = row.href ? "a" : "div";
+        const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
+        return (
+          <div key={row.label}>
+            <Wrapper
+              {...wrapperProps}
+              className="flex items-center"
+              style={{ padding: "14px 20px", textDecoration: "none" }}
+            >
+              <div style={{
+                width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.06)",
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginRight: 16,
+              }}>
+                <row.icon size={24} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.02em", margin: 0, marginBottom: 2 }}>
+                  {row.label}
+                </p>
+                <p style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word" }}>
+                  {row.value}
+                </p>
+              </div>
+            </Wrapper>
+            {idx < rows.length - 1 && (
+              <div style={{ marginLeft: 60, height: 1, background: "rgba(18,18,20,0.08)" }} />
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
   return (
-    <div className="min-h-screen pb-28" style={{ background: "#ebebeb" }}>
-      {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
-        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-          <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
-          <span
-            style={{
-              fontSize: 15,
-              fontWeight: 500,
-              color: "rgba(18,18,20,0.45)",
-              letterSpacing: "0.2px",
-            }}
-          >
-            Back
-          </span>
-        </button>
-      </div>
+    <div className="min-h-screen" style={pageStyle}>
+      <BackBtn navigate={navigate} />
 
       {/* Hero Image */}
       {event.image_url && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 22 }}>
-          <div
-            style={{
-              width: "100%",
-              overflow: "hidden",
-              borderRadius: 16,
-              background: "#f0f0f0",
-              aspectRatio: "4 / 3",
-            }}
-          >
-            <img src={event.image_url} alt={event.title} className="w-full h-full object-cover" />
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+          <div style={{ width: "100%", overflow: "hidden", borderRadius: 16, background: "#f0f0f0", aspectRatio: "16/10" }}>
+            <img src={event.image_url} alt={event.title} className="w-full h-full object-cover object-center" />
           </div>
         </div>
       )}
 
+      {/* Category overline */}
+      {event.tag && (
+        <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1.3, marginBottom: 4, paddingLeft: 24, margin: 0, marginBlockEnd: 4 }}>
+          {event.tag}
+        </p>
+      )}
+
       {/* Title */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        {event.tag && (
-          <p
-            style={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: "rgba(18,18,20,0.3)",
-              textTransform: "uppercase",
-              letterSpacing: 2.2,
-              marginBottom: 10,
-            }}
-          >
-            {event.tag}
-          </p>
-        )}
+      <h1 style={{
+        fontWeight: 400, fontSize: 34, lineHeight: 1.1, letterSpacing: "0.01em",
+        color: "#020202", textTransform: "uppercase", margin: 0, marginBottom: 4,
+        paddingLeft: 24, paddingRight: 24,
+      }}>
+        {event.title}
+      </h1>
 
-        <h1
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 400,
-            fontSize: 34,
-            lineHeight: 0.98,
-            letterSpacing: "0.01em",
-            color: "#2b2420",
-            margin: 0,
-            textTransform: "uppercase",
-          }}
-        >
-          {event.title}
-        </h1>
-
-        {(event.date || timeDisplay) && (
-          <p
-            style={{
-              marginTop: 14,
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontStyle: "italic",
-              fontSize: 14,
-              color: "rgba(18,18,20,0.42)",
-              lineHeight: 1.45,
-              letterSpacing: "0.15px",
-            }}
-          >
-            {formatDate(event.date)}
-            {timeDisplay ? ` · ${timeDisplay}` : ""}
-          </p>
-        )}
-      </div>
+      {/* Date line */}
+      {(event.date || timeDisplay) && (
+        <p style={{
+          fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", fontStyle: "italic",
+          paddingLeft: 24, margin: 0, marginBottom: 32,
+        }}>
+          {formatDate(event.date)}{timeDisplay ? ` · ${timeDisplay}` : ""}
+        </p>
+      )}
 
       {/* About */}
       {event.description && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
+        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
           <SectionLabel eyebrow="Overview" title="About" />
-          <div
-            style={{
-              background: "rgba(18,18,20,0.03)",
-              border: "1px solid rgba(18,18,20,0.06)",
-              borderRadius: 16,
-              padding: 16, boxShadow: "var(--card-shadow)",
-            }}
-          >
-            <p
-              style={{
-                margin: 0,
-                fontSize: 15,
-                color: "rgba(18,18,20,0.58)",
-                lineHeight: 1.85,
-                letterSpacing: "0.1px",
-              }}
-            >
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
+            <p style={{ margin: 0, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.45 }}>
               {event.description}
             </p>
           </div>
@@ -383,196 +266,31 @@ const EventDetail = () => {
 
       {/* Details */}
       {detailRows.length > 0 && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
+        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
           <SectionLabel eyebrow="Event info" title="Details" />
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid rgba(18,18,20,0.06)",
-              borderRadius: 16,
-              overflow: "hidden",
-            }}
-          >
-            {detailRows.map((row, idx) => {
-              const Wrapper = row.href ? "a" : "div";
-              const wrapperProps = row.href
-                ? {
-                    href: row.href,
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                  }
-                : {};
-
-              return (
-                <Wrapper
-                  key={row.label}
-                  {...wrapperProps}
-                  className={row.href ? "transition-colors hover:bg-[rgba(18,18,20,0.02)]" : ""}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                    padding: "18px 18px",
-                    borderBottom: idx < detailRows.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                    textDecoration: "none",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 34,
-                      height: 34,
-                      borderRadius: 16,
-                      background: "rgba(18,18,20,0.04)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <row.icon style={{ width: 16, height: 16, color: "rgba(18,18,20,0.42)" }} strokeWidth={1.8} />
-                  </div>
-
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p
-                      style={{
-                        fontSize: 12,
-                        color: "rgba(18,18,20,0.38)",
-                        margin: 0,
-                        marginBottom: 4,
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {row.label}
-                    </p>
-                    <p
-                      style={{
-                        fontSize: 15,
-                        fontWeight: 500,
-                        color: row.href ? "#2b2420" : "#2b2420",
-                        lineHeight: 1.4,
-                        margin: 0,
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {row.value}
-                    </p>
-                  </div>
-                </Wrapper>
-              );
-            })}
-          </div>
+          {renderDetailCard(detailRows)}
         </section>
       )}
 
       {/* Contact */}
       {contactRows.length > 0 && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
+        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
           <SectionLabel eyebrow="Reach out" title="Contact" />
-          <div
-            style={{
-              background: "#FFFFFF",
-              border: "1px solid rgba(18,18,20,0.06)",
-              borderRadius: 16,
-              overflow: "hidden",
-            }}
-          >
-            {contactRows.map((row, idx) => (
-              <a
-                key={row.label}
-                href={row.href}
-                target={row.label === "Social Media" || row.label === "Booking" ? "_blank" : undefined}
-                rel={row.label === "Social Media" || row.label === "Booking" ? "noopener noreferrer" : undefined}
-                className="transition-colors hover:bg-[rgba(18,18,20,0.02)]"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 14,
-                  padding: "18px 18px",
-                  borderBottom: idx < contactRows.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                  textDecoration: "none",
-                }}
-              >
-                <div
-                  style={{
-                    width: 34,
-                    height: 34,
-                    borderRadius: 16,
-                    background: "rgba(18,18,20,0.04)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <row.icon style={{ width: 16, height: 16, color: "rgba(18,18,20,0.42)" }} strokeWidth={1.8} />
-                </div>
-
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p
-                    style={{
-                      fontSize: 12,
-                      color: "rgba(18,18,20,0.38)",
-                      margin: 0,
-                      marginBottom: 4,
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    {row.label}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: 15,
-                      fontWeight: 500,
-                      color: "#2b2420",
-                      lineHeight: 1.4,
-                      margin: 0,
-                      wordBreak: "break-word",
-                    }}
-                  >
-                    {row.value}
-                  </p>
-                </div>
-              </a>
-            ))}
-          </div>
+          {renderDetailCard(contactRows, true)}
         </section>
       )}
 
       {/* Gallery */}
       {galleryImages.length > 0 && (
         <section style={{ marginBottom: 36 }}>
-          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
+          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
             <SectionLabel eyebrow="Moments" title="Gallery" />
           </div>
-
           <div className="overflow-x-auto scrollbar-hide">
-            <div
-              className="inline-flex"
-              style={{
-                gap: 12,
-                paddingLeft: 24,
-                paddingRight: 24,
-                paddingBottom: 4,
-              }}
-            >
+            <div className="inline-flex" style={{ gap: 12, paddingLeft: 24, paddingRight: 24, paddingBottom: 4 }}>
               {galleryImages.map((url, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: 220,
-                    aspectRatio: "4 / 3",
-                    borderRadius: 16,
-                    overflow: "hidden",
-                    background: "#f0f0f0",
-                    flexShrink: 0,
-                  }}
-                >
-                  <img
-                    src={url}
-                    alt={`${event.title} ${i + 1}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
+                <div key={i} style={{ width: 220, aspectRatio: "4/3", borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
+                  <img src={url} alt={`${event.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                 </div>
               ))}
             </div>
@@ -580,57 +298,43 @@ const EventDetail = () => {
         </section>
       )}
 
-      {/* Actions */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, paddingBottom: 8 }}>
-        <div className="flex" style={{ gap: 12 }}>
-          <button
-            onClick={handleShare}
-            className="flex items-center justify-center transition-colors"
-            style={{
-              flex: 1,
-              gap: 8,
-              height: 54,
-              borderRadius: 9999,
-              background: "rgba(18,18,20,0.04)",
-              border: "1px solid rgba(18,18,20,0.08)",
-              color: "#2b2420",
-              fontSize: 15,
-              fontWeight: 500,
-              letterSpacing: "0.1px",
-            }}
-          >
-            <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.9} />
-            Share
-          </button>
+      {/* Action buttons */}
+      <div className="flex" style={{ gap: 12, paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
+        <button
+          onClick={handleShare}
+          className="flex items-center justify-center"
+          style={{
+            flex: 1, gap: 8, minHeight: 48, borderRadius: 24,
+            background: "transparent", border: "1.5px solid rgba(18,18,20,0.15)",
+            fontSize: 15, fontWeight: 500, color: "#2B2420", cursor: "pointer",
+            ...pressStyle,
+          }}
+          {...pressHandlers}
+        >
+          <Share2 size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+          Share
+        </button>
 
-          <button
-            onClick={() => toggleFavourite.mutate()}
-            className="flex items-center justify-center transition-colors"
-            style={{
-              flex: 1,
-              gap: 8,
-              height: 54,
-              borderRadius: 9999,
-              background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
-              border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-              color: isFavourited ? "#FFFFFF" : "#2b2420",
-              fontSize: 15,
-              fontWeight: 500,
-              letterSpacing: "0.1px",
-            }}
-          >
-            <Heart
-              style={{
-                width: 16,
-                height: 16,
-                color: isFavourited ? "#FFFFFF" : "rgba(18,18,20,0.5)",
-                fill: isFavourited ? "#FFFFFF" : "transparent",
-              }}
-              strokeWidth={1.9}
-            />
-            Interested
-          </button>
-        </div>
+        <button
+          onClick={() => toggleFavourite.mutate()}
+          className="flex items-center justify-center"
+          style={{
+            flex: 1, gap: 8, minHeight: 48, borderRadius: 24,
+            background: "transparent",
+            border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.15)",
+            fontSize: 15, fontWeight: 500, color: "#2B2420", cursor: "pointer",
+            ...pressStyle,
+          }}
+          {...pressHandlers}
+        >
+          <Heart
+            size={20}
+            strokeWidth={1.8}
+            style={{ color: isFavourited ? "#D4654A" : "#2B2420" }}
+            fill={isFavourited ? "#D4654A" : "none"}
+          />
+          Interested
+        </button>
       </div>
     </div>
   );
