@@ -448,22 +448,22 @@ const MyAccount = () => {
       <div
         className="flex items-center"
         style={{
-          minHeight: 48,
-          padding: "12px 24px",
+          height: 48,
+          padding: "0 24px",
           transition: "transform 0.15s ease",
         }}
         onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
-        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 16 }} />
+        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 12 }} />
         <span style={{ flex: 1, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.2 }}>{item.label}</span>
         <ChevronRight style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
       </div>
     );
 
     const divider = !isLast ? (
-      <div style={{ marginLeft: 24, marginRight: 24, height: 1, background: "rgba(18,18,20,0.08)" }} />
+      <div style={{ marginLeft: 60, marginRight: 24, height: 1, background: "rgba(18,18,20,0.08)" }} />
     ) : null;
 
     if (item.href) return <div key={item.label}><Link to={item.href}>{content}</Link>{divider}</div>;
@@ -476,10 +476,10 @@ const MyAccount = () => {
       fontWeight: 500,
       letterSpacing: "0.06em",
       textTransform: "uppercase" as const,
-      color: "#020202",
+      color: "rgba(18,18,20,0.55)",
       lineHeight: 1.3,
-      marginTop: 24,
-      marginBottom: 8,
+      marginTop: 20,
+      marginBottom: 4,
       paddingLeft: 24,
     }}>
       {text}
@@ -506,7 +506,7 @@ const MyAccount = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <p style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontSize: 15,
@@ -520,8 +520,8 @@ const MyAccount = () => {
       </div>
 
       {/* Profile card */}
-      <div style={{ paddingLeft: 4, paddingRight: 4, marginBottom: 36 }}>
-        <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
+      <div style={{ paddingLeft: 4, paddingRight: 4, marginBottom: 24 }}>
+        <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
           <div className="flex items-center" style={{ gap: 14 }}>
             <div className="overflow-hidden flex items-center justify-center shrink-0" style={{ width: 64, height: 64, borderRadius: "50%", background: "#EBEBEB" }}>
               {profileLoading ? (
@@ -589,7 +589,7 @@ const MyAccount = () => {
       )}
 
       {/* Logout */}
-      <div className="flex justify-center" style={{ marginTop: 36, marginBottom: 48 }}>
+      <div className="flex justify-center" style={{ marginTop: 24, marginBottom: 48 }}>
         <button
           onClick={() => { signOut(); navigate("/"); }}
           className="flex items-center justify-center"
