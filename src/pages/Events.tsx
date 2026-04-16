@@ -330,7 +330,7 @@ const Events = () => {
                   fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)",
                   textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1.3, marginBottom: 4,
                 }}>
-                  Coming up
+                  Save the Date
                 </p>
                 <h2 style={{
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
