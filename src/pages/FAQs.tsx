@@ -74,14 +74,14 @@ const FAQs = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>
           HOW CAN WE<br />HELP?
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           Find answers to the most common questions about Hello Hoedspruit
         </p>
       </div>
@@ -171,7 +171,7 @@ const FAQs = () => {
               <h3 style={{ fontWeight: 400, fontSize: 20, color: "#ffffff", textTransform: "uppercase", letterSpacing: "0.3px", lineHeight: 1.1, marginBottom: 10 }}>
                 STILL HAVE A QUESTION?
               </h3>
-              <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22 }}>
+              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22 }}>
                 We're happy to help. Get in touch and we'll get back to you as soon as we can.
               </p>
               <Link

@@ -130,7 +130,7 @@ const ContactUs = () => {
           letterSpacing: 0.2,
           lineHeight: 1.4,
           fontStyle: "italic",
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           margin: 0,
         }}>
           Questions, feedback or local advice

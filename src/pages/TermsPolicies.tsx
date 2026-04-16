@@ -30,7 +30,7 @@ const TermsPolicies = () => {
         <h1 style={{ fontSize: 40, fontWeight: 400, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
           Terms & Policies
         </h1>
-        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 0 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 0 }}>
           Review the policies that govern your experience
         </p>
       </div>

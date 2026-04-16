@@ -67,10 +67,10 @@ const Feedback = () => {
 
       {/* Heading */}
       <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" as const }}>
+        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" as const }}>
           GIVE US<br />FEEDBACK
         </h1>
-        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4, marginTop: 12 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4, marginTop: 12 }}>
           Help us make Hello Hoedspruit better
         </p>
       </div>

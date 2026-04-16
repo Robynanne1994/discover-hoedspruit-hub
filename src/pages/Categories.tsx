@@ -100,7 +100,7 @@ const Categories = () => {
             fontWeight: 400,
             fontSize: 40,
             lineHeight: 1.0,
-            letterSpacing: "-0.5px",
+            letterSpacing: "0.01em",
              color: "#2b2420",
             margin: 0,
           }}
@@ -115,7 +115,7 @@ const Categories = () => {
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <p
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontStyle: "italic",
             fontSize: 14,
             color: "rgba(18,18,20,0.45)",

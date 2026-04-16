@@ -115,14 +115,14 @@ const VisitedPlaces = () => {
 
       {/* Heading */}
       <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0 }}>
           VISITED<br />PLACES
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ marginTop: 12, paddingLeft: 24, paddingRight: 24 }}>
-        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif", margin: 0 }}>
+        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", margin: 0 }}>
           {visitedCount === 1 ? "1 place you've been to" : `${visitedCount} places you've been to`}
         </p>
       </div>

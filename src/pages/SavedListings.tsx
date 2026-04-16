@@ -244,7 +244,7 @@ const SavedListings = () => {
       <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>SAVED</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
@@ -314,11 +314,11 @@ const SavedListings = () => {
       {backButton}
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>SAVED</h1>
       </div>
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>{subtitleText}</p>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>{subtitleText}</p>
       </div>
 
       {/* Search */}

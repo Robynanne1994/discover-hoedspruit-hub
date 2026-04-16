@@ -113,7 +113,7 @@ const SpecialDetail = () => {
   const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
     <div style={{ marginBottom: 14 }}>
       <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 2.2, marginBottom: 6 }}>{eyebrow}</p>
-      <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 20, lineHeight: 1, letterSpacing: "-0.3px", color: "#2b2420", textTransform: "uppercase", margin: 0 }}>{title}</h2>
+      <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 20, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0 }}>{title}</h2>
     </div>
   );
 
@@ -158,11 +158,11 @@ const SpecialDetail = () => {
           </span>
         </div>
 
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 34, lineHeight: 0.98, letterSpacing: "-0.6px", color: "#2b2420", margin: 0, textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 34, lineHeight: 0.98, letterSpacing: "0.01em", color: "#2b2420", margin: 0, textTransform: "uppercase" }}>
           {special.title}
         </h1>
 
-        <p style={{ marginTop: 14, fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.42)", lineHeight: 1.45, letterSpacing: "0.15px" }}>
+        <p style={{ marginTop: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.42)", lineHeight: 1.45, letterSpacing: "0.15px" }}>
           {special.business_name} · {validityText}
         </p>
       </div>

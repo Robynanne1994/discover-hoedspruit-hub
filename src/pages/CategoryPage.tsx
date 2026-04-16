@@ -191,7 +191,7 @@ const CategoryPage = () => {
             fontWeight: 400,
             fontSize: "clamp(28px, 8vw, 40px)",
             lineHeight: 1,
-            letterSpacing: "-0.5px",
+            letterSpacing: "0.01em",
             color: "#2b2420",
             margin: 0,
             wordBreak: "break-word",
@@ -206,7 +206,7 @@ const CategoryPage = () => {
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <p
           style={{
-            fontFamily: "Georgia, 'Times New Roman', serif",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontStyle: "italic",
             fontSize: 14,
             color: "rgba(18,18,20,0.45)",

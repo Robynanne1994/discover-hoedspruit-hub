@@ -12,9 +12,9 @@ const renderMarkdown = (text: string) => {
   while (i < lines.length) {
     const line = lines[i];
     if (line.startsWith("## ")) {
-      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 400, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(3)}</h2>);
+      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 400, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(3)}</h2>);
     } else if (line.startsWith("# ")) {
-      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 400, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(2)}</h2>);
+      elements.push(<h2 key={i} style={{ fontSize: 18, fontWeight: 400, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 28, marginBottom: 12 }}>{line.slice(2)}</h2>);
     } else if (line.startsWith("- ") || line.startsWith("* ")) {
       const items: string[] = [];
       while (i < lines.length && (lines[i].startsWith("- ") || lines[i].startsWith("* "))) {
@@ -123,7 +123,7 @@ const ArticleDetail = () => {
         </div>
 
         {/* Title */}
-        <h1 style={{ fontWeight: 400, fontSize: 28, color: "#2b2420", lineHeight: 1.1, letterSpacing: "-0.3px", marginBottom: 14 }}>{article.title}</h1>
+        <h1 style={{ fontWeight: 400, fontSize: 28, color: "#2b2420", lineHeight: 1.1, letterSpacing: "0.01em", marginBottom: 14 }}>{article.title}</h1>
 
         {/* Meta */}
         <div className="flex items-center flex-wrap" style={{ gap: 12, marginBottom: 8 }}>

@@ -33,7 +33,7 @@ const FollowList = () => {
           fontWeight: 400,
           fontSize: 40,
           lineHeight: 0.95,
-          letterSpacing: "-0.5px",
+          letterSpacing: "0.01em",
           color: "#2b2420",
           textTransform: "uppercase",
         }}>
@@ -44,7 +44,7 @@ const FollowList = () => {
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 12, marginBottom: 28 }}>
         <p style={{
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontStyle: "italic",
           fontSize: 14,
           color: "#827b75",

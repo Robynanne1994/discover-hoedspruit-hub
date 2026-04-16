@@ -147,7 +147,7 @@ const Events = () => {
             fontWeight: 400,
             fontSize: 40,
             lineHeight: 0.95,
-            letterSpacing: "-0.5px",
+            letterSpacing: "0.01em",
             color: "#2b2420",
             textTransform: "uppercase",
           }}
@@ -160,7 +160,7 @@ const Events = () => {
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <p
           style={{
-            fontFamily: "'Georgia', 'Times New Roman', serif",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontStyle: "italic",
             fontSize: 14,
             color: "rgba(18,18,20,0.4)",
@@ -253,7 +253,7 @@ const Events = () => {
               fontSize: 24,
               color: "#2b2420",
               marginBottom: 10,
-              letterSpacing: "-0.5px",
+              letterSpacing: "0.01em",
             }}
           >
             {search ? "No matching events" : "No events right now"}

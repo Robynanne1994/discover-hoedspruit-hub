@@ -78,7 +78,7 @@ const Specials = () => {
             fontWeight: 400,
             fontSize: "clamp(28px, 8vw, 40px)",
             lineHeight: 1,
-            letterSpacing: "-0.5px",
+            letterSpacing: "0.01em",
             color: "#2b2420",
             margin: 0,
           }}

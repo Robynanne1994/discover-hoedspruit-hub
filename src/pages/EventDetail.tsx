@@ -257,7 +257,7 @@ const EventDetail = () => {
           fontWeight: 400,
           fontSize: 20,
           lineHeight: 1,
-          letterSpacing: "-0.3px",
+          letterSpacing: "0.01em",
           color: "#2b2420",
           textTransform: "uppercase",
           margin: 0,
@@ -327,7 +327,7 @@ const EventDetail = () => {
             fontWeight: 400,
             fontSize: 34,
             lineHeight: 0.98,
-            letterSpacing: "-0.6px",
+            letterSpacing: "0.01em",
             color: "#2b2420",
             margin: 0,
             textTransform: "uppercase",
@@ -340,7 +340,7 @@ const EventDetail = () => {
           <p
             style={{
               marginTop: 14,
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
               fontStyle: "italic",
               fontSize: 14,
               color: "rgba(18,18,20,0.42)",

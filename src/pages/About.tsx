@@ -30,14 +30,14 @@ const About = () => {
 
       {/* Heading */}
       <div style={{ padding: "0 24px", marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0 }}>
           ABOUT HELLO HOEDSPRUIT
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ padding: "0 24px", marginBottom: 32 }}>
-        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, margin: 0 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, margin: 0 }}>
           Your full guide to Hoedspruit
         </p>
       </div>
@@ -56,7 +56,7 @@ const About = () => {
       {/* Founder section heading */}
       <div style={{ padding: "0 24px", marginBottom: 16 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>THE STORY</div>
-        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>MEET THE FOUNDER</h2>
+        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>MEET THE FOUNDER</h2>
       </div>
 
       {/* Founder story */}
@@ -74,7 +74,7 @@ const About = () => {
 
       {/* Values heading */}
       <div style={{ padding: "0 24px", marginBottom: 18 }}>
-        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>WHAT WE STAND FOR</h2>
+        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>WHAT WE STAND FOR</h2>
       </div>
 
       {/* Value cards grid */}
@@ -97,7 +97,7 @@ const About = () => {
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 10 }}>FOR BUSINESSES</div>
             <div style={{ fontWeight: 400, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 10 }}>WANT TO BE LISTED?</div>
-            <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22, marginTop: 0 }}>
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22, marginTop: 0 }}>
               If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
             </p>
             <button onClick={() => navigate("/advertise")} style={{ background: "#ebebeb", borderRadius: 9999, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>

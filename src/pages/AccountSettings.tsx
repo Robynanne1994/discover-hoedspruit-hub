@@ -103,14 +103,14 @@ const AccountSettings = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Helvetica Neue', sans-serif)" }}>
+        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Helvetica Neue', sans-serif)" }}>
           ACCOUNT<br />SETTINGS
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 12 }}>
-        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif", margin: 0 }}>
+        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", margin: 0 }}>
           Manage your account and preferences
         </p>
       </div>
