@@ -453,57 +453,106 @@ const MyAccount = () => {
     { icon: FileText, label: "Terms & Policies", href: "/terms" },
   ];
 
-  const renderRow = (item: any, isLast: boolean) => {
+  const renderRow = (item: any, isLast: boolean, singleLine = false) => {
     const Icon = item.icon;
     const content = (
-      <div className="flex items-center" style={{ gap: 14, paddingTop: 16, paddingBottom: 16, borderBottom: isLast ? "none" : "1px solid rgba(18,18,20,0.06)" }}>
-        <Icon style={{ width: 22, height: 22, strokeWidth: 1.5, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
+      <div
+        className="flex items-center"
+        style={{
+          padding: singleLine ? "14px 24px" : "16px 24px",
+          transition: "transform 0.15s ease",
+        }}
+        onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+        onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      >
+        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 20 }} />
         <div className="flex-1 min-w-0">
-          <span style={{ fontSize: 15, fontWeight: 600, color: "#020202", display: "block" }}>{item.label}</span>
-          {item.desc && <span style={{ fontSize: 12, color: "rgba(18,18,20,0.35)", marginTop: 2, display: "block" }}>{item.desc}</span>}
+          <span style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", display: "block", lineHeight: 1.3 }}>{item.label}</span>
+          {item.desc && <span style={{ fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", marginTop: 2, display: "block", lineHeight: 1.4 }}>{item.desc}</span>}
         </div>
-        <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
+        <ChevronRight style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)", flexShrink: 0, marginLeft: "auto" }} />
       </div>
     );
-    if (item.href) return <Link key={item.label} to={item.href}>{content}</Link>;
-    return <button key={item.label} onClick={item.action} className="w-full text-left">{content}</button>;
+
+    const divider = !isLast ? (
+      <div style={{ marginLeft: 68, height: 1, background: "rgba(18,18,20,0.08)" }} />
+    ) : null;
+
+    if (item.href) return <div key={item.label}><Link to={item.href}>{content}</Link>{divider}</div>;
+    return <div key={item.label}><button onClick={item.action} className="w-full text-left">{content}</button>{divider}</div>;
   };
 
+  const sectionHeader = (text: string) => (
+    <p style={{
+      fontSize: 12,
+      fontWeight: 500,
+      letterSpacing: "0.06em",
+      textTransform: "uppercase" as const,
+      color: "rgba(18,18,20,0.4)",
+      lineHeight: 1.3,
+      marginTop: 32,
+      marginBottom: 16,
+      paddingLeft: 24,
+    }}>
+      {text}
+    </p>
+  );
+
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-      {/* Heading */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>
-          PROFILE
+    <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+      {/* Page title */}
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <h1 style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontWeight: 400,
+          fontSize: 53,
+          lineHeight: 1,
+          letterSpacing: "0.01em",
+          color: "#020202",
+          textTransform: "none",
+          margin: 0,
+          marginBottom: 4,
+        }}>
+          Profile
         </h1>
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <p style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontSize: 15,
+          fontWeight: 400,
+          lineHeight: 1.35,
+          color: "rgba(18,18,20,0.55)",
+          margin: 0,
+        }}>
           Your account and settings
         </p>
       </div>
 
       {/* Profile card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <div style={{ background: "#ffffff", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, boxShadow: "var(--card-shadow)" }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
+        <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
           <div className="flex items-center" style={{ gap: 14 }}>
-            <div className="overflow-hidden flex items-center justify-center shrink-0" style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(18,18,20,0.06)" }}>
+            <div className="overflow-hidden flex items-center justify-center shrink-0" style={{ width: 64, height: 64, borderRadius: "50%", background: "#EBEBEB" }}>
               {profileLoading ? (
                 <Skeleton className="h-full w-full rounded-full" />
               ) : profile?.avatar_url ? (
                 <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
               ) : (
-                <UserCircle style={{ width: 32, height: 32, color: "rgba(18,18,20,0.2)" }} />
+                <span style={{ fontSize: 20, fontWeight: 500, color: "rgba(18,18,20,0.4)", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  {(profile?.display_name || user.email?.split("@")[0] || "U").charAt(0).toUpperCase()}
+                </span>
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="truncate" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 15, fontWeight: 700, color: "#020202", letterSpacing: "0.3px", lineHeight: 1.2 }}>
+              <h2 className="truncate" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 16, fontWeight: 500, color: "#020202", lineHeight: 1.2, margin: 0 }}>
                 {profile?.display_name || user.email?.split("@")[0]}
               </h2>
               {profile?.bio && (
-                <p style={{ fontSize: 13, color: "rgba(18,18,20,0.5)", marginTop: 8, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                <p style={{ fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", marginTop: 4, lineHeight: 1.4, margin: 0, marginBlockStart: 4 }}>
                   {profile.bio}
                 </p>
               )}
@@ -514,71 +563,68 @@ const MyAccount = () => {
             <FollowStats userId={user.id} />
             <button
               onClick={() => setActiveSection("profile")}
-              className="shrink-0 flex items-center active:scale-95 transition-transform"
-              style={{ gap: 4, padding: "4px 10px", border: "none", borderRadius: 8, background: "transparent" }}
+              className="shrink-0 flex items-center"
+              style={{
+                gap: 4,
+                padding: "4px 8px",
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+                transition: "transform 0.12s ease",
+              }}
+              onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
+              onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             >
-              <Pencil style={{ width: 12, height: 12, color: "rgba(18,18,20,0.3)" }} />
-              <span style={{ fontSize: 11, fontWeight: 500, color: "rgba(18,18,20,0.3)" }}>Edit</span>
+              <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Edit</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* My Hoedspruit */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 24, marginBottom: 32 }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          My Hoedspruit
-        </p>
-        {renderRow({ icon: Heart, label: "My Hoedspruit", desc: "Your saved content and visited places", href: "/my-hoedspruit" }, true)}
-      </div>
+      {sectionHeader("My Hoedspruit")}
+      {renderRow({ icon: Heart, label: "My Hoedspruit", desc: "Your saved content and visited places", href: "/my-hoedspruit" }, true)}
 
       {/* Settings */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Settings
-        </p>
-        {settingsItems.map((item, i) => renderRow(item, i === settingsItems.length - 1))}
-      </div>
+      {sectionHeader("Settings")}
+      {settingsItems.map((item, i) => renderRow(item, i === settingsItems.length - 1))}
 
       {/* Get in Touch */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          Get in Touch
-        </p>
-        {getInTouchItems.map((item, i) => renderRow(item, i === getInTouchItems.length - 1))}
-      </div>
+      {sectionHeader("Get in Touch")}
+      {getInTouchItems.map((item, i) => renderRow(item, i === getInTouchItems.length - 1))}
 
       {/* More */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-          More
-        </p>
-        {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1))}
-      </div>
+      {sectionHeader("More")}
+      {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1, !item.desc))}
 
       {isAdmin && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-          <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
-            Admin
-          </p>
-          <Link to="/admin">
-            <div className="flex items-center" style={{ gap: 14, paddingTop: 16, paddingBottom: 16 }}>
-              <LayoutDashboard style={{ width: 22, height: 22, strokeWidth: 1.5, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
-              <span className="flex-1" style={{ fontSize: 15, fontWeight: 600, color: "#020202" }}>Admin Dashboard</span>
-              <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
-            </div>
-          </Link>
-        </div>
+        <>
+          {sectionHeader("Admin")}
+          {renderRow({ icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" }, true, true)}
+        </>
       )}
 
       {/* Logout */}
-      <div className="flex justify-center" style={{ marginTop: 18, marginBottom: 50 }}>
+      <div className="flex justify-center" style={{ marginTop: 36, marginBottom: 48 }}>
         <button
           onClick={() => { signOut(); navigate("/"); }}
           className="flex items-center justify-center"
-          style={{ gap: 8, background: "#020202", borderRadius: 24, padding: "12px 24px", minHeight: 48, border: "none", cursor: "pointer" }}
+          style={{
+            gap: 8,
+            background: "#020202",
+            borderRadius: 24,
+            padding: "12px 24px",
+            minHeight: 48,
+            border: "none",
+            cursor: "pointer",
+            transition: "transform 0.12s ease, opacity 0.12s ease",
+          }}
+          onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.97)"; e.currentTarget.style.opacity = "0.85"; }}
+          onPointerUp={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.opacity = "1"; }}
+          onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.opacity = "1"; }}
         >
-          <LogOut style={{ width: 16, height: 16, strokeWidth: 1.5, color: "#FFFFFF" }} />
+          <LogOut style={{ width: 20, height: 20, strokeWidth: 1.8, color: "#FFFFFF" }} />
           <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF" }}>Log out</span>
         </button>
       </div>
