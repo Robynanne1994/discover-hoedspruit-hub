@@ -176,7 +176,7 @@ const SpecialDetail = () => {
 
       {/* Hero Image */}
       {special.image_url && (
-        <div style={{ marginLeft: 24, marginRight: 24, marginBottom: 12, borderRadius: 16, overflow: "hidden" }}>
+        <div style={{ marginLeft: 4, marginRight: 4, marginBottom: 12, borderRadius: 16, overflow: "hidden" }}>
           <img src={special.image_url} alt={special.title} style={{ width: "100%", aspectRatio: "16/10", objectFit: "cover", objectPosition: "center", display: "block" }} />
         </div>
       )}
