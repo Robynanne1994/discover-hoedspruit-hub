@@ -584,7 +584,7 @@ const MyAccount = () => {
 
       {/* My Hoedspruit */}
       {sectionHeader("My Hoedspruit")}
-      {renderRow({ icon: Heart, label: "My Hoedspruit", desc: "Your saved content and visited places", href: "/my-hoedspruit" }, true)}
+      {renderRow({ icon: Heart, label: "My Hoedspruit", desc: "Your saved content & visited places", href: "/my-hoedspruit" }, true)}
 
       {/* Settings */}
       {sectionHeader("Settings")}
