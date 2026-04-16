@@ -479,7 +479,7 @@ const MyAccount = () => {
       color: "rgba(18,18,20,0.55)",
       lineHeight: 1.3,
       marginTop: 20,
-      marginBottom: 4,
+      marginBottom: 12,
       paddingLeft: 24,
     }}>
       {text}
