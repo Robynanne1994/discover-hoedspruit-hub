@@ -12,13 +12,13 @@ const DoSection = () => {
 
   if (isLoading) {
     return (
-      <section style={{ paddingTop: 48 }}>
-        <div style={{ padding: "0 24px" }}>
+      <section style={{ paddingTop: 36 }}>
+        <div style={{ padding: "0 14px" }}>
           <HomeSectionHeader title={title || "What to Do"} />
         </div>
-        <div style={{ display: "flex", gap: 4, paddingLeft: 24 }}>
-          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "65vw", aspectRatio: "4/3" }} />
-          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "65vw", aspectRatio: "4/3" }} />
+        <div style={{ display: "flex", gap: 4, paddingLeft: 4 }}>
+          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
+          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
         </div>
       </section>
     );
@@ -27,8 +27,8 @@ const DoSection = () => {
   if (!listings?.length) return null;
 
   return (
-    <section style={{ paddingTop: 48 }}>
-      <div style={{ padding: "0 24px" }}>
+    <section style={{ paddingTop: 36 }}>
+      <div style={{ padding: "0 14px" }}>
         <HomeSectionHeader title={title || "What to Do"} actionLabel="See All" actionHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb" />
       </div>
       <HomeListingCarousel listings={listings.slice(0, 6)} />

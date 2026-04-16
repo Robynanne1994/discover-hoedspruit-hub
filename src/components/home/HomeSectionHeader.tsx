@@ -8,28 +8,14 @@ interface HomeSectionHeaderProps {
 
 const HomeSectionHeader = ({ title, actionLabel, actionHref }: HomeSectionHeaderProps) => {
   return (
-    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
-      <h2 style={{
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        fontWeight: 400,
-        fontSize: 34,
-        color: "#020202",
-        letterSpacing: "0.01em",
-        lineHeight: 1.1,
-        margin: 0,
-      }}>
+    <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20, marginTop: 18 }}>
+      <h2 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em" }}>
         {title}
       </h2>
       {actionLabel && actionHref && (
         <Link
           to={actionHref}
-          style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: 15,
-            fontWeight: 400,
-            color: "rgba(18,18,20,0.55)",
-            textDecoration: "none",
-          }}
+          style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}
         >
           {actionLabel} ›
         </Link>

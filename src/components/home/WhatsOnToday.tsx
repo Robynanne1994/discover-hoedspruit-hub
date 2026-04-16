@@ -35,7 +35,7 @@ const WhatsOnToday = () => {
 
   if (isLoading) {
     return (
-      <section style={{ padding: "0 24px" }}>
+      <section style={{ padding: "32px 14px 0" }}>
         <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {[1, 2, 3].map((i) => (
@@ -51,7 +51,7 @@ const WhatsOnToday = () => {
   const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
   return (
-    <section style={{ padding: "0 24px" }}>
+    <section style={{ padding: "32px 14px 24px" }}>
       <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
       <div>
         {events.map((event, idx) => {
@@ -65,15 +65,15 @@ const WhatsOnToday = () => {
                 alignItems: "center",
                 gap: 14,
                 padding: "14px 0",
-                borderBottom: idx < events.length - 1 ? "1px solid rgba(18,18,20,0.08)" : "none",
+                borderBottom: idx < events.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
                 textDecoration: "none",
               }}
             >
               <div style={{
-                width: 48,
-                height: 48,
-                background: "#EBEBEB",
-                borderRadius: "50%",
+                width: 50,
+                height: 50,
+                background: "rgba(18,18,20,0.04)",
+                borderRadius: 16,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -82,17 +82,17 @@ const WhatsOnToday = () => {
               }}>
                 {parsed ? (
                   <>
-                    <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 20, fontWeight: 500, color: "#020202", lineHeight: 1 }}>{parsed.getDate()}</span>
-                    <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.55)", textTransform: "uppercase" }}>{months[parsed.getMonth()]}</span>
+                    <span style={{ fontSize: 20, fontWeight: 400, color: "#2b2420", lineHeight: 1 }}>{parsed.getDate()}</span>
+                    <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 0.5 }}>{months[parsed.getMonth()]}</span>
                   </>
                 ) : (
-                  <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "rgba(18,18,20,0.55)", fontWeight: 500 }}>TBA</span>
+                  <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", fontWeight: 500 }}>TBA</span>
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
+                <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
                 {event.location && (
-                  <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)" }}>{event.location}</div>
+                  <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{event.location}</div>
                 )}
               </div>
             </Link>
