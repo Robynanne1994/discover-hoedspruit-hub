@@ -172,7 +172,7 @@ const ContactUs = () => {
               <button
                 type="submit"
                 disabled={submitForm.isPending}
-                style={{ width: "100%", background: "#020202", borderRadius: 24, padding: 16, border: "none", color: "#FFFFFF", fontSize: 15, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: submitForm.isPending ? 0.6 : 1, fontFamily: FF, transition: "transform 0.12s ease, opacity 0.12s ease" }}
+                style={{ width: "100%", background: "#020202", borderRadius: 24, padding: "12px 24px", minHeight: 48, border: "none", color: "#FFFFFF", fontSize: 15, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: submitForm.isPending ? 0.6 : 1, fontFamily: FF, transition: "transform 0.12s ease, opacity 0.12s ease", textTransform: "none" as const }}
                 onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; }}
                 onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
                 onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
