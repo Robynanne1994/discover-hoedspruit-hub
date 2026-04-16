@@ -428,22 +428,15 @@ const MyAccount = () => {
     );
   }
 
-  const quickActions = [
-    { icon: Heart, label: "Saved Listings", desc: "Listings you've bookmarked", href: "/saved" },
-    { icon: MapPin, label: "Visited Places", desc: "Places you've been to", href: "/visited" },
-    { icon: Calendar, label: "My Events", desc: "Your RSVP'd and saved events", href: "/saved?tab=events" },
-    { icon: Tag, label: "Saved Specials", desc: "Your saved specials and deals", href: "/saved?tab=specials" },
-  ];
-
   const settingsItems = [
-    { icon: Settings, label: "Account Settings", desc: "Manage your account details", href: "/account-settings" },
-    { icon: Bell, label: "Notifications", desc: "Choose what you hear from us", href: "/notifications" },
+    { icon: Settings, label: "Account Settings", href: "/account-settings" },
+    { icon: Bell, label: "Notifications", href: "/notifications" },
   ];
 
   const getInTouchItems = [
-    { icon: Mail, label: "Contact", desc: "Get in touch with us", href: "/contact" },
-    { icon: Megaphone, label: "Advertise", desc: "Promote your business", href: "/advertise" },
-    { icon: MessageSquare, label: "Feedback", desc: "Tell us how we can improve", href: "/feedback" },
+    { icon: Mail, label: "Contact", href: "/contact" },
+    { icon: Megaphone, label: "Advertise", href: "/advertise" },
+    { icon: MessageSquare, label: "Feedback", href: "/feedback" },
   ];
 
   const moreItems = [
@@ -453,30 +446,28 @@ const MyAccount = () => {
     { icon: FileText, label: "Terms & Policies", href: "/terms" },
   ];
 
-  const renderRow = (item: any, isLast: boolean, singleLine = false) => {
+  const renderRow = (item: any, isLast: boolean) => {
     const Icon = item.icon;
     const content = (
       <div
         className="flex items-center"
         style={{
-          padding: singleLine ? "14px 24px" : "16px 24px",
+          minHeight: 48,
+          padding: "12px 24px",
           transition: "transform 0.15s ease",
         }}
         onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
-        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 20 }} />
-        <div className="flex-1 min-w-0">
-          <span style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", display: "block", lineHeight: 1.3 }}>{item.label}</span>
-          {item.desc && <span style={{ fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", marginTop: 2, display: "block", lineHeight: 1.4 }}>{item.desc}</span>}
-        </div>
-        <ChevronRight style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)", flexShrink: 0, marginLeft: "auto" }} />
+        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 16 }} />
+        <span style={{ flex: 1, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.2 }}>{item.label}</span>
+        <ChevronRight style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
       </div>
     );
 
     const divider = !isLast ? (
-      <div style={{ marginLeft: 68, height: 1, background: "rgba(18,18,20,0.08)" }} />
+      <div style={{ marginLeft: 24, marginRight: 24, height: 1, background: "rgba(18,18,20,0.08)" }} />
     ) : null;
 
     if (item.href) return <div key={item.label}><Link to={item.href}>{content}</Link>{divider}</div>;
@@ -489,10 +480,10 @@ const MyAccount = () => {
       fontWeight: 500,
       letterSpacing: "0.06em",
       textTransform: "uppercase" as const,
-      color: "rgba(18,18,20,0.4)",
+      color: "rgba(18,18,20,0.55)",
       lineHeight: 1.3,
-      marginTop: 32,
-      marginBottom: 16,
+      marginTop: 24,
+      marginBottom: 8,
       paddingLeft: 24,
     }}>
       {text}
@@ -596,12 +587,12 @@ const MyAccount = () => {
 
       {/* More */}
       {sectionHeader("More")}
-      {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1, !(item as any).desc))}
+      {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1))}
 
       {isAdmin && (
         <>
           {sectionHeader("Admin")}
-          {renderRow({ icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" }, true, true)}
+          {renderRow({ icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" }, true)}
         </>
       )}
 
