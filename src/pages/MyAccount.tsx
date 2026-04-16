@@ -428,10 +428,6 @@ const MyAccount = () => {
     );
   }
 
-  const settingsItems = [
-    { icon: Settings, label: "Account Settings", href: "/account-settings" },
-  ];
-
   const getInTouchItems = [
     { icon: Mail, label: "Contact", href: "/contact" },
     { icon: Megaphone, label: "Advertise", href: "/advertise" },
@@ -439,6 +435,7 @@ const MyAccount = () => {
   ];
 
   const moreItems = [
+    { icon: Settings, label: "Account Settings", href: "/account-settings" },
     { icon: Info, label: "About", href: "/about" },
     { icon: Newspaper, label: "The Lowveld Lowdown", href: "/headlines" },
     { icon: HelpCircle, label: "Help & FAQs", href: "/faqs" },
@@ -576,16 +573,12 @@ const MyAccount = () => {
       {sectionHeader("My Hoedspruit")}
       {renderRow({ icon: Heart, label: "My Hoedspruit", desc: "Your saved content & visited places", href: "/my-hoedspruit" }, true)}
 
-      {/* Settings */}
-      {sectionHeader("Settings")}
-      {settingsItems.map((item, i) => renderRow(item, i === settingsItems.length - 1))}
-
       {/* Get in Touch */}
       {sectionHeader("Get in Touch")}
       {getInTouchItems.map((item, i) => renderRow(item, i === getInTouchItems.length - 1))}
 
-      {/* More */}
-      {sectionHeader("More")}
+      {/* Help & Settings */}
+      {sectionHeader("Help & Settings")}
       {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1))}
 
       {isAdmin && (
