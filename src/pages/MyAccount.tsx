@@ -587,12 +587,12 @@ const MyAccount = () => {
 
       {/* More */}
       {sectionHeader("More")}
-      {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1, !(item as any).desc))}
+      {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1))}
 
       {isAdmin && (
         <>
           {sectionHeader("Admin")}
-          {renderRow({ icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" }, true, true)}
+          {renderRow({ icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" }, true)}
         </>
       )}
 
