@@ -520,7 +520,7 @@ const MyAccount = () => {
       </div>
 
       {/* Profile card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
+      <div style={{ paddingLeft: 4, paddingRight: 4, marginBottom: 36 }}>
         <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
           <div className="flex items-center" style={{ gap: 14 }}>
             <div className="overflow-hidden flex items-center justify-center shrink-0" style={{ width: 64, height: 64, borderRadius: "50%", background: "#EBEBEB" }}>
