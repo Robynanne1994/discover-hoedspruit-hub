@@ -194,9 +194,14 @@ const SpecialDetail = () => {
       </h1>
 
       {/* Meta line */}
-      <p style={{ fontFamily: font, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", margin: 0, marginBottom: 20, paddingLeft: 24, paddingRight: 24 }}>
-        {special.business_name} · {validityText}
-      </p>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
+        <p style={{ fontFamily: font, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", margin: 0 }}>
+          {special.business_name}
+        </p>
+        <p style={{ fontFamily: font, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", margin: 0 }}>
+          {validityText}
+        </p>
+      </div>
 
       {/* Action buttons */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28, display: "flex", gap: 12 }}>
