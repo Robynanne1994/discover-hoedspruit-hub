@@ -109,10 +109,8 @@ const AccountSettings = () => {
         ))}
       </div>
 
-      {/* Log Out */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 36, marginBottom: 48 }}>
-        <LogOutButton onLogOut={() => { signOut(); navigate("/"); }} />
-      </div>
+
+
     </div>
   );
 };
