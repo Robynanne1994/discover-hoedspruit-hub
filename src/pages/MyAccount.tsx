@@ -442,7 +442,7 @@ const MyAccount = () => {
 
   const getInTouchItems = [
     { icon: Mail, label: "Contact", desc: "Get in touch with us", href: "/contact" },
-    { icon: Megaphone, label: "Advertise with Us", desc: "Promote your business", href: "/advertise" },
+    { icon: Megaphone, label: "Advertise", desc: "Promote your business", href: "/advertise" },
     { icon: MessageSquare, label: "Give Us Feedback", desc: "Tell us how we can improve", href: "/feedback" },
   ];
 
