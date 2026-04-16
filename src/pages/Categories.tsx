@@ -80,16 +80,18 @@ const Categories = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-        <h1 style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          textTransform: "none",
-          fontWeight: 400,
-          fontSize: 53,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
-          color: "#020202",
-          margin: 0,
-        }}>
+        <h1 
+          className="font-semibold"
+          style={{
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            textTransform: "none",
+            fontSize: 53,
+            lineHeight: 1,
+            letterSpacing: "0.01em",
+            color: "#020202",
+            margin: 0,
+          }}
+        >
           Explore<br />Hoedspruit
         </h1>
       </div>
