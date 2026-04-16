@@ -1,4 +1,4 @@
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,6 +11,31 @@ const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Me
 const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy"];
 const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
+
+const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
+  <button
+    onClick={onClick}
+    style={{
+      background: active ? "#020202" : "rgba(18,18,20,0.06)",
+      border: "none",
+      borderRadius: 9999,
+      padding: "8px 16px",
+      fontSize: 13,
+      fontWeight: 500,
+      fontFamily: font,
+      color: active ? "#ffffff" : "#2B2420",
+      cursor: "pointer",
+      transition: "transform 0.12s ease",
+    }}
+    onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.97)")}
+    onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
+    onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
+  >
+    {label}
+  </button>
+);
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -31,13 +56,11 @@ const CategoryPage = () => {
     queryKey: ["category", id],
     queryFn: async () => {
       const { data, error } = await supabase.from("categories").select("*").eq("id", id!).single();
-
       if (error) throw error;
       return data;
     },
     enabled: !!id,
   });
-
 
   const { data: subcategories } = useQuery({
     queryKey: ["subcategories", id],
@@ -47,7 +70,6 @@ const CategoryPage = () => {
         .select("*")
         .eq("category_id", id!)
         .order("sort_order");
-
       if (error) throw error;
       return data;
     },
@@ -61,34 +83,24 @@ const CategoryPage = () => {
         .from("listing_categories")
         .select("listing_id")
         .eq("category_id", id!);
-
       if (jErr) throw jErr;
-
       let listingIds = junctionData.map((r: any) => r.listing_id as string);
-
       if (listingIds.length === 0) return [];
-
       if (activeSubId) {
         const { data: subJunction, error: sErr } = await supabase
           .from("listing_subcategories")
           .select("listing_id")
           .eq("subcategory_id", activeSubId);
-
         if (sErr) throw sErr;
-
         const subListingIds = new Set(subJunction.map((r: any) => r.listing_id as string));
-
         listingIds = listingIds.filter((listingId) => subListingIds.has(listingId));
-
         if (listingIds.length === 0) return [];
       }
-
       const { data, error } = await supabase
         .from("listings")
         .select("*")
         .in("id", listingIds)
         .order("is_featured", { ascending: false });
-
       if (error) throw error;
       return data;
     },
@@ -163,96 +175,111 @@ const CategoryPage = () => {
     });
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi]);
 
+  const press = {
+    onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
+    onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+    onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+  };
+
   return (
-    <div className="min-h-screen pb-[72px]" style={{ background: "#ebebeb" }}>
+    <div style={{ minHeight: "100vh", paddingBottom: 84, background: "#EBEBEB", fontFamily: font }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-          <ArrowLeft size={18} strokeWidth={2} style={{ color: "rgba(18,18,20,0.5)" }} />
-          <span
-            style={{
-              fontSize: 15,
-              fontWeight: 500,
-              color: "rgba(18,18,20,0.5)",
-              letterSpacing: "0.2px",
-            }}
-          >
-            Back
-          </span>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+        >
+          <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
         </button>
       </div>
 
-      {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1
-          style={{
-            fontFamily: "var(--font-heading)",
-            textTransform: "uppercase",
-            fontWeight: 400,
-            fontSize: "clamp(28px, 8vw, 40px)",
-            lineHeight: 1,
-            letterSpacing: "0.01em",
-            color: "#2b2420",
-            margin: 0,
-            wordBreak: "break-word",
-            overflowWrap: "break-word",
-          }}
-        >
-          {categoryTitle}
-        </h1>
-      </div>
+      {/* Page title */}
+      <h1
+        style={{
+          fontFamily: font,
+          fontSize: 53,
+          fontWeight: 400,
+          lineHeight: 1,
+          letterSpacing: "0.01em",
+          color: "#020202",
+          textTransform: "none",
+          paddingLeft: 24,
+          paddingRight: 24,
+          marginBottom: 4,
+          marginTop: 0,
+        }}
+      >
+        {categoryTitle}
+      </h1>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p
-          style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontStyle: "italic",
-            fontSize: 14,
-            color: "rgba(18,18,20,0.45)",
-            letterSpacing: "0.2px",
-            lineHeight: 1.4,
-            margin: 0,
-          }}
-        >
-          {categoryDescription}
-        </p>
-      </div>
+      <p
+        style={{
+          fontFamily: font,
+          fontSize: 15,
+          fontWeight: 400,
+          lineHeight: 1.35,
+          color: "rgba(18, 18, 20, 0.55)",
+          fontStyle: "italic",
+          paddingLeft: 24,
+          paddingRight: 24,
+          marginBottom: 24,
+          marginTop: 0,
+        }}
+      >
+        {categoryDescription}
+      </p>
 
-      {/* Filter dropdown */}
+      {/* Filter button */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <button
           onClick={() => setShowFilters((v) => !v)}
-          className="flex items-center"
-          style={{ gap: 8 }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            padding: "10px 16px",
+            background: "rgba(18, 18, 20, 0.06)",
+            border: "none",
+            borderRadius: 20,
+            cursor: "pointer",
+            transition: "transform 0.12s ease",
+          }}
+          onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.97)")}
+          onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
+          onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
         >
-          <SlidersHorizontal size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.5)" }} />
-          <span style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "1.5px" }}>
+          <SlidersHorizontal size={18} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+          <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: font }}>
             Filter
           </span>
           {activeFilterCount > 0 && (
-            <span style={{ background: "#121214", color: "#fff", borderRadius: 999, width: 18, height: 18, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700 }}>
+            <span style={{ background: "#020202", color: "#fff", borderRadius: 999, width: 18, height: 18, display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700 }}>
               {activeFilterCount}
             </span>
           )}
-          {showFilters ? <ChevronUp size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.35)" }} /> : <ChevronDown size={16} strokeWidth={2} style={{ color: "rgba(18,18,20,0.35)" }} />}
+          <ChevronDown size={14} strokeWidth={1.8} style={{ color: "rgba(18, 18, 20, 0.4)", transform: showFilters ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }} />
         </button>
 
         {showFilters && (
           <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 16 }}>
             {activeFilterCount > 0 && (
-              <button onClick={clearAllFilters} style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.5)", textDecoration: "underline", alignSelf: "flex-start" }}>
+              <button
+                onClick={clearAllFilters}
+                style={{ fontSize: 13, fontWeight: 500, color: "rgba(18,18,20,0.5)", textDecoration: "underline", alignSelf: "flex-start", background: "none", border: "none", cursor: "pointer", fontFamily: font }}
+              >
                 Clear all filters
               </button>
             )}
 
             {subcategories && subcategories.length > 0 && (
               <div>
-                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Category</p>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Category</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
-                  <button onClick={() => handleSubFilter(null)} style={{ background: !activeSubId ? "#121214" : "rgba(18,18,20,0.04)", border: !activeSubId ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: !activeSubId ? 600 : 500, color: !activeSubId ? "#ffffff" : "rgba(18,18,20,0.5)" }}>All</button>
+                  <FilterChip label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
                   {subcategories.map((sub) => (
-                    <button key={sub.id} onClick={() => handleSubFilter(sub.id)} style={{ background: activeSubId === sub.id ? "#121214" : "rgba(18,18,20,0.04)", border: activeSubId === sub.id ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: activeSubId === sub.id ? 600 : 500, color: activeSubId === sub.id ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{sub.title}</button>
+                    <FilterChip key={sub.id} label={sub.title} active={activeSubId === sub.id} onClick={() => handleSubFilter(sub.id)} />
                   ))}
                 </div>
               </div>
@@ -260,10 +287,10 @@ const CategoryPage = () => {
 
             {isRestaurant && (
               <div>
-                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Cuisine</p>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Cuisine</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {CUISINE_OPTIONS.map((c) => (
-                    <button key={c} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} style={{ background: filterCuisine.includes(c) ? "#121214" : "rgba(18,18,20,0.04)", border: filterCuisine.includes(c) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterCuisine.includes(c) ? 600 : 500, color: filterCuisine.includes(c) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{c}</button>
+                    <FilterChip key={c} label={c} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
                   ))}
                 </div>
               </div>
@@ -271,10 +298,10 @@ const CategoryPage = () => {
 
             {isRestaurant && (
               <div>
-                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Vibe</p>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Vibe</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {VIBE_OPTIONS.map((v) => (
-                    <button key={v} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} style={{ background: filterVibe.includes(v) ? "#121214" : "rgba(18,18,20,0.04)", border: filterVibe.includes(v) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterVibe.includes(v) ? 600 : 500, color: filterVibe.includes(v) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{v}</button>
+                    <FilterChip key={v} label={v} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
                   ))}
                 </div>
               </div>
@@ -282,10 +309,10 @@ const CategoryPage = () => {
 
             {isRestaurant && (
               <div>
-                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Meal</p>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Meal</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {MEAL_OPTIONS.map((m) => (
-                    <button key={m} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} style={{ background: filterMeal.includes(m) ? "#121214" : "rgba(18,18,20,0.04)", border: filterMeal.includes(m) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterMeal.includes(m) ? 600 : 500, color: filterMeal.includes(m) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{m}</button>
+                    <FilterChip key={m} label={m} active={filterMeal.includes(m)} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} />
                   ))}
                 </div>
               </div>
@@ -293,24 +320,24 @@ const CategoryPage = () => {
 
             {isRestaurant && (
               <div>
-                <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Seating</p>
+                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Seating</p>
                 <div className="flex flex-wrap" style={{ gap: 8 }}>
                   {SEATING_OPTIONS.map((s) => (
-                    <button key={s} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} style={{ background: filterSeating.includes(s) ? "#121214" : "rgba(18,18,20,0.04)", border: filterSeating.includes(s) ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterSeating.includes(s) ? 600 : 500, color: filterSeating.includes(s) ? "#ffffff" : "rgba(18,18,20,0.5)" }}>{s}</button>
+                    <FilterChip key={s} label={s} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
                   ))}
                 </div>
               </div>
             )}
 
             <div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.2px", marginBottom: 8 }}>Amenities</p>
+              <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Amenities</p>
               <div className="flex flex-wrap" style={{ gap: 8 }}>
                 {(isRestaurant || isAccom) && (
-                  <button onClick={() => setFilterChildFriendly(!filterChildFriendly)} style={{ background: filterChildFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterChildFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterChildFriendly ? 600 : 500, color: filterChildFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Child Friendly</button>
+                  <FilterChip label="Child Friendly" active={filterChildFriendly} onClick={() => setFilterChildFriendly(!filterChildFriendly)} />
                 )}
-                <button onClick={() => setFilterPetFriendly(!filterPetFriendly)} style={{ background: filterPetFriendly ? "#121214" : "rgba(18,18,20,0.04)", border: filterPetFriendly ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterPetFriendly ? 600 : 500, color: filterPetFriendly ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Pet Friendly</button>
-                <button onClick={() => setFilterWheelchair(!filterWheelchair)} style={{ background: filterWheelchair ? "#121214" : "rgba(18,18,20,0.04)", border: filterWheelchair ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterWheelchair ? 600 : 500, color: filterWheelchair ? "#ffffff" : "rgba(18,18,20,0.5)" }}>Wheelchair Accessible</button>
-                <button onClick={() => setFilterWifi(!filterWifi)} style={{ background: filterWifi ? "#121214" : "rgba(18,18,20,0.04)", border: filterWifi ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "8px 16px", fontSize: 12, fontWeight: filterWifi ? 600 : 500, color: filterWifi ? "#ffffff" : "rgba(18,18,20,0.5)" }}>WiFi</button>
+                <FilterChip label="Pet Friendly" active={filterPetFriendly} onClick={() => setFilterPetFriendly(!filterPetFriendly)} />
+                <FilterChip label="Wheelchair Accessible" active={filterWheelchair} onClick={() => setFilterWheelchair(!filterWheelchair)} />
+                <FilterChip label="WiFi" active={filterWifi} onClick={() => setFilterWifi(!filterWifi)} />
               </div>
             </div>
           </div>
@@ -318,262 +345,232 @@ const CategoryPage = () => {
       </div>
 
       {/* Content */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-        {isLoading ? (
-          <div className="space-y-5">
+      {isLoading ? (
+        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+          <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 16, background: "#f0f0f0" }} />
+              <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 16, background: "rgba(18,18,20,0.06)" }} />
             ))}
           </div>
-        ) : filteredListings && filteredListings.length > 0 ? (
-          <div>
-            <p
-              style={{
-                textTransform: "uppercase",
-                fontSize: 11,
-                fontWeight: 600,
-                color: "rgba(18,18,20,0.35)",
-                letterSpacing: 3,
-                marginBottom: 6,
-              }}
-            >
-              LOCAL
-            </p>
-            <h2
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 400,
-                fontSize: 22,
-                color: "#2b2420",
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                marginBottom: 18,
-              }}
-            >
-              FAVOURITES
-            </h2>
+        </div>
+      ) : filteredListings && filteredListings.length > 0 ? (
+        <div>
+          {/* Section overline */}
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "rgba(18, 18, 20, 0.4)",
+              lineHeight: 1.3,
+              marginBottom: 4,
+              paddingLeft: 24,
+              fontFamily: font,
+            }}
+          >
+            Local
+          </p>
+          {/* Section heading */}
+          <h2
+            style={{
+              fontSize: 26,
+              fontWeight: 400,
+              lineHeight: 1.15,
+              letterSpacing: "0.01em",
+              color: "#020202",
+              textTransform: "uppercase",
+              paddingLeft: 24,
+              marginBottom: 16,
+              marginTop: 0,
+              fontFamily: font,
+            }}
+          >
+            Favourites
+          </h2>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {filteredListings.map((l) => {
-                const hasDetail = !!(
-                  l.long_description ||
-                  (l.gallery_images && l.gallery_images.length > 0) ||
-                  (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
-                  (isRestaurant && l.show_attributes)
-                );
+          <div style={{ display: "flex", flexDirection: "column", gap: 16, marginLeft: 24, marginRight: 24 }}>
+            {filteredListings.map((l) => {
+              const hasDetail = !!(
+                l.long_description ||
+                (l.gallery_images && l.gallery_images.length > 0) ||
+                (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
+                (isRestaurant && l.show_attributes)
+              );
 
-                return (
-                  <div
-                    key={l.id}
-                    onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
-                    className={hasDetail ? "cursor-pointer active:scale-[0.99] transition-transform duration-150" : ""}
-                    style={{
-                      background: "rgba(18,18,20,0.04)",
-                      border: "1px solid rgba(18,18,20,0.06)",
-                      borderRadius: 16,
-                      overflow: "hidden",
-                    }}
-                  >
-                    {/* Image */}
+              return (
+                <div
+                  key={l.id}
+                  onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
+                  style={{
+                    background: "#FFFFFF",
+                    border: "1px solid rgba(18, 18, 20, 0.06)",
+                    borderRadius: 16,
+                    overflow: "hidden",
+                    cursor: hasDetail ? "pointer" : "default",
+                    transition: "transform 0.15s ease",
+                  }}
+                  {...(hasDetail ? press : {})}
+                >
+                  {/* Hero image */}
+                  <div style={{ position: "relative", width: "100%", aspectRatio: "16/10", background: "rgba(18,18,20,0.04)" }}>
+                    {l.image_url ? (
+                      <img src={l.image_url} alt={l.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} loading="lazy" />
+                    ) : (
+                      <div style={{ width: "100%", height: "100%", background: "rgba(18,18,20,0.04)" }} />
+                    )}
+
+                    {/* Heart / save button */}
                     <div
-                      style={{
-                        position: "relative",
-                        width: "100%",
-                        height: 190,
-                        background: "#f0f0f0",
-                      }}
+                      style={{ position: "absolute", top: 12, right: 12, zIndex: 2 }}
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      {l.image_url ? (
-                        <img src={l.image_url} alt={l.title} className="w-full h-full object-cover" loading="lazy" />
-                      ) : (
-                        <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
-                      )}
-
-                      {/* Heart */}
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 4,
-                          right: 4,
-                          zIndex: 2,
-                        }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <FavouriteButton itemId={l.id} itemType="listing" />
-                      </div>
-
-                      {l.is_featured && (
-                        <div style={{ position: "absolute", left: 12, bottom: 12 }}>
-                          <span
-                            className="inline-flex items-center"
-                            style={{
-                              gap: 5,
-                              background: "rgba(255,255,255,0.92)",
-                              borderRadius: 999,
-                              padding: "7px 12px",
-                              fontSize: 11,
-                              fontWeight: 600,
-                              color: "#2b2420",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.6px",
-                            }}
-                          >
-                            <Star size={12} className="fill-current" />
-                            Featured
-                          </span>
-                        </div>
-                      )}
+                      <FavouriteButton itemId={l.id} itemType="listing" />
                     </div>
 
-                    {/* Details */}
-                    <div style={{ padding: 16 }}>
-                      <h3
-                        style={{
-                          fontFamily: "var(--font-heading)",
-                          fontWeight: 400,
-                          fontSize: 28,
-                          lineHeight: 0.98,
-                          letterSpacing: "-0.4px",
-                          color: "#2b2420",
-                          margin: 0,
-                          marginBottom: 10,
-                        }}
-                      >
-                        {l.title}
-                      </h3>
-
-                      {l.description && (
-                        <p
-                          className="line-clamp-2"
+                    {l.is_featured && (
+                      <div style={{ position: "absolute", left: 12, bottom: 12 }}>
+                        <span
                           style={{
-                            fontSize: 14,
-                            color: "rgba(18,18,20,0.5)",
-                            lineHeight: 1.5,
-                            margin: 0,
-                            marginBottom: 14,
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 5,
+                            background: "rgba(255,255,255,0.92)",
+                            borderRadius: 999,
+                            padding: "7px 12px",
+                            fontSize: 11,
+                            fontWeight: 600,
+                            color: "#2B2420",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.04em",
+                            fontFamily: font,
                           }}
                         >
-                          {l.description}
-                        </p>
-                      )}
+                          <Star size={12} strokeWidth={1.8} className="fill-current" />
+                          Featured
+                        </span>
+                      </div>
+                    )}
+                  </div>
 
-                      <div
+                  {/* Card content */}
+                  <div style={{ padding: "16px 20px 20px 20px" }}>
+                    <h3
+                      style={{
+                        fontFamily: font,
+                        fontSize: 22,
+                        fontWeight: 400,
+                        color: "#020202",
+                        textTransform: "uppercase",
+                        lineHeight: 1.15,
+                        letterSpacing: "0.01em",
+                        margin: 0,
+                        marginBottom: 6,
+                      }}
+                    >
+                      {l.title}
+                    </h3>
+
+                    {l.description && (
+                      <p
+                        className="line-clamp-2"
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 6,
+                          fontSize: 14,
+                          fontWeight: 400,
+                          lineHeight: 1.4,
+                          color: "rgba(18, 18, 20, 0.55)",
+                          margin: 0,
+                          marginBottom: 16,
+                          fontFamily: font,
                         }}
                       >
-                        {l.location && (
-                          <p
-                            className="flex items-center"
-                            style={{
-                              fontSize: 14,
-                              color: "rgba(18,18,20,0.45)",
-                              margin: 0,
-                              gap: 8,
-                            }}
-                          >
-                            <MapPin size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
-                            <span className="truncate">{l.location}</span>
-                          </p>
-                        )}
+                        {l.description}
+                      </p>
+                    )}
 
-                        {l.phone && (
-                          <a
-                            href={`tel:${l.phone}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center"
-                            style={{
-                              fontSize: 14,
-                              color: "rgba(18,18,20,0.45)",
-                              gap: 8,
-                              width: "fit-content",
-                            }}
-                          >
-                            <Phone size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
-                            <span>{l.phone}</span>
-                          </a>
-                        )}
+                    {/* Contact rows */}
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      {l.location && (
+                        <div style={{ display: "flex", alignItems: "center", padding: "6px 0", gap: 12 }}>
+                          <MapPin size={18} strokeWidth={1.8} style={{ flexShrink: 0, color: "rgba(18, 18, 20, 0.3)" }} />
+                          <span style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }} className="truncate">{l.location}</span>
+                        </div>
+                      )}
 
-                        {l.email && (
-                          <a
-                            href={`mailto:${l.email}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center"
-                            style={{
-                              fontSize: 14,
-                              color: "rgba(18,18,20,0.45)",
-                              gap: 8,
-                              width: "fit-content",
-                            }}
-                          >
-                            <Mail size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
-                            <span className="truncate">{l.email}</span>
-                          </a>
-                        )}
+                      {l.phone && (
+                        <a
+                          href={`tel:${l.phone}`}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ display: "flex", alignItems: "center", padding: "6px 0", gap: 12, textDecoration: "none", width: "fit-content", transition: "opacity 0.12s ease" }}
+                          onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.6")}
+                          onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                          onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                        >
+                          <Phone size={18} strokeWidth={1.8} style={{ flexShrink: 0, color: "rgba(18, 18, 20, 0.3)" }} />
+                          <span style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }}>{l.phone}</span>
+                        </a>
+                      )}
 
-                        {l.website && (
-                          <a
-                            href={l.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center"
-                            style={{
-                              fontSize: 14,
-                              color: "rgba(18,18,20,0.45)",
-                              gap: 8,
-                              width: "fit-content",
-                            }}
-                          >
-                            <Globe size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
-                            <span>Website</span>
-                          </a>
-                        )}
+                      {l.email && (
+                        <a
+                          href={`mailto:${l.email}`}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ display: "flex", alignItems: "center", padding: "6px 0", gap: 12, textDecoration: "none", width: "fit-content", transition: "opacity 0.12s ease" }}
+                          onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.6")}
+                          onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                          onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                        >
+                          <Mail size={18} strokeWidth={1.8} style={{ flexShrink: 0, color: "rgba(18, 18, 20, 0.3)" }} />
+                          <span style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }} className="truncate">{l.email}</span>
+                        </a>
+                      )}
 
-                        {(l as any).whatsapp && (
-                          <a
-                            href={`https://wa.me/${(l as any).whatsapp.replace(/[^0-9]/g, "")}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center"
-                            style={{
-                              fontSize: 14,
-                              color: "rgba(18,18,20,0.45)",
-                              gap: 8,
-                              width: "fit-content",
-                            }}
-                          >
-                            <MessageCircle size={15} strokeWidth={2} style={{ flexShrink: 0, color: "#000000" }} />
-                            <span>WhatsApp</span>
-                          </a>
-                        )}
-                      </div>
+                      {l.website && (
+                        <a
+                          href={l.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ display: "flex", alignItems: "center", padding: "6px 0", gap: 12, textDecoration: "none", width: "fit-content", transition: "opacity 0.12s ease" }}
+                          onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.6")}
+                          onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                          onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                        >
+                          <Globe size={18} strokeWidth={1.8} style={{ flexShrink: 0, color: "rgba(18, 18, 20, 0.3)" }} />
+                          <span style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }}>Website</span>
+                        </a>
+                      )}
+
+                      {(l as any).whatsapp && (
+                        <a
+                          href={`https://wa.me/${(l as any).whatsapp.replace(/[^0-9]/g, "")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ display: "flex", alignItems: "center", padding: "6px 0", gap: 12, textDecoration: "none", width: "fit-content", transition: "opacity 0.12s ease" }}
+                          onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.opacity = "0.6")}
+                          onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                          onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.opacity = "1")}
+                        >
+                          <MessageCircle size={18} strokeWidth={1.8} style={{ flexShrink: 0, color: "rgba(18, 18, 20, 0.3)" }} />
+                          <span style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }}>WhatsApp</span>
+                        </a>
+                      )}
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              );
+            })}
           </div>
-        ) : (
-          <div className="text-center" style={{ paddingTop: 80 }}>
-            <p
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 600,
-                fontSize: 18,
-                color: "#2b2420",
-                marginBottom: 4,
-              }}
-            >
-              No listings found
-            </p>
-            <p style={{ fontSize: 13, color: "rgba(18,18,20,0.45)" }}>Check back soon for places in this category</p>
-          </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        <div style={{ textAlign: "center", paddingTop: 80 }}>
+          <p style={{ fontFamily: font, fontWeight: 500, fontSize: 18, color: "#020202", marginBottom: 4 }}>
+            No listings found
+          </p>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.45)", fontFamily: font }}>Check back soon for places in this category</p>
+        </div>
+      )}
     </div>
   );
 };
