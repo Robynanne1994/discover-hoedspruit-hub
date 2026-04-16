@@ -32,7 +32,7 @@ const People = () => {
   });
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
@@ -55,7 +55,7 @@ const People = () => {
         <h1
           style={{
             fontFamily: "var(--font-heading)",
-            fontWeight: 900,
+            fontWeight: 400,
             fontSize: 40,
             lineHeight: 0.95,
             letterSpacing: "-0.5px",
@@ -152,7 +152,7 @@ const People = () => {
             <p
               style={{
                 fontFamily: "var(--font-heading)",
-                fontWeight: 900,
+                fontWeight: 400,
                 fontSize: 24,
                 color: "#2b2420",
                 marginBottom: 10,

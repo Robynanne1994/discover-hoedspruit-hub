@@ -193,7 +193,7 @@ const Notifications = () => {
   const masterEnabled = prefs.push_enabled;
 
   return (
-    <div style={{ background: "#ffffff", minHeight: "100vh", paddingBottom: 100 }}>
+    <div style={{ background: "#ebebeb", minHeight: "100vh", paddingBottom: 100 }}>
       {/* Back */}
       <div style={{ paddingTop: 44, paddingLeft: 24 }}>
         <button
@@ -207,7 +207,7 @@ const Notifications = () => {
 
       {/* Heading */}
       <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 400, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
           NOTIFICATIONS
         </h1>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 32 }}>

@@ -19,7 +19,7 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
       {/* Back */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -30,7 +30,7 @@ const About = () => {
 
       {/* Heading */}
       <div style={{ padding: "0 24px", marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
           ABOUT HELLO HOEDSPRUIT
         </h1>
       </div>
@@ -56,7 +56,7 @@ const About = () => {
       {/* Founder section heading */}
       <div style={{ padding: "0 24px", marginBottom: 16 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>THE STORY</div>
-        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>MEET THE FOUNDER</h2>
+        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>MEET THE FOUNDER</h2>
       </div>
 
       {/* Founder story */}
@@ -74,7 +74,7 @@ const About = () => {
 
       {/* Values heading */}
       <div style={{ padding: "0 24px", marginBottom: 18 }}>
-        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>WHAT WE STAND FOR</h2>
+        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>WHAT WE STAND FOR</h2>
       </div>
 
       {/* Value cards grid */}
@@ -96,11 +96,11 @@ const About = () => {
           <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
           <div style={{ position: "relative", zIndex: 1 }}>
             <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 10 }}>FOR BUSINESSES</div>
-            <div style={{ fontWeight: 900, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 10 }}>WANT TO BE LISTED?</div>
+            <div style={{ fontWeight: 400, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 10 }}>WANT TO BE LISTED?</div>
             <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22, marginTop: 0 }}>
               If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
             </p>
-            <button onClick={() => navigate("/advertise")} style={{ background: "#ffffff", borderRadius: 9999, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>
+            <button onClick={() => navigate("/advertise")} style={{ background: "#ebebeb", borderRadius: 9999, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>
               <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
               <ArrowUpRight size={14} color="#121214" strokeWidth={2.5} />
             </button>

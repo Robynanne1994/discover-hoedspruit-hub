@@ -13,7 +13,7 @@ const TermsPolicies = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24 }}>
         <button
@@ -27,7 +27,7 @@ const TermsPolicies = () => {
 
       {/* Heading */}
       <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 400, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
           Terms & Policies
         </h1>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 0 }}>

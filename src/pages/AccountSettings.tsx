@@ -48,7 +48,7 @@ const AccountSettings = () => {
 
   if (loading || !user) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ffffff" }}>
+      <div style={{ minHeight: "100vh", background: "#ebebeb" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
@@ -89,7 +89,7 @@ const AccountSettings = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
         <button
@@ -103,7 +103,7 @@ const AccountSettings = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Helvetica Neue', sans-serif)" }}>
+        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Helvetica Neue', sans-serif)" }}>
           ACCOUNT<br />SETTINGS
         </h1>
       </div>
@@ -128,7 +128,7 @@ const AccountSettings = () => {
             )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 16, fontWeight: 800, color: "#2b2420", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+            <div style={{ fontSize: 16, fontWeight: 400, color: "#2b2420", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
               {profileLoading ? <Skeleton className="h-5 w-28" /> : (profile?.display_name || user.email?.split("@")[0])}
             </div>
             <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>

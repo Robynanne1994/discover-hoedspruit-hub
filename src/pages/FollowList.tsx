@@ -16,7 +16,7 @@ const FollowList = () => {
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
 
   return (
-    <div className="min-h-screen" style={{ background: "#ffffff", paddingBottom: 100 }}>
+    <div className="min-h-screen" style={{ background: "#ebebeb", paddingBottom: 100 }}>
       {/* Header */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
         <button
@@ -30,7 +30,7 @@ const FollowList = () => {
 
         <h1 style={{
           fontFamily: "var(--font-heading)",
-          fontWeight: 900,
+          fontWeight: 400,
           fontSize: 40,
           lineHeight: 0.95,
           letterSpacing: "-0.5px",

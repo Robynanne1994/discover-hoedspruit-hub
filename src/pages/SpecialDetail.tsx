@@ -60,7 +60,7 @@ const SpecialDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
+      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
         <BackButton />
         <div className="flex flex-col items-center justify-center" style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
           <div className="animate-pulse" style={{ width: 48, height: 48, borderRadius: 9999, background: "rgba(18,18,20,0.06)", marginBottom: 14 }} />
@@ -72,7 +72,7 @@ const SpecialDetail = () => {
 
   if (!special) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
+      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
         <BackButton />
         <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 80, textAlign: "center" }}>
           <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 22, color: "#2b2420", marginBottom: 8 }}>Special not found</p>
@@ -113,7 +113,7 @@ const SpecialDetail = () => {
   const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
     <div style={{ marginBottom: 14 }}>
       <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 2.2, marginBottom: 6 }}>{eyebrow}</p>
-      <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 20, lineHeight: 1, letterSpacing: "-0.3px", color: "#2b2420", textTransform: "uppercase", margin: 0 }}>{title}</h2>
+      <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 20, lineHeight: 1, letterSpacing: "-0.3px", color: "#2b2420", textTransform: "uppercase", margin: 0 }}>{title}</h2>
     </div>
   );
 
@@ -138,7 +138,7 @@ const SpecialDetail = () => {
   };
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen pb-28" style={{ background: "#ebebeb" }}>
       <BackButton />
 
       {/* Hero Image */}
@@ -158,7 +158,7 @@ const SpecialDetail = () => {
           </span>
         </div>
 
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 34, lineHeight: 0.98, letterSpacing: "-0.6px", color: "#2b2420", margin: 0, textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 34, lineHeight: 0.98, letterSpacing: "-0.6px", color: "#2b2420", margin: 0, textTransform: "uppercase" }}>
           {special.title}
         </h1>
 
@@ -201,7 +201,7 @@ const SpecialDetail = () => {
       {detailRows.length > 0 && (
         <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
           <SectionLabel eyebrow="Deal info" title="Details" />
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+          <div style={{ background: "#ebebeb", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
             {detailRows.map((row, idx) => (
               <InfoRow key={row.label} icon={row.icon} label={row.label} value={row.value} isLast={idx === detailRows.length - 1} />
             ))}
@@ -213,7 +213,7 @@ const SpecialDetail = () => {
       {contactRows.length > 0 && (
         <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
           <SectionLabel eyebrow="Reach out" title="Contact" />
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+          <div style={{ background: "#ebebeb", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
             {contactRows.map((row, idx) => (
               <InfoRow key={row.label} icon={row.icon} label={row.label} value={row.value} isLast={idx === contactRows.length - 1} href={row.href} />
             ))}
@@ -229,7 +229,7 @@ const SpecialDetail = () => {
             style={{ background: "rgba(18,18,20,0.03)", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "16px 16px", textAlign: "center", cursor: "pointer" }}
             onClick={() => { navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }}
           >
-            <p style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: 22, letterSpacing: 3, color: "#2b2420", margin: 0 }}>{special.promo_code}</p>
+            <p style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 22, letterSpacing: 3, color: "#2b2420", margin: 0 }}>{special.promo_code}</p>
             <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginTop: 6 }}>Tap to copy</p>
           </div>
         </section>

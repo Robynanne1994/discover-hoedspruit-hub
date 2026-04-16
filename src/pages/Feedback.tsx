@@ -56,7 +56,7 @@ const Feedback = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen" style={{ background: "#ebebeb" }}>
       {/* Back */}
       <div style={{ paddingTop: 44, paddingLeft: 24 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6, background: "none", border: "none", cursor: "pointer" }}>
@@ -67,7 +67,7 @@ const Feedback = () => {
 
       {/* Heading */}
       <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" as const }}>
+        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" as const }}>
           GIVE US<br />FEEDBACK
         </h1>
         <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4, marginTop: 12 }}>

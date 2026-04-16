@@ -241,10 +241,10 @@ const SavedListings = () => {
 
   if (!loading && !user) {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
+          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
@@ -258,7 +258,7 @@ const SavedListings = () => {
 
   if (loading || isLoading || eventsLoading || specialsLoading) {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+      <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-10 w-48 mb-4" />
@@ -310,11 +310,11 @@ const SavedListings = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
       {backButton}
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>SAVED</h1>
       </div>
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>

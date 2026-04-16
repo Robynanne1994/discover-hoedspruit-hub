@@ -124,7 +124,7 @@ const Events = () => {
   }, [filteredEvents, featuredEvents]);
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
       {/* Back button */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button
@@ -144,7 +144,7 @@ const Events = () => {
         <h1
           style={{
             fontFamily: "var(--font-heading)",
-            fontWeight: 900,
+            fontWeight: 400,
             fontSize: 40,
             lineHeight: 0.95,
             letterSpacing: "-0.5px",
@@ -249,7 +249,7 @@ const Events = () => {
           <p
             style={{
               fontFamily: "var(--font-heading)",
-              fontWeight: 900,
+              fontWeight: 400,
               fontSize: 24,
               color: "#2b2420",
               marginBottom: 10,
@@ -293,7 +293,7 @@ const Events = () => {
                 <h2
                   style={{
                     fontFamily: "var(--font-heading)",
-                    fontWeight: 900,
+                    fontWeight: 400,
                     fontSize: 22,
                     color: "#2b2420",
                     textTransform: "uppercase",
@@ -411,7 +411,7 @@ const Events = () => {
                 <h2
                   style={{
                     fontFamily: "var(--font-heading)",
-                    fontWeight: 900,
+                    fontWeight: 400,
                     fontSize: 22,
                     color: "#2b2420",
                     textTransform: "uppercase",

@@ -51,7 +51,7 @@ const Specials = () => {
   }, [specials, filterType]);
 
   return (
-    <div className="min-h-screen pb-[100px]" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen pb-[100px]" style={{ background: "#ebebeb" }}>
       {/* Back button */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
@@ -75,7 +75,7 @@ const Specials = () => {
           style={{
             fontFamily: "var(--font-heading)",
             textTransform: "uppercase",
-            fontWeight: 900,
+            fontWeight: 400,
             fontSize: "clamp(28px, 8vw, 40px)",
             lineHeight: 1,
             letterSpacing: "-0.5px",
@@ -181,7 +181,7 @@ const Specials = () => {
             <h2
               style={{
                 fontFamily: "var(--font-heading)",
-                fontWeight: 900,
+                fontWeight: 400,
                 fontSize: 22,
                 color: "#2b2420",
                 textTransform: "uppercase",
@@ -253,7 +253,7 @@ const Specials = () => {
                     <h3
                       style={{
                         fontFamily: "var(--font-heading)",
-                        fontWeight: 900,
+                        fontWeight: 400,
                         fontSize: 28,
                         lineHeight: 0.98,
                         letterSpacing: "-0.4px",
