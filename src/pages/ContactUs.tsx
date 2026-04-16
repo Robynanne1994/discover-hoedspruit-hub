@@ -85,7 +85,7 @@ const ContactUs = () => {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
         <button
@@ -111,7 +111,7 @@ const ContactUs = () => {
       <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24 }}>
         <h1 style={{
           fontSize: 40,
-          fontWeight: 900,
+          fontWeight: 400,
           lineHeight: 0.95,
           letterSpacing: -0.5,
           color: "#2b2420",
@@ -130,7 +130,7 @@ const ContactUs = () => {
           letterSpacing: 0.2,
           lineHeight: 1.4,
           fontStyle: "italic",
-          fontFamily: "Georgia, 'Times New Roman', serif",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           margin: 0,
         }}>
           Questions, feedback or local advice
@@ -197,7 +197,7 @@ const ContactUs = () => {
       {/* Contact form */}
       {showForm && (
         <div style={{ marginTop: 32, paddingLeft: 24, paddingRight: 24 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 800, color: "#2b2420", marginBottom: 16 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 400, color: "#2b2420", marginBottom: 16 }}>
             Send us a message
           </h2>
 
@@ -221,7 +221,7 @@ const ContactUs = () => {
               }}>
                 <Check size={28} color="#121214" />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: "#2b2420", marginBottom: 8 }}>
+              <h3 style={{ fontSize: 18, fontWeight: 400, color: "#2b2420", marginBottom: 8 }}>
                 Thanks for reaching out
               </h3>
               <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 20 }}>

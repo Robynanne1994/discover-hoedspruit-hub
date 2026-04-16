@@ -15,8 +15,8 @@ export default {
     extend: {
       fontFamily: {
         heading: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
-        body: ['Manrope', 'Segoe UI', 'sans-serif'],
-        sans: ['Manrope', 'Segoe UI', 'sans-serif'],
+        body: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        sans: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

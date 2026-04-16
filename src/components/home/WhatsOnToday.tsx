@@ -82,7 +82,7 @@ const WhatsOnToday = () => {
               }}>
                 {parsed ? (
                   <>
-                    <span style={{ fontSize: 20, fontWeight: 800, color: "#2b2420", lineHeight: 1 }}>{parsed.getDate()}</span>
+                    <span style={{ fontSize: 20, fontWeight: 400, color: "#2b2420", lineHeight: 1 }}>{parsed.getDate()}</span>
                     <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 0.5 }}>{months[parsed.getMonth()]}</span>
                   </>
                 ) : (

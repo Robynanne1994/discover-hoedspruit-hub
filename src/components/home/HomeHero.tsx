@@ -101,7 +101,7 @@ const HomeHero = () => {
         <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 44, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", marginBottom: 12 }}>
           HELLO<br />HOEDSPRUIT
         </h1>
-        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginBottom: 20 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginBottom: 20 }}>
           Your local guide to the bushveld
         </p>
 

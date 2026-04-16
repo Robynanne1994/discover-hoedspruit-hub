@@ -76,7 +76,7 @@ const Advertise = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
       {/* Back */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -87,14 +87,14 @@ const Advertise = () => {
 
       {/* Heading */}
       <div style={{ padding: "0 24px", marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0 }}>
           REACH THE HOEDSPRUIT COMMUNITY
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ padding: "0 24px", marginBottom: 32 }}>
-        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, margin: 0 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, margin: 0 }}>
           Partner with us to put your business in the spotlight
         </p>
       </div>
@@ -120,10 +120,10 @@ const Advertise = () => {
           <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
           <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
           <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ fontWeight: 900, fontSize: 18, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 12 }}>
+            <div style={{ fontWeight: 400, fontSize: 18, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 12 }}>
               WHY HELLO HOEDSPRUIT?
             </div>
-            <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, margin: 0 }}>
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, margin: 0 }}>
               We're more than a directory — we're a trusted community hub. Your listing reaches people who are ready to explore, dine, and experience Hoedspruit.
             </p>
           </div>
@@ -132,7 +132,7 @@ const Advertise = () => {
 
       {/* Form heading */}
       <div style={{ padding: "0 24px", marginBottom: 20 }}>
-        <h2 style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>GET IN TOUCH</h2>
+        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>GET IN TOUCH</h2>
       </div>
 
       {/* Form or success */}
@@ -142,7 +142,7 @@ const Advertise = () => {
             <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.06)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
               <Check size={22} strokeWidth={2} color="#121214" />
             </div>
-            <div style={{ fontWeight: 900, fontSize: 18, color: "#2b2420", textTransform: "uppercase", marginBottom: 8 }}>Thanks for your interest!</div>
+            <div style={{ fontWeight: 400, fontSize: 18, color: "#020202", textTransform: "uppercase", marginBottom: 8 }}>Thanks for your interest!</div>
             <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", lineHeight: 1.5, marginBottom: 20 }}>We've received your enquiry and will be in touch soon.</p>
             <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 9999, padding: "10px 20px", fontSize: 13, fontWeight: 600, color: "#2b2420", cursor: "pointer" }}>
               Send Another Enquiry

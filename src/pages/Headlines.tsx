@@ -47,7 +47,7 @@ const Headlines = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
       {/* Back */}
       <div style={{ paddingTop: 52, paddingLeft: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6, background: "none", border: "none", cursor: "pointer" }}>
@@ -58,21 +58,21 @@ const Headlines = () => {
 
       {/* Title */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase", fontFamily: "var(--font-heading)" }}>
+        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", fontFamily: "var(--font-heading)" }}>
           THE LOWVELD<br />LOWDOWN
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           News, stories and local updates from the Lowveld
         </p>
       </div>
 
       {/* Search */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
-        <div className="flex items-center" style={{ background: "#ffffff", border: "2px solid #121214", borderRadius: 9999, padding: "11px 14px", gap: 8 }}>
+        <div className="flex items-center" style={{ background: "#ebebeb", border: "2px solid #121214", borderRadius: 9999, padding: "11px 14px", gap: 8 }}>
           <Search style={{ width: 16, height: 16, strokeWidth: 2, color: "#2b2420", flexShrink: 0 }} />
           <input
             value={search}
@@ -111,7 +111,7 @@ const Headlines = () => {
       {showFeatured && (
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>Latest</div>
-          <div style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 18 }}>Featured</div>
+          <div style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 18 }}>Featured</div>
 
           <Link to={`/headlines/${featured.slug}`}>
             <div style={{ borderRadius: 16, overflow: "hidden", position: "relative" }}>
@@ -121,10 +121,10 @@ const Headlines = () => {
                 ) : null}
                 <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)" }} />
                 <div style={{ position: "absolute", top: 14, left: 14, background: "#ffffff", borderRadius: 8, padding: "4px 10px" }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
                 </div>
                 <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
-                  <div style={{ fontWeight: 900, fontSize: 20, color: "#ffffff", lineHeight: 1.1, marginBottom: 6 }}>{featured.title}</div>
+                  <div style={{ fontWeight: 400, fontSize: 20, color: "#ffffff", lineHeight: 1.1, marginBottom: 6 }}>{featured.title}</div>
                   <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>
                     {formatDate(featured.published_at)} · {featured.read_time || 3} min read
                   </div>
@@ -138,7 +138,7 @@ const Headlines = () => {
       {/* Recent */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>More Stories</div>
-        <div style={{ fontWeight: 900, fontSize: 22, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px" }}>Recent</div>
+        <div style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px" }}>Recent</div>
       </div>
 
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>

@@ -126,7 +126,7 @@ const EventDetail = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
+      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
         <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
           <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
             <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
@@ -165,7 +165,7 @@ const EventDetail = () => {
 
   if (!event) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#FFFFFF" }}>
+      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
         <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
           <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
             <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
@@ -254,10 +254,10 @@ const EventDetail = () => {
       <h2
         style={{
           fontFamily: "var(--font-heading)",
-          fontWeight: 900,
+          fontWeight: 400,
           fontSize: 20,
           lineHeight: 1,
-          letterSpacing: "-0.3px",
+          letterSpacing: "0.01em",
           color: "#2b2420",
           textTransform: "uppercase",
           margin: 0,
@@ -269,7 +269,7 @@ const EventDetail = () => {
   );
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "#FFFFFF" }}>
+    <div className="min-h-screen pb-28" style={{ background: "#ebebeb" }}>
       {/* Back button */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
@@ -324,10 +324,10 @@ const EventDetail = () => {
         <h1
           style={{
             fontFamily: "var(--font-heading)",
-            fontWeight: 900,
+            fontWeight: 400,
             fontSize: 34,
             lineHeight: 0.98,
-            letterSpacing: "-0.6px",
+            letterSpacing: "0.01em",
             color: "#2b2420",
             margin: 0,
             textTransform: "uppercase",
@@ -340,7 +340,7 @@ const EventDetail = () => {
           <p
             style={{
               marginTop: 14,
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
               fontStyle: "italic",
               fontSize: 14,
               color: "rgba(18,18,20,0.42)",

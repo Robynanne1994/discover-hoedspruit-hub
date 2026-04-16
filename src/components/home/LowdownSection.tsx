@@ -46,7 +46,7 @@ const LowdownSection = () => {
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#2b2420", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
               </div>
               <div style={{ position: "absolute", bottom: 14, left: 14, right: 14 }}>
-                <div style={{ fontSize: 16, fontWeight: 800, color: "#ffffff", lineHeight: 1.15, marginBottom: 4 }}>{featured.title}</div>
+                <div style={{ fontSize: 16, fontWeight: 400, color: "#ffffff", lineHeight: 1.15, marginBottom: 4 }}>{featured.title}</div>
                 <div style={{ fontSize: 11, color: "rgba(255,255,255,0.5)" }}>{fmtDate(featured.published_at)} · {featured.read_time || 3} min read</div>
               </div>
             </div>

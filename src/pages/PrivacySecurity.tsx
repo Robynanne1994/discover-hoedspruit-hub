@@ -79,7 +79,7 @@ const PrivacySecurity = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen" style={{ background: "#ebebeb" }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
@@ -90,14 +90,14 @@ const PrivacySecurity = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>
           PRIVACY &<br />SECURITY
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           How we handle your information
         </p>
       </div>

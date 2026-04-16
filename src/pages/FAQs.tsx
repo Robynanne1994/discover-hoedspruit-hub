@@ -63,7 +63,7 @@ const FAQs = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#ffffff" }}>
+    <div className="min-h-screen" style={{ background: "#ebebeb" }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
@@ -74,14 +74,14 @@ const FAQs = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 900, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>
           HOW CAN WE<br />HELP?
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           Find answers to the most common questions about Hello Hoedspruit
         </p>
       </div>
@@ -168,16 +168,16 @@ const FAQs = () => {
             <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
             <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
             <div style={{ position: "relative", zIndex: 1 }}>
-              <h3 style={{ fontWeight: 900, fontSize: 20, color: "#ffffff", textTransform: "uppercase", letterSpacing: "0.3px", lineHeight: 1.1, marginBottom: 10 }}>
+              <h3 style={{ fontWeight: 400, fontSize: 20, color: "#ffffff", textTransform: "uppercase", letterSpacing: "0.3px", lineHeight: 1.1, marginBottom: 10 }}>
                 STILL HAVE A QUESTION?
               </h3>
-              <p style={{ fontFamily: "'Georgia', 'Times New Roman', serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22 }}>
+              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22 }}>
                 We're happy to help. Get in touch and we'll get back to you as soon as we can.
               </p>
               <Link
                 to="/contact"
                 className="inline-flex items-center"
-                style={{ background: "#ffffff", borderRadius: 9999, padding: "12px 22px", gap: 8 }}
+                style={{ background: "#ebebeb", borderRadius: 9999, padding: "12px 22px", gap: 8 }}
               >
                 <span style={{ fontSize: 14, fontWeight: 700, color: "#2b2420", letterSpacing: "0.3px" }}>Contact Us</span>
                 <ArrowUpRight style={{ width: 14, height: 14, color: "#2b2420", strokeWidth: 2.5 }} />

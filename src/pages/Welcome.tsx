@@ -38,7 +38,7 @@ const Welcome = () => {
           </div>
           <h1
             className="text-center font-heading font-bold text-foreground"
-            style={{ fontSize: 36, lineHeight: 1.1, letterSpacing: "-0.5px" }}
+            style={{ fontSize: 36, lineHeight: 1.1, letterSpacing: "0.01em" }}
           >
             Hello{" "}
             <span className="text-primary">Hoedspruit</span>
@@ -85,7 +85,7 @@ const Welcome = () => {
       <div className="flex-1 px-6 pb-12">
         <h1
           className="font-heading font-bold text-foreground mb-1"
-          style={{ fontSize: 28, letterSpacing: "-0.3px" }}
+          style={{ fontSize: 28, letterSpacing: "0.01em" }}
         >
           {mode === "signup" ? "Create Account" : "Welcome Back"}
         </h1>

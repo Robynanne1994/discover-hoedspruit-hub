@@ -58,7 +58,7 @@ const VisitedPlaces = () => {
 
   if (!loading && !user) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
+      <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
@@ -82,7 +82,7 @@ const VisitedPlaces = () => {
 
   if (loading || isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
+      <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
@@ -104,7 +104,7 @@ const VisitedPlaces = () => {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 72 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
         <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
@@ -115,14 +115,14 @@ const VisitedPlaces = () => {
 
       {/* Heading */}
       <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 900, lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0 }}>
           VISITED<br />PLACES
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ marginTop: 12, paddingLeft: 24, paddingRight: 24 }}>
-        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "Georgia, 'Times New Roman', serif", margin: 0 }}>
+        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", margin: 0 }}>
           {visitedCount === 1 ? "1 place you've been to" : `${visitedCount} places you've been to`}
         </p>
       </div>
