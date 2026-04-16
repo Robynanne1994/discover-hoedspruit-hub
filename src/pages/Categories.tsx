@@ -65,86 +65,61 @@ const Categories = () => {
   const listingResults = hasSearch ? (searchedListings || []) : [];
 
   return (
-    <div className="min-h-screen pb-[100px]" style={{ background: "#ebebeb" }}>
+    <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
         <button
           onClick={() => navigate(-1)}
           className="flex items-center"
-          style={{ gap: 6 }}
+          style={{ gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
         >
-          <ArrowLeft
-            size={18}
-            strokeWidth={2}
-            style={{ color: "rgba(18,18,20,0.5)" }}
-          />
-          <span
-            style={{
-              fontSize: 15,
-              fontWeight: 500,
-              color: "rgba(18,18,20,0.5)",
-              letterSpacing: "0.2px",
-            }}
-          >
-            Back
-          </span>
+          <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420" }}>Back</span>
         </button>
       </div>
 
       {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1
-          style={{
-            fontFamily: "var(--font-heading)",
-            textTransform: "uppercase",
-            fontWeight: 400,
-            fontSize: 40,
-            lineHeight: 1.0,
-            letterSpacing: "0.01em",
-             color: "#2b2420",
-            margin: 0,
-          }}
-        >
-          EXPLORE
-          <br />
-          HOEDSPRUIT
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
+        <h1 style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          textTransform: "none",
+          fontWeight: 400,
+          fontSize: 53,
+          lineHeight: 1,
+          letterSpacing: "0.01em",
+          color: "#020202",
+          margin: 0,
+        }}>
+          Explore<br />Hoedspruit
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p
-          style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontStyle: "italic",
-            fontSize: 14,
-            color: "rgba(18,18,20,0.45)",
-            letterSpacing: "0.2px",
-            lineHeight: 1.4,
-            margin: 0,
-          }}
-        >
+        <p style={{
+          fontSize: 15,
+          fontWeight: 400,
+          lineHeight: 1.35,
+          color: "rgba(18,18,20,0.55)",
+          margin: 0,
+        }}>
           Choose your adventure, tailored just for you
         </p>
       </div>
 
       {/* Search bar */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <div
           className="flex items-center"
           style={{
-            background: "#ffffff",
-            border: "2px solid #121214",
-            borderRadius: 9999,
-            padding: "11px 14px",
+            background: "#FFFFFF",
+            border: "1px solid rgba(18,18,20,0.1)",
+            borderRadius: 14,
+            padding: "12px 16px",
             gap: 8,
           }}
         >
-          <Search
-            size={16}
-            strokeWidth={2}
-            style={{ color: "#2b2420", flexShrink: 0 }}
-          />
+          <Search size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.35)", flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search categories & listings..."
@@ -155,12 +130,10 @@ const Categories = () => {
               background: "transparent",
               border: "none",
               outline: "none",
-              fontSize: 13,
-              color: "#2b2420",
-              letterSpacing: "0.1px",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              fontSize: 15,
+              fontWeight: 400,
+              color: "#2B2420",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             }}
             className="placeholder:text-[rgba(18,18,20,0.35)]"
           />
@@ -170,47 +143,29 @@ const Categories = () => {
       {/* Category cards */}
       <div style={{ paddingLeft: 24, paddingRight: 24 }}>
         {isLoading ? (
-          <div className="space-y-7">
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton
-                key={i}
-                className="w-full"
-                style={{ height: 180, borderRadius: 16, background: "#f0f0f0" }}
-              />
+              <Skeleton key={i} className="w-full" style={{ aspectRatio: "16/10", borderRadius: 16, background: "#f0f0f0" }} />
             ))}
           </div>
         ) : filteredCategories.length === 0 && listingResults.length === 0 ? (
           <div className="text-center" style={{ paddingTop: 80 }}>
-            <p
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 600,
-                fontSize: 18,
-                 color: "#2b2420",
-                marginBottom: 4,
-              }}
-            >
-              No results found
-            </p>
-            <p style={{ fontSize: 13, color: "rgba(18,18,20,0.45)" }}>
-              Try another search term
-            </p>
+            <p style={{ fontWeight: 500, fontSize: 18, color: "#2B2420", marginBottom: 4 }}>No results found</p>
+            <p style={{ fontSize: 14, color: "rgba(18,18,20,0.55)" }}>Try another search term</p>
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {/* Listing results */}
             {listingResults.length > 0 && (
               <div>
-                <p
-                  style={{
-                    textTransform: "uppercase",
-                    fontSize: 11,
-                    fontWeight: 600,
-                     color: "rgba(18,18,20,0.4)",
-                    letterSpacing: "1.5px",
-                    marginBottom: 14,
-                  }}
-                >
+                <p style={{
+                  textTransform: "uppercase",
+                  fontSize: 12,
+                  fontWeight: 500,
+                  color: "rgba(18,18,20,0.4)",
+                  letterSpacing: "0.06em",
+                  marginBottom: 16,
+                }}>
                   Listings
                 </p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -218,69 +173,37 @@ const Categories = () => {
                     <Link
                       key={listing.id}
                       to={`/listing/${listing.id}`}
-                      className="flex items-center active:scale-[0.98] transition-transform duration-150"
+                      className="flex items-center"
                       style={{
-                         background: "rgba(18,18,20,0.04)",
-                         borderRadius: 16,
+                        background: "rgba(18,18,20,0.04)",
+                        borderRadius: 16,
                         padding: 12,
                         gap: 12,
+                        transition: "transform 0.15s ease",
                       }}
+                      onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+                      onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                      onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                     >
-                      <div
-                        style={{
-                          width: 48,
-                          height: 48,
-                          borderRadius: 16,
-                          overflow: "hidden",
-                           background: "#f0f0f0",
-                          flexShrink: 0,
-                        }}
-                      >
+                      <div style={{ width: 48, height: 48, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
                         {listing.image_url ? (
-                          <img
-                            src={listing.image_url}
-                            alt={listing.title}
-                            className="w-full h-full object-cover"
-                          />
+                          <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
                         ) : (
-                           <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
+                          <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
                         )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 600,
-                             color: "#2b2420",
-                            margin: 0,
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                          }}
-                        >
+                        <p style={{ fontSize: 14, fontWeight: 500, color: "#2B2420", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                           {listing.title}
                         </p>
                         {listing.location && (
-                          <p
-                            className="flex items-center"
-                            style={{
-                              fontSize: 12,
-                               color: "rgba(18,18,20,0.4)",
-                              margin: 0,
-                              marginTop: 2,
-                              gap: 4,
-                            }}
-                          >
-                            <MapPin size={11} strokeWidth={2} />
+                          <p className="flex items-center" style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", margin: 0, marginTop: 2, gap: 4 }}>
+                            <MapPin size={11} strokeWidth={1.8} />
                             {listing.location}
                           </p>
                         )}
                       </div>
-                      <ArrowUpRight
-                        size={16}
-                        strokeWidth={2}
-                        style={{ color: "rgba(18,18,20,0.4)", flexShrink: 0 }}
-                      />
+                      <ArrowUpRight size={16} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
                     </Link>
                   ))}
                 </div>
@@ -289,16 +212,14 @@ const Categories = () => {
 
             {/* Category section label when both results exist */}
             {listingResults.length > 0 && filteredCategories.length > 0 && (
-              <p
-                style={{
-                  textTransform: "uppercase",
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: "rgba(18,18,20,0.4)",
-                  letterSpacing: "1.5px",
-                  marginBottom: -14,
-                }}
-              >
+              <p style={{
+                textTransform: "uppercase",
+                fontSize: 12,
+                fontWeight: 500,
+                color: "rgba(18,18,20,0.4)",
+                letterSpacing: "0.06em",
+                marginBottom: -8,
+              }}>
                 Categories
               </p>
             )}
@@ -310,47 +231,32 @@ const Categories = () => {
                 <Link
                   key={cat.id}
                   to={`/category/${cat.id}`}
-                  className="block active:scale-[0.98] transition-transform duration-150"
+                  className="block"
+                  style={{ transition: "transform 0.15s ease" }}
+                  onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+                  onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 >
-                  <div
-                    style={{
-                      width: "100%",
-                      height: 180,
-                      borderRadius: 16,
-                      overflow: "hidden",
-                       background: "#f0f0f0",
-                     }}
-                  >
+                  <div style={{ width: "100%", aspectRatio: "16/10", borderRadius: 16, overflow: "hidden", background: "#f0f0f0" }}>
                     {cat.image_url ? (
-                      <img
-                        src={cat.image_url}
-                        alt={cat.title}
-                        className="w-full h-full object-cover"
-                      />
+                      <img src={cat.image_url} alt={cat.title} className="w-full h-full object-cover object-center" />
                     ) : (
                       <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
                     )}
                   </div>
-                   <div
-                    className="flex items-center justify-between"
-                    style={{ paddingTop: 10 }}
-                  >
-                    <span
-                      style={{
-                        textTransform: "uppercase",
-                        fontSize: 14,
-                        fontWeight: 600,
-                        color: "#2b2420",
-                        letterSpacing: "1.5px",
-                      }}
-                    >
-                      {cat.title} <span style={{ fontWeight: 400, color: "rgba(18,18,20,0.35)", fontSize: 13 }}>({count})</span>
+                  <div className="flex items-center" style={{ marginTop: 10 }}>
+                    <span style={{
+                      textTransform: "uppercase",
+                      fontSize: 20,
+                      fontWeight: 500,
+                      color: "#2B2420",
+                      letterSpacing: "0.01em",
+                      lineHeight: 1.2,
+                    }}>
+                      {cat.title}
                     </span>
-                    <ArrowUpRight
-                      size={18}
-                      strokeWidth={2}
-                      style={{ color: "#2b2420" }}
-                    />
+                    <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", marginLeft: 6 }}>({count})</span>
+                    <ArrowUpRight size={22} strokeWidth={2.5} style={{ color: "rgba(18,18,20,0.3)", marginLeft: "auto" }} />
                   </div>
                 </Link>
               );
