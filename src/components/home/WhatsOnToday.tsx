@@ -72,7 +72,8 @@ const WhatsOnToday = () => {
               <div style={{
                 width: 50,
                 height: 50,
-                background: "rgba(18,18,20,0.04)",
+                background: "#FFFFFF",
+                border: "1px solid rgba(18,18,20,0.06)",
                 borderRadius: 16,
                 display: "flex",
                 flexDirection: "column",
