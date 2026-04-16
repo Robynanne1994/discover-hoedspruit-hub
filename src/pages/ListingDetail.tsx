@@ -16,6 +16,19 @@ import { toast } from "sonner";
 import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+const pressScale = (scale = "0.97") => ({
+  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${scale})`),
+  onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+  onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+});
+
+const pressOpacity = {
+  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.opacity = "0.6"),
+  onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.opacity = "1"),
+  onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.opacity = "1"),
+};
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
@@ -48,7 +61,6 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
-  // Favourite state
   const { data: isFavourited } = useQuery({
     queryKey: ["favourite", "listing", id, user?.id],
     queryFn: async () => {
@@ -76,7 +88,6 @@ const ListingDetail = () => {
     },
   });
 
-  // Visited state
   const { data: isVisited } = useQuery({
     queryKey: ["been-here", id, user?.id],
     queryFn: async () => {
@@ -123,15 +134,16 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ebebeb" }}>
+      <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
         <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "rgba(18,18,20,0.4)", fontSize: 15, fontWeight: 500 }}>
-            <ArrowLeft size={18} strokeWidth={2} /> Back
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
+            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
           </button>
         </div>
         <div style={{ padding: "48px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
           <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.04)", animation: "pulse 2s infinite" }} />
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)" }}>Loading...</p>
+          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", fontFamily: font }}>Loading...</p>
         </div>
       </div>
     );
@@ -139,15 +151,16 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ebebeb" }}>
+      <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
         <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: "rgba(18,18,20,0.4)", fontSize: 15, fontWeight: 500 }}>
-            <ArrowLeft size={18} strokeWidth={2} /> Back
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
+            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
           </button>
         </div>
         <div style={{ padding: "80px 24px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 16 }}>Listing not found.</p>
-          <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>Back to Home</Link>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 16, fontFamily: font }}>Listing not found.</p>
+          <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: "#2B2420", fontFamily: font }}>Back to Home</Link>
         </div>
       </div>
     );
@@ -184,17 +197,12 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
-  // Quick-scan pills for restaurants
   const quickPills: { label: string }[] = [];
   if (isListingRestaurant) {
-    // cuisine moved to its own accordion
-    // vibe moved to its own accordion
     if (priceLevel) quickPills.push({ label: "R".repeat(priceLevel) });
-    
   }
   const showQuickPills = quickPills.length > 0;
 
-  // Build accordion sections for restaurants
   type BoolField = { label: string; value: boolean | null };
   type TextField = { label: string; value: string | null };
   type AccSection = { key: string; icon: React.ReactNode; title: string; fields: (BoolField | TextField)[] };
@@ -208,9 +216,7 @@ const ListingDetail = () => {
       { label: "Accessible toilet", value: wheelchairToilet },
       { label: "Accessible parking", value: wheelchairCarPark },
     ].filter(f => f.value != null) as BoolField[];
-    if (accessFields.length > 0) {
-      accordionSections.push({ key: "accessibility", icon: <Accessibility size={18} strokeWidth={1.5} color="#121214" />, title: "Accessibility", fields: accessFields });
-    }
+    if (accessFields.length > 0) accordionSections.push({ key: "accessibility", icon: <Accessibility size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Accessibility", fields: accessFields });
 
     const kidsFields: BoolField[] = [
       { label: "Good for kids", value: goodForKids },
@@ -218,58 +224,43 @@ const ListingDetail = () => {
       { label: "High chairs", value: highChairs },
       { label: "Playground", value: kidsPlayground },
     ].filter(f => f.value != null) as BoolField[];
-    if (kidsFields.length > 0) {
-      accordionSections.push({ key: "kids", icon: <Users size={18} strokeWidth={1.5} color="#121214" />, title: "Kids & Family", fields: kidsFields });
-    }
+    if (kidsFields.length > 0) accordionSections.push({ key: "kids", icon: <Users size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Kids & Family", fields: kidsFields });
 
-    const amenFields: (BoolField)[] = [
+    const amenFields: BoolField[] = [
       { label: "Toilets", value: hasToilet },
       { label: "Wi-Fi", value: hasWifi },
       { label: "Free Wi-Fi", value: hasFreeWifi },
       { label: "Smoking section", value: smokingAllowed },
       { label: "Pets allowed", value: petsAllowed },
     ].filter(f => f.value != null) as BoolField[];
-    if (amenFields.length > 0) {
-      accordionSections.push({ key: "amenities", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Amenities", fields: amenFields });
-    }
+    if (amenFields.length > 0) accordionSections.push({ key: "amenities", icon: <Coffee size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Amenities", fields: amenFields });
 
     if (seating && seating.length > 0) {
-      const seatingFields: BoolField[] = seating.map(s => ({
-        label: s.replace(/ seating$/i, ""),
-        value: true,
-      }));
-      if (seatingFields.length > 0) {
-        accordionSections.push({ key: "seating", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Seating", fields: seatingFields });
-      }
+      const seatingFields: BoolField[] = seating.map(s => ({ label: s.replace(/ seating$/i, ""), value: true }));
+      accordionSections.push({ key: "seating", icon: <ClipboardList size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Seating", fields: seatingFields });
     }
 
-    // Service Options: show as booleans for dine-in/takeaway/delivery
     const serviceArr = serviceType || [];
     const svcFields: BoolField[] = [
       { label: "Dine-in", value: serviceArr.some(s => /sit\s*down|dine/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
       { label: "Takeaway", value: serviceArr.some(s => /take\s*away|takeaway/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
       { label: "Delivery", value: serviceArr.some(s => /deliver/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
     ].filter(f => f.value !== null) as BoolField[];
-    if (svcFields.length > 0) {
-      accordionSections.push({ key: "service", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Service Options", fields: svcFields });
-    }
+    if (svcFields.length > 0) accordionSections.push({ key: "service", icon: <ClipboardList size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Service Options", fields: svcFields });
 
-    // Meals Served: each meal as a boolean check item
     if (meal && meal.length > 0) {
       const mealFields: BoolField[] = meal.map(m => ({ label: m, value: true }));
-      accordionSections.push({ key: "meals", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Meals Served", fields: mealFields });
+      accordionSections.push({ key: "meals", icon: <Coffee size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Meals Served", fields: mealFields });
     }
 
-    // Cuisine: each cuisine type as a check item
     if (cuisine && cuisine.length > 0) {
       const cuisineFields: BoolField[] = cuisine.map(c => ({ label: c, value: true }));
-      accordionSections.push({ key: "cuisine", icon: <ShoppingBag size={18} strokeWidth={1.5} color="#121214" />, title: "Cuisine", fields: cuisineFields });
+      accordionSections.push({ key: "cuisine", icon: <ShoppingBag size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Cuisine", fields: cuisineFields });
     }
 
-    // Vibe: each vibe as a check item
     if (vibe && vibe.length > 0) {
       const vibeFields: BoolField[] = vibe.map(v => ({ label: v, value: true }));
-      accordionSections.push({ key: "vibe", icon: <Star size={18} strokeWidth={1.5} color="#121214" />, title: "Vibe", fields: vibeFields });
+      accordionSections.push({ key: "vibe", icon: <Star size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Vibe", fields: vibeFields });
     }
   }
 
@@ -280,162 +271,204 @@ const ListingDetail = () => {
     setOpenAccordion(openAccordion === key ? null : key);
   };
 
-  const circleBtn: React.CSSProperties = {
-    width: 38, height: 38, borderRadius: "50%", background: "#ffffff",
+  const overlayBtn: React.CSSProperties = {
+    width: 40, height: 40, borderRadius: "50%",
+    background: "rgba(255, 255, 255, 0.85)",
+    backdropFilter: "blur(8px)",
+    WebkitBackdropFilter: "blur(8px)",
     display: "flex", alignItems: "center", justifyContent: "center",
-    border: "none", cursor: "pointer", boxShadow: "var(--card-shadow)",
+    border: "none", cursor: "pointer",
+    transition: "transform 0.12s ease",
   };
 
+  const renderAccordionCard = (sections: AccSection[]) => (
+    <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden", marginBottom: 24 }}>
+      {sections.map((section, i) => {
+        const isOpen = openAccordion === section.key;
+        return (
+          <div key={section.key}>
+            {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
+            <button
+              onClick={() => toggleAccordion(section.key)}
+              style={{ width: "100%", display: "flex", alignItems: "center", padding: "16px 20px", background: "none", border: "none", cursor: "pointer", fontFamily: font }}
+            >
+              <div style={{ marginRight: 16, flexShrink: 0 }}>{section.icon}</div>
+              <span style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", flex: 1, textAlign: "left", fontFamily: font }}>{section.title}</span>
+              <ChevronDown
+                size={20} strokeWidth={1.8} color="rgba(18,18,20,0.25)"
+                style={{ transition: "transform 0.2s ease", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+              />
+            </button>
+            {isOpen && (
+              <div style={{ padding: "0 20px 16px 56px" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {section.fields.map((field, fi) => {
+                    const isBool = typeof field.value === "boolean";
+                    if (isBool && field.value) {
+                      return (
+                        <span key={fi} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
+                          {field.label}
+                        </span>
+                      );
+                    }
+                    if (isBool && !field.value) {
+                      return (
+                        <span key={fi} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "rgba(18,18,20,0.35)", textDecoration: "line-through", fontFamily: font }}>
+                          {field.label}
+                        </span>
+                      );
+                    }
+                    return (
+                      <span key={fi} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
+                        {field.label}: {field.value}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  // Get today for hours highlight
+  const todayIndex = new Date().getDay(); // 0=Sun
+  const todayLabel = todayIndex === 0 ? "Sunday" : DAY_LABELS[todayIndex - 1];
+
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
+    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 84, fontFamily: font }}>
       {/* Hero image */}
       {listing.image_url ? (
         <div style={{ position: "relative" }}>
-          <div style={{ height: 280, overflow: "hidden" }}>
-            <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden" }}>
+            <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
           </div>
-          {/* Back button */}
-          <button onClick={() => navigate(-1)} style={{ ...circleBtn, position: "absolute", top: 16, left: 20, zIndex: 10 }}>
-            <ArrowLeft size={18} strokeWidth={2} color="#121214" />
+          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
+            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
-          {/* Admin edit button */}
           {isAdmin && (
-            <div style={{ position: "absolute", top: 16, right: 20, zIndex: 10 }}>
-              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={circleBtn} title="Edit listing">
-                <Pencil size={18} strokeWidth={1.5} color="#121214" />
-              </button>
-            </div>
+            <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={{ ...overlayBtn, position: "absolute", top: 16, right: 16, zIndex: 10 }} title="Edit listing" {...pressScale("0.9")}>
+              <Pencil size={20} strokeWidth={1.8} color="#2B2420" />
+            </button>
           )}
         </div>
       ) : (
         <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button onClick={() => navigate(-1)} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }}>
-            <ArrowLeft size={18} strokeWidth={2} color="#121214" />
+          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
+            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
           <div style={{ display: "flex", gap: 10 }}>
-            <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }}>
-              <Heart size={18} strokeWidth={1.5} color="#121214" fill={isFavourited ? "#121214" : "none"} />
-            </button>
-            <button onClick={handleShare} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }}>
-              <Share2 size={18} strokeWidth={1.5} color="#121214" />
-            </button>
             {isAdmin && (
-              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={{ ...circleBtn, background: "rgba(18,18,20,0.04)" }} title="Edit listing">
-                <Pencil size={18} strokeWidth={1.5} color="#121214" />
+              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} title="Edit listing" {...pressScale("0.9")}>
+                <Pencil size={20} strokeWidth={1.8} color="#2B2420" />
               </button>
             )}
           </div>
         </div>
       )}
 
-      <div style={{ padding: "24px 24px 0" }}>
-        {/* Category label */}
+      {/* Content area */}
+      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
+        {/* Category overline */}
         {firstCategory && (
-          <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 8 }}>
+          <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginBottom: 4, marginTop: 0, fontFamily: font }}>
             {firstCategory.title}
-          </div>
+          </p>
         )}
 
-        {/* Title */}
-        <h1 style={{ fontWeight: 400, fontSize: 32, color: "#2b2420", lineHeight: 1.0, letterSpacing: -0.3, marginBottom: 14 }}>
+        {/* Listing name */}
+        <h1 style={{ fontFamily: font, fontSize: 34, fontWeight: 400, lineHeight: 1.1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", marginBottom: 8, marginTop: 0 }}>
           {listing.title}
         </h1>
 
-        {/* Star rating */}
+        {/* Google rating */}
         {(listing as any).google_rating != null && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
             <div style={{ display: "flex", gap: 2 }}>
               {[1, 2, 3, 4, 5].map((s) => (
                 <Star
                   key={s}
-                  size={14}
-                  fill={s <= Math.round((listing as any).google_rating) ? "#E8A83E" : "none"}
-                  color={s <= Math.round((listing as any).google_rating) ? "#E8A83E" : "rgba(18,18,20,0.15)"}
+                  size={16}
+                  fill={s <= Math.round((listing as any).google_rating) ? "#D4964A" : "none"}
+                  color={s <= Math.round((listing as any).google_rating) ? "#D4964A" : "rgba(18,18,20,0.15)"}
                   strokeWidth={s <= Math.round((listing as any).google_rating) ? 0 : 1.5}
                 />
               ))}
             </div>
-            <span style={{ fontSize: 15, fontWeight: 700, color: "#2b2420" }}>{(listing as any).google_rating}</span>
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#2B2420", fontFamily: font }}>{(listing as any).google_rating}</span>
             {(listing as any).google_reviews_count != null && (
               (listing as any).google_reviews_url ? (
-                <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", textDecoration: "none" }}>
+                <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", textDecoration: "none", fontFamily: font }}>
                   ({(listing as any).google_reviews_count} reviews)
                 </a>
               ) : (
-                <span style={{ fontSize: 13, color: "rgba(18,18,20,0.35)" }}>({(listing as any).google_reviews_count} reviews)</span>
+                <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", fontFamily: font }}>({(listing as any).google_reviews_count} reviews)</span>
               )
             )}
           </div>
         )}
 
-        {/* Action buttons row */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 28 }}>
+        {/* Action buttons row (Share, Save, Visited) */}
+        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
           <button
             onClick={handleShare}
-            className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 6, height: 40, borderRadius: 9999,
-              background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)",
-              color: "#2b2420", fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
-              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              background: "transparent", border: "1.5px solid rgba(18,18,20,0.12)", borderRadius: 24,
+              padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
+            {...pressScale()}
           >
-            <Share2 style={{ width: 14, height: 14, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.9} />
-            Share
+            <Share2 size={18} strokeWidth={1.8} color="#2B2420" />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Share</span>
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
-            className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 6, height: 40, borderRadius: 9999,
-              background: isFavourited ? "#121214" : "rgba(18,18,20,0.04)",
-              border: isFavourited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-              color: isFavourited ? "#FFFFFF" : "#121214",
-              fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
-              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              background: "transparent",
+              border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.12)",
+              borderRadius: 24, padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
+            {...pressScale()}
           >
-            <Heart
-              style={{ width: 14, height: 14, color: isFavourited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isFavourited ? "#FFFFFF" : "transparent" }}
-              strokeWidth={1.9}
-            />
-            {isFavourited ? "Saved" : "Save"}
+            <Heart size={18} strokeWidth={1.8} color={isFavourited ? "#D4654A" : "#2B2420"} fill={isFavourited ? "#D4654A" : "none"} />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>{isFavourited ? "Saved" : "Save"}</span>
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
-            className="flex items-center justify-center transition-colors"
             style={{
-              flex: 1, gap: 6, height: 40, borderRadius: 9999,
-              background: isVisited ? "#121214" : "rgba(18,18,20,0.04)",
-              border: isVisited ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-              color: isVisited ? "#FFFFFF" : "#121214",
-              fontSize: 12, fontWeight: 600, letterSpacing: "0.1px",
-              cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              background: "transparent",
+              border: isVisited ? "1.5px solid #3B7D4F" : "1.5px solid rgba(18,18,20,0.12)",
+              borderRadius: 24, padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
+            {...pressScale()}
           >
-            <CheckCircle
-              style={{ width: 14, height: 14, color: isVisited ? "#FFFFFF" : "rgba(18,18,20,0.5)", fill: isVisited ? "#FFFFFF" : "transparent" }}
-              strokeWidth={1.9}
-            />
-            Visited
+            <CheckCircle size={18} strokeWidth={1.8} color={isVisited ? "#3B7D4F" : "#2B2420"} fill={isVisited ? "#3B7D4F" : "none"} />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Visited</span>
           </button>
         </div>
 
-        {/* Call Now & Directions buttons */}
+        {/* Call Now & Directions */}
         {(listing.phone || (listing as any).google_maps_link) && (
-          <div style={{ display: "flex", gap: 10, marginBottom: 20 }}>
+          <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
             {listing.phone && (
               <a
                 href={`tel:${listing.phone}`}
-                className="flex items-center justify-center"
                 style={{
-                  flex: 1, gap: 8, height: 44, borderRadius: 9999,
-                  background: "#7B8B6F", color: "#FFFFFF",
-                  fontSize: 13, fontWeight: 600, textDecoration: "none",
-                  cursor: "pointer",
+                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 24,
+                  padding: "14px 24px", minHeight: 48, fontSize: 15, fontWeight: 600,
+                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease", fontFamily: font,
                 }}
+                onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
+                onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
               >
-                <Phone style={{ width: 16, height: 16 }} strokeWidth={1.8} />
+                <Phone size={20} strokeWidth={1.8} color="#FFFFFF" />
                 Call Now
               </a>
             )}
@@ -444,15 +477,17 @@ const ListingDetail = () => {
                 href={(listing as any).google_maps_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center"
                 style={{
-                  flex: 1, gap: 8, height: 44, borderRadius: 9999,
-                  background: "#715a3d", color: "#FFFFFF",
-                  fontSize: 13, fontWeight: 600, textDecoration: "none",
-                  cursor: "pointer",
+                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 24,
+                  padding: "14px 24px", minHeight: 48, fontSize: 15, fontWeight: 600,
+                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease", fontFamily: font,
                 }}
+                onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
+                onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
               >
-                <Navigation style={{ width: 16, height: 16 }} strokeWidth={1.8} />
+                <Navigation size={20} strokeWidth={1.8} color="#FFFFFF" />
                 Directions
               </a>
             )}
@@ -463,61 +498,64 @@ const ListingDetail = () => {
         {showQuickPills && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
             {quickPills.slice(0, 4).map((pill, i) => (
-              <span key={i} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 9999, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
+              <span key={i} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
                 {pill.label}
               </span>
             ))}
           </div>
         )}
 
-        {/* Contact details block */}
+        {/* Contact details card */}
         {hasContactInfo && (
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", marginBottom: 28 }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden", marginBottom: 24 }}>
             {[
               listing.location && {
-                icon: <MapPin size={18} strokeWidth={1.5} color="#121214" />,
+                icon: <MapPin size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
                 text: listing.location,
                 href: (listing as any).google_maps_link || undefined,
                 external: true,
               },
               listing.phone && {
-                icon: <Phone size={18} strokeWidth={1.5} color="#121214" />,
+                icon: <Phone size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
                 text: listing.phone,
                 href: `tel:${listing.phone}`,
               },
               listing.email && {
-                icon: <Mail size={18} strokeWidth={1.5} color="#121214" />,
+                icon: <Mail size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
                 text: listing.email,
                 href: `mailto:${listing.email}`,
               },
               listing.website && {
-                icon: <Globe size={18} strokeWidth={1.5} color="#121214" />,
+                icon: <Globe size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
                 text: "Website",
                 href: listing.website,
                 external: true,
               },
               (listing as any).whatsapp && {
-                icon: <MessageCircle size={18} strokeWidth={1.5} color="#121214" />,
+                icon: <MessageCircle size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
                 text: "WhatsApp",
                 href: `https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, "")}`,
                 external: true,
               },
             ].filter(Boolean).map((row: any, i, arr) => (
-              <a
-                key={i}
-                href={row.href}
-                target={row.external ? "_blank" : undefined}
-                rel={row.external ? "noopener noreferrer" : undefined}
-                style={{
-                  display: "flex", alignItems: "center", gap: 12,
-                  padding: "10px 16px",
-                  borderBottom: i < arr.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                  textDecoration: "none", cursor: row.href ? "pointer" : "default",
-                }}
-              >
-                {row.icon}
-                <span style={{ fontSize: 14, color: "rgba(18,18,20,0.4)" }}>{row.text}</span>
-              </a>
+              <div key={i}>
+                {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
+                <a
+                  href={row.href}
+                  target={row.external ? "_blank" : undefined}
+                  rel={row.external ? "noopener noreferrer" : undefined}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 16,
+                    padding: "14px 20px",
+                    textDecoration: "none", cursor: row.href ? "pointer" : "default",
+                    transition: "opacity 0.12s ease",
+                  }}
+                  {...(row.href ? pressOpacity : {})}
+                >
+                  {row.icon}
+                  <span style={{ fontSize: 15, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }}>{row.text}</span>
+                </a>
+              </div>
             ))}
           </div>
         )}
@@ -526,19 +564,20 @@ const ListingDetail = () => {
         {descriptionText && (() => {
           const paragraphs = (longDescription || listing.description || "").split("\n").filter(Boolean);
           return (
-            <div style={{ marginBottom: 28 }}>
-              <h2 style={{ fontWeight: 400, fontSize: 18, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>About</h2>
+            <div style={{ marginBottom: 24 }}>
+              <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>About</h2>
               <div style={{
                 ...(!aboutExpanded ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
               }}>
                 {paragraphs.map((paragraph: string, i: number) => (
-                  <p key={i} style={{ fontSize: 14, color: "rgba(18,18,20,0.6)", lineHeight: 1.7, marginBottom: 12 }}>{paragraph}</p>
+                  <p key={i} style={{ fontSize: 16, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.45, marginBottom: 12, fontFamily: font }}>{paragraph}</p>
                 ))}
               </div>
               {paragraphs.join(" ").length > 150 && (
                 <button
                   onClick={() => setAboutExpanded(!aboutExpanded)}
-                  style={{ fontSize: 13, fontWeight: 600, color: "#2b2420", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 4 }}
+                  style={{ fontSize: 15, fontWeight: 500, color: "#020202", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 4, textDecoration: "none", fontFamily: font, transition: "opacity 0.12s ease" }}
+                  {...pressOpacity}
                 >
                   {aboutExpanded ? "Show less" : "Read more"}
                 </button>
@@ -548,63 +587,9 @@ const ListingDetail = () => {
         })()}
 
         {/* Accordion sections */}
-        {accordionSections.length > 0 && (
-          <div style={{ marginBottom: 28 }}>
-            {accordionSections.map((section, i) => {
-              const isOpen = openAccordion === section.key;
-              return (
-                <div
-                  key={section.key}
-                  style={{
-                    background: "rgba(18,18,20,0.03)",
-                    borderLeft: "1px solid rgba(18,18,20,0.06)",
-                    borderRight: "1px solid rgba(18,18,20,0.06)",
-                    borderTop: "1px solid rgba(18,18,20,0.06)",
-                    borderBottom: i === accordionSections.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                    borderRadius: i === 0 ? "16px 16px 0 0" : i === accordionSections.length - 1 ? "0 0 16px 16px" : 0,
-                    overflow: "hidden",
-                  }}
-                >
-                  <button
-                    onClick={() => toggleAccordion(section.key)}
-                    style={{
-                      width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-                      padding: 16, background: "none", border: "none", cursor: "pointer",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      {section.icon}
-                      <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420" }}>{section.title}</span>
-                    </div>
-                    <ChevronDown
-                      size={16} strokeWidth={2} color="rgba(18,18,20,0.3)"
-                      style={{ transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-                    />
-                  </button>
-                  {isOpen && (
-                    <div style={{ borderTop: "1px solid rgba(18,18,20,0.06)", marginTop: 12, padding: "12px 16px 16px 16px" }}>
-                      {section.fields.map((field, fi) => {
-                        const isBool = typeof field.value === "boolean";
-                        return (
-                          <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
-                            <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
-                            {isBool ? (
-                              field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
-                            ) : (
-                              <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420" }}>{field.value}</span>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
+        {accordionSections.length > 0 && renderAccordionCard(accordionSections)}
 
-        {/* Shopping attributes as accordion-style cards */}
+        {/* Shopping attributes */}
         {isListingShopping && (() => {
           const airCon = (listing as any).air_conditioned as boolean | null;
           const paymentMethods = (listing as any).payment_methods as string[] | null;
@@ -637,28 +622,24 @@ const ListingDetail = () => {
           if (items.length === 0) return null;
 
           return (
-            <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, marginBottom: 28 }}>
-              <h3 style={{ fontWeight: 400, fontSize: 18, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 14 }}>Details</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, marginBottom: 24 }}>
+              <h3 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", marginBottom: 12, marginTop: 0 }}>Details</h3>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {items.map((item) => (
-                  <div key={item} style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#2b2420" }}>
-                    <Check size={14} color="#121214" /> <span>{item}</span>
-                  </div>
+                  <span key={item} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
+                    {item}
+                  </span>
                 ))}
               </div>
             </div>
           );
         })()}
 
-        {/* Accommodation accordion sections */}
+        {/* Accommodation sections */}
         {isListingAccommodation && (() => {
           const l = listing as any;
-          type BoolField = { label: string; value: boolean | null };
-          type TextField = { label: string; value: string | null };
-          type AccomSection = { key: string; icon: React.ReactNode; title: string; fields: (BoolField | TextField)[] };
-          const accomSections: AccomSection[] = [];
+          const accomSections: AccSection[] = [];
 
-          // Food & Drink
           const foodFields: BoolField[] = [
             { label: "Restaurant", value: l.has_restaurant },
             { label: "Bar", value: l.has_bar },
@@ -668,50 +649,43 @@ const ListingDetail = () => {
           if (l.has_breakfast && l.breakfast_included != null) {
             foodFields.push({ label: l.breakfast_included ? "Breakfast Included" : "Breakfast Paid", value: true });
           }
-          if (foodFields.length > 0) accomSections.push({ key: "accom-food", icon: <Coffee size={18} strokeWidth={1.5} color="#121214" />, title: "Food & Drink", fields: foodFields });
+          if (foodFields.length > 0) accomSections.push({ key: "accom-food", icon: <Coffee size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Food & Drink", fields: foodFields });
 
-          // Children
           const childFields: BoolField[] = [
             { label: "Child Friendly", value: l.child_friendly },
           ].filter(f => f.value != null) as BoolField[];
-          if (childFields.length > 0) accomSections.push({ key: "accom-children", icon: <Users size={18} strokeWidth={1.5} color="#121214" />, title: "Children", fields: childFields });
+          if (childFields.length > 0) accomSections.push({ key: "accom-children", icon: <Users size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Children", fields: childFields });
 
-          // Transport
           const transportFields: BoolField[] = [
             { label: "Airport Shuttle", value: l.has_airport_shuttle },
             { label: "Free Parking", value: l.has_free_parking },
             { label: "Secure Parking", value: l.has_secure_parking },
           ].filter(f => f.value != null) as BoolField[];
-          if (transportFields.length > 0) accomSections.push({ key: "accom-transport", icon: <Navigation size={18} strokeWidth={1.5} color="#121214" />, title: "Transport", fields: transportFields });
+          if (transportFields.length > 0) accomSections.push({ key: "accom-transport", icon: <Navigation size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Transport", fields: transportFields });
 
-          // Wellness
           const wellnessFields: BoolField[] = [
             { label: "Spa", value: l.has_spa },
             { label: "Fitness Centre", value: l.has_fitness_centre },
             { label: "Swimming Pool", value: l.has_swimming_pool },
           ].filter(f => f.value != null) as BoolField[];
-          if (wellnessFields.length > 0) accomSections.push({ key: "accom-wellness", icon: <Heart size={18} strokeWidth={1.5} color="#121214" />, title: "Wellness", fields: wellnessFields });
+          if (wellnessFields.length > 0) accomSections.push({ key: "accom-wellness", icon: <Heart size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Wellness", fields: wellnessFields });
 
-          // Rooms
           const roomFields: BoolField[] = [
             { label: "Aircon", value: l.has_aircon },
             { label: "Laundry Service", value: l.has_laundry },
           ].filter(f => f.value != null) as BoolField[];
-          if (roomFields.length > 0) accomSections.push({ key: "accom-rooms", icon: <ClipboardList size={18} strokeWidth={1.5} color="#121214" />, title: "Rooms", fields: roomFields });
+          if (roomFields.length > 0) accomSections.push({ key: "accom-rooms", icon: <ClipboardList size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Rooms", fields: roomFields });
 
-          // Internet
           const internetFields: BoolField[] = [
             { label: "Wi-Fi", value: l.has_wifi_accom },
           ].filter(f => f.value != null) as BoolField[];
-          if (internetFields.length > 0) accomSections.push({ key: "accom-internet", icon: <Wifi size={18} strokeWidth={1.5} color="#121214" />, title: "Internet", fields: internetFields });
+          if (internetFields.length > 0) accomSections.push({ key: "accom-internet", icon: <Wifi size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Internet", fields: internetFields });
 
-          // Pets
           const petFields: BoolField[] = [
             { label: "Pet Friendly", value: l.pets_allowed },
           ].filter(f => f.value != null) as BoolField[];
-          if (petFields.length > 0) accomSections.push({ key: "accom-pets", icon: <Heart size={18} strokeWidth={1.5} color="#121214" />, title: "Pets", fields: petFields });
+          if (petFields.length > 0) accomSections.push({ key: "accom-pets", icon: <Heart size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Pets", fields: petFields });
 
-          // General info pills
           const sleeps = l.sleeps as number | null;
           const priceRng = l.price_range as string | null;
           const kmFromTown = l.km_from_town as string | null;
@@ -728,67 +702,13 @@ const ListingDetail = () => {
               {infoItems.length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
                   {infoItems.map((item) => (
-                    <span key={item} style={{ background: "rgba(18,18,20,0.05)", borderRadius: 9999, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>
+                    <span key={item} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
                       {item}
                     </span>
                   ))}
                 </div>
               )}
-              {accomSections.length > 0 && (
-                <div style={{ marginBottom: 28 }}>
-                  {accomSections.map((section, i) => {
-                    const isOpen = openAccordion === section.key;
-                    return (
-                      <div
-                        key={section.key}
-                        style={{
-                          background: "rgba(18,18,20,0.03)",
-                          borderLeft: "1px solid rgba(18,18,20,0.06)",
-                          borderRight: "1px solid rgba(18,18,20,0.06)",
-                          borderTop: "1px solid rgba(18,18,20,0.06)",
-                          borderBottom: i === accomSections.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                          borderRadius: i === 0 ? "16px 16px 0 0" : i === accomSections.length - 1 ? "0 0 16px 16px" : 0,
-                          overflow: "hidden",
-                        }}
-                      >
-                        <button
-                          onClick={() => toggleAccordion(section.key)}
-                          style={{
-                            width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-                            padding: 16, background: "none", border: "none", cursor: "pointer",
-                          }}
-                        >
-                          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                            {section.icon}
-                            <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420" }}>{section.title}</span>
-                          </div>
-                          <ChevronDown
-                            size={16} strokeWidth={2} color="rgba(18,18,20,0.3)"
-                            style={{ transition: "transform 0.2s", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-                          />
-                        </button>
-                        {isOpen && (
-                          <div style={{ borderTop: "1px solid rgba(18,18,20,0.06)", marginTop: 12, padding: "12px 16px 16px 16px" }}>
-                            {section.fields.map((field, fi) => {
-                              const isBool = typeof field.value === "boolean";
-                              return (
-                                <div key={fi} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 0", borderBottom: fi < section.fields.length - 1 ? "1px solid rgba(18,18,20,0.04)" : "none" }}>
-                                  <span style={{ fontSize: 14, color: "rgba(18,18,20,0.5)" }}>{field.label}</span>
-                                  {isBool ? (
-                                    field.value ? <Check size={14} color="#2d8a4e" /> : <X size={14} color="#E24B4A" />
-                                  ) : (
-                                    <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420" }}>{field.value}</span>
-                                  )}
-                                </div>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              {accomSections.length > 0 && renderAccordionCard(accomSections)}
             </>
           );
         })()}
@@ -799,33 +719,37 @@ const ListingDetail = () => {
           const saToday = getSADate();
           const holidayCheck = isSAPublicHoliday(saToday);
           return (
-            <div style={{ marginBottom: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-                <Clock size={18} strokeWidth={1.5} color="#121214" />
-                <h2 style={{ fontWeight: 400, fontSize: 18, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5 }}>Hours</h2>
+            <div style={{ marginBottom: 24 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                <Clock size={24} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />
+                <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", margin: 0 }}>Hours</h2>
               </div>
               {holidayCheck.isHoliday && (
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "8px 12px", background: "#fef3c7", borderRadius: 10, border: "1px solid #fde68a" }}>
-                  <span style={{ fontSize: 13, color: "#92400e" }}>
+                  <span style={{ fontSize: 13, color: "#92400e", fontFamily: font }}>
                     <strong>Public holiday</strong> — Hours might differ
                   </span>
                 </div>
               )}
-              <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden" }}>
                 {DAY_LABELS.map((day, i) => {
                   const key = day.toLowerCase();
-                  const value = openingHours[key] || "";
+                  const value = openingHours![key] || "";
                   const isClosed = !value || value.toLowerCase() === "closed";
+                  const isToday = day === todayLabel;
                   return (
-                    <div
-                      key={day}
-                      style={{
-                        display: "flex", justifyContent: "space-between", padding: "9px 16px",
-                        borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                      }}
-                    >
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>{day}</span>
-                      <span style={{ fontSize: 13, color: isClosed ? "rgba(18,18,20,0.3)" : "rgba(18,18,20,0.5)" }}>{value || "Closed"}</span>
+                    <div key={day}>
+                      {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)" }} />}
+                      <div
+                        style={{
+                          display: "flex", justifyContent: "space-between", alignItems: "center",
+                          padding: "12px 20px",
+                          background: isToday ? "rgba(18,18,20,0.03)" : "transparent",
+                        }}
+                      >
+                        <span style={{ fontSize: 15, fontWeight: 500, color: isToday ? "#020202" : "#2B2420", fontFamily: font }}>{day}</span>
+                        <span style={{ fontSize: 15, fontWeight: 400, color: isClosed ? "rgba(18,18,20,0.35)" : "rgba(18,18,20,0.55)", fontFamily: font }}>{value || "Closed"}</span>
+                      </div>
                     </div>
                   );
                 })}
@@ -834,19 +758,18 @@ const ListingDetail = () => {
           );
         })()}
 
-        {/* Suggest an Edit */}
-        <div style={{ marginTop: 8, marginBottom: 48, display: "flex", justifyContent: "center" }}>
+        {/* Suggest an edit */}
+        <div style={{ marginTop: 8, marginBottom: 36, display: "flex", justifyContent: "center" }}>
           <a
             href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
             style={{
               display: "inline-flex", alignItems: "center", gap: 6,
-              padding: "6px 16px", borderRadius: 9999,
-              fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.45)",
-              textDecoration: "none", cursor: "pointer",
-              letterSpacing: "0.1px",
+              fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.35)",
+              textDecoration: "none", cursor: "pointer", transition: "opacity 0.12s ease", fontFamily: font,
             }}
+            {...pressOpacity}
           >
-            <Pencil size={12} strokeWidth={1.5} color="rgba(18,18,20,0.35)" />
+            <Pencil size={16} strokeWidth={1.8} color="rgba(18,18,20,0.35)" />
             Suggest an edit
           </a>
         </div>
