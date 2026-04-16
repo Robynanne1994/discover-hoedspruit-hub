@@ -535,7 +535,7 @@ const MyAccount = () => {
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="truncate" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 16, fontWeight: 500, color: "#020202", lineHeight: 1.2, margin: 0 }}>
+              <h2 className="truncate" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 16, fontWeight: 500, color: "#020202", lineHeight: 1.2, margin: 0, textTransform: "none" }}>
                 {profile?.display_name || user.email?.split("@")[0]}
               </h2>
               {profile?.bio && (
