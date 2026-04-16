@@ -109,14 +109,14 @@ const HomeHero = () => {
         <div ref={containerRef}>
           <div style={{
             background: "#ffffff",
-            border: "2px solid #121214",
-            borderRadius: 9999,
-            padding: "11px 14px",
+            border: "1px solid rgba(18,18,20,0.1)",
+            borderRadius: 14,
+            padding: "12px 16px",
             display: "flex",
             alignItems: "center",
             gap: 8,
           }}>
-            <Search size={16} strokeWidth={2} color="#121214" style={{ flexShrink: 0 }} />
+            <Search size={20} strokeWidth={2} color="rgba(18,18,20,0.35)" style={{ flexShrink: 0 }} />
             <input
               ref={inputRef}
               value={query}
@@ -128,13 +128,14 @@ const HomeHero = () => {
                 border: "none",
                 outline: "none",
                 background: "transparent",
-                fontSize: 13,
+                fontSize: 15,
                 color: "#2b2420",
                 letterSpacing: 0.1,
                 whiteSpace: "nowrap",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
               }}
+              className="placeholder:text-[rgba(18,18,20,0.35)]"
             />
             {isFetching && <Loader2 size={16} className="animate-spin" color="rgba(18,18,20,0.3)" style={{ flexShrink: 0 }} />}
             <div style={{ borderLeft: "1px solid rgba(18,18,20,0.1)", paddingLeft: 8, flexShrink: 0, display: "flex", alignItems: "center", gap: 5 }}>
