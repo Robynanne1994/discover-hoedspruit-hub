@@ -100,10 +100,7 @@ const AccountSettings = () => {
         </p>
       </div>
 
-      {/* Profile card */}
-      <div style={{ padding: "0 24px", marginBottom: 24 }}>
-        <ProfileCard profile={profile} profileLoading={profileLoading} user={user} />
-      </div>
+
 
       {/* Settings rows */}
       <div>
