@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +17,8 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
+const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
 const settingsRows = [
   { icon: User, label: "Account Info", desc: "Manage email, phone & password" },
   { icon: Bell, label: "Notification Preferences", desc: "Customize notification settings" },
@@ -24,6 +26,18 @@ const settingsRows = [
   { icon: HelpCircle, label: "Help & Support", desc: "FAQ & contact us", href: "/faqs" },
   { icon: FileText, label: "Terms & Policies", desc: "Our terms, privacy policy & more", href: "/terms" },
 ];
+
+const usePress = () => {
+  const [pressed, setPressed] = useState(false);
+  return {
+    pressed,
+    handlers: {
+      onPointerDown: () => setPressed(true),
+      onPointerUp: () => setPressed(false),
+      onPointerLeave: () => setPressed(false),
+    },
+  };
+};
 
 const AccountSettings = () => {
   const { user, signOut, loading } = useAuth();
@@ -48,8 +62,8 @@ const AccountSettings = () => {
 
   if (loading || !user) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ebebeb" }}>
-        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ minHeight: "100vh", background: "#ebebeb", fontFamily: FF }}>
+        <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
             <Skeleton className="h-10 w-48" />
@@ -59,109 +73,166 @@ const AccountSettings = () => {
     );
   }
 
-  const renderRow = (item: typeof settingsRows[0], idx: number) => {
-    const Icon = item.icon;
-    const isLast = idx === settingsRows.length - 1;
-    const inner = (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 14,
-          paddingTop: 16,
-          paddingBottom: 16,
-          borderBottom: isLast ? "none" : "1px solid rgba(18,18,20,0.06)",
-        }}
-      >
-        <Icon style={{ width: 22, height: 22, flexShrink: 0 }} strokeWidth={1.5} color="rgba(18,18,20,0.3)" />
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <span style={{ display: "block", fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.3 }}>{item.label}</span>
-          <span style={{ display: "block", fontSize: 12, color: "rgba(18,18,20,0.35)", marginTop: 2, lineHeight: 1.3 }}>{item.desc}</span>
-        </div>
-        <ChevronRight style={{ width: 16, height: 16, flexShrink: 0 }} strokeWidth={2} color="rgba(18,18,20,0.2)" />
-      </div>
-    );
-
-    if (item.href) {
-      return <Link key={item.label} to={item.href}>{inner}</Link>;
-    }
-    return <button key={item.label} className="w-full text-left">{inner}</button>;
-  };
-
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
         <button
           onClick={() => navigate(-1)}
-          style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
         >
-          <ArrowLeft style={{ width: 18, height: 18 }} strokeWidth={2} color="rgba(18,18,20,0.4)" />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
+          <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Back</span>
         </button>
       </div>
 
-      {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0, fontFamily: "var(--font-heading, 'Helvetica Neue', sans-serif)" }}>
-          ACCOUNT<br />SETTINGS
+      {/* Title */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
+        <h1 style={{ fontSize: 53, fontWeight: 400, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", textTransform: "none", margin: 0, fontFamily: FF }}>
+          Account Settings
         </h1>
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 12 }}>
-        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", margin: 0 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
           Manage your account and preferences
         </p>
       </div>
 
       {/* Profile card */}
-      <div style={{ padding: "0 24px", marginTop: 28 }}>
-        <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, display: "flex", alignItems: "center", gap: 14, boxShadow: "var(--card-shadow)" }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "rgba(18,18,20,0.06)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            {profileLoading ? (
-              <Skeleton className="h-full w-full rounded-full" />
-            ) : profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="Profile" style={{ width: 48, height: 48, objectFit: "cover" }} />
-            ) : (
-              <UserCircle style={{ width: 28, height: 28 }} color="rgba(18,18,20,0.2)" />
-            )}
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 16, fontWeight: 400, color: "#2b2420", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {profileLoading ? <Skeleton className="h-5 w-28" /> : (profile?.display_name || user.email?.split("@")[0])}
-            </div>
-            <div style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              {profileLoading ? <Skeleton className="h-3 w-36" /> : user.email}
-            </div>
-          </div>
-          <Link
-            to="/my-account"
-            style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 16px", border: "1px solid rgba(18,18,20,0.15)", borderRadius: 9999, background: "transparent", flexShrink: 0, textDecoration: "none" }}
-          >
-            <Pencil style={{ width: 14, height: 14 }} color="#121214" />
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#2b2420" }}>Edit</span>
-          </Link>
-        </div>
+      <div style={{ padding: "0 24px", marginBottom: 24 }}>
+        <ProfileCard profile={profile} profileLoading={profileLoading} user={user} />
       </div>
 
       {/* Settings rows */}
-      <div style={{ padding: "0 24px", marginTop: 32 }}>
-        {settingsRows.map((item, idx) => renderRow(item, idx))}
+      <div>
+        {settingsRows.map((item, idx) => (
+          <SettingsRow key={item.label} item={item} isLast={idx === settingsRows.length - 1} />
+        ))}
       </div>
 
       {/* Log Out */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 36 }}>
-        <button
-          onClick={() => { signOut(); navigate("/"); }}
-          style={{ display: "flex", alignItems: "center", gap: 8, padding: "14px 32px", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 9999, background: "transparent", cursor: "pointer" }}
-        >
-          <LogOut style={{ width: 16, height: 16 }} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />
-          <span style={{ fontSize: 14, fontWeight: 600, color: "rgba(18,18,20,0.4)" }}>Log out</span>
-        </button>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 36, marginBottom: 48 }}>
+        <LogOutButton onLogOut={() => { signOut(); navigate("/"); }} />
       </div>
     </div>
   );
 };
+
+function ProfileCard({ profile, profileLoading, user }: { profile: any; profileLoading: boolean; user: any }) {
+  const [pressed, setPressed] = useState(false);
+  return (
+    <div style={{
+      background: "#FFFFFF",
+      border: "1px solid rgba(18,18,20,0.06)",
+      borderRadius: 16,
+      padding: "16px 20px",
+      display: "flex",
+      alignItems: "center",
+    }}>
+      {/* Avatar */}
+      <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "#ebebeb", display: "flex", alignItems: "center", justifyContent: "center", marginRight: 14 }}>
+        {profileLoading ? (
+          <Skeleton className="h-full w-full rounded-full" />
+        ) : profile?.avatar_url ? (
+          <img src={profile.avatar_url} alt="Profile" style={{ width: 48, height: 48, objectFit: "cover" }} />
+        ) : (
+          <UserCircle size={28} strokeWidth={1.8} color="rgba(18,18,20,0.4)" />
+        )}
+      </div>
+      {/* Info */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 16, fontWeight: 500, color: "#020202", lineHeight: 1.3, marginBottom: 2, fontFamily: FF }}>
+          {profileLoading ? <Skeleton className="h-5 w-28" /> : (profile?.display_name || user.email?.split("@")[0])}
+        </div>
+        <div style={{ fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: FF }}>
+          {profileLoading ? <Skeleton className="h-3 w-36" /> : user.email}
+        </div>
+      </div>
+      {/* Edit */}
+      <Link
+        to="/my-account"
+        style={{
+          marginLeft: "auto",
+          display: "flex", alignItems: "center", gap: 6,
+          padding: "8px 14px",
+          border: "1.5px solid rgba(18,18,20,0.12)",
+          borderRadius: 24,
+          background: "transparent",
+          flexShrink: 0,
+          textDecoration: "none",
+          transform: pressed ? "scale(0.97)" : "scale(1)",
+          transition: "transform 0.12s ease",
+        }}
+        onPointerDown={() => setPressed(true)}
+        onPointerUp={() => setPressed(false)}
+        onPointerLeave={() => setPressed(false)}
+      >
+        <Pencil size={16} strokeWidth={1.8} color="#2B2420" />
+        <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Edit</span>
+      </Link>
+    </div>
+  );
+}
+
+function SettingsRow({ item, isLast }: { item: typeof settingsRows[0]; isLast: boolean }) {
+  const [pressed, setPressed] = useState(false);
+  const Icon = item.icon;
+  const inner = (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        padding: "16px 24px",
+        background: "transparent",
+        transform: pressed ? "scale(0.98)" : "scale(1)",
+        transition: "transform 0.15s ease",
+      }}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerLeave={() => setPressed(false)}
+    >
+      <Icon size={24} strokeWidth={1.8} color="rgba(18,18,20,0.3)" style={{ flexShrink: 0, marginRight: 20 }} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <span style={{ display: "block", fontSize: 16, fontWeight: 500, color: "#2B2420", lineHeight: 1.3, fontFamily: FF }}>{item.label}</span>
+        <span style={{ display: "block", fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.4, marginTop: 2, fontFamily: FF }}>{item.desc}</span>
+      </div>
+      <ChevronRight size={20} strokeWidth={1.8} color="rgba(18,18,20,0.2)" style={{ flexShrink: 0, marginLeft: "auto" }} />
+    </div>
+  );
+
+  const divider = !isLast ? (
+    <div style={{ marginLeft: 68, height: 1, background: "rgba(18,18,20,0.08)" }} />
+  ) : null;
+
+  if (item.href) {
+    return <div key={item.label}><Link to={item.href} style={{ textDecoration: "none" }}>{inner}</Link>{divider}</div>;
+  }
+  return <div key={item.label}><button className="w-full text-left" style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}>{inner}</button>{divider}</div>;
+}
+
+function LogOutButton({ onLogOut }: { onLogOut: () => void }) {
+  const [pressed, setPressed] = useState(false);
+  return (
+    <button
+      onClick={onLogOut}
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerLeave={() => setPressed(false)}
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "center",
+        gap: 8, padding: "12px 24px", minHeight: 48,
+        border: "1.5px solid rgba(18,18,20,0.15)",
+        borderRadius: 24, background: "transparent", cursor: "pointer",
+        transform: pressed ? "scale(0.97)" : "scale(1)",
+        transition: "transform 0.12s ease",
+      }}
+    >
+      <LogOut size={20} strokeWidth={1.8} color="#2B2420" />
+      <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Log out</span>
+    </button>
+  );
+}
 
 export default AccountSettings;
