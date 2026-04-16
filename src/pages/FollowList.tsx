@@ -16,47 +16,61 @@ const FollowList = () => {
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
 
   return (
-    <div className="min-h-screen" style={{ background: "#ebebeb", paddingBottom: 100 }}>
-      {/* Header */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center"
-          style={{ gap: 6, background: "none", border: "none", padding: 0, marginBottom: 20 }}
-        >
-          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "#2b2420" }} />
-          <span style={{ fontSize: 14, fontWeight: 500, color: "#2b2420", fontFamily: "var(--font-body)" }}>Back</span>
+    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
+      {/* Back button */}
+      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
+          <ArrowLeft size={18} strokeWidth={2} style={{ color: "rgba(18,18,20,0.4)" }} />
+          <span
+            style={{
+              fontSize: 15,
+              fontWeight: 500,
+              color: "rgba(18,18,20,0.4)",
+              letterSpacing: "0.2px",
+            }}
+          >
+            Back
+          </span>
         </button>
+      </div>
 
-        <h1 style={{
-          fontFamily: "var(--font-heading)",
-          fontWeight: 400,
-          fontSize: 40,
-          lineHeight: 0.95,
-          letterSpacing: "0.01em",
-          color: "#2b2420",
-          textTransform: "uppercase",
-        }}>
+      {/* Heading */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <h1
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontWeight: 400,
+            fontSize: 40,
+            lineHeight: 0.95,
+            letterSpacing: "0.01em",
+            color: "#020202",
+            textTransform: "uppercase",
+            margin: 0,
+          }}
+        >
           {isFollowers ? "FOLLOWERS" : "FOLLOWING"}
         </h1>
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 12, marginBottom: 28 }}>
-        <p style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontStyle: "italic",
-          fontSize: 14,
-          color: "#827b75",
-          letterSpacing: "0.2px",
-          lineHeight: 1.4,
-        }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <p
+          style={{
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontStyle: "italic",
+            fontSize: 14,
+            color: "rgba(18,18,20,0.4)",
+            letterSpacing: "0.2px",
+            lineHeight: 1.4,
+            margin: 0,
+          }}
+        >
           {isFollowers ? "People who follow you" : "People you follow"}
         </p>
       </div>
 
       {/* Content */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, paddingBottom: 40 }}>
         {isLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {Array.from({ length: 5 }).map((_, i) => (
@@ -65,30 +79,57 @@ const FollowList = () => {
                 className="flex items-center"
                 style={{
                   gap: 14,
-                  background: "#f5f0e8",
-                  borderRadius: 16,
                   padding: 16,
-                  boxShadow: "var(--card-shadow)",
+                  borderRadius: 16,
+                  background: "rgba(18,18,20,0.03)",
+                  border: "1px solid rgba(18,18,20,0.06)",
                 }}
               >
                 <Skeleton className="h-12 w-12 rounded-full" />
                 <div className="flex-1">
-                  <Skeleton className="h-4 w-28 mb-1" />
-                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-4 w-28 mb-2 rounded" />
+                  <Skeleton className="h-3 w-20 rounded" />
                 </div>
-                <Skeleton className="h-7 w-20 rounded-full" />
+                <Skeleton className="h-9 w-24 rounded-full" />
               </div>
             ))}
           </div>
         ) : !users?.length ? (
-          <div className="text-center" style={{ paddingTop: 60, paddingBottom: 40 }}>
-            <Users style={{ width: 48, height: 48, color: "rgba(18,18,20,0.12)", margin: "0 auto", marginBottom: 20 }} />
-            <p style={{ fontSize: 16, fontWeight: 600, color: "#2b2420", fontFamily: "var(--font-heading)", marginBottom: 8 }}>
-              {isFollowers ? "No followers yet" : "Not following anyone yet"}
+          <div className="text-center" style={{ paddingTop: 80 }}>
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
+              style={{ background: "rgba(18,18,20,0.04)" }}
+            >
+              <Users size={28} style={{ color: "rgba(18,18,20,0.2)" }} />
+            </div>
+
+            <p
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontWeight: 400,
+                fontSize: 24,
+                color: "#020202",
+                marginBottom: 10,
+                letterSpacing: "0.01em",
+                textTransform: "uppercase",
+              }}
+            >
+              {isFollowers ? "No followers yet" : "Not following anyone"}
             </p>
-            <p style={{ fontSize: 13, color: "#827b75", maxWidth: 240, margin: "0 auto 24px", fontFamily: "var(--font-body)" }}>
+
+            <p
+              style={{
+                fontSize: 13,
+                color: "rgba(18,18,20,0.4)",
+                lineHeight: 1.5,
+                maxWidth: 240,
+                margin: "0 auto 24px",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              }}
+            >
               {isFollowers ? "Share your profile to get followers" : "Discover people in the community"}
             </p>
+
             <Link to="/people">
               <button
                 style={{
@@ -102,11 +143,11 @@ const FollowList = () => {
                   padding: "12px 28px",
                   fontSize: 14,
                   fontWeight: 600,
-                  fontFamily: "var(--font-body)",
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                   cursor: "pointer",
                 }}
               >
-                <UserPlus style={{ width: 16, height: 16, strokeWidth: 2 }} />
+                <UserPlus size={16} strokeWidth={2} />
                 Find Friends
               </button>
             </Link>
@@ -130,11 +171,11 @@ const FollowList = () => {
                     padding: "12px 28px",
                     fontSize: 14,
                     fontWeight: 600,
-                    fontFamily: "var(--font-body)",
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                     cursor: "pointer",
                   }}
                 >
-                  <UserPlus style={{ width: 16, height: 16, strokeWidth: 2 }} />
+                  <UserPlus size={16} strokeWidth={2} />
                   Find Friends
                 </button>
               </Link>
