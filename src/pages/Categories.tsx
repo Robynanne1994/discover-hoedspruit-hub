@@ -143,7 +143,7 @@ const Categories = () => {
       </div>
 
       {/* Category cards */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingLeft: 4, paddingRight: 4 }}>
         {isLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {Array.from({ length: 4 }).map((_, i) => (
