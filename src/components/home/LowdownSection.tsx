@@ -61,7 +61,7 @@ const LowdownSection = () => {
                 <div style={{ width: "100%", height: 100, background: "#f0f0f0", flexShrink: 0 }}>
                   {article.image_url && <img src={article.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                 </div>
-                <div style={{ padding: "10px 12px", flex: 1, display: "flex", flexDirection: "column" }}>
+                <div style={{ padding: "10px 12px", flex: 1, display: "flex", flexDirection: "column", background: "#ffffff" }}>
                   <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: "0.5px" }}>{article.category}</div>
                   <div style={{ fontFamily: "var(--font-heading)", fontSize: 13, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginTop: 3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden", minHeight: "2.4em" }}>{article.title}</div>
                 </div>
