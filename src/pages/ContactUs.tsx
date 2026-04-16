@@ -50,7 +50,7 @@ const ContactUs = () => {
   };
 
   const contactOptions = [
-    { icon: Phone, title: "Call us", subtitle: CONTACT_PHONE, href: `tel:${CONTACT_PHONE.replace(/\s/g, "")}` },
+    { icon: Phone, title: "Phone", subtitle: CONTACT_PHONE, href: `tel:${CONTACT_PHONE.replace(/\s/g, "")}` },
     { icon: Mail, title: "Email us", subtitle: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
     { icon: MessageCircle, title: "Whatsapp", subtitle: "Typically replies in a few hours", href: WHATSAPP, external: true },
     { icon: HelpCircle, title: "Contact Form", subtitle: "Fill in our contact form", action: () => setShowForm((p) => !p) },
