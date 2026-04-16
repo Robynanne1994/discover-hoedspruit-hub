@@ -430,7 +430,6 @@ const MyAccount = () => {
 
   const settingsItems = [
     { icon: Settings, label: "Account Settings", href: "/account-settings" },
-    { icon: Bell, label: "Notifications", href: "/notifications" },
   ];
 
   const getInTouchItems = [
