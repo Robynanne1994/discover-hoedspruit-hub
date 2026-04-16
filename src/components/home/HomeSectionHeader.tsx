@@ -9,7 +9,7 @@ interface HomeSectionHeaderProps {
 const HomeSectionHeader = ({ title, actionLabel, actionHref }: HomeSectionHeaderProps) => {
   return (
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20, marginTop: 18 }}>
-      <h2 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em" }}>
+      <h2 className="font-semibold" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em" }}>
         {title}
       </h2>
       {actionLabel && actionHref && (
