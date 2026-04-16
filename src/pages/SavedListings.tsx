@@ -10,6 +10,8 @@ import { format, parseISO, isFuture, isPast } from "date-fns";
 
 type PrimaryTab = "listings" | "events" | "specials";
 
+const fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
 const SavedListings = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -231,26 +233,26 @@ const SavedListings = () => {
       : `${activeCount} ${activeCount === 1 ? "special" : "specials"} saved`;
 
   const backButton = (
-    <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-      <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-        <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
-        <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
+    <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 8 }}>
+        <ArrowLeft style={{ width: 20, height: 20, strokeWidth: 1.8, color: "#2B2420" }} />
+        <span style={{ fontFamily, fontSize: 15, fontWeight: 500, color: "#2B2420" }}>Back</span>
       </button>
     </div>
   );
 
   if (!loading && !user) {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
+      <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
         {backButton}
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>SAVED</h1>
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
+          <h1 style={{ fontFamily, fontWeight: 400, fontSize: 53, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", textTransform: "none" }}>Saved</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
-          <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Sign in to see saved</h3>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center", maxWidth: 260, margin: "0 auto 24px" }}>Save your favourite places and find them all here</p>
-          <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button></Link>
+          <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
+          <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+          <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Sign in to see your saved items</p>
+          <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium mt-6">Sign In / Create Account</Button></Link>
         </div>
       </div>
     );
@@ -258,27 +260,29 @@ const SavedListings = () => {
 
   if (loading || isLoading || eventsLoading || specialsLoading) {
     return (
-      <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
+      <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-          <Skeleton className="h-10 w-48 mb-4" />
+          <Skeleton className="h-14 w-48 mb-2" />
           <Skeleton className="h-4 w-40 mb-6" />
-          <Skeleton className="h-12 w-full rounded-[14px] mb-5" />
-          <div className="flex gap-2 mb-7">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-9 w-20 rounded-[10px]" />)}</div>
+          <Skeleton className="h-12 w-full rounded-[14px] mb-4" />
+          <div className="flex gap-2 mb-2">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-9 w-20 rounded-[20px]" />)}</div>
+          <div className="flex gap-2 mb-5">{[1, 2].map((i) => <Skeleton key={i} className="h-9 w-24 rounded-[20px]" />)}</div>
           <div className="flex flex-col gap-4">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-[200px] w-full rounded-[16px]" />)}</div>
         </div>
       </div>
     );
   }
 
-  const pillStyle = (active: boolean) => ({
-    background: active ? "#121214" : "rgba(18,18,20,0.04)",
-    border: active ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-    borderRadius: 9999,
-    padding: "9px 18px",
+  const chipStyle = (active: boolean) => ({
+    background: active ? "#020202" : "rgba(18,18,20,0.06)",
+    border: "none",
+    borderRadius: 20,
+    padding: "8px 16px",
     fontSize: 13,
-    fontWeight: active ? 600 : 500,
-    color: active ? "#ffffff" : "rgba(18,18,20,0.5)",
+    fontWeight: 500,
+    color: active ? "#FFFFFF" : "#2B2420",
+    fontFamily,
   } as const);
 
   const listingFilterOptions = ["All", ...listingCategories];
@@ -310,35 +314,37 @@ const SavedListings = () => {
   };
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
+    <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
       {backButton}
 
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>SAVED</h1>
+      {/* Title */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
+        <h1 style={{ fontFamily, fontWeight: 400, fontSize: 53, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", textTransform: "none" }}>Saved</h1>
       </div>
 
+      {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>{subtitleText}</p>
+        <p style={{ fontFamily, fontStyle: "italic", fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)" }}>{subtitleText}</p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-        <div className="flex items-center" style={{ background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "14px 16px", gap: 10 }}>
-          <Search style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+        <div className="flex items-center" style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "12px 16px", gap: 10 }}>
+          <Search style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.35)", flexShrink: 0 }} />
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-transparent outline-none"
-            style={{ fontSize: 14, color: "#2b2420", letterSpacing: "0.2px" }}
+            style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "#2B2420" }}
           />
         </div>
       </div>
 
-      {/* Primary toggle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 20, marginBottom: 16 }}>
-        <div className="flex" style={{ gap: 10 }}>
+      {/* Primary type chips */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+        <div className="flex flex-wrap" style={{ gap: 8 }}>
           {(["listings", "events", "specials"] as const).map((tab) => {
             const active = primaryTab === tab;
             const label = tab === "listings" ? "Listings" : tab === "events" ? "Events" : "Specials";
@@ -346,17 +352,7 @@ const SavedListings = () => {
               <button
                 key={tab}
                 onClick={() => { setPrimaryTab(tab); setSearch(""); }}
-                style={{
-                  flex: 1,
-                  background: active ? "#121214" : "rgba(18,18,20,0.04)",
-                  border: active ? "none" : "1px solid rgba(18,18,20,0.08)",
-                  borderRadius: 9999,
-                  padding: 10,
-                  fontSize: 14,
-                  fontWeight: active ? 700 : 600,
-                  color: active ? "#ffffff" : "rgba(18,18,20,0.5)",
-                  textAlign: "center",
-                }}
+                style={chipStyle(active)}
               >
                 {label}
               </button>
@@ -365,16 +361,16 @@ const SavedListings = () => {
         </div>
       </div>
 
-      {/* Secondary filters */}
+      {/* Secondary category chips */}
       {currentFilterOptions.length > 1 && (
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
-          <div className="flex overflow-x-auto scrollbar-hide" style={{ gap: 8 }}>
+          <div className="flex flex-wrap" style={{ gap: 8 }}>
             {currentFilterOptions.map((filter) => (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter)}
                 className="whitespace-nowrap"
-                style={pillStyle(activeFilter === filter)}
+                style={chipStyle(activeFilter === filter)}
               >
                 {filter}
               </button>
@@ -383,186 +379,200 @@ const SavedListings = () => {
         </div>
       )}
 
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-        {/* Listings view */}
-        {primaryTab === "listings" && (
-          <>
-            {filteredListings.length === 0 && (
-              <div className="text-center" style={{ paddingTop: 60 }}>
-                <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Nothing saved yet</h3>
-                <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>Tap the heart on any listing to save it here</p>
-              </div>
-            )}
-            {filteredListings.length > 0 && (
-              <div className="flex flex-col" style={{ gap: 16 }}>
-                {filteredListings.map((fav: any) => {
-                  const detail = fav.details;
-                  if (!detail) return null;
-                  const rating = detail.google_rating ? Number(detail.google_rating) : null;
-                  const location = detail.location;
-                  return (
-                    <Link key={fav.id} to={`/listing/${fav.item_id}`} className="block group">
-                      <div className="relative overflow-hidden w-full" style={{ borderRadius: 16, height: 200, background: "#f0f0f0" }}>
+      {/* Listings view */}
+      {primaryTab === "listings" && (
+        <>
+          {filteredListings.length === 0 && (
+            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
+              <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
+              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+              <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Tap the heart on any listing to save it here</p>
+            </div>
+          )}
+          {filteredListings.length > 0 && (
+            <div className="flex flex-col">
+              {filteredListings.map((fav: any) => {
+                const detail = fav.details;
+                if (!detail) return null;
+                const rating = detail.google_rating ? Number(detail.google_rating) : null;
+                const location = detail.location;
+                return (
+                  <Link key={fav.id} to={`/listing/${fav.item_id}`} className="block">
+                    <div
+                      className="relative overflow-hidden active:scale-[0.98]"
+                      style={{
+                        borderRadius: 16,
+                        marginLeft: 24,
+                        marginRight: 24,
+                        marginBottom: 16,
+                        transition: "transform 0.15s ease",
+                      }}
+                    >
+                      <div style={{ width: "100%", aspectRatio: "16/10", background: "#f0f0f0", position: "relative" }}>
                         {detail.image_url ? (
-                          <img src={detail.image_url} alt={detail.title} className="w-full h-full object-cover" loading="lazy" />
+                          <img src={detail.image_url} alt={detail.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} loading="lazy" />
                         ) : (
-                          <div className="w-full h-full" style={{ background: "#f0f0f0" }} />
+                          <div style={{ width: "100%", height: "100%", background: "#f0f0f0" }} />
                         )}
-                        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)" }} />
+                        {/* Gradient overlay */}
+                        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.02) 100%)" }} />
+                        {/* Heart button */}
                         <button
                           onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type }); }}
-                          className="absolute flex items-center justify-center"
-                          style={{ top: 12, right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.25)" }}
+                          className="absolute flex items-center justify-center active:scale-[0.85]"
+                          style={{ top: 12, right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)", transition: "transform 0.12s ease" }}
                           aria-label="Remove from saved"
                         >
-                          <Heart style={{ width: 20, height: 20, color: "#ffffff", fill: "#ffffff" }} />
+                          <Heart style={{ width: 18, height: 18, color: "#FFFFFF", fill: "#FFFFFF" }} />
                         </button>
+                        {/* Card text */}
                         <div className="absolute bottom-0 left-0 right-0" style={{ padding: 16 }}>
-                          <h3 className="line-clamp-2" style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}>{detail.title}</h3>
-                          <div className="flex items-center" style={{ gap: 4 }}>
+                          <h3 style={{ fontFamily, fontSize: 18, fontWeight: 500, color: "#FFFFFF", textTransform: "uppercase", lineHeight: 1.2, letterSpacing: "0.01em", marginBottom: 4 }}>{detail.title}</h3>
+                          <div className="flex items-center" style={{ gap: 6 }}>
                             {rating && (
                               <>
-                                <Star style={{ width: 12, height: 12, color: "#E8A83E", fill: "#E8A83E", flexShrink: 0 }} />
-                                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{rating.toFixed(1)}</span>
+                                <Star style={{ width: 14, height: 14, color: "#D4964A", fill: "#D4964A", flexShrink: 0 }} />
+                                <span style={{ fontFamily, fontSize: 13, fontWeight: 600, color: "#FFFFFF" }}>{rating.toFixed(1)}</span>
                               </>
                             )}
-                            {rating && location && <span style={{ fontSize: 13, color: "rgba(255,255,255,0.5)" }}>·</span>}
-                            {location && <span className="truncate" style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{location}</span>}
+                            {rating && location && <span style={{ fontFamily, fontSize: 13, color: "rgba(255,255,255,0.5)" }}>·</span>}
+                            {location && <span style={{ fontFamily, fontSize: 13, fontWeight: 400, color: "rgba(255,255,255,0.65)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{location}</span>}
                           </div>
                         </div>
                       </div>
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        )}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
 
-        {/* Events view */}
-        {primaryTab === "events" && (
-          <>
-            {filteredEvents.length === 0 && (
-              <div className="text-center" style={{ paddingTop: 60 }}>
-                <Calendar style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>No events saved yet</h3>
-                <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>Save events from the events page to keep track of them here</p>
-              </div>
-            )}
-            {filteredEvents.length > 0 && (
-              <div className="flex flex-col">
-                {filteredEvents.map((fav: any, idx: number) => {
-                  const evt = fav.details;
-                  if (!evt) return null;
-                  let dateLabel = "";
-                  let timeLabel = "";
+      {/* Events view */}
+      {primaryTab === "events" && (
+        <>
+          {filteredEvents.length === 0 && (
+            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
+              <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
+              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+              <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save events from the events page to keep track of them here</p>
+            </div>
+          )}
+          {filteredEvents.length > 0 && (
+            <div className="flex flex-col" style={{ paddingLeft: 24, paddingRight: 24 }}>
+              {filteredEvents.map((fav: any, idx: number) => {
+                const evt = fav.details;
+                if (!evt) return null;
+                let dateLabel = "";
+                let timeLabel = "";
+                try {
+                  const d = parseISO(evt.date);
+                  dateLabel = format(d, "d MMM yyyy").toUpperCase();
+                } catch { dateLabel = evt.date || ""; }
+                if (evt.start_time) timeLabel = ` · ${evt.start_time}`;
+
+                return (
+                  <Link
+                    key={fav.id}
+                    to={`/event/${fav.item_id}`}
+                    className="flex items-center active:scale-[0.98]"
+                    style={{
+                      gap: 14,
+                      paddingTop: 14,
+                      paddingBottom: 14,
+                      borderBottom: idx < filteredEvents.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                      transition: "transform 0.15s ease",
+                    }}
+                  >
+                    <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
+                      {evt.image_url ? (
+                        <img src={evt.image_url} alt={evt.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <Calendar style={{ width: 22, height: 22, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)" }} />
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontFamily, fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                        {dateLabel}{timeLabel}
+                      </p>
+                      <p style={{ fontFamily, fontSize: 15, fontWeight: 500, color: "#2B2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {evt.title}
+                      </p>
+                      {evt.location && <p style={{ fontFamily, fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{evt.location}</p>}
+                    </div>
+                    <ChevronRight style={{ width: 16, height: 16, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Specials view */}
+      {primaryTab === "specials" && (
+        <>
+          {filteredSpecials.length === 0 && (
+            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
+              <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
+              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+              <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save specials from the specials page to keep track of them here</p>
+            </div>
+          )}
+          {filteredSpecials.length > 0 && (
+            <div className="flex flex-col" style={{ paddingLeft: 24, paddingRight: 24 }}>
+              {filteredSpecials.map((fav: any, idx: number) => {
+                const sp = fav.details;
+                if (!sp) return null;
+                let validLabel = "Ongoing";
+                if (sp.valid_until) {
                   try {
-                    const d = parseISO(evt.date);
-                    dateLabel = format(d, "d MMM yyyy").toUpperCase();
-                  } catch { dateLabel = evt.date || ""; }
-                  if (evt.start_time) timeLabel = ` · ${evt.start_time}`;
+                    validLabel = `Valid until ${format(new Date(sp.valid_until), "d MMM yyyy")}`;
+                  } catch { validLabel = "Ongoing"; }
+                }
 
-                  return (
-                    <Link
-                      key={fav.id}
-                      to={`/event/${fav.item_id}`}
-                      className="flex items-center"
-                      style={{
-                        gap: 14,
-                        paddingTop: 14,
-                        paddingBottom: 14,
-                        borderBottom: idx < filteredEvents.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                      }}
-                    >
-                      <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
-                        {evt.image_url ? (
-                          <img src={evt.image_url} alt={evt.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                          <div className="flex items-center justify-center w-full h-full">
-                            <Calendar style={{ width: 22, height: 22, color: "rgba(18,18,20,0.2)" }} />
-                          </div>
-                        )}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-                          {dateLabel}{timeLabel}
-                        </p>
-                        <p style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                          {evt.title}
-                        </p>
-                        {evt.location && <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{evt.location}</p>}
-                      </div>
-                      <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        )}
-
-        {/* Specials view */}
-        {primaryTab === "specials" && (
-          <>
-            {filteredSpecials.length === 0 && (
-              <div className="text-center" style={{ paddingTop: 60 }}>
-                <Tag style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>No specials saved yet</h3>
-                <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>Save specials from the specials page to keep track of them here</p>
-              </div>
-            )}
-            {filteredSpecials.length > 0 && (
-              <div className="flex flex-col">
-                {filteredSpecials.map((fav: any, idx: number) => {
-                  const sp = fav.details;
-                  if (!sp) return null;
-                  let validLabel = "Ongoing";
-                  if (sp.valid_until) {
-                    try {
-                      validLabel = `Valid until ${format(new Date(sp.valid_until), "d MMM yyyy")}`;
-                    } catch { validLabel = "Ongoing"; }
-                  }
-
-                  return (
-                    <Link
-                      key={fav.id}
-                      to={`/specials/${fav.item_id}`}
-                      className="flex items-center"
-                      style={{
-                        gap: 14,
-                        paddingTop: 14,
-                        paddingBottom: 14,
-                        borderBottom: idx < filteredSpecials.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                      }}
-                    >
-                      <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, position: "relative" }}>
-                        {sp.image_url ? (
-                          <img src={sp.image_url} alt={sp.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                          <div className="flex items-center justify-center w-full h-full">
-                            <Tag style={{ width: 22, height: 22, color: "rgba(18,18,20,0.2)" }} />
-                          </div>
-                        )}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-                          {sp.deal_label} · {sp.business_name}
-                        </p>
-                        <p style={{ fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                          {sp.title}
-                        </p>
-                        <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{validLabel}</p>
-                      </div>
-                      <ChevronRight style={{ width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
-                    </Link>
-                  );
-                })}
-              </div>
-            )}
-          </>
-        )}
-      </div>
+                return (
+                  <Link
+                    key={fav.id}
+                    to={`/specials/${fav.item_id}`}
+                    className="flex items-center active:scale-[0.98]"
+                    style={{
+                      gap: 14,
+                      paddingTop: 14,
+                      paddingBottom: 14,
+                      borderBottom: idx < filteredSpecials.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
+                      transition: "transform 0.15s ease",
+                    }}
+                  >
+                    <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, position: "relative" }}>
+                      {sp.image_url ? (
+                        <img src={sp.image_url} alt={sp.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <div className="flex items-center justify-center w-full h-full">
+                          <Tag style={{ width: 22, height: 22, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)" }} />
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontFamily, fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
+                        {sp.deal_label} · {sp.business_name}
+                      </p>
+                      <p style={{ fontFamily, fontSize: 15, fontWeight: 500, color: "#2B2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {sp.title}
+                      </p>
+                      <p style={{ fontFamily, fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{validLabel}</p>
+                    </div>
+                    <ChevronRight style={{ width: 16, height: 16, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };
