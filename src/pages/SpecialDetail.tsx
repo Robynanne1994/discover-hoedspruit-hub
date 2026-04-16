@@ -229,7 +229,7 @@ const SpecialDetail = () => {
       {special.description && (
         <section style={{ marginBottom: 28 }}>
           <SectionLabel eyebrow="Overview" title="About This Deal" />
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, margin: "0 24px" }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, margin: "0 4px" }}>
             <p style={{ margin: 0, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.45, fontFamily: font }}>{special.description}</p>
           </div>
         </section>
@@ -239,7 +239,7 @@ const SpecialDetail = () => {
       {detailRows.length > 0 && (
         <section style={{ marginBottom: 28 }}>
           <SectionLabel eyebrow="Deal Info" title="Details" />
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", padding: "4px 0", margin: "0 24px" }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", padding: "4px 0", margin: "0 4px" }}>
             {detailRows.map((row, idx) => (
               <InfoRow key={row.label} icon={row.icon} label={row.label} value={row.value} isLast={idx === detailRows.length - 1} />
             ))}
@@ -251,7 +251,7 @@ const SpecialDetail = () => {
       {contactRows.length > 0 && (
         <section style={{ marginBottom: 28 }}>
           <SectionLabel eyebrow="Reach Out" title="Contact" />
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", padding: "4px 0", margin: "0 24px" }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", padding: "4px 0", margin: "0 4px" }}>
             {contactRows.map((row, idx) => (
               <InfoRow key={row.label} icon={row.icon} label={row.label} value={row.value} isLast={idx === contactRows.length - 1} href={row.href} />
             ))}
@@ -264,7 +264,7 @@ const SpecialDetail = () => {
         <section style={{ marginBottom: 28 }}>
           <SectionLabel eyebrow="Redeem" title="Promo Code" />
           <div
-            style={{ background: "#FFFFFF", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "16px 20px", textAlign: "center", cursor: "pointer", margin: "0 24px" }}
+            style={{ background: "#FFFFFF", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "16px 20px", textAlign: "center", cursor: "pointer", margin: "0 4px" }}
             onClick={() => { navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }}
           >
             <p style={{ fontFamily: font, fontWeight: 400, fontSize: 22, letterSpacing: 3, color: "#2B2420", margin: 0 }}>{special.promo_code}</p>
@@ -277,7 +277,7 @@ const SpecialDetail = () => {
       {special.terms && (
         <section style={{ marginBottom: 28 }}>
           <SectionLabel eyebrow="Fine Print" title="Terms & Conditions" />
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, margin: "0 24px" }}>
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, margin: "0 4px" }}>
             <p style={{ margin: 0, fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.45, fontFamily: font }}>{special.terms}</p>
           </div>
         </section>
