@@ -476,7 +476,7 @@ const MyAccount = () => {
       fontWeight: 500,
       letterSpacing: "0.06em",
       textTransform: "uppercase" as const,
-      color: "rgba(18,18,20,0.55)",
+      color: "#020202",
       lineHeight: 1.3,
       marginTop: 24,
       marginBottom: 8,
