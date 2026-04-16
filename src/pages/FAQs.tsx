@@ -2,8 +2,10 @@ import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, ChevronDown, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { Search, ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+
+const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const SECTION_ORDER = [
   "About Hello Hoedspruit",
@@ -63,40 +65,42 @@ const FAQs = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#ebebeb" }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+        >
+          <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Back</span>
         </button>
       </div>
 
-      {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>
-          HOW CAN WE<br />HELP?
+      {/* Title */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
+        <h1 style={{ fontSize: 53, fontWeight: 400, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", textTransform: "none", margin: 0, fontFamily: FF }}>
+          How Can We Help?
         </h1>
       </div>
 
       {/* Subtitle */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
+        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
           Find answers to the most common questions about Hello Hoedspruit
         </p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <div className="flex items-center" style={{ background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.08)", borderRadius: 9999, padding: "14px 16px", gap: 10 }}>
-          <Search style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <div style={{ display: "flex", alignItems: "center", background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "12px 16px", gap: 10 }}>
+          <Search size={20} strokeWidth={1.8} color="rgba(18,18,20,0.35)" style={{ flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search FAQs..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent outline-none"
-            style={{ fontSize: 14, color: "#2b2420", letterSpacing: "0.2px" }}
+            style={{ flex: 1, background: "transparent", outline: "none", border: "none", fontSize: 15, fontWeight: 400, color: "#2b2420", fontFamily: FF }}
           />
         </div>
       </div>
@@ -105,8 +109,8 @@ const FAQs = () => {
       {isLoading && (
         <div style={{ paddingLeft: 24, paddingRight: 24 }}>
           {[1, 2, 3].map((i) => (
-            <div key={i} style={{ marginBottom: 28 }}>
-              <Skeleton className="h-3 w-32 mb-3.5" />
+            <div key={i} style={{ marginBottom: 24 }}>
+              <Skeleton className="h-3 w-32 mb-3" />
               <Skeleton className="h-40 w-full rounded-[16px]" />
             </div>
           ))}
@@ -115,41 +119,46 @@ const FAQs = () => {
 
       {/* No results */}
       {!isLoading && filteredSections.length === 0 && (
-        <div className="text-center" style={{ paddingTop: 48 }}>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)" }}>No matching questions found.</p>
+        <div style={{ textAlign: "center", paddingTop: 48 }}>
+          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", fontFamily: FF }}>No matching questions found.</p>
         </div>
       )}
 
       {/* FAQ sections */}
       {!isLoading && filteredSections.map((section) => (
-        <div key={section.title} style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-          <h3 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+        <div key={section.title} style={{ paddingLeft: 24, paddingRight: 24 }}>
+          {/* Section overline */}
+          <h3 style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginTop: 8, marginBottom: 12, fontFamily: FF }}>
             {section.title}
           </h3>
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+          {/* Card */}
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: "4px 0", overflow: "hidden", marginBottom: 16 }}>
             {section.items.map((item, i) => {
               const isOpen = openItem === item.id;
               return (
-                <div key={item.id} style={{ borderBottom: i < section.items.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none" }}>
+                <div key={item.id}>
+                  {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)" }} />}
                   <button
                     onClick={() => toggleItem(item.id)}
-                    className="w-full flex items-center justify-between text-left"
-                    style={{ padding: 16 }}
+                    style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left", padding: "16px 20px", background: "none", border: "none", cursor: "pointer" }}
                   >
-                    <span style={{ fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.3, flex: 1, paddingRight: 12 }}>
+                    <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", lineHeight: 1.35, flex: 1, paddingRight: 12, fontFamily: FF }}>
                       {item.question}
                     </span>
                     <ChevronDown
+                      size={20}
+                      strokeWidth={1.8}
+                      color="rgba(18,18,20,0.25)"
                       style={{
-                        width: 16, height: 16, strokeWidth: 2, color: "rgba(18,18,20,0.25)", flexShrink: 0,
+                        flexShrink: 0,
                         transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
                         transition: "transform 0.2s ease",
                       }}
                     />
                   </button>
                   {isOpen && (
-                    <div style={{ padding: "0 16px 16px 16px", marginTop: -6 }}>
-                      <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, marginTop: 10 }}>
+                    <div style={{ padding: "0 20px 16px 20px" }}>
+                      <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.5, margin: 0, fontFamily: FF }}>
                         {item.answer}
                       </p>
                     </div>
@@ -163,24 +172,25 @@ const FAQs = () => {
 
       {/* CTA card */}
       {!isLoading && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
-          <div style={{ background: "#121214", borderRadius: 16, padding: "32px 24px", position: "relative", overflow: "hidden" }}>
-            <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
-            <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 16, marginBottom: 36 }}>
+          <div style={{ background: "#1A1A1A", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden" }}>
+            <div style={{ position: "absolute", top: -20, right: -20, width: 160, height: 160, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.08)" }} />
             <div style={{ position: "relative", zIndex: 1 }}>
-              <h3 style={{ fontWeight: 400, fontSize: 20, color: "#ffffff", textTransform: "uppercase", letterSpacing: "0.3px", lineHeight: 1.1, marginBottom: 10 }}>
-                STILL HAVE A QUESTION?
+              <h3 style={{ fontSize: 22, fontWeight: 400, color: "#FFFFFF", textTransform: "uppercase", lineHeight: 1.15, letterSpacing: "0.01em", marginBottom: 8, margin: 0, marginBlockEnd: 8, fontFamily: FF }}>
+                Still Have a Question?
               </h3>
-              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22 }}>
+              <p style={{ fontSize: 14, fontWeight: 400, lineHeight: 1.4, color: "rgba(255,255,255,0.55)", fontStyle: "italic", marginBottom: 20, margin: 0, marginBlockEnd: 20, fontFamily: FF }}>
                 We're happy to help. Get in touch and we'll get back to you as soon as we can.
               </p>
               <Link
                 to="/contact"
-                className="inline-flex items-center"
-                style={{ background: "#ebebeb", borderRadius: 9999, padding: "12px 22px", gap: 8 }}
+                style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#FFFFFF", color: "#1A1A1A", borderRadius: 24, padding: "12px 20px", textDecoration: "none", fontSize: 15, fontWeight: 600, fontFamily: FF, transition: "transform 0.12s ease, opacity 0.12s ease" }}
+                onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
+                onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
               >
-                <span style={{ fontSize: 14, fontWeight: 700, color: "#2b2420", letterSpacing: "0.3px" }}>Contact Us</span>
-                <ArrowUpRight style={{ width: 14, height: 14, color: "#2b2420", strokeWidth: 2.5 }} />
+                Contact Us
+                <ArrowRight size={16} strokeWidth={1.8} color="#1A1A1A" />
               </Link>
             </div>
           </div>
