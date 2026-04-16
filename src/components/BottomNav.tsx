@@ -16,20 +16,20 @@ const BottomNav = () => {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
       style={{
-        background: "#48484a",
-        borderRadius: "16px 16px 0 0",
-        height: 74,
-        padding: "0 20px 8px 20px",
+        background: "#FFFFFF",
+        height: 84,
+        paddingBottom: 34,
+        boxShadow: "0 -1px 0 rgba(18,18,20,0.06)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: 50 }}>
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
               ? location.pathname === "/"
               : location.pathname.startsWith(item.href);
           const Icon = item.icon;
-          const color = isActive ? "#ffffff" : "rgba(255,255,255,0.4)";
+          const inactiveColor = "rgba(18,18,20,0.35)";
 
           return (
             <Link
@@ -37,14 +37,33 @@ const BottomNav = () => {
               to={item.href}
               style={{ flex: 1, display: "flex", justifyContent: "center", textDecoration: "none" }}
             >
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
                 <Icon
-                  size={22}
-                  color={color}
-                  strokeWidth={isActive ? 2 : 1.5}
-                  fill={isActive && item.icon === Heart ? color : "none"}
+                  size={28}
+                  strokeWidth={1.8}
+                  color={isActive ? "#020202" : inactiveColor}
+                  fill={isActive && item.icon === Heart ? "#020202" : "none"}
                 />
-                <span style={{ fontFamily: "var(--font-heading)", fontSize: 10, fontWeight: 500, color }}>{item.label}</span>
+                {isActive ? (
+                  <span style={{
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    fontSize: 11,
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                    color: "#FFFFFF",
+                    background: "#020202",
+                    borderRadius: 16,
+                    padding: "6px 14px",
+                  }}>{item.label}</span>
+                ) : (
+                  <span style={{
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    fontSize: 11,
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                    color: inactiveColor,
+                  }}>{item.label}</span>
+                )}
               </div>
             </Link>
           );

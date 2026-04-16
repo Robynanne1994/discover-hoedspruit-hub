@@ -93,30 +93,46 @@ const HomeHero = () => {
   };
 
   const showDropdown = focused && query.trim().length > 0;
+  const WeatherIcon = getWeatherIcon(weatherCode);
 
   return (
     <>
       {/* Hero area */}
-      <div style={{ background: "#f5f0e8", padding: "48px 14px 28px" }}>
-        <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 44, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", marginBottom: 12 }}>
-          HELLO<br />HOEDSPRUIT
+      <div style={{ padding: "16px 24px 0" }}>
+        <h1 style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontWeight: 400,
+          fontSize: 53,
+          lineHeight: 1,
+          letterSpacing: "0.01em",
+          color: "#020202",
+          marginBottom: 8,
+        }}>
+          Hello Hoedspruit
         </h1>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginBottom: 20 }}>
+        <p style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontSize: 15,
+          fontWeight: 400,
+          color: "rgba(18,18,20,0.55)",
+          lineHeight: 1.35,
+          marginBottom: 24,
+        }}>
           Your local guide to the bushveld
         </p>
 
         {/* Search bar */}
         <div ref={containerRef}>
           <div style={{
-            background: "#ffffff",
-            border: "2px solid #121214",
-            borderRadius: 9999,
-            padding: "11px 14px",
+            background: "#FFFFFF",
+            border: "1px solid rgba(18,18,20,0.1)",
+            borderRadius: 14,
+            padding: "12px 16px",
             display: "flex",
             alignItems: "center",
-            gap: 8,
+            gap: 10,
           }}>
-            <Search size={16} strokeWidth={2} color="#121214" style={{ flexShrink: 0 }} />
+            <Search size={20} strokeWidth={1.8} color="rgba(18,18,20,0.35)" style={{ flexShrink: 0 }} />
             <input
               ref={inputRef}
               value={query}
@@ -128,66 +144,48 @@ const HomeHero = () => {
                 border: "none",
                 outline: "none",
                 background: "transparent",
-                fontSize: 13,
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontSize: 15,
                 color: "#2b2420",
-                letterSpacing: 0.1,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
+                letterSpacing: "0.01em",
               }}
             />
-            {isFetching && <Loader2 size={16} className="animate-spin" color="rgba(18,18,20,0.3)" style={{ flexShrink: 0 }} />}
-            <div style={{ borderLeft: "1px solid rgba(18,18,20,0.1)", paddingLeft: 8, flexShrink: 0, display: "flex", alignItems: "center", gap: 5 }}>
-              {(() => { const WeatherIcon = getWeatherIcon(weatherCode); return <WeatherIcon size={16} strokeWidth={1.5} color="rgba(18,18,20,0.4)" />; })()}
-              <span style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.5)" }}>
+            {isFetching && <Loader2 size={18} className="animate-spin" color="rgba(18,18,20,0.3)" style={{ flexShrink: 0 }} />}
+            <div style={{ borderLeft: "1px solid rgba(18,18,20,0.1)", paddingLeft: 10, flexShrink: 0, display: "flex", alignItems: "center", gap: 5 }}>
+              <WeatherIcon size={18} strokeWidth={1.5} color="rgba(18,18,20,0.35)" />
+              <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, fontWeight: 500, color: "rgba(18,18,20,0.55)" }}>
                 {temp !== null ? `${temp}°C` : "—"}
               </span>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Category pills */}
-      <div style={{ paddingTop: 18, paddingLeft: 14, overflowX: "auto" }} className="scrollbar-hide">
-        <div style={{ display: "flex", gap: 8 }}>
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <Link
-                key={cat.label}
-                to={cat.href}
-                className="group active:bg-[#121214]"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  padding: "7px 14px 7px 8px",
-                  background: "rgba(18,18,20,0.05)",
-                  border: "none",
-                  borderRadius: 9999,
-                  whiteSpace: "nowrap",
-                  textDecoration: "none",
-                }}
-              >
-                <span
-                  className="group-active:bg-[rgba(255,255,255,0.15)]"
+        {/* Category pills */}
+        <div style={{ marginTop: 16, marginBottom: 36, marginLeft: -24, marginRight: -24, paddingLeft: 24, overflowX: "auto" }} className="scrollbar-hide">
+          <div style={{ display: "flex", gap: 8 }}>
+            {categories.map((cat) => {
+              const Icon = cat.icon;
+              return (
+                <Link
+                  key={cat.label}
+                  to={cat.href}
                   style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: "50%",
-                    background: "rgba(18,18,20,0.08)",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
+                    gap: 6,
+                    padding: "6px 14px",
+                    background: "rgba(18,18,20,0.06)",
+                    borderRadius: 20,
+                    whiteSpace: "nowrap",
+                    textDecoration: "none",
                   }}
                 >
-                  <Icon size={11} strokeWidth={2} className="group-active:text-white" color="rgba(18,18,20,0.5)" />
-                </span>
-                <span className="group-active:text-white" style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)" }}>{cat.label}</span>
-              </Link>
-            );
-          })}
+                  <Icon size={14} strokeWidth={1.8} color="#2B2420" />
+                  <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 13, fontWeight: 500, color: "#2B2420" }}>{cat.label}</span>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -198,20 +196,20 @@ const HomeHero = () => {
           className="fixed left-0 right-0 z-[100] px-6"
           style={{ top: containerRef.current ? containerRef.current.getBoundingClientRect().bottom + 8 : 200 }}
         >
-          <div style={{ background: "#ffffff", borderRadius: 16, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto", boxShadow: "var(--card-shadow)" }}>
+          <div style={{ background: "#ffffff", borderRadius: 16, border: "1px solid rgba(18,18,20,0.08)", overflow: "hidden", maxHeight: "60vh", overflowY: "auto" }}>
             {!isFetching && !hasResults && (
-              <div style={{ padding: "32px 16px", textAlign: "center", fontSize: 13, color: "rgba(18,18,20,0.4)" }}>
+              <div style={{ padding: "32px 16px", textAlign: "center", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, color: "rgba(18,18,20,0.4)" }}>
                 No results for "{query}"
               </div>
             )}
 
             {results?.categories && results.categories.length > 0 && (
               <div style={{ padding: 8 }}>
-                <p style={{ padding: "6px 8px", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Categories</p>
+                <p style={{ padding: "6px 8px", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Categories</p>
                 {results.categories.map((cat) => (
                   <button key={cat.id} onClick={() => goTo(`/category/${cat.id}`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
                     <FolderOpen size={16} color="rgba(18,18,20,0.3)" />
-                    <span style={{ fontSize: 13, color: "#2b2420" }}>{cat.title}</span>
+                    <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, color: "#2b2420" }}>{cat.title}</span>
                   </button>
                 ))}
               </div>
@@ -219,13 +217,13 @@ const HomeHero = () => {
 
             {results?.listings && results.listings.length > 0 && (
               <div style={{ padding: 8 }}>
-                <p style={{ padding: "6px 8px", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Listings</p>
+                <p style={{ padding: "6px 8px", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Listings</p>
                 {results.listings.map((listing) => (
                   <button key={listing.id} onClick={() => goTo(`/listing/${listing.id}`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
                     <MapPin size={16} color="rgba(18,18,20,0.3)" />
                     <div>
-                      <span style={{ fontSize: 13, color: "#2b2420", display: "block" }}>{listing.title}</span>
-                      {listing.location && <span style={{ fontSize: 11, color: "rgba(18,18,20,0.35)", display: "block" }}>{listing.location}</span>}
+                      <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, color: "#2b2420", display: "block" }}>{listing.title}</span>
+                      {listing.location && <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "rgba(18,18,20,0.35)", display: "block" }}>{listing.location}</span>}
                     </div>
                   </button>
                 ))}
@@ -234,13 +232,13 @@ const HomeHero = () => {
 
             {results?.events && results.events.length > 0 && (
               <div style={{ padding: 8 }}>
-                <p style={{ padding: "6px 8px", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Events</p>
+                <p style={{ padding: "6px 8px", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 10, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 2 }}>Events</p>
                 {results.events.map((event) => (
                   <button key={event.id} onClick={() => goTo(`/events`)} style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "10px 12px", borderRadius: 8, border: "none", background: "transparent", cursor: "pointer" }}>
                     <CalendarDays size={16} color="rgba(18,18,20,0.3)" />
                     <div>
-                      <span style={{ fontSize: 13, color: "#2b2420", display: "block" }}>{event.title}</span>
-                      {event.location && <span style={{ fontSize: 11, color: "rgba(18,18,20,0.35)", display: "block" }}>{event.location}</span>}
+                      <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, color: "#2b2420", display: "block" }}>{event.title}</span>
+                      {event.location && <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "rgba(18,18,20,0.35)", display: "block" }}>{event.location}</span>}
                     </div>
                   </button>
                 ))}

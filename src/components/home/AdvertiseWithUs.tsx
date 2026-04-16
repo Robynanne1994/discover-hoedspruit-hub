@@ -5,86 +5,67 @@ const AdvertiseWithUs = () => {
   const navigate = useNavigate();
 
   return (
-    <section style={{ padding: "36px 4px 40px" }}>
+    <section style={{ padding: "48px 24px 0" }}>
       <div style={{
-        background: "#000000",
+        background: "#F5F0E8",
         borderRadius: 16,
-        padding: "28px 22px 26px",
+        padding: 24,
         position: "relative",
-        overflow: "hidden",
       }}>
-        {/* Top row: tagline + arrow */}
-        <div style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          marginBottom: 32,
-        }}>
-          <p style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: 14,
-            fontWeight: 400,
-            color: "#737373",
-            lineHeight: 1.4,
-            maxWidth: "70%",
-            margin: 0,
-          }}>
-            If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
-          </p>
-          <button
-            onClick={() => navigate("/contact")}
-            style={{
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.15)",
-              borderRadius: 8,
-              width: 36,
-              height: 36,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              flexShrink: 0,
-            }}
-          >
-            <ArrowUpRight size={16} color="#ffffff" strokeWidth={2} />
-          </button>
-        </div>
+        {/* Arrow button */}
+        <button
+          onClick={() => navigate("/contact")}
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            background: "rgba(18,18,20,0.06)",
+            border: "none",
+            borderRadius: "50%",
+            width: 44,
+            height: 44,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <ArrowUpRight size={20} color="rgba(18,18,20,0.3)" strokeWidth={1.8} />
+        </button>
 
-        {/* Bottom: Featured + two large titles */}
-        <div>
+        <p style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontSize: 16,
+          fontWeight: 400,
+          color: "#2B2420",
+          lineHeight: 1.4,
+          maxWidth: "75%",
+          marginBottom: 24,
+        }}>
+          If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
+        </p>
+
+        <div style={{ display: "flex", gap: 24 }}>
           <div style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: 11,
-            fontWeight: 400,
-            color: "#737373",
-            marginBottom: 8,
+            fontSize: 36,
+            fontWeight: 700,
+            color: "#D4654A",
+            lineHeight: 1.05,
+            letterSpacing: "-0.02em",
           }}>
-            Featured
+            Get<br />Listed
           </div>
           <div style={{
-            display: "flex",
-            gap: 24,
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 36,
+            fontWeight: 700,
+            color: "#D4654A",
+            opacity: 0.5,
+            lineHeight: 1.05,
+            letterSpacing: "-0.02em",
           }}>
-            <div style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 32,
-              fontWeight: 700,
-              color: "#ffffff",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-            }}>
-              Get<br />Listed
-            </div>
-            <div style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 32,
-              fontWeight: 700,
-              color: "#737373",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-            }}>
-              Reach<br />More
-            </div>
+            Reach<br />More
           </div>
         </div>
       </div>

@@ -10,16 +10,18 @@ import AdvertiseWithUs from "@/components/home/AdvertiseWithUs";
 
 const Index = () => {
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 80 }}>
-      <HomeHero />
-      <WhatsOnToday />
-      <SpecialsSection />
-      <EatSection />
-      <StaySection />
-      <ShopSection />
-      <DoSection />
-      <LowdownSection />
-      <AdvertiseWithUs />
+    <div style={{ minHeight: "100dvh", background: "#ebebeb", display: "flex", flexDirection: "column", overflow: "hidden", paddingBottom: 84 }}>
+      <div style={{ flex: 1, overflowY: "auto" }}>
+        <HomeHero />
+        <WhatsOnToday />
+        <SpecialsSection />
+        <EatSection />
+        <StaySection />
+        <ShopSection />
+        <DoSection />
+        <LowdownSection />
+        <AdvertiseWithUs />
+      </div>
     </div>
   );
 };
