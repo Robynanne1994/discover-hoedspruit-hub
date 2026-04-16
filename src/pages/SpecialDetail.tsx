@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import {
-  ChevronLeft,
+  ArrowLeft,
   Store,
   Calendar,
   Tag,
@@ -17,6 +17,8 @@ import {
   Ticket,
 } from "lucide-react";
 import { toast } from "sonner";
+
+const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -50,21 +52,21 @@ const SpecialDetail = () => {
   };
 
   const BackButton = () => (
-    <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
-      <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
-        <ChevronLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.45)" }} />
-        <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.45)", letterSpacing: "0.2px" }}>Back</span>
+    <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+        <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+        <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
       </button>
     </div>
   );
 
   if (isLoading) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
+      <div style={{ background: "#EBEBEB", minHeight: "100dvh", display: "flex", flexDirection: "column", paddingBottom: 84, fontFamily: font }}>
         <BackButton />
         <div className="flex flex-col items-center justify-center" style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
           <div className="animate-pulse" style={{ width: 48, height: 48, borderRadius: 9999, background: "rgba(18,18,20,0.06)", marginBottom: 14 }} />
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)" }}>Loading special...</p>
+          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", fontFamily: font }}>Loading special...</p>
         </div>
       </div>
     );
@@ -72,11 +74,11 @@ const SpecialDetail = () => {
 
   if (!special) {
     return (
-      <div className="min-h-screen pb-24" style={{ background: "#ebebeb" }}>
+      <div style={{ background: "#EBEBEB", minHeight: "100dvh", display: "flex", flexDirection: "column", paddingBottom: 84, fontFamily: font }}>
         <BackButton />
         <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 80, textAlign: "center" }}>
-          <p style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: 22, color: "#2b2420", marginBottom: 8 }}>Special not found</p>
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.45)", lineHeight: 1.5 }}>This special may have ended or been removed.</p>
+          <p style={{ fontFamily: font, fontWeight: 400, fontSize: 20, color: "#020202", textTransform: "uppercase", marginBottom: 8 }}>Special not found</p>
+          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", lineHeight: 1.5, fontFamily: font }}>This special may have ended or been removed.</p>
         </div>
       </div>
     );
@@ -111,97 +113,128 @@ const SpecialDetail = () => {
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
-    <div style={{ marginBottom: 14 }}>
-      <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 2.2, marginBottom: 6 }}>{eyebrow}</p>
-      <h2 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 20, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0 }}>{title}</h2>
+    <div>
+      <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, margin: 0, marginBottom: 4, paddingLeft: 24, fontFamily: font }}>{eyebrow}</p>
+      <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, lineHeight: 1.15, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0, marginBottom: 12, paddingLeft: 24 }}>{title}</h2>
     </div>
   );
 
   const InfoRow = ({ icon: Icon, label, value, isLast, href }: { icon: any; label: string; value: string; isLast?: boolean; href?: string }) => {
-    const Wrapper = href ? "a" : "div";
-    const wrapperProps = href ? { href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
-    return (
-      <Wrapper
-        {...wrapperProps}
-        className={href ? "transition-colors hover:bg-[rgba(18,18,20,0.02)]" : ""}
-        style={{ display: "flex", alignItems: "center", gap: 14, padding: "18px 18px", borderBottom: isLast ? "none" : "1px solid rgba(18,18,20,0.06)", textDecoration: "none" }}
-      >
-        <div style={{ width: 34, height: 34, borderRadius: 16, background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          <Icon style={{ width: 16, height: 16, color: "rgba(18,18,20,0.42)" }} strokeWidth={1.8} />
+    const content = (
+      <>
+        <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.06)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginRight: 16 }}>
+          <Icon size={24} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{ fontSize: 12, color: "rgba(18,18,20,0.38)", margin: 0, marginBottom: 4, lineHeight: 1.2 }}>{label}</p>
-          <p style={{ fontSize: 15, fontWeight: 500, color: "#2b2420", lineHeight: 1.4, margin: 0, wordBreak: "break-word" }}>{value}</p>
+          <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.02em", margin: 0, marginBottom: 2, fontFamily: font }}>{label}</p>
+          <p style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>{value}</p>
         </div>
-      </Wrapper>
+      </>
+    );
+
+    const rowStyle: React.CSSProperties = {
+      display: "flex",
+      alignItems: "center",
+      padding: "14px 20px",
+      textDecoration: "none",
+    };
+
+    const dividerStyle: React.CSSProperties = isLast ? {} : {
+      borderBottom: "1px solid rgba(18,18,20,0.08)",
+      marginLeft: 60,
+    };
+
+    if (href) {
+      return (
+        <div>
+          <a
+            href={href}
+            target={href.startsWith("tel:") ? undefined : "_blank"}
+            rel="noopener noreferrer"
+            className="active:opacity-60"
+            style={{ ...rowStyle, transition: "opacity 0.12s ease" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {content}
+          </a>
+          {!isLast && <div style={dividerStyle} />}
+        </div>
+      );
+    }
+
+    return (
+      <div>
+        <div style={rowStyle}>{content}</div>
+        {!isLast && <div style={dividerStyle} />}
+      </div>
     );
   };
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "#ebebeb" }}>
+    <div style={{ background: "#EBEBEB", minHeight: "100dvh", display: "flex", flexDirection: "column", overflow: "auto", paddingBottom: 84, fontFamily: font }}>
       <BackButton />
 
       {/* Hero Image */}
       {special.image_url && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 22 }}>
-          <div style={{ width: "100%", overflow: "hidden", borderRadius: 16, background: "#f0f0f0", aspectRatio: "4 / 3" }}>
-            <img src={special.image_url} alt={special.title} className="w-full h-full object-cover" />
-          </div>
+        <div style={{ marginLeft: 24, marginRight: 24, marginBottom: 12, borderRadius: 16, overflow: "hidden" }}>
+          <img src={special.image_url} alt={special.title} style={{ width: "100%", aspectRatio: "16/10", objectFit: "cover", objectPosition: "center", display: "block" }} />
         </div>
       )}
 
-      {/* Title */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: 1.5, background: "#121214", borderRadius: 8, padding: "3px 10px" }}>
-            {special.deal_label}
-          </span>
-        </div>
-
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 34, lineHeight: 0.98, letterSpacing: "0.01em", color: "#2b2420", margin: 0, textTransform: "uppercase" }}>
-          {special.title}
-        </h1>
-
-        <p style={{ marginTop: 14, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.42)", lineHeight: 1.45, letterSpacing: "0.15px" }}>
-          {special.business_name} · {validityText}
-        </p>
+      {/* Offer tag */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+        <span style={{ display: "inline-block", background: "#020202", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 500, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: font }}>
+          {special.deal_label}
+        </span>
       </div>
 
+      {/* Title */}
+      <h1 style={{ fontFamily: font, fontWeight: 400, fontSize: 34, lineHeight: 1.1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0, marginBottom: 6, paddingLeft: 24, paddingRight: 24 }}>
+        {special.title}
+      </h1>
+
+      {/* Meta line */}
+      <p style={{ fontFamily: font, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", margin: 0, marginBottom: 20, paddingLeft: 24, paddingRight: 24 }}>
+        {special.business_name} · {validityText}
+      </p>
+
       {/* Action buttons */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28, display: "flex", gap: 10 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28, display: "flex", gap: 12 }}>
         <button
           onClick={handleShare}
-          style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 9999, background: "transparent", cursor: "pointer" }}
+          className="active:scale-[0.97] active:opacity-85"
+          style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24, background: "transparent", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease" }}
         >
-          <Share2 style={{ width: 16, height: 16, color: "rgba(18,18,20,0.5)" }} strokeWidth={1.8} />
-          <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420" }}>Share</span>
+          <Share2 size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
+          <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Share</span>
         </button>
         {special.business_id && (
           <Link
             to={`/listing/${special.business_id}`}
-            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "14px 0", background: "#121214", borderRadius: 9999, textDecoration: "none" }}
+            className="active:scale-[0.97] active:opacity-85"
+            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, background: "#020202", borderRadius: 24, textDecoration: "none", border: "none", transition: "transform 0.12s ease, opacity 0.12s ease" }}
           >
-            <Store style={{ width: 16, height: 16, color: "#FFFFFF" }} strokeWidth={1.8} />
-            <span style={{ fontSize: 14, fontWeight: 600, color: "#FFFFFF" }}>View Business</span>
+            <Store size={20} strokeWidth={1.8} style={{ color: "#FFFFFF" }} />
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF", fontFamily: font }}>View Business</span>
           </Link>
         )}
       </div>
 
       {/* Description */}
       {special.description && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
-          <SectionLabel eyebrow="Overview" title="About this deal" />
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, boxShadow: "var(--card-shadow)" }}>
-            <p style={{ margin: 0, fontSize: 15, color: "rgba(18,18,20,0.58)", lineHeight: 1.85, letterSpacing: "0.1px" }}>{special.description}</p>
+        <section style={{ marginBottom: 28 }}>
+          <SectionLabel eyebrow="Overview" title="About This Deal" />
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, margin: "0 24px" }}>
+            <p style={{ margin: 0, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.45, fontFamily: font }}>{special.description}</p>
           </div>
         </section>
       )}
 
       {/* Details */}
       {detailRows.length > 0 && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
-          <SectionLabel eyebrow="Deal info" title="Details" />
-          <div style={{ background: "#ebebeb", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+        <section style={{ marginBottom: 28 }}>
+          <SectionLabel eyebrow="Deal Info" title="Details" />
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", padding: "4px 0", margin: "0 24px" }}>
             {detailRows.map((row, idx) => (
               <InfoRow key={row.label} icon={row.icon} label={row.label} value={row.value} isLast={idx === detailRows.length - 1} />
             ))}
@@ -211,9 +244,9 @@ const SpecialDetail = () => {
 
       {/* Contact */}
       {contactRows.length > 0 && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
-          <SectionLabel eyebrow="Reach out" title="Contact" />
-          <div style={{ background: "#ebebeb", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+        <section style={{ marginBottom: 28 }}>
+          <SectionLabel eyebrow="Reach Out" title="Contact" />
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden", padding: "4px 0", margin: "0 24px" }}>
             {contactRows.map((row, idx) => (
               <InfoRow key={row.label} icon={row.icon} label={row.label} value={row.value} isLast={idx === contactRows.length - 1} href={row.href} />
             ))}
@@ -223,24 +256,24 @@ const SpecialDetail = () => {
 
       {/* Promo code */}
       {special.promo_code && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
+        <section style={{ marginBottom: 28 }}>
           <SectionLabel eyebrow="Redeem" title="Promo Code" />
           <div
-            style={{ background: "rgba(18,18,20,0.03)", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "16px 16px", textAlign: "center", cursor: "pointer" }}
+            style={{ background: "#FFFFFF", border: "1px dashed rgba(18,18,20,0.15)", borderRadius: 16, padding: "16px 20px", textAlign: "center", cursor: "pointer", margin: "0 24px" }}
             onClick={() => { navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }}
           >
-            <p style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 22, letterSpacing: 3, color: "#2b2420", margin: 0 }}>{special.promo_code}</p>
-            <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginTop: 6 }}>Tap to copy</p>
+            <p style={{ fontFamily: font, fontWeight: 400, fontSize: 22, letterSpacing: 3, color: "#2B2420", margin: 0 }}>{special.promo_code}</p>
+            <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginTop: 6, fontFamily: font }}>Tap to copy</p>
           </div>
         </section>
       )}
 
       {/* Terms */}
       {special.terms && (
-        <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 34 }}>
-          <SectionLabel eyebrow="Fine print" title="Terms & Conditions" />
-          <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, boxShadow: "var(--card-shadow)" }}>
-            <p style={{ margin: 0, fontSize: 13, color: "rgba(18,18,20,0.5)", lineHeight: 1.7 }}>{special.terms}</p>
+        <section style={{ marginBottom: 28 }}>
+          <SectionLabel eyebrow="Fine Print" title="Terms & Conditions" />
+          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, margin: "0 24px" }}>
+            <p style={{ margin: 0, fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.45, fontFamily: font }}>{special.terms}</p>
           </div>
         </section>
       )}
