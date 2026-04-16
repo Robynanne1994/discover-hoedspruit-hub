@@ -448,15 +448,15 @@ const MyAccount = () => {
       <div
         className="flex items-center"
         style={{
-          minHeight: 48,
-          padding: "12px 24px",
+          height: 48,
+          padding: "0 24px",
           transition: "transform 0.15s ease",
         }}
         onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
-        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 16 }} />
+        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 12 }} />
         <span style={{ flex: 1, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.2 }}>{item.label}</span>
         <ChevronRight style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
       </div>
