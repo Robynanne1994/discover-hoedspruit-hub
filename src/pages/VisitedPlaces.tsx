@@ -115,7 +115,7 @@ const VisitedPlaces = () => {
 
       {/* Heading */}
       <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24 }}>
-        <h1 style={{ fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "uppercase", margin: 0 }}>
           VISITED<br />PLACES
         </h1>
       </div>
