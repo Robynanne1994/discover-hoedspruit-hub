@@ -181,7 +181,7 @@ const MyHoedspruit = () => {
           style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 400,
-            fontSize: 53,
+            fontSize: 34,
             lineHeight: 1,
             letterSpacing: "0.01em",
             color: "#020202",
