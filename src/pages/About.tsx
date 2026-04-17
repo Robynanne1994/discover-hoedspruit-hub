@@ -21,7 +21,7 @@ const About = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
       {/* Back */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
           <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
           <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
@@ -36,14 +36,14 @@ const About = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ padding: "0 24px", marginBottom: 32 }}>
+      <div style={{ padding: "0 20px", marginBottom: 32 }}>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, margin: 0 }}>
           Your full guide to Hoedspruit
         </p>
       </div>
 
       {/* Founder photo */}
-      <div style={{ padding: "0 24px", marginBottom: 28 }}>
+      <div style={{ padding: "0 20px", marginBottom: 28 }}>
         <div style={{ borderRadius: 16, overflow: "hidden", height: 320 }}>
           <img
             src="https://media.licdn.com/dms/image/v2/D4D03AQEovnKgk_KDnw/profile-displayphoto-crop_800_800/B4DZxSzIvCJcAM-/0/1770915663825?e=1775692800&v=beta&t=cqieS2K8_BvM9SoPttQVDEJWbBVERBzXXdwEie_hLnk"
@@ -54,13 +54,13 @@ const About = () => {
       </div>
 
       {/* Founder section heading */}
-      <div style={{ padding: "0 24px", marginBottom: 16 }}>
+      <div style={{ padding: "0 20px", marginBottom: 16 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>THE STORY</div>
         <h2 style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>MEET THE FOUNDER</h2>
       </div>
 
       {/* Founder story */}
-      <div style={{ padding: "0 24px", marginBottom: 36 }}>
+      <div style={{ padding: "0 20px", marginBottom: 36 }}>
         <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, margin: "0 0 16px" }}>
           My name is Robyn Dawes, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the Lowveld, and over the years I've watched this little town blossom into something truly special.
         </p>
@@ -73,12 +73,12 @@ const About = () => {
       </div>
 
       {/* Values heading */}
-      <div style={{ padding: "0 24px", marginBottom: 18 }}>
+      <div style={{ padding: "0 20px", marginBottom: 18 }}>
         <h2 style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>WHAT WE STAND FOR</h2>
       </div>
 
       {/* Value cards grid */}
-      <div style={{ padding: "0 24px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div style={{ padding: "0 20px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {values.map((item) => (
           <div key={item.title} style={{ ...cardStyle, padding: "16px 16px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
             <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
@@ -90,7 +90,7 @@ const About = () => {
       </div>
 
       {/* CTA card */}
-      <div style={{ padding: "0 24px", marginBottom: 100 }}>
+      <div style={{ padding: "0 20px", marginBottom: 100 }}>
         <div style={{
           background: "#000000",
           borderRadius: 16,
