@@ -31,7 +31,7 @@ const LowdownSection = () => {
   return (
     <div style={{ paddingTop: 36 }}>
       {/* Header */}
-      <div style={{ paddingLeft: 14, paddingRight: 14 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20 }}>
         <HomeSectionHeader title="Lowveld Lowdown" />
       </div>
 
@@ -70,7 +70,7 @@ const LowdownSection = () => {
           ))}
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14, paddingRight: 14 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 14, paddingRight: 20 }}>
         <Link to="/headlines" style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: "1.5px", textDecoration: "none" }}>
           READ ALL &gt;
         </Link>
