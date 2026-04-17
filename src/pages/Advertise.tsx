@@ -122,15 +122,12 @@ const Advertise = () => {
             <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, fontWeight: 400, color: "#737373", lineHeight: 1.4, maxWidth: "70%", margin: 0 }}>
               We're more than a directory — we're a trusted community hub. Your listing reaches people ready to explore, dine, and experience Hoedspruit.
             </p>
-            <div style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div style={{ background: "transparent", border: "none", width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <ArrowUpRight size={16} color="#ffffff" strokeWidth={2} />
             </div>
           </div>
-          {/* Bottom: Featured + two large titles */}
+          {/* Bottom: two large titles */}
           <div>
-            <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 11, fontWeight: 400, color: "#737373", marginBottom: 8 }}>
-              Featured
-            </div>
             <div style={{ display: "flex", gap: 24 }}>
               <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 32, fontWeight: 700, color: "#ffffff", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
                 Get<br />Listed
