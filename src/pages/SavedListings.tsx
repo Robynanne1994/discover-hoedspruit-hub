@@ -427,7 +427,7 @@ const SavedListings = () => {
                         </button>
                         {/* Card text */}
                         <div className="absolute bottom-0 left-0 right-0" style={{ padding: 16 }}>
-                          <h3 style={{ fontFamily, fontSize: 18, fontWeight: 500, color: "#FFFFFF", textTransform: "uppercase", lineHeight: 1.2, letterSpacing: "0.01em", marginBottom: 4 }}>{detail.title}</h3>
+                          <h3 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 24, fontWeight: 500, color: "#FFFFFF", textTransform: "capitalize", lineHeight: 1.2, letterSpacing: "0.01em", marginBottom: 4 }}>{detail.title?.toLowerCase()}</h3>
                           <div className="flex items-center" style={{ gap: 6 }}>
                             {rating && (
                               <>
