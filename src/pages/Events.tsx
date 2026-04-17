@@ -257,11 +257,13 @@ const Events = () => {
                 }}>
                   Curated
                 </p>
-                <h2 style={{
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  fontWeight: 400, fontSize: 22, color: "#020202",
-                  textTransform: "none", letterSpacing: "0.01em", lineHeight: 1.1, margin: 0,
-                }}>
+                <h2 
+                  className="font-medium text-3xl"
+                  style={{
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    color: "#020202",
+                    textTransform: "none", letterSpacing: "0.01em", lineHeight: 1.1, margin: 0,
+                  }}>
                   Featured
                 </h2>
               </div>
