@@ -179,11 +179,8 @@ const EventDetail = () => {
     bookingLink ? { label: "Booking", value: "Book Now", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
-  const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
+  const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
     <div style={{ marginBottom: 12 }}>
-      <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1.3, marginBottom: 4, margin: 0, fontFamily: font }}>
-        {eyebrow}
-      </p>
       <h2 style={{ fontWeight: 400, fontSize: 26, lineHeight: 1.15, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0, fontFamily: font }}>
         {title}
       </h2>
