@@ -78,7 +78,7 @@ const Advertise = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
       {/* Back */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
           <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
           <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
@@ -86,21 +86,21 @@ const Advertise = () => {
       </div>
 
       {/* Heading */}
-      <div style={{ padding: "0 24px", marginBottom: 12 }}>
+      <div style={{ padding: "0 20px", marginBottom: 12 }}>
         <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0 }}>
           REACH THE HOEDSPRUIT COMMUNITY
         </h1>
       </div>
 
       {/* Subtitle */}
-      <div style={{ padding: "0 24px", marginBottom: 32 }}>
+      <div style={{ padding: "0 20px", marginBottom: 32 }}>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, margin: 0 }}>
           Partner with us to put your business in the spotlight
         </p>
       </div>
 
       {/* Benefits card */}
-      <div style={{ padding: "0 24px", marginBottom: 32 }}>
+      <div style={{ padding: "0 20px", marginBottom: 32 }}>
         <div style={cardStyle}>
           {BENEFITS.map((item, i) => (
             <div key={item.title} style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 14, borderBottom: i < BENEFITS.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none" }}>
@@ -115,7 +115,7 @@ const Advertise = () => {
       </div>
 
       {/* Why card */}
-      <div style={{ padding: "0 24px", marginBottom: 36 }}>
+      <div style={{ padding: "0 20px", marginBottom: 36 }}>
         <div style={{ background: "#121214", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
           <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
@@ -131,12 +131,12 @@ const Advertise = () => {
       </div>
 
       {/* Form heading */}
-      <div style={{ padding: "0 24px", marginBottom: 20 }}>
+      <div style={{ padding: "0 20px", marginBottom: 20 }}>
         <h2 style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>GET IN TOUCH</h2>
       </div>
 
       {/* Form or success */}
-      <div style={{ padding: "0 24px", marginBottom: 28 }}>
+      <div style={{ padding: "0 20px", marginBottom: 28 }}>
         {submitted ? (
           <div style={{ ...cardStyle, padding: 32, textAlign: "center" }}>
             <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.06)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
@@ -201,7 +201,7 @@ const Advertise = () => {
       </div>
 
       {/* Email fallback */}
-      <div style={{ padding: "0 24px", marginBottom: 100 }}>
+      <div style={{ padding: "0 20px", marginBottom: 100 }}>
         <div style={{ ...cardStyle, padding: 24, textAlign: "center" }}>
           <Mail size={22} strokeWidth={1.5} color="#121214" style={{ margin: "0 auto 10px", display: "block" }} />
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", margin: "0 0 4px" }}>Or email us directly at</p>
