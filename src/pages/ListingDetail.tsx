@@ -460,9 +460,10 @@ const ListingDetail = () => {
                 href={`tel:${listing.phone}`}
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 24,
-                  padding: "14px 24px", minHeight: 48, fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease", fontFamily: font,
+                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
+                  padding: "12px 24px", height: 48, fontSize: 15, fontWeight: 600,
+                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize",
                 }}
                 onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
                 onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
@@ -479,9 +480,10 @@ const ListingDetail = () => {
                 rel="noopener noreferrer"
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 24,
-                  padding: "14px 24px", minHeight: 48, fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease", fontFamily: font,
+                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
+                  padding: "12px 24px", height: 48, fontSize: 15, fontWeight: 600,
+                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize",
                 }}
                 onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
                 onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}

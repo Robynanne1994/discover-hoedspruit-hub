@@ -217,11 +217,12 @@ const UserProfile = () => {
                     onTouchStart={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
                     onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
                     style={{
-                      minHeight: 48,
+                      height: 48,
                       padding: "12px 24px",
-                      borderRadius: 24,
+                      borderRadius: 16,
                       fontSize: 15,
-                      fontFamily: FONT,
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      textTransform: "capitalize",
                       cursor: "pointer",
                       transition: "transform 0.15s ease",
                       ...(following
