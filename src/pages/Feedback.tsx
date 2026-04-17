@@ -17,6 +17,10 @@ const Feedback = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
+    if (!subject.trim()) {
+      setError("Please add a subject");
+      return;
+    }
     if (!message.trim()) {
       setError("Please tell us what's on your mind");
       return;
@@ -107,9 +111,9 @@ const Feedback = () => {
       <div style={{ padding: "24px 24px 0" }}>
         <input
           type="text"
-          placeholder="Subject (optional)"
+          placeholder="Subject"
           value={subject}
-          onChange={(e) => setSubject(e.target.value)}
+          onChange={(e) => { setSubject(e.target.value); if (error) setError(""); }}
           style={{ ...inputStyle, marginBottom: 16 }}
           onFocus={(e) => (e.target.style.borderColor = "rgba(18,18,20,0.2)")}
           onBlur={(e) => (e.target.style.borderColor = "rgba(18,18,20,0.08)")}
