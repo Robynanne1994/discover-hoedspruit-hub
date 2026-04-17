@@ -78,7 +78,7 @@ const About = () => {
       </div>
 
       {/* Value cards grid */}
-      <div style={{ padding: "0 20px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+      <div style={{ padding: "0 20px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
         {values.map((item) => (
           <div key={item.title} style={{ ...cardStyle, padding: "16px 16px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
             <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#B4B4B4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
