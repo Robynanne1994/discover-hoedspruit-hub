@@ -56,7 +56,7 @@ const About = () => {
       {/* Founder section heading */}
       <div style={{ padding: "0 20px", marginBottom: 16 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>THE STORY</div>
-        <h2 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 28, color: "#020202", textTransform: "capitalize", letterSpacing: "-0.02em", margin: 0 }}>Meet The Founder</h2>
+        <h2 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 550, fontSize: 28, color: "#020202", textTransform: "capitalize", letterSpacing: "-0.02em", margin: 0 }}>Meet The Founder</h2>
       </div>
 
       {/* Founder story */}
@@ -74,7 +74,7 @@ const About = () => {
 
       {/* Values heading */}
       <div style={{ padding: "0 20px", marginBottom: 18 }}>
-        <h2 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 28, color: "#020202", textTransform: "capitalize", letterSpacing: "-0.02em", margin: 0 }}>What We Stand For</h2>
+        <h2 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 550, fontSize: 28, color: "#020202", textTransform: "capitalize", letterSpacing: "-0.02em", margin: 0 }}>What We Stand For</h2>
       </div>
 
       {/* Value cards grid */}
