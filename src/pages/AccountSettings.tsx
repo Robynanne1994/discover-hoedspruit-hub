@@ -122,11 +122,89 @@ const AccountSettings = () => {
         ))}
       </div>
 
-
+      {/* Delete account */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 32 }}>
+        <DeleteAccountButton />
+      </div>
 
     </div>
   );
 };
+
+function DeleteAccountButton() {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  const navigate = useNavigate();
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Not signed in");
+
+      const { data, error } = await supabase.functions.invoke("delete-account", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+
+      await supabase.auth.signOut();
+      toast.success("Your account has been deleted");
+      navigate("/auth", { replace: true });
+    } catch (err: any) {
+      toast.error(err?.message || "Could not delete account");
+      setLoading(false);
+      setOpen(false);
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        onPointerDown={() => setPressed(true)}
+        onPointerUp={() => setPressed(false)}
+        onPointerLeave={() => setPressed(false)}
+        style={{
+          width: "100%",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          gap: 8, padding: "12px 24px", minHeight: 48,
+          border: "1.5px solid rgba(220,38,38,0.35)",
+          borderRadius: 24, background: "transparent", cursor: "pointer",
+          transform: pressed ? "scale(0.97)" : "scale(1)",
+          transition: "transform 0.12s ease",
+          fontFamily: FF,
+        }}
+      >
+        <Trash2 size={20} strokeWidth={1.8} color="#dc2626" />
+        <span style={{ fontSize: 15, fontWeight: 500, color: "#dc2626", fontFamily: FF }}>Delete Account</span>
+      </button>
+
+      <AlertDialog open={open} onOpenChange={(v) => !loading && setOpen(v)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to delete your account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete your account and all associated data. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => { e.preventDefault(); handleDelete(); }}
+              disabled={loading}
+              style={{ background: "#dc2626", color: "#fff" }}
+            >
+              {loading ? (<><Loader2 size={16} className="animate-spin mr-2" /> Deleting...</>) : "Delete Account"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+}
 
 function ProfileCard({ profile, profileLoading, user }: { profile: any; profileLoading: boolean; user: any }) {
   const [pressed, setPressed] = useState(false);
