@@ -35,7 +35,7 @@ const AdvertiseWithUs = () => {
             onClick={() => navigate("/contact")}
             style={{
               background: "transparent",
-              border: "1px solid rgba(255,255,255,0.15)",
+              border: "none",
               borderRadius: 8,
               width: 36,
               height: 36,
