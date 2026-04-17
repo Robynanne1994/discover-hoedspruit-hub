@@ -132,7 +132,7 @@ const Advertise = () => {
 
       {/* Form heading */}
       <div style={{ padding: "0 20px", marginBottom: 20 }}>
-        <h2 style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: 0.5, margin: 0 }}>GET IN TOUCH</h2>
+        <h2 style={{ fontWeight: 400, fontSize: 35, color: "#020202", textTransform: "capitalize", letterSpacing: 0.5, margin: 0 }}>Get In Touch</h2>
       </div>
 
       {/* Form or success */}
