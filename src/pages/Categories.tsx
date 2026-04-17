@@ -184,10 +184,10 @@ const Categories = () => {
         style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           textTransform: "none",
-          fontSize: 34,
-          fontWeight: 400,
+          fontSize: 45,
+          fontWeight: 500,
           lineHeight: 1,
-          letterSpacing: "0.01em",
+          letterSpacing: "-0.01em",
           color: "#020202",
           margin: 0,
           marginBottom: 36,
