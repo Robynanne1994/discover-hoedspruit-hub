@@ -209,9 +209,6 @@ const EventDetail = () => {
                 <row.icon size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.02em", margin: 0, marginBottom: 2, fontFamily: font }}>
-                  {row.label}
-                </p>
                 <p style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>
                   {row.value}
                 </p>
