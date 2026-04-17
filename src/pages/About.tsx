@@ -90,7 +90,7 @@ const About = () => {
       </div>
 
       {/* CTA card */}
-      <div style={{ padding: "0 20px", marginBottom: 50 }}>
+      <div style={{ padding: "0 20px", marginBottom: 20 }}>
         <div style={{
           background: "#000000",
           borderRadius: 16,
