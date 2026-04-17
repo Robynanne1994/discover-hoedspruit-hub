@@ -427,7 +427,7 @@ const ListingDetail = () => {
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               background: "transparent",
               border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.12)",
               borderRadius: 24, padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
