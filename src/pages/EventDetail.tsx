@@ -318,11 +318,9 @@ const EventDetail = () => {
         {event.description && (
           <section style={{ marginBottom: 24 }}>
             <SectionLabel eyebrow="Overview" title="About" />
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
-              <p style={{ margin: 0, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.45, fontFamily: font }}>
-                {event.description}
-              </p>
-            </div>
+            <p style={{ margin: 0, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.45, fontFamily: font }}>
+              {event.description}
+            </p>
           </section>
         )}
 
