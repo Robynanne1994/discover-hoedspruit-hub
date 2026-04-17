@@ -20,7 +20,7 @@ import {
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const settingsRows = [
-  { icon: User, label: "Account Info", desc: "Manage email, phone & password" },
+  { icon: User, label: "Account Info", desc: "Manage email, phone & password", href: "/account-settings/info" },
   { icon: Bell, label: "Notification Preferences", desc: "Customize notification settings" },
   { icon: ShieldCheck, label: "Privacy & Security", desc: "Manage visibility, data & protection", href: "/privacy-security" },
   { icon: HelpCircle, label: "Help & Support", desc: "FAQ & contact us", href: "/faqs" },

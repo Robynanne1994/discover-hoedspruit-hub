@@ -43,6 +43,7 @@ import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import AccountSettings from "./pages/AccountSettings.tsx";
+import AccountInfo from "./pages/AccountInfo.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import TermsOfUse from "./pages/TermsOfUse.tsx";
@@ -103,6 +104,7 @@ const App = () => (
               <Route path="/saved" element={<SavedListings />} />
               <Route path="/visited" element={<VisitedPlaces />} />
               <Route path="/account-settings" element={<AccountSettings />} />
+              <Route path="/account-settings/info" element={<AccountInfo />} />
               <Route path="/terms" element={<TermsPolicies />} />
               <Route path="/terms/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-use" element={<TermsOfUse />} />
