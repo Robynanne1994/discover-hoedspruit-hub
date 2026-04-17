@@ -10,7 +10,7 @@ const values = [
 ];
 
 const cardStyle: React.CSSProperties = {
-  background: "rgba(18,18,20,0.03)",
+  background: "#ffffff",
   border: "1px solid rgba(18,18,20,0.06)",
   borderRadius: 16,
 };
