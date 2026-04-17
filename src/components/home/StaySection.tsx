@@ -13,9 +13,9 @@ const StaySection = () => {
         <div style={{ padding: "0 20px" }}>
           <HomeSectionHeader title={title || "Where to Stay"} />
         </div>
-        <div style={{ display: "flex", gap: 4, paddingLeft: 4 }}>
-          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
-          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 30px)", aspectRatio: "3/4" }} />
+        <div style={{ display: "flex", gap: 4, paddingLeft: 20 }}>
+          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 22px)", aspectRatio: "3/4" }} />
+          <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 22px)", aspectRatio: "3/4" }} />
         </div>
       </section>
     );

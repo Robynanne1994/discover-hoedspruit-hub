@@ -36,7 +36,7 @@ const LowdownSection = () => {
       </div>
 
       {/* Featured card */}
-      <div style={{ paddingLeft: 4, paddingRight: 4 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20 }}>
         <Link to={`/headlines/${featured.slug}`} style={{ textDecoration: "none", display: "block", marginBottom: 4 }}>
           <div style={{ borderRadius: 16, overflow: "hidden", position: "relative" }}>
             <div style={{ width: "100%", height: 160, background: "#f0f0f0", position: "relative" }}>

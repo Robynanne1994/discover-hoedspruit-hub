@@ -14,7 +14,7 @@ interface HomeListingCarouselProps {
 
 const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
   return (
-    <div style={{ overflowX: "auto", paddingLeft: 4 }} className="scrollbar-hide">
+    <div style={{ overflowX: "auto", paddingLeft: 20 }} className="scrollbar-hide">
       <div style={{ display: "flex", gap: 4 }}>
         {listings.map((listing, idx) => (
           <Link
@@ -22,7 +22,7 @@ const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
             to={`/listing/${listing.id}`}
             style={{
               flexShrink: 0,
-              width: "calc(50vw - 30px)",
+              width: "calc(50vw - 22px)",
               aspectRatio: "3/4",
               borderRadius: 16,
               overflow: "hidden",
@@ -30,7 +30,7 @@ const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
               background: "#f0f0f0",
               display: "block",
               textDecoration: "none",
-              marginRight: idx === listings.length - 1 ? 4 : 0,
+              marginRight: idx === listings.length - 1 ? 20 : 0,
             }}
           >
             {listing.image_url ? (
