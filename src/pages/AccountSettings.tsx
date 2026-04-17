@@ -15,7 +15,20 @@ import {
   LogOut,
   ChevronRight,
   ArrowLeft,
+  Trash2,
+  Loader2,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
