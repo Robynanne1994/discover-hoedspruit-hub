@@ -1,4 +1,4 @@
-import { Mail, Send, Loader2, Check, Star, Users, Eye, TrendingUp, ArrowLeft } from "lucide-react";
+import { Mail, Send, Loader2, Check, Star, Users, Eye, TrendingUp, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
