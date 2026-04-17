@@ -48,8 +48,8 @@ const Feedback = () => {
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
-    background: "rgba(18,18,20,0.03)",
-    border: "1px solid rgba(18,18,20,0.08)",
+    background: "#ffffff",
+    border: "1px solid rgba(18,18,20,0.06)",
     borderRadius: 16,
     padding: "14px 16px",
     fontSize: 15,
