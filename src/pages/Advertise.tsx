@@ -201,7 +201,7 @@ const Advertise = () => {
       </div>
 
       {/* Email fallback */}
-      <div style={{ padding: "0 20px", marginBottom: 100 }}>
+      <div style={{ padding: "0 20px", marginBottom: 50 }}>
         <div style={{ ...cardStyle, padding: 24, textAlign: "center" }}>
           <Mail size={22} strokeWidth={1.5} color="#121214" style={{ margin: "0 auto 10px", display: "block" }} />
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", margin: "0 0 4px" }}>Or email us directly at</p>
