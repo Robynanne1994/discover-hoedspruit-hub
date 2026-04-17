@@ -92,8 +92,8 @@ const ContactUs = () => {
               onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
               onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
             >
-              <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#ffffff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginRight: 16 }}>
-                <Icon size={20} strokeWidth={1.8} color="#B4B4B4" />
+              <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#B4B4B4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginRight: 16 }}>
+                <Icon size={20} strokeWidth={1.8} color="#ffffff" />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", lineHeight: 1.3, fontFamily: FF }}>{opt.title}</div>
