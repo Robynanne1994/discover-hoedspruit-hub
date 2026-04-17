@@ -87,8 +87,8 @@ const Advertise = () => {
 
       {/* Heading */}
       <div style={{ padding: "0 20px", marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "uppercase", margin: 0 }}>
-          REACH THE HOEDSPRUIT COMMUNITY
+        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "capitalize", margin: 0 }}>
+          Reach The Hoedspruit Community
         </h1>
       </div>
 
