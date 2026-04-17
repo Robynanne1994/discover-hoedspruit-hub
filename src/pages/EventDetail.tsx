@@ -267,25 +267,27 @@ const EventDetail = () => {
             onClick={handleShare}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "#715a3d", border: "1.5px solid #715a3d", borderRadius: 24,
-              padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
+              background: "#020202", border: "none", borderRadius: 16,
+              padding: "12px 24px", height: 48, cursor: "pointer", transition: "transform 0.12s ease",
+              fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
             }}
             {...pressScale()}
           >
             <Share2 size={14} strokeWidth={1.8} color="#ffffff" />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff" }}>Share</span>
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>Share</span>
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "#715a3d", border: "1.5px solid #715a3d",
-              borderRadius: 24, padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
+              background: "#020202", border: "none", borderRadius: 16,
+              padding: "12px 24px", height: 48, cursor: "pointer", transition: "transform 0.12s ease",
+              fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
             }}
             {...pressScale()}
           >
             <Heart size={14} strokeWidth={1.8} color="#ffffff" fill={isFavourited ? "#ffffff" : "none"} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff" }}>Interested</span>
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>Interested</span>
           </button>
         </div>
 
