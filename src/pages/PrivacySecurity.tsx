@@ -71,7 +71,7 @@ const cardStyle: React.CSSProperties = {
   overflow: "hidden",
 };
 
-const SECTION_PX = 24;
+const SECTION_PX = 20;
 
 const rowBorder: React.CSSProperties = {
   borderBottom: "1px solid rgba(18,18,20,0.06)",
