@@ -416,39 +416,39 @@ const ListingDetail = () => {
             onClick={handleShare}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent", border: "1.5px solid rgba(18,18,20,0.12)", borderRadius: 24,
-              padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
+              background: "transparent", border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24,
+              padding: "12px 24px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
             {...pressScale()}
           >
             <Share2 size={18} strokeWidth={1.8} color="#2B2420" />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Share</span>
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420" }}>Share</span>
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               background: "transparent",
-              border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.12)",
-              borderRadius: 24, padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
+              border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.15)",
+              borderRadius: 24, padding: "12px 24px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
             {...pressScale()}
           >
             <Heart size={18} strokeWidth={1.8} color={isFavourited ? "#D4654A" : "#2B2420"} fill={isFavourited ? "#D4654A" : "none"} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>{isFavourited ? "Saved" : "Save"}</span>
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420" }}>{isFavourited ? "Saved" : "Save"}</span>
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               background: "transparent",
-              border: isVisited ? "1.5px solid #3B7D4F" : "1.5px solid rgba(18,18,20,0.12)",
-              borderRadius: 24, padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
+              border: isVisited ? "1.5px solid #3B7D4F" : "1.5px solid rgba(18,18,20,0.15)",
+              borderRadius: 24, padding: "12px 24px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
             {...pressScale()}
           >
             <CheckCircle size={18} strokeWidth={1.8} color={isVisited ? "#3B7D4F" : "#2B2420"} fill={isVisited ? "#3B7D4F" : "none"} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Visited</span>
+            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420" }}>Visited</span>
           </button>
         </div>
 
