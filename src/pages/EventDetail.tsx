@@ -181,7 +181,7 @@ const EventDetail = () => {
 
   const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
     <div style={{ marginBottom: 12 }}>
-      <h2 style={{ fontWeight: 400, fontSize: 28, lineHeight: 1.15, letterSpacing: "0.01em", color: "#020202", textTransform: "capitalize", margin: 0, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>
+      <h2 style={{ fontWeight: 400, fontSize: 28, lineHeight: 1.15, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>
         {title}
       </h2>
     </div>
@@ -222,7 +222,7 @@ const EventDetail = () => {
       {/* Hero image with overlay back button */}
       {event.image_url ? (
         <div style={{ position: "relative" }}>
-          <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden" }}>
+          <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: 16 }}>
             <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
           </div>
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
