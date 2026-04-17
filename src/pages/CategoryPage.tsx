@@ -197,15 +197,15 @@ const CategoryPage = () => {
       {/* Page title */}
       <h1
         style={{
-          fontFamily: font,
-          fontSize: 53,
+          fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+          fontSize: 40,
           fontWeight: 400,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
+          lineHeight: 0.95,
+          letterSpacing: "-0.01em",
           color: "#020202",
-          textTransform: "none",
-          paddingLeft: 24,
-          paddingRight: 24,
+          textTransform: "capitalize",
+          paddingLeft: 20,
+          paddingRight: 20,
           marginBottom: 4,
           marginTop: 0,
         }}

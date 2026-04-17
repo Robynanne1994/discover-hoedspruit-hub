@@ -86,8 +86,8 @@ const Advertise = () => {
       </div>
 
       {/* Heading */}
-      <div style={{ padding: "0 20px", marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: -0.5, color: "#020202", textTransform: "capitalize", margin: 0 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
           Reach The Hoedspruit Community
         </h1>
       </div>

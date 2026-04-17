@@ -208,7 +208,7 @@ const MyAccount = () => {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase" }}>PROFILE</h1>
+          <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>Profile</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <UserCircle style={{ width: 48, height: 48, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
@@ -489,15 +489,15 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       {/* Page title */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20 }}>
         <h1 style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
           fontWeight: 400,
-          fontSize: 53,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
+          fontSize: 40,
+          lineHeight: 0.95,
+          letterSpacing: "-0.01em",
           color: "#020202",
-          textTransform: "none",
+          textTransform: "capitalize",
           margin: 0,
           marginBottom: 4,
         }}>

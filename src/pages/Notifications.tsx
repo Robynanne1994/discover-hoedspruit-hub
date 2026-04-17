@@ -206,9 +206,9 @@ const Notifications = () => {
       </div>
 
       {/* Heading */}
-      <div style={{ padding: "28px 24px 0" }}>
-        <h1 style={{ fontSize: 40, fontWeight: 400, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
-          NOTIFICATIONS
+      <div style={{ paddingTop: 28, paddingLeft: 20, paddingRight: 20 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 40, fontWeight: 400, textTransform: "capitalize", lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", margin: 0 }}>
+          Notifications
         </h1>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginTop: 12, marginBottom: 32 }}>
           Choose what you hear from us

@@ -180,21 +180,22 @@ const Categories = () => {
       </div>
 
       {/* Heading */}
-      <h1
-        style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          textTransform: "none",
-          fontSize: 45,
-          fontWeight: 500,
-          lineHeight: 1,
-          letterSpacing: "-0.01em",
-          color: "#020202",
-          margin: 0,
-          marginBottom: 36,
-        }}
-      >
-        Explore Hoedspruit
-      </h1>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 36 }}>
+        <h1
+          style={{
+            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+            textTransform: "capitalize",
+            fontSize: 40,
+            fontWeight: 400,
+            lineHeight: 0.95,
+            letterSpacing: "-0.01em",
+            color: "#020202",
+            margin: 0,
+          }}
+        >
+          Explore Hoedspruit
+        </h1>
+      </div>
 
       {/* Search bar */}
       <div

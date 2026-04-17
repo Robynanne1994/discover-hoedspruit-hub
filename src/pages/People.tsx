@@ -51,22 +51,20 @@ const People = () => {
       </div>
 
       {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
         <h1
           style={{
-            fontFamily: "var(--font-heading)",
+            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
             fontWeight: 400,
             fontSize: 40,
             lineHeight: 0.95,
-            letterSpacing: "0.01em",
-            color: "#2b2420",
-            textTransform: "uppercase",
+            letterSpacing: "-0.01em",
+            color: "#020202",
+            textTransform: "capitalize",
             margin: 0,
           }}
         >
-          FIND
-          <br />
-          PEOPLE
+          Find People
         </h1>
       </div>
 

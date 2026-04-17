@@ -57,9 +57,9 @@ const Headlines = () => {
       </div>
 
       {/* Title */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", fontFamily: "var(--font-heading)" }}>
-          THE LOWVELD<br />LOWDOWN
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
+          The Lowveld Lowdown
         </h1>
       </div>
 

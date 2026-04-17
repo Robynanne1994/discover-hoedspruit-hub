@@ -68,7 +68,7 @@ const ContactUs = () => {
 
       {/* Title */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-        <h1 style={{ fontSize: 53, fontWeight: 400, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", textTransform: "none", margin: 0, fontFamily: FF }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
           Get in Touch
         </h1>
       </div>

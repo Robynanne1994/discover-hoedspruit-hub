@@ -35,20 +35,20 @@ const FollowList = () => {
       </div>
 
       {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
         <h1
           style={{
-            fontFamily: "var(--font-heading)",
+            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
             fontWeight: 400,
             fontSize: 40,
             lineHeight: 0.95,
-            letterSpacing: "0.01em",
+            letterSpacing: "-0.01em",
             color: "#020202",
-            textTransform: "uppercase",
+            textTransform: "capitalize",
             margin: 0,
           }}
         >
-          {isFollowers ? "FOLLOWERS" : "FOLLOWING"}
+          {isFollowers ? "Followers" : "Following"}
         </h1>
       </div>
 
