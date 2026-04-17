@@ -81,8 +81,8 @@ const About = () => {
       <div style={{ padding: "0 20px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
         {values.map((item) => (
           <div key={item.title} style={{ ...cardStyle, padding: "16px 16px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.04)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
-              <item.icon size={22} strokeWidth={1.5} color="#121214" />
+            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#B4B4B4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
+              <item.icon size={22} strokeWidth={1.5} color="#ffffff" />
             </div>
             <div style={{ fontSize: 13, fontWeight: 700, color: "#2b2420", whiteSpace: "nowrap" }}>{item.title}</div>
           </div>
