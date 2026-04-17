@@ -190,10 +190,10 @@ const EventDetail = () => {
               style={{ padding: "14px 20px", textDecoration: "none" }}
             >
               <div style={{
-                width: 40, height: 40, borderRadius: "50%", background: "rgba(18,18,20,0.06)",
+                width: 40, height: 40, borderRadius: "50%", background: "#ffffff",
                 display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginRight: 16,
               }}>
-                <row.icon size={24} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
+                <row.icon size={24} strokeWidth={1.8} style={{ color: "#B4B4B4" }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.02em", margin: 0, marginBottom: 2 }}>
