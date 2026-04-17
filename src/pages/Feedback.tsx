@@ -152,7 +152,7 @@ const Feedback = () => {
       {/* Supportive text */}
       <div style={{ padding: "28px 24px 100px" }}>
         <div style={{
-          background: "rgba(18,18,20,0.03)",
+          background: "#ffffff",
           border: "1px solid rgba(18,18,20,0.06)",
           borderRadius: 16,
           padding: 16,
