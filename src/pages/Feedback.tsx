@@ -145,7 +145,7 @@ const Feedback = () => {
             textAlign: "center" as const,
           }}
         >
-          {submitting ? "Sending..." : "Send Feedback"}
+          {submitting ? "Sending..." : "Share Feedback"}
         </button>
       </div>
 
