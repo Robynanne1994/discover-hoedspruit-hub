@@ -167,7 +167,6 @@ const EventDetail = () => {
     { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
     { label: "Time", value: timeDisplay, icon: Clock, href: null as string | null },
     { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
-    { label: "Category", value: event.tag, icon: Tag, href: null as string | null },
     { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
     { label: "Price", value: price, icon: Banknote, href: null as string | null },
   ].filter((row) => row.value);
