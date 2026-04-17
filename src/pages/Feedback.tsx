@@ -142,7 +142,7 @@ const Feedback = () => {
             fontSize: 15,
             fontWeight: 700,
             color: "#ffffff",
-            letterSpacing: "0.3px",
+            letterSpacing: "-0.02em",
             border: "none",
             cursor: submitting ? "not-allowed" : "pointer",
             opacity: submitting ? 0.6 : 1,
