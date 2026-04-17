@@ -10,7 +10,7 @@ const EatSection = () => {
   if (isLoading) {
     return (
       <section style={{ paddingTop: 36 }}>
-        <div style={{ padding: "0 14px" }}>
+        <div style={{ padding: "0 20px" }}>
           <HomeSectionHeader title={title || "Where to Eat"} />
         </div>
         <div style={{ display: "flex", gap: 4, paddingLeft: 4 }}>
@@ -25,7 +25,7 @@ const EatSection = () => {
 
   return (
     <section style={{ paddingTop: 36 }}>
-      <div style={{ padding: "0 14px" }}>
+      <div style={{ padding: "0 20px" }}>
         <HomeSectionHeader title={title || "Where to Eat"} actionLabel="See All" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" />
       </div>
       <HomeListingCarousel listings={listings.slice(0, 6)} />
