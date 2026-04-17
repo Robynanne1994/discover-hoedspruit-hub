@@ -1,4 +1,4 @@
-import { Mail, Send, Loader2, Check, Star, Users, Eye, TrendingUp, ArrowLeft } from "lucide-react";
+import { Mail, Send, Loader2, Check, Star, Users, Eye, TrendingUp, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -114,18 +114,31 @@ const Advertise = () => {
         </div>
       </div>
 
-      {/* Why card */}
+      {/* Why card — matches homepage AdvertiseWithUs */}
       <div style={{ padding: "0 20px", marginBottom: 36 }}>
-        <div style={{ background: "#121214", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
-          <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ fontWeight: 400, fontSize: 18, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 12 }}>
-              WHY HELLO HOEDSPRUIT?
-            </div>
-            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, margin: 0 }}>
-              We're more than a directory — we're a trusted community hub. Your listing reaches people who are ready to explore, dine, and experience Hoedspruit.
+        <div style={{ background: "#000000", borderRadius: 16, padding: "28px 22px 26px", position: "relative", overflow: "hidden" }}>
+          {/* Top row: tagline + arrow */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 32 }}>
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, fontWeight: 400, color: "#737373", lineHeight: 1.4, maxWidth: "70%", margin: 0 }}>
+              We're more than a directory — we're a trusted community hub. Your listing reaches people ready to explore, dine, and experience Hoedspruit.
             </p>
+            <div style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <ArrowUpRight size={16} color="#ffffff" strokeWidth={2} />
+            </div>
+          </div>
+          {/* Bottom: Featured + two large titles */}
+          <div>
+            <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 11, fontWeight: 400, color: "#737373", marginBottom: 8 }}>
+              Featured
+            </div>
+            <div style={{ display: "flex", gap: 24 }}>
+              <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 32, fontWeight: 700, color: "#ffffff", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+                Get<br />Listed
+              </div>
+              <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 32, fontWeight: 700, color: "#737373", lineHeight: 1.05, letterSpacing: "-0.02em" }}>
+                Reach<br />More
+              </div>
+            </div>
           </div>
         </div>
       </div>
