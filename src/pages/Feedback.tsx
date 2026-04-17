@@ -119,7 +119,7 @@ const Feedback = () => {
           onBlur={(e) => (e.target.style.borderColor = "rgba(18,18,20,0.08)")}
         />
         <textarea
-          placeholder="Tell us what's on your mind..."
+          placeholder="Share your feedback with us..."
           value={message}
           onChange={(e) => { setMessage(e.target.value); if (error) setError(""); }}
           style={{ ...inputStyle, minHeight: 150, resize: "vertical", marginBottom: error ? 4 : 16 }}
