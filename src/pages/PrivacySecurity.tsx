@@ -65,11 +65,13 @@ const communityTexts = [
 ];
 
 const cardStyle: React.CSSProperties = {
-  background: "rgba(18,18,20,0.03)",
+  background: "#ffffff",
   border: "1px solid rgba(18,18,20,0.06)",
   borderRadius: 16,
   overflow: "hidden",
 };
+
+const SECTION_PX = 4;
 
 const rowBorder: React.CSSProperties = {
   borderBottom: "1px solid rgba(18,18,20,0.06)",
@@ -103,7 +105,7 @@ const PrivacySecurity = () => {
       </div>
 
       {/* Intro card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingLeft: SECTION_PX, paddingRight: SECTION_PX, marginBottom: 8 }}>
         <div style={{ ...cardStyle, padding: 16, boxShadow: "var(--card-shadow)" }}>
           <div className="flex items-start" style={{ gap: 12 }}>
             <Shield style={{ width: 22, height: 22, strokeWidth: 1.5, color: "#2b2420", flexShrink: 0, marginTop: 2 }} />
@@ -116,7 +118,7 @@ const PrivacySecurity = () => {
           </div>
         </div>
       </div>
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+      <div style={{ paddingLeft: SECTION_PX, paddingRight: SECTION_PX, marginBottom: 32 }}>
         <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", lineHeight: 1.5 }}>
           You stay in control of your account, saved places, and communication preferences.
         </p>
@@ -215,7 +217,7 @@ const PrivacySecurity = () => {
       </Section>
 
       {/* Policy Links */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
+      <div style={{ paddingLeft: SECTION_PX, paddingRight: SECTION_PX, marginBottom: 100 }}>
         <div style={cardStyle}>
           {[
             { icon: FileText, label: "Read Full Privacy Policy", href: "/terms/privacy" },
@@ -243,7 +245,7 @@ const PrivacySecurity = () => {
 };
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-  <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+  <div style={{ paddingLeft: SECTION_PX, paddingRight: SECTION_PX, marginBottom: 28 }}>
     <h3 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
       {title}
     </h3>
