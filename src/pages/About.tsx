@@ -98,74 +98,79 @@ const About = () => {
           position: "relative",
           overflow: "hidden",
         }}>
-          <div style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "flex-start",
-            marginBottom: 32,
-          }}>
-            <p style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 14,
-              fontWeight: 400,
-              color: "#737373",
-              lineHeight: 1.4,
-              maxWidth: "70%",
-              margin: 0,
-            }}>
-              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
-            </p>
+          {/* Decorative circles */}
+          <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
+          <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
+
+          {/* Top arrow */}
+          <div style={{ display: "flex", justifyContent: "flex-end", position: "relative", zIndex: 1 }}>
             <button
               onClick={() => navigate("/advertise")}
               style={{
                 background: "transparent",
                 border: "none",
-                borderRadius: 8,
                 width: 36,
                 height: 36,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                flexShrink: 0,
               }}
             >
               <ArrowUpRight size={16} color="#ffffff" strokeWidth={2} />
             </button>
           </div>
 
-          <div>
+          {/* Content */}
+          <div style={{ position: "relative", zIndex: 1, marginTop: -8 }}>
             <div style={{
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
               fontSize: 11,
-              fontWeight: 400,
+              fontWeight: 600,
               color: "#737373",
-              marginBottom: 8,
+              textTransform: "uppercase",
+              letterSpacing: 3,
+              marginBottom: 10,
             }}>
-              Featured
+              FOR BUSINESSES
             </div>
-            <div style={{ display: "flex", gap: 24 }}>
-              <div style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                fontSize: 32,
-                fontWeight: 700,
-                color: "#ffffff",
-                lineHeight: 1.05,
-                letterSpacing: "-0.02em",
-              }}>
-                Get<br />Listed
-              </div>
-              <div style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                fontSize: 32,
-                fontWeight: 700,
-                color: "#737373",
-                lineHeight: 1.05,
-                letterSpacing: "-0.02em",
-              }}>
-                Reach<br />More
-              </div>
+            <div style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontWeight: 700,
+              fontSize: 32,
+              color: "#ffffff",
+              lineHeight: 1.05,
+              letterSpacing: "-0.02em",
+              marginBottom: 14,
+            }}>
+              Want To Be Listed?
             </div>
+            <p style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontStyle: "italic",
+              fontSize: 14,
+              color: "#737373",
+              lineHeight: 1.5,
+              margin: "0 0 22px",
+            }}>
+              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
+            </p>
+            <button
+              onClick={() => navigate("/advertise")}
+              style={{
+                background: "#ffffff",
+                borderRadius: 12,
+                padding: "12px 22px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                border: "none",
+                cursor: "pointer",
+              }}
+            >
+              <span style={{ fontSize: 14, fontWeight: 600, color: "#020202", letterSpacing: "-0.02em" }}>Get in Touch</span>
+              <ArrowUpRight size={14} color="#020202" strokeWidth={2.5} />
+            </button>
           </div>
         </div>
       </div>
