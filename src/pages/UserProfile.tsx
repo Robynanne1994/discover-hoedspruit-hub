@@ -126,7 +126,7 @@ const UserProfile = () => {
       </div>
 
       {/* Avatar overlap */}
-      <div style={{ display: "flex", justifyContent: "flex-start", paddingLeft: 24, marginTop: -40 }}>
+      <div style={{ display: "flex", justifyContent: "flex-start", paddingLeft: 24, marginTop: -56 }}>
         <div
           style={{
             width: 80,
