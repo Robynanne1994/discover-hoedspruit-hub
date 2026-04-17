@@ -267,26 +267,25 @@ const EventDetail = () => {
             onClick={handleShare}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent", border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24,
+              background: "#715a3d", border: "1.5px solid #715a3d", borderRadius: 24,
               padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
             {...pressScale()}
           >
-            <Share2 size={14} strokeWidth={1.8} color="#2B2420" />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Share</span>
+            <Share2 size={14} strokeWidth={1.8} color="#ffffff" />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff" }}>Share</span>
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent",
-              border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.15)",
+              background: "#715a3d", border: "1.5px solid #715a3d",
               borderRadius: 24, padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
             {...pressScale()}
           >
-            <Heart size={14} strokeWidth={1.8} color={isFavourited ? "#D4654A" : "#2B2420"} fill={isFavourited ? "#D4654A" : "none"} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>{isFavourited ? "Interested" : "Interested"}</span>
+            <Heart size={14} strokeWidth={1.8} color="#ffffff" fill={isFavourited ? "#ffffff" : "none"} />
+            <span style={{ fontSize: 13, fontWeight: 500, color: "#ffffff" }}>Interested</span>
           </button>
         </div>
 
