@@ -411,7 +411,7 @@ const ListingDetail = () => {
         )}
 
         {/* Action buttons row (Share, Save, Visited) */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
           <button
             onClick={handleShare}
             style={{
