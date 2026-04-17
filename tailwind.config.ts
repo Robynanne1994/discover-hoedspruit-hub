@@ -14,9 +14,9 @@ export default {
     },
     extend: {
       fontFamily: {
-        heading: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
-        body: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
-        sans: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'],
+        heading: ['Helvetica World', 'Helvetica', 'Arial', 'sans-serif'],
+        body: ['Helvetica World', 'Helvetica', 'Arial', 'sans-serif'],
+        sans: ['Helvetica World', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

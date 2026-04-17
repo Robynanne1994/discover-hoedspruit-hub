@@ -62,7 +62,7 @@
 @tailwind utilities;
 
 html, body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Helvetica World', Helvetica, Arial, sans-serif;
 }
 
 @layer base {
@@ -107,9 +107,9 @@ html, body {
 
     --radius: 1rem;
 
-    --font-heading: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --font-body: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    --font-editorial: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-heading: 'Helvetica World', Helvetica, Arial, sans-serif;
+    --font-body: 'Helvetica World', Helvetica, Arial, sans-serif;
+    --font-editorial: 'Helvetica World', Helvetica, Arial, sans-serif;
 
     --hero-overlay: linear-gradient(to bottom, hsla(30, 20%, 20%, 0.05), hsla(30, 20%, 20%, 0.35));
     --warm-glow: 0 4px 20px -6px hsla(27, 30%, 34%, 0.1);
