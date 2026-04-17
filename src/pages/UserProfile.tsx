@@ -133,7 +133,7 @@ const UserProfile = () => {
             height: 80,
             borderRadius: "50%",
             border: "3px solid #FFFFFF",
-            background: PAGE_BG,
+            background: "#EBEBEB",
             overflow: "hidden",
             display: "flex",
             alignItems: "center",
