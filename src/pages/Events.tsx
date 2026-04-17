@@ -259,7 +259,7 @@ const Events = () => {
                 </p>
                 <h2 style={{
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  fontWeight: 400, fontSize: 34, color: "#020202",
+                  fontWeight: 400, fontSize: 22, color: "#020202",
                   textTransform: "none", letterSpacing: "0.01em", lineHeight: 1.1, margin: 0,
                 }}>
                   Featured
