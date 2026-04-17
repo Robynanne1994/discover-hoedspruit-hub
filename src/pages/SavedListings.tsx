@@ -245,8 +245,8 @@ const SavedListings = () => {
     return (
       <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
         {backButton}
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-          <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 1, letterSpacing: "-0.01em", color: "#020202", textTransform: "none" }}>Saved</h1>
+        <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
+          <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>Saved</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
@@ -318,8 +318,8 @@ const SavedListings = () => {
       {backButton}
 
       {/* Title */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 1, letterSpacing: "-0.01em", color: "#020202", textTransform: "none" }}>Saved</h1>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>Saved</h1>
       </div>
 
       {/* Subtitle */}

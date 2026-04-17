@@ -63,8 +63,8 @@ const Specials = () => {
       </div>
 
       {/* Title */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: font, textTransform: "none", fontWeight: 400, fontSize: 53, lineHeight: 1, letterSpacing: "0.01em", color: "#020202", margin: 0 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", textTransform: "capitalize", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", margin: 0 }}>
           Specials
         </h1>
       </div>

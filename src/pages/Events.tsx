@@ -144,18 +144,18 @@ const Events = () => {
       </div>
 
       {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
         <h1 style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
           fontWeight: 400,
-          fontSize: 34,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
+          fontSize: 40,
+          lineHeight: 0.95,
+          letterSpacing: "-0.01em",
           color: "#020202",
-          textTransform: "none",
+          textTransform: "capitalize",
           margin: 0,
         }}>
-          What's<br />Happening
+          What's Happening
         </h1>
       </div>
 
