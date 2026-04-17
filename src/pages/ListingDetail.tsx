@@ -370,7 +370,7 @@ const ListingDetail = () => {
       )}
 
       {/* Content area */}
-      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
         {/* Category overline */}
         {firstCategory && (
           <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginBottom: 4, marginTop: 0, fontFamily: font }}>
@@ -411,11 +411,11 @@ const ListingDetail = () => {
         )}
 
         {/* Action buttons row (Share, Save, Visited) */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+        <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
           <button
             onClick={handleShare}
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               background: "transparent", border: "1.5px solid rgba(18,18,20,0.12)", borderRadius: 24,
               padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
             }}
@@ -427,7 +427,7 @@ const ListingDetail = () => {
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               background: "transparent",
               border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.12)",
               borderRadius: 24, padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
@@ -440,7 +440,7 @@ const ListingDetail = () => {
           <button
             onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
             style={{
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
               background: "transparent",
               border: isVisited ? "1.5px solid #3B7D4F" : "1.5px solid rgba(18,18,20,0.12)",
               borderRadius: 24, padding: "10px 16px", cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
