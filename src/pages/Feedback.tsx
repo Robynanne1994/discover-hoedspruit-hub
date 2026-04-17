@@ -159,7 +159,7 @@ const Feedback = () => {
           textAlign: "center" as const,
         }}>
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.6 }}>
-            Every piece of feedback helps us improve. We read everything and appreciate you taking the time.
+            Every piece of feedback helps us improve. We read everything and appreciate you taking the time to share feedback with us.
           </p>
         </div>
       </div>
