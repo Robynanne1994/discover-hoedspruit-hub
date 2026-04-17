@@ -102,10 +102,17 @@ const EventDetail = () => {
   };
 
   const formatDate = (dateStr: string) => {
-    try {
-      const date = new Date(dateStr);
-      return date.toLocaleDateString("en-ZA", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-    } catch { return dateStr; }
+    if (!dateStr) return "";
+    // Strip HTML tags
+    const clean = String(dateStr).replace(/<[^>]*>/g, "").trim();
+    // Only try to parse strict ISO-style dates (YYYY-MM-DD). Otherwise show raw text.
+    if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
+      const date = new Date(clean);
+      if (!isNaN(date.getTime())) {
+        return date.toLocaleDateString("en-ZA", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+      }
+    }
+    return clean;
   };
 
   const handleShare = async () => {
