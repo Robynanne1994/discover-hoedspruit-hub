@@ -91,19 +91,81 @@ const About = () => {
 
       {/* CTA card */}
       <div style={{ padding: "0 24px", marginBottom: 100 }}>
-        <div style={{ background: "#121214", borderRadius: 16, padding: "32px 24px", position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
-          <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 10 }}>FOR BUSINESSES</div>
-            <div style={{ fontWeight: 400, fontSize: 22, color: "#ffffff", textTransform: "uppercase", letterSpacing: 0.3, lineHeight: 1.1, marginBottom: 10 }}>WANT TO BE LISTED?</div>
-            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.5, marginBottom: 22, marginTop: 0 }}>
+        <div style={{
+          background: "#000000",
+          borderRadius: 16,
+          padding: "28px 22px 26px",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+            marginBottom: 32,
+          }}>
+            <p style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 14,
+              fontWeight: 400,
+              color: "#737373",
+              lineHeight: 1.4,
+              maxWidth: "70%",
+              margin: 0,
+            }}>
               If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
             </p>
-            <button onClick={() => navigate("/advertise")} style={{ background: "#ebebeb", borderRadius: 9999, padding: "12px 22px", display: "inline-flex", alignItems: "center", gap: 8, border: "none", cursor: "pointer" }}>
-              <span style={{ fontSize: 14, fontWeight: 600, color: "#2b2420", letterSpacing: 0.3 }}>Get in Touch</span>
-              <ArrowUpRight size={14} color="#121214" strokeWidth={2.5} />
+            <button
+              onClick={() => navigate("/advertise")}
+              style={{
+                background: "transparent",
+                border: "none",
+                borderRadius: 8,
+                width: 36,
+                height: 36,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
+            >
+              <ArrowUpRight size={16} color="#ffffff" strokeWidth={2} />
             </button>
+          </div>
+
+          <div>
+            <div style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 11,
+              fontWeight: 400,
+              color: "#737373",
+              marginBottom: 8,
+            }}>
+              Featured
+            </div>
+            <div style={{ display: "flex", gap: 24 }}>
+              <div style={{
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontSize: 32,
+                fontWeight: 700,
+                color: "#ffffff",
+                lineHeight: 1.05,
+                letterSpacing: "-0.02em",
+              }}>
+                Get<br />Listed
+              </div>
+              <div style={{
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontSize: 32,
+                fontWeight: 700,
+                color: "#737373",
+                lineHeight: 1.05,
+                letterSpacing: "-0.02em",
+              }}>
+                Reach<br />More
+              </div>
+            </div>
           </div>
         </div>
       </div>
