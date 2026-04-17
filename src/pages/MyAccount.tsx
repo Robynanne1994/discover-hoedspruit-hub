@@ -596,11 +596,13 @@ const MyAccount = () => {
           style={{
             gap: 8,
             background: "#020202",
-            borderRadius: 24,
+            borderRadius: 16,
             padding: "12px 24px",
-            minHeight: 48,
+            height: 48,
             border: "none",
             cursor: "pointer",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            textTransform: "capitalize",
             transition: "transform 0.12s ease, opacity 0.12s ease",
           }}
           onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.97)"; e.currentTarget.style.opacity = "0.85"; }}
@@ -608,7 +610,7 @@ const MyAccount = () => {
           onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.opacity = "1"; }}
         >
           <LogOut style={{ width: 20, height: 20, strokeWidth: 1.8, color: "#FFFFFF" }} />
-          <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF" }}>Log out</span>
+          <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize" }}>Log Out</span>
         </button>
       </div>
     </div>

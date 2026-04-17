@@ -217,10 +217,10 @@ const SpecialDetail = () => {
           <Link
             to={`/listing/${special.business_id}`}
             className="active:scale-[0.97] active:opacity-85"
-            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, background: "#020202", borderRadius: 24, textDecoration: "none", border: "none", transition: "transform 0.12s ease, opacity 0.12s ease" }}
+            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 48, padding: "12px 24px", background: "#020202", borderRadius: 16, textDecoration: "none", border: "none", transition: "transform 0.12s ease, opacity 0.12s ease" }}
           >
             <Store size={20} strokeWidth={1.8} style={{ color: "#FFFFFF" }} />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF", fontFamily: font }}>View Business</span>
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize" }}>View Business</span>
           </Link>
         )}
       </div>
