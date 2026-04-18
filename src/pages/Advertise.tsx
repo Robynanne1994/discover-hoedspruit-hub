@@ -22,7 +22,7 @@ const BENEFITS = [
   { n: "04", title: "Grow your brand", description: "Build steady, lasting awareness with the Hoedspruit community over time." },
 ];
 
-const SOCIAL_PROOF = { count: "120+ businesses", suffix: " already on the app." };
+const SOCIAL_PROOF = { count: "389+ businesses", suffix: " already on the app." };
 
 const AVATARS = [
   "https://i.pravatar.cc/72?img=12",
