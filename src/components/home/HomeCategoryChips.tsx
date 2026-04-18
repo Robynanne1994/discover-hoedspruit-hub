@@ -1,0 +1,52 @@
+const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+
+export type HomeChip = "All" | "Eat" | "Stay" | "Do" | "Shop" | "Events";
+
+const CHIPS: HomeChip[] = ["All", "Eat", "Stay", "Do", "Shop", "Events"];
+
+interface Props {
+  active: HomeChip;
+  onChange: (chip: HomeChip) => void;
+}
+
+const HomeCategoryChips = ({ active, onChange }: Props) => {
+  return (
+    <div
+      className="scrollbar-hide"
+      style={{ overflowX: "auto", paddingLeft: 20, marginRight: 0 }}
+    >
+      <div style={{ display: "flex", gap: 8, paddingRight: 20 }}>
+        {CHIPS.map((chip) => {
+          const isActive = active === chip;
+          return (
+            <button
+              key={chip}
+              onClick={() => onChange(chip)}
+              onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+              onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              style={{
+                padding: "10px 18px",
+                borderRadius: 999,
+                background: isActive ? "#0A0A0A" : "#FFFFFF",
+                color: isActive ? "#FFFFFF" : "#0A0A0A",
+                fontFamily: SANS,
+                fontSize: 14,
+                lineHeight: 1,
+                border: "none",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                transition: "transform 150ms ease-out",
+              }}
+            >
+              {chip}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default HomeCategoryChips;
