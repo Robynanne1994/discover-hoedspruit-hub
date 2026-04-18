@@ -114,7 +114,7 @@ const Events = () => {
   }, [sortedEvents, activeFilter, search]);
 
   const featuredEvents = useMemo(
-    () => filteredEvents.filter((e) => e.image_url).slice(0, 4),
+    () => filteredEvents.filter((e) => e.is_featured).slice(0, 8),
     [filteredEvents]
   );
 
