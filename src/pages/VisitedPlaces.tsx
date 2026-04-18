@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -59,11 +60,8 @@ const VisitedPlaces = () => {
   if (!loading && !user) {
     return (
       <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
-        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
-          </button>
+        <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+          <BackButton />
         </div>
         <div style={{ paddingTop: 80, textAlign: "center", paddingLeft: 20, paddingRight: 20 }}>
           <MapPin size={48} strokeWidth={1.5} color="rgba(18,18,20,0.15)" style={{ margin: "0 auto" }} />
@@ -83,11 +81,8 @@ const VisitedPlaces = () => {
   if (loading || isLoading) {
     return (
       <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
-        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-            <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
-          </button>
+        <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+          <BackButton />
         </div>
         <div style={{ marginTop: 28, paddingLeft: 20, paddingRight: 20 }}>
           <Skeleton className="h-10 w-48 mb-4" />
@@ -106,11 +101,8 @@ const VisitedPlaces = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
-        <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
-        </button>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+        <BackButton />
       </div>
 
       {/* Heading */}

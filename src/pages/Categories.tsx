@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, ArrowLeft, ArrowUpRight, MapPin } from "lucide-react";
@@ -168,15 +169,8 @@ const Categories = () => {
       }}
     >
       {/* Back button */}
-      <div style={{ marginBottom: 8 }}>
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center"
-          style={{ gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
-        >
-          <ArrowLeft size={24} strokeWidth={1.8} style={{ color: "#020202" }} />
-          <span style={{ fontSize: 16, fontWeight: 400, color: "#020202" }}>Back</span>
-        </button>
+      <div style={{ marginBottom: 12 }}>
+        <BackButton />
       </div>
 
       {/* Heading */}

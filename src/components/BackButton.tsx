@@ -1,20 +1,64 @@
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { CSSProperties } from "react";
 
 interface BackButtonProps {
-  className?: string;
+  to?: string;
+  onClick?: () => void;
+  style?: CSSProperties;
 }
 
-const BackButton = ({ className }: BackButtonProps) => {
+const BackButton = ({ to, onClick, style }: BackButtonProps) => {
   const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (onClick) return onClick();
+    if (to) return navigate(to);
+    navigate(-1);
+  };
+
+  const handleDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.opacity = "0.6";
+  };
+  const handleUp = (e: React.PointerEvent<HTMLButtonElement>) => {
+    e.currentTarget.style.opacity = "1";
+  };
 
   return (
     <button
-      onClick={() => navigate(-1)}
-      className={cn("inline-flex items-center gap-2 text-primary hover:underline mb-4 text-sm font-medium", className)}
+      onClick={handleClick}
+      onPointerDown={handleDown}
+      onPointerUp={handleUp}
+      onPointerLeave={handleUp}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        minHeight: 44,
+        minWidth: 44,
+        padding: 0,
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        color: "#020202",
+        transition: "opacity 0.15s ease",
+        opacity: 1,
+        ...style,
+      }}
     >
-      <ArrowLeft className="h-4 w-4" /> Back
+      <ChevronLeft size={20} strokeWidth={1.8} color="#020202" />
+      <span
+        style={{
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontSize: 15,
+          fontWeight: 400,
+          color: "#020202",
+          letterSpacing: 0,
+          lineHeight: 1.2,
+        }}
+      >
+        Back
+      </span>
     </button>
   );
 };

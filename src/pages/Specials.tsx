@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import { useNavigate } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -55,11 +56,8 @@ const Specials = () => {
   return (
     <div style={{ background: "#EBEBEB", minHeight: "100dvh", display: "flex", flexDirection: "column", overflow: "auto", paddingBottom: 84, fontFamily: font }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
-        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
-        </button>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+        <BackButton />
       </div>
 
       {/* Title */}
