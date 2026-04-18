@@ -33,7 +33,8 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
       style={{
         display: "inline-flex",
         alignItems: "center",
-        gap: 6,
+        lineHeight: 1,
+        gap: 4,
         minHeight: 44,
         minWidth: 44,
         padding: 0,
@@ -46,7 +47,7 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
         ...style,
       }}
     >
-      <ChevronLeft size={20} strokeWidth={1.8} color="#020202" />
+      <ChevronLeft size={18} strokeWidth={1.8} color="#020202" style={{ display: "block", position: "relative", top: 0.5 }} />
       <span
         style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -54,7 +55,8 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
           fontWeight: 400,
           color: "#020202",
           letterSpacing: 0,
-          lineHeight: 1.2,
+          lineHeight: 1,
+          display: "inline-block",
         }}
       >
         Back
