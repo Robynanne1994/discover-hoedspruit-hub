@@ -359,17 +359,17 @@ const AdminListings = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-heading text-3xl font-bold text-foreground">Listings</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
+        <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Listings</h1>
+        <div className="flex flex-wrap gap-2">
           <Button variant="outline" className="gap-2" onClick={() => navigate("/admin/import")}>
-            <FileSpreadsheet className="h-4 w-4" /> Import/Export CSV
+            <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Import/Export CSV</span><span className="sm:hidden">CSV</span>
           </Button>
           <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
             <DialogTrigger asChild>
               <Button className="gap-2"><Plus className="h-4 w-4" /> Add Listing</Button>
             </DialogTrigger>
-            <DialogContent className="max-h-[85vh] overflow-y-auto">
+            <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader><DialogTitle>{editing ? "Edit Listing" : "Add Listing"}</DialogTitle></DialogHeader>
               <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
                 <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
@@ -783,8 +783,8 @@ const AdminListings = () => {
 
 
       {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <table className="w-full text-sm table-fixed">
+        <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm min-w-[640px]">
             <thead className="bg-muted">
               <tr>
                 <th className="p-3 w-[40px]">

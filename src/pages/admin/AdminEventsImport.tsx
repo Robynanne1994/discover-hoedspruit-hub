@@ -170,24 +170,24 @@ const AdminEventsImport = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 lg:mb-8 gap-3">
+        <div className="flex items-center gap-3 min-w-0">
           <Link to="/admin/events">
             <Button variant="ghost" size="icon"><ArrowLeft className="h-4 w-4" /></Button>
           </Link>
-          <h1 className="font-heading text-3xl font-bold text-foreground">Import/Export Events</h1>
+          <h1 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate">Import/Export Events</h1>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline" onClick={downloadEvents} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Download Events
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={downloadEvents} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Events</span><span className="sm:hidden">Events</span>
           </Button>
-          <Button variant="outline" onClick={downloadTemplate} className="gap-2">
-            <FileSpreadsheet className="h-4 w-4" /> Download Template
+          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2">
+            <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Template</span><span className="sm:hidden">Template</span>
           </Button>
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-8 space-y-6">
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">
         <div
           className="border-2 border-dashed border-border rounded-xl p-12 text-center cursor-pointer hover:border-primary transition-colors"
           onClick={() => fileRef.current?.click()}

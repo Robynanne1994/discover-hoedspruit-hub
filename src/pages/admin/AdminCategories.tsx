@@ -157,13 +157,13 @@ const AdminCategories = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-heading text-3xl font-bold text-foreground">Categories</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
+        <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Categories</h1>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> Add Category</Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editing ? "Edit Category" : "Add Category"}</DialogTitle>
             </DialogHeader>
@@ -193,7 +193,7 @@ const AdminCategories = () => {
 
       {/* Subcategory dialog */}
       <Dialog open={subOpen} onOpenChange={(v) => { if (!v) resetSubForm(); setSubOpen(v); }}>
-        <DialogContent>
+        <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingSub ? "Edit Subcategory" : "Add Subcategory"}</DialogTitle>
           </DialogHeader>
@@ -217,8 +217,8 @@ const AdminCategories = () => {
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
+          <table className="w-full text-sm min-w-[560px]">
             <thead className="bg-muted">
               <tr>
                 <th className="text-left p-3 font-medium text-muted-foreground">Title</th>
