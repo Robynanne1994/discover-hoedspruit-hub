@@ -34,7 +34,7 @@ const HomeLowdown = () => {
 
   return (
     <section>
-      <HomeSectionHead primary="Lowveld" serif="Lowdown" actionLabel="Read all" actionHref="/headlines" />
+      <HomeSectionHead primary="Lowveld" serif="lowdown" actionLabel="Read all" actionHref="/headlines" />
       <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 10 }}>
         {articles.map((a: any, idx: number) => (
           <Link
@@ -58,10 +58,10 @@ const HomeLowdown = () => {
               style={{
                 fontFamily: SERIF,
                 fontWeight: 300,
-                fontSize: 28,
-                color: "#0A0A0A",
+                fontSize: 22,
+                color: "#8A8480",
                 lineHeight: 1,
-                width: 36,
+                width: 28,
                 flexShrink: 0,
               }}
             >
