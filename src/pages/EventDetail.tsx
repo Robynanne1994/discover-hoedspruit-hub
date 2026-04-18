@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import ImageLightbox from "@/components/ImageLightbox";
 import {
   Calendar,
   Clock,
@@ -351,14 +353,28 @@ const EventDetail = () => {
           <div className="overflow-x-auto scrollbar-hide">
             <div className="inline-flex" style={{ gap: 12, paddingLeft: 24, paddingRight: 24, paddingBottom: 4 }}>
               {galleryImages.map((url, i) => (
-                <div key={i} style={{ width: 220, aspectRatio: "4/3", borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
+                  style={{ width: 220, aspectRatio: "4/3", borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, border: "none", padding: 0, cursor: "pointer" }}
+                  aria-label={`Open image ${i + 1}`}
+                >
                   <img src={url} alt={`${event.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
-                </div>
+                </button>
               ))}
             </div>
           </div>
         </section>
       )}
+
+      <ImageLightbox
+        images={galleryImages}
+        initialIndex={lightboxIndex}
+        open={lightboxOpen}
+        onOpenChange={setLightboxOpen}
+        alt={event.title}
+      />
 
       <BottomNav />
     </div>
