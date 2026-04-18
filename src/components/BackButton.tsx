@@ -47,7 +47,12 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
         ...style,
       }}
     >
-      <ChevronLeft size={18} strokeWidth={1.8} color="#020202" style={{ display: "block", position: "relative", top: 0.5 }} />
+      <ChevronLeft
+        size={22}
+        strokeWidth={1.8}
+        color="#020202"
+        style={{ display: "block", transform: "scale(1.4)", transformOrigin: "center" }}
+      />
       <span
         style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
