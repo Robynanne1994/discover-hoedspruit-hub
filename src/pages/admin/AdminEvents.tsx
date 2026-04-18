@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "", price: "" };
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "", price: "", is_featured: false };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -143,6 +143,7 @@ const AdminEvents = () => {
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
         price: values.price || null,
+        is_featured: !!values.is_featured,
       };
       if (editing) {
         const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
@@ -192,6 +193,7 @@ const AdminEvents = () => {
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
       price: (ev as any).price ?? "",
+      is_featured: !!(ev as any).is_featured,
     });
     setOpen(true);
   };
@@ -235,6 +237,11 @@ const AdminEvents = () => {
                 <div><Label>Contact Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} placeholder="+27 ..." /></div>
               </div>
               <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
+                <span className="text-sm font-medium">Featured event</span>
+                <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
+              </label>
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>
@@ -247,11 +254,12 @@ const AdminEvents = () => {
           <table className="w-full text-sm table-fixed">
             <thead className="bg-muted">
               <tr>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Title</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Date</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[25%]">Location</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Title</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Date</th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Location</th>
                 <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Tag</th>
-                <th className="p-3 w-[15%]"></th>
+                <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Featured</th>
+                <th className="p-3 w-[14%]"></th>
               </tr>
             </thead>
             <tbody>
@@ -261,6 +269,7 @@ const AdminEvents = () => {
                   <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
                   <td className="p-3 text-muted-foreground truncate">{ev.location ?? "—"}</td>
                   <td className="p-3 text-muted-foreground truncate">{ev.tag ?? "—"}</td>
+                  <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "★ Yes" : "—"}</td>
                   <td className="p-3">
                     <div className="flex gap-1 justify-end">
                       <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
@@ -270,7 +279,7 @@ const AdminEvents = () => {
                 </tr>
               ))}
               {events?.length === 0 && (
-                <tr><td colSpan={5} className="p-8 text-center text-muted-foreground">No events yet.</td></tr>
+                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No events yet.</td></tr>
               )}
             </tbody>
           </table>

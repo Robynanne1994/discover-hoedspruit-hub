@@ -227,6 +227,7 @@ export type Database = {
           google_maps_link: string | null
           id: string
           image_url: string | null
+          is_featured: boolean
           location: string | null
           price: string | null
           recurrence: string | null
@@ -248,6 +249,7 @@ export type Database = {
           google_maps_link?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           location?: string | null
           price?: string | null
           recurrence?: string | null
@@ -269,6 +271,7 @@ export type Database = {
           google_maps_link?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean
           location?: string | null
           price?: string | null
           recurrence?: string | null
