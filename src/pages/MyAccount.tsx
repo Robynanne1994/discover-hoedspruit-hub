@@ -505,20 +505,6 @@ const MyAccount = () => {
         </h1>
       </div>
 
-      {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 16 }}>
-        <p style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: 15,
-          fontWeight: 400,
-          lineHeight: 1.35,
-          color: "rgba(18,18,20,0.55)",
-          margin: 0,
-        }}>
-          Your account and settings
-        </p>
-      </div>
-
       {/* Profile card */}
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
