@@ -66,49 +66,35 @@
   font-display: swap;
 }
 
-/* Pragmatica — self-hosted woff2 */
-@font-face {
-  font-family: 'Pragmatica';
-  src: url('/fonts/Pragmatica-ExtExtraLight.woff2') format('woff2');
-  font-weight: 200;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Pragmatica';
-  src: url('/fonts/Pragmatica-ExtExtraLightOblique.woff2') format('woff2');
-  font-weight: 200;
-  font-style: italic;
-  font-display: swap;
-}
+/* Pragmatica — self-hosted woff2.
+   Only the normal-width "Book" and "Bold" cuts are mapped.
+   The Pragmatica-Ext* files are extended/wider and must NOT be used,
+   otherwise text renders horizontally stretched. */
 @font-face {
   font-family: 'Pragmatica';
   src: url('/fonts/Pragmatica-Book.woff2') format('woff2');
-  font-weight: 400;
+  font-weight: 300 500;
   font-style: normal;
+  font-stretch: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Pragmatica';
   src: url('/fonts/Pragmatica-BookOblique.woff2') format('woff2');
-  font-weight: 400;
+  font-weight: 300 500;
   font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Pragmatica';
-  src: url('/fonts/Pragmatica-ExtBook.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
+  font-stretch: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Pragmatica';
   src: url('/fonts/Pragmatica-Bold.woff2') format('woff2');
-  font-weight: 700;
+  font-weight: 600 800;
   font-style: normal;
+  font-stretch: normal;
   font-display: swap;
 }
+
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap');
 
