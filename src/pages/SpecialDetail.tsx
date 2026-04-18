@@ -52,7 +52,7 @@ const SpecialDetail = () => {
   };
 
   const BackButton = () => (
-    <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+    <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 16 }}>
       <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
         <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
         <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
@@ -64,7 +64,7 @@ const SpecialDetail = () => {
     return (
       <div style={{ background: "#EBEBEB", minHeight: "100dvh", display: "flex", flexDirection: "column", paddingBottom: 84, fontFamily: font }}>
         <BackButton />
-        <div className="flex flex-col items-center justify-center" style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
+        <div className="flex flex-col items-center justify-center" style={{ paddingTop: 80, paddingLeft: 20, paddingRight: 20 }}>
           <div className="animate-pulse" style={{ width: 48, height: 48, borderRadius: 9999, background: "rgba(18,18,20,0.06)", marginBottom: 14 }} />
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", fontFamily: font }}>Loading special...</p>
         </div>
@@ -76,7 +76,7 @@ const SpecialDetail = () => {
     return (
       <div style={{ background: "#EBEBEB", minHeight: "100dvh", display: "flex", flexDirection: "column", paddingBottom: 84, fontFamily: font }}>
         <BackButton />
-        <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 80, textAlign: "center" }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 80, textAlign: "center" }}>
           <p style={{ fontFamily: font, fontWeight: 400, fontSize: 20, color: "#020202", textTransform: "uppercase", marginBottom: 8 }}>Special not found</p>
           <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", lineHeight: 1.5, fontFamily: font }}>This special may have ended or been removed.</p>
         </div>
@@ -114,8 +114,8 @@ const SpecialDetail = () => {
 
   const SectionLabel = ({ eyebrow, title }: { eyebrow: string; title: string }) => (
     <div>
-      <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, margin: 0, marginBottom: 4, paddingLeft: 24, fontFamily: font }}>{eyebrow}</p>
-      <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, lineHeight: 1.15, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0, marginBottom: 12, paddingLeft: 24 }}>{title}</h2>
+      <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, margin: 0, marginBottom: 4, paddingLeft: 20, fontFamily: font }}>{eyebrow}</p>
+      <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, lineHeight: 1.15, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0, marginBottom: 12, paddingLeft: 20 }}>{title}</h2>
     </div>
   );
 
@@ -182,19 +182,19 @@ const SpecialDetail = () => {
       )}
 
       {/* Offer tag */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <span style={{ display: "inline-block", background: "#020202", borderRadius: 20, padding: "6px 14px", fontSize: 12, fontWeight: 500, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.04em", fontFamily: font }}>
           {special.deal_label}
         </span>
       </div>
 
       {/* Title */}
-      <h1 style={{ fontFamily: font, fontWeight: 400, fontSize: 34, lineHeight: 1.1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0, marginBottom: 6, paddingLeft: 24, paddingRight: 24 }}>
+      <h1 style={{ fontFamily: font, fontWeight: 400, fontSize: 34, lineHeight: 1.1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", margin: 0, marginBottom: 6, paddingLeft: 20, paddingRight: 20 }}>
         {special.title}
       </h1>
 
       {/* Meta line */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 20 }}>
         <p style={{ fontFamily: font, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", margin: 0 }}>
           {special.business_name}
         </p>
@@ -204,7 +204,7 @@ const SpecialDetail = () => {
       </div>
 
       {/* Action buttons */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28, display: "flex", gap: 12 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 28, display: "flex", gap: 12 }}>
         <button
           onClick={handleShare}
           className="active:scale-[0.97] active:opacity-85"
@@ -217,7 +217,7 @@ const SpecialDetail = () => {
           <Link
             to={`/listing/${special.business_id}`}
             className="active:scale-[0.97] active:opacity-85"
-            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 48, padding: "12px 24px", background: "#020202", borderRadius: 16, textDecoration: "none", border: "none", transition: "transform 0.12s ease, opacity 0.12s ease" }}
+            style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 48, padding: "12px 20px", background: "#020202", borderRadius: 16, textDecoration: "none", border: "none", transition: "transform 0.12s ease, opacity 0.12s ease" }}
           >
             <Store size={20} strokeWidth={1.8} style={{ color: "#FFFFFF" }} />
             <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize" }}>View Business</span>

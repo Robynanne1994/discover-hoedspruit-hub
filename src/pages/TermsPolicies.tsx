@@ -15,7 +15,7 @@ const TermsPolicies = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -36,7 +36,7 @@ const TermsPolicies = () => {
       </div>
 
       {/* Policy rows */}
-      <div style={{ padding: "32px 24px 0" }}>
+      <div style={{ padding: "32px 20px 0" }}>
         <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
           {policyRows.map((item, i) => {
             const Icon = item.icon;

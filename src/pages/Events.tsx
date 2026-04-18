@@ -132,7 +132,7 @@ const Events = () => {
   return (
     <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <button
           onClick={() => navigate(-1)}
           className="flex items-center"
@@ -160,14 +160,14 @@ const Events = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", margin: 0 }}>
           Events, markets and things to do around Hoedspruit
         </p>
       </div>
 
       {/* Search bar */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 16 }}>
         <div
           className="flex items-center"
           style={{
@@ -191,8 +191,8 @@ const Events = () => {
       </div>
 
       {/* Filter chips */}
-      <div className="overflow-x-auto scrollbar-hide" style={{ paddingLeft: 24, marginBottom: 24 }}>
-        <div className="flex" style={{ gap: 8, paddingRight: 24 }}>
+      <div className="overflow-x-auto scrollbar-hide" style={{ paddingLeft: 20, marginBottom: 24 }}>
+        <div className="flex" style={{ gap: 8, paddingRight: 20 }}>
           {filters.map((filter) => (
             <button
               key={filter.value}
@@ -217,7 +217,7 @@ const Events = () => {
       </div>
 
       {isLoading ? (
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20 }}>
           <Skeleton className="h-3 w-12 rounded mb-2" />
           <Skeleton className="h-8 w-32 rounded mb-4" />
           <div className="flex gap-3 overflow-hidden">
@@ -231,7 +231,7 @@ const Events = () => {
           ))}
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="text-center" style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
+        <div className="text-center" style={{ paddingTop: 80, paddingLeft: 20, paddingRight: 20 }}>
           <div
             className="flex items-center justify-center mx-auto"
             style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(18,18,20,0.04)", marginBottom: 24 }}
@@ -250,7 +250,7 @@ const Events = () => {
           {/* Featured Events */}
           {featuredEvents.length > 0 && (
             <section style={{ marginBottom: 36 }}>
-              <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+              <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 16 }}>
                 <p style={{
                   fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)",
                   textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1.3, marginBottom: 4,
@@ -269,7 +269,7 @@ const Events = () => {
                 </h2>
               </div>
               <div className="overflow-x-auto scrollbar-hide">
-                <div className="inline-flex snap-x snap-mandatory" style={{ paddingLeft: 24, gap: 12, paddingRight: 24, paddingBottom: 4 }}>
+                <div className="inline-flex snap-x snap-mandatory" style={{ paddingLeft: 20, gap: 12, paddingRight: 20, paddingBottom: 4 }}>
                   {featuredEvents.map((event) => (
                     <Link
                       key={event.id}
@@ -328,7 +328,7 @@ const Events = () => {
           {/* Upcoming Events */}
           {upcomingEvents.length > 0 && (
             <section style={{ paddingBottom: 36 }}>
-              <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+              <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 16 }}>
                 <p style={{
                   fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)",
                   textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1.3, marginBottom: 4,
@@ -349,7 +349,7 @@ const Events = () => {
                     <Link
                       to={`/events/${event.id}`}
                       className="flex items-center"
-                      style={{ padding: "14px 24px", transition: "transform 0.15s ease" }}
+                      style={{ padding: "14px 20px", transition: "transform 0.15s ease" }}
                       {...pressHandlers}
                     >
                       <div

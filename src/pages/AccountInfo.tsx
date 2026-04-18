@@ -161,7 +161,7 @@ const AccountInfo = () => {
   if (loading || !user) {
     return (
       <div style={{ minHeight: "100vh", background: "#ebebeb", fontFamily: FF }}>
-        <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
             <Skeleton className="h-10 w-48" />
@@ -177,7 +177,7 @@ const AccountInfo = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100, fontFamily: FF }}>
       {/* Back */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -193,14 +193,14 @@ const AccountInfo = () => {
           Account Info
         </h1>
       </div>
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", margin: 0, fontFamily: FF }}>
           Update your details and password
         </p>
       </div>
 
       {/* Personal details card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20 }}>
         <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.55)", marginBottom: 8, fontFamily: FF }}>
           Personal Details
         </div>
@@ -291,7 +291,7 @@ const AccountInfo = () => {
             border: "none",
             borderRadius: 16,
             height: 48,
-            padding: "12px 24px",
+            padding: "12px 20px",
             fontSize: 15,
             fontWeight: 600,
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -347,7 +347,7 @@ const AccountInfo = () => {
             border: "none",
             borderRadius: 16,
             height: 48,
-            padding: "12px 24px",
+            padding: "12px 20px",
             fontSize: 15,
             fontWeight: 600,
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",

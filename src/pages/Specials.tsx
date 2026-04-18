@@ -55,7 +55,7 @@ const Specials = () => {
   return (
     <div style={{ background: "#EBEBEB", minHeight: "100dvh", display: "flex", flexDirection: "column", overflow: "auto", paddingBottom: 84, fontFamily: font }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
           <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
           <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
@@ -70,14 +70,14 @@ const Specials = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <p style={{ fontFamily: font, fontStyle: "italic", fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.35, margin: 0 }}>
           The hottest deals and promotions in Hoedspruit
         </p>
       </div>
 
       {/* Filter button */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <button
           onClick={() => setShowFilters((v) => !v)}
           className="flex items-center active:scale-[0.97]"
@@ -134,7 +134,7 @@ const Specials = () => {
       {/* Content */}
       <div>
         {isLoading ? (
-          <div style={{ paddingLeft: 24, paddingRight: 24 }} className="space-y-4">
+          <div style={{ paddingLeft: 20, paddingRight: 20 }} className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 16, background: "#f0f0f0" }} />
             ))}
@@ -142,7 +142,7 @@ const Specials = () => {
         ) : filteredSpecials.length > 0 ? (
           <div>
             {/* Section overline */}
-            <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+            <div style={{ paddingLeft: 20, paddingRight: 20 }}>
               <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, margin: 0, marginBottom: 4, fontFamily: font }}>
                 Don't Miss
               </p>
@@ -252,7 +252,7 @@ const Specials = () => {
             </div>
           </div>
         ) : (
-          <div className="text-center" style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
+          <div className="text-center" style={{ paddingTop: 80, paddingLeft: 20, paddingRight: 20 }}>
             <Tag size={48} strokeWidth={1.5} style={{ color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
             <p style={{ fontFamily: font, fontWeight: 400, fontSize: 20, color: "#020202", textTransform: "uppercase", marginTop: 16, marginBottom: 4 }}>
               No specials found

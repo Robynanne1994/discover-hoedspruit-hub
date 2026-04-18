@@ -163,8 +163,8 @@ const Categories = () => {
         background: "#EBEBEB",
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         paddingTop: 16,
-        paddingLeft: 24,
-        paddingRight: 24,
+        paddingLeft: 20,
+        paddingRight: 20,
       }}
     >
       {/* Back button */}

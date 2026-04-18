@@ -62,7 +62,7 @@ const Feedback = () => {
   return (
     <div className="min-h-screen" style={{ background: "#ebebeb" }}>
       {/* Back */}
-      <div style={{ paddingTop: 44, paddingLeft: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6, background: "none", border: "none", cursor: "pointer" }}>
           <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
           <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
@@ -80,7 +80,7 @@ const Feedback = () => {
       </div>
 
       {/* Type selector */}
-      <div style={{ padding: "32px 24px 0" }}>
+      <div style={{ padding: "32px 20px 0" }}>
         <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase" as const, letterSpacing: 2, marginBottom: 12 }}>
           WHAT IS THIS ABOUT?
         </p>
@@ -108,7 +108,7 @@ const Feedback = () => {
       </div>
 
       {/* Form */}
-      <div style={{ padding: "24px 24px 0" }}>
+      <div style={{ padding: "24px 20px 0" }}>
         <input
           type="text"
           placeholder="Subject"
@@ -130,7 +130,7 @@ const Feedback = () => {
       </div>
 
       {/* Submit */}
-      <div style={{ padding: "8px 24px 0" }}>
+      <div style={{ padding: "8px 20px 0" }}>
         <button
           onClick={handleSubmit}
           disabled={submitting}
@@ -154,7 +154,7 @@ const Feedback = () => {
       </div>
 
       {/* Supportive text */}
-      <div style={{ padding: "28px 24px 100px" }}>
+      <div style={{ padding: "28px 20px 100px" }}>
         <div style={{
           background: "#ffffff",
           border: "1px solid rgba(18,18,20,0.06)",

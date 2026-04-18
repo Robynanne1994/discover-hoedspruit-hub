@@ -233,7 +233,7 @@ const SavedListings = () => {
       : `${activeCount} ${activeCount === 1 ? "special" : "specials"} saved`;
 
   const backButton = (
-    <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+    <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
       <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 8 }}>
         <ArrowLeft style={{ width: 20, height: 20, strokeWidth: 1.8, color: "#2B2420" }} />
         <span style={{ fontFamily, fontSize: 15, fontWeight: 500, color: "#2B2420" }}>Back</span>
@@ -262,7 +262,7 @@ const SavedListings = () => {
     return (
       <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
         {backButton}
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20 }}>
           <Skeleton className="h-14 w-48 mb-2" />
           <Skeleton className="h-4 w-40 mb-6" />
           <Skeleton className="h-12 w-full rounded-[14px] mb-4" />
@@ -323,12 +323,12 @@ const SavedListings = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <p style={{ fontFamily, fontStyle: "italic", fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)" }}>{subtitleText}</p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 16 }}>
         <div className="flex items-center" style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "12px 16px", gap: 10 }}>
           <Search style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.35)", flexShrink: 0 }} />
           <input
@@ -343,7 +343,7 @@ const SavedListings = () => {
       </div>
 
       {/* Primary type chips */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <div className="flex flex-wrap" style={{ gap: 8 }}>
           {(["listings", "events", "specials"] as const).map((tab) => {
             const active = primaryTab === tab;
@@ -363,7 +363,7 @@ const SavedListings = () => {
 
       {/* Secondary category chips */}
       {currentFilterOptions.length > 1 && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 20 }}>
           <div className="flex flex-wrap" style={{ gap: 8 }}>
             {currentFilterOptions.map((filter) => (
               <button
@@ -383,7 +383,7 @@ const SavedListings = () => {
       {primaryTab === "listings" && (
         <>
           {filteredListings.length === 0 && (
-            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
+            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 20, paddingRight: 20 }}>
               <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
               <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
               <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Tap the heart on any listing to save it here</p>
@@ -453,14 +453,14 @@ const SavedListings = () => {
       {primaryTab === "events" && (
         <>
           {filteredEvents.length === 0 && (
-            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
+            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 20, paddingRight: 20 }}>
               <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
               <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
               <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save events from the events page to keep track of them here</p>
             </div>
           )}
           {filteredEvents.length > 0 && (
-            <div className="flex flex-col" style={{ paddingLeft: 24, paddingRight: 24 }}>
+            <div className="flex flex-col" style={{ paddingLeft: 20, paddingRight: 20 }}>
               {filteredEvents.map((fav: any, idx: number) => {
                 const evt = fav.details;
                 if (!evt) return null;
@@ -516,14 +516,14 @@ const SavedListings = () => {
       {primaryTab === "specials" && (
         <>
           {filteredSpecials.length === 0 && (
-            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
+            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 20, paddingRight: 20 }}>
               <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
               <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
               <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save specials from the specials page to keep track of them here</p>
             </div>
           )}
           {filteredSpecials.length > 0 && (
-            <div className="flex flex-col" style={{ paddingLeft: 24, paddingRight: 24 }}>
+            <div className="flex flex-col" style={{ paddingLeft: 20, paddingRight: 20 }}>
               {filteredSpecials.map((fav: any, idx: number) => {
                 const sp = fav.details;
                 if (!sp) return null;

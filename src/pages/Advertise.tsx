@@ -198,7 +198,7 @@ const Advertise = () => {
             </div>
             {/* Submit */}
             <button type="submit" disabled={submitForm.isPending} style={{
-              width: "100%", background: "#020202", borderRadius: 16, height: 48, padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, border: "none", cursor: "pointer", opacity: submitForm.isPending ? 0.6 : 1, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+              width: "100%", background: "#020202", borderRadius: 16, height: 48, padding: "12px 20px", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, border: "none", cursor: "pointer", opacity: submitForm.isPending ? 0.6 : 1, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
             }}>
               {submitForm.isPending ? (
                 <><Loader2 size={16} color="#ffffff" className="animate-spin" /> <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff" }}>Sending...</span></>

@@ -126,7 +126,7 @@ const UserProfile = () => {
       </div>
 
       {/* Avatar overlap */}
-      <div style={{ display: "flex", justifyContent: "flex-start", paddingLeft: 24, marginTop: -56 }}>
+      <div style={{ display: "flex", justifyContent: "flex-start", paddingLeft: 20, marginTop: -56 }}>
         <div
           style={{
             width: 80,
@@ -151,7 +151,7 @@ const UserProfile = () => {
       </div>
 
       {/* Profile card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 16 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginTop: 16 }}>
         <div style={{ background: "#FFFFFF", borderRadius: 16, padding: 24 }}>
           {isLoading ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
@@ -218,7 +218,7 @@ const UserProfile = () => {
                     onTouchEnd={(e) => (e.currentTarget.style.transform = "scale(1)")}
                     style={{
                       height: 48,
-                      padding: "12px 24px",
+                      padding: "12px 20px",
                       borderRadius: 16,
                       fontSize: 15,
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -259,8 +259,8 @@ const UserProfile = () => {
               color: TEXT_PRIMARY,
               letterSpacing: "0.01em",
               margin: 0,
-              paddingLeft: 24,
-              paddingRight: 24,
+              paddingLeft: 20,
+              paddingRight: 20,
             }}
           >
             Visited Places
@@ -270,8 +270,8 @@ const UserProfile = () => {
               marginTop: 12,
               display: "flex",
               gap: 8,
-              paddingLeft: 24,
-              paddingRight: 24,
+              paddingLeft: 20,
+              paddingRight: 20,
               overflowX: "auto",
               scrollbarWidth: "none",
             }}
@@ -333,7 +333,7 @@ const UserProfile = () => {
 
       {/* Recent Reviews */}
       {reviews && reviews.length > 0 && (
-        <section style={{ marginTop: 24, paddingLeft: 24, paddingRight: 24 }}>
+        <section style={{ marginTop: 24, paddingLeft: 20, paddingRight: 20 }}>
           <h2
             style={{
               fontSize: 20,

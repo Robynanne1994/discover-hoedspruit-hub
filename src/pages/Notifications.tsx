@@ -195,7 +195,7 @@ const Notifications = () => {
   return (
     <div style={{ background: "#ebebeb", minHeight: "100vh", paddingBottom: 100 }}>
       {/* Back */}
-      <div style={{ paddingTop: 44, paddingLeft: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -216,7 +216,7 @@ const Notifications = () => {
       </div>
 
       {/* Master toggle */}
-      <div style={{ padding: "0 24px", marginBottom: 28 }}>
+      <div style={{ padding: "0 20px", marginBottom: 28 }}>
         <div
           onClick={() => updatePref("push_enabled")}
           style={{
@@ -241,7 +241,7 @@ const Notifications = () => {
       {/* Sections */}
       <div style={{ opacity: masterEnabled ? 1 : 0.4, transition: "opacity 200ms", pointerEvents: masterEnabled ? "auto" : "none" }}>
         {SECTIONS.map((section) => (
-          <div key={section.label} style={{ padding: "0 24px", marginBottom: 28 }}>
+          <div key={section.label} style={{ padding: "0 20px", marginBottom: 28 }}>
             <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
               {section.label}
             </div>
@@ -262,7 +262,7 @@ const Notifications = () => {
       </div>
 
       {/* Note */}
-      <div style={{ padding: "0 24px", marginBottom: 100 }}>
+      <div style={{ padding: "0 20px", marginBottom: 100 }}>
         <div style={{ background: "rgba(18,18,20,0.03)", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16, boxShadow: "var(--card-shadow)", textAlign: "center" }}>
           <span style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", lineHeight: 1.5 }}>
             Changes are saved automatically. You can update these at any time.
