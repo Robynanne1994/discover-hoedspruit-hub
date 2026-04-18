@@ -13,7 +13,7 @@ const INK = "#020202";
 const MUTED = "rgba(18,18,20,0.55)";
 const HAIRLINE = "rgba(18,18,20,0.08)";
 
-const HERO_STAT = { number: "2,400+", eyebrow: "Active community", caption: "Locals, visitors and newcomers using the app each month to find what's open and what's on." };
+const HERO_STAT = { number: "2,400+", eyebrow: "Active community", caption: "Locals, visitors and newcomers using Hello Hoedspruit every month to find what's open and what's on." };
 
 const BENEFITS = [
   { n: "01", title: "Local Visibility", description: "Show up when people search for places to eat, stay, shop and explore in Hoedspruit." },
