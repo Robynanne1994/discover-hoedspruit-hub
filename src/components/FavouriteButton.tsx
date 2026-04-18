@@ -61,12 +61,13 @@ const FavouriteButton = ({ itemId, itemType }: FavouriteButtonProps) => {
         e.preventDefault();
         toggle.mutate();
       }}
-      className="absolute top-2 right-2 z-10 bg-white/80 backdrop-blur-sm rounded-full p-1.5 hover:bg-white transition-colors"
+      className="absolute top-3 right-3 z-10 bg-white/92 backdrop-blur-sm rounded-full h-9 w-9 flex items-center justify-center hover:bg-white transition-colors"
       aria-label={isFavourited ? "Remove from favourites" : "Add to favourites"}
     >
       <Heart
-        className={`h-4 w-4 transition-colors ${
-          isFavourited ? "fill-pink-500 text-pink-500" : "text-muted-foreground"
+        strokeWidth={1.8}
+        className={`h-[18px] w-[18px] transition-colors ${
+          isFavourited ? "fill-[#D4654A] text-[#D4654A]" : "text-[rgba(18,18,20,0.3)]"
         }`}
       />
     </button>
