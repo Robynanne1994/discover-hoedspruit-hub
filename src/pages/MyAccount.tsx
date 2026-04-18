@@ -489,9 +489,9 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       {/* Page title */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
         <h1 style={{
-          fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+          fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
           fontWeight: 400,
           fontSize: 40,
           lineHeight: 0.95,
@@ -499,7 +499,6 @@ const MyAccount = () => {
           color: "#020202",
           textTransform: "capitalize",
           margin: 0,
-          marginBottom: 4,
         }}>
           Profile
         </h1>
