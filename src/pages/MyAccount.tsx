@@ -493,9 +493,9 @@ const MyAccount = () => {
         <h1 style={{
           fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
           fontWeight: 400,
-          fontSize: 40,
+          fontSize: 52,
           lineHeight: 0.95,
-          letterSpacing: "-0.01em",
+          letterSpacing: "-0.02em",
           color: "#020202",
           textTransform: "capitalize",
           margin: 0,
