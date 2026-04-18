@@ -185,7 +185,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 120, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 120, fontFamily: FF, overflowX: "hidden" }}>
       {/* Back button */}
       <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)", paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <button
@@ -294,27 +294,38 @@ const ContactUs = () => {
 
       {/* Two-column grid */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 48 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
+          gap: 10,
+          alignItems: "stretch",
+        }}>
           {CONTACT_PHONE && (
-            <ContactCard
-              overline="Call"
-              value={CONTACT_PHONE}
-              sub="Mon to Fri, 9 to 5"
-              href={`tel:${PHONE_DIGITS}`}
-            />
+            <div style={{ minWidth: 0 }}>
+              <ContactCard
+                overline="Call"
+                value={CONTACT_PHONE}
+                valueMode="nowrap"
+                sub="Mon to Fri, 9 to 5"
+                href={`tel:${PHONE_DIGITS}`}
+              />
+            </div>
           )}
           {CONTACT_EMAIL && (
-            <ContactCard
-              overline="Email"
-              value={CONTACT_EMAIL}
-              sub="Replies within 48 hours"
-              href={`mailto:${CONTACT_EMAIL}`}
-            />
+            <div style={{ minWidth: 0 }}>
+              <ContactCard
+                overline="Email"
+                value={CONTACT_EMAIL}
+                valueMode="wrap"
+                sub="Replies within 48 hours"
+                href={`mailto:${CONTACT_EMAIL}`}
+              />
+            </div>
           )}
-          <div style={{ gridColumn: "1 / -1" }}>
+          <div style={{ gridColumn: "span 2", minWidth: 0 }}>
             <ContactCard
               overline="Write to us"
-              value="Contact form"
+              title="Contact form"
               sub="Send a longer message"
               onClick={handleFormClick}
             />
