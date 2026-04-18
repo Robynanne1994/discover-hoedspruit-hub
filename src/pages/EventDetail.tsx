@@ -349,7 +349,7 @@ const EventDetail = () => {
             <SectionLabel eyebrow="Moments" title="Gallery" />
           </div>
           <div className="overflow-x-auto scrollbar-hide">
-            <div className="inline-flex" style={{ gap: 12, paddingLeft: 20, paddingRight: 20, paddingBottom: 4 }}>
+            <div className="inline-flex" style={{ gap: 12, paddingLeft: 24, paddingRight: 24, paddingBottom: 4 }}>
               {galleryImages.map((url, i) => (
                 <div key={i} style={{ width: 220, aspectRatio: "4/3", borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
                   <img src={url} alt={`${event.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
