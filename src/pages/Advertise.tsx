@@ -67,6 +67,7 @@ const Advertise = () => {
   const validate = () => {
     const errs: Record<string, string> = {};
     if (!name.trim()) errs.name = "Name is required";
+    if (!business.trim()) errs.business = "Business name is required";
     if (!email.trim()) errs.email = "Email is required";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.email = "Please enter a valid email";
     if (!message.trim()) errs.message = "Tell us a bit about what you're looking for";
@@ -315,11 +316,15 @@ const Advertise = () => {
               </div>
               <div style={{ marginBottom: 12 }}>
                 <input
-                  placeholder="Business name (optional)"
+                  placeholder="Business name"
                   value={business}
-                  onChange={(e) => setBusiness(e.target.value)}
-                  style={{ ...pillInput, borderRadius: 999 }}
+                  onChange={(e) => { setBusiness(e.target.value); if (errors.business) setErrors(p => ({ ...p, business: "" })); }}
+                  style={{
+                    ...pillInput, borderRadius: 999,
+                    borderColor: errors.business ? "#e53e3e" : "rgba(18,18,20,0.1)",
+                  }}
                 />
+                {errors.business && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 16 }}>{errors.business}</p>}
               </div>
               <div style={{ marginBottom: 20 }}>
                 <textarea
