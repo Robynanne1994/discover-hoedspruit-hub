@@ -12,18 +12,25 @@ interface Props {
   categorySearch: string | string[];
   defaultTitle: string;
   seeAllHref: string;
+  primary?: string;
+  serif?: string;
 }
 
-const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: Props) => {
+const cleanName = (s: string) => s.replace(/\s*&\s*/g, " and ");
+
+const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, primary: primaryProp, serif: serifProp }: Props) => {
   const { data: listings } = useHomepageSection(sectionKey, categorySearch);
   const { data: title } = useHomepageSectionTitle(sectionKey, defaultTitle);
 
   if (!listings || listings.length === 0) return null;
 
-  // Split title into "Where to" + serif word, fallback to single line
-  const parts = (title || defaultTitle).split(" ");
-  const serifWord = parts.length > 2 ? parts[parts.length - 1] : undefined;
-  const primary = serifWord ? parts.slice(0, -1).join(" ") : title || defaultTitle;
+  let primary = primaryProp;
+  let serifWord = serifProp;
+  if (!primary) {
+    const parts = (title || defaultTitle).split(" ");
+    serifWord = parts.length > 2 ? parts[parts.length - 1] : undefined;
+    primary = serifWord ? parts.slice(0, -1).join(" ") : title || defaultTitle;
+  }
 
   return (
     <section>
@@ -78,7 +85,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                     letterSpacing: "-0.01em",
                   }}
                 >
-                  {l.title}
+                  {cleanName(l.title)}
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {l.google_rating != null && (
