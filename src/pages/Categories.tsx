@@ -163,24 +163,19 @@ const Categories = () => {
         minHeight: "100dvh",
         background: "#EBEBEB",
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        paddingTop: 16,
+        paddingTop: "calc(env(safe-area-inset-top) + 24px)",
         paddingLeft: 20,
         paddingRight: 20,
       }}
     >
-      {/* Back button */}
-      <div style={{ marginBottom: 12 }}>
-        <BackButton />
-      </div>
-
       {/* Heading */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 36 }}>
+      <div style={{ marginBottom: 36 }}>
         <h1
-          className="font-semibold"
           style={{
-            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+            fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
+            fontWeight: 400,
             textTransform: "capitalize",
-            fontSize: 40,
+            fontSize: 52,
             lineHeight: 0.95,
             letterSpacing: "-0.02em",
             color: "#020202",
