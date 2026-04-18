@@ -2,10 +2,32 @@ import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, Search, Newspaper } from "lucide-react";
+import { ChevronLeft, Search, ArrowUpRight } from "lucide-react";
 import { format } from "date-fns";
 
-const categories = ["All", "News", "Community", "Wildlife", "Food", "Travel", "Property", "Events", "Lifestyle"];
+const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
+const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
+
+const PAGE_BG = "#EBEBEB";
+const CARD = "#FFFFFF";
+const SOFT = "#F2EFEC";
+const INK = "#0A0A0A";
+const MUTED = "#8A8480";
+
+const FEATURED_GRADIENT =
+  "radial-gradient(120% 90% at 30% 25%, #E27B4A 0%, #A04A2B 55%, #3A1A10 100%)";
+const FEATURED_OVERLAY =
+  "linear-gradient(to bottom, rgba(0,0,0,0) 35%, rgba(0,0,0,0.15) 55%, rgba(0,0,0,0.7) 100%)";
+
+const categories = ["All", "News", "Community", "Wildlife", "Food"];
+
+const pressDown = (scale = 0.98) => (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = `scale(${scale})`;
+};
+const pressUp = (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = "scale(1)";
+};
 
 const Headlines = () => {
   const navigate = useNavigate();
@@ -24,150 +46,241 @@ const Headlines = () => {
     },
   });
 
-  const featured = articles.find((a: any) => a.is_featured);
-
-  const filtered = useMemo(() => {
-    let list = articles.filter((a: any) => !a.is_featured);
-    if (activeCategory !== "All") {
-      list = list.filter((a: any) => a.category?.toLowerCase() === activeCategory.toLowerCase());
-    }
+  const matches = (a: any) => {
+    if (activeCategory !== "All" && a.category?.toLowerCase() !== activeCategory.toLowerCase()) return false;
     if (search.trim()) {
       const q = search.toLowerCase();
-      list = list.filter((a: any) =>
-        a.title?.toLowerCase().includes(q) || a.excerpt?.toLowerCase().includes(q)
-      );
+      if (!a.title?.toLowerCase().includes(q) && !a.excerpt?.toLowerCase().includes(q)) return false;
     }
-    return list;
-  }, [articles, activeCategory, search]);
-
-  const showFeatured = featured && (activeCategory === "All" || featured.category?.toLowerCase() === activeCategory.toLowerCase());
-
-  const formatDate = (d: string) => {
-    try { return format(new Date(d), "d MMMM yyyy"); } catch { return d; }
+    return true;
   };
 
+  const featured = useMemo(() => {
+    const f = articles.find((a: any) => a.is_featured && matches(a));
+    return f || articles.find((a: any) => matches(a));
+  }, [articles, activeCategory, search]);
+
+  const grid = useMemo(
+    () => articles.filter((a: any) => matches(a) && a.id !== featured?.id),
+    [articles, activeCategory, search, featured]
+  );
+
+  const fmtDate = (d: string) => {
+    try { return format(new Date(d), "d MMM yyyy"); } catch { return d; }
+  };
+  const monthLabel = format(new Date(), "MMMM yyyy");
+
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
-      {/* Back */}
-      <div style={{ paddingTop: 52, paddingLeft: 20, marginBottom: 28 }}>
-        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6, background: "none", border: "none", cursor: "pointer" }}>
-          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)" }}>Back</span>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 120 }}>
+      <style>{`
+        .lld-no-scrollbar::-webkit-scrollbar { display: none; }
+        .lld-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .lld-press { transition: transform 150ms ease-out; }
+        .lld-input::placeholder { color: ${MUTED}; }
+      `}</style>
+
+      {/* Masthead row */}
+      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <button
+          onClick={() => navigate(-1)}
+          onPointerDown={pressDown(0.98)}
+          onPointerUp={pressUp}
+          onPointerLeave={pressUp}
+          className="lld-press"
+          style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, color: INK }}
+        >
+          <ChevronLeft size={20} strokeWidth={2} color={INK} />
+          <span style={{ fontFamily: SANS, fontSize: 15, color: INK, lineHeight: 1 }}>Back</span>
         </button>
+        <span style={{ fontFamily: SERIF, fontWeight: 300, fontSize: 14, lineHeight: 1, letterSpacing: "-0.005em", color: MUTED }}>
+          {monthLabel}
+        </span>
       </div>
 
-      {/* Title */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
-          The Lowveld Lowdown
+      {/* Header */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
+        <div style={{ fontFamily: SANS, fontSize: 12, letterSpacing: "0.02em", color: MUTED, marginBottom: 8 }}>Stories</div>
+        <h1 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 52, lineHeight: 0.98, letterSpacing: "-0.03em", color: INK, margin: 0 }}>
+          The Lowveld<br />Lowdown
         </h1>
-      </div>
-
-      {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
-          News, stories and local updates from the Lowveld
+        <p style={{ fontFamily: SANS, fontSize: 15, lineHeight: 1.45, color: MUTED, marginTop: 14, marginBottom: 0, maxWidth: 280 }}>
+          News, stories and local updates from the Lowveld.
         </p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 20 }}>
-        <div className="flex items-center" style={{ background: "#ebebeb", border: "2px solid #121214", borderRadius: 9999, padding: "11px 14px", gap: 8 }}>
-          <Search style={{ width: 16, height: 16, strokeWidth: 2, color: "#2b2420", flexShrink: 0 }} />
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, background: SOFT, borderRadius: 999, padding: "14px 20px" }}>
+          <Search size={18} strokeWidth={2} color={MUTED} style={{ flexShrink: 0 }} />
           <input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search articles..."
-            style={{ border: "none", outline: "none", background: "transparent", fontSize: 13, color: "#2b2420", width: "100%", whiteSpace: "nowrap" }}
+            placeholder="Search articles"
+            className="lld-input"
+            style={{ border: "none", outline: "none", background: "transparent", fontFamily: SANS, fontSize: 15, color: INK, width: "100%" }}
           />
         </div>
       </div>
 
-      {/* Filter pills */}
-      <div style={{ paddingLeft: 20, marginBottom: 28, overflowX: "auto", WebkitOverflowScrolling: "touch" }} className="flex gap-2 no-scrollbar">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            style={{
-              background: activeCategory === cat ? "#121214" : "rgba(18,18,20,0.05)",
-              borderRadius: 9999,
-              padding: "7px 16px",
-              fontSize: 12,
-              fontWeight: 600,
-              color: activeCategory === cat ? "#ffffff" : "rgba(18,18,20,0.55)",
-              border: "none",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              flexShrink: 0,
-            }}
-          >
-            {cat}
-          </button>
-        ))}
+      {/* Category chips */}
+      <div
+        className="lld-no-scrollbar"
+        style={{ marginTop: 18, paddingLeft: 24, paddingRight: 0, marginRight: -24, display: "flex", gap: 8, overflowX: "auto" }}
+      >
+        {categories.map((cat) => {
+          const active = activeCategory === cat;
+          return (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              onPointerDown={pressDown(0.98)}
+              onPointerUp={pressUp}
+              onPointerLeave={pressUp}
+              className="lld-press"
+              style={{
+                background: active ? INK : CARD,
+                color: active ? "#FFFFFF" : INK,
+                fontFamily: SANS,
+                fontSize: 14,
+                lineHeight: 1,
+                padding: "10px 18px",
+                borderRadius: 999,
+                border: "none",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+              }}
+            >
+              {cat}
+            </button>
+          );
+        })}
+        <div style={{ width: 24, flexShrink: 0 }} />
       </div>
 
       {/* Featured */}
-      {showFeatured && (
-        <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>Latest</div>
-          <div style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 18 }}>Featured</div>
+      {featured && (
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
+          <Link
+            to={`/headlines/${featured.slug}`}
+            onPointerDown={pressDown(0.99)}
+            onPointerUp={pressUp}
+            onPointerLeave={pressUp}
+            className="lld-press"
+            style={{
+              display: "block",
+              position: "relative",
+              width: "100%",
+              aspectRatio: "4 / 5",
+              borderRadius: 24,
+              overflow: "hidden",
+              background: featured.image_url ? `url(${featured.image_url}) center/cover no-repeat` : FEATURED_GRADIENT,
+              textDecoration: "none",
+            }}
+          >
+            <div style={{ position: "absolute", inset: 0, background: FEATURED_OVERLAY }} />
 
-          <Link to={`/headlines/${featured.slug}`}>
-            <div style={{ borderRadius: 16, overflow: "hidden", position: "relative" }}>
-              <div style={{ width: "100%", height: 200, background: "#f0f0f0", position: "relative" }}>
-                {featured.image_url ? (
-                  <img src={featured.image_url} alt={featured.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : null}
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)" }} />
-                <div style={{ position: "absolute", top: 14, left: 14, background: "#ffffff", borderRadius: 8, padding: "4px 10px" }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px" }}>{featured.category}</span>
-                </div>
-                <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
-                  <div style={{ fontWeight: 400, fontSize: 20, color: "#ffffff", lineHeight: 1.1, marginBottom: 6 }}>{featured.title}</div>
-                  <div style={{ fontSize: 12, color: "rgba(255,255,255,0.6)" }}>
-                    {formatDate(featured.published_at)} · {featured.read_time || 3} min read
-                  </div>
-                </div>
+            {/* Tag */}
+            {featured.category && (
+              <div style={{
+                position: "absolute", top: 20, left: 20,
+                fontFamily: SANS, fontSize: 12, letterSpacing: "0.04em",
+                color: "rgba(255,255,255,0.9)", lineHeight: 1.2,
+              }}>
+                {featured.category}
               </div>
+            )}
+
+            {/* Arrow button */}
+            <div style={{
+              position: "absolute", top: 16, right: 16,
+              width: 36, height: 36, borderRadius: 999,
+              background: "rgba(255,255,255,0.95)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>
+              <ArrowUpRight size={14} strokeWidth={2.2} color={INK} />
+            </div>
+
+            {/* Bottom text */}
+            <div style={{ position: "absolute", left: 22, right: 22, bottom: 22 }}>
+              <div style={{
+                fontFamily: SANS, fontSize: 12, letterSpacing: "0.02em",
+                color: "rgba(255,255,255,0.78)", lineHeight: 1.2, marginBottom: 8,
+              }}>
+                {fmtDate(featured.published_at)} · {featured.read_time || 2} min read
+              </div>
+              <h2 style={{
+                fontFamily: DISPLAY, fontWeight: 700, fontSize: 32,
+                lineHeight: 1.0, letterSpacing: "-0.03em", color: "#FFFFFF", margin: 0,
+              }}>
+                {featured.title}
+              </h2>
             </div>
           </Link>
         </div>
       )}
 
-      {/* Recent */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 18 }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>More Stories</div>
-        <div style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px" }}>Recent</div>
-      </div>
+      {/* More stories */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 44 }}>
+        <div style={{ fontFamily: SANS, fontSize: 12, letterSpacing: "0.02em", color: MUTED, marginBottom: 8 }}>More stories</div>
+        <h2 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 40, lineHeight: 1.0, letterSpacing: "-0.03em", color: INK, margin: 0, marginBottom: 20 }}>
+          Recent
+        </h2>
 
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 100 }}>
-        {filtered.length === 0 && (
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.35)", textAlign: "center", paddingTop: 40 }}>No articles found.</p>
-        )}
-        {filtered.map((article: any, i: number) => (
-          <Link key={article.id} to={`/headlines/${article.slug}`}>
-            <div className="flex" style={{ gap: 14, paddingTop: 16, paddingBottom: 16, borderBottom: i < filtered.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none" }}>
-              <div style={{ width: 90, height: 90, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                {article.image_url ? (
-                  <img src={article.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                ) : (
-                  <Newspaper style={{ width: 28, height: 28, color: "rgba(18,18,20,0.15)" }} />
-                )}
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>{article.category}</div>
-                <div style={{
-                  fontSize: 15, fontWeight: 700, color: "#2b2420", lineHeight: 1.2, marginBottom: 6,
-                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as any, overflow: "hidden"
-                }}>{article.title}</div>
-                <div style={{ fontSize: 12, color: "rgba(18,18,20,0.35)" }}>
-                  {formatDate(article.published_at)} · {article.read_time || 3} min read
+        {grid.length === 0 ? (
+          <p style={{ fontFamily: SANS, fontSize: 14, color: MUTED, textAlign: "center", paddingTop: 24 }}>No articles found.</p>
+        ) : (
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {grid.map((article: any) => (
+              <Link
+                key={article.id}
+                to={`/headlines/${article.slug}`}
+                onPointerDown={pressDown(0.98)}
+                onPointerUp={pressUp}
+                onPointerLeave={pressUp}
+                className="lld-press"
+                style={{
+                  position: "relative",
+                  display: "block",
+                  background: CARD,
+                  borderRadius: 24,
+                  padding: "16px 16px 18px",
+                  minHeight: 190,
+                  textDecoration: "none",
+                }}
+              >
+                <div style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "0.04em", color: MUTED, lineHeight: 1.2 }}>
+                  {article.category || "Story"}
                 </div>
-              </div>
-            </div>
-          </Link>
-        ))}
+
+                <div style={{
+                  position: "absolute", top: 14, right: 14,
+                  width: 26, height: 26, borderRadius: 999,
+                  background: SOFT,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <ArrowUpRight size={12} strokeWidth={2.2} color={INK} />
+                </div>
+
+                <div style={{
+                  marginTop: 32,
+                  fontFamily: SANS, fontSize: 22, lineHeight: 1.1, letterSpacing: "-0.015em",
+                  color: INK,
+                  display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as any, overflow: "hidden",
+                }}>
+                  {article.title}
+                </div>
+
+                <div style={{
+                  position: "absolute", left: 16, right: 16, bottom: 16,
+                  fontFamily: SANS, fontSize: 12, letterSpacing: "0.01em", color: MUTED,
+                }}>
+                  {fmtDate(article.published_at)} · {article.read_time || 3} min read
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
