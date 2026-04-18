@@ -11,6 +11,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
+import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
 
 import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
@@ -38,6 +39,8 @@ const ListingDetail = () => {
   const whatToKnowRef = useRef<HTMLDivElement>(null);
   const [openAccordion, setOpenAccordion] = useState<string | null>(null);
   const [aboutExpanded, setAboutExpanded] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -776,6 +779,38 @@ const ListingDetail = () => {
           </a>
         </div>
       </div>
+
+      {hasGallery && (
+        <section style={{ marginBottom: 24, marginTop: 8 }}>
+          <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+            <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.08em", color: "rgba(43,36,32,0.5)", textTransform: "uppercase", marginBottom: 4 }}>Gallery</div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: "#2B2420", letterSpacing: "-0.01em" }}>More photos</div>
+          </div>
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="inline-flex" style={{ gap: 12, paddingLeft: 20, paddingRight: 20, paddingBottom: 4 }}>
+              {galleryImages!.map((url, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
+                  style={{ width: 220, aspectRatio: "4/3", borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, border: "none", padding: 0, cursor: "pointer" }}
+                  aria-label={`Open image ${i + 1}`}
+                >
+                  <img src={url} alt={`${listing.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <ImageLightbox
+        images={galleryImages ?? []}
+        initialIndex={lightboxIndex}
+        open={lightboxOpen}
+        onOpenChange={setLightboxOpen}
+        alt={listing.title}
+      />
 
       <BottomNav />
     </div>
