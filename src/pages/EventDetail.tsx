@@ -182,7 +182,7 @@ const EventDetail = () => {
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
     contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
     socialLink ? { label: "Social Media", value: "Social Media Profile", icon: Globe, href: socialLink } : null,
-    bookingLink ? { label: "Booking", value: "Book Now", icon: ExternalLink, href: bookingLink } : null,
+    bookingLink ? { label: "Booking", value: "Booking Link", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
@@ -310,7 +310,7 @@ const EventDetail = () => {
               onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
             >
               <ExternalLink size={20} strokeWidth={1.8} color="#FFFFFF" />
-              Book Now
+              Booking Link
             </a>
           </div>
         )}
