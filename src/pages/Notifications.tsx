@@ -195,14 +195,8 @@ const Notifications = () => {
   return (
     <div style={{ background: "#ebebeb", minHeight: "100vh", paddingBottom: 100 }}>
       {/* Back */}
-      <div style={{ paddingTop: 44, paddingLeft: 20 }}>
-        <button
-          onClick={() => navigate(-1)}
-          style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
-        >
-          <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
-        </button>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+        <BackButton />
       </div>
 
       {/* Heading */}

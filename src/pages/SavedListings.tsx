@@ -233,11 +233,8 @@ const SavedListings = () => {
       : `${activeCount} ${activeCount === 1 ? "special" : "specials"} saved`;
 
   const backButton = (
-    <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
-      <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 8 }}>
-        <ArrowLeft style={{ width: 20, height: 20, strokeWidth: 1.8, color: "#2B2420" }} />
-        <span style={{ fontFamily, fontSize: 15, fontWeight: 500, color: "#2B2420" }}>Back</span>
-      </button>
+    <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+      <BackButton />
     </div>
   );
 

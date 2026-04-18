@@ -62,11 +62,8 @@ const Feedback = () => {
   return (
     <div className="min-h-screen" style={{ background: "#ebebeb" }}>
       {/* Back */}
-      <div style={{ paddingTop: 44, paddingLeft: 20 }}>
-        <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6, background: "none", border: "none", cursor: "pointer" }}>
-          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
-        </button>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+        <BackButton />
       </div>
 
       {/* Heading */}
