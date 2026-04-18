@@ -285,7 +285,7 @@ const ContactUs = () => {
                 fontFamily: FF, fontSize: 13, fontWeight: 400,
                 color: "rgba(255,255,255,0.7)", margin: 0,
               }}>
-                {CONTACT_PHONE} · usually replies same day
+                {CONTACT_PHONE} · Reply same day
               </p>
             </div>
           </div>
