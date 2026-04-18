@@ -456,10 +456,11 @@ const CategoryPage = () => {
                   {/* Card content */}
                   <div style={{ padding: "16px 20px 20px 20px" }}>
                     <h3
+                      className="font-semibold"
                       style={{
                         fontFamily: font,
                         fontSize: 22,
-                        fontWeight: 400,
+                        fontWeight: 600,
                         color: "#020202",
                         textTransform: "uppercase",
                         lineHeight: 1.15,
