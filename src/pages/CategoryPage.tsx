@@ -373,9 +373,10 @@ const CategoryPage = () => {
           </p>
           {/* Section heading */}
           <h2
+            className="font-semibold"
             style={{
               fontSize: 26,
-              fontWeight: 400,
+              fontWeight: 600,
               lineHeight: 1.15,
               letterSpacing: "0.01em",
               color: "#020202",
