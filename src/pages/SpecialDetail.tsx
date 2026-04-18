@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import ImageLightbox from "@/components/ImageLightbox";
 import { format } from "date-fns";
 import {
   ArrowLeft,
@@ -23,6 +25,7 @@ const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
@@ -176,9 +179,24 @@ const SpecialDetail = () => {
 
       {/* Hero Image */}
       {special.image_url && (
-        <div style={{ marginLeft: 4, marginRight: 4, marginBottom: 12, borderRadius: 16, overflow: "hidden" }}>
+        <button
+          type="button"
+          onClick={() => setLightboxOpen(true)}
+          style={{ display: "block", width: "auto", marginLeft: 4, marginRight: 4, marginBottom: 12, borderRadius: 16, overflow: "hidden", border: "none", padding: 0, background: "transparent", cursor: "pointer" }}
+          aria-label="View image"
+        >
           <img src={special.image_url} alt={special.title} style={{ width: "100%", aspectRatio: "16/10", objectFit: "cover", objectPosition: "center", display: "block" }} />
-        </div>
+        </button>
+      )}
+
+      {special.image_url && (
+        <ImageLightbox
+          images={[special.image_url]}
+          initialIndex={0}
+          open={lightboxOpen}
+          onOpenChange={setLightboxOpen}
+          alt={special.title}
+        />
       )}
 
       {/* Offer tag */}
