@@ -184,7 +184,7 @@ const AccountInfo = () => {
 
       {/* Title */}
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
+        <h1 style={{ fontFamily: FF, fontSize: 52, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", color: "#0A0A0A", textTransform: "capitalize", margin: 0 }}>
           Account Info
         </h1>
       </div>
