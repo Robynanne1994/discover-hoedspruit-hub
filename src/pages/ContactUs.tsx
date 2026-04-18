@@ -1,6 +1,5 @@
-import BackButton from "@/components/BackButton";
 import { useState } from "react";
-import { Mail, Phone, MessageCircle, HelpCircle, ChevronRight, Send, Check, Loader2, ArrowLeft } from "lucide-react";
+import { ChevronLeft, ArrowUpRight, Send, Check, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,8 +8,107 @@ import BottomNav from "@/components/BottomNav";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const CONTACT_EMAIL = "hellohoedspruit@gmail.com";
-const CONTACT_PHONE = "+27 72 123 4567";
-const WHATSAPP = "https://wa.me/27721234567";
+const CONTACT_PHONE = "+27 61 332 1709";
+const PHONE_DIGITS = CONTACT_PHONE.replace(/\s|\+/g, "");
+const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;
+const INSTAGRAM_HANDLE = "@hellohoedspruit";
+const INSTAGRAM_URL = "https://instagram.com/hellohoedspruit";
+
+const press = {
+  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.98)"; },
+  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
+  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
+};
+
+const overlineStyle: React.CSSProperties = {
+  fontFamily: FF,
+  fontSize: 11,
+  fontWeight: 500,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color: "rgba(18,18,20,0.55)",
+  margin: 0,
+  lineHeight: 1,
+};
+
+const ContactCard = ({
+  overline,
+  value,
+  sub,
+  href,
+  onClick,
+  external,
+}: {
+  overline: string;
+  value: string;
+  sub?: string;
+  href?: string;
+  onClick?: () => void;
+  external?: boolean;
+}) => {
+  const inner = (
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 16,
+        padding: "18px 16px",
+        position: "relative",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        transition: "transform 0.15s ease",
+        cursor: "pointer",
+      }}
+      {...press}
+    >
+      <div style={{
+        position: "absolute", top: 14, right: 14,
+        width: 32, height: 32, borderRadius: "50%",
+        background: "rgba(18,18,20,0.06)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <ArrowUpRight size={12} strokeWidth={2.5} style={{ color: "rgba(18,18,20,0.3)" }} />
+      </div>
+      <p style={{ ...overlineStyle, marginBottom: 10, paddingRight: 36 }}>{overline}</p>
+      <p style={{
+        fontFamily: FF, fontSize: 17, fontWeight: 500,
+        lineHeight: 1.2, letterSpacing: "0.01em", color: "#020202",
+        margin: 0, paddingRight: 36,
+      }}>
+        {value}
+      </p>
+      {sub && (
+        <p style={{
+          fontFamily: FF, fontSize: 12, fontWeight: 400,
+          color: "rgba(18,18,20,0.55)", margin: 0, marginTop: 4,
+        }}>
+          {sub}
+        </p>
+      )}
+    </div>
+  );
+
+  if (href) {
+    return (
+      <a
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
+        style={{ textDecoration: "none", color: "inherit", display: "block" }}
+      >
+        {inner}
+      </a>
+    );
+  }
+  return (
+    <button
+      onClick={onClick}
+      style={{ background: "none", border: "none", padding: 0, width: "100%", textAlign: "left", cursor: "pointer" }}
+    >
+      {inner}
+    </button>
+  );
+};
 
 const ContactUs = () => {
   const navigate = useNavigate();
@@ -50,94 +148,183 @@ const ContactUs = () => {
     if (validate()) submitForm.mutate();
   };
 
-  const contactOptions = [
-    { icon: Phone, title: "Phone", subtitle: CONTACT_PHONE, href: `tel:${CONTACT_PHONE.replace(/\s/g, "")}` },
-    { icon: Mail, title: "Email", subtitle: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
-    { icon: MessageCircle, title: "Whatsapp", subtitle: "Typically replies in a few hours", href: WHATSAPP, external: true },
-    { icon: HelpCircle, title: "Contact Form", subtitle: "Fill in our contact form", action: () => setShowForm((p) => !p) },
-  ];
+  const handleFormClick = () => {
+    setShowForm((p) => {
+      const next = !p;
+      if (next) setTimeout(() => {
+        document.getElementById("contact-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
+      return next;
+    });
+  };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
-      {/* Back */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
-        <BackButton />
+    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 120, fontFamily: FF }}>
+      {/* Back button */}
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)", paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            width: 44, height: 44, borderRadius: "50%",
+            background: "rgba(18,18,20,0.06)",
+            border: "none", cursor: "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "transform 0.15s ease",
+          }}
+          {...press}
+        >
+          <ChevronLeft size={20} strokeWidth={1.8} style={{ color: "#020202" }} />
+        </button>
       </div>
 
-      {/* Title */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
-          Get in Touch
+      {/* Title block */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
+        <p style={{ ...overlineStyle, fontSize: 12, marginBottom: 12 }}>Say hello</p>
+        <h1 style={{
+          fontFamily: FF,
+          fontSize: 53, fontWeight: 400,
+          lineHeight: 1, letterSpacing: "0.01em",
+          color: "#020202", margin: 0, marginBottom: 16,
+        }}>
+          Get in<br />touch
         </h1>
-      </div>
-
-      {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 32 }}>
-        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
-          Questions, feedback or local advice
+        <p style={{
+          fontFamily: FF, fontSize: 15, fontWeight: 400,
+          lineHeight: 1.35, color: "rgba(18,18,20,0.55)",
+          margin: 0, maxWidth: 300,
+        }}>
+          Questions, feedback, or a local tip worth sharing. We read everything.
         </p>
       </div>
 
-      {/* Contact rows */}
-      <div>
-        {contactOptions.map((opt, i) => {
-          const Icon = opt.icon;
-          const isLast = i === contactOptions.length - 1;
-          const inner = (
-            <div
-              style={{ display: "flex", alignItems: "center", padding: "16px 20px", transition: "transform 0.15s ease" }}
-              onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.98)"; }}
-              onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
-              onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
-            >
-              <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#B4B4B4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginRight: 16 }}>
-                <Icon size={20} strokeWidth={1.8} color="#ffffff" />
+      {/* Primary coral WhatsApp card */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+        <a
+          href={WHATSAPP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: "none", color: "inherit", display: "block" }}
+        >
+          <div
+            style={{
+              background: "#D4654A",
+              borderRadius: 16,
+              padding: 20,
+              color: "#FFFFFF",
+              position: "relative",
+              minHeight: 180,
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              transition: "transform 0.15s ease",
+              cursor: "pointer",
+            }}
+            {...press}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <span style={{
+                background: "rgba(255,255,255,0.92)",
+                color: "#020202",
+                padding: "6px 14px",
+                borderRadius: 20,
+                fontSize: 11, fontWeight: 500,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                fontFamily: FF,
+                lineHeight: 1,
+              }}>
+                Fastest reply
+              </span>
+              <div style={{
+                width: 40, height: 40, borderRadius: "50%",
+                background: "rgba(255,255,255,0.22)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <ArrowUpRight size={14} strokeWidth={2.5} style={{ color: "#FFFFFF" }} />
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", lineHeight: 1.3, fontFamily: FF }}>{opt.title}</div>
-                <div style={{ fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.4, marginTop: 2, fontFamily: FF }}>{opt.subtitle}</div>
-              </div>
-              <ChevronRight size={20} strokeWidth={1.8} color="rgba(18,18,20,0.2)" style={{ flexShrink: 0, marginLeft: "auto" }} />
             </div>
-          );
-
-          const divider = !isLast ? <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 80 }} /> : null;
-
-          if (opt.action) {
-            return (
-              <div key={opt.title}>
-                <button onClick={opt.action} style={{ display: "block", width: "100%", textAlign: "left", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-                  {inner}
-                </button>
-                {divider}
-              </div>
-            );
-          }
-
-          return (
-            <div key={opt.title}>
-              <a href={opt.href} target={opt.external ? "_blank" : undefined} rel={opt.external ? "noopener noreferrer" : undefined} style={{ display: "block", textDecoration: "none", color: "inherit" }}>
-                {inner}
-              </a>
-              {divider}
+            <div>
+              <h2 style={{
+                fontFamily: FF,
+                fontSize: 26, fontWeight: 400,
+                lineHeight: 1, letterSpacing: "0.01em",
+                color: "#FFFFFF",
+                textTransform: "uppercase",
+                margin: 0, marginBottom: 8,
+              }}>
+                Whatsapp us
+              </h2>
+              <p style={{
+                fontFamily: FF, fontSize: 13, fontWeight: 400,
+                color: "rgba(255,255,255,0.7)", margin: 0,
+              }}>
+                {CONTACT_PHONE} · usually replies same day
+              </p>
             </div>
-          );
-        })}
+          </div>
+        </a>
       </div>
 
-      {/* Contact form */}
+      {/* Two-column grid */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 48 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          {CONTACT_PHONE && (
+            <ContactCard
+              overline="Call"
+              value={CONTACT_PHONE}
+              sub="Mon to Fri, 9 to 5"
+              href={`tel:${PHONE_DIGITS}`}
+            />
+          )}
+          {CONTACT_EMAIL && (
+            <ContactCard
+              overline="Email"
+              value={CONTACT_EMAIL}
+              sub="Replies within 48 hours"
+              href={`mailto:${CONTACT_EMAIL}`}
+            />
+          )}
+          <div style={{ gridColumn: "1 / -1" }}>
+            <ContactCard
+              overline="Write to us"
+              value="Contact form"
+              sub="Send a longer message"
+              onClick={handleFormClick}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Inline form (toggled) */}
       {showForm && (
-        <div style={{ marginTop: 24, paddingLeft: 20, paddingRight: 20 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 400, color: "#2B2420", marginBottom: 16, fontFamily: FF }}>Send us a message</h2>
+        <div id="contact-form" style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 48 }}>
           {submitted ? (
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 32, textAlign: "center" }}>
-              <div style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(18,18,20,0.06)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
-                <Check size={28} strokeWidth={1.8} color="#2B2420" />
+            <div style={{ background: "#FFFFFF", borderRadius: 16, padding: 32, textAlign: "center" }}>
+              <div style={{
+                width: 56, height: 56, borderRadius: "50%",
+                background: "rgba(18,18,20,0.06)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                margin: "0 auto 16px",
+              }}>
+                <Check size={28} strokeWidth={1.8} color="#020202" />
               </div>
-              <h3 style={{ fontSize: 18, fontWeight: 400, color: "#2B2420", marginBottom: 8, fontFamily: FF }}>Thanks for reaching out</h3>
-              <p style={{ fontSize: 14, color: "rgba(18,18,20,0.55)", marginBottom: 20, fontFamily: FF }}>We've received your message and will get back to you soon.</p>
-              <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24, padding: "10px 20px", fontSize: 14, fontWeight: 500, color: "#2B2420", cursor: "pointer", fontFamily: FF }}>
-                Send Another Message
+              <h3 style={{ fontFamily: FF, fontSize: 18, fontWeight: 500, color: "#020202", marginBottom: 8 }}>
+                Thanks for reaching out
+              </h3>
+              <p style={{ fontFamily: FF, fontSize: 14, color: "rgba(18,18,20,0.55)", marginBottom: 20 }}>
+                We've received your message and will get back to you soon.
+              </p>
+              <button
+                onClick={() => setSubmitted(false)}
+                style={{
+                  background: "none", border: "1px solid rgba(18,18,20,0.15)",
+                  borderRadius: 24, padding: "10px 20px",
+                  fontSize: 14, fontWeight: 500, color: "#020202",
+                  cursor: "pointer", fontFamily: FF,
+                }}
+              >
+                Send another message
               </button>
             </div>
           ) : (
@@ -152,7 +339,13 @@ const ContactUs = () => {
                     placeholder={f.ph}
                     value={f.val}
                     onChange={(e) => { f.set(e.target.value); if (errors[f.key]) setErrors((p) => ({ ...p, [f.key]: "" })); }}
-                    style={{ width: "100%", background: "#FFFFFF", border: errors[f.key] ? "1px solid #ef4444" : "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "14px 16px", fontSize: 15, color: "#2B2420", outline: "none", boxSizing: "border-box", fontFamily: FF }}
+                    style={{
+                      width: "100%", background: "#FFFFFF",
+                      border: errors[f.key] ? "1px solid #ef4444" : "1px solid rgba(18,18,20,0.1)",
+                      borderRadius: 14, padding: "14px 16px",
+                      fontSize: 15, color: "#020202", outline: "none",
+                      boxSizing: "border-box", fontFamily: FF,
+                    }}
                   />
                   {errors[f.key] && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors[f.key]}</p>}
                 </div>
@@ -163,33 +356,85 @@ const ContactUs = () => {
                   value={message}
                   onChange={(e) => { setMessage(e.target.value); if (errors.message) setErrors((p) => ({ ...p, message: "" })); }}
                   rows={5}
-                  style={{ width: "100%", background: "#FFFFFF", border: errors.message ? "1px solid #ef4444" : "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "14px 16px", fontSize: 15, color: "#2B2420", outline: "none", resize: "vertical", boxSizing: "border-box", fontFamily: FF }}
+                  style={{
+                    width: "100%", background: "#FFFFFF",
+                    border: errors.message ? "1px solid #ef4444" : "1px solid rgba(18,18,20,0.1)",
+                    borderRadius: 14, padding: "14px 16px",
+                    fontSize: 15, color: "#020202", outline: "none",
+                    resize: "vertical", boxSizing: "border-box", fontFamily: FF,
+                  }}
                 />
                 {errors.message && <p style={{ fontSize: 12, color: "#ef4444", marginTop: 4 }}>{errors.message}</p>}
               </div>
               <button
                 type="submit"
                 disabled={submitForm.isPending}
-                style={{ width: "100%", background: "#020202", borderRadius: 16, padding: "12px 20px", height: 48, border: "none", color: "#FFFFFF", fontSize: 15, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: submitForm.isPending ? 0.6 : 1, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", transition: "transform 0.12s ease, opacity 0.12s ease", textTransform: "capitalize" as const }}
-                onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; }}
-                onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
-                onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
+                style={{
+                  width: "100%", background: "#020202",
+                  borderRadius: 16, padding: "12px 20px", height: 48,
+                  border: "none", color: "#FFFFFF",
+                  fontSize: 15, fontWeight: 500, cursor: "pointer",
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+                  opacity: submitForm.isPending ? 0.6 : 1,
+                  fontFamily: FF, transition: "transform 0.15s ease",
+                }}
+                {...press}
               >
-                {submitForm.isPending ? <><Loader2 size={16} className="animate-spin" /> Sending...</> : <><Send size={16} strokeWidth={1.8} /> Send Message</>}
+                {submitForm.isPending
+                  ? <><Loader2 size={16} className="animate-spin" /> Sending</>
+                  : <><Send size={16} strokeWidth={1.8} /> Send message</>}
               </button>
             </form>
           )}
         </div>
       )}
 
-      {/* Footer card */}
-      <div style={{ marginLeft: 24, marginRight: 24, marginTop: 24 }}>
-        <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 24 }}>
-          <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.5, color: "rgba(18,18,20,0.45)", textAlign: "center", margin: 0, fontFamily: FF }}>
-            We're just a message away. Whether you have questions, feedback, or need local advice, we'd love to hear from you.
-          </p>
+      {/* Instagram footer */}
+      {INSTAGRAM_HANDLE && (
+        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: "none", color: "inherit", display: "block" }}
+          >
+            <div
+              style={{
+                background: "#F5F0E8",
+                borderRadius: 16,
+                padding: "22px 20px",
+                position: "relative",
+                transition: "transform 0.15s ease",
+                cursor: "pointer",
+              }}
+              {...press}
+            >
+              <div style={{
+                position: "absolute", top: 18, right: 18,
+                width: 32, height: 32, borderRadius: "50%",
+                background: "rgba(18,18,20,0.06)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                <ArrowUpRight size={12} strokeWidth={2.5} style={{ color: "rgba(18,18,20,0.3)" }} />
+              </div>
+              <p style={{ ...overlineStyle, marginBottom: 10, paddingRight: 36 }}>Follow along</p>
+              <p style={{
+                fontFamily: FF, fontSize: 20, fontWeight: 500,
+                lineHeight: 1.2, letterSpacing: "0.01em", color: "#020202",
+                margin: 0, paddingRight: 36,
+              }}>
+                {INSTAGRAM_HANDLE}
+              </p>
+              <p style={{
+                fontFamily: FF, fontSize: 13, fontWeight: 400,
+                color: "rgba(18,18,20,0.55)", margin: 0, marginTop: 6,
+              }}>
+                Daily picks, openings and what's on
+              </p>
+            </div>
+          </a>
         </div>
-      </div>
+      )}
 
       <BottomNav />
     </div>
