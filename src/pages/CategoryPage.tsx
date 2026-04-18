@@ -550,22 +550,7 @@ const CategoryPage = () => {
                   )}
 
                   {/* Save button top-right */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 12,
-                      right: 12,
-                      zIndex: 2,
-                      width: 44,
-                      height: 44,
-                      borderRadius: 999,
-                      background: "rgba(255,255,255,0.92)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                  <div onClick={(e) => e.stopPropagation()}>
                     <FavouriteButton itemId={l.id} itemType="listing" />
                   </div>
                 </div>
