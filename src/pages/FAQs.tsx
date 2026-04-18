@@ -79,7 +79,7 @@ const FAQs = () => {
 
       {/* Title */}
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif", fontSize: 52, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
+        <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 52, fontWeight: 700, lineHeight: 1, letterSpacing: "-0.03em", color: "#0A0A0A", margin: 0 }}>
           How Can We Help?
         </h1>
       </div>
