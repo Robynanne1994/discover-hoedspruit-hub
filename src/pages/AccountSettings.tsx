@@ -24,7 +24,7 @@ const CORAL_GRADIENT =
 type Row = { title: string; desc: string; href?: string };
 
 const accountRows: Row[] = [
-  { title: "Account info", desc: "Manage email, phone and password", href: "/account-settings/info" },
+  { title: "Account Info", desc: "Manage email, phone and password", href: "/account-settings/info" },
   { title: "Notification preferences", desc: "Customise what you hear from us", href: "/notifications" },
   { title: "Privacy & Security", desc: "Manage visibility, data and protection", href: "/privacy-security" },
 ];
