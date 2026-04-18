@@ -224,7 +224,7 @@ const Events = () => {
   return (
     <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 120, fontFamily: FONT }}>
       {/* Page title */}
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)", paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 24px)", paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
         <h1 style={{
           fontFamily: FONT,
           fontWeight: 400,
