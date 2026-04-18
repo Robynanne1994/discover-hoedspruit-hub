@@ -489,7 +489,7 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       {/* Page title */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 24px)", paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <h1 style={{
           fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
           fontWeight: 400,
