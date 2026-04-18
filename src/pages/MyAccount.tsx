@@ -207,7 +207,7 @@ const MyAccount = () => {
   if (!loading && !user) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
           <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>Profile</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
@@ -223,7 +223,7 @@ const MyAccount = () => {
   if (loading || !user) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-10 w-48 mb-4" />
           <Skeleton className="h-4 w-40 mb-7" />
           <Skeleton className="h-28 w-full rounded-[16px] mb-6" />
@@ -449,7 +449,7 @@ const MyAccount = () => {
         className="flex items-center"
         style={{
           height: 48,
-          padding: "0 20px",
+          padding: "0 24px",
           transition: "transform 0.15s ease",
         }}
         onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
@@ -480,7 +480,7 @@ const MyAccount = () => {
       lineHeight: 1.3,
       marginTop: 20,
       marginBottom: 4,
-      paddingLeft: 20,
+      paddingLeft: 24,
     }}>
       {text}
     </p>
@@ -489,7 +489,7 @@ const MyAccount = () => {
   return (
     <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       {/* Page title */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <h1 style={{
           fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
           fontWeight: 400,
@@ -505,7 +505,7 @@ const MyAccount = () => {
       </div>
 
       {/* Profile card */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
           <div className="flex items-center" style={{ gap: 14 }}>
             <div className="overflow-hidden flex items-center justify-center shrink-0" style={{ width: 64, height: 64, borderRadius: "50%", background: "#EBEBEB" }}>
