@@ -12,11 +12,7 @@ const SECTION_GAP = 40;
 const Index = () => {
   const [activeChip, setActiveChip] = useState<"All" | "Eat" | "Stay" | "Do" | "Shop" | "Events">("All");
 
-  const showSection = (key: typeof activeChip | "Lowdown" | "Specials") => {
-    if (activeChip === "All") return true;
-    if (key === "Specials" || key === "Lowdown") return activeChip === "All";
-    return activeChip === key;
-  };
+  const showSection = (key: "Lowdown" | "Specials") => activeChip === "All";
 
   return (
     <div
