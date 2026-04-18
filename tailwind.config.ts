@@ -17,6 +17,7 @@ export default {
         heading: ['Helvetica World', 'Helvetica', 'Arial', 'sans-serif'],
         body: ['Helvetica World', 'Helvetica', 'Arial', 'sans-serif'],
         sans: ['Helvetica World', 'Helvetica', 'Arial', 'sans-serif'],
+        pragmatica: ['Pragmatica', 'Helvetica', 'Arial', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
