@@ -91,7 +91,7 @@ const PrivacyPolicy = () => {
       {/* Top bar */}
       <div className="pt-14 pb-1 px-6 relative">
         <div className="absolute left-5 top-14">
-          <BackButton className="text-primary mb-0" />
+          <BackButton />
         </div>
         <h1 className="text-center text-[13px] font-medium text-muted-foreground uppercase tracking-[0.08em]">
           Privacy Policy
