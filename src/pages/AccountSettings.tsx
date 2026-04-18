@@ -1,24 +1,8 @@
-import BackButton from "@/components/BackButton";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Skeleton } from "@/components/ui/skeleton";
-import {
-  UserCircle,
-  Pencil,
-  User,
-  Bell,
-  ShieldCheck,
-  HelpCircle,
-  FileText,
-  LogOut,
-  ChevronRight,
-  ArrowLeft,
-  Trash2,
-  Loader2,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,105 +15,163 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 
-const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
 
-const settingsRows = [
-  { icon: User, label: "Account Info", desc: "Manage email, phone & password", href: "/account-settings/info" },
-  { icon: Bell, label: "Notification Preferences", desc: "Customize notification settings" },
-  { icon: ShieldCheck, label: "Privacy & Security", desc: "Manage visibility, data & protection", href: "/privacy-security" },
-  { icon: HelpCircle, label: "Help & Support", desc: "FAQ & contact us", href: "/faqs" },
-  { icon: FileText, label: "Terms & Policies", desc: "Our terms, privacy policy & more", href: "/terms" },
+const CORAL_GRADIENT =
+  "radial-gradient(circle at 35% 30%, #F47356 0%, #EB6240 70%, #D9572F 100%)";
+
+type Row = { title: string; desc: string; href?: string };
+
+const accountRows: Row[] = [
+  { title: "Account info", desc: "Manage email, phone and password", href: "/account-settings/info" },
+  { title: "Notification preferences", desc: "Customise what you hear from us", href: "/notifications" },
+  { title: "Privacy and security", desc: "Manage visibility, data and protection", href: "/privacy-security" },
 ];
 
-const usePress = () => {
-  const [pressed, setPressed] = useState(false);
-  return {
-    pressed,
-    handlers: {
-      onPointerDown: () => setPressed(true),
-      onPointerUp: () => setPressed(false),
-      onPointerLeave: () => setPressed(false),
-    },
-  };
-};
+const supportRows: Row[] = [
+  { title: "Help and support", desc: "FAQ and contact us", href: "/faqs" },
+  { title: "Terms and policies", desc: "Our terms, privacy policy and more", href: "/terms" },
+];
 
 const AccountSettings = () => {
-  const { user, signOut, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
   }, [user, loading, navigate]);
 
-  const { data: profile, isLoading: profileLoading } = useQuery({
-    queryKey: ["profile", user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user!.id)
-        .maybeSingle();
-      return data;
-    },
-    enabled: !!user,
-  });
-
-  if (loading || !user) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#ebebeb", fontFamily: FF }}>
-        <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20 }}>
-          <Skeleton className="h-4 w-20" />
-          <div style={{ marginTop: 28 }}>
-            <Skeleton className="h-10 w-48" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const [backPressed, setBackPressed] = useState(false);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
-      {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
-        <BackButton />
+    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 140, fontFamily: SANS, position: "relative", overflowX: "hidden" }}>
+      {/* Back */}
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <button
+          onClick={() => navigate(-1)}
+          onPointerDown={() => setBackPressed(true)}
+          onPointerUp={() => setBackPressed(false)}
+          onPointerLeave={() => setBackPressed(false)}
+          style={{
+            display: "inline-flex", alignItems: "center", gap: 4,
+            background: "transparent", border: "none", padding: 0, cursor: "pointer",
+            transform: backPressed ? "scale(0.98)" : "scale(1)",
+            transition: "transform 150ms ease-out",
+            fontFamily: SANS,
+          }}
+        >
+          <ChevronLeft size={20} strokeWidth={2} color="#0A0A0A" />
+          <span style={{ fontSize: 15, fontWeight: 400, color: "#0A0A0A", fontFamily: SANS }}>Back</span>
+        </button>
       </div>
 
-      {/* Title */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
-          Account Settings
-        </h1>
+      {/* Header area with coral circle */}
+      <div style={{ position: "relative", paddingLeft: 24, paddingRight: 24 }}>
+        {/* Coral circle */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: -20,
+            right: -120,
+            width: 240,
+            height: 240,
+            borderRadius: "50%",
+            background: CORAL_GRADIENT,
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ fontFamily: SANS, fontSize: 12, fontWeight: 400, letterSpacing: "0.02em", color: "#8A8480", marginBottom: 8 }}>
+            Settings
+          </div>
+          <h1 style={{ fontFamily: DISPLAY, fontSize: 52, fontWeight: 700, lineHeight: 0.98, letterSpacing: "-0.03em", color: "#0A0A0A", margin: 0, marginBottom: 14 }}>
+            Account<br />settings
+          </h1>
+          <p style={{ fontFamily: SANS, fontSize: 15, fontWeight: 400, lineHeight: 1.45, color: "#8A8480", margin: 0, maxWidth: 260 }}>
+            Manage your account and preferences.
+          </p>
+        </div>
       </div>
 
-      {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
-        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
-          Manage your account and preferences
-        </p>
+      {/* Group: Your account */}
+      <SettingsGroup label="Your account" rows={accountRows} marginTop={40} />
+
+      {/* Group: Support and legal */}
+      <SettingsGroup label="Support and legal" rows={supportRows} marginTop={40} />
+
+      {/* Delete */}
+      <div style={{ marginTop: 40, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ borderTop: "1px solid #E0DCD6", paddingTop: 24, display: "flex", justifyContent: "center" }}>
+          <DeleteAccountButton />
+        </div>
       </div>
-
-
-
-      {/* Settings rows */}
-      <div>
-        {settingsRows.map((item, idx) => (
-          <SettingsRow key={item.label} item={item} isLast={idx === settingsRows.length - 1} />
-        ))}
-      </div>
-
-      {/* Delete account */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginTop: 32 }}>
-        <DeleteAccountButton />
-      </div>
-
     </div>
   );
 };
 
+function SettingsGroup({ label, rows, marginTop }: { label: string; rows: Row[]; marginTop: number }) {
+  return (
+    <div style={{ marginTop, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ fontFamily: SANS, fontSize: 12, fontWeight: 400, letterSpacing: "0.02em", color: "#8A8480", marginBottom: 10, paddingLeft: 4 }}>
+        {label}
+      </div>
+      <div style={{ background: "#FFFFFF", borderRadius: 24, overflow: "hidden" }}>
+        {rows.map((row, idx) => (
+          <SettingsRow key={row.title} row={row} isFirst={idx === 0} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SettingsRow({ row, isFirst }: { row: Row; isFirst: boolean }) {
+  const [pressed, setPressed] = useState(false);
+  const [hover, setHover] = useState(false);
+  const bg = pressed ? "#F7F5F2" : hover ? "#FBFAF8" : "#FFFFFF";
+
+  const inner = (
+    <div
+      onPointerDown={() => setPressed(true)}
+      onPointerUp={() => setPressed(false)}
+      onPointerLeave={() => { setPressed(false); setHover(false); }}
+      onPointerEnter={() => setHover(true)}
+      style={{
+        display: "flex", alignItems: "center", gap: 16,
+        width: "100%", textAlign: "left",
+        padding: "18px 20px",
+        background: bg,
+        border: "none",
+        borderTop: isFirst ? "none" : "1px solid #F2EFEC",
+        transform: pressed ? "scale(0.98)" : "scale(1)",
+        transition: "transform 150ms ease-out, background-color 150ms ease-out",
+        cursor: "pointer",
+      }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: SANS, fontSize: 16, fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.005em", color: "#0A0A0A" }}>
+          {row.title}
+        </div>
+        <div style={{ fontFamily: SANS, fontSize: 13, fontWeight: 400, lineHeight: 1.3, letterSpacing: "0.01em", color: "#8A8480", marginTop: 4 }}>
+          {row.desc}
+        </div>
+      </div>
+      <ChevronRight size={20} strokeWidth={2} strokeLinecap="round" color="#8A8480" style={{ flexShrink: 0 }} />
+    </div>
+  );
+
+  if (row.href) {
+    return <Link to={row.href} style={{ textDecoration: "none", display: "block" }}>{inner}</Link>;
+  }
+  return <button style={{ background: "none", border: "none", padding: 0, width: "100%", cursor: "pointer" }}>{inner}</button>;
+}
+
 function DeleteAccountButton() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [pressed, setPressed] = useState(false);
+  const [hover, setHover] = useState(false);
   const navigate = useNavigate();
 
   const handleDelete = async () => {
@@ -138,13 +180,11 @@ function DeleteAccountButton() {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData.session?.access_token;
       if (!token) throw new Error("Not signed in");
-
       const { data, error } = await supabase.functions.invoke("delete-account", {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (error) throw error;
       if ((data as any)?.error) throw new Error((data as any).error);
-
       await supabase.auth.signOut();
       toast.success("Your account has been deleted");
       navigate("/auth", { replace: true });
@@ -159,160 +199,44 @@ function DeleteAccountButton() {
     <>
       <button
         onClick={() => setOpen(true)}
-        onPointerDown={() => setPressed(true)}
-        onPointerUp={() => setPressed(false)}
-        onPointerLeave={() => setPressed(false)}
+        onPointerEnter={() => setHover(true)}
+        onPointerLeave={() => setHover(false)}
         style={{
-          width: "100%",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          gap: 8, padding: "12px 20px", minHeight: 48,
-          border: "1.5px solid rgba(220,38,38,0.35)",
-          borderRadius: 24, background: "transparent", cursor: "pointer",
-          transform: pressed ? "scale(0.97)" : "scale(1)",
-          transition: "transform 0.12s ease",
-          fontFamily: FF,
+          background: "transparent", border: "none", cursor: "pointer",
+          padding: "8px 12px",
+          fontFamily: SANS, fontSize: 14, fontWeight: 400, letterSpacing: "0.01em",
+          color: hover ? "#0A0A0A" : "#8A8480",
+          transition: "color 150ms ease-out",
         }}
       >
-        <Trash2 size={20} strokeWidth={1.8} color="#dc2626" />
-        <span style={{ fontSize: 15, fontWeight: 500, color: "#dc2626", fontFamily: FF }}>Delete Account</span>
+        Delete account
       </button>
 
       <AlertDialog open={open} onOpenChange={(v) => !loading && setOpen(v)}>
-        <AlertDialogContent>
+        <AlertDialogContent style={{ fontFamily: SANS }}>
           <AlertDialogHeader>
-            <AlertDialogTitle>Are you sure you want to delete your account?</AlertDialogTitle>
-            <AlertDialogDescription>
-              This will permanently delete your account and all associated data. This action cannot be undone.
+            <AlertDialogTitle style={{ fontFamily: DISPLAY, letterSpacing: "-0.02em" }}>
+              Delete your account?
+            </AlertDialogTitle>
+            <AlertDialogDescription style={{ fontFamily: SANS, color: "#8A8480" }}>
+              This permanently deletes your account and all associated data. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={loading} style={{ fontFamily: SANS, background: "transparent", border: "none", color: "#8A8480" }}>
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => { e.preventDefault(); handleDelete(); }}
               disabled={loading}
-              style={{ background: "#dc2626", color: "#fff" }}
+              style={{ background: "#0A0A0A", color: "#FFFFFF", borderRadius: 999, padding: "12px 22px", fontFamily: SANS, fontSize: 15 }}
             >
-              {loading ? (<><Loader2 size={16} className="animate-spin mr-2" /> Deleting...</>) : "Delete Account"}
+              {loading ? (<><Loader2 size={16} className="animate-spin mr-2" /> Deleting...</>) : "Delete account"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </>
-  );
-}
-
-function ProfileCard({ profile, profileLoading, user }: { profile: any; profileLoading: boolean; user: any }) {
-  const [pressed, setPressed] = useState(false);
-  return (
-    <div style={{
-      background: "#FFFFFF",
-      border: "1px solid rgba(18,18,20,0.06)",
-      borderRadius: 16,
-      padding: "16px 20px",
-      display: "flex",
-      alignItems: "center",
-    }}>
-      {/* Avatar */}
-      <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", flexShrink: 0, background: "#ebebeb", display: "flex", alignItems: "center", justifyContent: "center", marginRight: 14 }}>
-        {profileLoading ? (
-          <Skeleton className="h-full w-full rounded-full" />
-        ) : profile?.avatar_url ? (
-          <img src={profile.avatar_url} alt="Profile" style={{ width: 48, height: 48, objectFit: "cover" }} />
-        ) : (
-          <UserCircle size={28} strokeWidth={1.8} color="rgba(18,18,20,0.4)" />
-        )}
-      </div>
-      {/* Info */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: 16, fontWeight: 500, color: "#020202", lineHeight: 1.3, marginBottom: 2, fontFamily: FF }}>
-          {profileLoading ? <Skeleton className="h-5 w-28" /> : (profile?.display_name || user.email?.split("@")[0])}
-        </div>
-        <div style={{ fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: FF }}>
-          {profileLoading ? <Skeleton className="h-3 w-36" /> : user.email}
-        </div>
-      </div>
-      {/* Edit */}
-      <Link
-        to="/my-account"
-        style={{
-          marginLeft: "auto",
-          display: "flex", alignItems: "center", gap: 6,
-          padding: "8px 14px",
-          border: "1.5px solid rgba(18,18,20,0.12)",
-          borderRadius: 24,
-          background: "transparent",
-          flexShrink: 0,
-          textDecoration: "none",
-          transform: pressed ? "scale(0.97)" : "scale(1)",
-          transition: "transform 0.12s ease",
-        }}
-        onPointerDown={() => setPressed(true)}
-        onPointerUp={() => setPressed(false)}
-        onPointerLeave={() => setPressed(false)}
-      >
-        <Pencil size={16} strokeWidth={1.8} color="#2B2420" />
-        <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Edit</span>
-      </Link>
-    </div>
-  );
-}
-
-function SettingsRow({ item, isLast }: { item: typeof settingsRows[0]; isLast: boolean }) {
-  const [pressed, setPressed] = useState(false);
-  const Icon = item.icon;
-  const inner = (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        padding: "16px 20px",
-        background: "transparent",
-        transform: pressed ? "scale(0.98)" : "scale(1)",
-        transition: "transform 0.15s ease",
-      }}
-      onPointerDown={() => setPressed(true)}
-      onPointerUp={() => setPressed(false)}
-      onPointerLeave={() => setPressed(false)}
-    >
-      <Icon size={24} strokeWidth={1.8} color="rgba(18,18,20,0.3)" style={{ flexShrink: 0, marginRight: 20 }} />
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <span style={{ display: "block", fontSize: 16, fontWeight: 500, color: "#2B2420", lineHeight: 1.3, fontFamily: FF }}>{item.label}</span>
-        <span style={{ display: "block", fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.4, marginTop: 2, fontFamily: FF }}>{item.desc}</span>
-      </div>
-      <ChevronRight size={20} strokeWidth={1.8} color="rgba(18,18,20,0.2)" style={{ flexShrink: 0, marginLeft: "auto" }} />
-    </div>
-  );
-
-  const divider = !isLast ? (
-    <div style={{ marginLeft: 68, height: 1, background: "rgba(18,18,20,0.08)" }} />
-  ) : null;
-
-  if (item.href) {
-    return <div key={item.label}><Link to={item.href} style={{ textDecoration: "none" }}>{inner}</Link>{divider}</div>;
-  }
-  return <div key={item.label}><button className="w-full text-left" style={{ background: "none", border: "none", padding: 0, cursor: "pointer", width: "100%" }}>{inner}</button>{divider}</div>;
-}
-
-function LogOutButton({ onLogOut }: { onLogOut: () => void }) {
-  const [pressed, setPressed] = useState(false);
-  return (
-    <button
-      onClick={onLogOut}
-      onPointerDown={() => setPressed(true)}
-      onPointerUp={() => setPressed(false)}
-      onPointerLeave={() => setPressed(false)}
-      style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        gap: 8, padding: "12px 20px", minHeight: 48,
-        border: "1.5px solid rgba(18,18,20,0.15)",
-        borderRadius: 24, background: "transparent", cursor: "pointer",
-        transform: pressed ? "scale(0.97)" : "scale(1)",
-        transition: "transform 0.12s ease",
-      }}
-    >
-      <LogOut size={20} strokeWidth={1.8} color="#2B2420" />
-      <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Log out</span>
-    </button>
   );
 }
 
