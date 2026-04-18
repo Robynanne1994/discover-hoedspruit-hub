@@ -1,12 +1,32 @@
-import BackButton from "@/components/BackButton";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ChevronLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-const feedbackTypes = ["Suggestion", "Bug", "Compliment", "Other"] as const;
+const FEEDBACK_TYPES = ["Suggestion", "Bug", "Compliment", "Other"] as const;
+
+const FF = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+const FF_DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
+
+const INK = "#0A0A0A";
+const MUTED = "#8A8480";
+const PAGE = "#EBEBEB";
+const CARD = "#FFFFFF";
+const CORAL = "#F26A48";
+
+const tap = {
+  onPointerDown: (e: React.PointerEvent<HTMLElement>) => {
+    (e.currentTarget as HTMLElement).style.transform = "scale(0.98)";
+  },
+  onPointerUp: (e: React.PointerEvent<HTMLElement>) => {
+    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
+  },
+  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => {
+    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
+  },
+};
 
 const Feedback = () => {
   const navigate = useNavigate();
@@ -14,19 +34,16 @@ const Feedback = () => {
   const [type, setType] = useState<string>("Suggestion");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  const [errors, setErrors] = useState<{ subject?: string; message?: string }>({});
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!subject.trim()) {
-      setError("Please add a subject");
-      return;
-    }
-    if (!message.trim()) {
-      setError("Please tell us what's on your mind");
-      return;
-    }
-    setError("");
+    const errs: typeof errors = {};
+    if (!subject.trim()) errs.subject = "Please add a subject";
+    if (!message.trim()) errs.message = "Please share your feedback";
+    setErrors(errs);
+    if (Object.keys(errs).length) return;
+
     setSubmitting(true);
     try {
       const { error: dbError } = await supabase.from("feedback" as any).insert({
@@ -36,10 +53,11 @@ const Feedback = () => {
         message: message.trim(),
       } as any);
       if (dbError) throw dbError;
-      toast.success("Thanks for your feedback!");
+      toast.success("Thanks, we've got it.");
       setSubject("");
       setMessage("");
       setType("Suggestion");
+      setErrors({});
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -47,120 +65,289 @@ const Feedback = () => {
     }
   };
 
-  const inputStyle: React.CSSProperties = {
-    width: "100%",
-    background: "#ffffff",
-    border: "1px solid rgba(18,18,20,0.06)",
-    borderRadius: 16,
-    padding: "14px 16px",
-    fontSize: 15,
-    fontWeight: 500,
-    color: "#2b2420",
-    outline: "none",
-    transition: "border-color 0.2s",
-  };
-
   return (
-    <div className="min-h-screen" style={{ background: "#ebebeb" }}>
+    <div
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: PAGE, fontFamily: FF, paddingBottom: 120 }}
+    >
+      {/* Decorative coral circle (placeholder for future warm image) */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: 80,
+          right: -130,
+          width: 260,
+          height: 260,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle at 35% 30%, #F47356 0%, #EB6240 70%, #D9572F 100%)",
+          zIndex: 0,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* Back */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
-        <BackButton />
-      </div>
-
-      {/* Heading */}
-      <div style={{ paddingTop: 28, paddingLeft: 20, paddingRight: 20 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
-          Give Us Feedback
-        </h1>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4, marginTop: 12 }}>
-          Help us make Hello Hoedspruit better
-        </p>
-      </div>
-
-      {/* Type selector */}
-      <div style={{ padding: "32px 20px 0" }}>
-        <p style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase" as const, letterSpacing: 2, marginBottom: 12 }}>
-          WHAT IS THIS ABOUT?
-        </p>
-        <div className="flex flex-wrap" style={{ gap: 8 }}>
-          {feedbackTypes.map((t) => (
-            <button
-              key={t}
-              onClick={() => setType(t)}
-              style={{
-                background: type === t ? "#121214" : "rgba(18,18,20,0.04)",
-                border: type === t ? "1px solid #121214" : "1px solid rgba(18,18,20,0.08)",
-                borderRadius: 9999,
-                padding: "9px 18px",
-                fontSize: 13,
-                fontWeight: type === t ? 600 : 500,
-                color: type === t ? "#ffffff" : "rgba(18,18,20,0.5)",
-                cursor: "pointer",
-                transition: "all 0.15s",
-              }}
-            >
-              {t}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Form */}
-      <div style={{ padding: "24px 20px 0" }}>
-        <input
-          type="text"
-          placeholder="Subject"
-          value={subject}
-          onChange={(e) => { setSubject(e.target.value); if (error) setError(""); }}
-          style={{ ...inputStyle, marginBottom: 16 }}
-          onFocus={(e) => (e.target.style.borderColor = "rgba(18,18,20,0.2)")}
-          onBlur={(e) => (e.target.style.borderColor = "rgba(18,18,20,0.08)")}
-        />
-        <textarea
-          placeholder="Share your feedback with us..."
-          value={message}
-          onChange={(e) => { setMessage(e.target.value); if (error) setError(""); }}
-          style={{ ...inputStyle, minHeight: 150, resize: "vertical", marginBottom: error ? 4 : 16 }}
-          onFocus={(e) => (e.target.style.borderColor = "rgba(18,18,20,0.2)")}
-          onBlur={(e) => (e.target.style.borderColor = "rgba(18,18,20,0.08)")}
-        />
-        {error && <p style={{ fontSize: 12, color: "#E24B4A", marginBottom: 16 }}>{error}</p>}
-      </div>
-
-      {/* Submit */}
-      <div style={{ padding: "8px 20px 0" }}>
+      <div style={{ padding: "16px 24px 0", position: "relative", zIndex: 1 }}>
         <button
-          onClick={handleSubmit}
-          disabled={submitting}
+          onClick={() => navigate(-1)}
+          {...tap}
           style={{
-            width: "100%",
-            background: "#121214",
-            borderRadius: 16,
-            padding: 16,
-            fontSize: 15,
-            fontWeight: 700,
-            color: "#ffffff",
-            letterSpacing: "-0.02em",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            background: "transparent",
             border: "none",
-            cursor: submitting ? "not-allowed" : "pointer",
-            opacity: submitting ? 0.6 : 1,
-            textAlign: "center" as const,
+            padding: 0,
+            color: INK,
+            fontFamily: FF,
+            fontWeight: 400,
+            fontSize: 15,
+            cursor: "pointer",
+            transition: "transform 150ms ease-out",
           }}
         >
-          {submitting ? "Sending..." : "Share Feedback"}
+          <ChevronLeft size={20} strokeWidth={2} />
+          Back
         </button>
       </div>
 
-      {/* Supportive text */}
-      <div style={{ padding: "28px 20px 100px" }}>
-        <div style={{
-          background: "#ffffff",
-          border: "1px solid rgba(18,18,20,0.06)",
-          borderRadius: 16,
-          padding: 16,
-          textAlign: "center" as const,
-        }}>
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.4)", lineHeight: 1.6 }}>
+      {/* Editorial header */}
+      <div style={{ padding: "28px 24px 0", position: "relative", zIndex: 1 }}>
+        <p
+          style={{
+            fontFamily: FF,
+            fontWeight: 400,
+            fontSize: 12,
+            letterSpacing: "0.02em",
+            color: MUTED,
+            margin: 0,
+            marginBottom: 8,
+          }}
+        >
+          Feedback
+        </p>
+        <h1
+          style={{
+            fontFamily: FF_DISPLAY,
+            fontWeight: 700,
+            fontSize: 52,
+            lineHeight: 0.98,
+            letterSpacing: "-0.03em",
+            color: INK,
+            margin: 0,
+            marginBottom: 14,
+          }}
+        >
+          Give Us
+          <br />
+          Feedback
+        </h1>
+        <p
+          style={{
+            fontFamily: FF,
+            fontWeight: 400,
+            fontSize: 15,
+            lineHeight: 1.45,
+            color: MUTED,
+            margin: 0,
+            maxWidth: 240,
+          }}
+        >
+          Help us make Hello Hoedspruit better.
+        </p>
+      </div>
+
+      {/* Category section */}
+      <div style={{ padding: "44px 24px 0", position: "relative", zIndex: 1 }}>
+        <p
+          style={{
+            fontFamily: FF,
+            fontWeight: 400,
+            fontSize: 12,
+            letterSpacing: "0.02em",
+            color: MUTED,
+            margin: 0,
+            marginBottom: 14,
+          }}
+        >
+          What is this about
+        </p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {FEEDBACK_TYPES.map((t) => {
+            const active = type === t;
+            return (
+              <button
+                key={t}
+                onClick={() => setType(t)}
+                {...tap}
+                style={{
+                  background: active ? INK : CARD,
+                  color: active ? "#FFFFFF" : INK,
+                  border: "none",
+                  borderRadius: 999,
+                  padding: "12px 22px",
+                  fontFamily: FF,
+                  fontWeight: 400,
+                  fontSize: 14,
+                  lineHeight: 1,
+                  cursor: "pointer",
+                  transition: "transform 150ms ease-out, background 150ms ease-out, color 150ms ease-out",
+                }}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Subject */}
+      <div style={{ padding: "32px 24px 0", position: "relative", zIndex: 1 }}>
+        <div
+          style={{
+            background: CARD,
+            borderRadius: 16,
+            padding: "18px 20px",
+            border: errors.subject ? `1px solid ${CORAL}` : "1px solid transparent",
+            transition: "border-color 150ms ease-out",
+          }}
+        >
+          <input
+            type="text"
+            placeholder="Subject"
+            value={subject}
+            onChange={(e) => {
+              setSubject(e.target.value);
+              if (errors.subject) setErrors((p) => ({ ...p, subject: undefined }));
+            }}
+            style={{
+              width: "100%",
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: FF,
+              fontWeight: 400,
+              fontSize: 15,
+              color: INK,
+            }}
+          />
+        </div>
+        {errors.subject && (
+          <p style={{ fontSize: 12, color: CORAL, margin: "6px 0 0", paddingLeft: 4, fontFamily: FF }}>
+            {errors.subject}
+          </p>
+        )}
+      </div>
+
+      {/* Textarea */}
+      <div style={{ padding: "10px 24px 0", position: "relative", zIndex: 1 }}>
+        <div
+          style={{
+            background: CARD,
+            borderRadius: 16,
+            padding: "18px 20px",
+            border: errors.message ? `1px solid ${CORAL}` : "1px solid transparent",
+            transition: "border-color 150ms ease-out",
+          }}
+        >
+          <textarea
+            placeholder="Share your feedback with us..."
+            value={message}
+            onChange={(e) => {
+              setMessage(e.target.value);
+              if (errors.message) setErrors((p) => ({ ...p, message: undefined }));
+            }}
+            style={{
+              width: "100%",
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              resize: "none",
+              minHeight: 128,
+              fontFamily: FF,
+              fontWeight: 400,
+              fontSize: 15,
+              lineHeight: 1.45,
+              color: INK,
+            }}
+          />
+        </div>
+        {errors.message && (
+          <p style={{ fontSize: 12, color: CORAL, margin: "6px 0 0", paddingLeft: 4, fontFamily: FF }}>
+            {errors.message}
+          </p>
+        )}
+      </div>
+
+      {/* Submit */}
+      <div style={{ padding: "20px 24px 0", position: "relative", zIndex: 1 }}>
+        <button
+          onClick={handleSubmit}
+          disabled={submitting}
+          {...tap}
+          style={{
+            width: "100%",
+            background: INK,
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: 999,
+            padding: "18px 24px",
+            fontFamily: FF,
+            fontWeight: 400,
+            fontSize: 15,
+            cursor: submitting ? "not-allowed" : "pointer",
+            opacity: submitting ? 0.7 : 1,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            transition: "transform 150ms ease-out, opacity 150ms ease-out",
+          }}
+        >
+          {submitting ? (
+            <>
+              <Loader2 size={16} className="animate-spin" /> Sending
+            </>
+          ) : (
+            "Share feedback"
+          )}
+        </button>
+      </div>
+
+      {/* Reassurance footer card */}
+      <div style={{ padding: "28px 24px 0", position: "relative", zIndex: 1 }}>
+        <div
+          style={{
+            background: CARD,
+            borderRadius: 24,
+            padding: "22px 24px",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 14,
+          }}
+        >
+          <span
+            aria-hidden
+            style={{
+              flex: "0 0 auto",
+              width: 8,
+              height: 8,
+              borderRadius: 999,
+              background: CORAL,
+              marginTop: 8,
+            }}
+          />
+          <p
+            style={{
+              fontFamily: FF,
+              fontWeight: 400,
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: MUTED,
+              margin: 0,
+            }}
+          >
             Every piece of feedback helps us improve. We read everything and appreciate you taking the time to share your thoughts with us.
           </p>
         </div>
