@@ -16,6 +16,7 @@ const Index = () => {
 
   return (
     <div
+      className="home-page"
       style={{
         minHeight: "100vh",
         background: "#EBEBEB",
@@ -46,6 +47,8 @@ const Index = () => {
             categorySearch="%restaurant%"
             defaultTitle="Where to eat"
             seeAllHref="/category/c867119f-8ca9-45a7-870e-6671f028748c"
+            primary="Where to"
+            serif="eat"
           />
         </div>
       )}
@@ -57,6 +60,8 @@ const Index = () => {
             categorySearch="%accommodation%"
             defaultTitle="Where to stay"
             seeAllHref="/category/cef1c5ad-b199-41c9-bc8a-5834703a953a"
+            primary="Where to"
+            serif="stay"
           />
         </div>
       )}
@@ -68,6 +73,8 @@ const Index = () => {
             categorySearch={["%activit%", "%things to do%", "%adventure%"]}
             defaultTitle="What to do"
             seeAllHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb"
+            primary="What to"
+            serif="do"
           />
         </div>
       )}
@@ -79,6 +86,8 @@ const Index = () => {
             categorySearch="%shop%"
             defaultTitle="Where to shop"
             seeAllHref="/category/7b335bd5-3ce9-4ecd-92bd-3735804402b8"
+            primary="Where to"
+            serif="shop"
           />
         </div>
       )}

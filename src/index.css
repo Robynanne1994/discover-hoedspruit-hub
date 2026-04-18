@@ -110,12 +110,24 @@
   font-display: swap;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html, body {
   font-family: 'Helvetica World', Helvetica, Arial, sans-serif;
+  font-stretch: normal;
+  font-synthesis: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Global stretch + synthesis lock — nothing should ever render condensed/expanded or faux-italic */
+*, *::before, *::after {
+  font-stretch: normal;
+  font-synthesis: none;
 }
 
 @layer base {
@@ -295,7 +307,13 @@ html, body {
   display: none;
 }
 
-/* Global heading capitalization — first letter of each word only */
-h1, h2, h3, h4, h5 {
-  text-transform: capitalize !important;
+/* Allow pages to opt out of the global uppercase + capitalize heading rules */
+.home-page h1,
+.home-page h2,
+.home-page h3,
+.home-page h4,
+.home-page h5,
+.home-page h6 {
+  text-transform: none !important;
+  letter-spacing: inherit;
 }

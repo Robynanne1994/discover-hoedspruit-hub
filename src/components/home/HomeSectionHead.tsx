@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
+const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
 const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
 interface Props {
-  /** First word of the title in display sans, second part in serif italic */
   primary: string;
   serif?: string;
   actionLabel?: string;
@@ -21,6 +20,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
         justifyContent: "space-between",
         padding: "0 20px",
         marginBottom: 18,
+        gap: 12,
       }}
     >
       <h2
@@ -30,8 +30,10 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
           fontWeight: 700,
           fontSize: 28,
           lineHeight: 1,
-          letterSpacing: "-0.025em",
+          letterSpacing: "-0.02em",
           color: "#0A0A0A",
+          fontStretch: "normal",
+          textTransform: "none",
         }}
       >
         {primary}
@@ -45,6 +47,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
                 fontWeight: 300,
                 color: "#8A8480",
                 letterSpacing: 0,
+                fontStretch: "normal",
               }}
             >
               {serif}
@@ -61,6 +64,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
             color: "#8A8480",
             textDecoration: "none",
             whiteSpace: "nowrap",
+            flexShrink: 0,
           }}
         >
           {actionLabel} ›
