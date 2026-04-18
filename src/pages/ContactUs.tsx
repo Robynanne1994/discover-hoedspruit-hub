@@ -317,7 +317,7 @@ const ContactUs = () => {
                 overline="Email"
                 value={CONTACT_EMAIL}
                 valueMode="wrap"
-                sub="Replies within 48 hours"
+                sub="Reply within 48 hours"
                 href={`mailto:${CONTACT_EMAIL}`}
               />
             </div>
