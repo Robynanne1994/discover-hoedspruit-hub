@@ -345,7 +345,7 @@ const EventDetail = () => {
       {/* Gallery (full-bleed scroll) */}
       {galleryImages.length > 0 && (
         <section style={{ marginBottom: 24 }}>
-          <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
             <SectionLabel eyebrow="Moments" title="Gallery" />
           </div>
           <div className="overflow-x-auto scrollbar-hide">
