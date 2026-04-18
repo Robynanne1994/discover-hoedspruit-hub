@@ -182,11 +182,11 @@ const Categories = () => {
       {/* Heading */}
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 36 }}>
         <h1
+          className="font-semibold"
           style={{
             fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
             textTransform: "capitalize",
             fontSize: 40,
-            fontWeight: 400,
             lineHeight: 0.95,
             letterSpacing: "-0.01em",
             color: "#020202",
