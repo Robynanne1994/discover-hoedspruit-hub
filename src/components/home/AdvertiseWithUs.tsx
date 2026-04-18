@@ -5,7 +5,7 @@ const AdvertiseWithUs = () => {
   const navigate = useNavigate();
 
   return (
-    <section style={{ padding: "36px 4px 40px" }}>
+    <section style={{ padding: "36px 20px 40px" }}>
       <div style={{
         background: "#000000",
         borderRadius: 16,
