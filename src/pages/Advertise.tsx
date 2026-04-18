@@ -290,7 +290,7 @@ const Advertise = () => {
             <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: 12 }}>
                 <input
-                  placeholder="Your name"
+                  placeholder="Name and surname"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors(p => ({ ...p, name: "" })); }}
                   style={{
