@@ -371,7 +371,7 @@ const Advertise = () => {
           <p style={{
             fontFamily: FF, fontSize: 11, fontWeight: 500, letterSpacing: "0.06em",
             textTransform: "uppercase", color: "rgba(18,18,20,0.55)", margin: 0,
-          }}>Or email us</p>
+          }}>Or email us directly</p>
           <div style={{
             fontFamily: FF, fontSize: 18, fontWeight: 500, color: INK, marginTop: 6,
           }}>hellohoedspruit@gmail.com</div>
