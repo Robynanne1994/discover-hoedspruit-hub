@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useFollowersList, useFollowingList } from "@/hooks/useFollows";
 import { Skeleton } from "@/components/ui/skeleton";
