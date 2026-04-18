@@ -38,14 +38,34 @@ const ContactCard = ({
   href,
   onClick,
   external,
+  valueMode = "default",
+  title,
 }: {
   overline: string;
-  value: string;
+  value?: string;
   sub?: string;
   href?: string;
   onClick?: () => void;
   external?: boolean;
+  valueMode?: "default" | "nowrap" | "wrap";
+  title?: string;
 }) => {
+  const valueBaseStyle: React.CSSProperties = {
+    fontFamily: FF,
+    fontWeight: 500,
+    letterSpacing: "0.01em",
+    color: "#020202",
+    margin: 0,
+    paddingRight: 36,
+  };
+
+  const valueStyle: React.CSSProperties =
+    valueMode === "nowrap"
+      ? { ...valueBaseStyle, fontSize: 16, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "clip" }
+      : valueMode === "wrap"
+      ? { ...valueBaseStyle, fontSize: 16, lineHeight: 1.25, wordBreak: "break-word" }
+      : { ...valueBaseStyle, fontSize: 17, lineHeight: 1.2 };
+
   const inner = (
     <div
       style={{
@@ -54,10 +74,13 @@ const ContactCard = ({
         padding: "18px 16px",
         position: "relative",
         height: "100%",
+        minWidth: 0,
+        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
         transition: "transform 0.15s ease",
         cursor: "pointer",
+        boxSizing: "border-box",
       }}
       {...press}
     >
@@ -69,18 +92,21 @@ const ContactCard = ({
       }}>
         <ArrowUpRight size={12} strokeWidth={2.5} style={{ color: "rgba(18,18,20,0.3)" }} />
       </div>
-      <p style={{ ...overlineStyle, marginBottom: 10, paddingRight: 36 }}>{overline}</p>
-      <p style={{
-        fontFamily: FF, fontSize: 17, fontWeight: 500,
-        lineHeight: 1.2, letterSpacing: "0.01em", color: "#020202",
-        margin: 0, paddingRight: 36,
-      }}>
-        {value}
-      </p>
+      <p style={{ ...overlineStyle, marginBottom: 12, paddingRight: 36 }}>{overline}</p>
+      {title && (
+        <p style={{
+          fontFamily: FF, fontSize: 18, fontWeight: 500, lineHeight: 1.2,
+          letterSpacing: "0.01em", color: "#020202", margin: 0, paddingRight: 36,
+        }}>
+          {title}
+        </p>
+      )}
+      {value && <p style={valueStyle}>{value}</p>}
+      <div style={{ flexGrow: 1, minHeight: 8 }} />
       {sub && (
         <p style={{
           fontFamily: FF, fontSize: 12, fontWeight: 400,
-          color: "rgba(18,18,20,0.55)", margin: 0, marginTop: 4,
+          color: "rgba(18,18,20,0.55)", margin: 0,
         }}>
           {sub}
         </p>
@@ -94,7 +120,7 @@ const ContactCard = ({
         href={href}
         target={external ? "_blank" : undefined}
         rel={external ? "noopener noreferrer" : undefined}
-        style={{ textDecoration: "none", color: "inherit", display: "block" }}
+        style={{ textDecoration: "none", color: "inherit", display: "block", minWidth: 0, height: "100%" }}
       >
         {inner}
       </a>
@@ -103,7 +129,7 @@ const ContactCard = ({
   return (
     <button
       onClick={onClick}
-      style={{ background: "none", border: "none", padding: 0, width: "100%", textAlign: "left", cursor: "pointer" }}
+      style={{ background: "none", border: "none", padding: 0, width: "100%", height: "100%", textAlign: "left", cursor: "pointer", minWidth: 0 }}
     >
       {inner}
     </button>
