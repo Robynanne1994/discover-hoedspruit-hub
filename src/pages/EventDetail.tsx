@@ -43,6 +43,8 @@ const overlayBtn: React.CSSProperties = {
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
   const { user } = useAuth();
   const queryClient = useQueryClient();
 
