@@ -188,7 +188,7 @@ const Categories = () => {
             textTransform: "capitalize",
             fontSize: 40,
             lineHeight: 0.95,
-            letterSpacing: "-0.01em",
+            letterSpacing: "-0.02em",
             color: "#020202",
             margin: 0,
           }}
