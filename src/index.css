@@ -241,3 +241,8 @@ html, body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* Global heading capitalization — first letter of each word only */
+h1, h2, h3, h4, h5 {
+  text-transform: capitalize !important;
+}
