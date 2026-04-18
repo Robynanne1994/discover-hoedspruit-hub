@@ -233,6 +233,7 @@ const Events = () => {
           letterSpacing: "0.01em",
           color: "#020202",
           margin: 0,
+          textTransform: "capitalize",
         }}>
           What's<br />happening
         </h1>
