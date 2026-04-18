@@ -194,13 +194,13 @@ const AdminSpecials = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="font-heading text-3xl font-bold text-foreground">Specials</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
+        <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Specials</h1>
         {!showForm && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Link to="/admin/specials/import">
               <Button variant="outline" className="gap-2">
-                <FileSpreadsheet className="h-4 w-4" /> Import / Export
+                <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Import / Export</span><span className="sm:hidden">CSV</span>
               </Button>
             </Link>
             <Button onClick={() => { setCreating(true); setForm(emptyForm); }}>
