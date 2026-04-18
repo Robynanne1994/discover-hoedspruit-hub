@@ -1,177 +1,362 @@
-import { MapPin, Heart, Sun, TreePine, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ChevronLeft, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
 
+const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
+const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
+
+const CORAL_GRADIENT =
+  "radial-gradient(circle at 35% 30%, #F47356 0%, #EB6240 70%, #D9572F 100%)";
+
 const values = [
-  { icon: MapPin, title: "Local Knowledge", description: "Curated listings and insider tips from people who know and love Hoedspruit." },
-  { icon: Heart, title: "Community Driven", description: "Supporting local businesses and helping them connect with visitors and residents." },
-  { icon: Sun, title: "Always Up to Date", description: "From seasonal events to new openings, we keep our finger on the pulse of the town." },
-  { icon: TreePine, title: "Nature at Heart", description: "Celebrating the incredible natural beauty and wildlife that makes Hoedspruit unique." },
+  { num: "01", title: "Local knowledge" },
+  { num: "02", title: "Community driven" },
+  { num: "03", title: "Always up to date" },
+  { num: "04", title: "Nature at heart" },
 ];
 
-const cardStyle: React.CSSProperties = {
-  background: "#ffffff",
-  border: "1px solid rgba(18,18,20,0.06)",
-  borderRadius: 16,
+const paragraphs = [
+  "My name is Robyn Dawes, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the Lowveld, and over the years I've watched this little town blossom into something truly special.",
+  "Having spent my whole life here, I know just how much Hoedspruit has to offer, from incredible wildlife and outdoor adventures to its warm community spirit and hidden gems that only a local would know.",
+  "The idea behind Hello Hoedspruit came from a simple frustration. There was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together.",
+];
+
+const press = (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = "scale(0.98)";
+};
+const release = (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = "scale(1)";
 };
 
 const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 120, fontFamily: SANS, color: "#0A0A0A" }}>
       {/* Back */}
-      <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
-        <button onClick={() => navigate(-1)} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
-          <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
+      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <button
+          onClick={() => navigate(-1)}
+          onPointerDown={press}
+          onPointerUp={release}
+          onPointerLeave={release}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            transition: "transform 150ms ease-out",
+            fontFamily: SANS,
+          }}
+        >
+          <ChevronLeft size={20} strokeWidth={1.8} color="#0A0A0A" />
+          <span style={{ fontSize: 15, fontWeight: 400, color: "#0A0A0A" }}>Back</span>
         </button>
       </div>
 
-      {/* Heading */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
-          About Hello Hoedspruit
-        </h1>
-      </div>
-
-      {/* Subtitle */}
-      <div style={{ padding: "0 20px", marginBottom: 32 }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, margin: 0 }}>
-          Your full guide to Hoedspruit
-        </p>
-      </div>
-
-      {/* Founder photo */}
-      <div style={{ padding: "0 20px", marginBottom: 28 }}>
-        <div style={{ borderRadius: 16, overflow: "hidden", height: 320 }}>
-          <img
-            src="https://media.licdn.com/dms/image/v2/D4D03AQEovnKgk_KDnw/profile-displayphoto-crop_800_800/B4DZxSzIvCJcAM-/0/1770915663825?e=1775692800&v=beta&t=cqieS2K8_BvM9SoPttQVDEJWbBVERBzXXdwEie_hLnk"
-            alt="Robyn Dawes — Founder of Hello Hoedspruit"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
+      {/* HEADER with coral circle */}
+      <div style={{ position: "relative", paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+        {/* coral circle */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: -30,
+            right: -120,
+            width: 240,
+            height: 240,
+            borderRadius: "50%",
+            background: CORAL_GRADIENT,
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ fontSize: 12, letterSpacing: "0.02em", color: "#8A8480", marginBottom: 8 }}>
+            About
+          </div>
+          <h1
+            style={{
+              fontFamily: DISPLAY,
+              fontWeight: 700,
+              fontSize: 48,
+              lineHeight: 0.98,
+              letterSpacing: "-0.03em",
+              color: "#0A0A0A",
+              margin: 0,
+              marginBottom: 14,
+            }}
+          >
+            About Hello<br />Hoedspruit
+          </h1>
+          <p
+            style={{
+              fontSize: 15,
+              lineHeight: 1.45,
+              color: "#8A8480",
+              margin: 0,
+              maxWidth: 240,
+            }}
+          >
+            Your full guide to Hoedspruit.
+          </p>
         </div>
       </div>
 
-      {/* Founder section heading */}
-      <div style={{ padding: "0 20px", marginBottom: 16 }}>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>THE STORY</div>
-        <h2 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 550, fontSize: 28, color: "#020202", textTransform: "capitalize", letterSpacing: "-0.02em", margin: 0 }}>Meet The Founder</h2>
-      </div>
-
-      {/* Founder story */}
-      <div style={{ padding: "0 20px", marginBottom: 36 }}>
-        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, margin: "0 0 16px" }}>
-          My name is Robyn Dawes, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the Lowveld, and over the years I've watched this little town blossom into something truly special.
-        </p>
-        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, margin: "0 0 16px" }}>
-          Having spent my whole life here, I know just how much Hoedspruit has to offer — from incredible wildlife and outdoor adventures to its warm community spirit and hidden gems that only a local would know.
-        </p>
-        <p style={{ fontSize: 14, color: "rgba(18,18,20,0.5)", lineHeight: 1.7, margin: 0 }}>
-          The idea behind Hello Hoedspruit came from a simple frustration: there was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local — Hello Hoedspruit is my way of bringing our community together.
-        </p>
-      </div>
-
-      {/* Values heading */}
-      <div style={{ padding: "0 20px", marginBottom: 18 }}>
-        <h2 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 550, fontSize: 28, color: "#020202", textTransform: "capitalize", letterSpacing: "-0.02em", margin: 0 }}>What We Stand For</h2>
-      </div>
-
-      {/* Value cards grid */}
-      <div style={{ padding: "0 20px", marginBottom: 36, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
-        {values.map((item) => (
-          <div key={item.title} style={{ ...cardStyle, padding: "16px 16px 16px", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: "#B4B4B4", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
-              <item.icon size={22} strokeWidth={1.5} color="#ffffff" />
+      {/* Founder card */}
+      <div style={{ position: "relative", zIndex: 2, paddingLeft: 24, paddingRight: 24, marginBottom: 52 }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 24,
+            padding: "14px 16px",
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              background: CORAL_GRADIENT,
+              flexShrink: 0,
+            }}
+          />
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 15, letterSpacing: "-0.005em", color: "#0A0A0A", fontWeight: 400 }}>
+              Robyn Dawes
             </div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#2b2420", whiteSpace: "nowrap" }}>{item.title}</div>
+            <div style={{ fontSize: 12, letterSpacing: "0.01em", color: "#8A8480", marginTop: 2 }}>
+              Founder of Hello Hoedspruit
+            </div>
           </div>
+          <button
+            onPointerDown={press}
+            onPointerUp={release}
+            onPointerLeave={release}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "#F2EFEC",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+              transition: "transform 150ms ease-out",
+            }}
+            aria-label="Founder details"
+          >
+            <ArrowUpRight size={14} color="#0A0A0A" strokeWidth={2} />
+          </button>
+        </div>
+      </div>
+
+      {/* The story */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 52 }}>
+        <div style={{ fontSize: 12, letterSpacing: "0.02em", color: "#8A8480", marginBottom: 10 }}>
+          The story
+        </div>
+        <h2
+          style={{
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 40,
+            lineHeight: 1.0,
+            letterSpacing: "-0.03em",
+            color: "#0A0A0A",
+            margin: 0,
+            marginBottom: 24,
+          }}
+        >
+          Meet the<br />founder
+        </h2>
+        {paragraphs.map((p, i) => (
+          <p
+            key={i}
+            style={{
+              fontSize: 15,
+              lineHeight: 1.65,
+              letterSpacing: "-0.005em",
+              color: "#0A0A0A",
+              margin: 0,
+              marginBottom: i < paragraphs.length - 1 ? 18 : 0,
+            }}
+          >
+            {p}
+          </p>
         ))}
       </div>
 
-      {/* CTA card */}
-      <div style={{ padding: "0 20px", marginBottom: 20 }}>
-        <div style={{
-          background: "#000000",
-          borderRadius: 16,
-          padding: "28px 22px 26px",
-          position: "relative",
-          overflow: "hidden",
-        }}>
-          {/* Decorative circles */}
-          <div style={{ position: "absolute", top: -20, right: -20, width: 120, height: 120, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.06)" }} />
-          <div style={{ position: "absolute", top: -40, right: -40, width: 180, height: 180, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
-
-          {/* Top arrow */}
-          <div style={{ display: "flex", justifyContent: "flex-end", position: "relative", zIndex: 1 }}>
+      {/* What we stand for */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 52 }}>
+        <h2
+          style={{
+            fontFamily: DISPLAY,
+            fontWeight: 700,
+            fontSize: 40,
+            lineHeight: 1.0,
+            letterSpacing: "-0.03em",
+            color: "#0A0A0A",
+            margin: 0,
+            marginBottom: 24,
+          }}
+        >
+          What we<br />stand for
+        </h2>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+          {values.map((v) => (
             <button
-              onClick={() => navigate("/advertise")}
+              key={v.num}
+              onPointerDown={press}
+              onPointerUp={release}
+              onPointerLeave={release}
               style={{
-                background: "transparent",
-                border: "none",
-                width: 36,
-                height: 36,
+                position: "relative",
+                background: "#FFFFFF",
+                borderRadius: 20,
+                padding: "18px 18px 20px",
+                minHeight: 150,
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
-            >
-              <ArrowUpRight size={16} color="#ffffff" strokeWidth={2} />
-            </button>
-          </div>
-
-          {/* Content */}
-          <div style={{ position: "relative", zIndex: 1, marginTop: -8 }}>
-            <div style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#737373",
-              textTransform: "uppercase",
-              letterSpacing: 3,
-              marginBottom: 10,
-            }}>
-              FOR BUSINESSES
-            </div>
-            <div style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontWeight: 700,
-              fontSize: 32,
-              color: "#ffffff",
-              lineHeight: 1.05,
-              letterSpacing: "-0.02em",
-              marginBottom: 14,
-            }}>
-              Want To Be Listed?
-            </div>
-            <p style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontStyle: "italic",
-              fontSize: 14,
-              color: "#737373",
-              lineHeight: 1.5,
-              margin: "0 0 22px",
-            }}>
-              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
-            </p>
-            <button
-              onClick={() => navigate("/advertise")}
-              style={{
-                background: "#ffffff",
-                borderRadius: 12,
-                padding: "12px 22px",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
+                flexDirection: "column",
+                justifyContent: "space-between",
                 border: "none",
+                textAlign: "left",
                 cursor: "pointer",
+                transition: "transform 150ms ease-out",
+                fontFamily: SANS,
               }}
             >
-              <span style={{ fontSize: 14, fontWeight: 600, color: "#020202", letterSpacing: "-0.02em" }}>Get in Touch</span>
-              <ArrowUpRight size={14} color="#020202" strokeWidth={2.5} />
+              <span
+                style={{
+                  fontFamily: SERIF,
+                  fontWeight: 300,
+                  fontSize: 32,
+                  lineHeight: 1,
+                  letterSpacing: "-0.02em",
+                  color: "#0A0A0A",
+                }}
+              >
+                {v.num}
+              </span>
+              <span
+                aria-hidden
+                style={{
+                  position: "absolute",
+                  top: 16,
+                  right: 16,
+                  width: 26,
+                  height: 26,
+                  borderRadius: "50%",
+                  background: "#F2EFEC",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <ArrowUpRight size={12} color="#0A0A0A" strokeWidth={2} />
+              </span>
+              <span
+                style={{
+                  marginTop: "auto",
+                  fontSize: 18,
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.01em",
+                  color: "#0A0A0A",
+                  fontWeight: 400,
+                }}
+              >
+                {v.title}
+              </span>
             </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Full-bleed coral CTA */}
+      <div
+        style={{
+          position: "relative",
+          background: "#F26A48",
+          padding: "36px 28px",
+          borderRadius: "32px 32px 0 0",
+          overflow: "hidden",
+          marginTop: 52,
+        }}
+      >
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: -60,
+            right: -60,
+            width: 200,
+            height: 200,
+            borderRadius: "50%",
+            background: "radial-gradient(circle, #F47356 0%, #D9572F 100%)",
+            opacity: 0.55,
+            pointerEvents: "none",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1 }}>
+          <div style={{ fontSize: 12, letterSpacing: "0.02em", color: "rgba(255,255,255,0.78)", marginBottom: 10 }}>
+            For businesses
           </div>
+          <h2
+            style={{
+              fontFamily: DISPLAY,
+              fontWeight: 700,
+              fontSize: 42,
+              lineHeight: 0.98,
+              letterSpacing: "-0.03em",
+              color: "#FFFFFF",
+              margin: 0,
+              marginBottom: 18,
+            }}
+          >
+            Want to be<br />listed?
+          </h2>
+          <p
+            style={{
+              fontSize: 15,
+              lineHeight: 1.5,
+              color: "rgba(255,255,255,0.85)",
+              margin: 0,
+              marginBottom: 24,
+              maxWidth: 290,
+            }}
+          >
+            If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
+          </p>
+          <button
+            onClick={() => navigate("/advertise")}
+            onPointerDown={press}
+            onPointerUp={release}
+            onPointerLeave={release}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              background: "#FFFFFF",
+              borderRadius: 999,
+              padding: "14px 22px",
+              border: "none",
+              cursor: "pointer",
+              transition: "transform 150ms ease-out",
+              fontFamily: SANS,
+            }}
+          >
+            <span style={{ fontSize: 15, color: "#0A0A0A", fontWeight: 400 }}>Get in touch</span>
+            <ArrowUpRight size={14} color="#0A0A0A" strokeWidth={2} />
+          </button>
         </div>
       </div>
 
