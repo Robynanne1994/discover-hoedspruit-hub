@@ -128,7 +128,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   return (
     <div className="min-h-screen pb-20" style={{ background: "#ffffff" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6 }}>
           <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
           <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px" }}>Back</span>
@@ -136,14 +136,14 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
       </div>
 
       {/* Heading */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
         <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
           EDIT PROFILE
         </h1>
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           Update your details and photo
         </p>
@@ -194,7 +194,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
       {/* Form */}
       <form
         onSubmit={(e) => { e.preventDefault(); saveProfile.mutate(); }}
-        style={{ paddingLeft: 24, paddingRight: 24 }}
+        style={{ paddingLeft: 20, paddingRight: 20 }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
           {/* Username */}

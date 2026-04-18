@@ -76,7 +76,7 @@ const AccountSettings = () => {
   if (loading || !user) {
     return (
       <div style={{ minHeight: "100vh", background: "#ebebeb", fontFamily: FF }}>
-        <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
             <Skeleton className="h-10 w-48" />
@@ -89,7 +89,7 @@ const AccountSettings = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -107,7 +107,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
           Manage your account and preferences
         </p>
@@ -123,7 +123,7 @@ const AccountSettings = () => {
       </div>
 
       {/* Delete account */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 32 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginTop: 32 }}>
         <DeleteAccountButton />
       </div>
 
@@ -170,7 +170,7 @@ function DeleteAccountButton() {
         style={{
           width: "100%",
           display: "flex", alignItems: "center", justifyContent: "center",
-          gap: 8, padding: "12px 24px", minHeight: 48,
+          gap: 8, padding: "12px 20px", minHeight: 48,
           border: "1.5px solid rgba(220,38,38,0.35)",
           borderRadius: 24, background: "transparent", cursor: "pointer",
           transform: pressed ? "scale(0.97)" : "scale(1)",
@@ -270,7 +270,7 @@ function SettingsRow({ item, isLast }: { item: typeof settingsRows[0]; isLast: b
       style={{
         display: "flex",
         alignItems: "center",
-        padding: "16px 24px",
+        padding: "16px 20px",
         background: "transparent",
         transform: pressed ? "scale(0.98)" : "scale(1)",
         transition: "transform 0.15s ease",
@@ -308,7 +308,7 @@ function LogOutButton({ onLogOut }: { onLogOut: () => void }) {
       onPointerLeave={() => setPressed(false)}
       style={{
         display: "flex", alignItems: "center", justifyContent: "center",
-        gap: 8, padding: "12px 24px", minHeight: 48,
+        gap: 8, padding: "12px 20px", minHeight: 48,
         border: "1.5px solid rgba(18,18,20,0.15)",
         borderRadius: 24, background: "transparent", cursor: "pointer",
         transform: pressed ? "scale(0.97)" : "scale(1)",

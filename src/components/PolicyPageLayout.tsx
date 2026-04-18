@@ -53,7 +53,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20 }}>
         <button
           onClick={() => navigate("/terms")}
           style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -64,7 +64,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
       </div>
 
       {/* Title */}
-      <div style={{ padding: "28px 24px 0" }}>
+      <div style={{ padding: "28px 20px 0" }}>
         <h1 style={{ fontSize: 40, fontWeight: 400, textTransform: "uppercase", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
           {title}
         </h1>
@@ -74,7 +74,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
       </div>
 
       {/* Sections */}
-      <div style={{ padding: "0 24px" }}>
+      <div style={{ padding: "0 20px" }}>
         {sections.map((section, i) => (
           <div key={i} style={{ marginTop: i === 0 ? 0 : 32 }}>
             <h2 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, margin: 0, marginBottom: 14 }}>

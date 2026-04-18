@@ -12,7 +12,7 @@ const baseStyle: CSSProperties = {
   border: "none",
   borderRadius: 16,
   height: 48,
-  padding: "12px 24px",
+  padding: "12px 20px",
   fontSize: 15,
   fontWeight: 600,
   fontFamily: FF,

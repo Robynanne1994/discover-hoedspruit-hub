@@ -116,7 +116,7 @@ const ArticleDetail = () => {
         </button>
       </div>
 
-      <div style={{ padding: "0 24px" }}>
+      <div style={{ padding: "0 20px" }}>
         {/* Category badge */}
         <div style={{ marginTop: 20, marginBottom: 14 }}>
           <span style={{ display: "inline-block", background: "rgba(18,18,20,0.05)", borderRadius: 9999, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)", textTransform: "uppercase" }}>{article.category}</span>

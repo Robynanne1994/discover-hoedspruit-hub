@@ -207,7 +207,7 @@ const MyAccount = () => {
   if (!loading && !user) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
           <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>Profile</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
@@ -223,7 +223,7 @@ const MyAccount = () => {
   if (loading || !user) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "#d2d2d2", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
           <Skeleton className="h-10 w-48 mb-4" />
           <Skeleton className="h-4 w-40 mb-7" />
           <Skeleton className="h-28 w-full rounded-[16px] mb-6" />
@@ -449,7 +449,7 @@ const MyAccount = () => {
         className="flex items-center"
         style={{
           height: 48,
-          padding: "0 24px",
+          padding: "0 20px",
           transition: "transform 0.15s ease",
         }}
         onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
@@ -480,7 +480,7 @@ const MyAccount = () => {
       lineHeight: 1.3,
       marginTop: 20,
       marginBottom: 4,
-      paddingLeft: 24,
+      paddingLeft: 20,
     }}>
       {text}
     </p>
@@ -506,7 +506,7 @@ const MyAccount = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 16 }}>
         <p style={{
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontSize: 15,
@@ -597,7 +597,7 @@ const MyAccount = () => {
             gap: 8,
             background: "#020202",
             borderRadius: 16,
-            padding: "12px 24px",
+            padding: "12px 20px",
             height: 48,
             border: "none",
             cursor: "pointer",

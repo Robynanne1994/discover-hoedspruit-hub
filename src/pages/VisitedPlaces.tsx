@@ -59,13 +59,13 @@ const VisitedPlaces = () => {
   if (!loading && !user) {
     return (
       <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
-        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
             <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
           </button>
         </div>
-        <div style={{ paddingTop: 80, textAlign: "center", paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 80, textAlign: "center", paddingLeft: 20, paddingRight: 20 }}>
           <MapPin size={48} strokeWidth={1.5} color="rgba(18,18,20,0.15)" style={{ margin: "0 auto" }} />
           <h2 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>Sign in to see your visited places</h2>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 24 }}>Mark places you've been to and keep track of your adventures.</p>
@@ -83,13 +83,13 @@ const VisitedPlaces = () => {
   if (loading || isLoading) {
     return (
       <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
-        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
             <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
             <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
           </button>
         </div>
-        <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ marginTop: 28, paddingLeft: 20, paddingRight: 20 }}>
           <Skeleton className="h-10 w-48 mb-4" />
           <Skeleton className="h-4 w-32 mb-6" />
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -106,7 +106,7 @@ const VisitedPlaces = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 44, paddingLeft: 20, paddingRight: 20 }}>
         <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
           <ArrowLeft size={18} strokeWidth={2} color="rgba(18,18,20,0.4)" />
           <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2 }}>Back</span>
@@ -121,14 +121,14 @@ const VisitedPlaces = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ marginTop: 12, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ marginTop: 12, paddingLeft: 20, paddingRight: 20 }}>
         <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", margin: 0 }}>
           {visitedCount === 1 ? "1 place you've been to" : `${visitedCount} places you've been to`}
         </p>
       </div>
 
       {/* Search */}
-      <div style={{ marginTop: 24, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ marginTop: 24, paddingLeft: 20, paddingRight: 20 }}>
         <div style={{
           display: "flex",
           alignItems: "center",
@@ -158,7 +158,7 @@ const VisitedPlaces = () => {
       </div>
 
       {/* Content */}
-      <div style={{ marginTop: 28, paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
+      <div style={{ marginTop: 28, paddingLeft: 20, paddingRight: 20, marginBottom: 100 }}>
         {visitedCount === 0 ? (
           <div style={{ textAlign: "center", paddingTop: 60 }}>
             <MapPin size={48} strokeWidth={1.5} color="rgba(18,18,20,0.15)" style={{ margin: "0 auto" }} />

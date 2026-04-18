@@ -59,7 +59,7 @@ const ContactUs = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
       {/* Back */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
           <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Back</span>
@@ -67,14 +67,14 @@ const ContactUs = () => {
       </div>
 
       {/* Title */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
         <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 40, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
           Get in Touch
         </h1>
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 32 }}>
         <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
           Questions, feedback or local advice
         </p>
@@ -87,7 +87,7 @@ const ContactUs = () => {
           const isLast = i === contactOptions.length - 1;
           const inner = (
             <div
-              style={{ display: "flex", alignItems: "center", padding: "16px 24px", transition: "transform 0.15s ease" }}
+              style={{ display: "flex", alignItems: "center", padding: "16px 20px", transition: "transform 0.15s ease" }}
               onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.98)"; }}
               onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
               onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
@@ -129,7 +129,7 @@ const ContactUs = () => {
 
       {/* Contact form */}
       {showForm && (
-        <div style={{ marginTop: 24, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ marginTop: 24, paddingLeft: 20, paddingRight: 20 }}>
           <h2 style={{ fontSize: 18, fontWeight: 400, color: "#2B2420", marginBottom: 16, fontFamily: FF }}>Send us a message</h2>
           {submitted ? (
             <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 32, textAlign: "center" }}>
@@ -138,7 +138,7 @@ const ContactUs = () => {
               </div>
               <h3 style={{ fontSize: 18, fontWeight: 400, color: "#2B2420", marginBottom: 8, fontFamily: FF }}>Thanks for reaching out</h3>
               <p style={{ fontSize: 14, color: "rgba(18,18,20,0.55)", marginBottom: 20, fontFamily: FF }}>We've received your message and will get back to you soon.</p>
-              <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24, padding: "10px 24px", fontSize: 14, fontWeight: 500, color: "#2B2420", cursor: "pointer", fontFamily: FF }}>
+              <button onClick={() => setSubmitted(false)} style={{ background: "none", border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24, padding: "10px 20px", fontSize: 14, fontWeight: 500, color: "#2B2420", cursor: "pointer", fontFamily: FF }}>
                 Send Another Message
               </button>
             </div>
@@ -172,7 +172,7 @@ const ContactUs = () => {
               <button
                 type="submit"
                 disabled={submitForm.isPending}
-                style={{ width: "100%", background: "#020202", borderRadius: 16, padding: "12px 24px", height: 48, border: "none", color: "#FFFFFF", fontSize: 15, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: submitForm.isPending ? 0.6 : 1, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", transition: "transform 0.12s ease, opacity 0.12s ease", textTransform: "capitalize" as const }}
+                style={{ width: "100%", background: "#020202", borderRadius: 16, padding: "12px 20px", height: 48, border: "none", color: "#FFFFFF", fontSize: 15, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: submitForm.isPending ? 0.6 : 1, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", transition: "transform 0.12s ease, opacity 0.12s ease", textTransform: "capitalize" as const }}
                 onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; }}
                 onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
                 onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}

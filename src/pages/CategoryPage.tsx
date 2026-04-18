@@ -184,7 +184,7 @@ const CategoryPage = () => {
   return (
     <div style={{ minHeight: "100vh", paddingBottom: 84, background: "#EBEBEB", fontFamily: font }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -222,8 +222,8 @@ const CategoryPage = () => {
           lineHeight: 1.35,
           color: "rgba(18, 18, 20, 0.55)",
           fontStyle: "italic",
-          paddingLeft: 24,
-          paddingRight: 24,
+          paddingLeft: 20,
+          paddingRight: 20,
           marginBottom: 24,
           marginTop: 0,
         }}
@@ -232,7 +232,7 @@ const CategoryPage = () => {
       </p>
 
       {/* Filter button */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <button
           onClick={() => setShowFilters((v) => !v)}
           style={{
@@ -346,7 +346,7 @@ const CategoryPage = () => {
 
       {/* Content */}
       {isLoading ? (
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20 }}>
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
               <Skeleton key={i} className="w-full" style={{ height: 280, borderRadius: 16, background: "rgba(18,18,20,0.06)" }} />
@@ -365,7 +365,7 @@ const CategoryPage = () => {
               color: "rgba(18, 18, 20, 0.4)",
               lineHeight: 1.3,
               marginBottom: 4,
-              paddingLeft: 24,
+              paddingLeft: 20,
               fontFamily: font,
             }}
           >
@@ -381,7 +381,7 @@ const CategoryPage = () => {
               letterSpacing: "0.01em",
               color: "#020202",
               textTransform: "uppercase",
-              paddingLeft: 24,
+              paddingLeft: 20,
               marginBottom: 16,
               marginTop: 0,
               fontFamily: font,

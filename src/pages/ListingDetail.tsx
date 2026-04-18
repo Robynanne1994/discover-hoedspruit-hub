@@ -135,13 +135,13 @@ const ListingDetail = () => {
   if (isLoading) {
     return (
       <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 24px 0" }}>
+        <div style={{ padding: "52px 20px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
             <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
             <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
           </button>
         </div>
-        <div style={{ padding: "48px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+        <div style={{ padding: "48px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
           <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.04)", animation: "pulse 2s infinite" }} />
           <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", fontFamily: font }}>Loading...</p>
         </div>
@@ -152,13 +152,13 @@ const ListingDetail = () => {
   if (!listing) {
     return (
       <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 24px 0" }}>
+        <div style={{ padding: "52px 20px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
             <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
             <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
           </button>
         </div>
-        <div style={{ padding: "80px 24px", textAlign: "center" }}>
+        <div style={{ padding: "80px 20px", textAlign: "center" }}>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 16, fontFamily: font }}>Listing not found.</p>
           <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: "#2B2420", fontFamily: font }}>Back to Home</Link>
         </div>
@@ -355,7 +355,7 @@ const ListingDetail = () => {
           )}
         </div>
       ) : (
-        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ padding: "48px 20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
             <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
@@ -461,7 +461,7 @@ const ListingDetail = () => {
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                  padding: "12px 24px", height: 48, fontSize: 15, fontWeight: 600,
+                  padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
                   textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize",
                 }}
@@ -481,7 +481,7 @@ const ListingDetail = () => {
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                  padding: "12px 24px", height: 48, fontSize: 15, fontWeight: 600,
+                  padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
                   textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize",
                 }}

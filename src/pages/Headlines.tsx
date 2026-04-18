@@ -49,7 +49,7 @@ const Headlines = () => {
   return (
     <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
       {/* Back */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, marginBottom: 28 }}>
+      <div style={{ paddingTop: 52, paddingLeft: 20, marginBottom: 28 }}>
         <button onClick={() => navigate(-1)} className="flex items-center" style={{ gap: 6, background: "none", border: "none", cursor: "pointer" }}>
           <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 2, color: "rgba(18,18,20,0.4)" }} />
           <span style={{ fontSize: 15, fontWeight: 500, color: "rgba(18,18,20,0.4)" }}>Back</span>
@@ -64,14 +64,14 @@ const Headlines = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           News, stories and local updates from the Lowveld
         </p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 20 }}>
         <div className="flex items-center" style={{ background: "#ebebeb", border: "2px solid #121214", borderRadius: 9999, padding: "11px 14px", gap: 8 }}>
           <Search style={{ width: 16, height: 16, strokeWidth: 2, color: "#2b2420", flexShrink: 0 }} />
           <input
@@ -84,7 +84,7 @@ const Headlines = () => {
       </div>
 
       {/* Filter pills */}
-      <div style={{ paddingLeft: 24, marginBottom: 28, overflowX: "auto", WebkitOverflowScrolling: "touch" }} className="flex gap-2 no-scrollbar">
+      <div style={{ paddingLeft: 20, marginBottom: 28, overflowX: "auto", WebkitOverflowScrolling: "touch" }} className="flex gap-2 no-scrollbar">
         {categories.map((cat) => (
           <button
             key={cat}
@@ -109,7 +109,7 @@ const Headlines = () => {
 
       {/* Featured */}
       {showFeatured && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>Latest</div>
           <div style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 18 }}>Featured</div>
 
@@ -136,12 +136,12 @@ const Headlines = () => {
       )}
 
       {/* Recent */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 18 }}>
         <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 6 }}>More Stories</div>
         <div style={{ fontWeight: 400, fontSize: 22, color: "#020202", textTransform: "uppercase", letterSpacing: "0.5px" }}>Recent</div>
       </div>
 
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 100 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 100 }}>
         {filtered.length === 0 && (
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.35)", textAlign: "center", paddingTop: 40 }}>No articles found.</p>
         )}

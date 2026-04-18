@@ -67,7 +67,7 @@ const FAQs = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
         <button
           onClick={() => navigate(-1)}
           style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
@@ -85,14 +85,14 @@ const FAQs = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
           Find answers to the most common questions about Hello Hoedspruit
         </p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <div style={{ display: "flex", alignItems: "center", background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "12px 16px", gap: 10 }}>
           <Search size={20} strokeWidth={1.8} color="rgba(18,18,20,0.35)" style={{ flexShrink: 0 }} />
           <input
@@ -107,7 +107,7 @@ const FAQs = () => {
 
       {/* Loading */}
       {isLoading && (
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20 }}>
           {[1, 2, 3].map((i) => (
             <div key={i} style={{ marginBottom: 24 }}>
               <Skeleton className="h-3 w-32 mb-3" />
@@ -126,7 +126,7 @@ const FAQs = () => {
 
       {/* FAQ sections */}
       {!isLoading && filteredSections.map((section) => (
-        <div key={section.title} style={{ paddingLeft: 24, paddingRight: 24 }}>
+        <div key={section.title} style={{ paddingLeft: 20, paddingRight: 20 }}>
           {/* Section overline */}
           <h3 style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginTop: 8, marginBottom: 12, fontFamily: FF }}>
             {section.title}
@@ -172,8 +172,8 @@ const FAQs = () => {
 
       {/* CTA card */}
       {!isLoading && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 16, marginBottom: 36 }}>
-          <div style={{ background: "#1A1A1A", borderRadius: 16, padding: "28px 24px", position: "relative", overflow: "hidden" }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20, marginTop: 16, marginBottom: 36 }}>
+          <div style={{ background: "#1A1A1A", borderRadius: 16, padding: "28px 20px", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: -20, right: -20, width: 160, height: 160, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.08)" }} />
             <div style={{ position: "relative", zIndex: 1 }}>
               <h3 style={{ fontSize: 22, fontWeight: 400, color: "#FFFFFF", textTransform: "uppercase", lineHeight: 1.15, letterSpacing: "0.01em", marginBottom: 8, margin: 0, marginBlockEnd: 8, fontFamily: FF }}>
