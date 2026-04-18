@@ -555,11 +555,11 @@ const AdminImport = () => {
 
   return (
     <div>
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
-        <h1 className="font-heading text-3xl font-bold text-foreground">Import / Export Listings</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 lg:mb-8 gap-4">
+        <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Import / Export Listings</h1>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-6 sm:p-8 space-y-6">
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 lg:p-8 space-y-6">
         {/* Category selector */}
         <div className="max-w-sm">
           <Label className="mb-2 block">Select Category</Label>
