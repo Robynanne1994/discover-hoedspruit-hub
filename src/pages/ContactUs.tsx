@@ -454,7 +454,7 @@ const ContactUs = () => {
               }}>
                 <ArrowUpRight size={12} strokeWidth={2.5} style={{ color: "rgba(18,18,20,0.3)" }} />
               </div>
-              <p style={{ ...overlineStyle, marginBottom: 10, paddingRight: 36 }}>Follow along</p>
+              <p style={{ ...overlineStyle, marginBottom: 10, paddingRight: 36 }}>Instagram</p>
               <p style={{
                 fontFamily: FF, fontSize: 20, fontWeight: 500,
                 lineHeight: 1.2, letterSpacing: "0.01em", color: "#020202",
