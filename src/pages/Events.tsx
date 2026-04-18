@@ -251,7 +251,7 @@ const Events = () => {
                 </h2>
               </div>
               <div className="overflow-x-auto scrollbar-hide">
-                <div className="inline-flex snap-x snap-mandatory" style={{ paddingLeft: 20, gap: 12, paddingRight: 24, paddingBottom: 4 }}>
+                <div className="inline-flex snap-x snap-mandatory" style={{ paddingLeft: 24, gap: 12, paddingRight: 24, paddingBottom: 4 }}>
                   {featuredEvents.map((event) => (
                     <Link
                       key={event.id}
