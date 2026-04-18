@@ -51,7 +51,7 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
         size={22}
         strokeWidth={1.8}
         color="#020202"
-        style={{ display: "block", transform: "scale(1.4)", transformOrigin: "center" }}
+        style={{ display: "block" }}
       />
       <span
         style={{
