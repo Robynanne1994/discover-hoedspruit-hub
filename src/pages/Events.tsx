@@ -132,32 +132,20 @@ const Events = () => {
 
   return (
     <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-      {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
-        <BackButton />
-      </div>
-
       {/* Heading */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 24px)", paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <h1 style={{
-          fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+          fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
           fontWeight: 400,
-          fontSize: 40,
+          fontSize: 52,
           lineHeight: 0.95,
-          letterSpacing: "-0.01em",
+          letterSpacing: "-0.02em",
           color: "#020202",
           textTransform: "capitalize",
           margin: 0,
         }}>
           What's Happening
         </h1>
-      </div>
-
-      {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
-        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", margin: 0 }}>
-          Events, markets and things to do around Hoedspruit
-        </p>
       </div>
 
       {/* Search bar */}
