@@ -11,15 +11,15 @@ const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 const HomeLowdown = () => {
   const { data: articles } = useQuery({
     queryKey: ["home-lowdown-list"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("articles")
-        .select("id, slug, title, category, published_at, read_time")
-        .eq("is_published", true)
-        .order("published_at", { ascending: false })
-        .limit(4);
-      return data || [];
-    },
+      queryFn: async () => {
+        const { data } = await supabase
+          .from("articles")
+          .select("id, slug, title, category, published_at, read_time, image_url")
+          .eq("is_published", true)
+          .order("published_at", { ascending: false })
+          .limit(4);
+        return data || [];
+      },
   });
 
   if (!articles || articles.length === 0) return null;
