@@ -727,7 +727,7 @@ const ListingDetail = () => {
             <div style={{ marginBottom: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                 <Clock size={24} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />
-                <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", margin: 0 }}>Hours</h2>
+                <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", margin: 0 }}>Hours</h2>
               </div>
               {holidayCheck.isHoliday && (
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "8px 12px", background: "#fef3c7", borderRadius: 10, border: "1px solid #fde68a" }}>
