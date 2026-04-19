@@ -628,7 +628,7 @@ const ListingDetail = () => {
 
           return (
             <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, marginBottom: 24 }}>
-              <h3 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", marginBottom: 12, marginTop: 0 }}>Details</h3>
+              <h3 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", marginBottom: 12, marginTop: 0 }}>Details</h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {items.map((item) => (
                   <span key={item} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
