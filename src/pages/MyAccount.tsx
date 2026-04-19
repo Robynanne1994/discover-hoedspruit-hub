@@ -441,7 +441,7 @@ const MyAccount = () => {
   const getInTouchItems = [
     { label: "Contact", href: "/contact" },
     { label: "Advertise", href: "/advertise" },
-    { label: "Send feedback", href: "/feedback" },
+    { label: "Feedback", href: "/feedback" },
   ];
   const helpItems = [
     { label: "Account settings", href: "/account-settings" },
