@@ -440,7 +440,7 @@ const MyAccount = () => {
   ];
   const getInTouchItems = [
     { label: "Contact", href: "/contact" },
-    { label: "Advertise with us", href: "/advertise" },
+    { label: "Advertise", href: "/advertise" },
     { label: "Send feedback", href: "/feedback" },
   ];
   const helpItems = [
