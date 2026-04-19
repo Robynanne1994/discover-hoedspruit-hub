@@ -436,7 +436,7 @@ const MyAccount = () => {
   const IVORY = "#F2EFEC";
 
   const myHoedspruitItems = [
-    { label: "My saved places", href: "/saved", heart: true },
+    { label: "My Hoedspruit", href: "/saved", heart: true },
   ];
   const getInTouchItems = [
     { label: "Contact", href: "/contact" },
