@@ -11,15 +11,15 @@ const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 const HomeLowdown = () => {
   const { data: articles } = useQuery({
     queryKey: ["home-lowdown-list"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("articles")
-        .select("id, slug, title, category, published_at, read_time")
-        .eq("is_published", true)
-        .order("published_at", { ascending: false })
-        .limit(4);
-      return data || [];
-    },
+      queryFn: async () => {
+        const { data } = await supabase
+          .from("articles")
+          .select("id, slug, title, category, published_at, read_time, image_url")
+          .eq("is_published", true)
+          .order("published_at", { ascending: false })
+          .limit(4);
+        return data || [];
+      },
   });
 
   if (!articles || articles.length === 0) return null;
@@ -56,16 +56,21 @@ const HomeLowdown = () => {
           >
             <div
               style={{
-                fontFamily: SERIF,
-                fontWeight: 300,
-                fontSize: 22,
-                color: "#8A8480",
-                lineHeight: 1,
-                width: 28,
+                width: 56,
+                height: 56,
+                borderRadius: 12,
+                overflow: "hidden",
+                background: "#F2EFEC",
                 flexShrink: 0,
               }}
             >
-              {String(idx + 1).padStart(2, "0")}
+              {a.image_url && (
+                <img
+                  src={a.image_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
