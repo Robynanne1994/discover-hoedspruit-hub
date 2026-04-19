@@ -457,6 +457,7 @@ const SpecialDetail = () => {
                       letterSpacing: 0,
                       color: TEXT,
                       margin: 0,
+                      textTransform: row.capitalize ? "capitalize" : "none",
                     }}
                   >
                     {row.value}
