@@ -198,6 +198,7 @@ const SpecialDetail = () => {
       icon: <Ticket size={20} strokeWidth={1.5} color={MUTED} />,
       label: "Type",
       value: special.special_type,
+      capitalize: true,
     });
   if (special.day_of_week?.length)
     detailRows.push({
@@ -312,20 +313,14 @@ const SpecialDetail = () => {
           {special.title}
         </h1>
 
-        <p
-          style={{
-            fontFamily: FONT,
-            fontSize: 16,
-            lineHeight: "23.2px",
-            color: MUTED,
-            margin: 0,
-            marginBottom: 28,
-          }}
-        >
-          <span style={{ color: TEXT }}>{special.business_name}</span>
-          <span style={{ margin: "0 8px" }}>·</span>
-          <span>{validityText}</span>
-        </p>
+        <div style={{ marginBottom: 28 }}>
+          <p style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: TEXT, margin: 0 }}>
+            {special.business_name}
+          </p>
+          <p style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: MUTED, margin: 0 }}>
+            {validityText}
+          </p>
+        </div>
 
         {/* Primary Call Now */}
         {phoneClean && (
