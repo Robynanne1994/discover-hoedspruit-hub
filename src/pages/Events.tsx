@@ -1,14 +1,23 @@
-import { Search, ArrowUpRight, Calendar } from "lucide-react";
+import { Search, ArrowUpRight, Bookmark } from "lucide-react";
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { parse, isToday, isBefore, startOfToday, endOfWeek, isWithinInterval } from "date-fns";
 
 type FilterType = "all" | "today" | "this-week" | "upcoming" | "past";
 
-const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
+
+const COLOR = {
+  bg: "#EBEBEB",
+  card: "#FFFFFF",
+  warm: "#F2EFEC",
+  text: "#0A0A0A",
+  muted: "#8A8480",
+  divider: "#E8E4DF",
+};
 
 function parseDateText(raw: string): Date | null {
   if (!raw) return null;
@@ -50,10 +59,39 @@ function buildDateMeta(event: { date: string; start_time: string | null }): stri
   return date || time || "";
 }
 
+/** Shorten verbose recurrence into editorial form. */
+function shortenRecurrence(raw: string): string {
+  if (!raw) return "";
+  const clean = raw.replace(/<[^>]*>/g, "").trim();
+  const lower = clean.toLowerCase();
+  if (lower.includes("first") && lower.includes("sat")) {
+    const t = clean.match(/(\d{1,2}[:.]?\d{0,2})\s*(am|pm)/i);
+    return t ? `First Sat · ${t[1].replace(".", ":")} ${t[2].toLowerCase()}` : "First Sat";
+  }
+  if (lower.includes("last") && lower.includes("fri")) {
+    const t = clean.match(/(\d{1,2}[:.]?\d{0,2})\s*(am|pm)/i);
+    return t ? `Last Fri · ${t[1].replace(".", ":")} ${t[2].toLowerCase()}` : "Last Fri";
+  }
+  if (lower.includes("every")) {
+    const dayMatch = clean.match(/every\s+(mon|tue|wed|thu|fri|sat|sun)\w*/i);
+    const t = clean.match(/(\d{1,2}[:.]?\d{0,2})\s*(am|pm)/i);
+    if (dayMatch) {
+      const day = dayMatch[1].charAt(0).toUpperCase() + dayMatch[1].slice(1).toLowerCase();
+      return t ? `Every ${day} · ${t[1].replace(".", ":")} ${t[2].toLowerCase()}` : `Every ${day}`;
+    }
+  }
+  if (lower.includes("monthly")) return "Monthly";
+  if (lower.includes("quarterly")) return "Quarterly";
+  if (lower.includes("weekly")) return "Weekly";
+  // Fallback: cut at first comma or slash, cap at 32 chars
+  const cut = clean.split(/[,/]/)[0].trim();
+  return cut.length > 32 ? cut.slice(0, 30).trim() + "…" : cut;
+}
+
 const filters: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
-  { label: "This week", value: "this-week" },
+  { label: "This Week", value: "this-week" },
   { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
 ];
@@ -64,28 +102,28 @@ const pressHandlers = {
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
-const SectionHeader = ({ overline, heading }: { overline: string; heading: string }) => (
-  <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+const SectionHead = ({ overline, heading }: { overline: string; heading: string }) => (
+  <div style={{ padding: "0 24px 20px 24px" }}>
     <p style={{
       fontFamily: FONT,
       fontSize: 12,
-      fontWeight: 500,
-      letterSpacing: "0.06em",
+      fontWeight: 400,
+      lineHeight: "14.4px",
+      letterSpacing: "0.24px",
       textTransform: "uppercase",
-      color: "rgba(18,18,20,0.55)",
-      lineHeight: 1,
+      color: COLOR.muted,
       margin: 0,
-      marginBottom: 4,
+      marginBottom: 10,
     }}>
       {overline}
     </p>
     <h2 style={{
       fontFamily: FONT,
-      fontWeight: 400,
-      fontSize: 34,
-      lineHeight: 1.1,
-      letterSpacing: "0.01em",
-      color: "#020202",
+      fontWeight: 700,
+      fontSize: 44,
+      lineHeight: "44px",
+      letterSpacing: "-1.32px",
+      color: COLOR.text,
       margin: 0,
     }}>
       {heading}
@@ -93,65 +131,112 @@ const SectionHeader = ({ overline, heading }: { overline: string; heading: strin
   </div>
 );
 
-const EventRow = ({ event, showDivider }: { event: any; showDivider: boolean }) => {
-  const meta = buildDateMeta(event);
+const EventRow = ({
+  event,
+  showDivider,
+  metaOverride,
+}: {
+  event: any;
+  showDivider: boolean;
+  metaOverride?: string;
+}) => {
+  const meta = metaOverride ?? buildDateMeta(event);
   const location = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
   return (
-    <div>
+    <>
       <Link
         to={`/events/${event.id}`}
-        className="flex items-center"
-        style={{ padding: "16px 24px", transition: "transform 0.15s ease", textDecoration: "none" }}
-        {...pressHandlers}
+        style={{
+          display: "grid",
+          gridTemplateColumns: "56px 1fr 24px",
+          gap: 14,
+          alignItems: "center",
+          padding: "18px 0",
+          textDecoration: "none",
+          transition: "background 0.15s ease",
+          borderRadius: 12,
+        }}
+        onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.background = COLOR.warm; }}
+        onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
+        onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; }}
       >
         <div
-          className="flex-shrink-0 overflow-hidden"
-          style={{ width: 64, height: 64, borderRadius: "50%", background: "#EBEBEB", marginRight: 16 }}
+          style={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            overflow: "hidden",
+            background: COLOR.warm,
+            flexShrink: 0,
+          }}
         >
           {event.image_url && (
-            <img src={event.image_url} alt={event.title} className="w-full h-full object-cover" loading="lazy" />
+            <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
           )}
         </div>
 
-        <div className="flex-1 min-w-0">
+        <div style={{ minWidth: 0 }}>
           {meta && (
             <p style={{
               fontFamily: FONT,
-              fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.55)",
-              textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1, margin: 0, marginBottom: 4,
+              fontSize: 11,
+              fontWeight: 400,
+              lineHeight: "13px",
+              letterSpacing: "0.22px",
+              textTransform: "uppercase",
+              color: COLOR.muted,
+              margin: 0,
+              marginBottom: 4,
             }}>
               {meta}
             </p>
           )}
-          <h4 className="line-clamp-1" style={{
+          <h4 style={{
             fontFamily: FONT,
-            fontSize: 20, fontWeight: 500, color: "#020202",
-            lineHeight: 1.2, letterSpacing: "0.01em", margin: 0, marginBottom: 2,
+            fontSize: 18,
+            fontWeight: 400,
+            lineHeight: "21.6px",
+            letterSpacing: "-0.18px",
+            color: COLOR.text,
+            margin: 0,
+            marginBottom: 4,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
           }}>
             {event.title}
           </h4>
           {location && (
-            <p className="line-clamp-1" style={{
+            <p style={{
               fontFamily: FONT,
-              fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", margin: 0,
+              fontSize: 13,
+              fontWeight: 400,
+              lineHeight: "18.2px",
+              color: COLOR.muted,
+              margin: 0,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}>
               {location}
             </p>
           )}
         </div>
 
-        <ArrowUpRight size={22} strokeWidth={2.5} style={{ color: "rgba(18,18,20,0.3)", flexShrink: 0, marginLeft: 12 }} />
+        <ArrowUpRight size={18} strokeWidth={1.5} style={{ color: COLOR.text, flexShrink: 0 }} />
       </Link>
       {showDivider && (
-        <div style={{ marginLeft: 24, marginRight: 24, height: 1, background: "rgba(18,18,20,0.08)" }} />
+        <div style={{ height: 1, background: COLOR.divider }} />
       )}
-    </div>
+    </>
   );
 };
 
 const Events = () => {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
@@ -185,7 +270,6 @@ const Events = () => {
     );
   }, [sortedEvents, search]);
 
-  // Recurring events bypass the date filter (they happen every week)
   const recurringEvents = useMemo(
     () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== ""),
     [searched]
@@ -222,74 +306,116 @@ const Events = () => {
   const hasAnything = featuredEvents.length > 0 || upcomingEvents.length > 0 || recurringEvents.length > 0;
 
   return (
-    <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 120, fontFamily: FONT }}>
-      {/* Page title */}
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 24px)", paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
+    <div className="min-h-screen" style={{ background: COLOR.bg, paddingBottom: 140, fontFamily: FONT }}>
+      {/* Top bar */}
+      <div
+        style={{
+          height: 56,
+          padding: "0 24px",
+          paddingTop: "env(safe-area-inset-top)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          marginTop: 8,
+        }}
+      >
+        <button
+          onClick={() => navigate("/saved?tab=events")}
+          aria-label="Saved events"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: COLOR.card,
+            border: "none",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Bookmark size={20} strokeWidth={1.5} style={{ color: COLOR.text }} />
+        </button>
+      </div>
+
+      {/* Page header */}
+      <div style={{ padding: "16px 24px 28px 24px" }}>
         <h1 style={{
           fontFamily: FONT,
-          fontWeight: 400,
-          fontSize: 53,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
-          color: "#020202",
+          fontWeight: 700,
+          fontSize: 52,
+          lineHeight: "52px",
+          letterSpacing: "-1.56px",
+          color: COLOR.text,
           margin: 0,
-          textTransform: "capitalize",
         }}>
-          What's<br />happening
+          What's Happening
         </h1>
       </div>
 
-      {/* Search bar */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+      {/* Search pill */}
+      <div style={{ padding: "0 24px 20px 24px" }}>
         <div
-          className="flex items-center"
           style={{
-            background: "#FFFFFF",
-            border: "1px solid rgba(18,18,20,0.1)",
-            borderRadius: 14,
-            padding: "12px 16px",
+            height: 48,
+            background: searchFocused ? COLOR.card : COLOR.warm,
+            border: searchFocused ? `1px solid ${COLOR.text}` : "1px solid transparent",
+            borderRadius: 999,
+            padding: "0 18px",
+            display: "flex",
+            alignItems: "center",
             gap: 10,
+            transition: "background 0.15s ease, border-color 0.15s ease",
           }}
         >
-          <Search size={20} strokeWidth={2} style={{ color: "rgba(18,18,20,0.35)", flexShrink: 0 }} />
+          <Search size={18} strokeWidth={1.5} style={{ color: COLOR.muted, flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search events"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent outline-none"
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
             style={{
-              fontSize: 15,
-              fontWeight: 400,
-              color: "#2B2420",
-              fontFamily: FONT,
+              flex: 1,
+              background: "transparent",
+              outline: "none",
               border: "none",
+              fontFamily: FONT,
+              fontSize: 16,
+              fontWeight: 400,
+              lineHeight: "22.4px",
+              color: COLOR.text,
             }}
           />
         </div>
       </div>
 
       {/* Filter chips */}
-      <div className="overflow-x-auto scrollbar-hide" style={{ marginBottom: 24 }}>
-        <div className="flex" style={{ gap: 8, paddingLeft: 24, paddingRight: 24 }}>
+      <div className="overflow-x-auto scrollbar-hide" style={{ marginBottom: 32 }}>
+        <div style={{ display: "flex", gap: 8, padding: "0 24px" }}>
           {filters.map((filter) => {
             const active = activeFilter === filter.value;
             return (
               <button
                 key={filter.value}
                 onClick={() => setActiveFilter(filter.value)}
-                className="whitespace-nowrap"
                 style={{
-                  background: active ? "#020202" : "rgba(18,18,20,0.06)",
+                  background: active ? COLOR.text : COLOR.card,
                   border: "none",
-                  borderRadius: 20,
-                  padding: "6px 14px",
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: active ? "#FFFFFF" : "#2B2420",
-                  cursor: "pointer",
+                  borderRadius: 999,
+                  padding: "9px 16px",
                   fontFamily: FONT,
+                  fontSize: 14,
+                  fontWeight: 400,
+                  lineHeight: "16.8px",
+                  color: active ? "#FFFFFF" : COLOR.text,
+                  boxShadow: active ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
                   flexShrink: 0,
+                  transition: "background 0.15s ease, color 0.15s ease",
                 }}
               >
                 {filter.label}
@@ -300,45 +426,50 @@ const Events = () => {
       </div>
 
       {isLoading ? (
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-          <Skeleton className="h-3 w-16 rounded mb-2" />
-          <Skeleton className="h-8 w-32 rounded mb-4" />
+        <div style={{ padding: "0 24px" }}>
+          <Skeleton className="h-3 w-16 rounded mb-3" />
+          <Skeleton className="h-10 w-40 rounded mb-5" />
           <div className="flex gap-3 overflow-hidden">
-            <Skeleton className="flex-shrink-0 rounded-2xl" style={{ width: 280, height: 380 }} />
-            <Skeleton className="flex-shrink-0 rounded-2xl" style={{ width: 280, height: 380 }} />
+            <Skeleton className="flex-shrink-0 rounded-3xl" style={{ width: 280, height: 380 }} />
+            <Skeleton className="flex-shrink-0 rounded-3xl" style={{ width: 280, height: 380 }} />
           </div>
         </div>
       ) : !hasAnything ? (
-        <div className="text-center" style={{ paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
-          <div
-            className="flex items-center justify-center mx-auto"
-            style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(18,18,20,0.04)", marginBottom: 24 }}
-          >
-            <Calendar size={28} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.2)" }} />
-          </div>
-          <p style={{ fontFamily: FONT, fontWeight: 400, fontSize: 24, color: "#020202", marginBottom: 8, letterSpacing: "0.01em" }}>
-            {search ? "No matching events" : "No events right now"}
+        <div style={{ padding: "60px 24px 0", textAlign: "center" }}>
+          <p style={{
+            fontFamily: FONT,
+            fontSize: 12,
+            fontWeight: 400,
+            lineHeight: "14.4px",
+            letterSpacing: "0.24px",
+            textTransform: "uppercase",
+            color: COLOR.muted,
+            margin: 0,
+            marginBottom: 10,
+          }}>
+            Nothing This Week
           </p>
-          <p style={{ fontFamily: FONT, fontSize: 14, color: "rgba(18,18,20,0.55)", lineHeight: 1.5, maxWidth: 240, margin: "0 auto" }}>
-            {search ? "Try another search or browse upcoming events" : "Check back soon for what's happening in Hoedspruit"}
+          <p style={{
+            fontFamily: FONT,
+            fontSize: 15,
+            fontWeight: 400,
+            lineHeight: "21.75px",
+            color: COLOR.text,
+            margin: 0,
+            maxWidth: 280,
+            marginInline: "auto",
+          }}>
+            Check back in a few days. New events are added all the time.
           </p>
         </div>
       ) : (
         <>
           {/* Featured */}
           {featuredEvents.length > 0 && (
-            <section style={{ marginBottom: 48 }}>
-              <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
-                <p style={{
-                  fontFamily: FONT,
-                  fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.55)",
-                  textTransform: "uppercase", letterSpacing: "0.06em", lineHeight: 1, margin: 0,
-                }}>
-                  Featured
-                </p>
-              </div>
+            <section style={{ marginBottom: 8 }}>
+              <SectionHead overline="Featured" heading="This Month" />
               <div className="overflow-x-auto scrollbar-hide" style={{ scrollSnapType: "x proximity" }}>
-                <div className="inline-flex" style={{ paddingLeft: 24, paddingRight: 24, gap: 12 }}>
+                <div style={{ display: "inline-flex", padding: "0 24px 40px 24px", gap: 14 }}>
                   {featuredEvents.map((event) => {
                     const meta = buildDateMeta(event);
                     const location = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
@@ -346,69 +477,126 @@ const Events = () => {
                       <Link
                         key={event.id}
                         to={`/events/${event.id}`}
-                        className="flex-shrink-0 relative overflow-hidden"
                         style={{
+                          flexShrink: 0,
+                          position: "relative",
+                          overflow: "hidden",
                           width: 280,
                           height: 380,
-                          borderRadius: 16,
+                          borderRadius: 24,
                           transition: "transform 0.15s ease",
                           scrollSnapAlign: "start",
                           textDecoration: "none",
+                          display: "block",
                         }}
                         {...pressHandlers}
                       >
                         {event.image_url ? (
-                          <img src={event.image_url} alt={event.title} className="w-full h-full object-cover object-center" loading="lazy" />
+                          <img
+                            src={event.image_url}
+                            alt={event.title}
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                            loading="lazy"
+                          />
                         ) : (
-                          <div className="w-full h-full" style={{ background: "#EBEBEB" }} />
+                          <div style={{ width: "100%", height: "100%", background: COLOR.warm }} />
                         )}
                         <div
-                          className="absolute inset-0"
-                          style={{ background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)" }}
+                          style={{
+                            position: "absolute",
+                            inset: 0,
+                            background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7) 100%)",
+                          }}
                         />
 
-                        {/* Top-left category */}
-                        {event.tag && (
-                          <p style={{
-                            position: "absolute", top: 16, left: 16,
-                            fontFamily: FONT,
-                            fontSize: 12, fontWeight: 500, color: "#FFFFFF",
-                            textTransform: "uppercase", letterSpacing: "0.06em", margin: 0, lineHeight: 1,
+                        {/* Top row */}
+                        <div style={{
+                          position: "absolute",
+                          top: 18,
+                          left: 18,
+                          right: 18,
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                        }}>
+                          {event.tag ? (
+                            <span style={{
+                              background: "rgba(255,255,255,0.18)",
+                              backdropFilter: "blur(8px)",
+                              WebkitBackdropFilter: "blur(8px)",
+                              color: "#FFFFFF",
+                              padding: "6px 12px",
+                              borderRadius: 999,
+                              fontFamily: FONT,
+                              fontSize: 11,
+                              fontWeight: 400,
+                              lineHeight: "13px",
+                              letterSpacing: "0.22px",
+                              textTransform: "uppercase",
+                            }}>
+                              {event.tag}
+                            </span>
+                          ) : <span />}
+                          <div style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: "50%",
+                            background: "rgba(255,255,255,0.2)",
+                            backdropFilter: "blur(8px)",
+                            WebkitBackdropFilter: "blur(8px)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
                           }}>
-                            {event.tag}
-                          </p>
-                        )}
+                            <ArrowUpRight size={14} strokeWidth={1.75} style={{ color: "#FFFFFF" }} />
+                          </div>
+                        </div>
 
-                        {/* Top-right arrow */}
-                        <ArrowUpRight
-                          size={22}
-                          strokeWidth={2.5}
-                          style={{ position: "absolute", top: 14, right: 14, color: "rgba(255,255,255,0.65)" }}
-                        />
-
-                        {/* Bottom stack */}
-                        <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: 16 }}>
+                        {/* Bottom meta */}
+                        <div style={{ position: "absolute", bottom: 20, left: 20, right: 20 }}>
                           {meta && (
                             <p style={{
                               fontFamily: FONT,
-                              fontSize: 15, fontWeight: 400, color: "rgba(255,255,255,0.7)",
-                              margin: 0, marginBottom: 6, lineHeight: 1,
+                              fontSize: 12,
+                              fontWeight: 400,
+                              lineHeight: "14.4px",
+                              letterSpacing: "0.24px",
+                              textTransform: "uppercase",
+                              color: "rgba(255,255,255,0.78)",
+                              margin: 0,
+                              marginBottom: 8,
                             }}>
                               {meta}
                             </p>
                           )}
-                          <h3 className="line-clamp-2" style={{
+                          <h3 style={{
                             fontFamily: FONT,
-                            fontSize: 26, fontWeight: 400, color: "#FFFFFF",
-                            textTransform: "uppercase", lineHeight: 1, letterSpacing: "0.01em",
-                            margin: 0, marginBottom: 6,
+                            fontWeight: 700,
+                            fontSize: 28,
+                            lineHeight: "30px",
+                            letterSpacing: "-0.84px",
+                            color: "#FFFFFF",
+                            margin: 0,
+                            marginBottom: 8,
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
                           }}>
                             {event.title}
                           </h3>
                           {location && (
-                            <p className="line-clamp-1" style={{
+                            <p style={{
                               fontFamily: FONT,
-                              fontSize: 13, fontWeight: 400, color: "rgba(255,255,255,0.7)", margin: 0,
+                              fontSize: 13,
+                              fontWeight: 400,
+                              lineHeight: "18.2px",
+                              letterSpacing: "0.13px",
+                              color: "rgba(255,255,255,0.78)",
+                              margin: 0,
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
                             }}>
                               {location}
                             </p>
@@ -424,12 +612,22 @@ const Events = () => {
 
           {/* Upcoming */}
           {upcomingEvents.length > 0 && (
-            <section style={{ marginBottom: 48 }}>
-              <SectionHeader overline="Save the date" heading="Upcoming" />
-              <div>
-                {upcomingEvents.map((event, idx) => (
-                  <EventRow key={event.id} event={event} showDivider={idx < upcomingEvents.length - 1} />
-                ))}
+            <section>
+              <SectionHead overline="Save The Date" heading="Upcoming" />
+              <div style={{ padding: "0 24px 40px 24px" }}>
+                <div style={{
+                  background: COLOR.card,
+                  borderRadius: 24,
+                  padding: "8px 20px",
+                }}>
+                  {upcomingEvents.map((event, idx) => (
+                    <EventRow
+                      key={event.id}
+                      event={event}
+                      showDivider={idx < upcomingEvents.length - 1}
+                    />
+                  ))}
+                </div>
               </div>
             </section>
           )}
@@ -437,11 +635,22 @@ const Events = () => {
           {/* Recurring */}
           {recurringEvents.length > 0 && (
             <section>
-              <SectionHeader overline="Happens regularly" heading="Every week" />
-              <div>
-                {recurringEvents.map((event, idx) => (
-                  <EventRow key={event.id} event={event} showDivider={idx < recurringEvents.length - 1} />
-                ))}
+              <SectionHead overline="Happens Regularly" heading="Every Week" />
+              <div style={{ padding: "0 24px 40px 24px" }}>
+                <div style={{
+                  background: COLOR.card,
+                  borderRadius: 24,
+                  padding: "8px 20px",
+                }}>
+                  {recurringEvents.map((event, idx) => (
+                    <EventRow
+                      key={event.id}
+                      event={event}
+                      showDivider={idx < recurringEvents.length - 1}
+                      metaOverride={shortenRecurrence(event.recurrence)}
+                    />
+                  ))}
+                </div>
               </div>
             </section>
           )}
