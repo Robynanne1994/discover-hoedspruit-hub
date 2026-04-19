@@ -382,7 +382,7 @@ const ListingDetail = () => {
         )}
 
         {/* Listing name */}
-        <h1 style={{ fontFamily: font, fontSize: 34, fontWeight: 400, lineHeight: 1.1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", marginBottom: 8, marginTop: 0 }}>
+        <h1 style={{ fontFamily: font, fontSize: 34, fontWeight: 400, lineHeight: 1.1, letterSpacing: "0.01em", color: "#0a0a0a", textTransform: "capitalize", marginBottom: 8, marginTop: 0 }}>
           {listing.title}
         </h1>
 
@@ -570,7 +570,7 @@ const ListingDetail = () => {
           const paragraphs = (longDescription || listing.description || "").split("\n").filter(Boolean);
           return (
             <div style={{ marginBottom: 24 }}>
-              <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>About</h2>
+              <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>About</h2>
               <div style={{
                 ...(!aboutExpanded ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
               }}>
@@ -628,7 +628,7 @@ const ListingDetail = () => {
 
           return (
             <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, marginBottom: 24 }}>
-              <h3 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", marginBottom: 12, marginTop: 0 }}>Details</h3>
+              <h3 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", marginBottom: 12, marginTop: 0 }}>Details</h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {items.map((item) => (
                   <span key={item} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
@@ -727,7 +727,7 @@ const ListingDetail = () => {
             <div style={{ marginBottom: 24 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
                 <Clock size={24} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />
-                <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", margin: 0 }}>Hours</h2>
+                <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", margin: 0 }}>Hours</h2>
               </div>
               {holidayCheck.isHoliday && (
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "8px 12px", background: "#fef3c7", borderRadius: 10, border: "1px solid #fde68a" }}>
