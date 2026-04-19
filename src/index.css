@@ -1,57 +1,57 @@
 /* Helvetica Neue — self-hosted woff2 */
 @font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueUltraLight.woff2') format('woff2');
+  font-family: "Helvetica Neue";
+  src: url("/fonts/HelveticaNeueUltraLight.woff2") format("woff2");
   font-weight: 200;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueThin.woff2') format('woff2');
+  font-family: "Helvetica Neue";
+  src: url("/fonts/HelveticaNeueThin.woff2") format("woff2");
   font-weight: 250;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueLight.woff2') format('woff2');
+  font-family: "Helvetica Neue";
+  src: url("/fonts/HelveticaNeueLight.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueRoman.woff2') format('woff2');
+  font-family: "Helvetica Neue";
+  src: url("/fonts/HelveticaNeueRoman.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueMedium.woff2') format('woff2');
+  font-family: "Helvetica Neue";
+  src: url("/fonts/HelveticaNeueMedium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueBold.woff2') format('woff2');
+  font-family: "Helvetica Neue";
+  src: url("/fonts/HelveticaNeueBold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Helvetica Neue';
-  src: url('/fonts/HelveticaNeueHeavy.woff2') format('woff2');
+  font-family: "Helvetica Neue";
+  src: url("/fonts/HelveticaNeueHeavy.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'Helvetica World';
-  src: url('/fonts/HelveticaWorldRegular.woff2') format('woff2');
+  font-family: "Helvetica World";
+  src: url("/fonts/HelveticaWorldRegular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -59,8 +59,8 @@
 
 /* Playfair Display — self-hosted woff2 */
 @font-face {
-  font-family: 'Playfair Display';
-  src: url('/fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+  font-family: "Playfair Display";
+  src: url("/fonts/PlayfairDisplay-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -71,39 +71,39 @@
    The Pragmatica-Ext* files are extended/wider and must NOT be used,
    otherwise text renders horizontally stretched. */
 @font-face {
-  font-family: 'Pragmatica';
-  src: url('/fonts/Pragmatica-Book.woff2') format('woff2');
+  font-family: "Pragmatica";
+  src: url("/fonts/Pragmatica-Book.woff2") format("woff2");
   font-weight: 300 500;
   font-style: normal;
   font-stretch: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Pragmatica';
-  src: url('/fonts/Pragmatica-BookOblique.woff2') format('woff2');
+  font-family: "Pragmatica";
+  src: url("/fonts/Pragmatica-BookOblique.woff2") format("woff2");
   font-weight: 300 500;
   font-style: italic;
   font-stretch: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: 'Pragmatica';
-  src: url('/fonts/Pragmatica-Bold.woff2') format('woff2');
+  font-family: "Pragmatica";
+  src: url("/fonts/Pragmatica-Bold.woff2") format("woff2");
   font-weight: 600 800;
   font-style: normal;
   font-stretch: normal;
   font-display: swap;
 }
 
-
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  font-family: 'Helvetica World', Helvetica, Arial, sans-serif;
+html,
+body {
+  font-family: "Helvetica World", Helvetica, Arial, sans-serif;
   font-stretch: normal;
   font-synthesis: none;
   -webkit-text-size-adjust: 100%;
@@ -111,7 +111,9 @@ html, body {
 }
 
 /* Global stretch + synthesis lock — nothing should ever render condensed/expanded or faux-italic */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   font-stretch: normal;
   font-synthesis: none;
 }
@@ -158,9 +160,9 @@ html, body {
 
     --radius: 1rem;
 
-    --font-heading: 'Helvetica World', Helvetica, Arial, sans-serif;
-    --font-body: 'Helvetica World', Helvetica, Arial, sans-serif;
-    --font-editorial: 'Helvetica World', Helvetica, Arial, sans-serif;
+    --font-heading: "Helvetica World", Helvetica, Arial, sans-serif;
+    --font-body: "Helvetica World", Helvetica, Arial, sans-serif;
+    --font-editorial: "Helvetica World", Helvetica, Arial, sans-serif;
 
     --hero-overlay: linear-gradient(to bottom, hsla(30, 20%, 20%, 0.05), hsla(30, 20%, 20%, 0.35));
     --warm-glow: 0 4px 20px -6px hsla(27, 30%, 34%, 0.1);
@@ -238,7 +240,12 @@ html, body {
     -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-heading);
     font-weight: 400;
     letter-spacing: 0.01em;
@@ -300,6 +307,6 @@ html, body {
 .home-page h4,
 .home-page h5,
 .home-page h6 {
-  text-transform: none !important;
+  text-transform: capitalize !important;
   letter-spacing: inherit;
 }
