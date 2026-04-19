@@ -2,7 +2,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ChevronDown, SlidersHorizontal, Bookmark } from "lucide-react";
+import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -12,26 +12,33 @@ const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", 
 const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
-const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const font = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
+
+// Palette
+const C = {
+  bg: "#EBEBEB",
+  card: "#FFFFFF",
+  text: "#0A0A0A",
+  muted: "#8A8480",
+  panel: "#F2EFEC",
+  border: "#E8E4DF",
+};
 
 const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
   <button
     onClick={onClick}
     style={{
-      background: active ? "#020202" : "rgba(18,18,20,0.06)",
-      border: "none",
+      background: active ? C.text : C.card,
+      border: `1px solid ${active ? C.text : C.border}`,
       borderRadius: 9999,
-      padding: "8px 16px",
+      padding: "8px 14px",
       fontSize: 13,
-      fontWeight: 500,
+      fontWeight: 400,
       fontFamily: font,
-      color: active ? "#ffffff" : "#2B2420",
+      color: active ? "#FFFFFF" : C.text,
       cursor: "pointer",
-      transition: "transform 0.12s ease",
+      lineHeight: 1.2,
     }}
-    onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.97)")}
-    onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
-    onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
   >
     {label}
   </button>
@@ -145,10 +152,17 @@ const CategoryPage = () => {
   };
 
   const categoryTitle = category?.title || "Category";
-  const eyebrow = category?.description?.split(".")[0]?.trim() || "Discover local";
   const subtitle = category?.description || "Local cafés, great meals and favourite places to eat in Hoedspruit.";
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
+
+  // Split title into two lines (try first space, otherwise keep on one line)
+  const titleParts = useMemo(() => {
+    const t = categoryTitle.trim();
+    const firstSpace = t.indexOf(" ");
+    if (firstSpace === -1) return [t];
+    return [t.slice(0, firstSpace), t.slice(firstSpace + 1)];
+  }, [categoryTitle]);
 
   const filteredListings = useMemo(() => {
     if (!listings) return [];
@@ -185,130 +199,162 @@ const CategoryPage = () => {
     return result;
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy]);
 
-  const press = {
-    onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
-    onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
-    onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
-  };
-
   const sortLabel = sortBy === "favourites" ? "Favourites" : sortBy === "name" ? "Name" : "Rating";
   const count = filteredListings.length;
 
-  // Subtle pill style for secondary action pills
-  const subtlePill: React.CSSProperties = {
-    background: "rgba(18,18,20,0.06)",
-    color: "#2B2420",
-    border: "none",
-    borderRadius: 20,
-    padding: "8px 16px",
-    fontSize: 13,
-    fontWeight: 500,
+  // Section eyebrow style for filter panel
+  const sectionEyebrow: React.CSSProperties = {
+    fontSize: 12,
+    fontWeight: 400,
+    color: C.muted,
+    textTransform: "uppercase",
+    letterSpacing: "0.24px",
+    marginBottom: 10,
     fontFamily: font,
-    textDecoration: "none",
+  };
+
+  // Secondary action button (icon circle pill)
+  const secondaryAction: React.CSSProperties = {
     display: "inline-flex",
     alignItems: "center",
+    gap: 8,
+    background: C.card,
+    border: `1px solid ${C.border}`,
+    borderRadius: 9999,
+    padding: "8px 14px 8px 8px",
+    fontSize: 13,
+    fontWeight: 400,
+    fontFamily: font,
+    color: C.text,
+    textDecoration: "none",
     cursor: "pointer",
     lineHeight: 1,
   };
-  const darkPill: React.CSSProperties = {
-    ...subtlePill,
-    background: "#020202",
+  const iconCircle: React.CSSProperties = {
+    width: 24,
+    height: 24,
+    borderRadius: 9999,
+    background: C.panel,
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  };
+  const primaryCTA: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    background: C.text,
     color: "#FFFFFF",
+    border: "none",
+    borderRadius: 9999,
+    padding: "10px 18px",
+    fontSize: 13,
+    fontWeight: 400,
+    fontFamily: font,
+    textDecoration: "none",
+    cursor: "pointer",
+    lineHeight: 1,
   };
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: 100, background: "#EBEBEB", fontFamily: font }}>
-      {/* Top safe area */}
-      <div style={{ paddingTop: 16 }} />
-
-      {/* Top row: Back + count */}
+    <div style={{ minHeight: "100vh", paddingBottom: 100, background: C.bg, fontFamily: font, color: C.text }}>
+      {/* Top bar — 56px */}
       <div
         style={{
+          height: 56,
+          paddingLeft: 24,
+          paddingRight: 24,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingLeft: 24,
-          paddingRight: 24,
-          marginBottom: 18,
         }}
       >
         <button
           onClick={() => navigate(-1)}
           style={{
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            gap: 6,
+            gap: 4,
             background: "none",
             border: "none",
-            cursor: "pointer",
             padding: 0,
+            cursor: "pointer",
+            color: C.text,
           }}
         >
-          <ArrowLeft size={18} strokeWidth={1.8} style={{ color: "#020202" }} />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "#020202", fontFamily: font }}>Back</span>
+          <ChevronLeft size={20} strokeWidth={1.6} color={C.text} />
+          <span style={{ fontFamily: font, fontWeight: 400, fontSize: 15, lineHeight: "18px", letterSpacing: 0, color: C.text }}>
+            Back
+          </span>
         </button>
 
         {!isLoading && (
           <span
             style={{
-              fontSize: 12,
-              fontWeight: 500,
-              textTransform: "uppercase",
-              letterSpacing: "0.06em",
-              color: "rgba(18,18,20,0.4)",
               fontFamily: font,
+              fontWeight: 400,
+              fontSize: 12,
+              lineHeight: "14.4px",
+              letterSpacing: "0.24px",
+              textTransform: "uppercase",
+              color: C.muted,
             }}
           >
-            {count} {count === 1 ? "place" : "places"}
+            {count} {count === 1 ? "Place" : "Places"}
           </span>
         )}
       </div>
 
-      {/* H1 */}
-      <h1
-        style={{
-          fontFamily: font,
-          fontSize: 53,
-          fontWeight: 400,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
-          color: "#020202",
-          paddingLeft: 24,
-          paddingRight: 24,
-          margin: 0,
-          marginBottom: 16,
-        }}
-      >
-        {categoryTitle}
-      </h1>
+      {/* Title block */}
+      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+        <h1
+          style={{
+            fontFamily: font,
+            fontWeight: 700,
+            fontSize: 52,
+            lineHeight: "52px",
+            letterSpacing: "-1.56px",
+            color: C.text,
+            margin: 0,
+          }}
+        >
+          {titleParts[0]}
+          {titleParts[1] && (
+            <>
+              <br />
+              {titleParts[1]}
+            </>
+          )}
+        </h1>
+        <p
+          style={{
+            fontFamily: font,
+            fontWeight: 400,
+            fontSize: 16,
+            lineHeight: "23.2px",
+            letterSpacing: 0,
+            color: C.muted,
+            maxWidth: 300,
+            margin: 0,
+            marginTop: 16,
+          }}
+        >
+          {subtitle}
+        </p>
+      </div>
 
-      {/* Subtitle */}
-      <p
-        style={{
-          fontFamily: font,
-          fontSize: 15,
-          fontWeight: 400,
-          lineHeight: 1.35,
-          color: "rgba(18,18,20,0.55)",
-          paddingLeft: 24,
-          paddingRight: 24,
-          margin: 0,
-          marginBottom: 24,
-          maxWidth: 280,
-        }}
-      >
-        {subtitle}
-      </p>
-
-      {/* Toolbar: Filter + Sort */}
+      {/* Filter row */}
       <div
         style={{
+          paddingTop: 16,
+          paddingBottom: 24,
+          paddingLeft: 24,
+          paddingRight: 24,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingLeft: 24,
-          paddingRight: 24,
-          marginBottom: 18,
           position: "relative",
         }}
       >
@@ -318,25 +364,31 @@ const CategoryPage = () => {
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            background: "#FFFFFF",
-            border: "1px solid rgba(18,18,20,0.1)",
-            borderRadius: 14,
-            padding: "10px 16px",
+            height: 40,
+            padding: "0 16px",
+            background: C.card,
+            border: "none",
+            borderRadius: 9999,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             cursor: "pointer",
-            transition: "transform 0.12s ease",
+            fontFamily: font,
+            fontWeight: 400,
+            fontSize: 14,
+            lineHeight: "16.8px",
+            color: C.text,
           }}
-          {...press}
         >
-          <SlidersHorizontal size={14} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.35)" }} />
-          <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Filter</span>
+          <SlidersHorizontal size={16} strokeWidth={1.8} color={C.text} />
+          <span>Filter</span>
           {activeFilterCount > 0 && (
             <span
               style={{
-                background: "#020202",
-                color: "#fff",
-                borderRadius: 999,
-                width: 18,
+                background: C.text,
+                color: "#FFFFFF",
+                borderRadius: 9999,
+                minWidth: 18,
                 height: 18,
+                padding: "0 5px",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -354,31 +406,34 @@ const CategoryPage = () => {
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: 6,
+            gap: 4,
             background: "transparent",
             border: "none",
-            padding: "10px 4px",
+            padding: 0,
             cursor: "pointer",
+            fontFamily: font,
+            fontWeight: 400,
+            fontSize: 14,
+            lineHeight: "16.8px",
+            color: C.muted,
           }}
         >
-          <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(18,18,20,0.55)", fontFamily: font }}>
-            Sort: {sortLabel}
-          </span>
-          <ChevronDown size={14} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.55)" }} />
+          <span>Sort: {sortLabel}</span>
+          <ChevronDown size={14} strokeWidth={1.8} color={C.muted} />
         </button>
 
         {showSortMenu && (
           <div
             style={{
               position: "absolute",
-              top: "calc(100% + 6px)",
+              top: "calc(100% - 8px)",
               right: 24,
-              background: "#FFFFFF",
-              border: "1px solid rgba(18,18,20,0.08)",
-              borderRadius: 12,
+              background: C.card,
+              border: `1px solid ${C.border}`,
+              borderRadius: 16,
               padding: 6,
               zIndex: 20,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
               minWidth: 160,
             }}
           >
@@ -394,12 +449,12 @@ const CategoryPage = () => {
                   width: "100%",
                   textAlign: "left",
                   padding: "10px 12px",
-                  background: sortBy === key ? "rgba(18,18,20,0.06)" : "transparent",
+                  background: sortBy === key ? C.panel : "transparent",
                   border: "none",
-                  borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#2B2420",
+                  borderRadius: 10,
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: C.text,
                   fontFamily: font,
                   cursor: "pointer",
                 }}
@@ -413,14 +468,14 @@ const CategoryPage = () => {
 
       {/* Filters panel */}
       {showFilters && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24, display: "flex", flexDirection: "column", gap: 20 }}>
           {activeFilterCount > 0 && (
             <button
               onClick={clearAllFilters}
               style={{
                 fontSize: 13,
-                fontWeight: 500,
-                color: "rgba(18,18,20,0.5)",
+                fontWeight: 400,
+                color: C.muted,
                 textDecoration: "underline",
                 alignSelf: "flex-start",
                 background: "none",
@@ -435,8 +490,8 @@ const CategoryPage = () => {
 
           {subcategories && subcategories.length > 0 && (
             <div>
-              <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Category</p>
-              <div className="flex flex-wrap" style={{ gap: 8 }}>
+              <p style={sectionEyebrow}>Category</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 <FilterChip label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
                 {subcategories.map((sub) => (
                   <FilterChip key={sub.id} label={sub.title} active={activeSubId === sub.id} onClick={() => handleSubFilter(sub.id)} />
@@ -448,32 +503,32 @@ const CategoryPage = () => {
           {isRestaurant && (
             <>
               <div>
-                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Cuisine</p>
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                <p style={sectionEyebrow}>Cuisine</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {CUISINE_OPTIONS.map((c) => (
                     <FilterChip key={c} label={c} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
                   ))}
                 </div>
               </div>
               <div>
-                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Vibe</p>
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                <p style={sectionEyebrow}>Vibe</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {VIBE_OPTIONS.map((v) => (
                     <FilterChip key={v} label={v} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
                   ))}
                 </div>
               </div>
               <div>
-                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Meal</p>
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                <p style={sectionEyebrow}>Meal</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {MEAL_OPTIONS.map((m) => (
                     <FilterChip key={m} label={m} active={filterMeal.includes(m)} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} />
                   ))}
                 </div>
               </div>
               <div>
-                <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Seating</p>
-                <div className="flex flex-wrap" style={{ gap: 8 }}>
+                <p style={sectionEyebrow}>Seating</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                   {SEATING_OPTIONS.map((s) => (
                     <FilterChip key={s} label={s} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
                   ))}
@@ -483,8 +538,8 @@ const CategoryPage = () => {
           )}
 
           <div>
-            <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Amenities</p>
-            <div className="flex flex-wrap" style={{ gap: 8 }}>
+            <p style={sectionEyebrow}>Amenities</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {(isRestaurant || isAccom) && (
                 <FilterChip label="Child Friendly" active={filterChildFriendly} onClick={() => setFilterChildFriendly(!filterChildFriendly)} />
               )}
@@ -498,15 +553,13 @@ const CategoryPage = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-          <div className="space-y-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="w-full" style={{ height: 360, borderRadius: 16, background: "rgba(18,18,20,0.06)" }} />
-            ))}
-          </div>
+        <div style={{ paddingLeft: 24, paddingRight: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="w-full" style={{ height: 320, borderRadius: 24, background: "rgba(10,10,10,0.05)" }} />
+          ))}
         </div>
       ) : filteredListings.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20, paddingLeft: 24, paddingRight: 24 }}>
           {filteredListings.map((l) => {
             const hasDetail = !!(
               l.long_description ||
@@ -522,50 +575,44 @@ const CategoryPage = () => {
               ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.location + ", Hoedspruit")}`
               : null;
 
+            const hasImage = !!l.image_url;
+
             return (
               <article
                 key={l.id}
                 onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
                 style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(18,18,20,0.06)",
-                  borderRadius: 16,
+                  background: C.card,
+                  border: "none",
+                  borderRadius: 24,
                   overflow: "hidden",
                   cursor: hasDetail ? "pointer" : "default",
-                  transition: "transform 0.15s ease",
                 }}
-                {...(hasDetail ? press : {})}
               >
-                {/* 4:3 cover */}
-                <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "rgba(18,18,20,0.04)" }}>
-                  {l.image_url ? (
+                {hasImage && (
+                  <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: C.panel }}>
                     <img
-                      src={l.image_url}
+                      src={l.image_url!}
                       alt={l.title}
                       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                       loading="lazy"
                     />
-                  ) : (
-                    <div style={{ width: "100%", height: "100%", background: "rgba(18,18,20,0.04)" }} />
-                  )}
-
-                  {/* Save button top-right */}
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <FavouriteButton itemId={l.id} itemType="listing" />
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <FavouriteButton itemId={l.id} itemType="listing" />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Body */}
-                <div style={{ padding: 20 }}>
+                <div style={{ padding: 24 }}>
                   <h3
                     style={{
                       fontFamily: font,
-                      fontSize: 26,
-                      fontWeight: 400,
-                      color: "#0a0a0a",
-                      textTransform: "capitalize",
-                      letterSpacing: "0.01em",
-                      lineHeight: 1.1,
+                      fontSize: 24,
+                      fontWeight: 700,
+                      color: C.text,
+                      letterSpacing: "-0.4px",
+                      lineHeight: 1.15,
                       margin: 0,
                     }}
                   >
@@ -576,13 +623,11 @@ const CategoryPage = () => {
                     <p
                       style={{
                         fontFamily: font,
-                        fontSize: 12,
-                        fontWeight: 500,
-                        textTransform: "capitalize",
-                        letterSpacing: "0.06em",
-                        color: "rgba(18,18,20,0.4)",
+                        fontSize: 13,
+                        fontWeight: 400,
+                        color: C.muted,
                         margin: 0,
-                        marginTop: 8,
+                        marginTop: 6,
                       }}
                     >
                       {l.location}
@@ -593,27 +638,28 @@ const CategoryPage = () => {
                     <p
                       style={{
                         fontFamily: font,
-                        fontSize: 14,
+                        fontSize: 15,
                         fontWeight: 400,
-                        lineHeight: 1.4,
-                        color: "rgba(18,18,20,0.55)",
+                        lineHeight: 1.5,
+                        color: C.muted,
                         margin: 0,
-                        marginTop: 10,
+                        marginTop: 14,
                       }}
                     >
                       {l.description}
                     </p>
                   )}
 
-                  {/* Action pills */}
+                  {/* Action row */}
                   {(l.phone || whatsappRaw || directionsHref || l.website) && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 20, alignItems: "center" }}>
                       {l.phone && (
                         <a
                           href={`tel:${l.phone}`}
                           onClick={(e) => e.stopPropagation()}
-                          style={subtlePill}
+                          style={primaryCTA}
                         >
+                          <Phone size={14} strokeWidth={1.8} color="#FFFFFF" />
                           Call
                         </a>
                       )}
@@ -623,8 +669,11 @@ const CategoryPage = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          style={subtlePill}
+                          style={secondaryAction}
                         >
+                          <span style={iconCircle}>
+                            <MessageCircle size={12} strokeWidth={1.8} color={C.text} />
+                          </span>
                           WhatsApp
                         </a>
                       )}
@@ -634,8 +683,11 @@ const CategoryPage = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          style={subtlePill}
+                          style={secondaryAction}
                         >
+                          <span style={iconCircle}>
+                            <MapPin size={12} strokeWidth={1.8} color={C.text} />
+                          </span>
                           Directions
                         </a>
                       )}
@@ -645,8 +697,11 @@ const CategoryPage = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          style={subtlePill}
+                          style={secondaryAction}
                         >
+                          <span style={iconCircle}>
+                            <Globe size={12} strokeWidth={1.8} color={C.text} />
+                          </span>
                           Website
                         </a>
                       )}
@@ -658,11 +713,11 @@ const CategoryPage = () => {
           })}
         </div>
       ) : (
-        <div style={{ textAlign: "center", paddingTop: 80 }}>
-          <p style={{ fontFamily: font, fontWeight: 500, fontSize: 18, color: "#020202", marginBottom: 4 }}>
+        <div style={{ textAlign: "center", paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
+          <p style={{ fontFamily: font, fontWeight: 700, fontSize: 18, color: C.text, marginBottom: 6 }}>
             No listings found
           </p>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.45)", fontFamily: font }}>
+          <p style={{ fontSize: 14, color: C.muted, fontFamily: font }}>
             Check back soon for places in this category
           </p>
         </div>
