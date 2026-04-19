@@ -1,58 +1,91 @@
-import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import ImageLightbox from "@/components/ImageLightbox";
 import { format } from "date-fns";
 import {
-  ArrowLeft,
+  ChevronLeft,
+  Heart,
+  Phone,
+  Share2,
   Store,
-  Calendar,
   Tag,
   Banknote,
-  Phone,
-  MessageCircle,
-  ExternalLink,
-  Share2,
-  Clock,
   Ticket,
-  Heart,
-  Pencil,
+  Clock,
+  Calendar,
+  ExternalLink,
+  MessageCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 
-const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
-const pressScale = (scale = "0.97") => ({
-  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${scale})`),
+const PAGE_BG = "#EBEBEB";
+const SURFACE = "#FFFFFF";
+const TEXT = "#0A0A0A";
+const MUTED = "#8A8480";
+const DIVIDER = "#E8E4DF";
+
+const press = {
+  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
   onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
-});
+};
 
-const pressOpacity = {
-  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.opacity = "0.6"),
-  onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.opacity = "1"),
-  onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.opacity = "1"),
+const eyebrow: React.CSSProperties = {
+  fontFamily: FONT,
+  fontWeight: 400,
+  fontSize: 12,
+  lineHeight: "14.4px",
+  letterSpacing: "0.24px",
+  textTransform: "uppercase",
+  color: MUTED,
+  margin: 0,
+};
+
+const sectionTitle: React.CSSProperties = {
+  fontFamily: FONT,
+  fontWeight: 700,
+  fontSize: 28,
+  lineHeight: "32px",
+  letterSpacing: "-0.56px",
+  color: TEXT,
+  margin: 0,
 };
 
 const overlayBtn: React.CSSProperties = {
-  width: 40, height: 40, borderRadius: "50%",
-  background: "rgba(255, 255, 255, 0.85)",
+  width: 44,
+  height: 44,
+  borderRadius: 999,
+  background: "rgba(255,255,255,0.95)",
   backdropFilter: "blur(8px)",
   WebkitBackdropFilter: "blur(8px)",
-  display: "flex", alignItems: "center", justifyContent: "center",
-  border: "none", cursor: "pointer",
-  transition: "transform 0.12s ease",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  border: "none",
+  cursor: "pointer",
+  transition: "transform 150ms ease-out",
+  position: "absolute",
+  top: 56,
+  zIndex: 10,
+};
+
+const formatPrice = (raw?: string | null) => {
+  if (!raw) return null;
+  const trimmed = raw.trim();
+  const num = parseFloat(trimmed.replace(/[^0-9.]/g, ""));
+  if (Number.isFinite(num)) return `R${num.toFixed(2)}`;
+  return trimmed;
 };
 
 const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, isAdmin } = useAuth();
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [aboutExpanded, setAboutExpanded] = useState(false);
+  const { user } = useAuth();
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
@@ -68,7 +101,13 @@ const SpecialDetail = () => {
     queryKey: ["favourite", "special", id, user?.id],
     queryFn: async () => {
       if (!user) return false;
-      const { data } = await supabase.from("favourites").select("id").eq("user_id", user.id).eq("item_id", id!).eq("item_type", "special").maybeSingle();
+      const { data } = await supabase
+        .from("favourites")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("item_id", id!)
+        .eq("item_type", "special")
+        .maybeSingle();
       return !!data;
     },
     enabled: !!user && !!id,
@@ -86,14 +125,8 @@ const SpecialDetail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favourite", "special", id] });
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
-      toast.success(isFavourited ? "Removed from saved" : "Saved!");
     },
   });
-
-  const requireAuth = () => {
-    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
-    return false;
-  };
 
   const handleShare = async () => {
     const shareUrl = window.location.href;
@@ -112,328 +145,344 @@ const SpecialDetail = () => {
     }
   };
 
-  if (isLoading) {
+  if (isLoading || !special) {
     return (
-      <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
-            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
-          </button>
-        </div>
-        <div style={{ padding: "48px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.04)" }} />
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", fontFamily: font }}>Loading...</p>
-        </div>
+      <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT }}>
+        <button
+          onClick={() => navigate(-1)}
+          style={{ ...overlayBtn, position: "fixed", left: 24, top: 56 }}
+          aria-label="Back"
+        >
+          <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
+        </button>
+        {!isLoading && (
+          <div style={{ padding: "120px 24px", textAlign: "center" }}>
+            <p style={{ fontSize: 14, color: MUTED, marginBottom: 16 }}>Special not found.</p>
+            <Link to="/specials" style={{ fontSize: 14, color: TEXT }}>Back to Specials</Link>
+          </div>
+        )}
       </div>
     );
   }
 
-  if (!special) {
-    return (
-      <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
-            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
-          </button>
-        </div>
-        <div style={{ padding: "80px 20px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 16, fontFamily: font }}>Special not found.</p>
-          <Link to="/specials" style={{ fontSize: 13, fontWeight: 600, color: "#2B2420", fontFamily: font }}>Back to Specials</Link>
-        </div>
-      </div>
-    );
-  }
+  const validFromTxt = special.valid_from ? format(new Date(special.valid_from), "d MMM yyyy") : null;
+  const validUntilTxt = special.valid_until ? format(new Date(special.valid_until), "d MMM yyyy") : null;
+  const validityText =
+    validFromTxt && validUntilTxt
+      ? `${validFromTxt} – ${validUntilTxt}`
+      : validUntilTxt
+        ? `Valid until ${validUntilTxt}`
+        : validFromTxt
+          ? `From ${validFromTxt}`
+          : "Ongoing";
 
-  const validFrom = special.valid_from ? format(new Date(special.valid_from), "d MMM yyyy") : null;
-  const validUntil = special.valid_until ? format(new Date(special.valid_until), "d MMM yyyy") : null;
-  const validityText = validFrom && validUntil
-    ? `${validFrom} – ${validUntil}`
-    : validUntil
-      ? `Until ${validUntil}`
-      : validFrom
-        ? `From ${validFrom}`
-        : "Ongoing";
+  const phoneClean = special.contact_phone?.replace(/\s/g, "");
+  const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
 
   const detailRows: { icon: React.ReactNode; label: string; value: string }[] = [
-    { icon: <Store size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, label: "Business", value: special.business_name },
-    { icon: <Tag size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, label: "Deal", value: special.deal_label },
+    { icon: <Store size={20} strokeWidth={1.5} color={MUTED} />, label: "Business", value: special.business_name },
+    { icon: <Tag size={20} strokeWidth={1.5} color={MUTED} />, label: "Deal", value: special.deal_label },
   ];
-  if (special.price || special.original_price) {
+  const priceFmt = formatPrice(special.price);
+  if (priceFmt) {
+    const original = formatPrice(special.original_price);
     detailRows.push({
-      icon: <Banknote size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
+      icon: <Banknote size={20} strokeWidth={1.5} color={MUTED} />,
       label: "Price",
-      value: [special.price, special.original_price ? `was ${special.original_price}` : null].filter(Boolean).join(" · "),
+      value: original ? `${priceFmt} · was ${original}` : priceFmt,
     });
   }
-  if (special.special_type) detailRows.push({ icon: <Ticket size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, label: "Type", value: special.special_type });
-  if (special.day_of_week?.length) detailRows.push({ icon: <Clock size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, label: "Days", value: special.day_of_week.join(", ") });
-  detailRows.push({ icon: <Calendar size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, label: "Validity", value: validityText });
-  if (special.category) detailRows.push({ icon: <Tag size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, label: "Category", value: special.category });
+  if (special.special_type)
+    detailRows.push({
+      icon: <Ticket size={20} strokeWidth={1.5} color={MUTED} />,
+      label: "Type",
+      value: special.special_type,
+    });
+  if (special.day_of_week?.length)
+    detailRows.push({
+      icon: <Clock size={20} strokeWidth={1.5} color={MUTED} />,
+      label: "Days",
+      value: special.day_of_week.join(", "),
+    });
+  detailRows.push({
+    icon: <Calendar size={20} strokeWidth={1.5} color={MUTED} />,
+    label: "Validity",
+    value: validityText,
+  });
+  if (special.category)
+    detailRows.push({
+      icon: <Tag size={20} strokeWidth={1.5} color={MUTED} />,
+      label: "Category",
+      value: special.category,
+    });
 
-  const contactRows = [
-    special.contact_phone && {
-      icon: <Phone size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-      text: special.contact_phone,
-      href: `tel:${special.contact_phone.replace(/\s/g, "")}`,
-    },
-    special.contact_whatsapp && {
-      icon: <MessageCircle size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-      text: "WhatsApp",
-      href: `https://wa.me/${special.contact_whatsapp.replace(/[^0-9]/g, "")}`,
+  const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
+  if (special.business_id) {
+    secondaryActions.push({
+      label: "View Business",
+      icon: <Store size={16} strokeWidth={1.5} color={TEXT} />,
+      onClick: () => navigate(`/listing/${special.business_id}`),
+    });
+  }
+  secondaryActions.push({
+    label: "Share",
+    icon: <Share2 size={16} strokeWidth={1.5} color={TEXT} />,
+    onClick: handleShare,
+  });
+  if (waClean) {
+    secondaryActions.push({
+      label: "WhatsApp",
+      icon: <MessageCircle size={16} strokeWidth={1.5} color={TEXT} />,
+      href: `https://wa.me/${waClean}`,
       external: true,
-    },
-    special.booking_link && {
-      icon: <ExternalLink size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-      text: "Book Now",
-      href: special.booking_link,
-      external: true,
-    },
-  ].filter(Boolean) as { icon: React.ReactNode; text: string; href: string; external?: boolean }[];
-
-  const description = special.description;
-  const descriptionParas = description ? description.split("\n").filter(Boolean) : [];
+    });
+  }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 84, fontFamily: font }}>
-      {/* Hero image */}
-      {special.image_url ? (
-        <div style={{ position: "relative" }}>
-          <button
-            type="button"
-            onClick={() => setLightboxOpen(true)}
-            style={{ display: "block", width: "100%", aspectRatio: "4/3", overflow: "hidden", border: "none", padding: 0, background: "transparent", cursor: "pointer" }}
-            aria-label="View image"
-          >
-            <img src={special.image_url} alt={special.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </button>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
-          </button>
-          {isAdmin && (
-            <button onClick={() => navigate(`/admin/specials`)} style={{ ...overlayBtn, position: "absolute", top: 16, right: 16, zIndex: 10 }} title="Edit special" {...pressScale("0.9")}>
-              <Pencil size={20} strokeWidth={1.8} color="#2B2420" />
-            </button>
-          )}
-        </div>
-      ) : (
-        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
-          </button>
-        </div>
-      )}
-
-      {special.image_url && (
-        <ImageLightbox
-          images={[special.image_url]}
-          initialIndex={0}
-          open={lightboxOpen}
-          onOpenChange={setLightboxOpen}
-          alt={special.title}
+    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
+      {/* Hero */}
+      <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", background: "linear-gradient(135deg, #C49B7A 0%, #8B5E3C 100%)" }}>
+        {special.image_url && (
+          <img
+            src={special.image_url}
+            alt={special.title}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+        {/* top gradient */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 120,
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.18), rgba(0,0,0,0))",
+            pointerEvents: "none",
+          }}
         />
-      )}
+        <button
+          onClick={() => navigate(-1)}
+          style={{ ...overlayBtn, left: 24 }}
+          aria-label="Back"
+          {...press}
+        >
+          <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
+        </button>
+        <button
+          onClick={() => {
+            if (!user) {
+              toast.info("Sign in to save");
+              navigate("/auth");
+              return;
+            }
+            toggleFavourite.mutate();
+          }}
+          style={{ ...overlayBtn, right: 24 }}
+          aria-label={isFavourited ? "Unsave" : "Save"}
+          {...press}
+        >
+          <Heart
+            size={20}
+            strokeWidth={1.5}
+            color={TEXT}
+            fill={isFavourited ? TEXT : "none"}
+          />
+        </button>
+      </div>
 
-      {/* Content area */}
-      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
-        {/* Deal label overline */}
-        <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginBottom: 4, marginTop: 0, fontFamily: font }}>
-          {special.deal_label}
-        </p>
+      {/* Content */}
+      <div style={{ padding: "28px 24px 0 24px" }}>
+        <p style={{ ...eyebrow, marginBottom: 12 }}>{special.deal_label}</p>
 
-        {/* Title */}
-        <h1 style={{ fontFamily: font, fontSize: 34, fontWeight: 400, lineHeight: 1.1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", marginBottom: 8, marginTop: 0 }}>
+        <h1
+          style={{
+            fontFamily: FONT,
+            fontWeight: 700,
+            fontSize: 44,
+            lineHeight: "44px",
+            letterSpacing: "-1.32px",
+            color: TEXT,
+            margin: 0,
+            marginBottom: 16,
+          }}
+        >
           {special.title}
         </h1>
 
-        {/* Meta line */}
-        <div style={{ marginBottom: 16 }}>
-          <p style={{ fontFamily: font, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", margin: 0, lineHeight: 1.4 }}>
-            {special.business_name}
-          </p>
-          <p style={{ fontFamily: font, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", margin: 0, lineHeight: 1.4 }}>
-            {validityText}
-          </p>
-        </div>
+        <p
+          style={{
+            fontFamily: FONT,
+            fontSize: 16,
+            lineHeight: "23.2px",
+            color: MUTED,
+            margin: 0,
+            marginBottom: 28,
+          }}
+        >
+          <span style={{ color: TEXT }}>{special.business_name}</span>
+          <span style={{ margin: "0 8px" }}>·</span>
+          <span>{validityText}</span>
+        </p>
 
-        {/* Action buttons row (Share, Save) */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-          <button
-            onClick={handleShare}
+        {/* Primary Call Now */}
+        {phoneClean && (
+          <a
+            href={`tel:${phoneClean}`}
             style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent", border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24,
-              padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              width: "100%",
+              height: 52,
+              background: TEXT,
+              color: "#FFFFFF",
+              borderRadius: 999,
+              padding: "0 20px",
+              textDecoration: "none",
+              fontFamily: FONT,
+              fontWeight: 400,
+              fontSize: 15,
+              lineHeight: "18px",
+              marginBottom: 14,
+              transition: "transform 150ms ease-out",
             }}
-            {...pressScale()}
+            {...press}
           >
-            <Share2 size={14} strokeWidth={1.8} color="#2B2420" />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Share</span>
-          </button>
-          <button
-            onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
-            style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent",
-              border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.15)",
-              borderRadius: 24, padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
-            }}
-            {...pressScale()}
-          >
-            <Heart size={14} strokeWidth={1.8} color={isFavourited ? "#D4654A" : "#2B2420"} fill={isFavourited ? "#D4654A" : "none"} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>{isFavourited ? "Saved" : "Save"}</span>
-          </button>
-        </div>
+            <Phone size={16} strokeWidth={1.5} color="#FFFFFF" />
+            <span>Call Now</span>
+            <span style={{ marginLeft: 6, fontSize: 13, lineHeight: "16px", color: "rgba(255,255,255,0.7)" }}>
+              {special.contact_phone}
+            </span>
+          </a>
+        )}
 
-        {/* Primary action buttons (Call & Book / View Business) */}
-        {(special.contact_phone || special.booking_link || special.business_id) && (
-          <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
-            {special.contact_phone && (
-              <a
-                href={`tel:${special.contact_phone.replace(/\s/g, "")}`}
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                  padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
-                  fontFamily: font, textTransform: "capitalize",
-                }}
-                {...pressScale()}
-              >
-                <Phone size={20} strokeWidth={1.8} color="#FFFFFF" />
-                Call Now
-              </a>
-            )}
-            {special.booking_link ? (
-              <a
-                href={special.booking_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                  padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
-                  fontFamily: font, textTransform: "capitalize",
-                }}
-                {...pressScale()}
-              >
-                <ExternalLink size={20} strokeWidth={1.8} color="#FFFFFF" />
-                Book Now
-              </a>
-            ) : special.business_id && (
-              <Link
-                to={`/listing/${special.business_id}`}
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                  padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
-                  fontFamily: font, textTransform: "capitalize",
-                }}
-                {...pressScale()}
-              >
-                <Store size={20} strokeWidth={1.8} color="#FFFFFF" />
-                View Business
-              </Link>
-            )}
+        {/* Secondary actions */}
+        {secondaryActions.length > 0 && (
+          <div style={{ display: "flex", gap: 8, marginBottom: 36 }}>
+            {secondaryActions.map((a, i) => {
+              const baseStyle: React.CSSProperties = {
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8,
+                height: 44,
+                background: SURFACE,
+                color: TEXT,
+                border: `1px solid ${DIVIDER}`,
+                borderRadius: 999,
+                padding: "0 16px",
+                fontFamily: FONT,
+                fontWeight: 400,
+                fontSize: 14,
+                lineHeight: "18px",
+                cursor: "pointer",
+                textDecoration: "none",
+                transition: "transform 150ms ease-out",
+              };
+              if (a.href) {
+                return (
+                  <a key={i} href={a.href} target={a.external ? "_blank" : undefined} rel={a.external ? "noopener noreferrer" : undefined} style={baseStyle} {...press}>
+                    {a.icon}
+                    <span>{a.label}</span>
+                  </a>
+                );
+              }
+              return (
+                <button key={i} onClick={a.onClick} style={baseStyle} {...press}>
+                  {a.icon}
+                  <span>{a.label}</span>
+                </button>
+              );
+            })}
           </div>
         )}
 
-        {/* Contact details card */}
-        {contactRows.length > 0 && (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden", marginBottom: 24 }}>
-            {contactRows.map((row, i) => (
-              <div key={i}>
-                {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
-                <a
-                  href={row.href}
-                  target={row.external ? "_blank" : undefined}
-                  rel={row.external ? "noopener noreferrer" : undefined}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 16,
-                    padding: "14px 20px",
-                    textDecoration: "none", cursor: "pointer",
-                    transition: "opacity 0.12s ease",
-                  }}
-                  {...pressOpacity}
-                >
-                  {row.icon}
-                  <span style={{ fontSize: 15, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }}>{row.text}</span>
-                </a>
+        {/* About This Deal */}
+        {special.description && (
+          <section style={{ marginBottom: 32 }}>
+            <p style={{ ...eyebrow, marginBottom: 8 }}>About This Deal</p>
+            <h2 style={{ ...sectionTitle, marginBottom: 16 }}>What's On Offer</h2>
+            <p
+              style={{
+                fontFamily: FONT,
+                fontSize: 16,
+                lineHeight: "23.2px",
+                letterSpacing: 0,
+                color: TEXT,
+                margin: 0,
+                whiteSpace: "pre-line",
+              }}
+            >
+              {special.description}
+            </p>
+          </section>
+        )}
+
+        {/* Details */}
+        <section style={{ marginBottom: 32 }}>
+          <p style={{ ...eyebrow, marginBottom: 8 }}>Details</p>
+          <h2 style={{ ...sectionTitle, marginBottom: 16 }}>The Fine Print</h2>
+          <div
+            style={{
+              background: SURFACE,
+              borderRadius: 24,
+              padding: "4px 20px",
+            }}
+          >
+            {detailRows.map((row, i) => (
+              <div
+                key={i}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "32px 1fr",
+                  gap: 16,
+                  alignItems: "center",
+                  padding: "16px 0",
+                  borderBottom: i < detailRows.length - 1 ? `1px solid ${DIVIDER}` : "none",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
+                <div style={{ minWidth: 0 }}>
+                  <p style={{ ...eyebrow, marginBottom: 2 }}>{row.label}</p>
+                  <p
+                    style={{
+                      fontFamily: FONT,
+                      fontWeight: 400,
+                      fontSize: 16,
+                      lineHeight: "23.2px",
+                      letterSpacing: 0,
+                      color: TEXT,
+                      margin: 0,
+                    }}
+                  >
+                    {row.value}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
-        )}
-
-        {/* About section */}
-        {description && (
-          <div style={{ marginBottom: 24 }}>
-            <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>About This Deal</h2>
-            <div style={{
-              ...(!aboutExpanded ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
-            }}>
-              {descriptionParas.map((paragraph, i) => (
-                <p key={i} style={{ fontSize: 16, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.45, marginBottom: 12, fontFamily: font }}>{paragraph}</p>
-              ))}
-            </div>
-            {description.length > 150 && (
-              <button
-                onClick={() => setAboutExpanded(!aboutExpanded)}
-                style={{ fontSize: 15, fontWeight: 500, color: "#020202", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 4, fontFamily: font, transition: "opacity 0.12s ease" }}
-                {...pressOpacity}
-              >
-                {aboutExpanded ? "Show less" : "Read more"}
-              </button>
-            )}
-          </div>
-        )}
-
-        {/* Details card */}
-        {detailRows.length > 0 && (
-          <div style={{ marginBottom: 24 }}>
-            <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>Details</h2>
-            <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden" }}>
-              {detailRows.map((row, i) => (
-                <div key={row.label}>
-                  {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
-                  <div style={{ display: "flex", alignItems: "center", gap: 16, padding: "14px 20px" }}>
-                    {row.icon}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", letterSpacing: "0.02em", margin: 0, marginBottom: 2, fontFamily: font }}>{row.label}</p>
-                      <p style={{ fontSize: 15, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>{row.value}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Promo code */}
-        {special.promo_code && (
-          <div style={{ marginBottom: 24 }}>
-            <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>Promo Code</h2>
-            <div
-              style={{ background: "#FFFFFF", border: "1px dashed rgba(18,18,20,0.2)", borderRadius: 16, padding: "20px", textAlign: "center", cursor: "pointer" }}
-              onClick={() => { navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }}
-              {...pressOpacity}
-            >
-              <p style={{ fontFamily: font, fontWeight: 500, fontSize: 22, letterSpacing: 3, color: "#020202", margin: 0 }}>{special.promo_code}</p>
-              <p style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", marginTop: 6, fontFamily: font }}>Tap to copy</p>
-            </div>
-          </div>
-        )}
+        </section>
 
         {/* Terms */}
         {special.terms && (
-          <div style={{ marginBottom: 24 }}>
-            <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>Terms & Conditions</h2>
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20 }}>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.45, fontFamily: font }}>{special.terms}</p>
-            </div>
-          </div>
+          <section style={{ marginBottom: 16 }}>
+            <p style={{ ...eyebrow, marginBottom: 8 }}>Terms</p>
+            <p
+              style={{
+                fontFamily: FONT,
+                fontSize: 14,
+                lineHeight: "20.3px",
+                color: MUTED,
+                margin: 0,
+                whiteSpace: "pre-line",
+              }}
+            >
+              {special.terms}
+            </p>
+          </section>
         )}
       </div>
     </div>
