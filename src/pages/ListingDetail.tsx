@@ -138,7 +138,7 @@ const ListingDetail = () => {
   if (isLoading) {
     return (
       <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 20px 0" }}>
+        <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
             <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
             <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
@@ -155,7 +155,7 @@ const ListingDetail = () => {
   if (!listing) {
     return (
       <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 20px 0" }}>
+        <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
             <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
             <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
@@ -358,7 +358,7 @@ const ListingDetail = () => {
           )}
         </div>
       ) : (
-        <div style={{ padding: "48px 20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
             <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>

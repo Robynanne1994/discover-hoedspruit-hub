@@ -24,7 +24,7 @@ const TermsPolicies = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 120, ...baseTextStyle }}>
       {/* Top row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 20px 0" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px 0" }}>
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
@@ -49,7 +49,7 @@ const TermsPolicies = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "28px 20px 0" }}>
+      <div style={{ padding: "28px 24px 0" }}>
         <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A8480" }}>
           The fine print
         </div>
@@ -82,7 +82,7 @@ const TermsPolicies = () => {
       </div>
 
       {/* Card */}
-      <div style={{ padding: "32px 20px 0" }}>
+      <div style={{ padding: "32px 24px 0" }}>
         <div style={{ background: "#ffffff", borderRadius: 20, overflow: "hidden" }}>
           {policyRows.map((item, i) => (
             <Link key={item.label} to={item.href} style={{ textDecoration: "none", display: "block" }}>
@@ -151,7 +151,7 @@ const TermsPolicies = () => {
       </div>
 
       {/* Footer note */}
-      <div style={{ padding: "28px 20px 0", display: "flex", alignItems: "flex-start", gap: 10 }}>
+      <div style={{ padding: "28px 24px 0", display: "flex", alignItems: "flex-start", gap: 10 }}>
         <span
           style={{
             width: 6,

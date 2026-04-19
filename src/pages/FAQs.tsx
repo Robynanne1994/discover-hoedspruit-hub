@@ -92,7 +92,7 @@ const FAQs = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 120, fontFamily: FF, ...baseStyle }}>
       {/* Top row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px 8px" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px 8px" }}>
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
@@ -118,7 +118,7 @@ const FAQs = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "20px 20px 0" }}>
+      <div style={{ padding: "20px 24px 0" }}>
         <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A8480", fontFamily: FF, marginBottom: 16, ...baseStyle }}>
           Need a hand
         </div>
@@ -149,7 +149,7 @@ const FAQs = () => {
       </div>
 
       {/* Search */}
-      <div style={{ padding: "28px 20px 24px" }}>
+      <div style={{ padding: "28px 24px 24px" }}>
         <div style={{
           display: "flex",
           alignItems: "center",
@@ -294,7 +294,7 @@ const FAQs = () => {
 
       {/* Coral contact card */}
       {!isLoading && (
-        <div style={{ padding: "8px 20px 0" }}>
+        <div style={{ padding: "8px 24px 0" }}>
           <div style={{
             background: "#F26A48",
             borderRadius: 24,

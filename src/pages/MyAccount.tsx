@@ -610,7 +610,7 @@ const MyAccount = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "28px 20px 0" }}>
+      <div style={{ padding: "28px 24px 0" }}>
         <p
           style={{
             ...baseTextStyle,
@@ -688,7 +688,7 @@ const MyAccount = () => {
       </div>
 
       {/* Stats card */}
-      <div style={{ padding: "24px 20px 0" }}>
+      <div style={{ padding: "24px 24px 0" }}>
         <div
           style={{
             background: "#FFFFFF",
@@ -720,26 +720,26 @@ const MyAccount = () => {
       </div>
 
       {/* My Hoedspruit */}
-      <div style={{ padding: "28px 20px 0" }}>
+      <div style={{ padding: "28px 24px 0" }}>
         {sectionLabel("My Hoedspruit")}
         {renderCard(myHoedspruitItems)}
       </div>
 
       {/* Get in touch */}
-      <div style={{ padding: "24px 20px 0" }}>
+      <div style={{ padding: "24px 24px 0" }}>
         {sectionLabel("Get in touch")}
         {renderCard(getInTouchItems)}
       </div>
 
       {/* Help and settings */}
-      <div style={{ padding: "24px 20px 0" }}>
+      <div style={{ padding: "24px 24px 0" }}>
         {sectionLabel("Help and settings")}
         {renderCard(helpItems)}
       </div>
 
       {/* Admin */}
       {isAdmin && (
-        <div style={{ padding: "24px 20px 0" }}>
+        <div style={{ padding: "24px 24px 0" }}>
           {sectionLabel("Admin")}
           {renderCard(adminItems)}
         </div>

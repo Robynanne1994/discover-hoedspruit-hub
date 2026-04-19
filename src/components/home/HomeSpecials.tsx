@@ -87,7 +87,7 @@ const HomeSpecials = () => {
                   </span>
                 </div>
               </div>
-              <div style={{ padding: "14px 16px 16px" }}>
+              <div style={{ padding: "14px 24px 16px" }}>
                 <div
                   style={{
                     fontFamily: SANS,
