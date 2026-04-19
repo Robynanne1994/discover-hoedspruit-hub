@@ -198,6 +198,7 @@ const SpecialDetail = () => {
       icon: <Ticket size={20} strokeWidth={1.5} color={MUTED} />,
       label: "Type",
       value: special.special_type,
+      capitalize: true,
     });
   if (special.day_of_week?.length)
     detailRows.push({
