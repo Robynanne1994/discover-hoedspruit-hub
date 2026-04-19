@@ -447,7 +447,7 @@ const MyAccount = () => {
     { label: "Account settings", href: "/account-settings" },
     { label: "About Hello Hoedspruit", href: "/about" },
     { label: "The Lowveld Lowdown", href: "/headlines" },
-    { label: "Help and FAQs", href: "/faqs" },
+    { label: "Help & FAQs", href: "/faqs" },
     { label: "Terms & Policies", href: "/terms" },
   ];
   const adminItems = [{ label: "Admin dashboard", href: "/admin" }];
