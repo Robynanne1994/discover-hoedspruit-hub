@@ -3,23 +3,31 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  MapPin, Phone, Mail, Globe, Star, Clock, Accessibility,
-  Check, Minus, X, Wifi, MessageCircle, Pencil, ArrowLeft,
-  Heart, Share2, CheckCircle, ChevronDown, Users, Coffee, ClipboardList,
-  ShoppingBag, Navigation,
+  Star, Pencil, ChevronLeft, ChevronDown, Menu,
+  Heart, Share2, Check, Phone, Navigation,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
-
 import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const font = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
-const pressScale = (scale = "0.97") => ({
+// Design tokens
+const C = {
+  bg: "#EBEBEB",
+  card: "#FFFFFF",
+  coral: "#F26A48",
+  panel: "#F2EFEC",
+  border: "#E8E4DF",
+  text: "#0A0A0A",
+  muted: "#8A8480",
+};
+
+const pressScale = (scale = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${scale})`),
   onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
@@ -137,16 +145,15 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: font }}>
         <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
-            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
+            <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
+            <span style={{ fontSize: 15, color: C.text, fontFamily: font }}>Back</span>
           </button>
         </div>
         <div style={{ padding: "48px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.04)", animation: "pulse 2s infinite" }} />
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", fontFamily: font }}>Loading...</p>
+          <p style={{ fontSize: 13, color: C.muted, fontFamily: font }}>Loading...</p>
         </div>
       </div>
     );
@@ -154,16 +161,16 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: font }}>
         <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
-            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
+            <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
+            <span style={{ fontSize: 15, color: C.text, fontFamily: font }}>Back</span>
           </button>
         </div>
         <div style={{ padding: "80px 20px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", marginBottom: 16, fontFamily: font }}>Listing not found.</p>
-          <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: "#2B2420", fontFamily: font }}>Back to Home</Link>
+          <p style={{ fontSize: 14, color: C.muted, marginBottom: 16, fontFamily: font }}>Listing not found.</p>
+          <Link to="/" style={{ fontSize: 13, fontWeight: 600, color: C.text, fontFamily: font }}>Back to Home</Link>
         </div>
       </div>
     );
@@ -200,279 +207,310 @@ const ListingDetail = () => {
   const hasWifi = (listing as any).has_wifi as boolean | null;
   const hasFreeWifi = (listing as any).has_free_wifi as boolean | null;
 
-  const quickPills: { label: string }[] = [];
-  if (isListingRestaurant) {
-    if (priceLevel) quickPills.push({ label: "R".repeat(priceLevel) });
-  }
-  const showQuickPills = quickPills.length > 0;
+  const tagPills: string[] = [];
+  if (isListingRestaurant && priceLevel) tagPills.push("R".repeat(priceLevel));
 
-  type BoolField = { label: string; value: boolean | null };
-  type TextField = { label: string; value: string | null };
-  type AccSection = { key: string; icon: React.ReactNode; title: string; fields: (BoolField | TextField)[] };
+  type AccField = { label: string; value: boolean | string | null };
+  type AccSection = { key: string; title: string; fields: AccField[] };
   const accordionSections: AccSection[] = [];
 
   if (isListingRestaurant) {
-    const accessFields: BoolField[] = [
-      { label: "Wheelchair friendly", value: wheelchairFriendly },
-      { label: "Accessible entrance", value: wheelchairEntrance },
-      { label: "Accessible seating", value: wheelchairSeating },
-      { label: "Accessible toilet", value: wheelchairToilet },
-      { label: "Accessible parking", value: wheelchairCarPark },
-    ].filter(f => f.value != null) as BoolField[];
-    if (accessFields.length > 0) accordionSections.push({ key: "accessibility", icon: <Accessibility size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Accessibility", fields: accessFields });
+    const accessFields = [
+      { label: "Wheelchair Friendly", value: wheelchairFriendly },
+      { label: "Accessible Entrance", value: wheelchairEntrance },
+      { label: "Accessible Seating", value: wheelchairSeating },
+      { label: "Accessible Toilet", value: wheelchairToilet },
+      { label: "Accessible Parking", value: wheelchairCarPark },
+    ].filter(f => f.value === true) as AccField[];
+    if (accessFields.length > 0) accordionSections.push({ key: "accessibility", title: "Accessibility", fields: accessFields });
 
-    const kidsFields: BoolField[] = [
-      { label: "Good for kids", value: goodForKids },
-      { label: "Kids menu", value: kidsMenu },
-      { label: "High chairs", value: highChairs },
+    const kidsFields = [
+      { label: "Good For Kids", value: goodForKids },
+      { label: "Kids Menu", value: kidsMenu },
+      { label: "High Chairs", value: highChairs },
       { label: "Playground", value: kidsPlayground },
-    ].filter(f => f.value != null) as BoolField[];
-    if (kidsFields.length > 0) accordionSections.push({ key: "kids", icon: <Users size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Kids & Family", fields: kidsFields });
+    ].filter(f => f.value === true) as AccField[];
+    if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & Family", fields: kidsFields });
 
-    const amenFields: BoolField[] = [
+    const amenFields = [
       { label: "Toilets", value: hasToilet },
       { label: "Wi-Fi", value: hasWifi },
       { label: "Free Wi-Fi", value: hasFreeWifi },
-      { label: "Smoking section", value: smokingAllowed },
-      { label: "Pets allowed", value: petsAllowed },
-    ].filter(f => f.value != null) as BoolField[];
-    if (amenFields.length > 0) accordionSections.push({ key: "amenities", icon: <Coffee size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Amenities", fields: amenFields });
+      { label: "Smoking Section", value: smokingAllowed },
+      { label: "Pets Allowed", value: petsAllowed },
+    ].filter(f => f.value === true) as AccField[];
+    if (amenFields.length > 0) accordionSections.push({ key: "amenities", title: "Amenities", fields: amenFields });
 
     if (seating && seating.length > 0) {
-      const seatingFields: BoolField[] = seating.map(s => ({ label: s.replace(/ seating$/i, ""), value: true }));
-      accordionSections.push({ key: "seating", icon: <ClipboardList size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Seating", fields: seatingFields });
+      accordionSections.push({ key: "seating", title: "Seating", fields: seating.map(s => ({ label: s.replace(/ seating$/i, ""), value: true })) });
     }
 
     const serviceArr = serviceType || [];
-    const svcFields: BoolField[] = [
-      { label: "Dine-in", value: serviceArr.some(s => /sit\s*down|dine/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
-      { label: "Takeaway", value: serviceArr.some(s => /take\s*away|takeaway/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
-      { label: "Delivery", value: serviceArr.some(s => /deliver/i.test(s)) ? true : serviceArr.length > 0 ? false : null },
-    ].filter(f => f.value !== null) as BoolField[];
-    if (svcFields.length > 0) accordionSections.push({ key: "service", icon: <ClipboardList size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Service Options", fields: svcFields });
-
-    if (meal && meal.length > 0) {
-      const mealFields: BoolField[] = meal.map(m => ({ label: m, value: true }));
-      accordionSections.push({ key: "meals", icon: <Coffee size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Meals Served", fields: mealFields });
+    if (serviceArr.length > 0) {
+      accordionSections.push({ key: "service", title: "Service Options", fields: serviceArr.map(s => ({ label: s, value: true })) });
     }
 
-    if (cuisine && cuisine.length > 0) {
-      const cuisineFields: BoolField[] = cuisine.map(c => ({ label: c, value: true }));
-      accordionSections.push({ key: "cuisine", icon: <ShoppingBag size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Cuisine", fields: cuisineFields });
-    }
+    if (meal && meal.length > 0) accordionSections.push({ key: "meals", title: "Meals Served", fields: meal.map(m => ({ label: m, value: true })) });
+    if (cuisine && cuisine.length > 0) accordionSections.push({ key: "cuisine", title: "Cuisine", fields: cuisine.map(c => ({ label: c, value: true })) });
+    if (vibe && vibe.length > 0) accordionSections.push({ key: "vibe", title: "Vibe", fields: vibe.map(v => ({ label: v, value: true })) });
+  }
 
-    if (vibe && vibe.length > 0) {
-      const vibeFields: BoolField[] = vibe.map(v => ({ label: v, value: true }));
-      accordionSections.push({ key: "vibe", icon: <Star size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Vibe", fields: vibeFields });
+  // Accommodation accordion
+  if (isListingAccommodation) {
+    const l = listing as any;
+    const food = [
+      { label: "Restaurant", value: l.has_restaurant },
+      { label: "Bar", value: l.has_bar },
+      { label: "Room Service", value: l.has_room_service },
+      { label: "Breakfast", value: l.has_breakfast },
+    ].filter(f => f.value === true) as AccField[];
+    if (food.length > 0) accordionSections.push({ key: "accom-food", title: "Food & Drink", fields: food });
+
+    const transport = [
+      { label: "Airport Shuttle", value: l.has_airport_shuttle },
+      { label: "Free Parking", value: l.has_free_parking },
+      { label: "Secure Parking", value: l.has_secure_parking },
+    ].filter(f => f.value === true) as AccField[];
+    if (transport.length > 0) accordionSections.push({ key: "accom-transport", title: "Transport", fields: transport });
+
+    const wellness = [
+      { label: "Spa", value: l.has_spa },
+      { label: "Fitness Centre", value: l.has_fitness_centre },
+      { label: "Swimming Pool", value: l.has_swimming_pool },
+    ].filter(f => f.value === true) as AccField[];
+    if (wellness.length > 0) accordionSections.push({ key: "accom-wellness", title: "Wellness", fields: wellness });
+
+    const rooms = [
+      { label: "Aircon", value: l.has_aircon },
+      { label: "Laundry Service", value: l.has_laundry },
+      { label: "Wi-Fi", value: l.has_wifi_accom },
+    ].filter(f => f.value === true) as AccField[];
+    if (rooms.length > 0) accordionSections.push({ key: "accom-rooms", title: "Rooms", fields: rooms });
+
+    if (l.child_friendly === true) accordionSections.push({ key: "accom-children", title: "Children", fields: [{ label: "Child Friendly", value: true }] });
+    if (l.pets_allowed === true) accordionSections.push({ key: "accom-pets", title: "Pets", fields: [{ label: "Pet Friendly", value: true }] });
+  }
+
+  // Shopping accordion
+  if (isListingShopping) {
+    const l = listing as any;
+    const shop = [
+      { label: "Air Conditioned", value: l.air_conditioned },
+      { label: "Delivery Available", value: l.delivery_available },
+      { label: "Click & Collect", value: l.click_and_collect },
+      { label: "Order Online", value: l.order_online },
+      { label: "Parking Available", value: l.parking_available },
+      { label: "Wheelchair Friendly", value: l.wheelchair_friendly },
+      { label: "Local Products", value: l.local_products },
+      { label: "Curio / Gifts", value: l.curio_or_gifts },
+    ].filter(f => f.value === true) as AccField[];
+    if (shop.length > 0) accordionSections.push({ key: "shop-amenities", title: "Amenities", fields: shop });
+    if (l.payment_methods && l.payment_methods.length > 0) {
+      accordionSections.push({ key: "shop-payment", title: "Payment", fields: l.payment_methods.map((p: string) => ({ label: p, value: true })) });
+    }
+    if (l.product_categories && l.product_categories.length > 0) {
+      accordionSections.push({ key: "shop-products", title: "Products", fields: l.product_categories.map((p: string) => ({ label: p, value: true })) });
     }
   }
 
-  const hasContactInfo = listing.location || listing.phone || listing.email || listing.website || (listing as any).whatsapp;
   const descriptionText = longDescription || listing.description;
 
   const toggleAccordion = (key: string) => {
     setOpenAccordion(openAccordion === key ? null : key);
   };
 
-  const overlayBtn: React.CSSProperties = {
-    width: 40, height: 40, borderRadius: "50%",
-    background: "rgba(255, 255, 255, 0.85)",
-    backdropFilter: "blur(8px)",
-    WebkitBackdropFilter: "blur(8px)",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    border: "none", cursor: "pointer",
-    transition: "transform 0.12s ease",
-  };
-
-  const renderAccordionCard = (sections: AccSection[]) => (
-    <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden", marginBottom: 24 }}>
-      {sections.map((section, i) => {
-        const isOpen = openAccordion === section.key;
-        return (
-          <div key={section.key}>
-            {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
-            <button
-              onClick={() => toggleAccordion(section.key)}
-              style={{ width: "100%", display: "flex", alignItems: "center", padding: "16px 20px", background: "none", border: "none", cursor: "pointer", fontFamily: font }}
-            >
-              <div style={{ marginRight: 16, flexShrink: 0 }}>{section.icon}</div>
-              <span style={{ fontSize: 16, fontWeight: 500, color: "#2B2420", flex: 1, textAlign: "left", fontFamily: font }}>{section.title}</span>
-              <ChevronDown
-                size={20} strokeWidth={1.8} color="rgba(18,18,20,0.25)"
-                style={{ transition: "transform 0.2s ease", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-              />
-            </button>
-            {isOpen && (
-              <div style={{ padding: "0 20px 16px 56px" }}>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {section.fields.map((field, fi) => {
-                    const isBool = typeof field.value === "boolean";
-                    if (isBool && field.value) {
-                      return (
-                        <span key={fi} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
-                          {field.label}
-                        </span>
-                      );
-                    }
-                    if (isBool && !field.value) {
-                      return (
-                        <span key={fi} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "rgba(18,18,20,0.35)", textDecoration: "line-through", fontFamily: font }}>
-                          {field.label}
-                        </span>
-                      );
-                    }
-                    return (
-                      <span key={fi} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
-                        {field.label}: {field.value}
-                      </span>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-
-  // Get today for hours highlight
+  // Today
   const todayIndex = new Date().getDay(); // 0=Sun
   const todayLabel = todayIndex === 0 ? "Sunday" : DAY_LABELS[todayIndex - 1];
 
-  return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 84, fontFamily: font }}>
-      {/* Hero image */}
-      {listing.image_url ? (
-        <div style={{ position: "relative" }}>
-          <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden" }}>
-            <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
-          </button>
-          {isAdmin && (
-            <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={{ ...overlayBtn, position: "absolute", top: 16, right: 16, zIndex: 10 }} title="Edit listing" {...pressScale("0.9")}>
-              <Pencil size={20} strokeWidth={1.8} color="#2B2420" />
-            </button>
-          )}
-        </div>
-      ) : (
-        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
-          </button>
-          <div style={{ display: "flex", gap: 10 }}>
-            {isAdmin && (
-              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}`)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} title="Edit listing" {...pressScale("0.9")}>
-                <Pencil size={20} strokeWidth={1.8} color="#2B2420" />
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+  // Floating circle button style
+  const circleBtn: React.CSSProperties = {
+    width: 44, height: 44, borderRadius: "50%",
+    background: C.card,
+    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    border: "none", cursor: "pointer",
+    transition: "transform 0.15s ease-out",
+  };
 
-      {/* Content area */}
-      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
-        {/* Category overline */}
+  // Contact rows
+  const whatsappNum = (listing as any).whatsapp as string | null;
+  const contactRows = [
+    listing.location && {
+      label: "Location",
+      value: listing.location,
+      href: (listing as any).google_maps_link || undefined,
+      external: true,
+      underline: false,
+    },
+    listing.phone && {
+      label: "Phone",
+      value: listing.phone,
+      href: `tel:${listing.phone}`,
+      external: false,
+      underline: false,
+    },
+    listing.email && {
+      label: "Email",
+      value: listing.email,
+      href: `mailto:${listing.email}`,
+      external: false,
+      underline: false,
+    },
+    listing.website && {
+      label: "Website",
+      value: listing.website.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+      href: listing.website,
+      external: true,
+      underline: true,
+    },
+    whatsappNum && {
+      label: "WhatsApp",
+      value: "Message On WhatsApp",
+      href: `https://wa.me/${whatsappNum.replace(/[^0-9]/g, "")}`,
+      external: true,
+      underline: true,
+    },
+  ].filter(Boolean) as Array<{ label: string; value: string; href: string; external: boolean; underline: boolean }>;
+
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 140, fontFamily: font, color: C.text }}>
+      {/* Hero image, full-bleed 360px, bottom rounded 24px */}
+      <div style={{ position: "relative" }}>
+        {listing.image_url ? (
+          <img
+            src={listing.image_url}
+            alt={listing.title}
+            style={{
+              width: "100%", height: 360, objectFit: "cover", display: "block",
+              borderBottomLeftRadius: 24, borderBottomRightRadius: 24,
+            }}
+          />
+        ) : (
+          <div style={{
+            width: "100%", height: 360, background: C.panel,
+            borderBottomLeftRadius: 24, borderBottomRightRadius: 24,
+          }} />
+        )}
+
+        {/* Floating circle buttons */}
+        <button
+          onClick={() => navigate(-1)}
+          style={{ ...circleBtn, position: "absolute", top: 56, left: 20 }}
+          aria-label="Back"
+          {...pressScale("0.94")}
+        >
+          <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
+        </button>
+        <button
+          onClick={() => isAdmin ? navigate(`/admin/listings?edit=${listing.id}`) : undefined}
+          style={{ ...circleBtn, position: "absolute", top: 56, right: 20 }}
+          aria-label={isAdmin ? "Edit listing" : "Menu"}
+          {...pressScale("0.94")}
+        >
+          {isAdmin ? <Pencil size={20} strokeWidth={1.5} color={C.text} /> : <Menu size={20} strokeWidth={1.5} color={C.text} />}
+        </button>
+      </div>
+
+      {/* Title block */}
+      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
         {firstCategory && (
-          <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginBottom: 4, marginTop: 0, fontFamily: font }}>
+          <p style={{
+            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
+            letterSpacing: "0.24px", color: C.muted, margin: 0, marginBottom: 10,
+          }}>
             {firstCategory.title}
           </p>
         )}
 
-        {/* Listing name */}
-        <h1 style={{ fontFamily: font, fontSize: 34, fontWeight: 400, lineHeight: 1.1, letterSpacing: "0.01em", color: "#0a0a0a", textTransform: "capitalize", marginBottom: 8, marginTop: 0 }}>
+        <h1 style={{
+          fontFamily: font, fontWeight: 700, fontSize: 52, lineHeight: "52px",
+          letterSpacing: "-1.56px", color: C.text, margin: 0, marginBottom: 20,
+        }}>
           {listing.title}
         </h1>
 
-        {/* Google rating */}
+        {/* Rating row */}
         {(listing as any).google_rating != null && (
-          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 24 }}>
             <div style={{ display: "flex", gap: 2 }}>
-              {[1, 2, 3, 4, 5].map((s) => (
-                <Star
-                  key={s}
-                  size={16}
-                  fill={s <= Math.round((listing as any).google_rating) ? "#D4964A" : "none"}
-                  color={s <= Math.round((listing as any).google_rating) ? "#D4964A" : "rgba(18,18,20,0.15)"}
-                  strokeWidth={s <= Math.round((listing as any).google_rating) ? 0 : 1.5}
-                />
-              ))}
+              {[1, 2, 3, 4, 5].map((s) => {
+                const filled = s <= Math.round((listing as any).google_rating);
+                return (
+                  <Star
+                    key={s}
+                    size={14}
+                    fill={filled ? C.text : "transparent"}
+                    color={filled ? C.text : C.border}
+                    strokeWidth={1.5}
+                  />
+                );
+              })}
             </div>
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#2B2420", fontFamily: font }}>{(listing as any).google_rating}</span>
+            <span style={{ fontFamily: font, fontWeight: 700, fontSize: 14, color: C.text }}>
+              {(listing as any).google_rating}
+            </span>
             {(listing as any).google_reviews_count != null && (
               (listing as any).google_reviews_url ? (
-                <a href={(listing as any).google_reviews_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", textDecoration: "none", fontFamily: font }}>
+                <a
+                  href={(listing as any).google_reviews_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ fontFamily: font, fontWeight: 400, fontSize: 14, color: C.muted, textDecoration: "none" }}
+                >
                   ({(listing as any).google_reviews_count} reviews)
                 </a>
               ) : (
-                <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", fontFamily: font }}>({(listing as any).google_reviews_count} reviews)</span>
+                <span style={{ fontFamily: font, fontWeight: 400, fontSize: 14, color: C.muted }}>
+                  ({(listing as any).google_reviews_count} reviews)
+                </span>
               )
             )}
           </div>
         )}
 
-        {/* Action buttons row (Share, Save, Visited) */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-          <button
-            onClick={handleShare}
-            style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent", border: "1.5px solid rgba(18,18,20,0.15)", borderRadius: 24,
-              padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
-            }}
-            {...pressScale()}
-          >
-            <Share2 size={14} strokeWidth={1.8} color="#2B2420" />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Share</span>
-          </button>
-          <button
-            onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
-            style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent",
-              border: isFavourited ? "1.5px solid #D4654A" : "1.5px solid rgba(18,18,20,0.15)",
-              borderRadius: 24, padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
-            }}
-            {...pressScale()}
-          >
-            <Heart size={14} strokeWidth={1.8} color={isFavourited ? "#D4654A" : "#2B2420"} fill={isFavourited ? "#D4654A" : "none"} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>{isFavourited ? "Saved" : "Save"}</span>
-          </button>
-          <button
-            onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
-            style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "transparent",
-              border: isVisited ? "1.5px solid #3B7D4F" : "1.5px solid rgba(18,18,20,0.15)",
-              borderRadius: 24, padding: "12px", height: 48, cursor: "pointer", transition: "transform 0.12s ease", fontFamily: font,
-            }}
-            {...pressScale()}
-          >
-            <CheckCircle size={14} strokeWidth={1.8} color={isVisited ? "#3B7D4F" : "#2B2420"} fill={isVisited ? "#3B7D4F" : "none"} />
-            <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420" }}>Visited</span>
-          </button>
+        {/* Secondary action row: Share / Save / Visited */}
+        <div style={{ display: "flex", gap: 8, marginTop: 24 }}>
+          {[
+            { label: "Share", icon: <Share2 size={14} strokeWidth={1.5} color={C.text} />, onClick: handleShare, active: false },
+            { label: isFavourited ? "Saved" : "Save", icon: <Heart size={14} strokeWidth={1.5} color={C.text} fill={isFavourited ? C.text : "none"} />, onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); }, active: !!isFavourited },
+            { label: "Visited", icon: isVisited ? <Check size={14} strokeWidth={1.5} color={C.text} /> : <Check size={14} strokeWidth={1.5} color={C.text} />, onClick: () => { if (!requireAuth()) toggleVisited.mutate(); }, active: !!isVisited },
+          ].map((btn, i) => (
+            <button
+              key={i}
+              onClick={btn.onClick}
+              style={{
+                flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                height: 40, borderRadius: 999,
+                background: C.card, border: `1px solid ${C.border}`,
+                cursor: "pointer", transition: "transform 0.15s ease-out",
+                fontFamily: font, padding: "0 12px",
+              }}
+              {...pressScale()}
+            >
+              {btn.icon}
+              <span style={{ fontFamily: font, fontWeight: 400, fontSize: 13, color: C.text }}>{btn.label}</span>
+            </button>
+          ))}
         </div>
 
-        {/* Call Now & Directions */}
+        {/* Primary CTAs: Call Now / Directions */}
         {(listing.phone || (listing as any).google_maps_link) && (
-          <div style={{ display: "flex", gap: 12, marginBottom: 20 }}>
+          <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
             {listing.phone && (
               <a
                 href={`tel:${listing.phone}`}
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                  padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize",
+                  height: 48, borderRadius: 999,
+                  background: C.text, color: "#FFFFFF",
+                  textDecoration: "none", cursor: "pointer",
+                  transition: "transform 0.15s ease-out",
+                  fontFamily: font, fontSize: 15, lineHeight: "18px", fontWeight: 400,
                 }}
-                onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
-                onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-                onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                {...pressScale()}
               >
-                <Phone size={20} strokeWidth={1.8} color="#FFFFFF" />
+                <Phone size={18} strokeWidth={1.5} color="#FFFFFF" />
                 Call Now
               </a>
             )}
@@ -483,82 +521,72 @@ const ListingDetail = () => {
                 rel="noopener noreferrer"
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                  padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
-                  textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize",
+                  height: 48, borderRadius: 999,
+                  background: C.text, color: "#FFFFFF",
+                  textDecoration: "none", cursor: "pointer",
+                  transition: "transform 0.15s ease-out",
+                  fontFamily: font, fontSize: 15, lineHeight: "18px", fontWeight: 400,
                 }}
-                onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
-                onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-                onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+                {...pressScale()}
               >
-                <Navigation size={20} strokeWidth={1.8} color="#FFFFFF" />
+                <Navigation size={18} strokeWidth={1.5} color="#FFFFFF" />
                 Directions
               </a>
             )}
           </div>
         )}
 
-        {/* Quick-scan pills */}
-        {showQuickPills && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-            {quickPills.slice(0, 4).map((pill, i) => (
-              <span key={i} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
-                {pill.label}
+        {/* Tag chips */}
+        {tagPills.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 20 }}>
+            {tagPills.map((p, i) => (
+              <span
+                key={i}
+                style={{
+                  background: C.panel, borderRadius: 999, padding: "8px 14px",
+                  fontFamily: font, fontWeight: 400, fontSize: 13, color: C.text,
+                }}
+              >
+                {p}
               </span>
             ))}
           </div>
         )}
 
-        {/* Contact details card */}
-        {hasContactInfo && (
-          <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden", marginBottom: 24 }}>
-            {[
-              listing.location && {
-                icon: <MapPin size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-                text: listing.location,
-                href: (listing as any).google_maps_link || undefined,
-                external: true,
-              },
-              listing.phone && {
-                icon: <Phone size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-                text: listing.phone,
-                href: `tel:${listing.phone}`,
-              },
-              listing.email && {
-                icon: <Mail size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-                text: listing.email,
-                href: `mailto:${listing.email}`,
-              },
-              listing.website && {
-                icon: <Globe size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-                text: "Website",
-                href: listing.website,
-                external: true,
-              },
-              (listing as any).whatsapp && {
-                icon: <MessageCircle size={20} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />,
-                text: "WhatsApp",
-                href: `https://wa.me/${(listing as any).whatsapp.replace(/[^0-9]/g, "")}`,
-                external: true,
-              },
-            ].filter(Boolean).map((row: any, i, arr) => (
-              <div key={i}>
-                {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
+        {/* Contact card */}
+        {contactRows.length > 0 && (
+          <div style={{
+            background: C.card, borderRadius: 24,
+            paddingLeft: 20, paddingRight: 20,
+            marginTop: 32, overflow: "hidden",
+          }}>
+            {contactRows.map((row, i) => (
+              <div key={i} style={{
+                paddingTop: 18, paddingBottom: 18,
+                borderBottom: i < contactRows.length - 1 ? `1px solid ${C.border}` : "none",
+              }}>
+                <p style={{
+                  fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
+                  letterSpacing: "0.24px", color: C.muted, margin: 0,
+                }}>
+                  {row.label}
+                </p>
+                <div style={{ height: 4 }} />
                 <a
                   href={row.href}
                   target={row.external ? "_blank" : undefined}
                   rel={row.external ? "noopener noreferrer" : undefined}
                   style={{
-                    display: "flex", alignItems: "center", gap: 16,
-                    padding: "14px 20px",
-                    textDecoration: "none", cursor: row.href ? "pointer" : "default",
+                    fontFamily: font, fontWeight: 400, fontSize: 18, lineHeight: "21.6px",
+                    letterSpacing: "-0.18px", color: C.text,
+                    textDecoration: row.underline ? "underline" : "none",
+                    textUnderlineOffset: "3px",
+                    display: "inline-block",
                     transition: "opacity 0.12s ease",
                   }}
-                  {...(row.href ? pressOpacity : {})}
+                  {...pressOpacity}
                 >
-                  {row.icon}
-                  <span style={{ fontSize: 15, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, fontFamily: font }}>{row.text}</span>
+                  {row.value}
                 </a>
               </div>
             ))}
@@ -567,156 +595,109 @@ const ListingDetail = () => {
 
         {/* About section */}
         {descriptionText && (() => {
-          const paragraphs = (longDescription || listing.description || "").split("\n").filter(Boolean);
+          const text = (longDescription || listing.description || "").trim();
+          const paragraphs = text.split("\n").filter(Boolean);
+          const isLong = text.length > 220;
           return (
-            <div style={{ marginBottom: 24 }}>
-              <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>About</h2>
-              <div style={{
-                ...(!aboutExpanded ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
+            <div style={{ marginTop: 40 }}>
+              <h2 style={{
+                fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
+                letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
               }}>
-                {paragraphs.map((paragraph: string, i: number) => (
-                  <p key={i} style={{ fontSize: 16, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.45, marginBottom: 12, fontFamily: font }}>{paragraph}</p>
+                About
+              </h2>
+              <div style={{
+                ...(!aboutExpanded && isLong ? { display: "-webkit-box", WebkitLineClamp: 5, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
+              }}>
+                {paragraphs.map((p, i) => (
+                  <p key={i} style={{
+                    fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "23.2px",
+                    color: C.text, margin: 0, marginBottom: i < paragraphs.length - 1 ? 12 : 0,
+                  }}>
+                    {p}
+                  </p>
                 ))}
               </div>
-              {paragraphs.join(" ").length > 150 && (
+              {isLong && (
                 <button
                   onClick={() => setAboutExpanded(!aboutExpanded)}
-                  style={{ fontSize: 15, fontWeight: 500, color: "#020202", background: "none", border: "none", padding: 0, cursor: "pointer", marginTop: 4, textDecoration: "none", fontFamily: font, transition: "opacity 0.12s ease" }}
+                  style={{
+                    marginTop: 10, background: "none", border: "none", padding: 0, cursor: "pointer",
+                    fontFamily: font, fontWeight: 400, fontSize: 14, color: C.text,
+                    textDecoration: "underline", textUnderlineOffset: "3px",
+                    transition: "opacity 0.12s ease",
+                  }}
                   {...pressOpacity}
                 >
-                  {aboutExpanded ? "Show less" : "Read more"}
+                  {aboutExpanded ? "Show Less" : "Read More"}
                 </button>
               )}
             </div>
           );
         })()}
 
-        {/* Accordion sections */}
-        {accordionSections.length > 0 && renderAccordionCard(accordionSections)}
-
-        {/* Shopping attributes */}
-        {isListingShopping && (() => {
-          const airCon = (listing as any).air_conditioned as boolean | null;
-          const paymentMethods = (listing as any).payment_methods as string[] | null;
-          const deliveryAvail = (listing as any).delivery_available as boolean | null;
-          const clickCollect = (listing as any).click_and_collect as boolean | null;
-          const orderOnline = (listing as any).order_online as boolean | null;
-          const parkingAvail = (listing as any).parking_available as boolean | null;
-          const shopWheelchair = (listing as any).wheelchair_friendly as boolean | null;
-          const localProds = (listing as any).local_products as boolean | null;
-          const shopType = (listing as any).shop_type as string | null;
-          const curioGifts = (listing as any).curio_or_gifts as boolean | null;
-          const prodCats = (listing as any).product_categories as string[] | null;
-          const priceRng = (listing as any).price_range as string | null;
-
-          const items = [
-            shopType && `Type: ${shopType}`,
-            priceRng && `Price: ${priceRng}`,
-            airCon && "Air Conditioned",
-            deliveryAvail && "Delivery Available",
-            clickCollect && "Click & Collect",
-            orderOnline && "Order Online",
-            parkingAvail && "Parking Available",
-            shopWheelchair && "Wheelchair Friendly",
-            localProds && "Local Products",
-            curioGifts && "Curio / Gifts",
-            paymentMethods && paymentMethods.length > 0 && `Payment: ${paymentMethods.join(", ")}`,
-            prodCats && prodCats.length > 0 && `Products: ${prodCats.join(", ")}`,
-          ].filter(Boolean) as string[];
-
-          if (items.length === 0) return null;
-
-          return (
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 20, marginBottom: 24 }}>
-              <h3 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", marginBottom: 12, marginTop: 0 }}>Details</h3>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {items.map((item) => (
-                  <span key={item} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
-                    {item}
-                  </span>
-                ))}
-              </div>
+        {/* Details section */}
+        {accordionSections.length > 0 && (
+          <div style={{ marginTop: 40 }}>
+            <h2 style={{
+              fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
+              letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
+            }}>
+              Details
+            </h2>
+            <div style={{
+              background: C.card, borderRadius: 24,
+              paddingLeft: 20, paddingRight: 20, overflow: "hidden",
+            }}>
+              {accordionSections.map((section, i) => {
+                const isOpen = openAccordion === section.key;
+                return (
+                  <div key={section.key} style={{
+                    borderBottom: i < accordionSections.length - 1 ? `1px solid ${C.border}` : "none",
+                  }}>
+                    <button
+                      onClick={() => toggleAccordion(section.key)}
+                      style={{
+                        width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
+                        paddingTop: 22, paddingBottom: 22,
+                        background: "none", border: "none", cursor: "pointer", fontFamily: font,
+                      }}
+                    >
+                      <span style={{
+                        fontFamily: font, fontWeight: 400, fontSize: 18, lineHeight: "21.6px",
+                        letterSpacing: "-0.18px", color: C.text,
+                      }}>
+                        {section.title}
+                      </span>
+                      <ChevronDown
+                        size={18}
+                        strokeWidth={1.5}
+                        color={C.muted}
+                        style={{ transition: "transform 0.2s ease-out", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                      />
+                    </button>
+                    {isOpen && (
+                      <div style={{ paddingBottom: 18, display: "flex", flexWrap: "wrap", gap: 8 }}>
+                        {section.fields.map((f, fi) => (
+                          <span
+                            key={fi}
+                            style={{
+                              background: C.card, border: `1px solid ${C.border}`,
+                              borderRadius: 999, padding: "6px 12px",
+                              fontFamily: font, fontWeight: 400, fontSize: 13, color: C.text,
+                            }}
+                          >
+                            {typeof f.value === "string" ? `${f.label}: ${f.value}` : f.label}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          );
-        })()}
-
-        {/* Accommodation sections */}
-        {isListingAccommodation && (() => {
-          const l = listing as any;
-          const accomSections: AccSection[] = [];
-
-          const foodFields: BoolField[] = [
-            { label: "Restaurant", value: l.has_restaurant },
-            { label: "Bar", value: l.has_bar },
-            { label: "Room Service", value: l.has_room_service },
-            { label: "Breakfast", value: l.has_breakfast },
-          ].filter(f => f.value != null) as BoolField[];
-          if (l.has_breakfast && l.breakfast_included != null) {
-            foodFields.push({ label: l.breakfast_included ? "Breakfast Included" : "Breakfast Paid", value: true });
-          }
-          if (foodFields.length > 0) accomSections.push({ key: "accom-food", icon: <Coffee size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Food & Drink", fields: foodFields });
-
-          const childFields: BoolField[] = [
-            { label: "Child Friendly", value: l.child_friendly },
-          ].filter(f => f.value != null) as BoolField[];
-          if (childFields.length > 0) accomSections.push({ key: "accom-children", icon: <Users size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Children", fields: childFields });
-
-          const transportFields: BoolField[] = [
-            { label: "Airport Shuttle", value: l.has_airport_shuttle },
-            { label: "Free Parking", value: l.has_free_parking },
-            { label: "Secure Parking", value: l.has_secure_parking },
-          ].filter(f => f.value != null) as BoolField[];
-          if (transportFields.length > 0) accomSections.push({ key: "accom-transport", icon: <Navigation size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Transport", fields: transportFields });
-
-          const wellnessFields: BoolField[] = [
-            { label: "Spa", value: l.has_spa },
-            { label: "Fitness Centre", value: l.has_fitness_centre },
-            { label: "Swimming Pool", value: l.has_swimming_pool },
-          ].filter(f => f.value != null) as BoolField[];
-          if (wellnessFields.length > 0) accomSections.push({ key: "accom-wellness", icon: <Heart size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Wellness", fields: wellnessFields });
-
-          const roomFields: BoolField[] = [
-            { label: "Aircon", value: l.has_aircon },
-            { label: "Laundry Service", value: l.has_laundry },
-          ].filter(f => f.value != null) as BoolField[];
-          if (roomFields.length > 0) accomSections.push({ key: "accom-rooms", icon: <ClipboardList size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Rooms", fields: roomFields });
-
-          const internetFields: BoolField[] = [
-            { label: "Wi-Fi", value: l.has_wifi_accom },
-          ].filter(f => f.value != null) as BoolField[];
-          if (internetFields.length > 0) accomSections.push({ key: "accom-internet", icon: <Wifi size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Internet", fields: internetFields });
-
-          const petFields: BoolField[] = [
-            { label: "Pet Friendly", value: l.pets_allowed },
-          ].filter(f => f.value != null) as BoolField[];
-          if (petFields.length > 0) accomSections.push({ key: "accom-pets", icon: <Heart size={22} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />, title: "Pets", fields: petFields });
-
-          const sleeps = l.sleeps as number | null;
-          const priceRng = l.price_range as string | null;
-          const kmFromTown = l.km_from_town as string | null;
-          const infoItems = [
-            sleeps != null && `Sleeps: ${sleeps}`,
-            priceRng && `Price: ${priceRng}`,
-            kmFromTown && `${kmFromTown} km from town`,
-          ].filter(Boolean) as string[];
-
-          if (accomSections.length === 0 && infoItems.length === 0) return null;
-
-          return (
-            <>
-              {infoItems.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
-                  {infoItems.map((item) => (
-                    <span key={item} style={{ background: "rgba(18,18,20,0.06)", borderRadius: 20, padding: "6px 14px", fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>
-                      {item}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {accomSections.length > 0 && renderAccordionCard(accomSections)}
-            </>
-          );
-        })()}
+          </div>
+        )}
 
         {/* Hours section */}
         <div ref={whatToKnowRef} />
@@ -724,37 +705,58 @@ const ListingDetail = () => {
           const saToday = getSADate();
           const holidayCheck = isSAPublicHoliday(saToday);
           return (
-            <div style={{ marginBottom: 24 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                <Clock size={24} strokeWidth={1.8} color="rgba(18,18,20,0.3)" />
-                <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", margin: 0 }}>Hours</h2>
-              </div>
+            <div style={{ marginTop: 40 }}>
+              <h2 style={{
+                fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
+                letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
+              }}>
+                Hours
+              </h2>
               {holidayCheck.isHoliday && (
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 8, padding: "8px 12px", background: "#fef3c7", borderRadius: 10, border: "1px solid #fde68a" }}>
-                  <span style={{ fontSize: 13, color: "#92400e", fontFamily: font }}>
-                    <strong>Public holiday</strong> — Hours might differ
-                  </span>
+                <div style={{
+                  marginBottom: 12, padding: "10px 14px", background: C.panel, borderRadius: 12,
+                  fontFamily: font, fontSize: 13, color: C.text,
+                }}>
+                  Public holiday — hours might differ
                 </div>
               )}
-              <div style={{ background: "#FFFFFF", borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", padding: "4px 0", overflow: "hidden" }}>
+              <div style={{
+                background: C.card, borderRadius: 24,
+                paddingLeft: 20, paddingRight: 20, overflow: "hidden",
+              }}>
                 {DAY_LABELS.map((day, i) => {
                   const key = day.toLowerCase();
                   const value = openingHours![key] || "";
                   const isClosed = !value || value.toLowerCase() === "closed";
                   const isToday = day === todayLabel;
                   return (
-                    <div key={day}>
-                      {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)" }} />}
-                      <div
-                        style={{
-                          display: "flex", justifyContent: "space-between", alignItems: "center",
-                          padding: "12px 20px",
-                          background: isToday ? "rgba(18,18,20,0.03)" : "transparent",
-                        }}
-                      >
-                        <span style={{ fontSize: 15, fontWeight: 500, color: isToday ? "#020202" : "#2B2420", fontFamily: font }}>{day}</span>
-                        <span style={{ fontSize: 15, fontWeight: 400, color: isClosed ? "rgba(18,18,20,0.35)" : "rgba(18,18,20,0.55)", fontFamily: font }}>{value || "Closed"}</span>
-                      </div>
+                    <div key={day} style={{
+                      display: "flex", justifyContent: "space-between", alignItems: "center",
+                      paddingTop: 16, paddingBottom: 16,
+                      borderBottom: i < DAY_LABELS.length - 1 ? `1px solid ${C.border}` : "none",
+                    }}>
+                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                        {isToday && (
+                          <span style={{
+                            width: 6, height: 6, borderRadius: "50%",
+                            background: C.coral, display: "inline-block", marginRight: 8,
+                          }} />
+                        )}
+                        <span style={{
+                          fontFamily: font,
+                          fontWeight: isToday ? 700 : 400,
+                          fontSize: 16, lineHeight: "20px",
+                          color: C.text,
+                        }}>
+                          {day}{isToday ? " · Today" : ""}
+                        </span>
+                      </span>
+                      <span style={{
+                        fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
+                        color: isToday ? C.text : C.muted,
+                      }}>
+                        {isClosed ? "Closed" : value}
+                      </span>
                     </div>
                   );
                 })}
@@ -764,27 +766,31 @@ const ListingDetail = () => {
         })()}
 
         {/* Suggest an edit */}
-        <div style={{ marginTop: 8, marginBottom: 36, display: "flex", justifyContent: "center" }}>
+        <div style={{ marginTop: 28, display: "flex", justifyContent: "center" }}>
           <a
             href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
             style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.35)",
-              textDecoration: "none", cursor: "pointer", transition: "opacity 0.12s ease", fontFamily: font,
+              fontFamily: font, fontWeight: 400, fontSize: 13, color: C.muted,
+              textDecoration: "underline", textUnderlineOffset: "3px",
+              transition: "opacity 0.12s ease",
             }}
             {...pressOpacity}
           >
-            <Pencil size={16} strokeWidth={1.8} color="rgba(18,18,20,0.35)" />
             Suggest an edit
           </a>
         </div>
       </div>
 
+      {/* Gallery */}
       {hasGallery && (
-        <section style={{ marginBottom: 24, marginTop: 8 }}>
-          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-            <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.08em", color: "rgba(43,36,32,0.5)", textTransform: "uppercase", marginBottom: 4 }}>Gallery</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: "#2B2420", letterSpacing: "-0.01em" }}>More photos</div>
+        <section style={{ marginTop: 40 }}>
+          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
+            <h2 style={{
+              fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
+              letterSpacing: "-1.32px", color: C.text, margin: 0,
+            }}>
+              Gallery
+            </h2>
           </div>
           <div className="overflow-x-auto scrollbar-hide">
             <div className="inline-flex" style={{ gap: 12, paddingLeft: 24, paddingRight: 24, paddingBottom: 4 }}>
@@ -793,7 +799,10 @@ const ListingDetail = () => {
                   key={i}
                   type="button"
                   onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
-                  style={{ width: 220, aspectRatio: "4/3", borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, border: "none", padding: 0, cursor: "pointer" }}
+                  style={{
+                    width: 240, aspectRatio: "4/3", borderRadius: 24, overflow: "hidden",
+                    background: C.panel, flexShrink: 0, border: "none", padding: 0, cursor: "pointer",
+                  }}
                   aria-label={`Open image ${i + 1}`}
                 >
                   <img src={url} alt={`${listing.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
