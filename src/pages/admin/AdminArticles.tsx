@@ -12,8 +12,6 @@ import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
 
-const categoryOptions = ["News", "Community", "Wildlife", "Food", "Travel", "Property", "Events", "Lifestyle"];
-
 interface Article {
   id: string;
   title: string;
@@ -185,12 +183,7 @@ const AdminArticles = () => {
           <div className="space-y-4">
             <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value, slug: generateSlug(e.target.value) })} /></div>
             <div><Label>Slug</Label><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} /></div>
-            <div>
-              <Label>Category *</Label>
-              <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-                {categoryOptions.map((c) => <option key={c} value={c.toLowerCase()}>{c}</option>)}
-              </select>
-            </div>
+            <div><Label>Category *</Label><Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Type any category, e.g. News, Wildlife, Property" /></div>
             <div><Label>Excerpt</Label><Textarea value={form.excerpt || ""} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} placeholder="A short 1-2 sentence summary" style={{ maxHeight: 80 }} /></div>
             <div><Label>Body *</Label><Textarea value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })} placeholder="Write your article here. Supports basic markdown." style={{ minHeight: 300 }} /></div>
             <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} /></div>
