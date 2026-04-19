@@ -42,9 +42,6 @@ const HomeMasthead = () => {
 
       {/* Masthead */}
       <div style={{ padding: "28px 20px 0" }}>
-        <p style={{ margin: 0, fontFamily: SANS, fontSize: 12, color: "#8A8480", marginBottom: 14 }}>
-          Your local guide
-        </p>
         <h1
           style={{
             margin: 0,
@@ -69,11 +66,11 @@ const HomeMasthead = () => {
             maxWidth: 260,
           }}
         >
-          A{" "}
+          Your{" "}
           <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, color: "#0A0A0A" }}>
-            slow-paced
+            Lowveld
           </span>{" "}
-          guide to eating, staying and exploring the bushveld.
+          Local
         </p>
       </div>
 
