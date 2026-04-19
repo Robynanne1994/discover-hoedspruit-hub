@@ -445,9 +445,9 @@ const Specials = () => {
                 <div style={{ padding: 20 }}>
                   <h3
                     style={{
-                      fontFamily: "Pragmatica Book",
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                       fontSize: 28,
-                      fontWeight: 400,
+                      fontWeight: 700,
                       color: "#0A0A0A",
                       textTransform: "capitalize",
                       letterSpacing: "-0.02em",
