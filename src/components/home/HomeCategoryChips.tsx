@@ -1,8 +1,8 @@
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 
-export type HomeChip = "All" | "Eat" | "Stay" | "Do" | "Shop" | "Events";
+export type HomeChip = "All" | "Eat" | "Stay" | "Do" | "Shop" | "Events" | "Specials";
 
-const CHIPS: HomeChip[] = ["All", "Eat", "Stay", "Do", "Shop", "Events"];
+const CHIPS: HomeChip[] = ["All", "Eat", "Stay", "Do", "Shop", "Events", "Specials"];
 
 interface Props {
   active: HomeChip;
