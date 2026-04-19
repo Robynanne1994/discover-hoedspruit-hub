@@ -562,8 +562,8 @@ const CategoryPage = () => {
                       fontFamily: font,
                       fontSize: 26,
                       fontWeight: 400,
-                      color: "#020202",
-                      textTransform: "uppercase",
+                      color: "#0a0a0a",
+                      textTransform: "capitalize",
                       letterSpacing: "0.01em",
                       lineHeight: 1.1,
                       margin: 0,
@@ -578,7 +578,7 @@ const CategoryPage = () => {
                         fontFamily: font,
                         fontSize: 12,
                         fontWeight: 500,
-                        textTransform: "uppercase",
+                        textTransform: "capitalize",
                         letterSpacing: "0.06em",
                         color: "rgba(18,18,20,0.4)",
                         margin: 0,
@@ -612,7 +612,7 @@ const CategoryPage = () => {
                         <a
                           href={`tel:${l.phone}`}
                           onClick={(e) => e.stopPropagation()}
-                          style={darkPill}
+                          style={subtlePill}
                         >
                           Call
                         </a>
