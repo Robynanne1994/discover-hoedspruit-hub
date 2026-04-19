@@ -10,7 +10,7 @@ import { useState } from "react";
 const SECTION_GAP = 40;
 
 const Index = () => {
-  const [activeChip, setActiveChip] = useState<"All" | "Eat" | "Stay" | "Do" | "Shop" | "Events">("All");
+  const [activeChip, setActiveChip] = useState<"All" | "Eat" | "Stay" | "Do" | "Shop" | "Events" | "Specials">("All");
 
   const showSection = (key: "Lowdown" | "Specials") => activeChip === "All";
 
