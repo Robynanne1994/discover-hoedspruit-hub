@@ -67,9 +67,7 @@ const Specials = () => {
     if (!specials) return [];
     let result = specials;
     if (filterType.length > 0) {
-      result = result.filter((s) =>
-        filterType.some((t) => (s.special_type || "").toLowerCase() === t.toLowerCase())
-      );
+      result = result.filter((s) => filterType.some((t) => (s.special_type || "").toLowerCase() === t.toLowerCase()));
     }
     if (sortBy === "name") {
       return [...result].sort((a, b) => a.title.localeCompare(b.title));
@@ -131,7 +129,15 @@ const Specials = () => {
       >
         <button
           onClick={() => navigate(-1)}
-          style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: 0,
+          }}
         >
           <ArrowLeft size={18} strokeWidth={1.8} style={{ color: "#020202" }} />
           <span style={{ fontSize: 15, fontWeight: 500, color: "#020202", fontFamily: font }}>Back</span>
@@ -142,7 +148,7 @@ const Specials = () => {
             style={{
               fontSize: 12,
               fontWeight: 500,
-              textTransform: "uppercase",
+              textTransform: "capitalize",
               letterSpacing: "0.06em",
               color: "rgba(18,18,20,0.4)",
               fontFamily: font,
@@ -159,7 +165,7 @@ const Specials = () => {
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontSize: 52,
           fontWeight: 700,
-          lineHeight: 1.02,
+          lineHeight: 1,
           letterSpacing: "-0.03em",
           color: "#0A0A0A",
           paddingLeft: 24,
@@ -178,7 +184,7 @@ const Specials = () => {
           fontFamily: font,
           fontSize: 15,
           fontWeight: 400,
-          lineHeight: 1.35,
+          lineHeight: 1.45,
           color: "rgba(18,18,20,0.55)",
           paddingLeft: 24,
           paddingRight: 24,
@@ -187,7 +193,7 @@ const Specials = () => {
           maxWidth: 280,
         }}
       >
-        The hottest deals and promotions in Hoedspruit.
+        The hottest deals in Hoedspruit.
       </p>
 
       {/* Toolbar: Filter + Sort */}
@@ -303,7 +309,16 @@ const Specials = () => {
 
       {/* Filters panel */}
       {showFilters && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div
+          style={{
+            paddingLeft: 24,
+            paddingRight: 24,
+            marginBottom: 24,
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
           {activeFilterCount > 0 && (
             <button
               onClick={clearAllFilters}
@@ -319,12 +334,24 @@ const Specials = () => {
                 fontFamily: font,
               }}
             >
-              Clear all filters
+              Clear All Filters
             </button>
           )}
 
           <div>
-            <p style={{ fontSize: 12, fontWeight: 500, color: "rgba(18,18,20,0.4)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8, fontFamily: font }}>Type</p>
+            <p
+              style={{
+                fontSize: 12,
+                fontWeight: 500,
+                color: "rgba(18,18,20,0.4)",
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                marginBottom: 8,
+                fontFamily: font,
+              }}
+            >
+              Type
+            </p>
             <div className="flex flex-wrap" style={{ gap: 8 }}>
               {TYPE_OPTIONS.map((t) => (
                 <FilterChip key={t} label={t} active={filterType.includes(t)} onClick={() => toggleFilter(t)} />
@@ -339,7 +366,11 @@ const Specials = () => {
         <div style={{ paddingLeft: 24, paddingRight: 24 }}>
           <div className="space-y-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="w-full" style={{ height: 360, borderRadius: 16, background: "rgba(18,18,20,0.06)" }} />
+              <Skeleton
+                key={i}
+                className="w-full"
+                style={{ height: 360, borderRadius: 16, background: "rgba(18,18,20,0.06)" }}
+              />
             ))}
           </div>
         </div>
@@ -366,7 +397,9 @@ const Specials = () => {
                 {...press}
               >
                 {/* 4:3 cover */}
-                <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "rgba(18,18,20,0.04)" }}>
+                <div
+                  style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "rgba(18,18,20,0.04)" }}
+                >
                   {s.image_url ? (
                     <img
                       src={s.image_url}
@@ -375,7 +408,10 @@ const Specials = () => {
                       loading="lazy"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center" style={{ background: "rgba(18,18,20,0.04)" }}>
+                    <div
+                      className="w-full h-full flex items-center justify-center"
+                      style={{ background: "rgba(18,18,20,0.04)" }}
+                    >
                       <Tag size={32} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.15)" }} />
                     </div>
                   )}
@@ -409,13 +445,13 @@ const Specials = () => {
                 <div style={{ padding: 20 }}>
                   <h3
                     style={{
-                      fontFamily: "'Pragmatica', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontSize: 22,
+                      fontFamily: "Pragmatica Book",
+                      fontSize: 28,
                       fontWeight: 400,
                       color: "#0A0A0A",
                       textTransform: "capitalize",
-                      letterSpacing: "-0.01em",
-                      lineHeight: 1.15,
+                      letterSpacing: "-0.02em",
+                      lineHeight: 1,
                       margin: 0,
                     }}
                   >
@@ -456,19 +492,11 @@ const Specials = () => {
                   {/* Action pills */}
                   {(s.contact_phone || whatsappRaw || s.booking_link) && (
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
-                      <Link
-                        to={`/specials/${s.id}`}
-                        onClick={(e) => e.stopPropagation()}
-                        style={darkPill}
-                      >
+                      <Link to={`/specials/${s.id}`} onClick={(e) => e.stopPropagation()} style={darkPill}>
                         View Deal
                       </Link>
                       {s.contact_phone && (
-                        <a
-                          href={`tel:${s.contact_phone}`}
-                          onClick={(e) => e.stopPropagation()}
-                          style={subtlePill}
-                        >
+                        <a href={`tel:${s.contact_phone}`} onClick={(e) => e.stopPropagation()} style={subtlePill}>
                           Call
                         </a>
                       )}
