@@ -355,7 +355,7 @@ const Advertise = () => {
               >
                 {submitForm.isPending ? (
                   <><Loader2 size={16} color="#FFFFFF" className="animate-spin" /> Sending</>
-                ) : "Send enquiry"}
+                ) : "Submit"}
               </button>
             </form>
           </>
