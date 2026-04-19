@@ -90,7 +90,7 @@ const PrivacyPolicy = () => {
     <div className="min-h-screen pb-20 bg-background">
       {/* Top bar */}
       <div className="pt-14 pb-1 px-6 relative">
-        <div className="absolute left-5 top-14">
+        <div className="absolute left-6 top-14">
           <BackButton />
         </div>
         <h1 className="text-center text-[13px] font-medium text-muted-foreground uppercase tracking-[0.08em]">
