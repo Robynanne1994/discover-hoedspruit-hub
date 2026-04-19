@@ -428,176 +428,381 @@ const MyAccount = () => {
     );
   }
 
+  const FONT_STACK = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+  const SERIF = "'Playfair Display', Georgia, serif";
+  const TEXT = "#0A0A0A";
+  const MUTED = "#8A8480";
+  const IVORY = "#F2EFEC";
+
+  const myHoedspruitItems = [
+    { label: "My saved places", href: "/saved", heart: true },
+  ];
   const getInTouchItems = [
-    { icon: Mail, label: "Contact", href: "/contact" },
-    { icon: Megaphone, label: "Advertise", href: "/advertise" },
-    { icon: MessageSquare, label: "Feedback", href: "/feedback" },
+    { label: "Contact", href: "/contact" },
+    { label: "Advertise with us", href: "/advertise" },
+    { label: "Send feedback", href: "/feedback" },
   ];
-
-  const moreItems = [
-    { icon: Settings, label: "Account Settings", href: "/account-settings" },
-    { icon: Info, label: "About", href: "/about" },
-    { icon: Newspaper, label: "The Lowveld Lowdown", href: "/headlines" },
-    { icon: HelpCircle, label: "Help & FAQs", href: "/faqs" },
-    { icon: FileText, label: "Terms & Policies", href: "/terms" },
+  const helpItems = [
+    { label: "Account settings", href: "/account-settings" },
+    { label: "About Hello Hoedspruit", href: "/about" },
+    { label: "The Lowveld Lowdown", href: "/headlines" },
+    { label: "Help and FAQs", href: "/faqs" },
+    { label: "Terms and policies", href: "/terms" },
   ];
+  const adminItems = [{ label: "Admin dashboard", href: "/admin" }];
 
-  const renderRow = (item: any, isLast: boolean) => {
-    const Icon = item.icon;
-    const content = (
-      <div
-        className="flex items-center"
-        style={{
-          height: 48,
-          padding: "0 24px",
-          transition: "transform 0.15s ease",
-        }}
-        onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
-        onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      >
-        <Icon style={{ width: 24, height: 24, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0, marginRight: 12 }} />
-        <span style={{ flex: 1, fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.2 }}>{item.label}</span>
-        <ChevronRight style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
-      </div>
-    );
-
-    const divider = !isLast ? (
-      <div style={{ marginLeft: 60, marginRight: 24, height: 1, background: "rgba(18,18,20,0.08)" }} />
-    ) : null;
-
-    if (item.href) return <div key={item.label}><Link to={item.href}>{content}</Link>{divider}</div>;
-    return <div key={item.label}><button onClick={item.action} className="w-full text-left">{content}</button>{divider}</div>;
+  const baseTextStyle: React.CSSProperties = {
+    fontFamily: FONT_STACK,
+    fontStretch: "normal",
+    fontSynthesis: "none",
+    transform: "none",
   };
 
-  const sectionHeader = (text: string) => (
-    <p style={{
-      fontSize: 12,
-      fontWeight: 500,
-      letterSpacing: "0.06em",
-      textTransform: "uppercase" as const,
-      color: "rgba(18,18,20,0.55)",
-      lineHeight: 1.3,
-      marginTop: 20,
-      marginBottom: 4,
-      paddingLeft: 24,
-    }}>
+  const renderCard = (items: { label: string; href: string; heart?: boolean }[]) => (
+    <div
+      style={{
+        background: "#FFFFFF",
+        borderRadius: 20,
+        overflow: "hidden",
+      }}
+    >
+      {items.map((item, i) => (
+        <div key={item.label}>
+          <Link
+            to={item.href}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              padding: "18px 20px",
+              textDecoration: "none",
+              transition: "transform 0.15s ease",
+            }}
+            onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.995)")}
+            onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          >
+            {item.heart && (
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  background: "#F26A48",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Heart size={14} strokeWidth={1.8} color="#FFFFFF" fill="#FFFFFF" />
+              </div>
+            )}
+            <span
+              style={{
+                ...baseTextStyle,
+                flex: 1,
+                fontSize: 16,
+                fontWeight: 500,
+                lineHeight: 1.25,
+                color: TEXT,
+              }}
+            >
+              {item.label}
+            </span>
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                background: IVORY,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <ChevronRight size={14} strokeWidth={2} color={TEXT} />
+            </div>
+          </Link>
+          {i < items.length - 1 && (
+            <div
+              style={{
+                height: 1,
+                background: IVORY,
+                marginLeft: 20,
+                marginRight: 20,
+              }}
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+
+  const sectionLabel = (text: string) => (
+    <p
+      style={{
+        ...baseTextStyle,
+        fontSize: 11,
+        fontWeight: 500,
+        letterSpacing: "0.18em",
+        textTransform: "uppercase",
+        color: MUTED,
+        margin: 0,
+        marginBottom: 10,
+        paddingLeft: 4,
+      }}
+    >
       {text}
     </p>
   );
 
+  const firstName = (profile?.display_name || user.email?.split("@")[0] || "You").split(" ")[0];
+  const username = user.email ? `@${user.email.split("@")[0]}` : "";
+
   return (
-    <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-      {/* Page title */}
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 24px)", paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <h1 style={{
-          fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
-          fontWeight: 400,
-          fontSize: 52,
-          lineHeight: 0.95,
-          letterSpacing: "-0.02em",
-          color: "#020202",
-          textTransform: "capitalize",
-          margin: 0,
-        }}>
-          Profile
-        </h1>
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#EBEBEB",
+        paddingBottom: 120,
+        ...baseTextStyle,
+      }}
+    >
+      {/* Top row */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "calc(env(safe-area-inset-top) + 16px) 20px 0",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: SERIF,
+            fontStyle: "italic",
+            fontWeight: 300,
+            fontSize: 16,
+            color: MUTED,
+          }}
+        >
+          Your profile
+        </span>
+        <Link
+          to="/account-settings"
+          aria-label="Settings"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: "#FFFFFF",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Settings size={18} strokeWidth={1.8} color={TEXT} />
+        </Link>
       </div>
 
-      {/* Profile card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: 16 }}>
-          <div className="flex items-center" style={{ gap: 14 }}>
-            <div className="overflow-hidden flex items-center justify-center shrink-0" style={{ width: 64, height: 64, borderRadius: "50%", background: "#EBEBEB" }}>
-              {profileLoading ? (
-                <Skeleton className="h-full w-full rounded-full" />
-              ) : profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="Profile" className="h-full w-full object-cover" />
-              ) : (
-                <span style={{ fontSize: 20, fontWeight: 500, color: "rgba(18,18,20,0.4)", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
-                  {(profile?.display_name || user.email?.split("@")[0] || "U").charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h2 className="truncate" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 16, fontWeight: 500, color: "#020202", lineHeight: 1.2, margin: 0, textTransform: "none" }}>
-                {profile?.display_name || user.email?.split("@")[0]}
-              </h2>
-              {profile?.bio && (
-                <p style={{ fontSize: 14, fontWeight: 400, color: "rgba(18,18,20,0.55)", marginTop: 4, lineHeight: 1.4, margin: 0, marginBlockStart: 4 }}>
-                  {profile.bio}
-                </p>
-              )}
-            </div>
+      {/* Hero */}
+      <div style={{ padding: "28px 20px 0" }}>
+        <p
+          style={{
+            ...baseTextStyle,
+            fontSize: 11,
+            fontWeight: 500,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: MUTED,
+            margin: 0,
+            marginBottom: 14,
+          }}
+        >
+          Hello
+        </p>
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+          <div
+            style={{
+              width: 84,
+              height: 84,
+              borderRadius: "50%",
+              background: "#E2C9B4",
+              overflow: "hidden",
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <span style={{ ...baseTextStyle, fontSize: 28, fontWeight: 500, color: "#FFFFFF" }}>
+                {firstName.charAt(0).toUpperCase()}
+              </span>
+            )}
           </div>
+          <h1
+            style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontWeight: 700,
+              fontSize: 60,
+              lineHeight: 0.92,
+              letterSpacing: "-0.03em",
+              color: TEXT,
+              margin: 0,
+              flex: 1,
+              minWidth: 0,
+              wordBreak: "break-word",
+            }}
+          >
+            {firstName}
+          </h1>
+        </div>
 
-          <div className="flex items-center justify-between" style={{ marginTop: 16 }}>
-            <FollowStats userId={user.id} />
-            <button
-              onClick={() => setActiveSection("profile")}
-              className="shrink-0 flex items-center"
-              style={{
-                gap: 4,
-                padding: "4px 8px",
-                border: "none",
-                background: "transparent",
-                cursor: "pointer",
-                transition: "transform 0.12s ease",
-              }}
-              onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.97)")}
-              onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-              onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            >
-              <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>Edit</span>
-            </button>
-          </div>
+        {username && (
+          <p style={{ ...baseTextStyle, fontSize: 14, color: MUTED, margin: "16px 0 0" }}>{username}</p>
+        )}
+
+        {profile?.bio && (
+          <p
+            style={{
+              fontFamily: SERIF,
+              fontStyle: "italic",
+              fontWeight: 300,
+              fontSize: 18,
+              lineHeight: 1.4,
+              color: MUTED,
+              maxWidth: 300,
+              margin: "10px 0 0",
+            }}
+          >
+            {profile.bio}
+          </p>
+        )}
+      </div>
+
+      {/* Stats card */}
+      <div style={{ padding: "24px 20px 0" }}>
+        <div
+          style={{
+            background: "#FFFFFF",
+            borderRadius: 20,
+            padding: "18px 22px",
+            display: "flex",
+            alignItems: "center",
+            gap: 32,
+          }}
+        >
+          <FollowStat userId={user.id} />
+          <button
+            onClick={() => setActiveSection("profile")}
+            style={{
+              marginLeft: "auto",
+              background: TEXT,
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: 999,
+              padding: "8px 16px",
+              fontSize: 13,
+              fontFamily: FONT_STACK,
+              cursor: "pointer",
+            }}
+          >
+            Edit
+          </button>
         </div>
       </div>
 
       {/* My Hoedspruit */}
-      {sectionHeader("My Hoedspruit")}
-      {renderRow({ icon: Heart, label: "My Hoedspruit", desc: "Your saved content & visited places", href: "/my-hoedspruit" }, true)}
+      <div style={{ padding: "28px 20px 0" }}>
+        {sectionLabel("My Hoedspruit")}
+        {renderCard(myHoedspruitItems)}
+      </div>
 
-      {/* Get in Touch */}
-      {sectionHeader("Get in Touch")}
-      {getInTouchItems.map((item, i) => renderRow(item, i === getInTouchItems.length - 1))}
+      {/* Get in touch */}
+      <div style={{ padding: "24px 20px 0" }}>
+        {sectionLabel("Get in touch")}
+        {renderCard(getInTouchItems)}
+      </div>
 
-      {/* Help & Settings */}
-      {sectionHeader("Help & Settings")}
-      {moreItems.map((item, i) => renderRow(item, i === moreItems.length - 1))}
+      {/* Help and settings */}
+      <div style={{ padding: "24px 20px 0" }}>
+        {sectionLabel("Help and settings")}
+        {renderCard(helpItems)}
+      </div>
 
+      {/* Admin */}
       {isAdmin && (
-        <>
-          {sectionHeader("Admin")}
-          {renderRow({ icon: LayoutDashboard, label: "Admin Dashboard", href: "/admin" }, true)}
-        </>
+        <div style={{ padding: "24px 20px 0" }}>
+          {sectionLabel("Admin")}
+          {renderCard(adminItems)}
+        </div>
       )}
 
-      {/* Logout */}
-      <div className="flex justify-center" style={{ marginTop: 24, marginBottom: 48 }}>
+      {/* Log out */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 32 }}>
         <button
-          onClick={() => { signOut(); navigate("/"); }}
-          className="flex items-center justify-center"
-          style={{
-            gap: 8,
-            background: "#020202",
-            borderRadius: 16,
-            padding: "12px 20px",
-            height: 48,
-            border: "none",
-            cursor: "pointer",
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            textTransform: "capitalize",
-            transition: "transform 0.12s ease, opacity 0.12s ease",
+          onClick={() => {
+            signOut();
+            navigate("/");
           }}
-          onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.97)"; e.currentTarget.style.opacity = "0.85"; }}
-          onPointerUp={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.opacity = "1"; }}
-          onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.opacity = "1"; }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            background: TEXT,
+            color: "#FFFFFF",
+            border: "none",
+            borderRadius: 999,
+            padding: "14px 28px 14px 24px",
+            fontFamily: FONT_STACK,
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: "pointer",
+          }}
         >
-          <LogOut style={{ width: 20, height: 20, strokeWidth: 1.8, color: "#FFFFFF" }} />
-          <span style={{ fontSize: 15, fontWeight: 600, color: "#FFFFFF", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", textTransform: "capitalize" }}>Log Out</span>
+          <LogOut size={16} strokeWidth={1.8} color="#FFFFFF" />
+          <span>Log out</span>
         </button>
       </div>
+    </div>
+  );
+};
+
+// Inline editorial follow stats (followers / following stacked)
+const FollowStat = ({ userId }: { userId: string }) => {
+  const { useFollowCounts } = require("@/hooks/useFollows") as typeof import("@/hooks/useFollows");
+  const { data: counts } = useFollowCounts(userId);
+  const TEXT = "#0A0A0A";
+  const MUTED = "#8A8480";
+  const FONT_STACK = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+  const Stat = ({ to, count, label }: { to: string; count: number; label: string }) => (
+    <Link to={to} style={{ textDecoration: "none", display: "flex", flexDirection: "column", gap: 4 }}>
+      <span style={{ fontFamily: FONT_STACK, fontSize: 18, fontWeight: 500, color: TEXT, lineHeight: 1 }}>{count}</span>
+      <span
+        style={{
+          fontFamily: FONT_STACK,
+          fontSize: 11,
+          fontWeight: 500,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: MUTED,
+          lineHeight: 1,
+        }}
+      >
+        {label}
+      </span>
+    </Link>
+  );
+  return (
+    <div style={{ display: "flex", gap: 32 }}>
+      <Stat to={`/profile/${userId}/followers`} count={counts?.followers ?? 0} label="Followers" />
+      <Stat to={`/profile/${userId}/following`} count={counts?.following ?? 0} label="Following" />
     </div>
   );
 };
