@@ -1,20 +1,44 @@
 import { useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
+import { Search, ChevronDown, ChevronLeft, ArrowRight } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FF = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+const FF_HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FF_PF = "'Playfair Display', Georgia, serif";
 
 const SECTION_ORDER = [
   "About Hello Hoedspruit",
-  "Using the App",
-  "Listings & Information",
-  "For Business Owners",
-  "Account & Privacy",
+  "Using the app",
+  "Listings and information",
+  "For business owners",
+  "Account and privacy",
   "General",
 ];
+
+// Map possible legacy DB section names to the new sentence-case labels
+const SECTION_ALIASES: Record<string, string> = {
+  "About Hello Hoedspruit": "About Hello Hoedspruit",
+  "Using the App": "Using the app",
+  "Using the app": "Using the app",
+  "Listings & Information": "Listings and information",
+  "Listings and Information": "Listings and information",
+  "Listings and information": "Listings and information",
+  "For Business Owners": "For business owners",
+  "For business owners": "For business owners",
+  "Account & Privacy": "Account and privacy",
+  "Account and Privacy": "Account and privacy",
+  "Account and privacy": "Account and privacy",
+  "General": "General",
+};
+
+const baseStyle = {
+  fontStretch: "normal" as const,
+  fontSynthesis: "none" as const,
+  transform: "none" as const,
+};
 
 const FAQs = () => {
   const navigate = useNavigate();
@@ -37,8 +61,9 @@ const FAQs = () => {
     if (!faqs) return [];
     const grouped: Record<string, typeof faqs> = {};
     faqs.forEach((faq) => {
-      if (!grouped[faq.section]) grouped[faq.section] = [];
-      grouped[faq.section].push(faq);
+      const label = SECTION_ALIASES[faq.section] || faq.section;
+      if (!grouped[label]) grouped[label] = [];
+      grouped[label].push(faq);
     });
     return SECTION_ORDER
       .filter((s) => grouped[s]?.length)
@@ -65,53 +90,101 @@ const FAQs = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 84, fontFamily: FF }}>
-      {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 8 }}>
+    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 120, fontFamily: FF, ...baseStyle }}>
+      {/* Top row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px 8px" }}>
         <button
           onClick={() => navigate(-1)}
-          style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          aria-label="Back"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: "#FFFFFF",
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            boxShadow: "0 1px 3px rgba(10,10,10,0.08)",
+            cursor: "pointer",
+            ...baseStyle,
+          }}
         >
-          <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: FF }}>Back</span>
+          <ChevronLeft size={20} strokeWidth={1.8} color="#0A0A0A" />
         </button>
+        <span style={{ fontFamily: FF_PF, fontStyle: "italic", fontWeight: 300, fontSize: 16, color: "#8A8480", ...baseStyle }}>
+          Support
+        </span>
       </div>
 
-      {/* Title */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif", fontSize: 52, fontWeight: 400, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
-          How Can We Help?
+      {/* Hero */}
+      <div style={{ padding: "20px 20px 0" }}>
+        <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A8480", fontFamily: FF, marginBottom: 16, ...baseStyle }}>
+          Need a hand
+        </div>
+        <h1 style={{
+          fontFamily: FF_HN,
+          fontWeight: 700,
+          fontSize: 60,
+          lineHeight: 0.92,
+          letterSpacing: "-0.03em",
+          color: "#0A0A0A",
+          margin: 0,
+          ...baseStyle,
+        }}>
+          How can<br />we help?
         </h1>
-      </div>
-
-      {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
-        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: FF }}>
-          Find answers to the most common questions about Hello Hoedspruit
+        <p style={{
+          fontFamily: FF_PF,
+          fontStyle: "italic",
+          fontWeight: 300,
+          fontSize: 18,
+          lineHeight: 1.4,
+          color: "#8A8480",
+          margin: "20px 0 0",
+          ...baseStyle,
+        }}>
+          Quick answers to the things people ask us most.
         </p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "12px 16px", gap: 10 }}>
-          <Search size={20} strokeWidth={1.8} color="rgba(18,18,20,0.35)" style={{ flexShrink: 0 }} />
+      <div style={{ padding: "28px 20px 24px" }}>
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          background: "#FFFFFF",
+          borderRadius: 999,
+          padding: "14px 20px",
+          gap: 12,
+        }}>
+          <Search size={18} strokeWidth={1.8} color="#8A8480" style={{ flexShrink: 0 }} />
           <input
             type="text"
-            placeholder="Search FAQs..."
+            placeholder="Search FAQs"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ flex: 1, background: "transparent", outline: "none", border: "none", fontSize: 15, fontWeight: 400, color: "#2b2420", fontFamily: FF }}
+            style={{
+              flex: 1,
+              background: "transparent",
+              outline: "none",
+              border: "none",
+              fontSize: 15,
+              color: "#0A0A0A",
+              fontFamily: FF,
+              ...baseStyle,
+            }}
           />
         </div>
       </div>
 
       {/* Loading */}
       {isLoading && (
-        <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+        <div style={{ padding: "0 20px" }}>
           {[1, 2, 3].map((i) => (
             <div key={i} style={{ marginBottom: 24 }}>
               <Skeleton className="h-3 w-32 mb-3" />
-              <Skeleton className="h-40 w-full rounded-[16px]" />
+              <Skeleton className="h-40 w-full rounded-[20px]" />
             </div>
           ))}
         </div>
@@ -119,47 +192,96 @@ const FAQs = () => {
 
       {/* No results */}
       {!isLoading && filteredSections.length === 0 && (
-        <div style={{ textAlign: "center", paddingTop: 48 }}>
-          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.4)", fontFamily: FF }}>No matching questions found.</p>
+        <div style={{ textAlign: "center", padding: "48px 20px" }}>
+          <p style={{ fontSize: 15, color: "#8A8480", fontFamily: FF, ...baseStyle }}>
+            No matching questions found.
+          </p>
         </div>
       )}
 
       {/* FAQ sections */}
       {!isLoading && filteredSections.map((section) => (
-        <div key={section.title} style={{ paddingLeft: 20, paddingRight: 20 }}>
-          {/* Section overline */}
-          <h3 style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginTop: 8, marginBottom: 12, fontFamily: FF }}>
+        <div key={section.title} style={{ padding: "0 20px", marginBottom: 24 }}>
+          <h3 style={{
+            fontSize: 11,
+            letterSpacing: "0.18em",
+            textTransform: "uppercase",
+            color: "#8A8480",
+            fontFamily: FF,
+            margin: "0 0 12px 4px",
+            ...baseStyle,
+          }}>
             {section.title}
           </h3>
-          {/* Card */}
-          <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: "4px 0", overflow: "hidden", marginBottom: 16 }}>
+          <div style={{ background: "#FFFFFF", borderRadius: 20, overflow: "hidden" }}>
             {section.items.map((item, i) => {
               const isOpen = openItem === item.id;
+              const hasAnswer = item.answer && item.answer.trim().length > 0;
               return (
                 <div key={item.id}>
-                  {i > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)" }} />}
+                  {i > 0 && (
+                    <div style={{ height: 1, background: "#F2EFEC", margin: "0 20px" }} />
+                  )}
                   <button
                     onClick={() => toggleItem(item.id)}
-                    style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", textAlign: "left", padding: "16px 20px", background: "none", border: "none", cursor: "pointer" }}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 12,
+                      textAlign: "left",
+                      padding: 20,
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      ...baseStyle,
+                    }}
                   >
-                    <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", lineHeight: 1.35, flex: 1, paddingRight: 12, fontFamily: FF }}>
+                    <span style={{
+                      fontSize: 16,
+                      fontWeight: 500,
+                      color: "#0A0A0A",
+                      lineHeight: 1.3,
+                      flex: 1,
+                      fontFamily: FF,
+                      ...baseStyle,
+                    }}>
                       {item.question}
                     </span>
-                    <ChevronDown
-                      size={20}
-                      strokeWidth={1.8}
-                      color="rgba(18,18,20,0.25)"
-                      style={{
-                        flexShrink: 0,
-                        transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                        transition: "transform 0.2s ease",
-                      }}
-                    />
+                    <span style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 999,
+                      background: isOpen ? "#0A0A0A" : "#F2EFEC",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                      transition: "background 0.2s ease",
+                    }}>
+                      <ChevronDown
+                        size={16}
+                        strokeWidth={2}
+                        color={isOpen ? "#FFFFFF" : "#0A0A0A"}
+                        style={{
+                          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                          transition: "transform 0.2s ease",
+                        }}
+                      />
+                    </span>
                   </button>
                   {isOpen && (
-                    <div style={{ padding: "0 20px 16px 20px" }}>
-                      <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", lineHeight: 1.5, margin: 0, fontFamily: FF }}>
-                        {item.answer}
+                    <div style={{ padding: "0 20px 20px" }}>
+                      <p style={{
+                        fontSize: 14,
+                        lineHeight: 1.55,
+                        color: "#8A8480",
+                        margin: 0,
+                        fontFamily: FF,
+                        ...baseStyle,
+                      }}>
+                        {hasAnswer ? item.answer : "We're still writing this one. Check back soon."}
                       </p>
                     </div>
                   )}
@@ -170,28 +292,82 @@ const FAQs = () => {
         </div>
       ))}
 
-      {/* CTA card */}
+      {/* Coral contact card */}
       {!isLoading && (
-        <div style={{ paddingLeft: 20, paddingRight: 20, marginTop: 16, marginBottom: 36 }}>
-          <div style={{ background: "#1A1A1A", borderRadius: 16, padding: "28px 20px", position: "relative", overflow: "hidden" }}>
-            <div style={{ position: "absolute", top: -20, right: -20, width: 160, height: 160, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.08)" }} />
+        <div style={{ padding: "8px 20px 0" }}>
+          <div style={{
+            background: "#F26A48",
+            borderRadius: 24,
+            padding: 28,
+            position: "relative",
+            overflow: "hidden",
+          }}>
+            <div style={{
+              position: "absolute",
+              top: -60,
+              right: -60,
+              width: 200,
+              height: 200,
+              borderRadius: "50%",
+              background: "rgba(255,255,255,0.08)",
+            }} />
             <div style={{ position: "relative", zIndex: 1 }}>
-              <h3 style={{ fontSize: 22, fontWeight: 400, color: "#FFFFFF", textTransform: "uppercase", lineHeight: 1.15, letterSpacing: "0.01em", marginBottom: 8, margin: 0, marginBlockEnd: 8, fontFamily: FF }}>
-                Still Have a Question?
+              <div style={{
+                fontSize: 11,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: "rgba(255,255,255,0.75)",
+                fontFamily: FF,
+                marginBottom: 14,
+                ...baseStyle,
+              }}>
+                Still stuck
+              </div>
+              <h3 style={{
+                fontFamily: FF_HN,
+                fontWeight: 700,
+                fontSize: 34,
+                lineHeight: 1,
+                letterSpacing: "-0.02em",
+                color: "#FFFFFF",
+                margin: 0,
+                ...baseStyle,
+              }}>
+                Ask us anything.
               </h3>
-              <p style={{ fontSize: 14, fontWeight: 400, lineHeight: 1.4, color: "rgba(255,255,255,0.55)", fontStyle: "italic", marginBottom: 20, margin: 0, marginBlockEnd: 20, fontFamily: FF }}>
-                We're happy to help. Get in touch and we'll get back to you as soon as we can.
+              <p style={{
+                fontFamily: FF_PF,
+                fontStyle: "italic",
+                fontWeight: 300,
+                fontSize: 15,
+                lineHeight: 1.5,
+                color: "rgba(255,255,255,0.85)",
+                margin: "14px 0 22px",
+                ...baseStyle,
+              }}>
+                We're a small team but we answer every message. Drop us a line and we'll get back to you.
               </p>
-              <Link
-                to="/contact"
-                style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#FFFFFF", color: "#1A1A1A", borderRadius: 24, padding: "12px 20px", textDecoration: "none", fontSize: 15, fontWeight: 600, fontFamily: FF, transition: "transform 0.12s ease, opacity 0.12s ease" }}
-                onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
-                onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-                onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+              <button
+                onClick={() => navigate("/contact")}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  background: "#FFFFFF",
+                  color: "#0A0A0A",
+                  borderRadius: 999,
+                  padding: "12px 22px",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 15,
+                  fontWeight: 500,
+                  fontFamily: FF,
+                  ...baseStyle,
+                }}
               >
-                Contact Us
-                <ArrowRight size={16} strokeWidth={1.8} color="#1A1A1A" />
-              </Link>
+                Get in touch
+                <ArrowRight size={16} strokeWidth={2} color="#0A0A0A" />
+              </button>
             </div>
           </div>
         </div>
