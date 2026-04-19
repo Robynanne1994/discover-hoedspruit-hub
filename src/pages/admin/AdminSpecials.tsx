@@ -71,14 +71,10 @@ const SPECIAL_TYPES = [
 
 const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-const CATEGORIES = [
-  { value: "restaurant", label: "Restaurant" },
-  { value: "accommodation", label: "Accommodation" },
-  { value: "activity", label: "Activity" },
-  { value: "wellness", label: "Wellness" },
-  { value: "shopping", label: "Shopping" },
-  { value: "other", label: "Other" },
-];
+const stripTrailingZeros = (val: string | null) => {
+  if (!val) return val;
+  return val.replace(/(\d)\.00\b/g, "$1").replace(/(\d\.\d)0\b/g, "$1");
+};
 
 const GroupLabel = ({ children }: { children: React.ReactNode }) => (
   <div style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 2, marginTop: 24, marginBottom: 12 }}>
@@ -285,8 +281,8 @@ const AdminSpecials = () => {
           <div><Label>Valid Until (leave empty for ongoing)</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => setForm({ ...form, valid_until: e.target.value || null })} /></div>
 
           <GroupLabel>Pricing</GroupLabel>
-          <div><Label>Deal Price (e.g. R145, R450pp)</Label><Input placeholder="R" value={form.price || ""} onChange={(e) => setForm({ ...form, price: e.target.value || null })} /></div>
-          <div><Label>Original Price (optional, for showing savings)</Label><Input placeholder="R" value={form.original_price || ""} onChange={(e) => setForm({ ...form, original_price: e.target.value || null })} /></div>
+          <div><Label>Deal Price (e.g. R145, R450pp)</Label><Input placeholder="R" value={form.price || ""} onChange={(e) => setForm({ ...form, price: stripTrailingZeros(e.target.value) || null })} onBlur={(e) => setForm({ ...form, price: stripTrailingZeros(e.target.value) || null })} /></div>
+          <div><Label>Original Price (optional, for showing savings)</Label><Input placeholder="R" value={form.original_price || ""} onChange={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} onBlur={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} /></div>
 
           <GroupLabel>Booking</GroupLabel>
           <div className="flex items-center gap-3">
@@ -304,16 +300,11 @@ const AdminSpecials = () => {
           <div><Label>Terms & Conditions (optional)</Label><Textarea placeholder="e.g. T's & C's apply. Sit down only." value={form.terms || ""} onChange={(e) => setForm({ ...form, terms: e.target.value || null })} style={{ minHeight: 80 }} /></div>
           <div>
             <Label>Category</Label>
-            <select
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            <Input
+              placeholder="e.g. Restaurant, Spa Day, Family Stay"
               value={form.category || ""}
               onChange={(e) => setForm({ ...form, category: e.target.value || null })}
-            >
-              <option value="">— Select —</option>
-              {CATEGORIES.map((c) => (
-                <option key={c.value} value={c.value}>{c.label}</option>
-              ))}
-            </select>
+            />
           </div>
 
           <div className="border-t border-border pt-4 mt-4 space-y-4">

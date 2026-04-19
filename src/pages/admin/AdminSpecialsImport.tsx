@@ -6,6 +6,11 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const stripTrailingZeros = (val: string | null | undefined) => {
+  if (!val) return val ?? null;
+  return val.replace(/(\d)\.00\b/g, "$1").replace(/(\d\.\d)0\b/g, "$1");
+};
+
 const EXPECTED_HEADERS = [
   "title", "deal_label", "business_name", "description", "image_url",
   "special_type", "day_of_week", "valid_from", "valid_until",
@@ -99,8 +104,8 @@ const AdminSpecialsImport = () => {
           day_of_week: row.day_of_week ? row.day_of_week.split("|").map((s: string) => s.trim().toLowerCase()).filter(Boolean) : null,
           valid_from: row.valid_from || null,
           valid_until: row.valid_until || null,
-          price: row.price || null,
-          original_price: row.original_price || null,
+          price: stripTrailingZeros(row.price) || null,
+          original_price: stripTrailingZeros(row.original_price) || null,
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
           booking_link: row.booking_link || null,
           promo_code: row.promo_code || null,
@@ -163,7 +168,7 @@ const AdminSpecialsImport = () => {
     const rows = specials.map((s: any) => [
       s.title, s.deal_label, s.business_name, s.description ?? "",
       s.image_url ?? "", s.special_type ?? "", (s.day_of_week ?? []).join("|"),
-      s.valid_from ?? "", s.valid_until ?? "", s.price ?? "", s.original_price ?? "",
+      s.valid_from ?? "", s.valid_until ?? "", stripTrailingZeros(s.price) ?? "", stripTrailingZeros(s.original_price) ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.promo_code ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.terms ?? "", s.category ?? "",
       s.is_active ? "true" : "false", String(s.sort_order ?? 0),
