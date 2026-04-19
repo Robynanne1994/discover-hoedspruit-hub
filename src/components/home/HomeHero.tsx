@@ -149,7 +149,7 @@ const HomeHero = () => {
       </div>
 
       {/* Category pills */}
-      <div style={{ paddingTop: 18, paddingLeft: 20, paddingRight: 20, overflowX: "auto" }} className="scrollbar-hide">
+      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, overflowX: "auto" }} className="scrollbar-hide">
         <div style={{ display: "flex", gap: 8 }}>
           {categories.map((cat) => {
             const Icon = cat.icon;

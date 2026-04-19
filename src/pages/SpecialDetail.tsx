@@ -236,7 +236,7 @@ const SpecialDetail = () => {
       )}
 
       {/* Content area */}
-      <div style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
+      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
         {/* Deal label overline */}
         <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginBottom: 4, marginTop: 0, fontFamily: font }}>
           {special.deal_label}

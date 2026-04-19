@@ -19,12 +19,12 @@ const FollowList = () => {
   return (
     <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <BackButton />
       </div>
 
       {/* Heading */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <h1
           style={{
             fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
@@ -42,7 +42,7 @@ const FollowList = () => {
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 28 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <p
           style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -59,7 +59,7 @@ const FollowList = () => {
       </div>
 
       {/* Content */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, paddingBottom: 40 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, paddingBottom: 40 }}>
         {isLoading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {Array.from({ length: 5 }).map((_, i) => (

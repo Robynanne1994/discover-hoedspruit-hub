@@ -35,7 +35,7 @@ const HomeWhatsOn = () => {
   return (
     <section>
       <HomeSectionHead primary="What's on" actionLabel="All events" actionHref="/events" />
-      <div style={{ padding: "0 20px" }}>
+      <div style={{ padding: "0 24px" }}>
         <div style={{ background: "#FFFFFF", borderRadius: 24, padding: "4px 20px" }}>
           {events.map((e, idx) => (
             <Link

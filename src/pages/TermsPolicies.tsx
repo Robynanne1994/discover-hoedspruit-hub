@@ -95,7 +95,7 @@ const TermsPolicies = () => {
                   position: "relative",
                 }}
               >
-                <div style={{ flex: 1, paddingRight: 16 }}>
+                <div style={{ flex: 1, paddingRight: 24 }}>
                   <div
                     style={{
                       fontSize: 17,

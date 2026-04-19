@@ -98,7 +98,7 @@ const Row = ({ title, description, checked, onChange, showDivider }: RowProps) =
         cursor: "pointer",
       }}
     >
-      <div style={{ flex: 1, paddingRight: 16 }}>
+      <div style={{ flex: 1, paddingRight: 24 }}>
         <div
           style={{
             ...baseTextStyle,
@@ -178,7 +178,7 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
       color: "#8A8480",
       textTransform: "uppercase",
       letterSpacing: "0.18em",
-      padding: "0 20px",
+      padding: "0 24px",
       marginBottom: 12,
     }}
   >
@@ -242,8 +242,8 @@ const Notifications = () => {
       <div
         style={{
           paddingTop: 16,
-          paddingLeft: 20,
-          paddingRight: 20,
+          paddingLeft: 24,
+          paddingRight: 24,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -266,7 +266,7 @@ const Notifications = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "0 20px", marginBottom: 28 }}>
+      <div style={{ padding: "0 24px", marginBottom: 28 }}>
         <div
           style={{
             ...baseTextStyle,
@@ -313,7 +313,7 @@ const Notifications = () => {
       </div>
 
       {/* Master push card */}
-      <div style={{ padding: "0 20px", marginBottom: 36 }}>
+      <div style={{ padding: "0 24px", marginBottom: 36 }}>
         <div
           onClick={() => updatePref("push_enabled")}
           style={{
@@ -326,7 +326,7 @@ const Notifications = () => {
             cursor: "pointer",
           }}
         >
-          <div style={{ flex: 1, paddingRight: 16 }}>
+          <div style={{ flex: 1, paddingRight: 24 }}>
             <div
               style={{
                 ...baseTextStyle,
@@ -366,7 +366,7 @@ const Notifications = () => {
         {SECTIONS.map((section) => (
           <div key={section.label} style={{ marginBottom: 32 }}>
             <SectionLabel>{section.label}</SectionLabel>
-            <div style={{ padding: "0 20px" }}>
+            <div style={{ padding: "0 24px" }}>
               <div style={{ background: "#FFFFFF", borderRadius: 20, overflow: "hidden" }}>
                 {section.rows.map((row, i) => (
                   <Row
@@ -385,7 +385,7 @@ const Notifications = () => {
       </div>
 
       {/* Footer note */}
-      <div style={{ padding: "0 20px" }}>
+      <div style={{ padding: "0 24px" }}>
         <div
           style={{
             background: "#F2EFEC",

@@ -6,7 +6,7 @@ const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
 
 const HomeGetListed = () => {
   return (
-    <section style={{ padding: "0 20px" }}>
+    <section style={{ padding: "0 24px" }}>
       <div
         style={{
           position: "relative",

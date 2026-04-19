@@ -299,7 +299,7 @@ const Advertise = () => {
                     borderColor: errors.name ? "#e53e3e" : "rgba(18,18,20,0.1)",
                   }}
                 />
-                {errors.name && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 16 }}>{errors.name}</p>}
+                {errors.name && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 24 }}>{errors.name}</p>}
               </div>
               <div style={{ marginBottom: 12 }}>
                 <input
@@ -312,7 +312,7 @@ const Advertise = () => {
                     borderColor: errors.email ? "#e53e3e" : "rgba(18,18,20,0.1)",
                   }}
                 />
-                {errors.email && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 16 }}>{errors.email}</p>}
+                {errors.email && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 24 }}>{errors.email}</p>}
               </div>
               <div style={{ marginBottom: 12 }}>
                 <input
@@ -324,7 +324,7 @@ const Advertise = () => {
                     borderColor: errors.business ? "#e53e3e" : "rgba(18,18,20,0.1)",
                   }}
                 />
-                {errors.business && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 16 }}>{errors.business}</p>}
+                {errors.business && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 24 }}>{errors.business}</p>}
               </div>
               <div style={{ marginBottom: 20 }}>
                 <textarea
@@ -338,7 +338,7 @@ const Advertise = () => {
                     fontFamily: FF,
                   }}
                 />
-                {errors.message && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 16 }}>{errors.message}</p>}
+                {errors.message && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 24 }}>{errors.message}</p>}
               </div>
               <button
                 type="submit"

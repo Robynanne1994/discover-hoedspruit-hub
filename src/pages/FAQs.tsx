@@ -180,7 +180,7 @@ const FAQs = () => {
 
       {/* Loading */}
       {isLoading && (
-        <div style={{ padding: "0 20px" }}>
+        <div style={{ padding: "0 24px" }}>
           {[1, 2, 3].map((i) => (
             <div key={i} style={{ marginBottom: 24 }}>
               <Skeleton className="h-3 w-32 mb-3" />
@@ -201,7 +201,7 @@ const FAQs = () => {
 
       {/* FAQ sections */}
       {!isLoading && filteredSections.map((section) => (
-        <div key={section.title} style={{ padding: "0 20px", marginBottom: 24 }}>
+        <div key={section.title} style={{ padding: "0 24px", marginBottom: 24 }}>
           <h3 style={{
             fontSize: 11,
             letterSpacing: "0.18em",

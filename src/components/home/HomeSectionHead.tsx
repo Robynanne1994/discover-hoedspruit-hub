@@ -18,7 +18,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "space-between",
-        padding: "0 20px",
+        padding: "0 24px",
         marginBottom: 18,
         gap: 12,
       }}

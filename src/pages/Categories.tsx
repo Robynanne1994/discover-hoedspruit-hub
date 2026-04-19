@@ -164,8 +164,8 @@ const Categories = () => {
         background: "#EBEBEB",
         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
         paddingTop: "calc(env(safe-area-inset-top) + 24px)",
-        paddingLeft: 20,
-        paddingRight: 20,
+        paddingLeft: 24,
+        paddingRight: 24,
       }}
     >
       {/* Heading */}
@@ -229,12 +229,12 @@ const Categories = () => {
               color: "rgba(18,18,20,0.4)",
               letterSpacing: "0.06em",
               marginBottom: 12,
-              paddingLeft: 20,
+              paddingLeft: 24,
             }}
           >
             Listings
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingLeft: 20, paddingRight: 20 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingLeft: 24, paddingRight: 24 }}>
             {listingResults.map((listing) => (
               <Link
                 key={listing.id}
