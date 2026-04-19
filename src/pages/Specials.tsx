@@ -156,17 +156,17 @@ const Specials = () => {
       {/* H1 */}
       <h1
         style={{
-          fontFamily: font,
-          fontSize: 53,
-          fontWeight: 400,
-          lineHeight: 1,
-          letterSpacing: "0.01em",
-          color: "#020202",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontSize: 52,
+          fontWeight: 700,
+          lineHeight: 1.02,
+          letterSpacing: "-0.03em",
+          color: "#0A0A0A",
           paddingLeft: 24,
           paddingRight: 24,
           margin: 0,
           marginBottom: 16,
-          textTransform: "uppercase",
+          textTransform: "capitalize",
         }}
       >
         Specials
