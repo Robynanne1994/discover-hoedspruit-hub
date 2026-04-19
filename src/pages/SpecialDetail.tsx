@@ -232,14 +232,6 @@ const SpecialDetail = () => {
     icon: <Share2 size={16} strokeWidth={1.5} color={TEXT} />,
     onClick: handleShare,
   });
-  if (waClean) {
-    secondaryActions.push({
-      label: "Whatspp",
-      icon: <MessageCircle size={16} strokeWidth={1.5} color={TEXT} />,
-      href: `https://wa.me/${waClean}`,
-      external: true,
-    });
-  }
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
@@ -322,37 +314,66 @@ const SpecialDetail = () => {
           </p>
         </div>
 
-        {/* Primary Call Now */}
-        {phoneClean && (
-          <a
-            href={`tel:${phoneClean}`}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              width: "100%",
-              height: 52,
-              background: TEXT,
-              color: "#FFFFFF",
-              borderRadius: 999,
-              padding: "0 20px",
-              textDecoration: "none",
-              fontFamily: FONT,
-              fontWeight: 400,
-              fontSize: 15,
-              lineHeight: "18px",
-              marginBottom: 14,
-              transition: "transform 150ms ease-out",
-            }}
-            {...press}
-          >
-            <Phone size={16} strokeWidth={1.5} color="#FFFFFF" />
-            <span>Call Now</span>
-            <span style={{ marginLeft: 6, fontSize: 13, lineHeight: "16px", color: "rgba(255,255,255,0.7)" }}>
-              {special.contact_phone}
-            </span>
-          </a>
+        {/* Primary Call Now / WhatsApp */}
+        {(phoneClean || waClean) && (
+          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+            {phoneClean && (
+              <a
+                href={`tel:${phoneClean}`}
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  height: 52,
+                  background: TEXT,
+                  color: "#FFFFFF",
+                  borderRadius: 999,
+                  padding: "0 16px",
+                  textDecoration: "none",
+                  fontFamily: FONT,
+                  fontWeight: 400,
+                  fontSize: 15,
+                  lineHeight: "18px",
+                  transition: "transform 150ms ease-out",
+                }}
+                {...press}
+              >
+                <Phone size={16} strokeWidth={1.5} color="#FFFFFF" />
+                <span>Call Now</span>
+              </a>
+            )}
+            {waClean && (
+              <a
+                href={`https://wa.me/${waClean}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8,
+                  height: 52,
+                  background: TEXT,
+                  color: "#FFFFFF",
+                  borderRadius: 999,
+                  padding: "0 16px",
+                  textDecoration: "none",
+                  fontFamily: FONT,
+                  fontWeight: 400,
+                  fontSize: 15,
+                  lineHeight: "18px",
+                  transition: "transform 150ms ease-out",
+                }}
+                {...press}
+              >
+                <MessageCircle size={16} strokeWidth={1.5} color="#FFFFFF" />
+                <span>WhatsApp</span>
+              </a>
+            )}
+          </div>
         )}
 
         {/* Secondary actions */}
