@@ -382,7 +382,7 @@ const ListingDetail = () => {
         )}
 
         {/* Listing name */}
-        <h1 style={{ fontFamily: font, fontSize: 34, fontWeight: 400, lineHeight: 1.1, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", marginBottom: 8, marginTop: 0 }}>
+        <h1 style={{ fontFamily: font, fontSize: 34, fontWeight: 400, lineHeight: 1.1, letterSpacing: "0.01em", color: "#0a0a0a", textTransform: "capitalize", marginBottom: 8, marginTop: 0 }}>
           {listing.title}
         </h1>
 
