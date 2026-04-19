@@ -422,6 +422,66 @@ const SpecialDetail = () => {
           </section>
         )}
 
+        {/* Promo code */}
+        {special.promo_code && (
+          <section style={{ marginBottom: 32 }}>
+            <p style={{ ...eyebrow, marginBottom: 8 }}>Promo Code</p>
+            <h2 style={{ ...sectionTitle, marginBottom: 16 }}>Use At Checkout</h2>
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(special.promo_code!);
+                  toast.success("Promo code copied!");
+                } catch {
+                  toast.error("Could not copy code");
+                }
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+                background: SURFACE,
+                border: `1px dashed ${TEXT}`,
+                borderRadius: 16,
+                padding: "18px 20px",
+                cursor: "pointer",
+                fontFamily: FONT,
+                transition: "transform 150ms ease-out",
+              }}
+              {...press}
+            >
+              <span
+                style={{
+                  fontFamily: FONT,
+                  fontWeight: 700,
+                  fontSize: 22,
+                  letterSpacing: "0.04em",
+                  color: TEXT,
+                  textTransform: "uppercase",
+                }}
+              >
+                {special.promo_code}
+              </span>
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontFamily: FONT,
+                  fontSize: 13,
+                  letterSpacing: "0.24px",
+                  textTransform: "uppercase",
+                  color: MUTED,
+                }}
+              >
+                <Copy size={14} strokeWidth={1.5} color={MUTED} />
+                Copy
+              </span>
+            </button>
+          </section>
+        )}
+
         {/* Details */}
         <section style={{ marginBottom: 32 }}>
           <p style={{ ...eyebrow, marginBottom: 8 }}>Details</p>
