@@ -179,7 +179,7 @@ const SpecialDetail = () => {
   const phoneClean = special.contact_phone?.replace(/\s/g, "");
   const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
 
-  const detailRows: { icon: React.ReactNode; label: string; value: string }[] = [
+  const detailRows: { icon: React.ReactNode; label: string; value: string; capitalize?: boolean }[] = [
     { icon: <Store size={20} strokeWidth={1.5} color={MUTED} />, label: "Business", value: special.business_name },
     { icon: <Tag size={20} strokeWidth={1.5} color={MUTED} />, label: "Deal", value: special.deal_label },
   ];
