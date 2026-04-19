@@ -84,19 +84,19 @@ const PrivacySecurity = () => {
   return (
     <div className="min-h-screen" style={{ background: "#ebebeb" }}>
       {/* Back button */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <BackButton />
       </div>
 
       {/* Heading */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
           Privacy & Security
         </h1>
       </div>
 
       {/* Subtitle */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 32 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: "0.2px", lineHeight: 1.4 }}>
           How we handle your information
         </p>

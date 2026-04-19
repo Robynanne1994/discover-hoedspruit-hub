@@ -13,9 +13,9 @@ const HomeCategoryChips = ({ active, onChange }: Props) => {
   return (
     <div
       className="scrollbar-hide"
-      style={{ overflowX: "auto", paddingLeft: 20, marginRight: 0 }}
+      style={{ overflowX: "auto", paddingLeft: 24, marginRight: 0 }}
     >
-      <div style={{ display: "flex", gap: 8, paddingRight: 20 }}>
+      <div style={{ display: "flex", gap: 8, paddingRight: 24 }}>
         {CHIPS.map((chip) => {
           const isActive = active === chip;
           return (

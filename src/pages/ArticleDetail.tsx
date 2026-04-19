@@ -22,7 +22,7 @@ const renderMarkdown = (text: string) => {
         i++;
       }
       elements.push(
-        <ul key={`ul-${i}`} style={{ paddingLeft: 20, marginBottom: 16 }}>
+        <ul key={`ul-${i}`} style={{ paddingLeft: 24, marginBottom: 16 }}>
           {items.map((item, j) => (
             <li key={j} style={{ fontSize: 15, color: "rgba(18,18,20,0.55)", lineHeight: 1.8, marginBottom: 10 }} dangerouslySetInnerHTML={{ __html: inlineFormat(item) }} />
           ))}
@@ -116,7 +116,7 @@ const ArticleDetail = () => {
         </button>
       </div>
 
-      <div style={{ padding: "0 20px" }}>
+      <div style={{ padding: "0 24px" }}>
         {/* Category badge */}
         <div style={{ marginTop: 20, marginBottom: 14 }}>
           <span style={{ display: "inline-block", background: "rgba(18,18,20,0.05)", borderRadius: 9999, padding: "6px 14px", fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.55)", textTransform: "uppercase" }}>{article.category}</span>

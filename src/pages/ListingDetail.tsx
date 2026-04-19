@@ -138,7 +138,7 @@ const ListingDetail = () => {
   if (isLoading) {
     return (
       <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 20px 0" }}>
+        <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
             <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
             <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
@@ -155,7 +155,7 @@ const ListingDetail = () => {
   if (!listing) {
     return (
       <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: font }}>
-        <div style={{ padding: "52px 20px 0" }}>
+        <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
             <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
             <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
@@ -358,7 +358,7 @@ const ListingDetail = () => {
           )}
         </div>
       ) : (
-        <div style={{ padding: "48px 20px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
             <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
@@ -373,7 +373,7 @@ const ListingDetail = () => {
       )}
 
       {/* Content area */}
-      <div style={{ paddingTop: 20, paddingLeft: 20, paddingRight: 20 }}>
+      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
         {/* Category overline */}
         {firstCategory && (
           <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginBottom: 4, marginTop: 0, fontFamily: font }}>
@@ -782,12 +782,12 @@ const ListingDetail = () => {
 
       {hasGallery && (
         <section style={{ marginBottom: 24, marginTop: 8 }}>
-          <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
             <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.08em", color: "rgba(43,36,32,0.5)", textTransform: "uppercase", marginBottom: 4 }}>Gallery</div>
             <div style={{ fontSize: 22, fontWeight: 700, color: "#2B2420", letterSpacing: "-0.01em" }}>More photos</div>
           </div>
           <div className="overflow-x-auto scrollbar-hide">
-            <div className="inline-flex" style={{ gap: 12, paddingLeft: 20, paddingRight: 20, paddingBottom: 4 }}>
+            <div className="inline-flex" style={{ gap: 12, paddingLeft: 24, paddingRight: 24, paddingBottom: 4 }}>
               {galleryImages!.map((url, i) => (
                 <button
                   key={i}

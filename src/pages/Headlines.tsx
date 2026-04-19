@@ -244,7 +244,7 @@ const Headlines = () => {
                   display: "block",
                   background: CARD,
                   borderRadius: 24,
-                  padding: "16px 16px 18px",
+                  padding: "16px 24px 18px",
                   minHeight: 190,
                   textDecoration: "none",
                 }}

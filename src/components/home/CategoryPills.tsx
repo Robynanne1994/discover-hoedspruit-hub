@@ -11,7 +11,7 @@ const categories = [
 
 const CategoryPills = () => {
   return (
-    <section className="px-4 pt-3 pb-2">
+    <section className="px-6 pt-3 pb-2">
       <div className="flex gap-1.5 overflow-x-auto scrollbar-hide pb-0.5">
         {categories.map((cat) => {
           const Icon = cat.icon;

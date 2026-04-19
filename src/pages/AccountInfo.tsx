@@ -162,7 +162,7 @@ const AccountInfo = () => {
   if (loading || !user) {
     return (
       <div style={{ minHeight: "100vh", background: "#ebebeb", fontFamily: FF }}>
-        <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20 }}>
+        <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
             <Skeleton className="h-10 w-48" />
@@ -178,24 +178,24 @@ const AccountInfo = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100, fontFamily: FF }}>
       {/* Back */}
-      <div style={{ paddingTop: 16, paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <BackButton />
       </div>
 
       {/* Title */}
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 4 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
         <h1 style={{ fontFamily: FF, fontSize: 52, fontWeight: 600, lineHeight: 1, letterSpacing: "-0.03em", color: "#0A0A0A", textTransform: "capitalize", margin: 0 }}>
           Account Info
         </h1>
       </div>
-      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", margin: 0, fontFamily: FF }}>
           Update your details and password
         </p>
       </div>
 
       {/* Personal details card */}
-      <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
         <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.55)", marginBottom: 8, fontFamily: FF }}>
           Personal Details
         </div>

@@ -21,7 +21,7 @@ const HomeMasthead = () => {
   return (
     <div style={{ paddingTop: 16 }}>
       {/* Top bar: only menu button on the right */}
-      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 20px 0" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 24px 0" }}>
         <Link
           to="/account-settings"
           aria-label="Menu"
@@ -41,7 +41,7 @@ const HomeMasthead = () => {
       </div>
 
       {/* Masthead */}
-      <div style={{ padding: "28px 20px 0" }}>
+      <div style={{ padding: "28px 24px 0" }}>
         <h1
           style={{
             margin: 0,
@@ -75,7 +75,7 @@ const HomeMasthead = () => {
       </div>
 
       {/* Search row */}
-      <div style={{ padding: "24px 20px 0", display: "flex", gap: 8 }}>
+      <div style={{ padding: "24px 24px 0", display: "flex", gap: 8 }}>
         <Link
           to="/categories"
           style={{
@@ -108,7 +108,7 @@ const HomeMasthead = () => {
           style={{
             background: "#FFFFFF",
             borderRadius: 999,
-            padding: "14px 16px",
+            padding: "14px 24px",
             display: "flex",
             alignItems: "center",
             gap: 6,

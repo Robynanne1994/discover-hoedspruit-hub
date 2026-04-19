@@ -35,7 +35,7 @@ const HomeLowdown = () => {
   return (
     <section>
       <HomeSectionHead primary="Lowveld" serif="lowdown" actionLabel="Read all" actionHref="/headlines" />
-      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 10 }}>
         {articles.map((a: any, idx: number) => (
           <Link
             key={a.id}

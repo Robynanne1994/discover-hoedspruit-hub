@@ -10,10 +10,10 @@ const EatSection = () => {
   if (isLoading) {
     return (
       <section style={{ paddingTop: 36 }}>
-        <div style={{ padding: "0 20px" }}>
+        <div style={{ padding: "0 24px" }}>
           <HomeSectionHeader title={title || "Where to Eat"} />
         </div>
-        <div style={{ display: "flex", gap: 4, paddingLeft: 20 }}>
+        <div style={{ display: "flex", gap: 4, paddingLeft: 24 }}>
           <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 22px)", aspectRatio: "3/4" }} />
           <Skeleton className="flex-shrink-0 rounded-xl" style={{ width: "calc(50vw - 22px)", aspectRatio: "3/4" }} />
         </div>
@@ -25,7 +25,7 @@ const EatSection = () => {
 
   return (
     <section style={{ paddingTop: 36 }}>
-      <div style={{ padding: "0 20px" }}>
+      <div style={{ padding: "0 24px" }}>
         <HomeSectionHeader title={title || "Where to Eat"} actionLabel="See All" actionHref="/category/c867119f-8ca9-45a7-870e-6671f028748c" />
       </div>
       <HomeListingCarousel listings={listings.slice(0, 6)} />

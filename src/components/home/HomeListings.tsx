@@ -40,8 +40,8 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
         actionLabel="See all"
         actionHref={seeAllHref}
       />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
-        <div style={{ display: "flex", gap: 12, paddingRight: 20 }}>
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
+        <div style={{ display: "flex", gap: 12, paddingRight: 24 }}>
           {listings.slice(0, 6).map((l: any) => (
             <Link
               key={l.id}

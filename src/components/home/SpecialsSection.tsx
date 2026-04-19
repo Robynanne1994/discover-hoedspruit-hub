@@ -42,7 +42,7 @@ const SpecialsSection = () => {
   return (
     <div style={{ width: "100%", paddingTop: 28, paddingBottom: 28 }}>
       {/* Header */}
-      <div style={{ padding: "0 20px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
+      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 20 }}>
         <div>
           <h2 className="font-semibold" style={{ fontSize: 22, color: "#2b2420", textTransform: "capitalize", letterSpacing: 0.5, margin: 0 }}>
             Specials
@@ -54,7 +54,7 @@ const SpecialsSection = () => {
       </div>
 
       {/* Carousel */}
-      <div style={{ overflowX: "auto", paddingLeft: 20 }} className="scrollbar-hide">
+      <div style={{ overflowX: "auto", paddingLeft: 24 }} className="scrollbar-hide">
         <div style={{ display: "flex", gap: 4 }}>
           {specials.map((special, idx) => (
             <CardWrapper key={special.id} special={special}>

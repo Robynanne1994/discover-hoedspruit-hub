@@ -173,7 +173,7 @@ const MyHoedspruit = () => {
 
   return (
     <div style={{ background: "#ebebeb", height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden", maxHeight: "100dvh" }}>
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 24px)", paddingLeft: 20, paddingRight: 20, marginBottom: 36 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 24px)", paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
         <h1
           style={{
             fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
