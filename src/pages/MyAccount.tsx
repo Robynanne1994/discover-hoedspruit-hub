@@ -721,7 +721,7 @@ const MyAccount = () => {
 
       {/* My Hoedspruit */}
       <div style={{ padding: "28px 24px 0" }}>
-        {sectionLabel("My Hoedspruit")}
+        {sectionLabel("Saved")}
         {renderCard(myHoedspruitItems)}
       </div>
 
