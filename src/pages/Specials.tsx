@@ -2,39 +2,46 @@ import { useNavigate, Link } from "react-router-dom";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ArrowLeft, ChevronDown, SlidersHorizontal, Tag } from "lucide-react";
+import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, Tag } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 
 const TYPE_OPTIONS = ["Daily Special", "Weekly Special", "Monthly Special", "Seasonal", "Happy Hour", "Promotion"];
 
-const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
+
+const COLOR = {
+  bg: "#EBEBEB",
+  surface: "#FFFFFF",
+  warm: "#F2EFEC",
+  text: "#0A0A0A",
+  muted: "#8A8480",
+  divider: "#E8E4DF",
+};
+
+type SortKey = "favourites" | "name" | "expiring";
 
 const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
   <button
     onClick={onClick}
     style={{
-      background: active ? "#020202" : "rgba(18,18,20,0.06)",
+      background: active ? COLOR.text : COLOR.warm,
       border: "none",
       borderRadius: 9999,
-      padding: "8px 16px",
-      fontSize: 13,
-      fontWeight: 500,
-      fontFamily: font,
-      color: active ? "#ffffff" : "#2B2420",
+      padding: "9px 16px",
+      fontSize: 14,
+      fontWeight: 400,
+      lineHeight: "16.8px",
+      letterSpacing: 0,
+      fontFamily: FONT,
+      color: active ? "#FFFFFF" : COLOR.text,
       cursor: "pointer",
-      transition: "transform 0.12s ease",
     }}
-    onPointerDown={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.97)")}
-    onPointerUp={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
-    onPointerLeave={(e) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)")}
   >
     {label}
   </button>
 );
-
-type SortKey = "favourites" | "name" | "expiring";
 
 const Specials = () => {
   const navigate = useNavigate();
@@ -56,9 +63,7 @@ const Specials = () => {
   });
 
   const activeFilterCount = filterType.length > 0 ? 1 : 0;
-
   const clearAllFilters = () => setFilterType([]);
-
   const toggleFilter = (val: string) => {
     setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
   };
@@ -69,9 +74,7 @@ const Specials = () => {
     if (filterType.length > 0) {
       result = result.filter((s) => filterType.some((t) => (s.special_type || "").toLowerCase() === t.toLowerCase()));
     }
-    if (sortBy === "name") {
-      return [...result].sort((a, b) => a.title.localeCompare(b.title));
-    }
+    if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
     if (sortBy === "expiring") {
       return [...result].sort((a, b) => {
         if (!a.valid_until) return 1;
@@ -91,120 +94,151 @@ const Specials = () => {
   const sortLabel = sortBy === "favourites" ? "Favourites" : sortBy === "name" ? "Name" : "Expiring";
   const count = filteredSpecials.length;
 
-  const subtlePill: React.CSSProperties = {
-    background: "rgba(18,18,20,0.06)",
-    color: "#2B2420",
+  // Buttons
+  const primaryBtn: React.CSSProperties = {
+    background: COLOR.text,
+    color: "#FFFFFF",
     border: "none",
-    borderRadius: 20,
-    padding: "8px 16px",
-    fontSize: 13,
-    fontWeight: 500,
-    fontFamily: font,
+    height: 44,
+    padding: "0 22px",
+    borderRadius: 999,
+    fontFamily: FONT,
+    fontSize: 15,
+    lineHeight: "18px",
+    letterSpacing: 0,
+    fontWeight: 400,
+    textTransform: "capitalize" as const,
     textDecoration: "none",
     display: "inline-flex",
     alignItems: "center",
+    justifyContent: "center",
     cursor: "pointer",
-    lineHeight: 1,
+    transition: "transform 150ms ease-out",
+    whiteSpace: "nowrap" as const,
   };
-  const darkPill: React.CSSProperties = {
-    ...subtlePill,
-    background: "#020202",
-    color: "#FFFFFF",
+  const secondaryBtn: React.CSSProperties = {
+    background: COLOR.surface,
+    color: COLOR.text,
+    border: `1px solid ${COLOR.divider}`,
+    height: 44,
+    padding: "0 18px",
+    borderRadius: 999,
+    fontFamily: FONT,
+    fontSize: 14,
+    lineHeight: "18px",
+    letterSpacing: 0,
+    fontWeight: 400,
+    textTransform: "capitalize" as const,
+    textDecoration: "none",
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    cursor: "pointer",
+    transition: "transform 150ms ease-out",
+    whiteSpace: "nowrap" as const,
+  };
+
+  const dealPill: React.CSSProperties = {
+    fontFamily: FONT,
+    fontSize: 11,
+    lineHeight: "13px",
+    letterSpacing: "0.22px",
+    textTransform: "uppercase" as const,
+    color: COLOR.text,
+    fontWeight: 400,
+    padding: "7px 12px",
+    borderRadius: 999,
+    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+    display: "inline-block",
   };
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: 100, background: "#EBEBEB", fontFamily: font }}>
-      <div style={{ paddingTop: 16 }} />
-
-      {/* Top row: Back + count */}
+    <div style={{ minHeight: "100vh", paddingBottom: 120, background: COLOR.bg, fontFamily: FONT }}>
+      {/* Top bar */}
       <div
         style={{
+          height: 56,
+          padding: "0 24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingLeft: 24,
-          paddingRight: 24,
-          marginBottom: 18,
         }}
       >
         <button
           onClick={() => navigate(-1)}
+          aria-label="Back"
           style={{
+            width: 44,
+            height: 44,
+            borderRadius: 999,
+            background: COLOR.surface,
+            border: "none",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
             display: "flex",
             alignItems: "center",
-            gap: 6,
-            background: "none",
-            border: "none",
+            justifyContent: "center",
             cursor: "pointer",
-            padding: 0,
           }}
         >
-          <ArrowLeft size={18} strokeWidth={1.8} style={{ color: "#020202" }} />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "#020202", fontFamily: font }}>Back</span>
+          <ChevronLeft size={20} strokeWidth={1.5} color={COLOR.text} />
         </button>
 
         {!isLoading && (
           <span
             style={{
-              fontSize: 12,
-              fontWeight: 500,
-              textTransform: "capitalize",
-              letterSpacing: "0.06em",
-              color: "rgba(18,18,20,0.4)",
-              fontFamily: font,
+              fontFamily: FONT,
+              fontSize: 13,
+              lineHeight: "18.2px",
+              letterSpacing: "0.13px",
+              fontWeight: 400,
+              color: COLOR.muted,
             }}
           >
-            {count} {count === 1 ? "deal" : "deals"}
+            <span style={{ color: COLOR.text }}>{count}</span> Deals
           </span>
         )}
       </div>
 
-      {/* H1 */}
-      <h1
-        style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: 52,
-          fontWeight: 700,
-          lineHeight: 1,
-          letterSpacing: "-0.03em",
-          color: "#0A0A0A",
-          paddingLeft: 24,
-          paddingRight: 24,
-          margin: 0,
-          marginBottom: 16,
-          textTransform: "capitalize",
-        }}
-      >
-        Specials
-      </h1>
+      {/* Page header */}
+      <div style={{ padding: "16px 24px 24px 24px" }}>
+        <h1
+          style={{
+            fontFamily: FONT,
+            fontSize: 52,
+            lineHeight: "52px",
+            letterSpacing: "-1.56px",
+            fontWeight: 700,
+            color: COLOR.text,
+            margin: 0,
+            marginBottom: 12,
+            textTransform: "capitalize",
+          }}
+        >
+          Specials
+        </h1>
+        <p
+          style={{
+            fontFamily: FONT,
+            fontSize: 16,
+            lineHeight: "23.2px",
+            letterSpacing: 0,
+            fontWeight: 400,
+            color: COLOR.muted,
+            margin: 0,
+          }}
+        >
+          The hottest deals in Hoedspruit.
+        </p>
+      </div>
 
-      {/* Subtitle */}
-      <p
-        style={{
-          fontFamily: font,
-          fontSize: 15,
-          fontWeight: 400,
-          lineHeight: 1.45,
-          color: "rgba(18,18,20,0.55)",
-          paddingLeft: 24,
-          paddingRight: 24,
-          margin: 0,
-          marginBottom: 24,
-          maxWidth: 280,
-        }}
-      >
-        The hottest deals in Hoedspruit.
-      </p>
-
-      {/* Toolbar: Filter + Sort */}
+      {/* Controls row */}
       <div
         style={{
+          padding: "0 24px 24px 24px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingLeft: 24,
-          paddingRight: 24,
-          marginBottom: 18,
           position: "relative",
         }}
       >
@@ -214,21 +248,35 @@ const Specials = () => {
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            background: "#FFFFFF",
-            border: "1px solid rgba(18,18,20,0.1)",
-            borderRadius: 14,
-            padding: "10px 16px",
+            background: COLOR.surface,
+            border: "none",
+            height: 40,
+            padding: "0 18px",
+            borderRadius: 999,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             cursor: "pointer",
-            transition: "transform 0.12s ease",
+            transition: "transform 150ms ease-out",
           }}
           {...press}
         >
-          <SlidersHorizontal size={14} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.35)" }} />
-          <span style={{ fontSize: 13, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Filter</span>
+          <SlidersHorizontal size={16} strokeWidth={1.5} color={COLOR.text} />
+          <span
+            style={{
+              fontFamily: FONT,
+              fontSize: 14,
+              lineHeight: "16.8px",
+              letterSpacing: 0,
+              fontWeight: 400,
+              color: COLOR.text,
+              textTransform: "capitalize",
+            }}
+          >
+            Filter
+          </span>
           {activeFilterCount > 0 && (
             <span
               style={{
-                background: "#020202",
+                background: COLOR.text,
                 color: "#fff",
                 borderRadius: 999,
                 width: 18,
@@ -237,7 +285,8 @@ const Specials = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: 10,
-                fontWeight: 700,
+                fontWeight: 400,
+                marginLeft: 2,
               }}
             >
               {activeFilterCount}
@@ -253,29 +302,29 @@ const Specials = () => {
             gap: 6,
             background: "transparent",
             border: "none",
-            padding: "10px 4px",
+            padding: "8px 0",
             cursor: "pointer",
           }}
         >
-          <span style={{ fontSize: 13, fontWeight: 500, color: "rgba(18,18,20,0.55)", fontFamily: font }}>
-            Sort: {sortLabel}
+          <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
+            Sort:{" "}
+            <span style={{ color: COLOR.text, textTransform: "capitalize" }}>{sortLabel}</span>
           </span>
-          <ChevronDown size={14} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.55)" }} />
+          <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
         </button>
 
         {showSortMenu && (
           <div
             style={{
               position: "absolute",
-              top: "calc(100% + 6px)",
+              top: "calc(100% - 4px)",
               right: 24,
-              background: "#FFFFFF",
-              border: "1px solid rgba(18,18,20,0.08)",
-              borderRadius: 12,
+              background: COLOR.surface,
+              borderRadius: 16,
               padding: 6,
               zIndex: 20,
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              minWidth: 160,
+              minWidth: 180,
             }}
           >
             {(["favourites", "name", "expiring"] as SortKey[]).map((key) => (
@@ -290,14 +339,15 @@ const Specials = () => {
                   width: "100%",
                   textAlign: "left",
                   padding: "10px 12px",
-                  background: sortBy === key ? "rgba(18,18,20,0.06)" : "transparent",
+                  background: sortBy === key ? COLOR.warm : "transparent",
                   border: "none",
-                  borderRadius: 8,
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#2B2420",
-                  fontFamily: font,
+                  borderRadius: 10,
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: COLOR.text,
+                  fontFamily: FONT,
                   cursor: "pointer",
+                  textTransform: "capitalize",
                 }}
               >
                 {key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Expiring"}
@@ -309,50 +359,42 @@ const Specials = () => {
 
       {/* Filters panel */}
       {showFilters && (
-        <div
-          style={{
-            paddingLeft: 24,
-            paddingRight: 24,
-            marginBottom: 24,
-            display: "flex",
-            flexDirection: "column",
-            gap: 16,
-          }}
-        >
+        <div style={{ padding: "0 24px 24px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
           {activeFilterCount > 0 && (
             <button
               onClick={clearAllFilters}
               style={{
                 fontSize: 13,
-                fontWeight: 500,
-                color: "rgba(18,18,20,0.5)",
+                fontWeight: 400,
+                color: COLOR.muted,
                 textDecoration: "underline",
                 alignSelf: "flex-start",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                fontFamily: font,
+                fontFamily: FONT,
               }}
             >
               Clear All Filters
             </button>
           )}
-
           <div>
             <p
               style={{
+                fontFamily: FONT,
                 fontSize: 12,
-                fontWeight: 500,
-                color: "rgba(18,18,20,0.4)",
+                lineHeight: "14.4px",
+                letterSpacing: "0.24px",
+                fontWeight: 400,
+                color: COLOR.muted,
                 textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                marginBottom: 8,
-                fontFamily: font,
+                margin: 0,
+                marginBottom: 10,
               }}
             >
               Type
             </p>
-            <div className="flex flex-wrap" style={{ gap: 8 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {TYPE_OPTIONS.map((t) => (
                 <FilterChip key={t} label={t} active={filterType.includes(t)} onClick={() => toggleFilter(t)} />
               ))}
@@ -363,182 +405,229 @@ const Specials = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-          <div className="space-y-4">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton
-                key={i}
-                className="w-full"
-                style={{ height: 360, borderRadius: 16, background: "rgba(18,18,20,0.06)" }}
-              />
-            ))}
-          </div>
+        <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="w-full" style={{ height: 380, borderRadius: 24, background: "#DEDEDE" }} />
+          ))}
         </div>
       ) : filteredSpecials.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 24px" }}>
           {filteredSpecials.map((s) => {
             const whatsappRaw = s.contact_whatsapp;
             const validText = s.valid_until
               ? `Valid until ${format(new Date(s.valid_until), "d MMM yyyy")}`
               : "Ongoing";
+            const hasImage = !!s.image_url;
+
+            const Title = (
+              <h3
+                style={{
+                  fontFamily: FONT,
+                  fontSize: 28,
+                  lineHeight: "32px",
+                  letterSpacing: "-0.56px",
+                  fontWeight: 700,
+                  color: COLOR.text,
+                  textTransform: "capitalize",
+                  margin: 0,
+                  marginBottom: 12,
+                }}
+              >
+                {s.title}
+              </h3>
+            );
+
+            const Vendor = (
+              <p
+                style={{
+                  fontFamily: FONT,
+                  fontSize: 11,
+                  lineHeight: "13px",
+                  letterSpacing: "0.22px",
+                  fontWeight: 400,
+                  color: COLOR.muted,
+                  textTransform: "uppercase",
+                  margin: 0,
+                  marginBottom: 4,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {s.business_name}
+              </p>
+            );
+
+            const Validity = (
+              <p
+                style={{
+                  fontFamily: FONT,
+                  fontSize: 12,
+                  lineHeight: "15.6px",
+                  letterSpacing: "0.12px",
+                  fontWeight: 400,
+                  color: COLOR.muted,
+                  margin: 0,
+                  marginBottom: 14,
+                }}
+              >
+                {validText}
+              </p>
+            );
+
+            const Description = s.description ? (
+              <p
+                style={{
+                  fontFamily: FONT,
+                  fontSize: 14,
+                  lineHeight: "20.3px",
+                  letterSpacing: 0,
+                  fontWeight: 400,
+                  color: COLOR.text,
+                  margin: 0,
+                  marginBottom: 20,
+                }}
+              >
+                {s.description}
+              </p>
+            ) : null;
+
+            const Actions = (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+                <Link to={`/specials/${s.id}`} onClick={(e) => e.stopPropagation()} style={primaryBtn} {...press}>
+                  View Deal
+                </Link>
+                {s.contact_phone && (
+                  <a href={`tel:${s.contact_phone}`} onClick={(e) => e.stopPropagation()} style={secondaryBtn} {...press}>
+                    <Phone size={14} strokeWidth={1.5} color={COLOR.text} />
+                    Call
+                  </a>
+                )}
+                {whatsappRaw && (
+                  <a
+                    href={`https://wa.me/${whatsappRaw.replace(/[^0-9]/g, "")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    style={secondaryBtn}
+                    {...press}
+                  >
+                    WhatsApp
+                  </a>
+                )}
+              </div>
+            );
 
             return (
               <article
                 key={s.id}
                 onClick={() => navigate(`/specials/${s.id}`)}
                 style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(18,18,20,0.06)",
-                  borderRadius: 16,
+                  background: COLOR.surface,
+                  borderRadius: 24,
                   overflow: "hidden",
                   cursor: "pointer",
-                  transition: "transform 0.15s ease",
+                  transition: "transform 150ms ease-out",
                 }}
-                {...press}
               >
-                {/* 4:3 cover */}
-                <div
-                  style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "rgba(18,18,20,0.04)" }}
-                >
-                  {s.image_url ? (
-                    <img
-                      src={s.image_url}
-                      alt={s.title}
-                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                      loading="lazy"
-                    />
-                  ) : (
+                {hasImage ? (
+                  <>
+                    {/* Variant A: image */}
+                    <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: COLOR.warm }}>
+                      <img
+                        src={s.image_url!}
+                        alt={s.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        loading="lazy"
+                      />
+                      <div style={{ position: "absolute", left: 14, top: 12 }}>
+                        <span
+                          style={{
+                            ...dealPill,
+                            background: "rgba(255,255,255,0.92)",
+                            backdropFilter: "blur(8px)",
+                            WebkitBackdropFilter: "blur(8px)",
+                          }}
+                        >
+                          {s.deal_label}
+                        </span>
+                      </div>
+                      <div onClick={(e) => e.stopPropagation()}>
+                        <FavouriteButton itemId={s.id} itemType="special" />
+                      </div>
+                    </div>
+                    <div style={{ padding: 20 }}>
+                      {Title}
+                      {Vendor}
+                      {Validity}
+                      {Description}
+                      {Actions}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    {/* Variant B: text-only */}
                     <div
-                      className="w-full h-full flex items-center justify-center"
-                      style={{ background: "rgba(18,18,20,0.04)" }}
-                    >
-                      <Tag size={32} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.15)" }} />
-                    </div>
-                  )}
-
-                  {/* Deal label pill top-left */}
-                  <div style={{ position: "absolute", left: 12, top: 12 }}>
-                    <span
                       style={{
-                        background: "#FFFFFF",
-                        borderRadius: 20,
-                        padding: "6px 12px",
-                        fontSize: 11,
-                        fontWeight: 600,
-                        color: "#2B2420",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.04em",
-                        fontFamily: font,
+                        padding: "20px 20px 0 20px",
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: "space-between",
+                        gap: 12,
                       }}
                     >
-                      {s.deal_label}
-                    </span>
-                  </div>
-
-                  {/* Save button top-right */}
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <FavouriteButton itemId={s.id} itemType="special" />
-                  </div>
-                </div>
-
-                {/* Body */}
-                <div style={{ padding: 20 }}>
-                  <h3
-                    style={{
-                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontSize: 28,
-                      fontWeight: 700,
-                      color: "#0A0A0A",
-                      textTransform: "capitalize",
-                      letterSpacing: "-0.02em",
-                      lineHeight: 1,
-                      margin: 0,
-                    }}
-                  >
-                    {s.title}
-                  </h3>
-
-                  <p
-                    style={{
-                      fontFamily: font,
-                      fontSize: 12,
-                      fontWeight: 500,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                      color: "rgba(18,18,20,0.4)",
-                      margin: 0,
-                      marginTop: 8,
-                    }}
-                  >
-                    {s.business_name} · {validText}
-                  </p>
-
-                  {s.description && (
-                    <p
-                      style={{
-                        fontFamily: font,
-                        fontSize: 14,
-                        fontWeight: 400,
-                        lineHeight: 1.4,
-                        color: "rgba(18,18,20,0.55)",
-                        margin: 0,
-                        marginTop: 10,
-                      }}
-                    >
-                      {s.description}
-                    </p>
-                  )}
-
-                  {/* Action pills */}
-                  {(s.contact_phone || whatsappRaw || s.booking_link) && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
-                      <Link to={`/specials/${s.id}`} onClick={(e) => e.stopPropagation()} style={darkPill}>
-                        View Deal
-                      </Link>
-                      {s.contact_phone && (
-                        <a href={`tel:${s.contact_phone}`} onClick={(e) => e.stopPropagation()} style={subtlePill}>
-                          Call
-                        </a>
-                      )}
-                      {whatsappRaw && (
-                        <a
-                          href={`https://wa.me/${whatsappRaw.replace(/[^0-9]/g, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          style={subtlePill}
-                        >
-                          WhatsApp
-                        </a>
-                      )}
-                      {s.booking_link && (
-                        <a
-                          href={s.booking_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          style={subtlePill}
-                        >
-                          Book
-                        </a>
-                      )}
+                      <span style={dealPill}>{s.deal_label}</span>
+                      <div onClick={(e) => e.stopPropagation()} style={{ position: "relative", width: 36, height: 36 }}>
+                        <FavouriteButton itemId={s.id} itemType="special" />
+                      </div>
                     </div>
-                  )}
-                </div>
+                    <div style={{ padding: "16px 20px 20px 20px" }}>
+                      {Title}
+                      {Vendor}
+                      {Validity}
+                      {Description}
+                      {Actions}
+                    </div>
+                  </>
+                )}
               </article>
             );
           })}
         </div>
       ) : (
-        <div style={{ textAlign: "center", paddingTop: 80 }}>
-          <p style={{ fontFamily: font, fontWeight: 500, fontSize: 18, color: "#020202", marginBottom: 4 }}>
-            No specials found
+        <div style={{ textAlign: "center", padding: "80px 24px" }}>
+          <p
+            style={{
+              fontFamily: FONT,
+              fontSize: 12,
+              lineHeight: "14.4px",
+              letterSpacing: "0.24px",
+              textTransform: "uppercase",
+              color: COLOR.muted,
+              margin: 0,
+              marginBottom: 8,
+            }}
+          >
+            No Deals Match
           </p>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.45)", fontFamily: font }}>
-            Check back soon for the latest deals in Hoedspruit
+          <p
+            style={{
+              fontFamily: FONT,
+              fontSize: 14,
+              lineHeight: "20.3px",
+              color: COLOR.text,
+              margin: 0,
+              maxWidth: 280,
+              marginInline: "auto",
+            }}
+          >
+            Try clearing a filter or two. New deals are added all the time.
           </p>
         </div>
       )}
+
+      {/* Tag import kept to satisfy bundler if previously referenced */}
+      <span style={{ display: "none" }}><Tag size={1} /></span>
     </div>
   );
 };
