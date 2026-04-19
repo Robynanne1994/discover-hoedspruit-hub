@@ -570,7 +570,7 @@ const ListingDetail = () => {
           const paragraphs = (longDescription || listing.description || "").split("\n").filter(Boolean);
           return (
             <div style={{ marginBottom: 24 }}>
-              <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#020202", textTransform: "uppercase", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>About</h2>
+              <h2 style={{ fontFamily: font, fontWeight: 400, fontSize: 26, color: "#0a0a0a", textTransform: "capitalize", letterSpacing: "0.01em", lineHeight: 1.15, marginBottom: 8, marginTop: 0 }}>About</h2>
               <div style={{
                 ...(!aboutExpanded ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
               }}>
