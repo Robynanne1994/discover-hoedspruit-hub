@@ -1,10 +1,10 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, Search, Heart, Calendar, User } from "lucide-react";
+import { Home, Search, Tag, Calendar, User } from "lucide-react";
 
 const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/categories", icon: Search },
-  { label: "Saved", href: "/my-hoedspruit", icon: Heart },
+  { label: "Specials", href: "/specials", icon: Tag },
   { label: "Events", href: "/events", icon: Calendar },
   { label: "Profile", href: "/my-account", icon: User },
 ];
