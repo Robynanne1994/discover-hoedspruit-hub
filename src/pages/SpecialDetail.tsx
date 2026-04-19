@@ -234,7 +234,7 @@ const SpecialDetail = () => {
   });
   if (waClean) {
     secondaryActions.push({
-      label: "WhatsApp",
+      label: "Whatspp",
       icon: <MessageCircle size={16} strokeWidth={1.5} color={TEXT} />,
       href: `https://wa.me/${waClean}`,
       external: true,
