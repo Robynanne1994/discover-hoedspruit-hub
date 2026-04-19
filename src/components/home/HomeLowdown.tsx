@@ -56,16 +56,21 @@ const HomeLowdown = () => {
           >
             <div
               style={{
-                fontFamily: SERIF,
-                fontWeight: 300,
-                fontSize: 22,
-                color: "#8A8480",
-                lineHeight: 1,
-                width: 28,
+                width: 56,
+                height: 56,
+                borderRadius: 12,
+                overflow: "hidden",
+                background: "#F2EFEC",
                 flexShrink: 0,
               }}
             >
-              {String(idx + 1).padStart(2, "0")}
+              {a.image_url && (
+                <img
+                  src={a.image_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                />
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
