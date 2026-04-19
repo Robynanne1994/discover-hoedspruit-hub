@@ -777,7 +777,6 @@ const MyAccount = () => {
 
 // Inline editorial follow stats (followers / following stacked)
 const FollowStat = ({ userId }: { userId: string }) => {
-  const { useFollowCounts } = require("@/hooks/useFollows") as typeof import("@/hooks/useFollows");
   const { data: counts } = useFollowCounts(userId);
   const TEXT = "#0A0A0A";
   const MUTED = "#8A8480";
