@@ -33,7 +33,7 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 120, fontFamily: SANS, color: "#0A0A0A" }}>
+    <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: SANS, color: "#0A0A0A" }}>
       {/* Back */}
       <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button
@@ -286,7 +286,7 @@ const About = () => {
         style={{
           position: "relative",
           background: "#F26A48",
-          padding: "36px 28px",
+          padding: "36px 28px 156px",
           borderRadius: "32px 32px 0 0",
           overflow: "hidden",
           marginTop: 52,
