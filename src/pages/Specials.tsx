@@ -512,7 +512,7 @@ const Specials = () => {
                     style={secondaryBtn}
                     {...press}
                   >
-                    WhatsApp
+                    Whatsapp
                   </a>
                 )}
               </div>
