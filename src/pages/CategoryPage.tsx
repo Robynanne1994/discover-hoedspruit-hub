@@ -670,7 +670,7 @@ const CategoryPage = () => {
                           onClick={(e) => e.stopPropagation()}
                           style={secondaryAction}
                         >
-                          WhatsApp
+                          Whatsapp
                         </a>
                       )}
                       {directionsHref && (
