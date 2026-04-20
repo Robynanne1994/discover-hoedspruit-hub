@@ -418,6 +418,7 @@ const ListingDetail = () => {
           <p style={{
             fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
             letterSpacing: "0.24px", color: C.muted, margin: 0, marginBottom: 10,
+            textTransform: "uppercase",
           }}>
             {firstCategory.title}
           </p>
