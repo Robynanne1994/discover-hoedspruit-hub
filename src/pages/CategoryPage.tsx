@@ -221,7 +221,7 @@ const CategoryPage = () => {
     background: C.card,
     border: `1px solid ${C.border}`,
     borderRadius: 9999,
-    padding: "8px 14px 8px 8px",
+    padding: "10px 18px",
     fontSize: 13,
     fontWeight: 400,
     fontFamily: font,
