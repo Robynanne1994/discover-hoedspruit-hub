@@ -212,7 +212,7 @@ const Specials = () => {
             color: COLOR.text,
             margin: 0,
             marginBottom: 12,
-            textTransform: "capitalize",
+            textTransform: "none",
           }}
         >
           Specials
@@ -428,7 +428,7 @@ const Specials = () => {
                   letterSpacing: "-0.56px",
                   fontWeight: 700,
                   color: COLOR.text,
-                  textTransform: "capitalize",
+                  textTransform: "none",
                   margin: 0,
                   marginBottom: 12,
                 }}

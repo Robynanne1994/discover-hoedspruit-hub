@@ -205,7 +205,7 @@ const FAQs = () => {
           <h3 style={{
             fontSize: 11,
             letterSpacing: "0.18em",
-            textTransform: "uppercase",
+            textTransform: "none",
             color: "#8A8480",
             fontFamily: FF,
             margin: "0 0 12px 4px",

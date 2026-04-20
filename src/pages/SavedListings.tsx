@@ -244,11 +244,11 @@ const SavedListings = () => {
       <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-          <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>Saved</h1>
+          <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>Saved</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-          <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+          <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
           <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Sign in to see your saved items</p>
           <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium mt-6">Sign In / Create Account</Button></Link>
         </div>
@@ -317,7 +317,7 @@ const SavedListings = () => {
 
       {/* Title */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>Saved</h1>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>Saved</h1>
       </div>
 
       {/* Subtitle */}
@@ -383,7 +383,7 @@ const SavedListings = () => {
           {filteredListings.length === 0 && (
             <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
               <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
               <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Tap the heart on any listing to save it here</p>
             </div>
           )}
@@ -425,7 +425,7 @@ const SavedListings = () => {
                         </button>
                         {/* Card text */}
                         <div className="absolute bottom-0 left-0 right-0" style={{ padding: 16 }}>
-                          <h3 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 18, fontWeight: 600, color: "#FFFFFF", textTransform: "capitalize", lineHeight: 1.2, letterSpacing: "0.01em", marginBottom: 4 }}>{detail.title?.toLowerCase()}</h3>
+                          <h3 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 18, fontWeight: 600, color: "#FFFFFF", textTransform: "none", lineHeight: 1.2, letterSpacing: "0.01em", marginBottom: 4 }}>{detail.title?.toLowerCase()}</h3>
                           <div className="flex items-center" style={{ gap: 6 }}>
                             {rating && (
                               <>
@@ -453,7 +453,7 @@ const SavedListings = () => {
           {filteredEvents.length === 0 && (
             <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
               <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
               <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save events from the events page to keep track of them here</p>
             </div>
           )}
@@ -516,7 +516,7 @@ const SavedListings = () => {
           {filteredSpecials.length === 0 && (
             <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
               <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "uppercase" }}>Nothing saved yet</h3>
+              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
               <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save specials from the specials page to keep track of them here</p>
             </div>
           )}
