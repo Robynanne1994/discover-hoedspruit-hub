@@ -315,7 +315,7 @@ const Advertise = () => {
             <h2 style={{
               fontFamily: FF, fontSize: 44, fontWeight: 700, lineHeight: "44px",
               letterSpacing: "-1.32px", color: INK, margin: "0 0 28px",
-            }}>Tell Us A Bit About You</h2>
+            }}>Say Hello...</h2>
             <form onSubmit={handleSubmit}>
               <div style={{ marginBottom: 12 }}>
                 <input
