@@ -433,7 +433,7 @@ const SpecialDetail = () => {
         {special.description && (
           <section style={{ marginBottom: 32 }}>
             <p style={{ ...eyebrow, marginBottom: 8 }}>About This Deal</p>
-            <h2 style={{ ...sectionTitle, marginBottom: 16 }}>What's on offer</h2>
+            <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>What's on offer</h2>
             <p
               style={{
                 fontFamily: FONT,
@@ -513,7 +513,7 @@ const SpecialDetail = () => {
         {/* Details */}
         <section style={{ marginBottom: 32 }}>
           <p style={{ ...eyebrow, marginBottom: 8 }}>Details</p>
-          <h2 style={{ ...sectionTitle, marginBottom: 16 }}>The fine print</h2>
+          <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>The fine print</h2>
           <div
             style={{
               background: SURFACE,
