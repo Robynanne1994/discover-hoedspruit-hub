@@ -325,7 +325,7 @@ const ContactUs = () => {
           <div style={{ gridColumn: "span 2", minWidth: 0 }}>
             <ContactCard
               overline="Write to us"
-              title="Contact Form"
+              title="Contact Ffrm"
               sub="Send a longer message"
               onClick={handleFormClick}
             />
