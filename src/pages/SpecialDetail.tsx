@@ -433,7 +433,7 @@ const SpecialDetail = () => {
         {special.description && (
           <section style={{ marginBottom: 32 }}>
             <p style={{ ...eyebrow, marginBottom: 8 }}>About This Deal</p>
-            <h2 style={{ ...sectionTitle, marginBottom: 16 }}>What's On Offer</h2>
+            <h2 style={{ ...sectionTitle, marginBottom: 16 }}>What's on offer</h2>
             <p
               style={{
                 fontFamily: FONT,
