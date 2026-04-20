@@ -271,7 +271,7 @@ const ContactUs = () => {
                 color: "rgba(255,255,255,0.7)", margin: 0,
                 wordBreak: "break-word",
               }}>
-                {CONTACT_EMAIL} · Reply within 48 hours
+                {CONTACT_EMAIL}<br />Reply within 48 hours
               </p>
             </div>
           </div>
