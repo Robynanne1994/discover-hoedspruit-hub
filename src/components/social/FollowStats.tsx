@@ -18,9 +18,6 @@ const FollowStats = ({ userId }: FollowStatsProps) => {
     );
   }
 
-  const followersCount = counts?.followers ?? 0;
-  const followingCount = counts?.following ?? 0;
-
   return (
     <div className="flex items-center" style={{ gap: 24 }}>
       <Link
@@ -28,15 +25,15 @@ const FollowStats = ({ userId }: FollowStatsProps) => {
         className="flex items-center active:scale-95 transition-transform"
         style={{ gap: 4 }}
       >
-        <span style={{ fontSize: 15, fontWeight: 600, color: "#020202" }}>{followersCount}</span>
-        <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)" }}>{followersCount === 1 ? "Follower" : "Followers"}</span>
+        <span style={{ fontSize: 15, fontWeight: 600, color: "#020202" }}>{counts?.followers ?? 0}</span>
+        <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)" }}>Followers</span>
       </Link>
       <Link
         to={`/profile/${userId}/following`}
         className="flex items-center active:scale-95 transition-transform"
         style={{ gap: 4 }}
       >
-        <span style={{ fontSize: 15, fontWeight: 600, color: "#020202" }}>{followingCount}</span>
+        <span style={{ fontSize: 15, fontWeight: 600, color: "#020202" }}>{counts?.following ?? 0}</span>
         <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)" }}>Following</span>
       </Link>
     </div>
