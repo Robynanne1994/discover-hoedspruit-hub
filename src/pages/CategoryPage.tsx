@@ -659,7 +659,6 @@ const CategoryPage = () => {
                           onClick={(e) => e.stopPropagation()}
                           style={primaryCTA}
                         >
-                          <Phone size={14} strokeWidth={1.8} color="#FFFFFF" />
                           Call
                         </a>
                       )}
