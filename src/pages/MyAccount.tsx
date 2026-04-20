@@ -612,20 +612,6 @@ const MyAccount = () => {
 
       {/* Hero */}
       <div style={{ padding: "28px 24px 0" }}>
-        <p
-          style={{
-            ...baseTextStyle,
-            fontSize: 11,
-            fontWeight: 500,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: MUTED,
-            margin: 0,
-            marginBottom: 14,
-          }}
-        >
-          Hello
-        </p>
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <div
             style={{
