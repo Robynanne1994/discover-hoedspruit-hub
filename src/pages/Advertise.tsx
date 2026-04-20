@@ -152,7 +152,7 @@ const Advertise = () => {
           fontFamily: FF, fontSize: 52, fontWeight: 700, lineHeight: "52px",
           letterSpacing: "-1.56px", color: INK, margin: "0 0 20px",
         }}>
-          Reach The Hoedspruit Community
+          Reach the Hoedspruit community
         </h1>
         <p style={{
           fontFamily: FF, fontSize: 16, fontWeight: 400, lineHeight: "23.2px",
