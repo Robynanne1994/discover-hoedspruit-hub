@@ -271,14 +271,14 @@ const Events = () => {
   }, [sortedEvents, search]);
 
   const recurringEvents = useMemo(
-    () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none"),
+    () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== ""),
     [searched]
   );
 
   const datedEvents = useMemo(() => {
     const today = startOfToday();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-    const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "" || e.recurrence.trim().toLowerCase() === "none");
+    const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "");
     if (activeFilter === "all") return nonRecurring;
     return nonRecurring.filter((event) => {
       const date = event._parsed;
