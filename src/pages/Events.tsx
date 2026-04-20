@@ -633,28 +633,49 @@ const Events = () => {
             </section>
           )}
 
-          {/* Recurring */}
-          {recurringEvents.length > 0 && (
-            <section>
-              <SectionHead overline="Happens Regularly" heading="Every Week" />
-              <div style={{ padding: "0 24px 40px 24px" }}>
-                <div style={{
-                  background: COLOR.card,
-                  borderRadius: 24,
-                  padding: "8px 20px",
-                }}>
-                  {recurringEvents.map((event, idx) => (
-                    <EventRow
-                      key={event.id}
-                      event={event}
-                      showDivider={idx < recurringEvents.length - 1}
-                      metaOverride={shortenRecurrence(event.recurrence)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
+          {/* Recurring — grouped by cadence */}
+          {(() => {
+            const groups: { heading: string; events: typeof recurringEvents }[] = [
+              { heading: "Every Day", events: [] },
+              { heading: "Every Week", events: [] },
+              { heading: "Every Month", events: [] },
+              { heading: "Every Quarter", events: [] },
+              { heading: "Every Year", events: [] },
+              { heading: "Other", events: [] },
+            ];
+            for (const e of recurringEvents) {
+              const r = (e.recurrence || "").toLowerCase();
+              if (r.includes("daily") || r.includes("every day")) groups[0].events.push(e);
+              else if (r.includes("weekly") || r.includes("every week") || /every\s+(mon|tue|wed|thu|fri|sat|sun)/.test(r) || r.includes("first") || r.includes("last")) groups[1].events.push(e);
+              else if (r.includes("monthly") || r.includes("every month")) groups[2].events.push(e);
+              else if (r.includes("quarterly") || r.includes("quarter")) groups[3].events.push(e);
+              else if (r.includes("yearly") || r.includes("annual") || r.includes("every year")) groups[4].events.push(e);
+              else groups[5].events.push(e);
+            }
+            return groups
+              .filter((g) => g.events.length > 0)
+              .map((g) => (
+                <section key={g.heading}>
+                  <SectionHead overline="Happens Regularly" heading={g.heading} />
+                  <div style={{ padding: "0 24px 40px 24px" }}>
+                    <div style={{
+                      background: COLOR.card,
+                      borderRadius: 24,
+                      padding: "8px 20px",
+                    }}>
+                      {g.events.map((event, idx) => (
+                        <EventRow
+                          key={event.id}
+                          event={event}
+                          showDivider={idx < g.events.length - 1}
+                          metaOverride={shortenRecurrence(event.recurrence)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              ));
+          })()}
         </>
       )}
     </div>
