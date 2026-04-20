@@ -248,20 +248,7 @@ const ContactUs = () => {
             }}
             {...press}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-              <span style={{
-                background: "rgba(255,255,255,0.92)",
-                color: "#020202",
-                padding: "6px 14px",
-                borderRadius: 20,
-                fontSize: 11, fontWeight: 500,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                fontFamily: FF,
-                lineHeight: 1,
-              }}>
-                Fastest reply
-              </span>
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}>
               <div style={{
                 width: 40, height: 40, borderRadius: "50%",
                 background: "rgba(255,255,255,0.22)",
