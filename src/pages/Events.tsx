@@ -64,6 +64,7 @@ function shortenRecurrence(raw: string): string {
   if (!raw) return "";
   const clean = raw.replace(/<[^>]*>/g, "").trim();
   const lower = clean.toLowerCase();
+  if (lower === "none" || lower === "n/a") return "";
   if (lower.includes("first") && lower.includes("sat")) {
     const t = clean.match(/(\d{1,2}[:.]?\d{0,2})\s*(am|pm)/i);
     return t ? `First Sat · ${t[1].replace(".", ":")} ${t[2].toLowerCase()}` : "First Sat";
@@ -271,14 +272,14 @@ const Events = () => {
   }, [sortedEvents, search]);
 
   const recurringEvents = useMemo(
-    () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== ""),
+    () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none"),
     [searched]
   );
 
   const datedEvents = useMemo(() => {
     const today = startOfToday();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-    const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "");
+    const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "" || e.recurrence.trim().toLowerCase() === "none");
     if (activeFilter === "all") return nonRecurring;
     return nonRecurring.filter((event) => {
       const date = event._parsed;
