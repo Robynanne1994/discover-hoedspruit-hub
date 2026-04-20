@@ -128,6 +128,7 @@ const HomeHero = () => {
                 border: "none",
                 outline: "none",
                 background: "transparent",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 fontSize: 15,
                 color: "#2b2420",
                 letterSpacing: 0.1,
