@@ -483,7 +483,7 @@ const Specials = () => {
                   lineHeight: "20.3px",
                   letterSpacing: 0,
                   fontWeight: 400,
-                  color: COLOR.text,
+                  color: "rgb(138, 132, 128)",
                   margin: 0,
                   marginBottom: 20,
                 }}
