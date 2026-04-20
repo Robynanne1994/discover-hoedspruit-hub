@@ -271,7 +271,7 @@ const Events = () => {
   }, [sortedEvents, search]);
 
   const recurringEvents = useMemo(
-    () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== ""),
+    () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none"),
     [searched]
   );
 
