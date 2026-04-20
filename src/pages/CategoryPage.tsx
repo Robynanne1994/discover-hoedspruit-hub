@@ -670,9 +670,6 @@ const CategoryPage = () => {
                           onClick={(e) => e.stopPropagation()}
                           style={secondaryAction}
                         >
-                          <span style={iconCircle}>
-                            <MessageCircle size={12} strokeWidth={1.8} color={C.text} />
-                          </span>
                           WhatsApp
                         </a>
                       )}
