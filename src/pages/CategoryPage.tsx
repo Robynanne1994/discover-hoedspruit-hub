@@ -681,9 +681,6 @@ const CategoryPage = () => {
                           onClick={(e) => e.stopPropagation()}
                           style={secondaryAction}
                         >
-                          <span style={iconCircle}>
-                            <MapPin size={12} strokeWidth={1.8} color={C.text} />
-                          </span>
                           Directions
                         </a>
                       )}
@@ -695,9 +692,6 @@ const CategoryPage = () => {
                           onClick={(e) => e.stopPropagation()}
                           style={secondaryAction}
                         >
-                          <span style={iconCircle}>
-                            <Globe size={12} strokeWidth={1.8} color={C.text} />
-                          </span>
                           Website
                         </a>
                       )}
