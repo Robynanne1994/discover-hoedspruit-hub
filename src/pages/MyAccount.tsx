@@ -502,6 +502,7 @@ const MyAccount = () => {
             <span
               style={{
                 ...baseTextStyle,
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 flex: 1,
                 fontSize: 16,
                 fontWeight: 500,
