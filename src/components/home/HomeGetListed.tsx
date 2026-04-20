@@ -68,7 +68,7 @@ const HomeGetListed = () => {
               marginBottom: 22,
             }}
           >
-            Reach locals and visitors looking for the best of Hoedspruit.
+            Put your business in front of locals and visitors looking for what you do.
           </p>
           <Link
             to="/advertise"
