@@ -279,7 +279,7 @@ const ContactUs = () => {
                 textTransform: "none",
                 margin: 0, marginBottom: 8,
               }}>
-                Whatsapp us
+                Whatsapp
               </h2>
               <p style={{
                 fontFamily: FF, fontSize: 13, fontWeight: 400,
