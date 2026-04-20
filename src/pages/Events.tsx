@@ -278,7 +278,7 @@ const Events = () => {
   const datedEvents = useMemo(() => {
     const today = startOfToday();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-    const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "");
+    const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "" || e.recurrence.trim().toLowerCase() === "none");
     if (activeFilter === "all") return nonRecurring;
     return nonRecurring.filter((event) => {
       const date = event._parsed;
