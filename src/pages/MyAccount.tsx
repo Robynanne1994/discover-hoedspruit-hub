@@ -788,7 +788,7 @@ const FollowStat = ({ userId }: { userId: string }) => {
   );
   return (
     <div style={{ display: "flex", gap: 32 }}>
-      <Stat to={`/profile/${userId}/followers`} count={counts?.followers ?? 0} label="Followers" />
+      <Stat to={`/profile/${userId}/followers`} count={counts?.followers ?? 0} label={counts?.followers === 1 ? "Follower" : "Followers"} />
       <Stat to={`/profile/${userId}/following`} count={counts?.following ?? 0} label="Following" />
     </div>
   );
