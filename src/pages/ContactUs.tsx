@@ -224,12 +224,10 @@ const ContactUs = () => {
         </p>
       </div>
 
-      {/* Primary coral WhatsApp card */}
+      {/* Primary coral Email card */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <a
-          href={WHATSAPP_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+          href={`mailto:${CONTACT_EMAIL}`}
           style={{ textDecoration: "none", color: "inherit", display: "block" }}
         >
           <div
@@ -266,13 +264,14 @@ const ContactUs = () => {
                 textTransform: "none",
                 margin: 0, marginBottom: 8,
               }}>
-                Whatsapp
+                Email
               </h2>
               <p style={{
                 fontFamily: FF, fontSize: 13, fontWeight: 400,
                 color: "rgba(255,255,255,0.7)", margin: 0,
+                wordBreak: "break-word",
               }}>
-                {CONTACT_PHONE} · Reply same day
+                {CONTACT_EMAIL} · Reply within 48 hours
               </p>
             </div>
           </div>
@@ -298,17 +297,16 @@ const ContactUs = () => {
               />
             </div>
           )}
-          {CONTACT_EMAIL && (
-            <div style={{ minWidth: 0 }}>
-              <ContactCard
-                overline="Email"
-                value={CONTACT_EMAIL}
-                valueMode="wrap"
-                sub="Reply within 48 hours"
-                href={`mailto:${CONTACT_EMAIL}`}
-              />
-            </div>
-          )}
+          <div style={{ minWidth: 0 }}>
+            <ContactCard
+              overline="WhatsApp"
+              value={CONTACT_PHONE}
+              valueMode="nowrap"
+              sub="Reply same day"
+              href={WHATSAPP_URL}
+              external
+            />
+          </div>
           <div style={{ gridColumn: "span 2", minWidth: 0 }}>
             <ContactCard
               overline="Write to us"
