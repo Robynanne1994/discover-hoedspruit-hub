@@ -16,9 +16,12 @@ import {
   ExternalLink,
   MessageCircle,
   Copy,
+  Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
@@ -86,7 +89,8 @@ const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const [editOpen, setEditOpen] = useState(false);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
