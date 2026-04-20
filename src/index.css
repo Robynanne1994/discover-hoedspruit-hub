@@ -307,6 +307,6 @@ body {
 .home-page h4,
 .home-page h5,
 .home-page h6 {
-  text-transform: capitalize !important;
+  text-transform: none !important;
   letter-spacing: inherit;
 }
