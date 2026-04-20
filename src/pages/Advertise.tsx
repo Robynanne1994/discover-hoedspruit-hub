@@ -417,13 +417,6 @@ const Advertise = () => {
         </a>
       </div>
 
-      {/* Footer note */}
-      <div style={{ padding: "0 24px 40px 24px", textAlign: "center" }}>
-        <p style={{
-          fontFamily: FF, fontSize: 12, fontWeight: 400, lineHeight: "15.6px",
-          letterSpacing: "0.12px", color: MUTED, margin: 0,
-        }}>Replies usually within a day.</p>
-      </div>
 
       <BottomNav />
     </div>
