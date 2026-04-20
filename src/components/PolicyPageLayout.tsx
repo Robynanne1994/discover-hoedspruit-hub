@@ -77,7 +77,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
       <div style={{ padding: "0 20px" }}>
         {sections.map((section, i) => (
           <div key={i} style={{ marginTop: i === 0 ? 0 : 32 }}>
-            <h2 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, margin: 0, marginBottom: 14 }}>
+            <h2 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "none", letterSpacing: 3, margin: 0, marginBottom: 14 }}>
               {section.heading}
             </h2>
             {renderBody(section.body)}

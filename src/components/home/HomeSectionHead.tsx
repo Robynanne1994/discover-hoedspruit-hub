@@ -33,7 +33,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
           letterSpacing: "-0.02em",
           color: "#0A0A0A",
           fontStretch: "normal",
-          textTransform: "lowercase",
+          textTransform: "none",
         }}
       >
         {primary}
@@ -48,6 +48,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
                 color: "#8A8480",
                 letterSpacing: 0,
                 fontStretch: "normal",
+                textTransform: "none",
               }}
             >
               {serif}
