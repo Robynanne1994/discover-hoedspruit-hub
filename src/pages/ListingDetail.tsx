@@ -510,7 +510,6 @@ const ListingDetail = () => {
                 }}
                 {...pressScale()}
               >
-                <Phone size={18} strokeWidth={1.5} color="#FFFFFF" />
                 Call Now
               </a>
             )}
