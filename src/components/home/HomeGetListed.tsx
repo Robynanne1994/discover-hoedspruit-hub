@@ -83,8 +83,10 @@ const HomeGetListed = () => {
               color: "#0A0A0A",
               borderRadius: 999,
               padding: "12px 18px",
-              fontFamily: SANS,
-              fontSize: 14,
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 15,
+              lineHeight: "18px",
+              letterSpacing: 0,
               textDecoration: "none",
               transition: "transform 150ms ease-out",
             }}
