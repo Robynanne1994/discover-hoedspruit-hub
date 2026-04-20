@@ -16,9 +16,12 @@ import {
   ExternalLink,
   MessageCircle,
   Copy,
+  Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useState } from "react";
+import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
@@ -86,7 +89,8 @@ const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const [editOpen, setEditOpen] = useState(false);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
@@ -232,6 +236,13 @@ const SpecialDetail = () => {
     icon: <Share2 size={16} strokeWidth={1.5} color={TEXT} />,
     onClick: handleShare,
   });
+  if (isAdmin) {
+    secondaryActions.push({
+      label: "Edit",
+      icon: <Pencil size={16} strokeWidth={1.5} color={TEXT} />,
+      onClick: () => setEditOpen(true),
+    });
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
@@ -564,6 +575,9 @@ const SpecialDetail = () => {
           </section>
         )}
       </div>
+      {isAdmin && (
+        <SpecialEditDialog open={editOpen} onOpenChange={setEditOpen} special={special} />
+      )}
     </div>
   );
 };
