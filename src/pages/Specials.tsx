@@ -499,7 +499,6 @@ const Specials = () => {
                 </Link>
                 {s.contact_phone && (
                   <a href={`tel:${s.contact_phone}`} onClick={(e) => e.stopPropagation()} style={secondaryBtn} {...press}>
-                    <Phone size={14} strokeWidth={1.5} color={COLOR.text} />
                     Call
                   </a>
                 )}
