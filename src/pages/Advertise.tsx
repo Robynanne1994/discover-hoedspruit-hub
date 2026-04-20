@@ -250,7 +250,7 @@ const Advertise = () => {
             fontFamily: FF, fontSize: 12, fontWeight: 400, lineHeight: "14.4px",
             letterSpacing: "0.24px", textTransform: "uppercase",
             color: "rgba(255,255,255,0.6)", margin: "0 0 14px",
-          }}>Listing Plans</p>
+          }}>For Local Businesses</p>
           <h2 style={{
             fontFamily: FF, fontSize: 36, fontWeight: 700, lineHeight: "38px",
             letterSpacing: "-1.08px", color: "#FFFFFF", margin: "0 0 14px",
