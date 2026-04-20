@@ -58,7 +58,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
           <div><Label>Deal Label</Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
-          <div><Label>Image</Label><ImageUpload value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
+          <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Valid From</Label><Input type="date" value={form.valid_from || ""} onChange={(e) => set("valid_from", e.target.value || null)} /></div>
             <div><Label>Valid Until</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => set("valid_until", e.target.value || null)} /></div>
