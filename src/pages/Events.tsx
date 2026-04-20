@@ -64,6 +64,7 @@ function shortenRecurrence(raw: string): string {
   if (!raw) return "";
   const clean = raw.replace(/<[^>]*>/g, "").trim();
   const lower = clean.toLowerCase();
+  if (lower === "none" || lower === "n/a") return "";
   if (lower.includes("first") && lower.includes("sat")) {
     const t = clean.match(/(\d{1,2}[:.]?\d{0,2})\s*(am|pm)/i);
     return t ? `First Sat · ${t[1].replace(".", ":")} ${t[2].toLowerCase()}` : "First Sat";
