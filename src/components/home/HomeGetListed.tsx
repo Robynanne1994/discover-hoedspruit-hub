@@ -89,7 +89,7 @@ const HomeGetListed = () => {
               transition: "transform 150ms ease-out",
             }}
           >
-            Get in touch
+            Get in Touch
             <ArrowUpRight size={14} color="#0A0A0A" strokeWidth={2} />
           </Link>
         </div>
