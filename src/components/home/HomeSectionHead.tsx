@@ -33,7 +33,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
           letterSpacing: "-0.02em",
           color: "#0A0A0A",
           fontStretch: "normal",
-          textTransform: "none",
+          textTransform: "lowercase",
         }}
       >
         {primary}
