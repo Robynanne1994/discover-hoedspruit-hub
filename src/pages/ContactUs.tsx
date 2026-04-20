@@ -206,7 +206,7 @@ const ContactUs = () => {
 
       {/* Title block */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
-        <p style={{ ...overlineStyle, fontSize: 12, marginBottom: 12 }}>Say hello</p>
+        
         <h1 style={{
           fontFamily: FF,
           fontSize: 53, fontWeight: 400,
