@@ -298,6 +298,22 @@ const EventDetail = () => {
           </button>
         </div>
 
+        {isAdmin && (
+          <button
+            onClick={() => setEditOpen(true)}
+            style={{
+              width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+              background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 16,
+              padding: "12px 20px", height: 48, cursor: "pointer", marginBottom: 20,
+              fontFamily: font,
+            }}
+            {...pressScale()}
+          >
+            <Pencil size={14} strokeWidth={1.8} color="#2B2420" />
+            <span style={{ fontSize: 15, fontWeight: 600, color: "#2B2420", fontFamily: font }}>Edit Event</span>
+          </button>
+        )}
+
         {/* Book Now CTA */}
         {bookingLink && (
           <div style={{ marginBottom: 20 }}>
@@ -382,6 +398,9 @@ const EventDetail = () => {
       />
 
       <BottomNav />
+      {isAdmin && event && (
+        <EventEditDialog open={editOpen} onOpenChange={setEditOpen} event={event} />
+      )}
     </div>
   );
 };
