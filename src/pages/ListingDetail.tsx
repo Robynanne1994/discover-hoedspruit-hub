@@ -528,7 +528,6 @@ const ListingDetail = () => {
                 }}
                 {...pressScale()}
               >
-                <Navigation size={18} strokeWidth={1.5} color="#FFFFFF" />
                 Directions
               </a>
             )}
