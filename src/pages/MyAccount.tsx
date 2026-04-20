@@ -734,7 +734,7 @@ const MyAccount = () => {
 
       {/* Help and settings */}
       <div style={{ padding: "24px 24px 0" }}>
-        {sectionLabel("Help and settings")}
+        {sectionLabel("Help & settings")}
         {renderCard(helpItems)}
       </div>
 
