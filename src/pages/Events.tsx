@@ -351,7 +351,7 @@ const Events = () => {
           color: COLOR.text,
           margin: 0,
         }}>
-          What's Happening
+          What's happening
         </h1>
       </div>
 
