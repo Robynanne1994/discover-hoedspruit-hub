@@ -236,6 +236,13 @@ const SpecialDetail = () => {
     icon: <Share2 size={16} strokeWidth={1.5} color={TEXT} />,
     onClick: handleShare,
   });
+  if (isAdmin) {
+    secondaryActions.push({
+      label: "Edit",
+      icon: <Pencil size={16} strokeWidth={1.5} color={TEXT} />,
+      onClick: () => setEditOpen(true),
+    });
+  }
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
@@ -568,6 +575,9 @@ const SpecialDetail = () => {
           </section>
         )}
       </div>
+      {isAdmin && (
+        <SpecialEditDialog open={editOpen} onOpenChange={setEditOpen} special={special} />
+      )}
     </div>
   );
 };
