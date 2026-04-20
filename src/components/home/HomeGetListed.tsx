@@ -55,7 +55,7 @@ const HomeGetListed = () => {
               marginBottom: 12,
             }}
           >
-            Get listed in the guide.
+            Stand out in Hoedspruit.
           </h3>
           <p
             style={{
