@@ -41,7 +41,7 @@ const HomeGetListed = () => {
               marginBottom: 14,
             }}
           >
-            For local business
+            For local businesses
           </div>
           <h3
             style={{
