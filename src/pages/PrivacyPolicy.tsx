@@ -93,7 +93,7 @@ const PrivacyPolicy = () => {
         <div className="absolute left-6 top-14">
           <BackButton />
         </div>
-        <h1 className="text-center text-[13px] font-medium text-muted-foreground uppercase tracking-[0.08em]">
+        <h1 className="text-center text-[13px] font-medium text-muted-foreground tracking-[0.08em]">
           Privacy Policy
         </h1>
       </div>

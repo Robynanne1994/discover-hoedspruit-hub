@@ -90,7 +90,7 @@ const PrivacySecurity = () => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "capitalize", margin: 0 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>
           Privacy & Security
         </h1>
       </div>
@@ -244,7 +244,7 @@ const PrivacySecurity = () => {
 
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div style={{ paddingLeft: SECTION_PX, paddingRight: SECTION_PX, marginBottom: 28 }}>
-    <h3 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "uppercase", letterSpacing: 3, marginBottom: 14 }}>
+    <h3 style={{ fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.3)", textTransform: "none", letterSpacing: 3, marginBottom: 14 }}>
       {title}
     </h3>
     {children}

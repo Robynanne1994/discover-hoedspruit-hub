@@ -276,7 +276,7 @@ const ContactUs = () => {
                 fontSize: 26, fontWeight: 400,
                 lineHeight: 1, letterSpacing: "0.01em",
                 color: "#FFFFFF",
-                textTransform: "uppercase",
+                textTransform: "none",
                 margin: 0, marginBottom: 8,
               }}>
                 Whatsapp us

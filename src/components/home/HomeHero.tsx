@@ -98,7 +98,7 @@ const HomeHero = () => {
     <>
       {/* Hero area */}
       <div className="bg-white" style={{ padding: "48px 24px 28px" }}>
-        <h1 className="font-medium" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 44, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "uppercase", marginBottom: 12 }}>
+        <h1 className="font-medium" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 44, lineHeight: 0.95, letterSpacing: "0.01em", color: "#020202", textTransform: "none", marginBottom: 12 }}>
           HELLO<br />HOEDSPRUIT
         </h1>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, marginBottom: 20 }}>

@@ -49,7 +49,7 @@ const People = () => {
             lineHeight: 0.95,
             letterSpacing: "-0.01em",
             color: "#020202",
-            textTransform: "capitalize",
+            textTransform: "none",
             margin: 0,
           }}
         >

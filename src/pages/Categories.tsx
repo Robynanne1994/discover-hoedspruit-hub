@@ -174,7 +174,7 @@ const Categories = () => {
           style={{
             fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
             fontWeight: 400,
-            textTransform: "capitalize",
+            textTransform: "none",
             fontSize: 52,
             lineHeight: 0.95,
             letterSpacing: "-0.02em",

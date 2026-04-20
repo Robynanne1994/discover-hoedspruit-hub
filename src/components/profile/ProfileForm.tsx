@@ -137,7 +137,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
 
       {/* Heading */}
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 12 }}>
-        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "uppercase" }}>
+        <h1 style={{ fontFamily: "var(--font-heading)", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.5px", color: "#2b2420", textTransform: "none" }}>
           EDIT PROFILE
         </h1>
       </div>
