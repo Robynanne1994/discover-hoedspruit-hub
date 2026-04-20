@@ -24,7 +24,7 @@ const HERO_STAT = {
 
 const BENEFITS = [
   { n: "01", title: "Local visibility", description: "Show up when people search for places to eat, stay, shop and explore in Hoedspruit." },
-  { n: "02", title: "Targeted Audience", description: "Reach an engaged community already in discovery mode and ready to spend locally." },
+  { n: "02", title: "Targeted audience", description: "Reach an engaged community already in discovery mode and ready to spend locally." },
   { n: "03", title: "Featured Placement", description: "Stand out in carousels, category pages and curated picks across the app." },
   { n: "04", title: "Grow Your Brand", description: "Build steady, lasting awareness with the Hoedspruit community over time." },
 ];
