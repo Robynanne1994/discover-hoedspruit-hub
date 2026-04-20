@@ -286,7 +286,7 @@ const About = () => {
         style={{
           position: "relative",
           background: "#F26A48",
-          padding: "36px 28px 156px",
+          padding: "36px 28px 110px",
           borderRadius: "32px 32px 0 0",
           overflow: "hidden",
           marginTop: 52,
