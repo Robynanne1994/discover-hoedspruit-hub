@@ -33,7 +33,7 @@ const About = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 120, fontFamily: SANS, color: "#0A0A0A" }}>
+    <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: SANS, color: "#0A0A0A" }}>
       {/* Back */}
       <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
         <button
