@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
+import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar,
   Clock,
@@ -17,6 +18,7 @@ import {
   Phone,
   Globe,
   Banknote,
+  Pencil,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -45,7 +47,8 @@ const EventDetail = () => {
   const navigate = useNavigate();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const [editOpen, setEditOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: isFavourited } = useQuery({
