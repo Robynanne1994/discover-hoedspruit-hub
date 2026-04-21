@@ -632,7 +632,7 @@ const Events = () => {
           {activeFilter !== "past" && activeFilter !== "today" && (() => {
             const groups: { heading: string; events: typeof recurringEvents }[] = [
               { heading: "Every Day", events: [] },
-              { heading: "Every Week", events: [] },
+              { heading: "Weekly", events: [] },
               { heading: "Every Month", events: [] },
               { heading: "Every Quarter", events: [] },
               { heading: "Every Year", events: [] },
