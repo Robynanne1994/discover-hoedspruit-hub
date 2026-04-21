@@ -611,6 +611,8 @@ const Events = () => {
               { heading: "Every Year", events: [] },
               { heading: "Other", events: [] },
             ];
+            const now = startOfToday();
+            const monthEndNow = endOfMonth(now);
             for (const e of recurringEvents) {
               const r = (e.recurrence || "").toLowerCase();
               if (r.includes("daily") || r.includes("every day")) groups[0].events.push(e);
@@ -619,6 +621,16 @@ const Events = () => {
               else if (r.includes("quarterly") || r.includes("quarter")) groups[3].events.push(e);
               else if (r.includes("yearly") || r.includes("annual") || r.includes("every year")) groups[4].events.push(e);
               else groups[5].events.push(e);
+            }
+            // For "This Month", hide quarterly/yearly/other unless their date falls within current month
+            if (activeFilter === "this-month") {
+              const inMonth = (e: typeof recurringEvents[number]) => {
+                const d = e._parsed;
+                return !!d && d.getMonth() === now.getMonth();
+              };
+              groups[3].events = groups[3].events.filter(inMonth);
+              groups[4].events = groups[4].events.filter(inMonth);
+              groups[5].events = groups[5].events.filter(inMonth);
             }
             return groups
               .filter((g) => g.events.length > 0)
