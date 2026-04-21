@@ -560,7 +560,8 @@ const MyAccount = () => {
     </p>
   );
 
-  const firstName = (profile?.display_name || user.email?.split("@")[0] || "You").split(" ")[0];
+  const fullName = profile?.display_name?.trim() || user.email?.split("@")[0] || "You";
+  const firstName = fullName.split(" ")[0];
   const username = user.email ? `@${user.email.split("@")[0]}` : "";
 
   return (
@@ -627,10 +628,10 @@ const MyAccount = () => {
           <h1
             style={{
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontWeight: 700,
-              fontSize: 60,
-              lineHeight: 0.92,
-              letterSpacing: "-0.03em",
+              fontWeight: 500,
+              fontSize: 35,
+              lineHeight: 1,
+              letterSpacing: "-0.02em",
               color: TEXT,
               margin: 0,
               flex: 1,
@@ -638,7 +639,7 @@ const MyAccount = () => {
               wordBreak: "break-word",
             }}
           >
-            {firstName}
+            {fullName}
           </h1>
         </div>
 
