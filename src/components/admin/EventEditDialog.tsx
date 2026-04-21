@@ -18,7 +18,7 @@ interface Props {
 
 const FIELDS = [
   "title", "description", "date", "start_time", "end_time", "location",
-  "tag", "image_url", "recurrence", "price", "booking_link",
+  "tag", "image_url", "recurrence", "price", "notes", "booking_link",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone",
   "is_featured",
 ];
@@ -65,6 +65,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
           <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
           <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
+          <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => set("notes", e.target.value)} placeholder="Additional info shown under price" /></div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
