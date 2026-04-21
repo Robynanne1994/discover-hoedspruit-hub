@@ -72,6 +72,20 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
+  const { data: linkedSpecials } = useQuery({
+    queryKey: ["listing-specials", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("specials")
+        .select("*")
+        .eq("business_id", id!)
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      return data || [];
+    },
+    enabled: !!id,
+  });
+
   const { data: isFavourited } = useQuery({
     queryKey: ["favourite", "listing", id, user?.id],
     queryFn: async () => {
