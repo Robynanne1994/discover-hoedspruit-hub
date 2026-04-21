@@ -570,7 +570,7 @@ const Events = () => {
           {/* Upcoming */}
           {upcomingEvents.length > 0 && (
             <section>
-              <SectionHead overline="Save The Date" heading="Upcoming" />
+              <SectionHead overline="Save The Date" heading={activeFilter === "past" ? "Past" : "Upcoming"} />
               <div style={{ padding: "0 24px 40px 24px" }}>
                 <div style={{
                   background: COLOR.card,
