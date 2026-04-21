@@ -250,16 +250,43 @@ const EventDetail = () => {
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
             <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
-          {isAdmin && (
-            <button
-              onClick={() => setEditOpen(true)}
-              aria-label="Edit event"
-              style={{ ...overlayBtn, position: "absolute", top: 16, right: 16, zIndex: 10 }}
-              {...pressScale("0.9")}
-            >
-              <Pencil size={18} strokeWidth={1.8} color="#2B2420" />
-            </button>
-          )}
+          {(() => {
+            const rightIcons: { key: string; onClick: () => void; ariaLabel: string; node: React.ReactNode }[] = [];
+            if (isAdmin) {
+              rightIcons.push({
+                key: "edit",
+                onClick: () => setEditOpen(true),
+                ariaLabel: "Edit event",
+                node: <Pencil size={18} strokeWidth={1.8} color="#2B2420" />,
+              });
+            }
+            rightIcons.push({
+              key: "share",
+              onClick: handleShare,
+              ariaLabel: "Share",
+              node: <Share2 size={18} strokeWidth={1.8} color="#2B2420" />,
+            });
+            rightIcons.push({
+              key: "fav",
+              onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); },
+              ariaLabel: isFavourited ? "Unsave" : "Save",
+              node: <Heart size={18} strokeWidth={1.8} color="#2B2420" fill={isFavourited ? "#2B2420" : "none"} />,
+            });
+            return rightIcons.map((b, idx) => {
+              const rightOffset = 16 + (rightIcons.length - 1 - idx) * (40 + 8);
+              return (
+                <button
+                  key={b.key}
+                  onClick={b.onClick}
+                  aria-label={b.ariaLabel}
+                  style={{ ...overlayBtn, position: "absolute", top: 16, right: rightOffset, zIndex: 10 }}
+                  {...pressScale("0.9")}
+                >
+                  {b.node}
+                </button>
+              );
+            });
+          })()}
         </div>
       ) : (
         <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
