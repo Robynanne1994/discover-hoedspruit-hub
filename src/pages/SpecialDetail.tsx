@@ -309,9 +309,18 @@ const SpecialDetail = () => {
         </h1>
 
         <div style={{ marginBottom: 28 }}>
-          <p style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: TEXT, margin: 0 }}>
-            {special.business_name}
-          </p>
+          {special.business_id ? (
+            <Link
+              to={`/listing/${special.business_id}`}
+              style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: TEXT, margin: 0, textDecoration: "underline", textUnderlineOffset: 2, display: "block" }}
+            >
+              {special.business_name}
+            </Link>
+          ) : (
+            <p style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: TEXT, margin: 0 }}>
+              {special.business_name}
+            </p>
+          )}
           <p style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: MUTED, margin: 0 }}>
             {validityText}
           </p>
