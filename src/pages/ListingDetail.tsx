@@ -444,14 +444,43 @@ const ListingDetail = () => {
         >
           <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
         </button>
-        <button
-          onClick={() => isAdmin ? navigate(`/admin/listings?edit=${listing.id}`) : undefined}
-          style={{ ...circleBtn, position: "absolute", top: 56, right: 20 }}
-          aria-label={isAdmin ? "Edit listing" : "Menu"}
-          {...pressScale("0.94")}
-        >
-          {isAdmin ? <Pencil size={20} strokeWidth={1.5} color={C.text} /> : <Menu size={20} strokeWidth={1.5} color={C.text} />}
-        </button>
+        {/* Top-right action cluster: Share / Save / Visited (+ Edit if admin) */}
+        <div style={{ position: "absolute", top: 56, right: 20, display: "flex", gap: 8 }}>
+          <button
+            onClick={handleShare}
+            style={circleBtn}
+            aria-label="Share"
+            {...pressScale("0.94")}
+          >
+            <Share2 size={18} strokeWidth={1.5} color={C.text} />
+          </button>
+          <button
+            onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
+            style={circleBtn}
+            aria-label={isFavourited ? "Remove from saved" : "Save"}
+            {...pressScale("0.94")}
+          >
+            <Heart size={18} strokeWidth={1.5} color={C.text} fill={isFavourited ? C.text : "none"} />
+          </button>
+          <button
+            onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
+            style={circleBtn}
+            aria-label={isVisited ? "Remove from visited" : "Mark as visited"}
+            {...pressScale("0.94")}
+          >
+            <Check size={18} strokeWidth={1.5} color={isVisited ? C.coral : C.text} />
+          </button>
+          {isAdmin && (
+            <button
+              onClick={() => navigate(`/admin/listings?edit=${listing.id}`)}
+              style={circleBtn}
+              aria-label="Edit listing"
+              {...pressScale("0.94")}
+            >
+              <Pencil size={18} strokeWidth={1.5} color={C.text} />
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Title block */}
