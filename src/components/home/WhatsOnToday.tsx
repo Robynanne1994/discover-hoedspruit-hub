@@ -100,7 +100,10 @@ const WhatsOnToday = () => {
       <HomeSectionHeader title="What's On" actionLabel="See All" actionHref="/events" />
       <div>
         {events.map((event, idx) => {
-          const parsed = event.parsedDate;
+          const start = (event as any).parsedDate as Date | null;
+          const end = (event as any).parsedEnd as Date | null;
+          const isMultiDay = !!(start && end && start.getTime() !== end.getTime());
+          const sameMonth = isMultiDay && start!.getMonth() === end!.getMonth();
           return (
             <Link
               key={event.id}
@@ -125,12 +128,28 @@ const WhatsOnToday = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
+                padding: "0 4px",
               }}>
-                {parsed ? (
-                  <>
-                    <span style={{ fontSize: 20, fontWeight: 400, color: "#2b2420", lineHeight: 1 }}>{parsed.getDate()}</span>
-                    <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 0.5 }}>{months[parsed.getMonth()]}</span>
-                  </>
+                {start ? (
+                  isMultiDay ? (
+                    sameMonth ? (
+                      <>
+                        <span style={{ fontSize: 13, fontWeight: 500, color: "#2b2420", lineHeight: 1.05, whiteSpace: "nowrap" }}>{start!.getDate()}–{end!.getDate()}</span>
+                        <span style={{ fontSize: 9, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 0.5, marginTop: 2 }}>{months[start!.getMonth()]}</span>
+                      </>
+                    ) : (
+                      <>
+                        <span style={{ fontSize: 10, fontWeight: 500, color: "#2b2420", lineHeight: 1.1, whiteSpace: "nowrap" }}>{start!.getDate()} {months[start!.getMonth()]}</span>
+                        <span style={{ fontSize: 8, color: "rgba(18,18,20,0.35)", lineHeight: 1.1 }}>–</span>
+                        <span style={{ fontSize: 10, fontWeight: 500, color: "#2b2420", lineHeight: 1.1, whiteSpace: "nowrap" }}>{end!.getDate()} {months[end!.getMonth()]}</span>
+                      </>
+                    )
+                  ) : (
+                    <>
+                      <span style={{ fontSize: 20, fontWeight: 400, color: "#2b2420", lineHeight: 1 }}>{start.getDate()}</span>
+                      <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 0.5 }}>{months[start.getMonth()]}</span>
+                    </>
+                  )
                 ) : (
                   <span style={{ fontSize: 10, color: "rgba(18,18,20,0.35)", fontWeight: 500 }}>TBA</span>
                 )}
