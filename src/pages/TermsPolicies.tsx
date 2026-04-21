@@ -64,7 +64,7 @@ const TermsPolicies = () => {
             margin: "14px 0 0",
           }}
         >
-          Terms and policies
+          Terms & policies
         </h1>
         <p
           style={{
