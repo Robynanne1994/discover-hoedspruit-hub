@@ -365,7 +365,7 @@ const SpecialDetail = () => {
                 }}
                 {...press}
               >
-                <MessageCircle size={16} strokeWidth={1.5} color="#FFFFFF" />
+                
                 <span>Whatsapp</span>
               </a>
             )}
