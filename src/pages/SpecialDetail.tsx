@@ -186,7 +186,6 @@ const SpecialDetail = () => {
 
   const detailRows: { icon: React.ReactNode; label: string; value: string; capitalize?: boolean }[] = [
     { icon: <Store size={20} strokeWidth={1.5} color={MUTED} />, label: "Business", value: special.business_name },
-    { icon: <Tag size={20} strokeWidth={1.5} color={MUTED} />, label: "Deal", value: special.deal_label },
   ];
   const priceFmt = formatPrice(special.price);
   if (priceFmt) {
