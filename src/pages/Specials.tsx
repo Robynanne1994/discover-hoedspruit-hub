@@ -128,8 +128,8 @@ const Specials = () => {
     default: "Default",
     saved: "Saved",
     name: "Alphabetically",
-    business: "Business",
-    expiring: "Expiring soon",
+    business: "Business Name",
+    expiring: "Expiring Soon",
   };
   const sortLabel = SORT_LABELS[sortBy];
   const count = filteredSpecials.length;
