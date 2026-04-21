@@ -1,0 +1,2 @@
+ALTER TABLE public.favourites DROP CONSTRAINT IF EXISTS favourites_item_type_check;
+ALTER TABLE public.favourites ADD CONSTRAINT favourites_item_type_check CHECK (item_type = ANY (ARRAY['listing'::text, 'event'::text, 'special'::text]));
