@@ -196,13 +196,6 @@ const SpecialDetail = () => {
       value: original ? `${priceFmt} · was ${original}` : priceFmt,
     });
   }
-  if (special.special_type)
-    detailRows.push({
-      icon: <Ticket size={20} strokeWidth={1.5} color={MUTED} />,
-      label: "Type",
-      value: special.special_type,
-      capitalize: true,
-    });
   if (special.day_of_week?.length)
     detailRows.push({
       icon: <Clock size={20} strokeWidth={1.5} color={MUTED} />,
