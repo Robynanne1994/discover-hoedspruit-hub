@@ -361,7 +361,55 @@ const EventDetail = () => {
           </section>
         )}
 
-        {/* Contact */}
+        {/* Notes (collapsible) */}
+        {notes && (
+          <section style={{ marginBottom: 24 }}>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, overflow: "hidden" }}>
+              <button
+                onClick={() => setNotesOpen((v) => !v)}
+                aria-expanded={notesOpen}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  padding: "14px 20px",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  textAlign: "left",
+                }}
+              >
+                <div style={{ marginRight: 16, flexShrink: 0 }}>
+                  <StickyNote size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 16, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, fontFamily: font }}>
+                    Notes
+                  </p>
+                </div>
+                <ChevronDown
+                  size={20}
+                  strokeWidth={1.8}
+                  style={{
+                    color: "rgba(18,18,20,0.5)",
+                    transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 200ms ease-out",
+                    flexShrink: 0,
+                  }}
+                />
+              </button>
+              {notesOpen && (
+                <div style={{ padding: "0 20px 16px 56px" }}>
+                  <p style={{ fontSize: 15, fontWeight: 400, color: "#2B2420", lineHeight: 1.5, margin: 0, whiteSpace: "pre-wrap", fontFamily: font }}>
+                    {notes}
+                  </p>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+
         {contactRows.length > 0 && (
           <section style={{ marginBottom: 24 }}>
             <SectionLabel eyebrow="Reach out" title="Contact" />
