@@ -440,10 +440,10 @@ const EventDetail = () => {
                       </p>
                     </div>
                     <ChevronDown
-                      size={20}
+                      size={18}
                       strokeWidth={1.8}
+                      color="#2B2420"
                       style={{
-                        color: "rgba(18,18,20,0.5)",
                         transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)",
                         transition: "transform 200ms ease-out",
                         flexShrink: 0,
