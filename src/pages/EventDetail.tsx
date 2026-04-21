@@ -365,7 +365,6 @@ const EventDetail = () => {
               onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
               onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
             >
-              <ExternalLink size={20} strokeWidth={1.8} color="#FFFFFF" />
               Book Now
             </a>
           </div>
