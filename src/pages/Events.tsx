@@ -768,9 +768,9 @@ const Events = () => {
             }
             return groups
               .filter((g) => g.events.length > 0)
-              .map((g) => (
+              .map((g, gIdx) => (
                 <section key={g.heading}>
-                  <SectionHead overline="Recurring" heading={g.heading} />
+                  <SectionHead overline="Recurring" heading={g.heading} trailing={filterSlot === "recurring" && gIdx === 0 ? tagFilterButton : undefined} />
                   <div style={{ padding: "0 24px 40px 24px" }}>
                     <div style={{
                       background: COLOR.card,
