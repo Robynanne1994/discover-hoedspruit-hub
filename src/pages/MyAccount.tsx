@@ -444,7 +444,7 @@ const MyAccount = () => {
     { label: "Feedback", href: "/feedback" },
   ];
   const helpItems = [
-    { label: "Account Settings", href: "/account-settings" },
+    { label: "Settings", href: "/account-settings" },
     { label: "About Hello Hoedspruit", href: "/about" },
     { label: "The Lowveld Lowdown", href: "/headlines" },
     { label: "Help & FAQs", href: "/faqs" },
