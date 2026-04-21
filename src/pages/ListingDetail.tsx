@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Star, Pencil, ChevronLeft, ChevronDown, Menu,
   Heart, Share2, Check, Phone, Navigation,
+  MapPin, Mail, Globe, MessageCircle, ArrowUpRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
@@ -377,43 +378,39 @@ const ListingDetail = () => {
 
   // Contact rows
   const whatsappNum = (listing as any).whatsapp as string | null;
+  const waCleanNum = whatsappNum ? whatsappNum.replace(/[^0-9]/g, "") : null;
   const contactRows = [
     listing.location && {
       label: "Location",
       value: listing.location,
+      icon: MapPin,
       href: (listing as any).google_maps_link || undefined,
-      external: true,
-      underline: false,
     },
     listing.phone && {
       label: "Phone",
       value: listing.phone,
-      href: `tel:${listing.phone}`,
-      external: false,
-      underline: false,
+      icon: Phone,
+      href: `tel:${listing.phone.replace(/\s/g, "")}`,
     },
     listing.email && {
       label: "Email",
       value: listing.email,
+      icon: Mail,
       href: `mailto:${listing.email}`,
-      external: false,
-      underline: false,
     },
     listing.website && {
       label: "Website",
       value: listing.website.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+      icon: Globe,
       href: listing.website,
-      external: true,
-      underline: true,
     },
-    whatsappNum && {
-      label: "Whatsapp",
-      value: "Message On WhatsApp",
-      href: `https://wa.me/${whatsappNum.replace(/[^0-9]/g, "")}`,
-      external: true,
-      underline: true,
+    waCleanNum && {
+      label: "WhatsApp",
+      value: whatsappNum,
+      icon: MessageCircle,
+      href: `https://wa.me/${waCleanNum}`,
     },
-  ].filter(Boolean) as Array<{ label: string; value: string; href: string; external: boolean; underline: boolean }>;
+  ].filter(Boolean) as Array<{ label: string; value: string; icon: any; href: string }>;
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 140, fontFamily: font, color: C.text }}>
@@ -598,43 +595,42 @@ const ListingDetail = () => {
           </div>
         )}
 
-        {/* Contact card */}
+        {/* Contact card — matches Events / Specials */}
         {contactRows.length > 0 && (
-          <div style={{
-            background: C.card, borderRadius: 24,
-            paddingLeft: 20, paddingRight: 20,
-            marginTop: 32, overflow: "hidden",
-          }}>
-            {contactRows.map((row, i) => (
-              <div key={i} style={{
-                paddingTop: 18, paddingBottom: 18,
-                borderBottom: i < contactRows.length - 1 ? `1px solid ${C.border}` : "none",
-              }}>
-                <p style={{
-                  fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-                  letterSpacing: "0.24px", color: C.muted, margin: 0,
-                }}>
-                  {row.label}
-                </p>
-                <div style={{ height: 4 }} />
-                <a
-                  href={row.href}
-                  target={row.external ? "_blank" : undefined}
-                  rel={row.external ? "noopener noreferrer" : undefined}
-                  style={{
-                    fontFamily: font, fontWeight: 400, fontSize: 18, lineHeight: "21.6px",
-                    letterSpacing: "-0.18px", color: C.text,
-                    textDecoration: row.underline ? "underline" : "none",
-                    textUnderlineOffset: "3px",
-                    display: "inline-block",
-                    transition: "opacity 0.12s ease",
-                  }}
-                  {...pressOpacity}
-                >
-                  {row.value}
-                </a>
-              </div>
-            ))}
+          <div style={{ marginTop: 32 }}>
+            <h2 style={{
+              fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 28, lineHeight: 1.15,
+              letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0, marginBottom: 12,
+            }}>
+              Contact
+            </h2>
+            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: "4px 0", overflow: "hidden" }}>
+              {contactRows.map((row, idx) => {
+                const Wrapper: any = row.href ? "a" : "div";
+                const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
+                return (
+                  <div key={row.label}>
+                    {idx > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
+                    <Wrapper
+                      {...wrapperProps}
+                      style={{ display: "flex", alignItems: "center", padding: "14px 20px", textDecoration: "none" }}
+                    >
+                      <div style={{ marginRight: 16, flexShrink: 0 }}>
+                        <row.icon size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>
+                          {row.value}
+                        </p>
+                      </div>
+                      {row.href && (
+                        <ArrowUpRight size={18} strokeWidth={1.8} color="#2B2420" style={{ flexShrink: 0, marginLeft: 12 }} />
+                      )}
+                    </Wrapper>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
