@@ -315,7 +315,7 @@ const SpecialDetail = () => {
 
       {/* Content */}
       <div style={{ padding: "28px 24px 0 24px" }}>
-        <p style={{ ...eyebrow, marginBottom: 12 }}>{special.deal_label}</p>
+        <p style={{ ...eyebrow, marginBottom: 12, color: "rgba(18, 18, 20, 0.4)", fontWeight: 500 }}>{special.deal_label}</p>
 
         <h1
           style={{
