@@ -81,6 +81,7 @@ function shortenRecurrence(raw: string): string {
       return t ? `Every ${day} · ${t[1].replace(".", ":")} ${t[2].toLowerCase()}` : `Every ${day}`;
     }
   }
+  if (lower.includes("year") || lower.includes("annual")) return "Yearly";
   if (lower.includes("month")) return "Monthly";
   if (lower.includes("quarterly")) return "Quarterly";
   if (lower.includes("weekly")) return "Weekly";
