@@ -1,5 +1,11 @@
-import { Search, ArrowUpRight, Bookmark } from "lucide-react";
+import { Search, ArrowUpRight, Bookmark, SlidersHorizontal, Check } from "lucide-react";
 import { useState, useMemo } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
