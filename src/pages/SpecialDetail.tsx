@@ -259,7 +259,6 @@ const SpecialDetail = () => {
           aria-label="Back"
           {...press}
         >
-          <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
         </button>
         <button
           onClick={() => {
