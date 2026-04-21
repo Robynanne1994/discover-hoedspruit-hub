@@ -631,11 +631,11 @@ const Events = () => {
           {/* Recurring — grouped by cadence */}
           {activeFilter !== "past" && activeFilter !== "today" && (() => {
             const groups: { heading: string; events: typeof recurringEvents }[] = [
-              { heading: "Every Day", events: [] },
+              { heading: "Daily", events: [] },
               { heading: "Weekly", events: [] },
               { heading: "Monthly", events: [] },
-              { heading: "Every Quarter", events: [] },
-              { heading: "Every Year", events: [] },
+              { heading: "Quarterly", events: [] },
+              { heading: "Yearly", events: [] },
               { heading: "Other", events: [] },
             ];
             const now = startOfToday();
