@@ -527,7 +527,7 @@ const Events = () => {
           {/* Featured */}
           {featuredEvents.length > 0 && (
             <section style={{ marginBottom: 8 }}>
-              <SectionHead overline="Featured" heading="Monthly" />
+              <SectionHead overline="Featured" heading="Monthly" trailing={filterSlot === "featured" ? tagFilterButton : undefined} />
               <div className="overflow-x-auto scrollbar-hide" style={{ scrollSnapType: "x proximity" }}>
                 <div style={{ display: "inline-flex", padding: "0 24px 40px 24px", gap: 14 }}>
                   {featuredEvents.map((event) => {
