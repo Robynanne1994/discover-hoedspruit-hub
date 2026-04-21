@@ -451,9 +451,9 @@ const Events = () => {
       </div>
 
       {/* Filter chips */}
-      <div style={{ marginBottom: 32, padding: "0 24px" }}>
+      <div style={{ marginBottom: 32 }}>
         <div className="overflow-x-auto scrollbar-hide">
-          <div style={{ display: "flex", gap: 8 }}>
+          <div style={{ display: "inline-flex", gap: 8, padding: "0 56px 0 24px" }}>
             {filters.map((filter) => {
               const active = activeFilter === filter.value;
               return (
