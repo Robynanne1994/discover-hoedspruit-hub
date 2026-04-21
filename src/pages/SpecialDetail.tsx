@@ -161,7 +161,7 @@ const SpecialDetail = () => {
       <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT }}>
         <button
           onClick={() => navigate(-1)}
-          style={{ ...overlayBtn, position: "fixed", left: 24, top: 56 }}
+          style={{ ...overlayBtn, position: "fixed", left: 24, top: 16 }}
           aria-label="Back"
         >
           <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
