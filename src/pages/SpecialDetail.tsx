@@ -81,7 +81,7 @@ const formatPrice = (raw?: string | null) => {
   if (!raw) return null;
   const trimmed = raw.trim();
   const num = parseFloat(trimmed.replace(/[^0-9.]/g, ""));
-  if (Number.isFinite(num)) return `R${num.toFixed(2)}`;
+  if (Number.isFinite(num)) return `R${Number.isInteger(num) ? num : num.toFixed(2)}`;
   return trimmed;
 };
 
@@ -200,7 +200,7 @@ const SpecialDetail = () => {
     detailRows.push({
       icon: <Clock size={20} strokeWidth={1.5} color={MUTED} />,
       label: "Days",
-      value: special.day_of_week.join(", "),
+      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
     });
   detailRows.push({
     icon: <Calendar size={20} strokeWidth={1.5} color={MUTED} />,
