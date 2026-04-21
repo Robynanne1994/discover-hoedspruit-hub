@@ -437,7 +437,31 @@ const Specials = () => {
               </h3>
             );
 
-            const Vendor = (
+            const Vendor = s.business_id ? (
+              <Link
+                to={`/listing/${s.business_id}`}
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  fontFamily: FONT,
+                  fontSize: 11,
+                  lineHeight: "13px",
+                  letterSpacing: "0.22px",
+                  fontWeight: 400,
+                  color: COLOR.text,
+                  textTransform: "uppercase",
+                  display: "block",
+                  margin: 0,
+                  marginBottom: 4,
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 2,
+                }}
+              >
+                {s.business_name}
+              </Link>
+            ) : (
               <p
                 style={{
                   fontFamily: FONT,
