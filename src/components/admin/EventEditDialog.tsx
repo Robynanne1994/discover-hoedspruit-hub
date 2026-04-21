@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const [form, setForm] = useState<any>(event);
 
   useEffect(() => { setForm(event); }, [event, open]);
+
+  const { data: listings } = useQuery({
+    queryKey: ["all-listings-for-events"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listings").select("id, title").order("title");
+      return data ?? [];
+    },
+  });
 
   const save = useMutation({
     mutationFn: async () => {
