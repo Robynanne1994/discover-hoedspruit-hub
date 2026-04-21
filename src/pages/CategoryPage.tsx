@@ -447,7 +447,7 @@ const CategoryPage = () => {
                 minWidth: 200,
               }}
             >
-              {(["favourites", "name", "rating"] as SortKey[]).map((key) => (
+              {(["default", "favourites", "name", "rating"] as SortKey[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => {
@@ -469,7 +469,7 @@ const CategoryPage = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Rating"}
+                  {key === "default" ? "Default" : key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Rating"}
                 </button>
               ))}
             </div>
