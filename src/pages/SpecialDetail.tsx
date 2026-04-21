@@ -517,6 +517,76 @@ const SpecialDetail = () => {
           </div>
         </section>
 
+        {/* Contact */}
+        {(phoneClean || waClean || special.booking_link) && (
+          <section style={{ marginBottom: 32 }}>
+            <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none", fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontSize: 28, fontWeight: 400 }}>Contact</h2>
+            <div
+              style={{
+                background: SURFACE,
+                borderRadius: 24,
+                padding: "4px 20px",
+              }}
+            >
+              {(() => {
+                const contactRows: { icon: React.ReactNode; label: string; value: string; href: string; external?: boolean }[] = [];
+                if (phoneClean) {
+                  contactRows.push({
+                    icon: <Phone size={20} strokeWidth={1.5} color={MUTED} />,
+                    label: "Phone",
+                    value: special.contact_phone!,
+                    href: `tel:${phoneClean}`,
+                  });
+                }
+                if (waClean) {
+                  contactRows.push({
+                    icon: <MessageCircle size={20} strokeWidth={1.5} color={MUTED} />,
+                    label: "WhatsApp",
+                    value: special.contact_whatsapp!,
+                    href: `https://wa.me/${waClean}`,
+                    external: true,
+                  });
+                }
+                if (special.booking_link) {
+                  contactRows.push({
+                    icon: <ExternalLink size={20} strokeWidth={1.5} color={MUTED} />,
+                    label: "Booking",
+                    value: "Booking Link",
+                    href: special.booking_link,
+                    external: true,
+                  });
+                }
+                return contactRows.map((row, i) => (
+                  <a
+                    key={i}
+                    href={row.href}
+                    target={row.external ? "_blank" : undefined}
+                    rel={row.external ? "noopener noreferrer" : undefined}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "32px 1fr 20px",
+                      gap: 16,
+                      alignItems: "center",
+                      padding: "16px 0",
+                      borderBottom: i < contactRows.length - 1 ? `1px solid ${DIVIDER}` : "none",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ ...eyebrow, marginBottom: 2 }}>{row.label}</p>
+                      <p style={{ fontFamily: FONT, fontWeight: 400, fontSize: 16, lineHeight: "23.2px", letterSpacing: 0, color: TEXT, margin: 0 }}>
+                        {row.value}
+                      </p>
+                    </div>
+                    <ArrowUpRight size={18} color={TEXT} strokeWidth={1.8} />
+                  </a>
+                ));
+              })()}
+            </div>
+          </section>
+        )}
+
         {/* Terms */}
         {special.terms && (
           <section style={{ marginBottom: 16 }}>
