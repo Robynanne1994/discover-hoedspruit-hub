@@ -313,11 +313,11 @@ const SpecialDetail = () => {
 
         <h1
           style={{
-            fontFamily: FONT,
-            fontWeight: 700,
-            fontSize: 44,
-            lineHeight: "44px",
-            letterSpacing: "-1.32px",
+            fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontWeight: 500,
+            fontSize: 35,
+            lineHeight: "38px",
+            letterSpacing: "-1px",
             color: TEXT,
             margin: 0,
             marginBottom: 16,
