@@ -176,16 +176,22 @@ const SpecialDetail = () => {
     );
   }
 
-  const validFromTxt = special.valid_from ? format(new Date(special.valid_from), "d MMM yyyy") : null;
-  const validUntilTxt = special.valid_until ? format(new Date(special.valid_until), "d MMM yyyy") : null;
-  const validityText =
-    validFromTxt && validUntilTxt
-      ? `${validFromTxt} – ${validUntilTxt}`
-      : validUntilTxt
-        ? `Valid until ${validUntilTxt}`
-        : validFromTxt
-          ? `From ${validFromTxt}`
-          : "Ongoing";
+  const fromDate = special.valid_from ? new Date(special.valid_from) : null;
+  const untilDate = special.valid_until ? new Date(special.valid_until) : null;
+  const validFromTxt = fromDate ? format(fromDate, "d MMM yyyy") : null;
+  const validUntilTxt = untilDate ? format(untilDate, "d MMM yyyy") : null;
+  let validityText: string;
+  if (fromDate && untilDate) {
+    const sameYear = fromDate.getFullYear() === untilDate.getFullYear();
+    const fromShort = sameYear ? format(fromDate, "d MMM") : format(fromDate, "d MMM yyyy");
+    validityText = `${fromShort} – ${format(untilDate, "d MMM yyyy")}`;
+  } else if (validUntilTxt) {
+    validityText = `Valid until ${validUntilTxt}`;
+  } else if (validFromTxt) {
+    validityText = `From ${validFromTxt}`;
+  } else {
+    validityText = "Ongoing";
+  }
 
   const phoneClean = special.contact_phone?.replace(/\s/g, "");
   const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
