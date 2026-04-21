@@ -100,7 +100,7 @@ const filters: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This week", value: "this-week" },
-  { label: "Monthly", value: "this-month" },
+  { label: "This month", value: "this-month" },
   { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
 ];
