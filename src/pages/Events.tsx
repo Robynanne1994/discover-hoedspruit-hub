@@ -741,7 +741,7 @@ const Events = () => {
                 <div style={{
                   background: COLOR.card,
                   borderRadius: 24,
-                  padding: "8px 20px",
+                  padding: "8px 20px 8px 12px",
                 }}>
                   {upcomingEvents.map((event, idx) => (
                     <EventRow
@@ -807,7 +807,7 @@ const Events = () => {
                     <div style={{
                       background: COLOR.card,
                       borderRadius: 24,
-                      padding: "8px 20px",
+                      padding: "8px 20px 8px 12px",
                     }}>
                       {g.events.map((event, idx) => (
                         <EventRow
