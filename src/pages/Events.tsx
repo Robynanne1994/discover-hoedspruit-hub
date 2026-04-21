@@ -393,37 +393,86 @@ const Events = () => {
         </div>
       </div>
 
-      {/* Filter chips */}
-      <div className="overflow-x-auto scrollbar-hide" style={{ marginBottom: 32 }}>
-        <div style={{ display: "flex", gap: 8, padding: "0 24px" }}>
-          {filters.map((filter) => {
-            const active = activeFilter === filter.value;
-            return (
-              <button
-                key={filter.value}
-                onClick={() => setActiveFilter(filter.value)}
-                style={{
-                  background: active ? COLOR.text : COLOR.card,
-                  border: "none",
-                  borderRadius: 999,
-                  padding: "9px 16px",
-                  fontFamily: FONT,
-                  fontSize: 14,
-                  fontWeight: 400,
-                  lineHeight: "16.8px",
-                  color: active ? "#FFFFFF" : COLOR.text,
-                  boxShadow: active ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                  transition: "background 0.15s ease, color 0.15s ease",
-                }}
-              >
-                {filter.label}
-              </button>
-            );
-          })}
+      {/* Filter chips + tag filter */}
+      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 32, padding: "0 24px" }}>
+        <div className="overflow-x-auto scrollbar-hide" style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", gap: 8 }}>
+            {filters.map((filter) => {
+              const active = activeFilter === filter.value;
+              return (
+                <button
+                  key={filter.value}
+                  onClick={() => setActiveFilter(filter.value)}
+                  style={{
+                    background: active ? COLOR.text : COLOR.card,
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "9px 16px",
+                    fontFamily: FONT,
+                    fontSize: 14,
+                    fontWeight: 400,
+                    lineHeight: "16.8px",
+                    color: active ? "#FFFFFF" : COLOR.text,
+                    boxShadow: active ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
+                    cursor: "pointer",
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                    transition: "background 0.15s ease, color 0.15s ease",
+                  }}
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
+
+        {/* Tag filter button */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              aria-label="Filter by tag"
+              disabled={availableTags.length === 0}
+              style={{
+                flexShrink: 0,
+                height: 36,
+                paddingInline: activeTag ? 14 : 0,
+                width: activeTag ? "auto" : 36,
+                background: activeTag ? COLOR.text : COLOR.card,
+                color: activeTag ? "#FFFFFF" : COLOR.text,
+                border: "none",
+                borderRadius: 999,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 6,
+                cursor: availableTags.length === 0 ? "not-allowed" : "pointer",
+                opacity: availableTags.length === 0 ? 0.4 : 1,
+                boxShadow: activeTag ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
+                fontFamily: FONT,
+                fontSize: 13,
+                fontWeight: 400,
+                whiteSpace: "nowrap",
+                transition: "background 0.15s ease, color 0.15s ease",
+              }}
+            >
+              <SlidersHorizontal size={15} strokeWidth={1.75} />
+              {activeTag && <span>{activeTag}</span>}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" style={{ maxHeight: 320, overflowY: "auto" }}>
+            <DropdownMenuItem onClick={() => setActiveTag(null)}>
+              <span style={{ flex: 1 }}>All tags</span>
+              {!activeTag && <Check size={14} />}
+            </DropdownMenuItem>
+            {availableTags.map((tag) => (
+              <DropdownMenuItem key={tag} onClick={() => setActiveTag(tag)}>
+                <span style={{ flex: 1, textTransform: "capitalize" }}>{tag}</span>
+                {activeTag === tag && <Check size={14} />}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {isLoading ? (
