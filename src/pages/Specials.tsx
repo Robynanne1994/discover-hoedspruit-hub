@@ -46,10 +46,23 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
 
 const Specials = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [showFilters, setShowFilters] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>("favourites");
+  const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showSortMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setShowSortMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showSortMenu]);
 
   const { data: specials, isLoading } = useQuery({
     queryKey: ["all-specials"],
@@ -61,6 +74,20 @@ const Specials = () => {
         .order("sort_order", { ascending: true });
       return data || [];
     },
+  });
+
+  const { data: savedIds } = useQuery({
+    queryKey: ["saved-special-ids", user?.id],
+    queryFn: async () => {
+      if (!user) return new Set<string>();
+      const { data } = await supabase
+        .from("favourites")
+        .select("item_id")
+        .eq("user_id", user.id)
+        .eq("item_type", "special");
+      return new Set((data || []).map((f: any) => f.item_id as string));
+    },
+    enabled: !!user,
   });
 
   const activeFilterCount = filterType.length > 0 ? 1 : 0;
@@ -75,16 +102,21 @@ const Specials = () => {
     if (filterType.length > 0) {
       result = result.filter((s) => filterType.some((t) => (s.special_type || "").toLowerCase() === t.toLowerCase()));
     }
+    if (sortBy === "saved") {
+      const ids = savedIds || new Set<string>();
+      return [...result].filter((s) => ids.has(s.id));
+    }
     if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortBy === "business") return [...result].sort((a, b) => a.business_name.localeCompare(b.business_name));
     if (sortBy === "expiring") {
-      return [...result].sort((a, b) => {
-        if (!a.valid_until) return 1;
-        if (!b.valid_until) return -1;
-        return new Date(a.valid_until).getTime() - new Date(b.valid_until).getTime();
-      });
+      const now = Date.now();
+      const withDate = result.filter((s) => s.valid_until && new Date(s.valid_until).getTime() >= now);
+      const without = result.filter((s) => !s.valid_until || new Date(s.valid_until).getTime() < now);
+      withDate.sort((a, b) => new Date(a.valid_until!).getTime() - new Date(b.valid_until!).getTime());
+      return [...withDate, ...without];
     }
     return result;
-  }, [specials, filterType, sortBy]);
+  }, [specials, filterType, sortBy, savedIds]);
 
   const press = {
     onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
@@ -92,7 +124,14 @@ const Specials = () => {
     onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   };
 
-  const sortLabel = sortBy === "favourites" ? "Favourites" : sortBy === "name" ? "Name" : "Expiring";
+  const SORT_LABELS: Record<SortKey, string> = {
+    default: "Default",
+    saved: "Saved",
+    name: "Alphabetically",
+    business: "Business",
+    expiring: "Expiring soon",
+  };
+  const sortLabel = SORT_LABELS[sortBy];
   const count = filteredSpecials.length;
 
   // Buttons
