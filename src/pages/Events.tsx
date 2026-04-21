@@ -81,7 +81,7 @@ function shortenRecurrence(raw: string): string {
       return t ? `Every ${day} · ${t[1].replace(".", ":")} ${t[2].toLowerCase()}` : `Every ${day}`;
     }
   }
-  if (lower.includes("monthly")) return "Monthly";
+  if (lower.includes("month")) return "Monthly";
   if (lower.includes("quarterly")) return "Quarterly";
   if (lower.includes("weekly")) return "Weekly";
   // Fallback: cut at first comma or slash, cap at 32 chars
@@ -93,7 +93,7 @@ const filters: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
-  { label: "This Month", value: "this-month" },
+  { label: "Monthly", value: "this-month" },
   { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
 ];
@@ -442,7 +442,7 @@ const Events = () => {
           {/* Featured */}
           {featuredEvents.length > 0 && (
             <section style={{ marginBottom: 8 }}>
-              <SectionHead overline="Featured" heading="This Month" />
+              <SectionHead overline="Featured" heading="Monthly" />
               <div className="overflow-x-auto scrollbar-hide" style={{ scrollSnapType: "x proximity" }}>
                 <div style={{ display: "inline-flex", padding: "0 24px 40px 24px", gap: 14 }}>
                   {featuredEvents.map((event) => {
