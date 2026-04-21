@@ -104,7 +104,7 @@ const pressHandlers = {
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
-const SectionHead = ({ overline, heading }: { overline: string; heading: string }) => (
+const SectionHead = ({ overline, heading, subheading }: { overline: string; heading: string; subheading?: string }) => (
   <div style={{ padding: "0 24px 20px 24px" }}>
     <h2 style={{
       fontFamily: FONT,
@@ -117,6 +117,21 @@ const SectionHead = ({ overline, heading }: { overline: string; heading: string 
     }}>
       {heading}
     </h2>
+    {subheading && (
+      <p style={{
+        fontFamily: FONT,
+        fontSize: 12,
+        fontWeight: 400,
+        lineHeight: "14.4px",
+        letterSpacing: "0.24px",
+        textTransform: "uppercase",
+        color: COLOR.muted,
+        margin: 0,
+        marginTop: 10,
+      }}>
+        {subheading}
+      </p>
+    )}
   </div>
 );
 
