@@ -666,15 +666,15 @@ const Events = () => {
               <SectionHead
                 overline={
                   activeFilter === "today"
-                    ? new Date().toLocaleDateString("en-US", { weekday: "long" })
-                    : "Save The Date"
-                }
-                heading={
-                  activeFilter === "today"
                     ? (() => {
                         const d = new Date();
                         return `${d.getDate()} ${d.toLocaleString("en-US", { month: "long" })} ${d.getFullYear()}`;
                       })()
+                    : "Save The Date"
+                }
+                heading={
+                  activeFilter === "today"
+                    ? "Today"
                     : activeFilter === "past"
                       ? "Past"
                       : activeFilter === "this-month"
