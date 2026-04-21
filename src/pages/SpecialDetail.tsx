@@ -336,7 +336,7 @@ const SpecialDetail = () => {
           {special.business_id ? (
             <Link
               to={`/listing/${special.business_id}`}
-              style={{ fontFamily: FONT, fontSize: 14, lineHeight: "20px", color: TEXT, margin: 0, textDecoration: "underline", textUnderlineOffset: 2, display: "block" }}
+              style={{ fontFamily: FONT, fontSize: 14, lineHeight: "20px", color: TEXT, margin: 0, textDecoration: "none", display: "block" }}
             >
               {special.business_name}
             </Link>
