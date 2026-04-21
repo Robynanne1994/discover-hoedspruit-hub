@@ -1,11 +1,12 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, Tag } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
+import { useAuth } from "@/hooks/useAuth";
 
 const TYPE_OPTIONS = ["Daily Special", "Weekly Special", "Monthly Special", "Seasonal", "Happy Hour", "Promotion"];
 
@@ -20,7 +21,7 @@ const COLOR = {
   divider: "#E8E4DF",
 };
 
-type SortKey = "favourites" | "name" | "expiring";
+type SortKey = "default" | "saved" | "name" | "business" | "expiring";
 
 const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
   <button
@@ -45,10 +46,23 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
 
 const Specials = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [showFilters, setShowFilters] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>("favourites");
+  const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showSortMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setShowSortMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showSortMenu]);
 
   const { data: specials, isLoading } = useQuery({
     queryKey: ["all-specials"],
@@ -60,6 +74,20 @@ const Specials = () => {
         .order("sort_order", { ascending: true });
       return data || [];
     },
+  });
+
+  const { data: savedIds } = useQuery({
+    queryKey: ["saved-special-ids", user?.id],
+    queryFn: async () => {
+      if (!user) return new Set<string>();
+      const { data } = await supabase
+        .from("favourites")
+        .select("item_id")
+        .eq("user_id", user.id)
+        .eq("item_type", "special");
+      return new Set((data || []).map((f: any) => f.item_id as string));
+    },
+    enabled: !!user,
   });
 
   const activeFilterCount = filterType.length > 0 ? 1 : 0;
@@ -74,16 +102,21 @@ const Specials = () => {
     if (filterType.length > 0) {
       result = result.filter((s) => filterType.some((t) => (s.special_type || "").toLowerCase() === t.toLowerCase()));
     }
+    if (sortBy === "saved") {
+      const ids = savedIds || new Set<string>();
+      return [...result].filter((s) => ids.has(s.id));
+    }
     if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortBy === "business") return [...result].sort((a, b) => a.business_name.localeCompare(b.business_name));
     if (sortBy === "expiring") {
-      return [...result].sort((a, b) => {
-        if (!a.valid_until) return 1;
-        if (!b.valid_until) return -1;
-        return new Date(a.valid_until).getTime() - new Date(b.valid_until).getTime();
-      });
+      const now = Date.now();
+      const withDate = result.filter((s) => s.valid_until && new Date(s.valid_until).getTime() >= now);
+      const without = result.filter((s) => !s.valid_until || new Date(s.valid_until).getTime() < now);
+      withDate.sort((a, b) => new Date(a.valid_until!).getTime() - new Date(b.valid_until!).getTime());
+      return [...withDate, ...without];
     }
     return result;
-  }, [specials, filterType, sortBy]);
+  }, [specials, filterType, sortBy, savedIds]);
 
   const press = {
     onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
@@ -91,7 +124,14 @@ const Specials = () => {
     onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   };
 
-  const sortLabel = sortBy === "favourites" ? "Favourites" : sortBy === "name" ? "Name" : "Expiring";
+  const SORT_LABELS: Record<SortKey, string> = {
+    default: "Default",
+    saved: "Saved",
+    name: "Alphabetically",
+    business: "Business",
+    expiring: "Expiring soon",
+  };
+  const sortLabel = SORT_LABELS[sortBy];
   const count = filteredSpecials.length;
 
   // Buttons
@@ -294,67 +334,68 @@ const Specials = () => {
           )}
         </button>
 
-        <button
-          onClick={() => setShowSortMenu((v) => !v)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            background: "transparent",
-            border: "none",
-            padding: "8px 0",
-            cursor: "pointer",
-          }}
-        >
-          <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
-            Sort:{" "}
-            <span style={{ color: COLOR.text, textTransform: "capitalize" }}>{sortLabel}</span>
-          </span>
-          <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
-        </button>
-
-        {showSortMenu && (
-          <div
+        <div ref={sortRef} style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowSortMenu((v) => !v)}
             style={{
-              position: "absolute",
-              top: "calc(100% - 4px)",
-              right: 24,
-              background: COLOR.surface,
-              borderRadius: 16,
-              padding: 6,
-              zIndex: 20,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              minWidth: 180,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "transparent",
+              border: "none",
+              padding: "8px 0",
+              cursor: "pointer",
             }}
           >
-            {(["favourites", "name", "expiring"] as SortKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => {
-                  setSortBy(key);
-                  setShowSortMenu(false);
-                }}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "10px 12px",
-                  background: sortBy === key ? COLOR.warm : "transparent",
-                  border: "none",
-                  borderRadius: 10,
-                  fontSize: 14,
-                  fontWeight: 400,
-                  color: COLOR.text,
-                  fontFamily: FONT,
-                  cursor: "pointer",
-                  textTransform: "capitalize",
-                }}
-              >
-                {key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Expiring"}
-              </button>
-            ))}
-          </div>
-        )}
+            <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
+              Sort:{" "}
+              <span style={{ color: COLOR.text }}>{sortLabel}</span>
+            </span>
+            <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
+          </button>
+
+          {showSortMenu && (
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(100% - 4px)",
+                right: 0,
+                background: COLOR.surface,
+                borderRadius: 16,
+                padding: 6,
+                zIndex: 20,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                minWidth: 200,
+              }}
+            >
+              {(["default", "saved", "name", "business", "expiring"] as SortKey[]).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setSortBy(key);
+                    setShowSortMenu(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 12px",
+                    background: sortBy === key ? COLOR.warm : "transparent",
+                    border: "none",
+                    borderRadius: 10,
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: COLOR.text,
+                    fontFamily: FONT,
+                    cursor: "pointer",
+                  }}
+                >
+                  {SORT_LABELS[key]}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filters panel */}
