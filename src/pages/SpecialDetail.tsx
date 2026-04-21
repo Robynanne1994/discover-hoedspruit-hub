@@ -375,11 +375,11 @@ const SpecialDetail = () => {
             <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none", fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontSize: 28, fontWeight: 400 }}>About</h2>
             <p
               style={{
-                fontFamily: FONT,
-                fontSize: 16,
-                lineHeight: "23.2px",
+                fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                fontSize: 14,
+                lineHeight: "20px",
                 letterSpacing: 0,
-                color: TEXT,
+                color: "rgb(115, 115, 115)",
                 margin: 0,
                 whiteSpace: "pre-line",
               }}
