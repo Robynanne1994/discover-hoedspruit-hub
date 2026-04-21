@@ -305,8 +305,8 @@ const SpecialDetail = () => {
           style={{
             fontFamily: FONT,
             fontWeight: 700,
-            fontSize: 44,
-            lineHeight: "44px",
+            fontSize: 35,
+            lineHeight: "38px",
             letterSpacing: "-1.32px",
             color: TEXT,
             margin: 0,
