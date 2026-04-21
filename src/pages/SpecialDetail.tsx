@@ -74,7 +74,7 @@ const overlayBtn: React.CSSProperties = {
   cursor: "pointer",
   transition: "transform 150ms ease-out",
   position: "absolute",
-  top: 56,
+  top: 16,
   zIndex: 10,
 };
 
@@ -161,7 +161,7 @@ const SpecialDetail = () => {
       <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT }}>
         <button
           onClick={() => navigate(-1)}
-          style={{ ...overlayBtn, position: "fixed", left: 24, top: 56 }}
+          style={{ ...overlayBtn, position: "fixed", left: 24, top: 16 }}
           aria-label="Back"
         >
           <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
@@ -222,18 +222,6 @@ const SpecialDetail = () => {
     });
 
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
-  secondaryActions.push({
-    label: "Share",
-    icon: <Share2 size={16} strokeWidth={1.5} color={TEXT} />,
-    onClick: handleShare,
-  });
-  if (isAdmin) {
-    secondaryActions.push({
-      label: "Edit",
-      icon: <Pencil size={16} strokeWidth={1.5} color={TEXT} />,
-      onClick: () => setEditOpen(true),
-    });
-  }
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
@@ -266,26 +254,57 @@ const SpecialDetail = () => {
         >
           <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
         </button>
-        <button
-          onClick={() => {
-            if (!user) {
-              toast.info("Sign in to save");
-              navigate("/auth");
-              return;
-            }
-            toggleFavourite.mutate();
-          }}
-          style={{ ...overlayBtn, right: 24 }}
-          aria-label={isFavourited ? "Unsave" : "Save"}
-          {...press}
-        >
-          <Heart
-            size={20}
-            strokeWidth={1.5}
-            color={TEXT}
-            fill={isFavourited ? TEXT : "none"}
-          />
-        </button>
+        {(() => {
+          const rightIcons: { key: string; onClick: () => void; ariaLabel: string; node: React.ReactNode }[] = [];
+          if (isAdmin) {
+            rightIcons.push({
+              key: "edit",
+              onClick: () => setEditOpen(true),
+              ariaLabel: "Edit",
+              node: <Pencil size={20} strokeWidth={1.5} color={TEXT} />,
+            });
+          }
+          rightIcons.push({
+            key: "share",
+            onClick: handleShare,
+            ariaLabel: "Share",
+            node: <Share2 size={20} strokeWidth={1.5} color={TEXT} />,
+          });
+          rightIcons.push({
+            key: "fav",
+            onClick: () => {
+              if (!user) {
+                toast.info("Sign in to save");
+                navigate("/auth");
+                return;
+              }
+              toggleFavourite.mutate();
+            },
+            ariaLabel: isFavourited ? "Unsave" : "Save",
+            node: (
+              <Heart
+                size={20}
+                strokeWidth={1.5}
+                color={TEXT}
+                fill={isFavourited ? TEXT : "none"}
+              />
+            ),
+          });
+          return rightIcons.map((b, idx) => {
+            const rightOffset = 24 + (rightIcons.length - 1 - idx) * (44 + 8);
+            return (
+              <button
+                key={b.key}
+                onClick={b.onClick}
+                style={{ ...overlayBtn, right: rightOffset }}
+                aria-label={b.ariaLabel}
+                {...press}
+              >
+                {b.node}
+              </button>
+            );
+          });
+        })()}
       </div>
 
       {/* Content */}
