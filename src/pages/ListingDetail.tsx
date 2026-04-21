@@ -496,8 +496,8 @@ const ListingDetail = () => {
         )}
 
         <h1 style={{
-          fontFamily: font, fontWeight: 700, fontSize: 52, lineHeight: "52px",
-          letterSpacing: "-1.56px", color: C.text, margin: 0, marginBottom: 20,
+          fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 500, fontSize: 35, lineHeight: 1.05,
+          letterSpacing: "-0.5px", color: C.text, margin: 0, marginBottom: 20,
         }}>
           {listing.title}
         </h1>
