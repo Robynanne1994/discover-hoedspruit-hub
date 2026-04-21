@@ -171,6 +171,7 @@ const EventDetail = () => {
 
   const mapsLink = (event as any).google_maps_link || null;
   const socialLink = (event as any).social_media_link || null;
+  const socialLabel = (event as any).social_media_label || null;
   const contactEmail = (event as any).contact_email || null;
   const contactPhone = (event as any).contact_phone || null;
   const galleryImages: string[] = (event as any).gallery_images ?? [];
@@ -188,7 +189,7 @@ const EventDetail = () => {
   const contactRows = [
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
     contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
-    socialLink ? { label: "Social Media", value: "Social Media Profile", icon: Globe, href: socialLink } : null,
+    socialLink ? { label: "Social Media", value: socialLabel || "Social Media Profile", icon: Globe, href: socialLink } : null,
     bookingLink ? { label: "Booking", value: "Booking Link", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
