@@ -222,13 +222,6 @@ const SpecialDetail = () => {
     });
 
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
-  if (special.business_id) {
-    secondaryActions.push({
-      label: "View Business",
-      icon: <Store size={16} strokeWidth={1.5} color={TEXT} />,
-      onClick: () => navigate(`/listing/${special.business_id}`),
-    });
-  }
   secondaryActions.push({
     label: "Share",
     icon: <Share2 size={16} strokeWidth={1.5} color={TEXT} />,
@@ -332,67 +325,7 @@ const SpecialDetail = () => {
           </p>
         </div>
 
-        {/* Primary Call Now / WhatsApp */}
-        {(phoneClean || waClean) && (
-          <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
-            {phoneClean && (
-              <a
-                href={`tel:${phoneClean}`}
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  height: 52,
-                  background: TEXT,
-                  color: "#FFFFFF",
-                  borderRadius: 999,
-                  padding: "0 16px",
-                  textDecoration: "none",
-                  fontFamily: FONT,
-                  fontWeight: 400,
-                  fontSize: 15,
-                  lineHeight: "18px",
-                  transition: "transform 150ms ease-out",
-                }}
-                {...press}
-              >
-                <Phone size={16} strokeWidth={1.5} color="#FFFFFF" />
-                <span>Call Now</span>
-              </a>
-            )}
-            {waClean && (
-              <a
-                href={`https://wa.me/${waClean}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  flex: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 8,
-                  height: 52,
-                  background: TEXT,
-                  color: "#FFFFFF",
-                  borderRadius: 999,
-                  padding: "0 16px",
-                  textDecoration: "none",
-                  fontFamily: FONT,
-                  fontWeight: 400,
-                  fontSize: 15,
-                  lineHeight: "18px",
-                  transition: "transform 150ms ease-out",
-                }}
-                {...press}
-              >
-                <MessageCircle size={16} strokeWidth={1.5} color="#FFFFFF" />
-                <span>Whatsapp</span>
-              </a>
-            )}
-          </div>
-        )}
+        {/* Primary call/whatsapp removed — moved to Contact section below */}
 
         {/* Secondary actions */}
         {secondaryActions.length > 0 && (
