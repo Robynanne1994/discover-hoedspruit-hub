@@ -27,7 +27,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
         style={{
           margin: 0,
           fontFamily: DISPLAY,
-          fontWeight: 400,
+          fontWeight: 500,
           fontSize: 28,
           lineHeight: 1,
           letterSpacing: "-0.02em",
@@ -44,7 +44,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
               style={{
                 fontFamily: DISPLAY,
                 fontStyle: "normal",
-                fontWeight: 400,
+                fontWeight: 500,
                 fontSize: 28,
                 color: "#0A0A0A",
                 letterSpacing: "-0.02em",
