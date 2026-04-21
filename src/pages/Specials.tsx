@@ -494,9 +494,6 @@ const Specials = () => {
 
             const Actions = (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
-                <Link to={`/specials/${s.id}`} onClick={(e) => e.stopPropagation()} style={primaryBtn} {...press}>
-                  View Deal
-                </Link>
                 {s.contact_phone && (
                   <a href={`tel:${s.contact_phone}`} onClick={(e) => e.stopPropagation()} style={secondaryBtn} {...press}>
                     Call
