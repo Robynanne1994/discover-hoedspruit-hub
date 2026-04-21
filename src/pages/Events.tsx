@@ -4,9 +4,9 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { parse, isToday, isBefore, startOfToday, endOfWeek, isWithinInterval } from "date-fns";
+import { parse, isToday, isBefore, startOfToday, endOfWeek, endOfMonth, isWithinInterval } from "date-fns";
 
-type FilterType = "all" | "today" | "this-week" | "upcoming" | "past";
+type FilterType = "all" | "today" | "this-week" | "this-month" | "upcoming" | "past";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
@@ -93,6 +93,7 @@ const filters: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
+  { label: "This Month", value: "this-month" },
   { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
 ];
@@ -266,6 +267,7 @@ const Events = () => {
   const datedEvents = useMemo(() => {
     const today = startOfToday();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+    const monthEnd = endOfMonth(today);
     const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "" || e.recurrence.trim().toLowerCase() === "none");
     if (activeFilter === "all") return nonRecurring;
     return nonRecurring.filter((event) => {
@@ -274,6 +276,7 @@ const Events = () => {
       switch (activeFilter) {
         case "today": return isToday(date);
         case "this-week": return isWithinInterval(date, { start: today, end: weekEnd });
+        case "this-month": return isWithinInterval(date, { start: today, end: monthEnd });
         case "upcoming": return !isBefore(date, today);
         case "past": return isBefore(date, today) && !isToday(date);
         default: return true;
