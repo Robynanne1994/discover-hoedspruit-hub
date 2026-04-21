@@ -172,7 +172,8 @@ const SectionHead = ({ overline, heading, subheading, trailing }: { overline: st
       </p>
     )}
   </div>
-);
+  );
+};
 
 const EventRow = ({
   event,
