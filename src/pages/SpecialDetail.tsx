@@ -74,7 +74,7 @@ const overlayBtn: React.CSSProperties = {
   cursor: "pointer",
   transition: "transform 150ms ease-out",
   position: "absolute",
-  top: 56,
+  top: 16,
   zIndex: 10,
 };
 
