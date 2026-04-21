@@ -17,6 +17,7 @@ import {
   MessageCircle,
   Copy,
   Pencil,
+  ArrowUpRight,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -531,7 +532,7 @@ const SpecialDetail = () => {
                 key={i}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "32px 1fr",
+                  gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
                   gap: 16,
                   alignItems: "center",
                   padding: "16px 0",
@@ -553,8 +554,7 @@ const SpecialDetail = () => {
                         color: TEXT,
                         margin: 0,
                         textTransform: row.capitalize ? "capitalize" : "none",
-                        textDecoration: "underline",
-                        textUnderlineOffset: 2,
+                        textDecoration: "none",
                       }}
                     >
                       {row.value}
@@ -576,6 +576,9 @@ const SpecialDetail = () => {
                     </p>
                   )}
                 </div>
+                {row.href && (
+                  <ArrowUpRight size={18} color={TEXT} strokeWidth={1.8} />
+                )}
               </div>
             ))}
           </div>
