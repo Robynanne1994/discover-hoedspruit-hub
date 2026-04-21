@@ -531,7 +531,7 @@ const Events = () => {
                   const d = new Date();
                   return `${d.getDate()} ${d.toLocaleString("en-US", { month: "long" })} ${d.getFullYear()}`;
                 })()
-              : "Save The Date";
+              : "This month";
           return (
             <>
               <SectionHead overline={emptyOverline} heading={emptyHeading} trailing={tagFilterButton} />
@@ -731,7 +731,7 @@ const Events = () => {
                         const d = new Date();
                         return `${d.getDate()} ${d.toLocaleString("en-US", { month: "long" })} ${d.getFullYear()}`;
                       })()
-                    : "Save The Date"
+                    : "This month"
                 }
                 heading={
                   activeFilter === "today"
