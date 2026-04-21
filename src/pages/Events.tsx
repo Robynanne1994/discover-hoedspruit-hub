@@ -731,7 +731,14 @@ const Events = () => {
                         const d = new Date();
                         return `${d.getDate()} ${d.toLocaleString("en-US", { month: "long" })} ${d.getFullYear()}`;
                       })()
-                    : ""
+                    : activeFilter === "this-week"
+                      ? (() => {
+                          const ws = startOfWeek(new Date(), { weekStartsOn: 1 });
+                          const we = endOfWeek(new Date(), { weekStartsOn: 1 });
+                          const fmt = (d: Date) => `${d.getDate()} ${d.toLocaleString("en-US", { month: "short" })}`;
+                          return `${fmt(ws)} – ${fmt(we)} ${we.getFullYear()}`;
+                        })()
+                      : ""
                 }
                 heading={
                   activeFilter === "today"
@@ -743,16 +750,6 @@ const Events = () => {
                         : activeFilter === "this-week"
                           ? "This week"
                           : "Upcoming"
-                }
-                subheading={
-                  activeFilter === "this-week"
-                    ? (() => {
-                        const ws = startOfWeek(new Date(), { weekStartsOn: 1 });
-                        const we = endOfWeek(new Date(), { weekStartsOn: 1 });
-                        const fmt = (d: Date) => `${d.getDate()} ${d.toLocaleString("en-US", { month: "short" })}`;
-                        return `${fmt(ws)} – ${fmt(we)} ${we.getFullYear()}`;
-                      })()
-                    : undefined
                 }
                 trailing={filterSlot === "upcoming" ? tagFilterButton : undefined}
               />
