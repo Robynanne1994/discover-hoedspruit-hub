@@ -1,9 +1,13 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import DOMPurify from "dompurify";
 import { supabase } from "@/integrations/supabase/client";
 import { ArrowLeft, Share2, Newspaper } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+
+const sanitizeHtml = (html: string) =>
+  DOMPurify.sanitize(html, { ALLOWED_URI_REGEXP: /^(?:https?|mailto|tel):/i });
 
 const renderMarkdown = (text: string) => {
   const lines = text.split("\n");
@@ -24,7 +28,7 @@ const renderMarkdown = (text: string) => {
       elements.push(
         <ul key={`ul-${i}`} style={{ paddingLeft: 24, marginBottom: 16 }}>
           {items.map((item, j) => (
-            <li key={j} style={{ fontSize: 15, color: "rgba(18,18,20,0.55)", lineHeight: 1.8, marginBottom: 10 }} dangerouslySetInnerHTML={{ __html: inlineFormat(item) }} />
+            <li key={j} style={{ fontSize: 15, color: "rgba(18,18,20,0.55)", lineHeight: 1.8, marginBottom: 10 }} dangerouslySetInnerHTML={{ __html: sanitizeHtml(inlineFormat(item)) }} />
           ))}
         </ul>
       );
@@ -32,7 +36,7 @@ const renderMarkdown = (text: string) => {
     } else if (line.trim() === "") {
       // skip blank
     } else {
-      elements.push(<p key={i} style={{ fontSize: 15, color: "rgba(18,18,20,0.55)", lineHeight: 1.8, marginBottom: 16 }} dangerouslySetInnerHTML={{ __html: inlineFormat(line) }} />);
+      elements.push(<p key={i} style={{ fontSize: 15, color: "rgba(18,18,20,0.55)", lineHeight: 1.8, marginBottom: 16 }} dangerouslySetInnerHTML={{ __html: sanitizeHtml(inlineFormat(line)) }} />);
     }
     i++;
   }
