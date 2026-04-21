@@ -80,6 +80,7 @@ const AccountInfo = () => {
   });
 
   const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [location, setLocation] = useState("");
@@ -89,6 +90,7 @@ const AccountInfo = () => {
   useEffect(() => {
     if (profile && !initialized.current) {
       setDisplayName(profile.display_name || "");
+      setUsername((profile as any).username || "");
       setEmail(profile.email || user?.email || "");
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
@@ -105,6 +107,7 @@ const AccountInfo = () => {
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
         display_name: displayName.trim() || null,
+        username: username.trim() || null,
         email: email.trim() || null,
         phone: phone.trim() || null,
         location: location.trim() || null,
@@ -212,6 +215,18 @@ const AccountInfo = () => {
               <div>
                 <label style={labelStyle}>Name</label>
                 <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your first name" style={inputStyle} maxLength={50} />
+              </div>
+              <div>
+                <label style={labelStyle}>Username</label>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/\s+/g, "").toLowerCase())}
+                  placeholder="yourusername"
+                  style={inputStyle}
+                  maxLength={30}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                />
               </div>
               <div>
                 <label style={labelStyle}>Email</label>
