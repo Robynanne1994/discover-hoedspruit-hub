@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
-import { parse, isToday, isBefore, startOfToday, endOfWeek, endOfMonth, isWithinInterval } from "date-fns";
+import { parse, isToday, isBefore, startOfToday, startOfWeek, endOfWeek, endOfMonth, isWithinInterval } from "date-fns";
 
 type FilterType = "all" | "today" | "this-week" | "this-month" | "upcoming" | "past";
 
@@ -104,7 +104,7 @@ const pressHandlers = {
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
-const SectionHead = ({ overline, heading }: { overline: string; heading: string }) => (
+const SectionHead = ({ overline, heading, subheading }: { overline: string; heading: string; subheading?: string }) => (
   <div style={{ padding: "0 24px 20px 24px" }}>
     <h2 style={{
       fontFamily: FONT,
@@ -117,6 +117,21 @@ const SectionHead = ({ overline, heading }: { overline: string; heading: string 
     }}>
       {heading}
     </h2>
+    {subheading && (
+      <p style={{
+        fontFamily: FONT,
+        fontSize: 12,
+        fontWeight: 400,
+        lineHeight: "14.4px",
+        letterSpacing: "0.24px",
+        textTransform: "uppercase",
+        color: COLOR.muted,
+        margin: 0,
+        marginTop: 10,
+      }}>
+        {subheading}
+      </p>
+    )}
   </div>
 );
 
@@ -580,7 +595,19 @@ const Events = () => {
                     ? "Past"
                     : activeFilter === "this-month"
                       ? new Date().toLocaleString("en-US", { month: "long", year: "numeric" })
-                      : "Upcoming"
+                      : activeFilter === "this-week"
+                        ? "This Week"
+                        : "Upcoming"
+                }
+                subheading={
+                  activeFilter === "this-week"
+                    ? (() => {
+                        const ws = startOfWeek(new Date(), { weekStartsOn: 1 });
+                        const we = endOfWeek(new Date(), { weekStartsOn: 1 });
+                        const fmt = (d: Date) => `${d.getDate()} ${d.toLocaleString("en-US", { month: "short" })}`;
+                        return `${fmt(ws)} – ${fmt(we)} ${we.getFullYear()}`;
+                      })()
+                    : undefined
                 }
               />
               <div style={{ padding: "0 24px 40px 24px" }}>
@@ -630,6 +657,19 @@ const Events = () => {
               groups[3].events = groups[3].events.filter(inMonth);
               groups[4].events = groups[4].events.filter(inMonth);
               groups[5].events = groups[5].events.filter(inMonth);
+            }
+            // For "This Week", hide monthly/quarterly/yearly/other unless their date falls within current week
+            if (activeFilter === "this-week") {
+              const ws = startOfWeek(now, { weekStartsOn: 1 });
+              const we = endOfWeek(now, { weekStartsOn: 1 });
+              const inWeek = (e: typeof recurringEvents[number]) => {
+                const d = e._parsed;
+                return !!d && isWithinInterval(d, { start: ws, end: we });
+              };
+              groups[2].events = groups[2].events.filter(inWeek);
+              groups[3].events = groups[3].events.filter(inWeek);
+              groups[4].events = groups[4].events.filter(inWeek);
+              groups[5].events = groups[5].events.filter(inWeek);
             }
             return groups
               .filter((g) => g.events.length > 0)
