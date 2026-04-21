@@ -209,10 +209,10 @@ const EventRow = ({
           )}
           <h4 style={{
             fontFamily: FONT,
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: 400,
-            lineHeight: "21.6px",
-            letterSpacing: "-0.18px",
+            lineHeight: "16.8px",
+            letterSpacing: "-0.14px",
             color: COLOR.text,
             margin: 0,
             marginBottom: 4,
@@ -663,10 +663,10 @@ const Events = () => {
                           )}
                           <h3 style={{
                             fontFamily: FONT,
-                            fontWeight: 700,
-                            fontSize: 28,
-                            lineHeight: "30px",
-                            letterSpacing: "-0.84px",
+                            fontWeight: 400,
+                            fontSize: 14,
+                            lineHeight: "16.8px",
+                            letterSpacing: "-0.14px",
                             color: "#FFFFFF",
                             margin: 0,
                             marginBottom: 8,
