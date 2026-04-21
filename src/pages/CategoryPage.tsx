@@ -1,5 +1,5 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe } from "lucide-react";
@@ -54,6 +54,18 @@ const CategoryPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("favourites");
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showSortMenu) return;
+    const handler = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setShowSortMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [showSortMenu]);
   const [filterCuisine, setFilterCuisine] = useState<string[]>([]);
   const [filterVibe, setFilterVibe] = useState<string[]>([]);
   const [filterMeal, setFilterMeal] = useState<string[]>([]);
@@ -401,69 +413,68 @@ const CategoryPage = () => {
           )}
         </button>
 
-        <button
-          onClick={() => setShowSortMenu((v) => !v)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            background: "transparent",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            fontFamily: font,
-            fontWeight: 400,
-            fontSize: 14,
-            lineHeight: "16.8px",
-            color: C.muted,
-          }}
-        >
-          <span>Sort: {sortLabel}</span>
-          <ChevronDown size={14} strokeWidth={1.8} color={C.muted} />
-        </button>
-
-        {showSortMenu && (
-          <div
+        <div ref={sortRef} style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowSortMenu((v) => !v)}
             style={{
-              position: "absolute",
-              top: "calc(100% - 8px)",
-              right: 24,
-              background: C.card,
-              border: `1px solid ${C.border}`,
-              borderRadius: 16,
-              padding: 6,
-              zIndex: 20,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.06)",
-              minWidth: 160,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "transparent",
+              border: "none",
+              padding: "8px 0",
+              cursor: "pointer",
             }}
           >
-            {(["favourites", "name", "rating"] as SortKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => {
-                  setSortBy(key);
-                  setShowSortMenu(false);
-                }}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "10px 12px",
-                  background: sortBy === key ? C.panel : "transparent",
-                  border: "none",
-                  borderRadius: 10,
-                  fontSize: 14,
-                  fontWeight: 400,
-                  color: C.text,
-                  fontFamily: font,
-                  cursor: "pointer",
-                }}
-              >
-                {key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Rating"}
-              </button>
-            ))}
-          </div>
-        )}
+            <span style={{ fontFamily: font, fontSize: 14, lineHeight: "16.8px", color: C.muted, fontWeight: 400 }}>
+              Sort By:{" "}
+              <span style={{ color: C.text }}>{sortLabel}</span>
+            </span>
+            <ChevronDown size={14} strokeWidth={1.75} color={C.text} />
+          </button>
+
+          {showSortMenu && (
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(100% - 4px)",
+                right: 0,
+                background: C.panel,
+                borderRadius: 16,
+                padding: 6,
+                zIndex: 20,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                minWidth: 200,
+              }}
+            >
+              {(["favourites", "name", "rating"] as SortKey[]).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setSortBy(key);
+                    setShowSortMenu(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 12px",
+                    background: sortBy === key ? C.card : "transparent",
+                    border: "none",
+                    borderRadius: 10,
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: C.text,
+                    fontFamily: font,
+                    cursor: "pointer",
+                  }}
+                >
+                  {key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Rating"}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filters panel */}
