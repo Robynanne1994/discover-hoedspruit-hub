@@ -111,19 +111,24 @@ const pressHandlers = {
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
-const SectionHead = ({ overline, heading, subheading }: { overline: string; heading: string; subheading?: string }) => (
+const SectionHead = ({ overline, heading, subheading, trailing }: { overline: string; heading: string; subheading?: string; trailing?: React.ReactNode }) => (
   <div style={{ padding: "0 24px 20px 24px" }}>
-    <h2 style={{
-      fontFamily: FONT,
-      fontWeight: 700,
-      fontSize: 44,
-      lineHeight: "44px",
-      letterSpacing: "-1.32px",
-      color: COLOR.text,
-      margin: 0,
-    }}>
-      {heading}
-    </h2>
+    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
+      <h2 style={{
+        fontFamily: FONT,
+        fontWeight: 700,
+        fontSize: 44,
+        lineHeight: "44px",
+        letterSpacing: "-1.32px",
+        color: COLOR.text,
+        margin: 0,
+        flex: 1,
+        minWidth: 0,
+      }}>
+        {heading}
+      </h2>
+      {trailing && <div style={{ flexShrink: 0 }}>{trailing}</div>}
+    </div>
     {subheading && (
       <p style={{
         fontFamily: FONT,
@@ -337,6 +342,58 @@ const Events = () => {
 
   const hasAnything = featuredEvents.length > 0 || upcomingEvents.length > 0 || recurringEvents.length > 0;
 
+  const tagFilterButton = (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          aria-label="Filter by tag"
+          disabled={availableTags.length === 0}
+          style={{
+            flexShrink: 0,
+            height: 36,
+            paddingInline: activeTag ? 14 : 0,
+            width: activeTag ? "auto" : 36,
+            background: activeTag ? COLOR.text : COLOR.card,
+            color: activeTag ? "#FFFFFF" : COLOR.text,
+            border: "none",
+            borderRadius: 999,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            cursor: availableTags.length === 0 ? "not-allowed" : "pointer",
+            opacity: availableTags.length === 0 ? 0.4 : 1,
+            boxShadow: activeTag ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
+            fontFamily: FONT,
+            fontSize: 13,
+            fontWeight: 400,
+            whiteSpace: "nowrap",
+            transition: "background 0.15s ease, color 0.15s ease",
+          }}
+        >
+          <SlidersHorizontal size={15} strokeWidth={1.75} />
+          {activeTag && <span>{activeTag}</span>}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" style={{ maxHeight: 320, overflowY: "auto" }}>
+        <DropdownMenuItem onClick={() => setActiveTag(null)}>
+          <span style={{ flex: 1 }}>All tags</span>
+          {!activeTag && <Check size={14} />}
+        </DropdownMenuItem>
+        {availableTags.map((tag) => (
+          <DropdownMenuItem key={tag} onClick={() => setActiveTag(tag)}>
+            <span style={{ flex: 1, textTransform: "capitalize" }}>{tag}</span>
+            {activeTag === tag && <Check size={14} />}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  // Decide which section heading shows the tag filter (the first visible one)
+  const filterSlot: "featured" | "upcoming" | "recurring" =
+    featuredEvents.length > 0 ? "featured" : upcomingEvents.length > 0 ? "upcoming" : "recurring";
+
   return (
     <div className="min-h-screen" style={{ background: COLOR.bg, paddingBottom: 140, fontFamily: FONT }}>
 
@@ -393,9 +450,9 @@ const Events = () => {
         </div>
       </div>
 
-      {/* Filter chips + tag filter */}
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 32, padding: "0 24px" }}>
-        <div className="overflow-x-auto scrollbar-hide" style={{ flex: 1, minWidth: 0 }}>
+      {/* Filter chips */}
+      <div style={{ marginBottom: 32, padding: "0 24px" }}>
+        <div className="overflow-x-auto scrollbar-hide">
           <div style={{ display: "flex", gap: 8 }}>
             {filters.map((filter) => {
               const active = activeFilter === filter.value;
@@ -426,53 +483,6 @@ const Events = () => {
             })}
           </div>
         </div>
-
-        {/* Tag filter button */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              aria-label="Filter by tag"
-              disabled={availableTags.length === 0}
-              style={{
-                flexShrink: 0,
-                height: 36,
-                paddingInline: activeTag ? 14 : 0,
-                width: activeTag ? "auto" : 36,
-                background: activeTag ? COLOR.text : COLOR.card,
-                color: activeTag ? "#FFFFFF" : COLOR.text,
-                border: "none",
-                borderRadius: 999,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 6,
-                cursor: availableTags.length === 0 ? "not-allowed" : "pointer",
-                opacity: availableTags.length === 0 ? 0.4 : 1,
-                boxShadow: activeTag ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
-                fontFamily: FONT,
-                fontSize: 13,
-                fontWeight: 400,
-                whiteSpace: "nowrap",
-                transition: "background 0.15s ease, color 0.15s ease",
-              }}
-            >
-              <SlidersHorizontal size={15} strokeWidth={1.75} />
-              {activeTag && <span>{activeTag}</span>}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" style={{ maxHeight: 320, overflowY: "auto" }}>
-            <DropdownMenuItem onClick={() => setActiveTag(null)}>
-              <span style={{ flex: 1 }}>All tags</span>
-              {!activeTag && <Check size={14} />}
-            </DropdownMenuItem>
-            {availableTags.map((tag) => (
-              <DropdownMenuItem key={tag} onClick={() => setActiveTag(tag)}>
-                <span style={{ flex: 1, textTransform: "capitalize" }}>{tag}</span>
-                {activeTag === tag && <Check size={14} />}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
 
       {isLoading ? (
@@ -517,7 +527,7 @@ const Events = () => {
           {/* Featured */}
           {featuredEvents.length > 0 && (
             <section style={{ marginBottom: 8 }}>
-              <SectionHead overline="Featured" heading="Monthly" />
+              <SectionHead overline="Featured" heading="Monthly" trailing={filterSlot === "featured" ? tagFilterButton : undefined} />
               <div className="overflow-x-auto scrollbar-hide" style={{ scrollSnapType: "x proximity" }}>
                 <div style={{ display: "inline-flex", padding: "0 24px 40px 24px", gap: 14 }}>
                   {featuredEvents.map((event) => {
@@ -693,6 +703,7 @@ const Events = () => {
                       })()
                     : undefined
                 }
+                trailing={filterSlot === "upcoming" ? tagFilterButton : undefined}
               />
               <div style={{ padding: "0 24px 40px 24px" }}>
                 <div style={{
@@ -757,9 +768,9 @@ const Events = () => {
             }
             return groups
               .filter((g) => g.events.length > 0)
-              .map((g) => (
+              .map((g, gIdx) => (
                 <section key={g.heading}>
-                  <SectionHead overline="Recurring" heading={g.heading} />
+                  <SectionHead overline="Recurring" heading={g.heading} trailing={filterSlot === "recurring" && gIdx === 0 ? tagFilterButton : undefined} />
                   <div style={{ padding: "0 24px 40px 24px" }}>
                     <div style={{
                       background: COLOR.card,
