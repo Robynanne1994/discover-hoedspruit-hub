@@ -105,19 +105,6 @@ const pressHandlers = {
 
 const SectionHead = ({ overline, heading }: { overline: string; heading: string }) => (
   <div style={{ padding: "0 24px 20px 24px" }}>
-    <p style={{
-      fontFamily: FONT,
-      fontSize: 12,
-      fontWeight: 400,
-      lineHeight: "14.4px",
-      letterSpacing: "0.24px",
-      textTransform: "uppercase",
-      color: COLOR.muted,
-      margin: 0,
-      marginBottom: 10,
-    }}>
-      {overline}
-    </p>
     <h2 style={{
       fontFamily: FONT,
       fontWeight: 700,
