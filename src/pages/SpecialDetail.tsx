@@ -81,7 +81,7 @@ const formatPrice = (raw?: string | null) => {
   if (!raw) return null;
   const trimmed = raw.trim();
   const num = parseFloat(trimmed.replace(/[^0-9.]/g, ""));
-  if (Number.isFinite(num)) return `R${Number.isInteger(num) ? num : num.toFixed(2)}`;
+  if (Number.isFinite(num)) return `R${num.toFixed(2)}`;
   return trimmed;
 };
 
@@ -197,6 +197,13 @@ const SpecialDetail = () => {
       value: original ? `${priceFmt} · was ${original}` : priceFmt,
     });
   }
+  if (special.special_type)
+    detailRows.push({
+      icon: <Ticket size={20} strokeWidth={1.5} color={MUTED} />,
+      label: "Type",
+      value: special.special_type,
+      capitalize: true,
+    });
   if (special.day_of_week?.length)
     detailRows.push({
       icon: <Clock size={20} strokeWidth={1.5} color={MUTED} />,
@@ -208,6 +215,13 @@ const SpecialDetail = () => {
     label: "Validity",
     value: validityText,
   });
+  if (special.category)
+    detailRows.push({
+      icon: <Tag size={20} strokeWidth={1.5} color={MUTED} />,
+      label: "Category",
+      value: special.category,
+      capitalize: true,
+    });
 
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
   if (special.business_id) {
@@ -259,6 +273,7 @@ const SpecialDetail = () => {
           aria-label="Back"
           {...press}
         >
+          <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
         </button>
         <button
           onClick={() => {
@@ -290,8 +305,8 @@ const SpecialDetail = () => {
           style={{
             fontFamily: FONT,
             fontWeight: 700,
-            fontSize: 35,
-            lineHeight: "38px",
+            fontSize: 44,
+            lineHeight: "44px",
             letterSpacing: "-1.32px",
             color: TEXT,
             margin: 0,
@@ -336,7 +351,7 @@ const SpecialDetail = () => {
                 }}
                 {...press}
               >
-                
+                <Phone size={16} strokeWidth={1.5} color="#FFFFFF" />
                 <span>Call Now</span>
               </a>
             )}
