@@ -628,8 +628,10 @@ const ListingDetail = () => {
                       {...wrapperProps}
                       style={{ display: "flex", alignItems: "center", padding: "14px 20px", textDecoration: "none" }}
                     >
-                      <div style={{ marginRight: 16, flexShrink: 0 }}>
-                        <row.icon size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
+                      <div style={{ marginRight: 16, flexShrink: 0, display: "flex", alignItems: "center" }}>
+                        {row.isCustomIcon
+                          ? <row.icon color="rgba(18,18,20,0.3)" />
+                          : <row.icon size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>
