@@ -750,7 +750,7 @@ const Events = () => {
               .filter((g) => g.events.length > 0)
               .map((g) => (
                 <section key={g.heading}>
-                  <SectionHead overline="Happens Regularly" heading={g.heading} />
+                  <SectionHead overline="Recurring" heading={g.heading} />
                   <div style={{ padding: "0 24px 40px 24px" }}>
                     <div style={{
                       background: COLOR.card,
