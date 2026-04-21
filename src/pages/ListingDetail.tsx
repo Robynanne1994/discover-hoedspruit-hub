@@ -438,7 +438,7 @@ const ListingDetail = () => {
         {/* Floating circle buttons */}
         <button
           onClick={() => navigate(-1)}
-          style={{ ...circleBtn, position: "absolute", top: 56, left: 20 }}
+          style={{ ...circleBtn, position: "absolute", top: 36, left: 20 }}
           aria-label="Back"
           {...pressScale("0.94")}
         >
