@@ -762,7 +762,9 @@ const ListingDetail = () => {
                 </div>
               )}
               <div style={{
-                background: C.card, borderRadius: 24,
+                background: "#FFFFFF",
+                border: "1px solid rgba(18,18,20,0.06)",
+                borderRadius: 16,
                 paddingLeft: 20, paddingRight: 20, overflow: "hidden",
               }}>
                 {DAY_LABELS.map((day, i) => {
@@ -773,8 +775,8 @@ const ListingDetail = () => {
                   return (
                     <div key={day} style={{
                       display: "flex", justifyContent: "space-between", alignItems: "center",
-                      paddingTop: 16, paddingBottom: 16,
-                      borderBottom: i < DAY_LABELS.length - 1 ? `1px solid ${C.border}` : "none",
+                      paddingTop: 14, paddingBottom: 14,
+                      borderBottom: i < DAY_LABELS.length - 1 ? "1px solid rgba(18,18,20,0.08)" : "none",
                     }}>
                       <span style={{ display: "inline-flex", alignItems: "center" }}>
                         {isToday && (
@@ -786,15 +788,15 @@ const ListingDetail = () => {
                         <span style={{
                           fontFamily: font,
                           fontWeight: isToday ? 700 : 400,
-                          fontSize: 16, lineHeight: "20px",
-                          color: C.text,
+                          fontSize: 14, lineHeight: "20px",
+                          color: "#2B2420",
                         }}>
                           {day}{isToday ? " · Today" : ""}
                         </span>
                       </span>
                       <span style={{
-                        fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
-                        color: isToday ? C.text : C.muted,
+                        fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: "20px",
+                        color: isToday ? "#2B2420" : "rgba(43,36,32,0.6)",
                       }}>
                         {isClosed ? "Closed" : value}
                       </span>
@@ -802,137 +804,6 @@ const ListingDetail = () => {
                   );
                 })}
               </div>
-            </div>
-          );
-        })()}
-
-        {/* Specials section */}
-        {linkedSpecials && linkedSpecials.length > 0 && (
-          <div style={{ marginTop: 40 }}>
-            <h2 style={{
-              fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 28, lineHeight: 1.15,
-              letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0, marginBottom: 16,
-            }}>
-              Current Specials
-            </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {linkedSpecials.map((s: any) => {
-                const validText = s.valid_until
-                  ? `Valid until ${format(new Date(s.valid_until), "d MMM yyyy")}`
-                  : "Ongoing";
-                const dealPill: React.CSSProperties = {
-                  fontFamily: font, fontSize: 11, lineHeight: "13px",
-                  letterSpacing: "0.22px", textTransform: "uppercase",
-                  color: C.text, fontWeight: 400, padding: "7px 12px",
-                  borderRadius: 999, boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                  display: "inline-block",
-                };
-                return (
-                  <article
-                    key={s.id}
-                    onClick={() => navigate(`/specials/${s.id}`)}
-                    style={{
-                      background: C.card, borderRadius: 24, overflow: "hidden",
-                      cursor: "pointer", transition: "transform 150ms ease-out",
-                    }}
-                    {...pressScale("0.99")}
-                  >
-                    {s.image_url ? (
-                      <>
-                        <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: C.panel }}>
-                          <img
-                            src={s.image_url}
-                            alt={s.title}
-                            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                            loading="lazy"
-                          />
-                          <div style={{ position: "absolute", left: 14, top: 12 }}>
-                            <span style={{
-                              ...dealPill,
-                              background: "rgba(255,255,255,0.92)",
-                              backdropFilter: "blur(8px)",
-                              WebkitBackdropFilter: "blur(8px)",
-                            }}>
-                              {s.deal_label}
-                            </span>
-                          </div>
-                        </div>
-                        <div style={{ padding: 20 }}>
-                          <h3 style={{
-                            fontFamily: font, fontSize: 28, lineHeight: "32px",
-                            letterSpacing: "-0.56px", fontWeight: 700, color: C.text,
-                            margin: 0, marginBottom: 12,
-                          }}>
-                            {s.title}
-                          </h3>
-                          <p style={{
-                            fontFamily: font, fontSize: 12, lineHeight: "15.6px",
-                            letterSpacing: "0.12px", color: C.muted, margin: 0,
-                          }}>
-                            {validText}
-                          </p>
-                          {s.description && (
-                            <p style={{
-                              fontFamily: font, fontSize: 14, lineHeight: "20.3px",
-                              color: "rgb(138, 132, 128)", margin: 0, marginTop: 14,
-                            }}>
-                              {s.description}
-                            </p>
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div style={{ padding: "20px 20px 0 20px" }}>
-                          <span style={{ ...dealPill, background: C.panel }}>{s.deal_label}</span>
-                        </div>
-                        <div style={{ padding: "16px 20px 20px 20px" }}>
-                          <h3 style={{
-                            fontFamily: font, fontSize: 28, lineHeight: "32px",
-                            letterSpacing: "-0.56px", fontWeight: 700, color: C.text,
-                            margin: 0, marginBottom: 12,
-                          }}>
-                            {s.title}
-                          </h3>
-                          <p style={{
-                            fontFamily: font, fontSize: 12, lineHeight: "15.6px",
-                            letterSpacing: "0.12px", color: C.muted, margin: 0,
-                          }}>
-                            {validText}
-                          </p>
-                          {s.description && (
-                            <p style={{
-                              fontFamily: font, fontSize: 14, lineHeight: "20.3px",
-                              color: "rgb(138, 132, 128)", margin: 0, marginTop: 14,
-                            }}>
-                              {s.description}
-                            </p>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </article>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Suggest an edit */}
-        <div style={{ marginTop: 28, display: "flex", justifyContent: "center" }}>
-          <a
-            href={`mailto:info@hellohoedspruit.com?subject=${encodeURIComponent(`${listing?.title || "Listing"} – Edit Suggestion`)}`}
-            style={{
-              fontFamily: font, fontWeight: 400, fontSize: 13, color: C.muted,
-              textDecoration: "underline", textUnderlineOffset: "3px",
-              transition: "opacity 0.12s ease",
-            }}
-            {...pressOpacity}
-          >
-            Suggest an edit
-          </a>
-        </div>
-      </div>
 
       {/* Gallery */}
       {hasGallery && (
