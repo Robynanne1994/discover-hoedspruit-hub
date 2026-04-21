@@ -355,7 +355,7 @@ const EventDetail = () => {
 
         {/* Details */}
         {detailRows.length > 0 && (
-          <section style={{ marginBottom: 24 }}>
+          <section style={{ marginBottom: notes ? 8 : 24 }}>
             <SectionLabel eyebrow="Event info" title="Details" />
             {renderDetailCard(detailRows)}
           </section>
