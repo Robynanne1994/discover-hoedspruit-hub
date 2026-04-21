@@ -83,7 +83,7 @@ function shortenRecurrence(raw: string): string {
   }
   if (lower.includes("year") || lower.includes("annual")) return "Yearly";
   if (lower.includes("month")) return "Monthly";
-  if (lower.includes("quarterly")) return "Quarterly";
+  if (lower.includes("quarter")) return "Quarterly";
   if (lower.includes("weekly")) return "Weekly";
   // Fallback: cut at first comma or slash, cap at 32 chars
   const cut = clean.split(/[,/]/)[0].trim();
