@@ -131,7 +131,7 @@ const SectionHead = ({ overline, heading, subheading, trailing }: { overline: st
       </p>
     )}
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-      <h2 style={isRecurring ? {
+      <h2 style={{
         fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif",
         fontWeight: 500,
         fontSize: 35,
@@ -141,16 +141,7 @@ const SectionHead = ({ overline, heading, subheading, trailing }: { overline: st
         margin: 0,
         flex: 1,
         minWidth: 0,
-      } : {
-        fontFamily: FONT,
-        fontWeight: 700,
-        fontSize: 44,
-        lineHeight: "44px",
-        letterSpacing: "-1.32px",
-        color: COLOR.text,
-        margin: 0,
-        flex: 1,
-        minWidth: 0,
+        textTransform: "none",
       }}>
         {heading}
       </h2>
