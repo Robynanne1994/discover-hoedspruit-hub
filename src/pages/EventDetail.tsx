@@ -177,6 +177,7 @@ const EventDetail = () => {
   const galleryImages: string[] = (event as any).gallery_images ?? [];
   const bookingLink = (event as any).booking_link || null;
   const price = (event as any).price || null;
+  const notes = (event as any).notes || null;
 
   const detailRows = [
     { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
@@ -184,6 +185,7 @@ const EventDetail = () => {
     { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
     { label: "Recurrence", value: event.recurrence, icon: RotateCcw, href: null as string | null },
     { label: "Price", value: price, icon: Banknote, href: null as string | null },
+    { label: "Notes", value: notes, icon: StickyNote, href: null as string | null },
   ].filter((row) => row.value);
 
   const contactRows = [
