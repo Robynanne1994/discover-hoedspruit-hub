@@ -232,6 +232,9 @@ const EventDetail = () => {
                   {row.value}
                 </p>
               </div>
+              {row.href && (
+                <ArrowUpRight size={18} strokeWidth={1.8} color="#2B2420" style={{ flexShrink: 0, marginLeft: 12 }} />
+              )}
             </Wrapper>
           </div>
         );
