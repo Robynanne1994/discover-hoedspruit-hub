@@ -81,7 +81,7 @@ const formatPrice = (raw?: string | null) => {
   if (!raw) return null;
   const trimmed = raw.trim();
   const num = parseFloat(trimmed.replace(/[^0-9.]/g, ""));
-  if (Number.isFinite(num)) return `R${num.toFixed(2)}`;
+  if (Number.isFinite(num)) return `R${Number.isInteger(num) ? num : num.toFixed(2)}`;
   return trimmed;
 };
 
