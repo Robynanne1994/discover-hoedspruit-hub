@@ -633,7 +633,7 @@ const Events = () => {
             const groups: { heading: string; events: typeof recurringEvents }[] = [
               { heading: "Every Day", events: [] },
               { heading: "Weekly", events: [] },
-              { heading: "Every Month", events: [] },
+              { heading: "Monthly", events: [] },
               { heading: "Every Quarter", events: [] },
               { heading: "Every Year", events: [] },
               { heading: "Other", events: [] },
