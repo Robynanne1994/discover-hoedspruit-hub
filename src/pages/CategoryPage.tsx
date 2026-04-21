@@ -302,21 +302,6 @@ const CategoryPage = () => {
           </span>
         </button>
 
-        {!isLoading && (
-          <span
-            style={{
-              fontFamily: font,
-              fontWeight: 400,
-              fontSize: 12,
-              lineHeight: "14.4px",
-              letterSpacing: "0.24px",
-              textTransform: "uppercase",
-              color: C.muted,
-            }}
-          >
-            {count} {count === 1 ? "Place" : "Places"}
-          </span>
-        )}
       </div>
 
       {/* Title block */}
