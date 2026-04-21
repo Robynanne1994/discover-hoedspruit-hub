@@ -19,7 +19,7 @@ interface Props {
 const FIELDS = [
   "title", "description", "date", "start_time", "end_time", "location",
   "tag", "image_url", "recurrence", "price", "booking_link",
-  "google_maps_link", "social_media_link", "contact_email", "contact_phone",
+  "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone",
   "is_featured",
 ];
 
@@ -68,6 +68,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
+          <div><Label>Social Media Label</Label><Input value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Instagram, Facebook" /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Contact Email</Label><Input value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} /></div>
             <div><Label>Contact Phone</Label><Input value={form.contact_phone || ""} onChange={(e) => set("contact_phone", e.target.value)} /></div>

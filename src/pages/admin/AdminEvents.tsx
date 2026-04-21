@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "", price: "", is_featured: false };
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "", price: "", is_featured: false };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -138,6 +138,7 @@ const AdminEvents = () => {
         recurrence: values.recurrence || null,
         google_maps_link: values.google_maps_link || null,
         social_media_link: values.social_media_link || null,
+        social_media_label: values.social_media_label || null,
         contact_email: values.contact_email || null,
         contact_phone: values.contact_phone || null,
         gallery_images: galleryArr,
@@ -188,6 +189,7 @@ const AdminEvents = () => {
       recurrence: ev.recurrence ?? "",
       google_maps_link: ev.google_maps_link ?? "",
       social_media_link: (ev as any).social_media_link ?? "",
+      social_media_label: (ev as any).social_media_label ?? "",
       contact_email: (ev as any).contact_email ?? "",
       contact_phone: (ev as any).contact_phone ?? "",
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
@@ -230,6 +232,7 @@ const AdminEvents = () => {
               <EventCoverUpload value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} />
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
+              <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
               <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
               <div className="grid grid-cols-2 gap-4">

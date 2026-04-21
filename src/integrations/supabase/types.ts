@@ -231,6 +231,7 @@ export type Database = {
           location: string | null
           price: string | null
           recurrence: string | null
+          social_media_label: string | null
           social_media_link: string | null
           start_time: string | null
           tag: string | null
@@ -253,6 +254,7 @@ export type Database = {
           location?: string | null
           price?: string | null
           recurrence?: string | null
+          social_media_label?: string | null
           social_media_link?: string | null
           start_time?: string | null
           tag?: string | null
@@ -275,6 +277,7 @@ export type Database = {
           location?: string | null
           price?: string | null
           recurrence?: string | null
+          social_media_label?: string | null
           social_media_link?: string | null
           start_time?: string | null
           tag?: string | null
