@@ -21,7 +21,7 @@ const COLOR = {
   divider: "#E8E4DF",
 };
 
-type SortKey = "favourites" | "name" | "expiring";
+type SortKey = "default" | "saved" | "name" | "business" | "expiring";
 
 const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
   <button
