@@ -541,31 +541,6 @@ const ListingDetail = () => {
           </div>
         )}
 
-        {/* Secondary action row: Share / Save / Visited */}
-        <div style={{ display: "flex", gap: 8, marginTop: 24 }}>
-          {[
-            { label: "Share", icon: <Share2 size={14} strokeWidth={1.5} color={C.text} />, onClick: handleShare, active: false },
-            { label: isFavourited ? "Saved" : "Save", icon: <Heart size={14} strokeWidth={1.5} color={C.text} fill={isFavourited ? C.text : "none"} />, onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); }, active: !!isFavourited },
-            { label: "Visited", icon: isVisited ? <Check size={14} strokeWidth={1.5} color={C.text} /> : <Check size={14} strokeWidth={1.5} color={C.text} />, onClick: () => { if (!requireAuth()) toggleVisited.mutate(); }, active: !!isVisited },
-          ].map((btn, i) => (
-            <button
-              key={i}
-              onClick={btn.onClick}
-              style={{
-                flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-                height: 40, borderRadius: 999,
-                background: C.card, border: `1px solid ${C.border}`,
-                cursor: "pointer", transition: "transform 0.15s ease-out",
-                fontFamily: font, padding: "0 12px",
-              }}
-              {...pressScale()}
-            >
-              {btn.icon}
-              <span style={{ fontFamily: font, fontWeight: 400, fontSize: 13, color: C.text }}>{btn.label}</span>
-            </button>
-          ))}
-        </div>
-
         {/* Primary CTAs: Call Now / Directions */}
         {(listing.phone || (listing as any).google_maps_link) && (
           <div style={{ display: "flex", gap: 10, marginTop: 12 }}>
