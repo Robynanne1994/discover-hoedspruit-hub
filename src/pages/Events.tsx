@@ -282,12 +282,12 @@ const Events = () => {
     );
   }, [sortedEvents, search]);
 
-  const recurringEvents = useMemo(
+  const recurringEventsAll = useMemo(
     () => searched.filter((e) => e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none"),
     [searched]
   );
 
-  const datedEvents = useMemo(() => {
+  const datedEventsAll = useMemo(() => {
     const today = startOfToday();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     const monthEnd = endOfMonth(today);
@@ -306,6 +306,24 @@ const Events = () => {
       }
     });
   }, [searched, activeFilter]);
+
+  // Tags available within current pill-filter scope
+  const availableTags = useMemo(() => {
+    const set = new Set<string>();
+    [...datedEventsAll, ...recurringEventsAll].forEach((e) => {
+      if (e.tag && e.tag.trim()) set.add(e.tag.trim());
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [datedEventsAll, recurringEventsAll]);
+
+  // Reset tag if no longer available
+  useMemo(() => {
+    if (activeTag && !availableTags.includes(activeTag)) setActiveTag(null);
+  }, [availableTags, activeTag]);
+
+  const matchesTag = (e: any) => !activeTag || (e.tag && e.tag.trim() === activeTag);
+  const recurringEvents = useMemo(() => recurringEventsAll.filter(matchesTag), [recurringEventsAll, activeTag]);
+  const datedEvents = useMemo(() => datedEventsAll.filter(matchesTag), [datedEventsAll, activeTag]);
 
   const featuredEvents = useMemo(
     () => datedEvents.filter((e) => e.is_featured).slice(0, 8),
