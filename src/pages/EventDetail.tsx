@@ -20,6 +20,7 @@ import {
   Banknote,
   Pencil,
   StickyNote,
+  ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -50,6 +51,7 @@ const EventDetail = () => {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
+  const [notesOpen, setNotesOpen] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: isFavourited } = useQuery({
@@ -186,7 +188,6 @@ const EventDetail = () => {
     { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
     { label: "Recurrence", value: event.recurrence && event.recurrence.trim().toLowerCase() !== "none" ? event.recurrence : null, icon: RotateCcw, href: null as string | null },
     { label: "Price", value: price, icon: Banknote, href: null as string | null },
-    { label: "Notes", value: notes, icon: StickyNote, href: null as string | null },
   ].filter((row) => row.value);
 
   const contactRows = [
