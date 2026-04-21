@@ -93,6 +93,7 @@ const filters: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
+  { label: "This Month", value: "this-month" },
   { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
 ];
