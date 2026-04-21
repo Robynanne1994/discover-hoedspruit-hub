@@ -338,7 +338,7 @@ const EventDetail = () => {
               onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
             >
               <ExternalLink size={20} strokeWidth={1.8} color="#FFFFFF" />
-              Booking Link
+              Book Now
             </a>
           </div>
         )}
