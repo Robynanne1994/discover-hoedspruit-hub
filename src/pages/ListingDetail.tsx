@@ -445,7 +445,7 @@ const ListingDetail = () => {
           <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
         </button>
         {/* Top-right action cluster: Share / Save / Visited (+ Edit if admin) */}
-        <div style={{ position: "absolute", top: 56, right: 20, display: "flex", gap: 8 }}>
+        <div style={{ position: "absolute", top: 36, right: 20, display: "flex", gap: 8 }}>
           <button
             onClick={handleShare}
             style={circleBtn}
