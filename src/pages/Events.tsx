@@ -342,6 +342,58 @@ const Events = () => {
 
   const hasAnything = featuredEvents.length > 0 || upcomingEvents.length > 0 || recurringEvents.length > 0;
 
+  const tagFilterButton = (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          aria-label="Filter by tag"
+          disabled={availableTags.length === 0}
+          style={{
+            flexShrink: 0,
+            height: 36,
+            paddingInline: activeTag ? 14 : 0,
+            width: activeTag ? "auto" : 36,
+            background: activeTag ? COLOR.text : COLOR.card,
+            color: activeTag ? "#FFFFFF" : COLOR.text,
+            border: "none",
+            borderRadius: 999,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 6,
+            cursor: availableTags.length === 0 ? "not-allowed" : "pointer",
+            opacity: availableTags.length === 0 ? 0.4 : 1,
+            boxShadow: activeTag ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
+            fontFamily: FONT,
+            fontSize: 13,
+            fontWeight: 400,
+            whiteSpace: "nowrap",
+            transition: "background 0.15s ease, color 0.15s ease",
+          }}
+        >
+          <SlidersHorizontal size={15} strokeWidth={1.75} />
+          {activeTag && <span>{activeTag}</span>}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" style={{ maxHeight: 320, overflowY: "auto" }}>
+        <DropdownMenuItem onClick={() => setActiveTag(null)}>
+          <span style={{ flex: 1 }}>All tags</span>
+          {!activeTag && <Check size={14} />}
+        </DropdownMenuItem>
+        {availableTags.map((tag) => (
+          <DropdownMenuItem key={tag} onClick={() => setActiveTag(tag)}>
+            <span style={{ flex: 1, textTransform: "capitalize" }}>{tag}</span>
+            {activeTag === tag && <Check size={14} />}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  // Decide which section heading shows the tag filter (the first visible one)
+  const filterSlot: "featured" | "upcoming" | "recurring" =
+    featuredEvents.length > 0 ? "featured" : upcomingEvents.length > 0 ? "upcoming" : "recurring";
+
   return (
     <div className="min-h-screen" style={{ background: COLOR.bg, paddingBottom: 140, fontFamily: FONT }}>
 
