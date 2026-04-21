@@ -595,7 +595,19 @@ const Events = () => {
                     ? "Past"
                     : activeFilter === "this-month"
                       ? new Date().toLocaleString("en-US", { month: "long", year: "numeric" })
-                      : "Upcoming"
+                      : activeFilter === "this-week"
+                        ? "This Week"
+                        : "Upcoming"
+                }
+                subheading={
+                  activeFilter === "this-week"
+                    ? (() => {
+                        const ws = startOfWeek(new Date(), { weekStartsOn: 1 });
+                        const we = endOfWeek(new Date(), { weekStartsOn: 1 });
+                        const fmt = (d: Date) => `${d.getDate()} ${d.toLocaleString("en-US", { month: "short" })}`;
+                        return `${fmt(ws)} – ${fmt(we)} ${we.getFullYear()}`;
+                      })()
+                    : undefined
                 }
               />
               <div style={{ padding: "0 24px 40px 24px" }}>
