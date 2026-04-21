@@ -11,6 +11,7 @@ const Welcome = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
@@ -19,7 +20,12 @@ const Welcome = () => {
     e.preventDefault();
     setLoading(true);
     if (mode === "signup") {
-      const { error } = await signUp(email, password, displayName || undefined);
+      if (!firstName.trim()) {
+        toast.error("Please enter your first name");
+        setLoading(false);
+        return;
+      }
+      const { error } = await signUp(email, password, displayName || firstName, firstName);
       if (error) toast.error(error.message);
       else toast.success("Account created! You're in.");
     } else {
@@ -98,19 +104,35 @@ const Welcome = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === "signup" && (
-            <div className="space-y-1.5">
-              <Label htmlFor="displayName" className="text-xs font-medium text-muted-foreground">
-                Display Name
-              </Label>
-              <Input
-                id="displayName"
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="How should we call you?"
-                className="h-12 rounded-xl bg-card border-border text-[15px]"
-              />
-            </div>
+            <>
+              <div className="space-y-1.5">
+                <Label htmlFor="firstName" className="text-xs font-medium text-muted-foreground">
+                  First Name
+                </Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  placeholder="Your first name"
+                  className="h-12 rounded-xl bg-card border-border text-[15px]"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="displayName" className="text-xs font-medium text-muted-foreground">
+                  Display Name
+                </Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="How should we call you?"
+                  className="h-12 rounded-xl bg-card border-border text-[15px]"
+                />
+              </div>
+            </>
           )}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs font-medium text-muted-foreground">
