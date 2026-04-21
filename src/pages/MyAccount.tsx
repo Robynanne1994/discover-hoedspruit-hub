@@ -560,8 +560,7 @@ const MyAccount = () => {
     </p>
   );
 
-  const fullName = profile?.display_name?.trim() || user.email?.split("@")[0] || "You";
-  const firstName = fullName.split(" ")[0];
+  const firstName = (profile?.display_name?.trim() || user.email?.split("@")[0] || "You").split(" ")[0];
   const username = user.email ? `@${user.email.split("@")[0]}` : "";
 
   return (
@@ -639,7 +638,7 @@ const MyAccount = () => {
               wordBreak: "break-word",
             }}
           >
-            {fullName}
+            {firstName}
           </h1>
         </div>
 

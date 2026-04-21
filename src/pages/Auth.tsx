@@ -55,13 +55,15 @@ const Auth = () => {
           <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl p-6 space-y-4">
             {isSignUp && (
               <div>
-                <Label htmlFor="displayName">Display Name</Label>
+                <Label htmlFor="displayName">Name</Label>
                 <Input
                   id="displayName"
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="How should we call you?"
+                  placeholder="Your first name"
+                  required
+                  maxLength={50}
                 />
               </div>
             )}
