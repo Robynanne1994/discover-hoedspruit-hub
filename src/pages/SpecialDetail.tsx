@@ -80,8 +80,13 @@ const overlayBtn: React.CSSProperties = {
 const formatPrice = (raw?: string | null) => {
   if (!raw) return null;
   const trimmed = raw.trim();
-  const num = parseFloat(trimmed.replace(/[^0-9.]/g, ""));
-  if (Number.isFinite(num)) return `R${Number.isInteger(num) ? num : num.toFixed(2)}`;
+  if (!trimmed) return null;
+  // Pure numeric values get a Rand prefix; anything else (e.g. "20% Off",
+  // "R450pp", "Buy 1 Get 1 Free") is treated as free-form text.
+  if (/^\d+(\.\d+)?$/.test(trimmed)) {
+    const num = parseFloat(trimmed);
+    return `R${Number.isInteger(num) ? num : num.toFixed(2)}`;
+  }
   return trimmed;
 };
 
