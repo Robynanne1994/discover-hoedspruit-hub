@@ -438,7 +438,7 @@ const SpecialDetail = () => {
         {/* About This Deal */}
         {special.description && (
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>About</h2>
+            <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none", fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontSize: 28, fontWeight: 400 }}>About</h2>
             <p
               style={{
                 fontFamily: FONT,
@@ -518,7 +518,7 @@ const SpecialDetail = () => {
         {/* Details */}
         <section style={{ marginBottom: 32 }}>
           
-          <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>Details</h2>
+          <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none", fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontSize: 28, fontWeight: 400 }}>Details</h2>
           <div
             style={{
               background: SURFACE,
