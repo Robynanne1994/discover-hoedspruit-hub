@@ -111,7 +111,9 @@ const pressHandlers = {
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
-const SectionHead = ({ overline, heading, subheading, trailing }: { overline: string; heading: string; subheading?: string; trailing?: React.ReactNode }) => (
+const SectionHead = ({ overline, heading, subheading, trailing }: { overline: string; heading: string; subheading?: string; trailing?: React.ReactNode }) => {
+  const isRecurring = overline === "Recurring";
+  return (
   <div style={{ padding: "0 24px 20px 24px" }}>
     {overline && (
       <p style={{
@@ -129,7 +131,17 @@ const SectionHead = ({ overline, heading, subheading, trailing }: { overline: st
       </p>
     )}
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
-      <h2 style={{
+      <h2 style={isRecurring ? {
+        fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontWeight: 500,
+        fontSize: 35,
+        lineHeight: "38px",
+        letterSpacing: "-1px",
+        color: COLOR.text,
+        margin: 0,
+        flex: 1,
+        minWidth: 0,
+      } : {
         fontFamily: FONT,
         fontWeight: 700,
         fontSize: 44,
