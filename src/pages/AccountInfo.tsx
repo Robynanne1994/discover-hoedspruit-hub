@@ -90,6 +90,7 @@ const AccountInfo = () => {
   useEffect(() => {
     if (profile && !initialized.current) {
       setDisplayName(profile.display_name || "");
+      setUsername((profile as any).username || "");
       setEmail(profile.email || user?.email || "");
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
