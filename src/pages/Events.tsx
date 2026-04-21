@@ -195,9 +195,9 @@ const EventRow = ({
           {meta && (
             <p style={{
               fontFamily: FONT,
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: 400,
-              lineHeight: "13px",
+              lineHeight: "14px",
               letterSpacing: "0.22px",
               textTransform: "uppercase",
               color: COLOR.muted,
@@ -225,9 +225,9 @@ const EventRow = ({
           {location && (
             <p style={{
               fontFamily: FONT,
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: 400,
-              lineHeight: "18.2px",
+              lineHeight: "16px",
               color: COLOR.muted,
               margin: 0,
               whiteSpace: "nowrap",
