@@ -804,6 +804,9 @@ const ListingDetail = () => {
                   );
                 })}
               </div>
+            </div>
+          );
+        })()}
 
       {/* Gallery */}
       {hasGallery && (
