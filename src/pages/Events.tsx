@@ -495,34 +495,65 @@ const Events = () => {
           </div>
         </div>
       ) : !hasAnything ? (
-        <div style={{ padding: "60px 24px 0", textAlign: "center" }}>
-          <p style={{
-            fontFamily: FONT,
-            fontSize: 12,
-            fontWeight: 400,
-            lineHeight: "14.4px",
-            letterSpacing: "0.24px",
-            textTransform: "uppercase",
-            color: COLOR.muted,
-            margin: 0,
-            marginBottom: 10,
-          }}>
-            Nothing This Week
-          </p>
-          <p style={{
-            fontFamily: FONT,
-            fontSize: 15,
-            fontWeight: 400,
-            lineHeight: "21.75px",
-            color: COLOR.text,
-            margin: 0,
-            maxWidth: 280,
-            marginInline: "auto",
-          }}>
-            Check back in a few days. New events are added all the time.
-          </p>
-        </div>
-      ) : (
+        (() => {
+          const emptyHeading =
+            activeFilter === "today"
+              ? "Today"
+              : activeFilter === "past"
+                ? "Past"
+                : activeFilter === "this-month"
+                  ? new Date().toLocaleString("en-US", { month: "long", year: "numeric" })
+                  : activeFilter === "this-week"
+                    ? "This week"
+                    : "Upcoming";
+          const emptyOverline =
+            activeFilter === "today"
+              ? (() => {
+                  const d = new Date();
+                  return `${d.getDate()} ${d.toLocaleString("en-US", { month: "long" })} ${d.getFullYear()}`;
+                })()
+              : "Save The Date";
+          return (
+            <>
+              <SectionHead overline={emptyOverline} heading={emptyHeading} trailing={tagFilterButton} />
+              <div style={{ padding: "20px 24px 0", textAlign: "center" }}>
+                <p style={{
+                  fontFamily: FONT,
+                  fontSize: 15,
+                  fontWeight: 400,
+                  lineHeight: "21.75px",
+                  color: COLOR.text,
+                  margin: 0,
+                  marginBottom: 16,
+                  maxWidth: 320,
+                  marginInline: "auto",
+                }}>
+                  No events found.
+                </p>
+                <button
+                  onClick={() => {
+                    setActiveTag(null);
+                    setActiveFilter("all");
+                  }}
+                  style={{
+                    background: COLOR.text,
+                    color: "#FFFFFF",
+                    border: "none",
+                    borderRadius: 999,
+                    padding: "10px 20px",
+                    fontFamily: FONT,
+                    fontSize: 14,
+                    fontWeight: 400,
+                    lineHeight: "16.8px",
+                    cursor: "pointer",
+                  }}
+                >
+                  Remove filters
+                </button>
+              </div>
+            </>
+          );
+        })()
         <>
           {/* Featured */}
           {featuredEvents.length > 0 && (
