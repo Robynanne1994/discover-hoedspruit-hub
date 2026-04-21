@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,7 @@ interface Props {
 }
 
 const FIELDS: (keyof any)[] = [
-  "title", "description", "business_name", "image_url", "deal_label",
+  "title", "description", "business_name", "business_id", "image_url", "deal_label",
   "valid_from", "valid_until", "is_active", "special_type", "price",
   "original_price", "promo_code", "contact_phone", "contact_whatsapp",
   "booking_link", "terms", "category",
@@ -49,6 +49,30 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
 
   const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
 
+  const { data: listings } = useQuery({
+    queryKey: ["admin-listings-picker"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listings").select("id, title").order("title", { ascending: true }).limit(2000);
+      return data || [];
+    },
+  });
+
+  const [businessQuery, setBusinessQuery] = useState("");
+  useEffect(() => {
+    if (open) setBusinessQuery("");
+  }, [open]);
+
+  const selectedListing = useMemo(
+    () => (listings || []).find((l: any) => l.id === form?.business_id),
+    [listings, form?.business_id]
+  );
+
+  const filteredListings = useMemo(() => {
+    const q = businessQuery.trim().toLowerCase();
+    if (!q) return (listings || []).slice(0, 8);
+    return (listings || []).filter((l: any) => l.title.toLowerCase().includes(q)).slice(0, 8);
+  }, [listings, businessQuery]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -56,6 +80,39 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
         <div className="space-y-3 py-2">
           <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
           <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
+          <div>
+            <Label>Linked Business Listing</Label>
+            {selectedListing ? (
+              <div className="flex items-center justify-between gap-2 rounded-md border px-3 py-2 mt-1">
+                <span className="text-sm">{selectedListing.title}</span>
+                <Button type="button" variant="ghost" size="sm" onClick={() => set("business_id", null)}>Clear</Button>
+              </div>
+            ) : (
+              <>
+                <Input
+                  placeholder="Search listings to link..."
+                  value={businessQuery}
+                  onChange={(e) => setBusinessQuery(e.target.value)}
+                  className="mt-1"
+                />
+                {filteredListings.length > 0 && (
+                  <div className="mt-1 border rounded-md max-h-48 overflow-y-auto">
+                    {filteredListings.map((l: any) => (
+                      <button
+                        key={l.id}
+                        type="button"
+                        onClick={() => { set("business_id", l.id); if (!form.business_name) set("business_name", l.title); }}
+                        className="block w-full text-left px-3 py-2 text-sm hover:bg-muted"
+                      >
+                        {l.title}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+            <p className="text-xs text-muted-foreground mt-1">Linking allows users to tap the business name to view the full listing.</p>
+          </div>
           <div><Label>Deal Label</Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
           <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
