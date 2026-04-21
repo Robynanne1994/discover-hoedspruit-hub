@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "", price: "", notes: "", is_featured: false };
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -132,6 +132,8 @@ const AdminEvents = () => {
         date: values.date,
         location: values.location || null,
         tag: values.tag || null,
+        sub_tag_1: values.sub_tag_1 || null,
+        sub_tag_2: values.sub_tag_2 || null,
         image_url: values.image_url || null,
         start_time: values.start_time || null,
         end_time: values.end_time || null,
@@ -141,10 +143,12 @@ const AdminEvents = () => {
         social_media_label: values.social_media_label || null,
         contact_email: values.contact_email || null,
         contact_phone: values.contact_phone || null,
+        contact_whatsapp: values.contact_whatsapp || null,
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
         price: values.price || null,
         notes: values.notes || null,
+        business_id: values.business_id || null,
         is_featured: !!values.is_featured,
       };
       if (editing) {
@@ -184,6 +188,8 @@ const AdminEvents = () => {
       date: ev.date,
       location: ev.location ?? "",
       tag: ev.tag ?? "",
+      sub_tag_1: (ev as any).sub_tag_1 ?? "",
+      sub_tag_2: (ev as any).sub_tag_2 ?? "",
       image_url: ev.image_url ?? "",
       start_time: ev.start_time ?? "",
       end_time: ev.end_time ?? "",
@@ -193,10 +199,12 @@ const AdminEvents = () => {
       social_media_label: (ev as any).social_media_label ?? "",
       contact_email: (ev as any).contact_email ?? "",
       contact_phone: (ev as any).contact_phone ?? "",
+      contact_whatsapp: (ev as any).contact_whatsapp ?? "",
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
       price: (ev as any).price ?? "",
       notes: (ev as any).notes ?? "",
+      business_id: (ev as any).business_id ?? "",
       is_featured: !!(ev as any).is_featured,
     });
     setOpen(true);
