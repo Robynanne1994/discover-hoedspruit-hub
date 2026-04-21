@@ -195,34 +195,9 @@ const Specials = () => {
 
   return (
     <div style={{ minHeight: "100vh", paddingBottom: 120, background: COLOR.bg, fontFamily: FONT }}>
-      {/* Top bar */}
-      <div
-        style={{
-          height: 56,
-          padding: "0 24px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div />
+      {/* Top spacer */}
+      <div style={{ height: 16 }} />
 
-
-        {!isLoading && (
-          <span
-            style={{
-              fontFamily: FONT,
-              fontSize: 13,
-              lineHeight: "18.2px",
-              letterSpacing: "0.13px",
-              fontWeight: 400,
-              color: COLOR.muted,
-            }}
-          >
-            <span style={{ color: COLOR.text }}>{count}</span> Deals
-          </span>
-        )}
-      </div>
 
       {/* Page header */}
       <div style={{ padding: "16px 24px 24px 24px" }}>
