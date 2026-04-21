@@ -210,8 +210,8 @@ const AccountInfo = () => {
           ) : (
             <>
               <div>
-                <label style={labelStyle}>Display Name</label>
-                <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your name" style={inputStyle} />
+                <label style={labelStyle}>Name</label>
+                <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your first name" style={inputStyle} maxLength={50} />
               </div>
               <div>
                 <label style={labelStyle}>Email</label>
