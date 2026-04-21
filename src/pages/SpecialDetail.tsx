@@ -571,7 +571,15 @@ const SpecialDetail = () => {
                       </svg>
                     ),
                     label: "WhatsApp",
-                    value: special.contact_whatsapp!,
+                    value: (() => {
+                      const raw = waClean;
+                      // ZA numbers: 27XXXXXXXXX -> 0XX XXX XXXX
+                      if (raw.startsWith("27") && raw.length === 11) {
+                        const local = "0" + raw.slice(2);
+                        return `${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`;
+                      }
+                      return special.contact_whatsapp!;
+                    })(),
                     href: `https://wa.me/${waClean}`,
                     external: true,
                   });
