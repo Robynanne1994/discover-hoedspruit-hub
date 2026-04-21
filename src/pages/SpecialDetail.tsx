@@ -337,7 +337,7 @@ const SpecialDetail = () => {
                 }}
                 {...press}
               >
-                <Phone size={16} strokeWidth={1.5} color="#FFFFFF" />
+                
                 <span>Call Now</span>
               </a>
             )}
