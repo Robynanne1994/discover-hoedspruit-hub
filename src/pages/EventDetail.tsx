@@ -293,16 +293,34 @@ const EventDetail = () => {
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
             <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
-          {isAdmin && (
+          <div style={{ display: "flex", gap: 8 }}>
+            {isAdmin && (
+              <button
+                onClick={() => setEditOpen(true)}
+                aria-label="Edit event"
+                style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
+                {...pressScale("0.9")}
+              >
+                <Pencil size={18} strokeWidth={1.8} color="#2B2420" />
+              </button>
+            )}
             <button
-              onClick={() => setEditOpen(true)}
-              aria-label="Edit event"
+              onClick={handleShare}
+              aria-label="Share"
               style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
               {...pressScale("0.9")}
             >
-              <Pencil size={18} strokeWidth={1.8} color="#2B2420" />
+              <Share2 size={18} strokeWidth={1.8} color="#2B2420" />
             </button>
-          )}
+            <button
+              onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
+              aria-label={isFavourited ? "Unsave" : "Save"}
+              style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
+              {...pressScale("0.9")}
+            >
+              <Heart size={18} strokeWidth={1.8} color="#2B2420" fill={isFavourited ? "#2B2420" : "none"} />
+            </button>
+          </div>
         </div>
       )}
 
