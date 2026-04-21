@@ -123,6 +123,14 @@ const AdminEvents = () => {
     },
   });
 
+  const { data: listings } = useQuery({
+    queryKey: ["all-listings-for-events-admin"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listings").select("id, title").order("title");
+      return data ?? [];
+    },
+  });
+
   const upsert = useMutation({
     mutationFn: async (values: typeof form) => {
       const galleryArr = values.gallery_images ? values.gallery_images.split("\n").filter(Boolean) : [];
