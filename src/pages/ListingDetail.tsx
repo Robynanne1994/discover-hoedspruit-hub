@@ -407,7 +407,7 @@ const ListingDetail = () => {
       underline: true,
     },
     whatsappNum && {
-      label: "WhatsApp",
+      label: "Whatsapp",
       value: "Message On WhatsApp",
       href: `https://wa.me/${whatsappNum.replace(/[^0-9]/g, "")}`,
       external: true,
