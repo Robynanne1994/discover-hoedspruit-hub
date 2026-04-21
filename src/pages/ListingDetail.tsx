@@ -646,8 +646,8 @@ const ListingDetail = () => {
           return (
             <div style={{ marginTop: 40 }}>
               <h2 style={{
-                fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
-                letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
+                fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 28, lineHeight: 1.15,
+                letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0, marginBottom: 16,
               }}>
                 About
               </h2>
@@ -656,8 +656,8 @@ const ListingDetail = () => {
               }}>
                 {paragraphs.map((p, i) => (
                   <p key={i} style={{
-                    fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "23.2px",
-                    color: C.text, margin: 0, marginBottom: i < paragraphs.length - 1 ? 12 : 0,
+                    fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 14, lineHeight: 1.45,
+                    color: "#737373", margin: 0, marginBottom: i < paragraphs.length - 1 ? 12 : 0,
                   }}>
                     {p}
                   </p>
@@ -685,8 +685,8 @@ const ListingDetail = () => {
         {accordionSections.length > 0 && (
           <div style={{ marginTop: 40 }}>
             <h2 style={{
-              fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
-              letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
+              fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 28, lineHeight: 1.15,
+              letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0, marginBottom: 16,
             }}>
               Details
             </h2>
@@ -752,8 +752,8 @@ const ListingDetail = () => {
           return (
             <div style={{ marginTop: 40 }}>
               <h2 style={{
-                fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
-                letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
+                fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 28, lineHeight: 1.15,
+                letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0, marginBottom: 16,
               }}>
                 Hours
               </h2>
@@ -814,8 +814,8 @@ const ListingDetail = () => {
         {linkedSpecials && linkedSpecials.length > 0 && (
           <div style={{ marginTop: 40 }}>
             <h2 style={{
-              fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
-              letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
+              fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 28, lineHeight: 1.15,
+              letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0, marginBottom: 16,
             }}>
               Current Specials
             </h2>
@@ -943,8 +943,8 @@ const ListingDetail = () => {
         <section style={{ marginTop: 40 }}>
           <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
             <h2 style={{
-              fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
-              letterSpacing: "-1.32px", color: C.text, margin: 0,
+              fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 28, lineHeight: 1.15,
+              letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0,
             }}>
               Gallery
             </h2>
