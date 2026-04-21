@@ -336,16 +336,16 @@ const SpecialDetail = () => {
           {special.business_id ? (
             <Link
               to={`/listing/${special.business_id}`}
-              style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: TEXT, margin: 0, textDecoration: "underline", textUnderlineOffset: 2, display: "block" }}
+              style={{ fontFamily: FONT, fontSize: 14, lineHeight: "20px", color: TEXT, margin: 0, textDecoration: "underline", textUnderlineOffset: 2, display: "block" }}
             >
               {special.business_name}
             </Link>
           ) : (
-            <p style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: TEXT, margin: 0 }}>
+            <p style={{ fontFamily: FONT, fontSize: 14, lineHeight: "20px", color: TEXT, margin: 0 }}>
               {special.business_name}
             </p>
           )}
-          <p style={{ fontFamily: FONT, fontSize: 16, lineHeight: "23.2px", color: MUTED, margin: 0 }}>
+          <p style={{ fontFamily: FONT, fontSize: 14, lineHeight: "20px", color: MUTED, margin: 0 }}>
             {validityText}
           </p>
         </div>
@@ -506,8 +506,8 @@ const SpecialDetail = () => {
                       style={{
                         fontFamily: FONT,
                         fontWeight: 400,
-                        fontSize: 16,
-                        lineHeight: "23.2px",
+                        fontSize: 14,
+                        lineHeight: "20px",
                         letterSpacing: 0,
                         color: TEXT,
                         margin: 0,
@@ -522,8 +522,8 @@ const SpecialDetail = () => {
                       style={{
                         fontFamily: FONT,
                         fontWeight: 400,
-                        fontSize: 16,
-                        lineHeight: "23.2px",
+                        fontSize: 14,
+                        lineHeight: "20px",
                         letterSpacing: 0,
                         color: TEXT,
                         margin: 0,
