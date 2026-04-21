@@ -113,6 +113,21 @@ const pressHandlers = {
 
 const SectionHead = ({ overline, heading, subheading, trailing }: { overline: string; heading: string; subheading?: string; trailing?: React.ReactNode }) => (
   <div style={{ padding: "0 24px 20px 24px" }}>
+    {overline && (
+      <p style={{
+        fontFamily: FONT,
+        fontSize: 14,
+        fontWeight: 400,
+        lineHeight: "16px",
+        letterSpacing: "0.28px",
+        textTransform: "uppercase",
+        color: COLOR.muted,
+        margin: 0,
+        marginBottom: 8,
+      }}>
+        {overline}
+      </p>
+    )}
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
       <h2 style={{
         fontFamily: FONT,
