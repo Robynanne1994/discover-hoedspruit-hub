@@ -202,7 +202,6 @@ const EventDetail = () => {
     contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
     waClean ? { label: "WhatsApp", value: contactWhatsapp, icon: MessageCircle, href: `https://wa.me/${waClean}` } : null,
     socialLink ? { label: "Social Media", value: socialLabel || "Social Media Profile", icon: Globe, href: socialLink } : null,
-    bookingLink ? { label: "Booking", value: "Booking Link", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
