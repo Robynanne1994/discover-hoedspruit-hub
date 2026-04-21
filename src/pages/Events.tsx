@@ -99,7 +99,7 @@ function shortenRecurrence(raw: string): string {
 const filters: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
-  { label: "This Week", value: "this-week" },
+  { label: "This week", value: "this-week" },
   { label: "Monthly", value: "this-month" },
   { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
@@ -671,7 +671,7 @@ const Events = () => {
                     : activeFilter === "this-month"
                       ? new Date().toLocaleString("en-US", { month: "long", year: "numeric" })
                       : activeFilter === "this-week"
-                        ? "This Week"
+                        ? "This week"
                         : "Upcoming"
                 }
                 subheading={
