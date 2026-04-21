@@ -242,6 +242,23 @@ const AdminEvents = () => {
                 <div><Label>End Time</Label><Input type="time" value={form.end_time} onChange={(e) => setForm({ ...form, end_time: e.target.value })} /></div>
               </div>
               <div><Label>Tag</Label><Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} placeholder="e.g. Market, Sport, Dining" /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Sub-tag 1 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_1} onChange={(e) => setForm({ ...form, sub_tag_1: e.target.value })} placeholder="e.g. Family-friendly" /></div>
+                <div><Label>Sub-tag 2 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
+              </div>
+              <div>
+                <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
+                <select
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={form.business_id}
+                  onChange={(e) => setForm({ ...form, business_id: e.target.value })}
+                >
+                  <option value="">— Not linked —</option>
+                  {(listings || []).map((l: any) => (
+                    <option key={l.id} value={l.id}>{l.title}</option>
+                  ))}
+                </select>
+              </div>
               <div><Label>Recurrence</Label>
                 <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={form.recurrence} onChange={(e) => setForm({ ...form, recurrence: e.target.value })}>
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
@@ -258,6 +275,7 @@ const AdminEvents = () => {
                 <div><Label>Contact Email</Label><Input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} placeholder="info@example.com" /></div>
                 <div><Label>Contact Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} placeholder="+27 ..." /></div>
               </div>
+              <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp} onChange={(e) => setForm({ ...form, contact_whatsapp: e.target.value })} placeholder="+27 ..." /></div>
               <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
