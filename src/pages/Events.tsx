@@ -658,6 +658,19 @@ const Events = () => {
               groups[4].events = groups[4].events.filter(inMonth);
               groups[5].events = groups[5].events.filter(inMonth);
             }
+            // For "This Week", hide monthly/quarterly/yearly/other unless their date falls within current week
+            if (activeFilter === "this-week") {
+              const ws = startOfWeek(now, { weekStartsOn: 1 });
+              const we = endOfWeek(now, { weekStartsOn: 1 });
+              const inWeek = (e: typeof recurringEvents[number]) => {
+                const d = e._parsed;
+                return !!d && isWithinInterval(d, { start: ws, end: we });
+              };
+              groups[2].events = groups[2].events.filter(inWeek);
+              groups[3].events = groups[3].events.filter(inWeek);
+              groups[4].events = groups[4].events.filter(inWeek);
+              groups[5].events = groups[5].events.filter(inWeek);
+            }
             return groups
               .filter((g) => g.events.length > 0)
               .map((g) => (
