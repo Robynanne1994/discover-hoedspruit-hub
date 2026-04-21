@@ -581,17 +581,7 @@ const MyAccount = () => {
           padding: "calc(env(safe-area-inset-top) + 16px) 20px 0",
         }}
       >
-        <span
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 16,
-            color: MUTED,
-          }}
-        >
-          Your profile
-        </span>
+        <span />
         <Link
           to="/account-settings"
           aria-label="Settings"
