@@ -308,37 +308,6 @@ const Events = () => {
 
   return (
     <div className="min-h-screen" style={{ background: COLOR.bg, paddingBottom: 140, fontFamily: FONT }}>
-      {/* Top bar */}
-      <div
-        style={{
-          height: 56,
-          padding: "0 24px",
-          paddingTop: "env(safe-area-inset-top)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-end",
-          marginTop: 8,
-        }}
-      >
-        <button
-          onClick={() => navigate("/saved?tab=events")}
-          aria-label="Saved events"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: COLOR.card,
-            border: "none",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <Bookmark size={20} strokeWidth={1.5} style={{ color: COLOR.text }} />
-        </button>
-      </div>
 
       {/* Page header */}
       <div style={{ padding: "16px 24px 28px 24px" }}>
