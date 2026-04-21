@@ -786,7 +786,7 @@ const ListingDetail = () => {
               fontFamily: font, fontWeight: 700, fontSize: 44, lineHeight: "44px",
               letterSpacing: "-1.32px", color: C.text, margin: 0, marginBottom: 16,
             }}>
-              Specials
+              Current Specials
             </h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {linkedSpecials.map((s: any) => {
