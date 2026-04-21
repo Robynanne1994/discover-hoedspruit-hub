@@ -554,6 +554,7 @@ const Events = () => {
             </>
           );
         })()
+      ) : (
         <>
           {/* Featured */}
           {featuredEvents.length > 0 && (
