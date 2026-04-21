@@ -111,19 +111,24 @@ const pressHandlers = {
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
-const SectionHead = ({ overline, heading, subheading }: { overline: string; heading: string; subheading?: string }) => (
+const SectionHead = ({ overline, heading, subheading, trailing }: { overline: string; heading: string; subheading?: string; trailing?: React.ReactNode }) => (
   <div style={{ padding: "0 24px 20px 24px" }}>
-    <h2 style={{
-      fontFamily: FONT,
-      fontWeight: 700,
-      fontSize: 44,
-      lineHeight: "44px",
-      letterSpacing: "-1.32px",
-      color: COLOR.text,
-      margin: 0,
-    }}>
-      {heading}
-    </h2>
+    <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 12 }}>
+      <h2 style={{
+        fontFamily: FONT,
+        fontWeight: 700,
+        fontSize: 44,
+        lineHeight: "44px",
+        letterSpacing: "-1.32px",
+        color: COLOR.text,
+        margin: 0,
+        flex: 1,
+        minWidth: 0,
+      }}>
+        {heading}
+      </h2>
+      {trailing && <div style={{ flexShrink: 0 }}>{trailing}</div>}
+    </div>
     {subheading && (
       <p style={{
         fontFamily: FONT,
