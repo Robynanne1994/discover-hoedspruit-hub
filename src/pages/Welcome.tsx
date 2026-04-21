@@ -11,6 +11,7 @@ const Welcome = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [firstName, setFirstName] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
@@ -19,7 +20,12 @@ const Welcome = () => {
     e.preventDefault();
     setLoading(true);
     if (mode === "signup") {
-      const { error } = await signUp(email, password, displayName || undefined);
+      if (!firstName.trim()) {
+        toast.error("Please enter your first name");
+        setLoading(false);
+        return;
+      }
+      const { error } = await signUp(email, password, displayName || firstName, firstName);
       if (error) toast.error(error.message);
       else toast.success("Account created! You're in.");
     } else {
