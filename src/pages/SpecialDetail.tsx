@@ -505,7 +505,7 @@ const SpecialDetail = () => {
         {/* Details */}
         <section style={{ marginBottom: 32 }}>
           
-          <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>The fine print</h2>
+          <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>Details</h2>
           <div
             style={{
               background: SURFACE,
