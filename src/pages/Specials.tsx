@@ -334,67 +334,68 @@ const Specials = () => {
           )}
         </button>
 
-        <button
-          onClick={() => setShowSortMenu((v) => !v)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 6,
-            background: "transparent",
-            border: "none",
-            padding: "8px 0",
-            cursor: "pointer",
-          }}
-        >
-          <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
-            Sort:{" "}
-            <span style={{ color: COLOR.text, textTransform: "capitalize" }}>{sortLabel}</span>
-          </span>
-          <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
-        </button>
-
-        {showSortMenu && (
-          <div
+        <div ref={sortRef} style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowSortMenu((v) => !v)}
             style={{
-              position: "absolute",
-              top: "calc(100% - 4px)",
-              right: 24,
-              background: COLOR.surface,
-              borderRadius: 16,
-              padding: 6,
-              zIndex: 20,
-              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              minWidth: 180,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "transparent",
+              border: "none",
+              padding: "8px 0",
+              cursor: "pointer",
             }}
           >
-            {(["favourites", "name", "expiring"] as SortKey[]).map((key) => (
-              <button
-                key={key}
-                onClick={() => {
-                  setSortBy(key);
-                  setShowSortMenu(false);
-                }}
-                style={{
-                  display: "block",
-                  width: "100%",
-                  textAlign: "left",
-                  padding: "10px 12px",
-                  background: sortBy === key ? COLOR.warm : "transparent",
-                  border: "none",
-                  borderRadius: 10,
-                  fontSize: 14,
-                  fontWeight: 400,
-                  color: COLOR.text,
-                  fontFamily: FONT,
-                  cursor: "pointer",
-                  textTransform: "capitalize",
-                }}
-              >
-                {key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Expiring"}
-              </button>
-            ))}
-          </div>
-        )}
+            <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
+              Sort:{" "}
+              <span style={{ color: COLOR.text }}>{sortLabel}</span>
+            </span>
+            <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
+          </button>
+
+          {showSortMenu && (
+            <div
+              style={{
+                position: "absolute",
+                top: "calc(100% - 4px)",
+                right: 0,
+                background: COLOR.surface,
+                borderRadius: 16,
+                padding: 6,
+                zIndex: 20,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                minWidth: 200,
+              }}
+            >
+              {(["default", "saved", "name", "business", "expiring"] as SortKey[]).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setSortBy(key);
+                    setShowSortMenu(false);
+                  }}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    textAlign: "left",
+                    padding: "10px 12px",
+                    background: sortBy === key ? COLOR.warm : "transparent",
+                    border: "none",
+                    borderRadius: 10,
+                    fontSize: 14,
+                    fontWeight: 400,
+                    color: COLOR.text,
+                    fontFamily: FONT,
+                    cursor: "pointer",
+                  }}
+                >
+                  {SORT_LABELS[key]}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Filters panel */}
