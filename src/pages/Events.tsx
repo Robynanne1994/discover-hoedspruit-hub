@@ -627,7 +627,7 @@ const Events = () => {
                           key={event.id}
                           event={event}
                           showDivider={idx < g.events.length - 1}
-                          metaOverride={g.heading === "Every Year" ? buildDateMeta(event) : shortenRecurrence(event.recurrence)}
+                          metaOverride={buildDateMeta(event) || shortenRecurrence(event.recurrence)}
                         />
                       ))}
                     </div>
