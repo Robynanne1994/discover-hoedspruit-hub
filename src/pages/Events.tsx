@@ -664,15 +664,24 @@ const Events = () => {
           {upcomingEvents.length > 0 && (
             <section>
               <SectionHead
-                overline="Save The Date"
+                overline={
+                  activeFilter === "today"
+                    ? new Date().toLocaleDateString("en-US", { weekday: "long" })
+                    : "Save The Date"
+                }
                 heading={
-                  activeFilter === "past"
-                    ? "Past"
-                    : activeFilter === "this-month"
-                      ? new Date().toLocaleString("en-US", { month: "long", year: "numeric" })
-                      : activeFilter === "this-week"
-                        ? "This week"
-                        : "Upcoming"
+                  activeFilter === "today"
+                    ? (() => {
+                        const d = new Date();
+                        return `${d.getDate()} ${d.toLocaleString("en-US", { month: "long" })} ${d.getFullYear()}`;
+                      })()
+                    : activeFilter === "past"
+                      ? "Past"
+                      : activeFilter === "this-month"
+                        ? new Date().toLocaleString("en-US", { month: "long", year: "numeric" })
+                        : activeFilter === "this-week"
+                          ? "This week"
+                          : "Upcoming"
                 }
                 subheading={
                   activeFilter === "this-week"
