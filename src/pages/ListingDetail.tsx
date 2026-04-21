@@ -76,11 +76,14 @@ const ListingDetail = () => {
   const { data: linkedSpecials } = useQuery({
     queryKey: ["listing-specials", id],
     queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
       const { data } = await supabase
         .from("specials")
         .select("*")
         .eq("business_id", id!)
         .eq("is_active", true)
+        .or(`valid_from.is.null,valid_from.lte.${today}`)
+        .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("sort_order", { ascending: true });
       return data || [];
     },
