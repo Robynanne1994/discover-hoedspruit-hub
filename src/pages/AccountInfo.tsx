@@ -107,6 +107,7 @@ const AccountInfo = () => {
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
         display_name: displayName.trim() || null,
+        username: username.trim() || null,
         email: email.trim() || null,
         phone: phone.trim() || null,
         location: location.trim() || null,
