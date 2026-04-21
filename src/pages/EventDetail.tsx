@@ -266,17 +266,11 @@ const EventDetail = () => {
         </h1>
 
         {/* Date line */}
-        {event.date && (
-          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, fontFamily: font }}>
-            {formatDate(event.date)}
+        {(event.date || timeDisplay) && (
+          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, marginBottom: 16, fontFamily: font }}>
+            {formatDate(event.date)}{timeDisplay ? ` · ${timeDisplay}` : ""}
           </p>
         )}
-        {timeDisplay && (
-          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, marginTop: 2, marginBottom: 16, fontFamily: font }}>
-            {timeDisplay}
-          </p>
-        )}
-        {!event.date && !timeDisplay ? null : !timeDisplay && event.date ? <div style={{ marginBottom: 16 }} /> : null}
 
         {/* Action buttons (Share, Interested) */}
         <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
