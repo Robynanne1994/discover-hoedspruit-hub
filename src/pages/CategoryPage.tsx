@@ -44,7 +44,7 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
   </button>
 );
 
-type SortKey = "favourites" | "name" | "rating";
+type SortKey = "default" | "favourites" | "name" | "rating";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -52,7 +52,7 @@ const CategoryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
   const [showFilters, setShowFilters] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>("favourites");
+  const [sortBy, setSortBy] = useState<SortKey>("default");
   const [showSortMenu, setShowSortMenu] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
@@ -211,7 +211,7 @@ const CategoryPage = () => {
     return result;
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy]);
 
-  const sortLabel = sortBy === "favourites" ? "Favourites" : sortBy === "name" ? "Name" : "Rating";
+  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Favourites" : sortBy === "name" ? "Name" : "Rating";
   const count = filteredListings.length;
 
   // Section eyebrow style for filter panel
