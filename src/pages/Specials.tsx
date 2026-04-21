@@ -205,24 +205,8 @@ const Specials = () => {
           justifyContent: "space-between",
         }}
       >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 999,
-            background: COLOR.surface,
-            border: "none",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <ChevronLeft size={20} strokeWidth={1.5} color={COLOR.text} />
-        </button>
+        <div />
+
 
         {!isLoading && (
           <span
