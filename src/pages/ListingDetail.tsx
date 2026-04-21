@@ -90,6 +90,30 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
+  const { data: linkedEvents } = useQuery({
+    queryKey: ["listing-events", id],
+    queryFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const { data } = await (supabase as any)
+        .from("events")
+        .select("*")
+        .eq("business_id", id!);
+      // Filter: keep events whose ISO date is today/future, OR non-ISO/recurring (always upcoming)
+      return (data || []).filter((e: any) => {
+        const isRecurring = e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none";
+        if (isRecurring) return true;
+        const clean = String(e.date || "").replace(/<[^>]*>/g, "").trim();
+        if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
+          const d = new Date(clean);
+          if (!isNaN(d.getTime())) return d >= today;
+          return true;
+        }
+        return true; // free-text date — keep
+      });
+    },
+    enabled: !!id,
+  });
   const { data: isFavourited } = useQuery({
     queryKey: ["favourite", "listing", id, user?.id],
     queryFn: async () => {

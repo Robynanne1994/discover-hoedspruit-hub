@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", gallery_images: "", booking_link: "", price: "", notes: "", is_featured: false };
+const emptyForm = { title: "", description: "", date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -123,6 +123,14 @@ const AdminEvents = () => {
     },
   });
 
+  const { data: listings } = useQuery({
+    queryKey: ["all-listings-for-events-admin"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listings").select("id, title").order("title");
+      return data ?? [];
+    },
+  });
+
   const upsert = useMutation({
     mutationFn: async (values: typeof form) => {
       const galleryArr = values.gallery_images ? values.gallery_images.split("\n").filter(Boolean) : [];
@@ -132,6 +140,8 @@ const AdminEvents = () => {
         date: values.date,
         location: values.location || null,
         tag: values.tag || null,
+        sub_tag_1: values.sub_tag_1 || null,
+        sub_tag_2: values.sub_tag_2 || null,
         image_url: values.image_url || null,
         start_time: values.start_time || null,
         end_time: values.end_time || null,
@@ -141,10 +151,12 @@ const AdminEvents = () => {
         social_media_label: values.social_media_label || null,
         contact_email: values.contact_email || null,
         contact_phone: values.contact_phone || null,
+        contact_whatsapp: values.contact_whatsapp || null,
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
         price: values.price || null,
         notes: values.notes || null,
+        business_id: values.business_id || null,
         is_featured: !!values.is_featured,
       };
       if (editing) {
@@ -184,6 +196,8 @@ const AdminEvents = () => {
       date: ev.date,
       location: ev.location ?? "",
       tag: ev.tag ?? "",
+      sub_tag_1: (ev as any).sub_tag_1 ?? "",
+      sub_tag_2: (ev as any).sub_tag_2 ?? "",
       image_url: ev.image_url ?? "",
       start_time: ev.start_time ?? "",
       end_time: ev.end_time ?? "",
@@ -193,10 +207,12 @@ const AdminEvents = () => {
       social_media_label: (ev as any).social_media_label ?? "",
       contact_email: (ev as any).contact_email ?? "",
       contact_phone: (ev as any).contact_phone ?? "",
+      contact_whatsapp: (ev as any).contact_whatsapp ?? "",
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
       price: (ev as any).price ?? "",
       notes: (ev as any).notes ?? "",
+      business_id: (ev as any).business_id ?? "",
       is_featured: !!(ev as any).is_featured,
     });
     setOpen(true);
@@ -226,6 +242,23 @@ const AdminEvents = () => {
                 <div><Label>End Time</Label><Input type="time" value={form.end_time} onChange={(e) => setForm({ ...form, end_time: e.target.value })} /></div>
               </div>
               <div><Label>Tag</Label><Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} placeholder="e.g. Market, Sport, Dining" /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Sub-tag 1 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_1} onChange={(e) => setForm({ ...form, sub_tag_1: e.target.value })} placeholder="e.g. Family-friendly" /></div>
+                <div><Label>Sub-tag 2 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
+              </div>
+              <div>
+                <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
+                <select
+                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={form.business_id}
+                  onChange={(e) => setForm({ ...form, business_id: e.target.value })}
+                >
+                  <option value="">— Not linked —</option>
+                  {(listings || []).map((l: any) => (
+                    <option key={l.id} value={l.id}>{l.title}</option>
+                  ))}
+                </select>
+              </div>
               <div><Label>Recurrence</Label>
                 <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={form.recurrence} onChange={(e) => setForm({ ...form, recurrence: e.target.value })}>
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
@@ -242,6 +275,7 @@ const AdminEvents = () => {
                 <div><Label>Contact Email</Label><Input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} placeholder="info@example.com" /></div>
                 <div><Label>Contact Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} placeholder="+27 ..." /></div>
               </div>
+              <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp} onChange={(e) => setForm({ ...form, contact_whatsapp: e.target.value })} placeholder="+27 ..." /></div>
               <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />

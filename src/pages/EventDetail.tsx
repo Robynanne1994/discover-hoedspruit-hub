@@ -21,6 +21,7 @@ import {
   Pencil,
   StickyNote,
   ChevronDown,
+  MessageCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -177,10 +178,15 @@ const EventDetail = () => {
   const socialLabel = (event as any).social_media_label || null;
   const contactEmail = (event as any).contact_email || null;
   const contactPhone = (event as any).contact_phone || null;
+  const contactWhatsapp = (event as any).contact_whatsapp || null;
+  const waClean = contactWhatsapp ? contactWhatsapp.replace(/[^0-9]/g, "") : null;
   const galleryImages: string[] = (event as any).gallery_images ?? [];
   const bookingLink = (event as any).booking_link || null;
   const price = (event as any).price || null;
   const notes = (event as any).notes || null;
+  const subTag1 = (event as any).sub_tag_1 || null;
+  const subTag2 = (event as any).sub_tag_2 || null;
+  const tagParts = [event.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "");
 
   const detailRows = [
     { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
@@ -193,6 +199,7 @@ const EventDetail = () => {
   const contactRows = [
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}` } : null,
     contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}` } : null,
+    waClean ? { label: "WhatsApp", value: contactWhatsapp, icon: MessageCircle, href: `https://wa.me/${waClean}` } : null,
     socialLink ? { label: "Social Media", value: socialLabel || "Social Media Profile", icon: Globe, href: socialLink } : null,
     bookingLink ? { label: "Booking", value: "Booking Link", icon: ExternalLink, href: bookingLink } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
@@ -275,9 +282,9 @@ const EventDetail = () => {
       {/* Content area */}
       <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
         {/* Category overline */}
-        {event.tag && (
+        {tagParts.length > 0 && (
           <p style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.4)", lineHeight: 1.3, marginBottom: 4, marginTop: 0, fontFamily: font }}>
-            {event.tag}
+            {tagParts.join(" | ")}
           </p>
         )}
 

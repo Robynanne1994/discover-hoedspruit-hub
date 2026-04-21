@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,9 @@ interface Props {
 
 const FIELDS = [
   "title", "description", "date", "start_time", "end_time", "location",
-  "tag", "image_url", "recurrence", "price", "notes", "booking_link",
-  "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone",
-  "is_featured",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "recurrence", "price", "notes", "booking_link",
+  "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
+  "business_id", "is_featured",
 ];
 
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
@@ -28,6 +28,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const [form, setForm] = useState<any>(event);
 
   useEffect(() => { setForm(event); }, [event, open]);
+
+  const { data: listings } = useQuery({
+    queryKey: ["all-listings-for-events"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listings").select("id, title").order("title");
+      return data ?? [];
+    },
+  });
 
   const save = useMutation({
     mutationFn: async () => {
@@ -55,6 +63,23 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
         <div className="space-y-3 py-2">
           <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
           <div><Label>Tag/Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} /></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Sub-tag 1 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
+            <div><Label>Sub-tag 2 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
+          </div>
+          <div>
+            <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
+            <select
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              value={form.business_id || ""}
+              onChange={(e) => set("business_id", e.target.value || null)}
+            >
+              <option value="">— Not linked —</option>
+              {(listings || []).map((l: any) => (
+                <option key={l.id} value={l.id}>{l.title}</option>
+              ))}
+            </select>
+          </div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
           <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
           <div><Label>Date</Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="YYYY-MM-DD or text" /></div>
@@ -74,6 +99,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Contact Email</Label><Input value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} /></div>
             <div><Label>Contact Phone</Label><Input value={form.contact_phone || ""} onChange={(e) => set("contact_phone", e.target.value)} /></div>
           </div>
+          <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+27 ..." /></div>
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
         </div>
         <DialogFooter>

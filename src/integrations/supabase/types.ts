@@ -217,8 +217,10 @@ export type Database = {
       events: {
         Row: {
           booking_link: string | null
+          business_id: string | null
           contact_email: string | null
           contact_phone: string | null
+          contact_whatsapp: string | null
           created_at: string
           date: string
           description: string | null
@@ -235,14 +237,18 @@ export type Database = {
           social_media_label: string | null
           social_media_link: string | null
           start_time: string | null
+          sub_tag_1: string | null
+          sub_tag_2: string | null
           tag: string | null
           title: string
           updated_at: string
         }
         Insert: {
           booking_link?: string | null
+          business_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
+          contact_whatsapp?: string | null
           created_at?: string
           date: string
           description?: string | null
@@ -259,14 +265,18 @@ export type Database = {
           social_media_label?: string | null
           social_media_link?: string | null
           start_time?: string | null
+          sub_tag_1?: string | null
+          sub_tag_2?: string | null
           tag?: string | null
           title: string
           updated_at?: string
         }
         Update: {
           booking_link?: string | null
+          business_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
+          contact_whatsapp?: string | null
           created_at?: string
           date?: string
           description?: string | null
@@ -283,11 +293,21 @@ export type Database = {
           social_media_label?: string | null
           social_media_link?: string | null
           start_time?: string | null
+          sub_tag_1?: string | null
+          sub_tag_2?: string | null
           tag?: string | null
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "events_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       faqs: {
         Row: {
