@@ -687,45 +687,45 @@ const ListingDetail = () => {
               Details
             </h2>
             <div style={{
-              background: C.card, borderRadius: 24,
+              background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16,
               paddingLeft: 20, paddingRight: 20, overflow: "hidden",
             }}>
               {accordionSections.map((section, i) => {
                 const isOpen = openAccordion === section.key;
                 return (
                   <div key={section.key} style={{
-                    borderBottom: i < accordionSections.length - 1 ? `1px solid ${C.border}` : "none",
+                    borderBottom: i < accordionSections.length - 1 ? "1px solid rgba(18,18,20,0.08)" : "none",
                   }}>
                     <button
                       onClick={() => toggleAccordion(section.key)}
                       style={{
                         width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between",
-                        paddingTop: 22, paddingBottom: 22,
+                        paddingTop: 14, paddingBottom: 14,
                         background: "none", border: "none", cursor: "pointer", fontFamily: font,
                       }}
                     >
                       <span style={{
-                        fontFamily: font, fontWeight: 400, fontSize: 18, lineHeight: "21.6px",
-                        letterSpacing: "-0.18px", color: C.text,
+                        fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: 1.3,
+                        color: "#2B2420",
                       }}>
                         {section.title}
                       </span>
                       <ChevronDown
                         size={18}
-                        strokeWidth={1.5}
-                        color={C.muted}
+                        strokeWidth={1.8}
+                        color="#2B2420"
                         style={{ transition: "transform 0.2s ease-out", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
                       />
                     </button>
                     {isOpen && (
-                      <div style={{ paddingBottom: 18, display: "flex", flexWrap: "wrap", gap: 8 }}>
+                      <div style={{ paddingBottom: 16, display: "flex", flexWrap: "wrap", gap: 8 }}>
                         {section.fields.map((f, fi) => (
                           <span
                             key={fi}
                             style={{
-                              background: C.card, border: `1px solid ${C.border}`,
+                              background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.06)",
                               borderRadius: 999, padding: "6px 12px",
-                              fontFamily: font, fontWeight: 400, fontSize: 13, color: C.text,
+                              fontFamily: font, fontWeight: 400, fontSize: 13, color: "#2B2420",
                             }}
                           >
                             {typeof f.value === "string" ? `${f.label}: ${f.value}` : f.label}
