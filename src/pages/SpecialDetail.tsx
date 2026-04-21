@@ -424,7 +424,7 @@ const SpecialDetail = () => {
         {/* About This Deal */}
         {special.description && (
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>What's on offer</h2>
+            <h2 style={{ ...sectionTitle, marginBottom: 16, textTransform: "none" }}>About</h2>
             <p
               style={{
                 fontFamily: FONT,
