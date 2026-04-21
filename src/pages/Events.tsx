@@ -267,6 +267,7 @@ const Events = () => {
   const datedEvents = useMemo(() => {
     const today = startOfToday();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+    const monthEnd = endOfMonth(today);
     const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "" || e.recurrence.trim().toLowerCase() === "none");
     if (activeFilter === "all") return nonRecurring;
     return nonRecurring.filter((event) => {
@@ -275,6 +276,7 @@ const Events = () => {
       switch (activeFilter) {
         case "today": return isToday(date);
         case "this-week": return isWithinInterval(date, { start: today, end: weekEnd });
+        case "this-month": return isWithinInterval(date, { start: today, end: monthEnd });
         case "upcoming": return !isBefore(date, today);
         case "past": return isBefore(date, today) && !isToday(date);
         default: return true;
