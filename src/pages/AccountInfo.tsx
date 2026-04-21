@@ -217,6 +217,18 @@ const AccountInfo = () => {
                 <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Your first name" style={inputStyle} maxLength={50} />
               </div>
               <div>
+                <label style={labelStyle}>Username</label>
+                <input
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.replace(/\s+/g, "").toLowerCase())}
+                  placeholder="yourusername"
+                  style={inputStyle}
+                  maxLength={30}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                />
+              </div>
+              <div>
                 <label style={labelStyle}>Email</label>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="your@email.com" style={inputStyle} />
                 {email.trim() && email.trim() !== user.email && (
