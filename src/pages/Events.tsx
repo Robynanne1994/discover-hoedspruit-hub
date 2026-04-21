@@ -703,6 +703,7 @@ const Events = () => {
                       })()
                     : undefined
                 }
+                trailing={filterSlot === "upcoming" ? tagFilterButton : undefined}
               />
               <div style={{ padding: "0 24px 40px 24px" }}>
                 <div style={{
