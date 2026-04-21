@@ -612,7 +612,6 @@ const Events = () => {
               { heading: "Other", events: [] },
             ];
             const now = startOfToday();
-            const monthEndNow = endOfMonth(now);
             for (const e of recurringEvents) {
               const r = (e.recurrence || "").toLowerCase();
               if (r.includes("daily") || r.includes("every day")) groups[0].events.push(e);
