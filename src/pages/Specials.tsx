@@ -128,8 +128,8 @@ const Specials = () => {
     default: "Default",
     saved: "Saved",
     name: "Alphabetically",
-    business: "Business",
-    expiring: "Expiring soon",
+    business: "Business Name",
+    expiring: "Expiring Soon",
   };
   const sortLabel = SORT_LABELS[sortBy];
   const count = filteredSpecials.length;
@@ -348,7 +348,7 @@ const Specials = () => {
             }}
           >
             <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
-              Sort:{" "}
+              Sort By:{" "}
               <span style={{ color: COLOR.text }}>{sortLabel}</span>
             </span>
             <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
