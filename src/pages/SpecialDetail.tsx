@@ -222,18 +222,6 @@ const SpecialDetail = () => {
     });
 
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
-  secondaryActions.push({
-    label: "Share",
-    icon: <Share2 size={16} strokeWidth={1.5} color={TEXT} />,
-    onClick: handleShare,
-  });
-  if (isAdmin) {
-    secondaryActions.push({
-      label: "Edit",
-      icon: <Pencil size={16} strokeWidth={1.5} color={TEXT} />,
-      onClick: () => setEditOpen(true),
-    });
-  }
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
