@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { parse, isToday, isBefore, startOfToday, endOfWeek, isWithinInterval } from "date-fns";
 
-type FilterType = "all" | "today" | "this-week" | "upcoming" | "past";
+type FilterType = "all" | "today" | "this-week" | "this-month" | "upcoming" | "past";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
