@@ -43,9 +43,6 @@ const TermsPolicies = () => {
         >
           <ChevronLeft size={20} strokeWidth={2} color="#0A0A0A" />
         </button>
-        <span style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300, fontSize: 16, color: "#8A8480" }}>
-          Settings
-        </span>
       </div>
 
       {/* Hero */}
