@@ -211,7 +211,7 @@ const CategoryPage = () => {
     return result;
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy]);
 
-  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Favourites" : sortBy === "name" ? "Name" : "Rating";
+  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : "Rating";
   const count = filteredListings.length;
 
   // Section eyebrow style for filter panel
@@ -469,7 +469,7 @@ const CategoryPage = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {key === "default" ? "Default" : key === "favourites" ? "Favourites" : key === "name" ? "Name" : "Rating"}
+                  {key === "default" ? "Default" : key === "favourites" ? "Saved" : key === "name" ? "Name" : "Rating"}
                 </button>
               ))}
             </div>
