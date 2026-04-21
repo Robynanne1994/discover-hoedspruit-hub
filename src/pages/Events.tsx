@@ -125,7 +125,7 @@ const SectionHead = ({ overline, heading, subheading, trailing }: { overline: st
         textTransform: "uppercase",
         color: COLOR.muted,
         margin: 0,
-        marginBottom: 8,
+        marginBottom: isRecurring ? 2 : 8,
       }}>
         {overline}
       </p>
