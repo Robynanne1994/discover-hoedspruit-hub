@@ -104,19 +104,35 @@ const Welcome = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === "signup" && (
-            <div className="space-y-1.5">
-              <Label htmlFor="displayName" className="text-xs font-medium text-muted-foreground">
-                Display Name
-              </Label>
-              <Input
-                id="displayName"
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="How should we call you?"
-                className="h-12 rounded-xl bg-card border-border text-[15px]"
-              />
-            </div>
+            <>
+              <div className="space-y-1.5">
+                <Label htmlFor="firstName" className="text-xs font-medium text-muted-foreground">
+                  First Name
+                </Label>
+                <Input
+                  id="firstName"
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  required
+                  placeholder="Your first name"
+                  className="h-12 rounded-xl bg-card border-border text-[15px]"
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="displayName" className="text-xs font-medium text-muted-foreground">
+                  Display Name
+                </Label>
+                <Input
+                  id="displayName"
+                  type="text"
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="How should we call you?"
+                  className="h-12 rounded-xl bg-card border-border text-[15px]"
+                />
+              </div>
+            </>
           )}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs font-medium text-muted-foreground">
