@@ -184,8 +184,8 @@ const SpecialDetail = () => {
   const phoneClean = special.contact_phone?.replace(/\s/g, "");
   const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
 
-  const detailRows: { icon: React.ReactNode; label: string; value: string; capitalize?: boolean }[] = [
-    { icon: <Store size={20} strokeWidth={1.5} color={MUTED} />, label: "Business", value: special.business_name },
+  const detailRows: { icon: React.ReactNode; label: string; value: string; capitalize?: boolean; href?: string }[] = [
+    { icon: <Store size={20} strokeWidth={1.5} color={MUTED} />, label: "Business", value: special.business_name, href: special.business_id ? `/listing/${special.business_id}` : undefined },
   ];
   const priceFmt = formatPrice(special.price);
   if (priceFmt) {
@@ -536,20 +536,40 @@ const SpecialDetail = () => {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
                 <div style={{ minWidth: 0 }}>
                   <p style={{ ...eyebrow, marginBottom: 2 }}>{row.label}</p>
-                  <p
-                    style={{
-                      fontFamily: FONT,
-                      fontWeight: 400,
-                      fontSize: 16,
-                      lineHeight: "23.2px",
-                      letterSpacing: 0,
-                      color: TEXT,
-                      margin: 0,
-                      textTransform: row.capitalize ? "capitalize" : "none",
-                    }}
-                  >
-                    {row.value}
-                  </p>
+                  {row.href ? (
+                    <Link
+                      to={row.href}
+                      style={{
+                        fontFamily: FONT,
+                        fontWeight: 400,
+                        fontSize: 16,
+                        lineHeight: "23.2px",
+                        letterSpacing: 0,
+                        color: TEXT,
+                        margin: 0,
+                        textTransform: row.capitalize ? "capitalize" : "none",
+                        textDecoration: "underline",
+                        textUnderlineOffset: 2,
+                      }}
+                    >
+                      {row.value}
+                    </Link>
+                  ) : (
+                    <p
+                      style={{
+                        fontFamily: FONT,
+                        fontWeight: 400,
+                        fontSize: 16,
+                        lineHeight: "23.2px",
+                        letterSpacing: 0,
+                        color: TEXT,
+                        margin: 0,
+                        textTransform: row.capitalize ? "capitalize" : "none",
+                      }}
+                    >
+                      {row.value}
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
