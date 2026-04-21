@@ -345,36 +345,6 @@ const EventDetail = () => {
           </p>
         )}
 
-        {/* Action buttons (Share, Interested) */}
-        <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-          <button
-            onClick={handleShare}
-            style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "#020202", border: "none", borderRadius: 16,
-              padding: "12px 20px", height: 48, cursor: "pointer", transition: "transform 0.12s ease",
-              fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-            }}
-            {...pressScale()}
-          >
-            <Share2 size={14} strokeWidth={1.8} color="#ffffff" />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>Share</span>
-          </button>
-          <button
-            onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
-            style={{
-              flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "#020202", border: "none", borderRadius: 16,
-              padding: "12px 20px", height: 48, cursor: "pointer", transition: "transform 0.12s ease",
-              fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-            }}
-            {...pressScale()}
-          >
-            <Heart size={14} strokeWidth={1.8} color="#ffffff" fill={isFavourited ? "#ffffff" : "none"} />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#ffffff", fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>Interested</span>
-          </button>
-        </div>
-
 
 
         {/* Book Now CTA */}
