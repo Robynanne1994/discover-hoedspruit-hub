@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
-const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
+const SANS = "'Helvetica World', Helvetica, Arial, sans-serif";
+const DISPLAY = "'Helvetica World', Helvetica, Arial, sans-serif";
+const SERIF = "'Helvetica World', Helvetica, Arial, sans-serif";
 
 interface Props {
   primary: string;
