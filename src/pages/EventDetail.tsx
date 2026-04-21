@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Share2,
   ArrowLeft,
+  ArrowUpRight,
   Heart,
   ExternalLink,
   Mail,
