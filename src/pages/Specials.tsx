@@ -1,11 +1,12 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, Tag } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
+import { useAuth } from "@/hooks/useAuth";
 
 const TYPE_OPTIONS = ["Daily Special", "Weekly Special", "Monthly Special", "Seasonal", "Happy Hour", "Promotion"];
 
