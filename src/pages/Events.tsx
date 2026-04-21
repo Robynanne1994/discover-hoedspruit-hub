@@ -593,7 +593,7 @@ const Events = () => {
           )}
 
           {/* Recurring — grouped by cadence */}
-          {activeFilter !== "past" && (() => {
+          {activeFilter !== "past" && activeFilter !== "today" && (() => {
             const groups: { heading: string; events: typeof recurringEvents }[] = [
               { heading: "Every Day", events: [] },
               { heading: "Every Week", events: [] },
