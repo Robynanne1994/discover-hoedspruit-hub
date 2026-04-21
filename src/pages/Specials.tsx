@@ -348,7 +348,7 @@ const Specials = () => {
             }}
           >
             <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
-              Sort:{" "}
+              Sort By:{" "}
               <span style={{ color: COLOR.text }}>{sortLabel}</span>
             </span>
             <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
