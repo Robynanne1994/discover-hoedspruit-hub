@@ -446,7 +446,7 @@ const EventDetail = () => {
                   </button>
                   {notesOpen && (
                     <div style={{ padding: "0 20px 16px 56px" }}>
-                      <p style={{ fontSize: 15, fontWeight: 400, color: "#2B2420", lineHeight: 1.5, margin: 0, whiteSpace: "pre-wrap", fontFamily: font }}>
+                      <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.5, margin: 0, whiteSpace: "pre-wrap", fontFamily: font }}>
                         {notes}
                       </p>
                     </div>
