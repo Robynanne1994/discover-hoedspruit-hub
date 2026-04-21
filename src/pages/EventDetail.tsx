@@ -243,12 +243,32 @@ const EventDetail = () => {
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
             <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
+          {isAdmin && (
+            <button
+              onClick={() => setEditOpen(true)}
+              aria-label="Edit event"
+              style={{ ...overlayBtn, position: "absolute", top: 16, right: 16, zIndex: 10 }}
+              {...pressScale("0.9")}
+            >
+              <Pencil size={18} strokeWidth={1.8} color="#2B2420" />
+            </button>
+          )}
         </div>
       ) : (
-        <div style={{ padding: "48px 24px 0" }}>
+        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
             <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
           </button>
+          {isAdmin && (
+            <button
+              onClick={() => setEditOpen(true)}
+              aria-label="Edit event"
+              style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
+              {...pressScale("0.9")}
+            >
+              <Pencil size={18} strokeWidth={1.8} color="#2B2420" />
+            </button>
+          )}
         </div>
       )}
 
@@ -303,21 +323,7 @@ const EventDetail = () => {
           </button>
         </div>
 
-        {isAdmin && (
-          <button
-            onClick={() => setEditOpen(true)}
-            style={{
-              width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-              background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.12)", borderRadius: 16,
-              padding: "12px 20px", height: 48, cursor: "pointer", marginBottom: 20,
-              fontFamily: font,
-            }}
-            {...pressScale()}
-          >
-            <Pencil size={14} strokeWidth={1.8} color="#2B2420" />
-            <span style={{ fontSize: 15, fontWeight: 600, color: "#2B2420", fontFamily: font }}>Edit Event</span>
-          </button>
-        )}
+
 
         {/* Book Now CTA */}
         {bookingLink && (
