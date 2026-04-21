@@ -229,6 +229,7 @@ export type Database = {
           image_url: string | null
           is_featured: boolean
           location: string | null
+          notes: string | null
           price: string | null
           recurrence: string | null
           social_media_label: string | null
@@ -252,6 +253,7 @@ export type Database = {
           image_url?: string | null
           is_featured?: boolean
           location?: string | null
+          notes?: string | null
           price?: string | null
           recurrence?: string | null
           social_media_label?: string | null
@@ -275,6 +277,7 @@ export type Database = {
           image_url?: string | null
           is_featured?: boolean
           location?: string | null
+          notes?: string | null
           price?: string | null
           recurrence?: string | null
           social_media_label?: string | null
