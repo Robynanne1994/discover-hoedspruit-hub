@@ -1019,7 +1019,7 @@ const ListingDetail = () => {
                       </p>
                     )}
                     <p style={{
-                      fontFamily: FONT_BODY, fontSize: 14, color: C.text, margin: 0, fontWeight: 400,
+                      fontFamily: FONT_BODY, fontSize: 15, color: C.text, margin: 0, fontWeight: 400,
                       overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box",
                       WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const,
                     }}>
