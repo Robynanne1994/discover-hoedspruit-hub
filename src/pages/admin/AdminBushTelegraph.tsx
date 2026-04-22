@@ -275,7 +275,7 @@ const AdminBushTelegraph = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Bush Telegraph</h1>
+          <h1 className="text-2xl font-bold">Local Channels</h1>
           <p className="text-muted-foreground text-sm">Manage off-app resources (Facebook, Whatsapp, Instagram, Websites, Radio).</p>
         </div>
         <div className="flex flex-wrap gap-2">

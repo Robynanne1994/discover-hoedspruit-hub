@@ -447,7 +447,7 @@ const MyAccount = () => {
     { label: "Settings", href: "/account-settings" },
     { label: "About", href: "/about" },
     { label: "The Lowveld Lowdown", href: "/headlines" },
-    { label: "The Bush Telegraph", href: "/bush-telegraph" },
+    { label: "Local Channels", href: "/bush-telegraph" },
     { label: "Help & FAQs", href: "/faqs" },
     { label: "Terms & Policies", href: "/terms" },
   ];
