@@ -97,6 +97,48 @@ export type Database = {
           },
         ]
       }
+      bush_telegraph_resources: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_featured: boolean
+          meta: string | null
+          platform: string
+          sort_order: number
+          title: string
+          tone: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_featured?: boolean
+          meta?: string | null
+          platform: string
+          sort_order?: number
+          title: string
+          tone?: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_featured?: boolean
+          meta?: string | null
+          platform?: string
+          sort_order?: number
+          title?: string
+          tone?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
