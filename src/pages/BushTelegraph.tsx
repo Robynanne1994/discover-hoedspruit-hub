@@ -173,15 +173,15 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
   if (!open) return null;
 
   const submit = async () => {
-    if (!name.trim() || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
-      toast.error("Please fill in your name, the resource name, link and reason.");
+    if (!name.trim() || !email.trim() || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
+      toast.error("Please fill in all the fields.");
       return;
     }
     setSubmitting(true);
-    const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nWhy it's worth being on: ${reason.trim()}`;
+    const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nAbout: ${reason.trim()}`;
     const { error } = await supabase.from("contact_submissions").insert({
       name: name.trim(),
-      email: email.trim() || "noreply@local-channels.local",
+      email: email.trim(),
       message: composed,
     });
     setSubmitting(false);
