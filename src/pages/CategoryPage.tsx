@@ -308,11 +308,11 @@ const CategoryPage = () => {
       <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
         <h1
           style={{
-            fontFamily: font,
-            fontWeight: 700,
-            fontSize: 52,
-            lineHeight: "52px",
-            letterSpacing: "-1.56px",
+            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+            fontWeight: 500,
+            fontSize: 40,
+            lineHeight: 1,
+            letterSpacing: "-0.02em",
             color: C.text,
             margin: 0,
           }}
