@@ -164,21 +164,24 @@ const ResourceCard = ({ r }: { r: Resource }) => {
 const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [resourceName, setResourceName] = useState("");
+  const [resourceLink, setResourceLink] = useState("");
+  const [reason, setReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   if (!open) return null;
 
   const submit = async () => {
-    if (!name.trim() || !message.trim()) {
-      toast.error("Please add your name and a short description.");
+    if (!name.trim() || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
+      toast.error("Please fill in your name, the resource name, link and reason.");
       return;
     }
     setSubmitting(true);
+    const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nWhy it's worth being on: ${reason.trim()}`;
     const { error } = await supabase.from("contact_submissions").insert({
       name: name.trim(),
       email: email.trim() || "noreply@local-channels.local",
-      message: `[Local Channels suggestion]\n${message.trim()}`,
+      message: composed,
     });
     setSubmitting(false);
     if (error) {
@@ -186,7 +189,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
       return;
     }
     toast.success("Thanks — we'll take a look.");
-    setName(""); setEmail(""); setMessage("");
+    setName(""); setEmail(""); setResourceName(""); setResourceLink(""); setReason("");
     onClose();
   };
 
@@ -223,7 +226,9 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
           <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email (optional)" style={inputStyle} />
-          <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Resource name, link, and why it's worth being on" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
+          <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="Resource name" style={inputStyle} />
+          <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="Resource link" style={inputStyle} />
+          <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Why it's worth being on" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
         </div>
         <button
           onClick={submit}
