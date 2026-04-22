@@ -339,24 +339,52 @@ const ListingDetail = () => {
   const todayIndex = new Date().getDay();
   const todayLabel = todayIndex === 0 ? "Sunday" : DAY_LABELS[todayIndex - 1];
 
-  const computeOpenStatus = () => {
+  const parseTimeStr = (s: string) => {
+    const norm = s.replace(".", ":").trim();
+    const [h, mm] = norm.split(":");
+    return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
+  };
+  const formatTime = (s: string) => (s.includes(":") ? s : `${s}:00`);
+
+  type OpenStatus =
+    | { state: "open"; closes: string }
+    | { state: "closed"; opensAt?: string; opensDay?: string }
+    | { state: "temporarily_closed" };
+
+  const computeOpenStatus = (): OpenStatus | null => {
     if (!openingHours) return null;
     const todayKey = todayLabel.toLowerCase();
-    const today = openingHours[todayKey];
-    if (!today || today.toLowerCase() === "closed") return null;
-    const m = today.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-    if (!m) return { open: true, closes: today };
+    const todayVal = openingHours[todayKey] || "";
+    if (todayVal && /temporarily\s*closed/i.test(todayVal)) return { state: "temporarily_closed" };
+
+    const findNextOpen = (startOffset: number): { opensAt: string; opensDay: string } | null => {
+      for (let i = startOffset; i < startOffset + 7; i++) {
+        const idx = (DAY_LABELS.indexOf(todayLabel) + i) % 7;
+        const dayName = DAY_LABELS[idx];
+        const v = openingHours[dayName.toLowerCase()] || "";
+        if (!v || v.toLowerCase() === "closed") continue;
+        const mm = v.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+        if (!mm) continue;
+        const label = i === 1 ? "tomorrow" : dayName;
+        return { opensAt: formatTime(mm[1]), opensDay: label };
+      }
+      return null;
+    };
+
+    if (!todayVal || todayVal.toLowerCase() === "closed") {
+      const next = findNextOpen(1);
+      return { state: "closed", ...(next || {}) };
+    }
+    const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+    if (!m) return { state: "open", closes: todayVal };
     const now = new Date();
     const cur = now.getHours() * 60 + now.getMinutes();
-    const parse = (s: string) => {
-      const norm = s.replace(".", ":");
-      const [h, mm] = norm.split(":");
-      return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
-    };
-    const o = parse(m[1]);
-    const c = parse(m[2]);
-    if (cur >= o && cur <= c) return { open: true, closes: m[2].includes(":") ? m[2] : `${m[2]}:00` };
-    return { open: false, closes: m[2] };
+    const o = parseTimeStr(m[1]);
+    const c = parseTimeStr(m[2]);
+    if (cur >= o && cur <= c) return { state: "open", closes: formatTime(m[2]) };
+    if (cur < o) return { state: "closed", opensAt: formatTime(m[1]), opensDay: "today" };
+    const next = findNextOpen(1);
+    return { state: "closed", ...(next || {}) };
   };
   const openStatus = computeOpenStatus();
 
