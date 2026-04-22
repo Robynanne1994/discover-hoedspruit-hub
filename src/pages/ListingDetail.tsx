@@ -262,7 +262,7 @@ const ListingDetail = () => {
       { label: "Wi-Fi", value: hasWifi },
       { label: "Free Wi-Fi", value: hasFreeWifi },
       { label: "Smoking section", value: smokingAllowed },
-      { label: "Pets friendly", value: petsAllowed },
+      { label: "Pet friendly", value: petsAllowed },
     ]);
     if (amenFields.length > 0) accordionSections.push({ key: "amenities", title: "Amenities", fields: amenFields });
 
@@ -306,7 +306,7 @@ const ListingDetail = () => {
     if (rooms.length > 0) accordionSections.push({ key: "accom-rooms", title: "Rooms", fields: rooms });
 
     if (l.child_friendly === true) accordionSections.push({ key: "accom-children", title: "Children", fields: [{ label: "Child friendly", value: true }] });
-    if (l.pets_allowed === true) accordionSections.push({ key: "accom-pets", title: "Pets", fields: [{ label: "Pets friendly", value: true }] });
+    if (l.pets_allowed === true) accordionSections.push({ key: "accom-pets", title: "Pets", fields: [{ label: "Pet friendly", value: true }] });
   }
 
   if (isListingShopping) {
