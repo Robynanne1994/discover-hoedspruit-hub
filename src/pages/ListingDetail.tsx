@@ -273,7 +273,7 @@ const ListingDetail = () => {
       { label: "High Chairs", value: highChairs },
       { label: "Kids playground", value: kidsPlayground },
     ].filter(f => f.value === true) as AccField[];
-    if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & Family", fields: kidsFields });
+    if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & family", fields: kidsFields });
 
     const amenFields = [
       { label: "Toilets", value: hasToilet },
