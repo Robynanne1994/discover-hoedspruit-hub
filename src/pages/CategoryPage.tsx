@@ -616,53 +616,6 @@ const CategoryPage = () => {
                     </p>
                   )}
 
-                  {/* Action row */}
-                  {(l.phone || whatsappRaw || directionsHref || l.website) && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 20, alignItems: "center" }}>
-                      {l.phone && (
-                        <a
-                          href={`tel:${l.phone}`}
-                          onClick={(e) => e.stopPropagation()}
-                          style={primaryCTA}
-                        >
-                          Call
-                        </a>
-                      )}
-                      {whatsappRaw && (
-                        <a
-                          href={`https://wa.me/${whatsappRaw.replace(/[^0-9]/g, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          style={secondaryAction}
-                        >
-                          Whatsapp
-                        </a>
-                      )}
-                      {directionsHref && (
-                        <a
-                          href={directionsHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          style={secondaryAction}
-                        >
-                          Directions
-                        </a>
-                      )}
-                      {l.website && (
-                        <a
-                          href={l.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          style={secondaryAction}
-                        >
-                          Website
-                        </a>
-                      )}
-                    </div>
-                  )}
                 </div>
               </article>
             );
