@@ -90,6 +90,17 @@ const Avatar = ({ tone, label }: { tone: AvatarTone; label: string }) => {
 const ResourceCard = ({ r }: { r: Resource }) => {
   const [parts1, parts2] = r.meta.split(" · ");
   const initial = r.title.replace(/^@/, "").charAt(0).toUpperCase();
+  // If the title is fully uppercase (e.g. "HOEDSPRUIT NEWS"), convert to sentence case.
+  // Preserve titles that already use mixed case.
+  const displayTitle = (() => {
+    const t = r.title;
+    const letters = t.replace(/[^A-Za-z]/g, "");
+    if (letters.length > 1 && letters === letters.toUpperCase()) {
+      const lower = t.toLowerCase();
+      return lower.charAt(0).toUpperCase() + lower.slice(1);
+    }
+    return t;
+  })();
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
 
   const open = () => window.open(r.url, "_blank", "noopener,noreferrer");
@@ -122,7 +133,7 @@ const ResourceCard = ({ r }: { r: Resource }) => {
           <Avatar tone={r.tone} label={initial} />
         )}
         <div style={{ flex: 1, minWidth: 0, paddingRight: 24 }}>
-          <h4 style={{ fontFamily: HW, fontWeight: 500, fontSize: 18, lineHeight: "22px", letterSpacing: "-0.36px", color: TEXT, margin: 0 }}>{r.title}</h4>
+          <h4 style={{ fontFamily: HW, fontWeight: 500, fontSize: 18, lineHeight: "22px", letterSpacing: "-0.36px", color: TEXT, margin: 0 }}>{displayTitle}</h4>
           <div style={{ ...baseText, fontSize: 12, lineHeight: "15.6px", letterSpacing: "0.12px", color: MUTED, marginTop: 6 }}>
             {parts1}
             {parts2 && (
