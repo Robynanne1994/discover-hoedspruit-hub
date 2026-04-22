@@ -69,9 +69,13 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
             textDecoration: "none",
             whiteSpace: "nowrap",
             flexShrink: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
           }}
         >
-          {actionLabel} ›
+          {actionLabel}
+          <ArrowUpRight size={14} strokeWidth={2} />
         </Link>
       )}
     </div>
