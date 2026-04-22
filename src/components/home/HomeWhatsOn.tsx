@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 
@@ -109,15 +109,19 @@ const HomeWhatsOn = () => {
                 {e.location && (
                   <div
                     style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
                       fontFamily: SANS,
                       fontSize: 13,
                       color: "#8A8480",
                       overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
                     }}
                   >
-                    {e.location}
+                    <MapPin size={12} color="#B8A89A" strokeWidth={2} style={{ flexShrink: 0 }} />
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {e.location}
+                    </span>
                   </div>
                 )}
               </div>
