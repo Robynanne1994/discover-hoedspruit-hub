@@ -995,7 +995,7 @@ const ListingDetail = () => {
               textDecoration: "underline", textUnderlineOffset: "3px",
             }}
           >
-            Suggest An Edit
+            Suggest an edit to this listing
           </a>
         </div>
       </div>
