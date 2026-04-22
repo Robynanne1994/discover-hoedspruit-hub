@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, Plus, ArrowUpRight, X } from "lucide-react";
+import { ChevronLeft, Plus, ArrowUpRight, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const HW = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HN = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
@@ -276,6 +277,7 @@ const SectionHeader = ({ title, count }: { title: string; count: string }) => (
 
 const BushTelegraph = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [active, setActive] = useState<"All" | Platform>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -323,9 +325,16 @@ const BushTelegraph = () => {
         <IconButton onClick={() => navigate(-1)} ariaLabel="Back">
           <ChevronLeft size={20} color={TEXT} strokeWidth={2} />
         </IconButton>
-        <IconButton onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
-          <Plus size={20} color={TEXT} strokeWidth={2} />
-        </IconButton>
+        <div style={{ display: "flex", gap: 8 }}>
+          {isAdmin && (
+            <IconButton onClick={() => navigate("/admin/bush-telegraph")} ariaLabel="Edit local channels">
+              <Pencil size={18} color={TEXT} strokeWidth={2} />
+            </IconButton>
+          )}
+          <IconButton onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
+            <Plus size={20} color={TEXT} strokeWidth={2} />
+          </IconButton>
+        </div>
       </div>
 
       {/* Hero */}
