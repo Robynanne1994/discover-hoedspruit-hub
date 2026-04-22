@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Star, Pencil, ChevronLeft, ChevronDown,
+  Star, Pencil, ChevronLeft, ChevronDown, ChevronRight,
   Heart, Share2, Check, X as XIcon, Phone, Navigation,
   MapPin, Mail, Globe, ArrowUpRight,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
@@ -75,6 +75,7 @@ const ListingDetail = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
+  const [galleryHintVisible, setGalleryHintVisible] = useState(true);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -614,27 +615,50 @@ const ListingDetail = () => {
         )}
 
         {hasGallery && (
-          <div style={{
-            marginTop: 24,
-            marginLeft: -24, marginRight: -24,
-            overflowX: "auto", WebkitOverflowScrolling: "touch",
-          }} className="scrollbar-hide">
-            <div style={{ display: "inline-flex", gap: 10, paddingLeft: 24, paddingRight: 24 }}>
-              {galleryImages!.map((url, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
-                  style={{
-                    width: 120, height: 120, borderRadius: 16, overflow: "hidden",
-                    background: C.panel, flexShrink: 0, border: "none", padding: 0, cursor: "pointer",
-                  }}
-                  aria-label={`Open image ${i + 1}`}
-                >
-                  <img src={url} alt={`${listing.title} ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
-                </button>
-              ))}
+          <div style={{ position: "relative", marginTop: 24, marginLeft: -24, marginRight: -24 }}>
+            <div
+              style={{
+                overflowX: "auto", WebkitOverflowScrolling: "touch",
+              }}
+              className="scrollbar-hide"
+              onScroll={(e) => {
+                if (e.currentTarget.scrollLeft > 8 && galleryHintVisible) setGalleryHintVisible(false);
+              }}
+            >
+              <div style={{ display: "inline-flex", gap: 10, paddingLeft: 24, paddingRight: 24 }}>
+                {galleryImages!.map((url, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
+                    style={{
+                      width: 120, height: 120, borderRadius: 16, overflow: "hidden",
+                      background: C.panel, flexShrink: 0, border: "none", padding: 0, cursor: "pointer",
+                    }}
+                    aria-label={`Open image ${i + 1}`}
+                  >
+                    <img src={url} alt={`${listing.title} ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                  </button>
+                ))}
+              </div>
             </div>
+            {galleryImages && galleryImages.length > 3 && (
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute", top: "50%", right: 12, transform: "translateY(-50%)",
+                  width: 32, height: 32, borderRadius: 999,
+                  background: "rgba(255,255,255,0.92)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  pointerEvents: "none",
+                  opacity: galleryHintVisible ? 1 : 0,
+                  transition: "opacity 200ms ease-out",
+                }}
+              >
+                <ChevronRight size={18} strokeWidth={1.75} color={C.text} />
+              </div>
+            )}
           </div>
         )}
 
