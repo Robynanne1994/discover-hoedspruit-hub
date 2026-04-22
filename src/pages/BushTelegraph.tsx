@@ -140,7 +140,7 @@ const ResourceCard = ({ r }: { r: Resource }) => {
                   key={i}
                   style={{
                     ...baseText,
-                    fontSize: 11,
+                    fontSize: 10,
                     lineHeight: 1,
                     letterSpacing: "0.22px",
                     textTransform: "uppercase",
