@@ -383,7 +383,7 @@ const BushTelegraph = () => {
         <div style={{ padding: "24px 24px 0" }}>
           <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
             <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>This Week's Pick</div>
-            <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 35, lineHeight: "35px", letterSpacing: "-1.05px", color: TEXT, margin: "16px 0 0" }}>
+            <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 22, lineHeight: "26px", letterSpacing: "-0.66px", color: TEXT, margin: "16px 0 0" }}>
               {featured.title}
             </h2>
             {featured.description && (
