@@ -79,10 +79,11 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                     color: "#0A0A0A",
                     lineHeight: 1.2,
                     marginBottom: 6,
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
                     letterSpacing: "-0.01em",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
                   {cleanName(l.title)}
