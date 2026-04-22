@@ -445,7 +445,7 @@ const BushTelegraph = () => {
           return (
             <div key={section.platform} style={{ marginTop: 40 }}>
               <SectionHeader title={section.platform} count={count} />
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16, padding: "0 24px" }}>
                 {section.items.map((r) => <ResourceCard key={r.id} r={r} />)}
               </div>
             </div>
