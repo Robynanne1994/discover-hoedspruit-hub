@@ -84,6 +84,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
+                    minHeight: "2.4em",
                   }}
                 >
                   {cleanName(l.title)}
