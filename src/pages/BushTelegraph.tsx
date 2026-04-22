@@ -28,6 +28,9 @@ interface Resource {
   url: string;
   tone: AvatarTone;
   is_featured: boolean;
+  image_url: string | null;
+  tag_1: string | null;
+  tag_2: string | null;
 }
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "Whatsapp", "Instagram", "Websites", "Radio"];
@@ -86,6 +89,7 @@ const Avatar = ({ tone, label }: { tone: AvatarTone; label: string }) => {
 const ResourceCard = ({ r }: { r: Resource }) => {
   const [parts1, parts2] = r.meta.split(" · ");
   const initial = r.title.replace(/^@/, "").charAt(0).toUpperCase();
+  const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
 
   const open = () => window.open(r.url, "_blank", "noopener,noreferrer");
 
@@ -107,7 +111,15 @@ const ResourceCard = ({ r }: { r: Resource }) => {
       }}
     >
       <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-        <Avatar tone={r.tone} label={initial} />
+        {r.image_url ? (
+          <img
+            src={r.image_url}
+            alt=""
+            style={{ width: 56, height: 56, borderRadius: 999, objectFit: "cover", flexShrink: 0 }}
+          />
+        ) : (
+          <Avatar tone={r.tone} label={initial} />
+        )}
         <div style={{ flex: 1, minWidth: 0, paddingRight: 24 }}>
           <h4 style={{ ...baseText, fontSize: 22, lineHeight: "25.3px", letterSpacing: "-0.22px", color: TEXT, margin: 0 }}>{r.title}</h4>
           <div style={{ ...baseText, fontSize: 12, lineHeight: "15.6px", letterSpacing: "0.12px", color: MUTED, marginTop: 6 }}>
@@ -120,6 +132,28 @@ const ResourceCard = ({ r }: { r: Resource }) => {
             )}
           </div>
           <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: TEXT, margin: "10px 0 0" }}>{r.description}</p>
+          {tags.length > 0 && (
+            <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
+              {tags.map((t, i) => (
+                <span
+                  key={i}
+                  style={{
+                    ...baseText,
+                    fontSize: 11,
+                    lineHeight: 1,
+                    letterSpacing: "0.22px",
+                    textTransform: "uppercase",
+                    background: WARM,
+                    color: TEXT,
+                    padding: "6px 10px",
+                    borderRadius: 999,
+                  }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <ArrowUpRight size={16} color={TEXT} strokeWidth={1.75} style={{ position: "absolute", top: 20, right: 20 }} />
@@ -257,6 +291,9 @@ const BushTelegraph = () => {
         url: r.url,
         tone: (r.tone as AvatarTone) ?? "warm",
         is_featured: !!r.is_featured,
+        image_url: r.image_url ?? null,
+        tag_1: r.tag_1 ?? null,
+        tag_2: r.tag_2 ?? null,
       })) as Resource[];
     },
   });

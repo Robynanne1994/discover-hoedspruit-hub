@@ -8,12 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import ImageUpload from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown } from "lucide-react";
 
 const PLATFORMS = ["Facebook", "Whatsapp", "Instagram", "Websites", "Radio"] as const;
 const TONES = ["warm", "warm-grey", "coral", "dark"] as const;
-const HEADERS = ["title", "platform", "meta", "description", "url", "tone", "is_featured", "sort_order"];
+const HEADERS = ["title", "platform", "meta", "description", "url", "image_url", "tag_1", "tag_2", "tone", "is_featured", "sort_order"];
 
 type Resource = {
   id: string;
@@ -22,6 +23,9 @@ type Resource = {
   meta: string | null;
   description: string | null;
   url: string;
+  image_url: string | null;
+  tag_1: string | null;
+  tag_2: string | null;
   tone: string;
   is_featured: boolean;
   sort_order: number;
@@ -33,6 +37,9 @@ const emptyForm = {
   meta: "",
   description: "",
   url: "",
+  image_url: "",
+  tag_1: "",
+  tag_2: "",
   tone: "warm",
   is_featured: false,
   sort_order: 0,
@@ -105,6 +112,9 @@ const AdminBushTelegraph = () => {
         sort_order: Number(rest.sort_order) || 0,
         meta: rest.meta || null,
         description: rest.description || null,
+        image_url: rest.image_url || null,
+        tag_1: rest.tag_1?.trim() || null,
+        tag_2: rest.tag_2?.trim() || null,
       };
       if (id) {
         const { error } = await supabase.from("bush_telegraph_resources").update(data).eq("id", id);
@@ -152,6 +162,9 @@ const AdminBushTelegraph = () => {
       meta: r.meta ?? "",
       description: r.description ?? "",
       url: r.url,
+      image_url: r.image_url ?? "",
+      tag_1: r.tag_1 ?? "",
+      tag_2: r.tag_2 ?? "",
       tone: r.tone,
       is_featured: r.is_featured,
       sort_order: r.sort_order,
@@ -211,6 +224,9 @@ const AdminBushTelegraph = () => {
           meta: r.meta || null,
           description: r.description || null,
           url,
+          image_url: r.image_url?.trim() || null,
+          tag_1: r.tag_1?.trim() || null,
+          tag_2: r.tag_2?.trim() || null,
           tone: TONES.includes(tone as any) ? tone : "warm",
           is_featured: r.is_featured?.toLowerCase() === "true" || r.is_featured === "1",
           sort_order: r.sort_order ? parseInt(r.sort_order) || 0 : 0,
@@ -257,17 +273,18 @@ const AdminBushTelegraph = () => {
 
   const downloadTemplate = () => {
     const csv = HEADERS.join(",") + "\n" +
-      '"Hoedspruit Helpers","Facebook","Facebook Group · 14.2k members","The unofficial town hall...","https://facebook.com/groups/example","warm","true","0"\n';
-    downloadCSV(csv, "bush_telegraph_template.csv");
+      '"Hoedspruit Helpers","Facebook","Facebook Group · 14.2k members","The unofficial town hall...","https://facebook.com/groups/example","https://example.com/image.jpg","Community","Free","warm","true","0"\n';
+    downloadCSV(csv, "local_channels_template.csv");
   };
 
   const downloadExport = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
-      r.title, r.platform, r.meta ?? "", r.description ?? "", r.url, r.tone,
+      r.title, r.platform, r.meta ?? "", r.description ?? "", r.url,
+      r.image_url ?? "", r.tag_1 ?? "", r.tag_2 ?? "", r.tone,
       r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
     ].map(escapeCSV).join(","));
-    downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "bush_telegraph_export.csv");
+    downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "local_channels_export.csv");
     toast.success(`Exported ${resources.length} resources`);
   };
 
@@ -301,7 +318,7 @@ const AdminBushTelegraph = () => {
           <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
           <p className="font-medium">{fileName || "Click to upload CSV"}</p>
           <p className="text-xs text-muted-foreground mt-1">Columns: {HEADERS.join(", ")}</p>
-          <p className="text-xs text-muted-foreground mt-1">Matched by title (case-insensitive). Missing rows will be deleted.</p>
+          <p className="text-xs text-muted-foreground mt-1">Matched by title (case-insensitive). Missing rows will be deleted. tag_1 / tag_2 are optional.</p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
 
@@ -360,9 +377,10 @@ const AdminBushTelegraph = () => {
               <thead className="bg-muted">
                 <tr>
                   <th className="p-3 text-left"><ArrowUpDown className="h-3 w-3 inline mr-1" />Order</th>
+                  <th className="p-3 text-left">Image</th>
                   <th className="p-3 text-left">Title</th>
                   <th className="p-3 text-left">Platform</th>
-                  <th className="p-3 text-left">Meta</th>
+                  <th className="p-3 text-left">Tags</th>
                   <th className="p-3 text-left">Featured</th>
                   <th className="p-3 text-right">Actions</th>
                 </tr>
@@ -371,9 +389,18 @@ const AdminBushTelegraph = () => {
                 {resources.map((r) => (
                   <tr key={r.id} className="border-t border-border">
                     <td className="p-3 text-muted-foreground">{r.sort_order}</td>
+                    <td className="p-3">
+                      {r.image_url ? (
+                        <img src={r.image_url} alt="" className="h-10 w-10 rounded object-cover" />
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </td>
                     <td className="p-3 font-medium">{r.title}</td>
                     <td className="p-3">{r.platform}</td>
-                    <td className="p-3 text-muted-foreground max-w-[240px] truncate">{r.meta || "—"}</td>
+                    <td className="p-3 text-muted-foreground">
+                      {[r.tag_1, r.tag_2].filter(Boolean).join(", ") || "—"}
+                    </td>
                     <td className="p-3">{r.is_featured ? "★" : ""}</td>
                     <td className="p-3 text-right">
                       <Button variant="ghost" size="icon" onClick={() => startEdit(r)}><Pencil className="h-4 w-4" /></Button>
@@ -395,7 +422,7 @@ const AdminBushTelegraph = () => {
 
       {/* Edit Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editing ? "Edit Resource" : "Add Resource"}</DialogTitle>
           </DialogHeader>
@@ -422,6 +449,24 @@ const AdminBushTelegraph = () => {
                     {TONES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+            <div>
+              <Label>Image (URL or upload)</Label>
+              <ImageUpload
+                bucket="local-channels-images"
+                value={form.image_url}
+                onChange={(url) => setForm({ ...form, image_url: url })}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Tag 1 (optional)</Label>
+                <Input value={form.tag_1} onChange={(e) => setForm({ ...form, tag_1: e.target.value })} placeholder="e.g. Community" />
+              </div>
+              <div>
+                <Label>Tag 2 (optional)</Label>
+                <Input value={form.tag_2} onChange={(e) => setForm({ ...form, tag_2: e.target.value })} placeholder="e.g. Free" />
               </div>
             </div>
             <div>

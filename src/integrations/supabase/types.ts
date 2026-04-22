@@ -102,10 +102,13 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          image_url: string | null
           is_featured: boolean
           meta: string | null
           platform: string
           sort_order: number
+          tag_1: string | null
+          tag_2: string | null
           title: string
           tone: string
           updated_at: string
@@ -115,10 +118,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean
           meta?: string | null
           platform: string
           sort_order?: number
+          tag_1?: string | null
+          tag_2?: string | null
           title: string
           tone?: string
           updated_at?: string
@@ -128,10 +134,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          image_url?: string | null
           is_featured?: boolean
           meta?: string | null
           platform?: string
           sort_order?: number
+          tag_1?: string | null
+          tag_2?: string | null
           title?: string
           tone?: string
           updated_at?: string
