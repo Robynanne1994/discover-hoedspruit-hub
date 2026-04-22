@@ -102,7 +102,7 @@ const HomeMasthead = () => {
               textOverflow: "ellipsis",
             }}
           >
-            Search the 'Hoed
+            Search the 'Hoed...
           </span>
         </Link>
         <div
