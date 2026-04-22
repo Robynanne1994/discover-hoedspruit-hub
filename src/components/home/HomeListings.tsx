@@ -117,6 +117,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                         fontSize: 12,
                         color: "#8A8480",
+                        fontWeight: 400,
                         whiteSpace: "normal",
                         wordBreak: "break-word",
                         lineHeight: 1.2,
