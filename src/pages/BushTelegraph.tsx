@@ -384,7 +384,7 @@ const BushTelegraph = () => {
       </div>
 
       {/* Featured */}
-      {featured && (
+      {featured && active === "All" && (
         <div style={{ padding: "24px 24px 0" }}>
           <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
             <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>This week's pick</div>
