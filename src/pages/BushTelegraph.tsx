@@ -343,7 +343,7 @@ const BushTelegraph = () => {
         <h1 style={{ fontFamily: HW, fontWeight: 500, fontSize: 40, lineHeight: "40px", letterSpacing: "-1.2px", color: TEXT, margin: "12px 0 0" }}>
           Local Channels
         </h1>
-        <p style={{ ...baseText, fontSize: 16, lineHeight: "23.2px", color: MUTED, margin: "12px 0 0", maxWidth: 320 }}>
+        <p style={{ ...baseText, fontFamily: HN, fontSize: 12, lineHeight: "17.4px", color: MUTED, margin: "12px 0 0", maxWidth: 320 }}>
           The local channels, groups and feeds worth being on. Curated, not crowdsourced.
         </p>
       </div>
