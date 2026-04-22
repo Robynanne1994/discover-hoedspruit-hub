@@ -132,7 +132,7 @@ const ResourceCard = ({ r }: { r: Resource }) => {
               </>
             )}
           </div>
-          <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: TEXT, margin: "10px 0 0" }}>{r.description}</p>
+          <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: "rgb(138, 132, 128)", margin: "10px 0 0" }}>{r.description}</p>
           {tags.length > 0 && (
             <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
               {tags.map((t, i) => (
