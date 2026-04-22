@@ -409,10 +409,10 @@ const Specials = () => {
             const Title = (
               <h3
                 style={{
-                  fontFamily: FONT,
-                  fontSize: 28,
-                  lineHeight: "32px",
-                  letterSpacing: "-0.56px",
+                  fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                  fontSize: 22,
+                  lineHeight: "26px",
+                  letterSpacing: "-0.44px",
                   fontWeight: 500,
                   color: COLOR.text,
                   textTransform: "none",
