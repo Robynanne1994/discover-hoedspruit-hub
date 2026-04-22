@@ -31,6 +31,7 @@ import Events from "./pages/Events.tsx";
 import About from "./pages/About.tsx";
 import Directories from "./pages/Directories.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
+import BushTelegraph from "./pages/BushTelegraph.tsx";
 import SavedListings from "./pages/SavedListings.tsx";
 import VisitedPlaces from "./pages/VisitedPlaces.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -100,6 +101,7 @@ const App = () => (
               <Route path="/directories" element={<Directories />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/my-account" element={<MyAccount />} />
+              <Route path="/bush-telegraph" element={<BushTelegraph />} />
               <Route path="/my-hoedspruit" element={<MyHoedspruit />} />
               <Route path="/saved" element={<SavedListings />} />
               <Route path="/visited" element={<VisitedPlaces />} />
