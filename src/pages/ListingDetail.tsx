@@ -881,6 +881,7 @@ const ListingDetail = () => {
                     </div>
                   );
                 })}
+                </div>
               </div>
             </>
           );
