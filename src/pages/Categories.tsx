@@ -172,10 +172,10 @@ const Categories = () => {
       <div style={{ marginBottom: 36 }}>
         <h1
           style={{
-            fontFamily: "'Pragmatica', Helvetica, Arial, sans-serif",
-            fontWeight: 400,
+            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+            fontWeight: 500,
             textTransform: "none",
-            fontSize: 52,
+            fontSize: 40,
             lineHeight: 0.95,
             letterSpacing: "-0.02em",
             color: "#020202",
