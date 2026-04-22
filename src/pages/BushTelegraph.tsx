@@ -104,11 +104,10 @@ const ResourceCard = ({ r }: { r: Resource }) => {
         border: "none",
         borderRadius: 24,
         padding: 20,
-        margin: "0 24px",
         cursor: "pointer",
         position: "relative",
         display: "block",
-        width: "calc(100% - 48px)",
+        width: "100%",
       }}
     >
       <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
