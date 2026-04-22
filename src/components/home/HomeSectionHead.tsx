@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 
 const SANS = "'Helvetica World', Helvetica, Arial, sans-serif";
 const DISPLAY = "'Helvetica World', Helvetica, Arial, sans-serif";
@@ -68,9 +69,13 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
             textDecoration: "none",
             whiteSpace: "nowrap",
             flexShrink: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 4,
           }}
         >
-          {actionLabel} ›
+          {actionLabel}
+          <ArrowUpRight size={14} strokeWidth={2} />
         </Link>
       )}
     </div>
