@@ -325,21 +325,6 @@ const CategoryPage = () => {
             </>
           )}
         </h1>
-        <p
-          style={{
-            fontFamily: font,
-            fontWeight: 400,
-            fontSize: 16,
-            lineHeight: "23.2px",
-            letterSpacing: 0,
-            color: C.muted,
-            maxWidth: 300,
-            margin: 0,
-            marginTop: 16,
-          }}
-        >
-          {subtitle}
-        </p>
       </div>
 
       {/* Filter row */}
