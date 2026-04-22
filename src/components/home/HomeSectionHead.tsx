@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ArrowUpRight } from "lucide-react";
 
 const SANS = "'Helvetica World', Helvetica, Arial, sans-serif";
 const DISPLAY = "'Helvetica World', Helvetica, Arial, sans-serif";
