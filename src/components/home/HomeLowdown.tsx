@@ -104,7 +104,7 @@ const HomeLowdown = () => {
               >
                 {a.title}
               </div>
-              <div style={{ fontFamily: SANS, fontSize: 12, color: "#8A8480" }}>
+              <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "#8A8480" }}>
                 {fmt(a.published_at)} · {a.read_time || 3} min read
               </div>
             </div>
