@@ -740,7 +740,8 @@ const ListingDetail = () => {
                             style={{
                               background: "rgba(18,18,20,0.04)", border: "1px solid rgba(18,18,20,0.06)",
                               borderRadius: 999, padding: "6px 12px",
-                              fontFamily: font, fontWeight: 400, fontSize: 13, color: "#2B2420",
+                              fontFamily: font, fontWeight: 400, fontSize: 12, color: "#2B2420",
+                              textTransform: "none",
                             }}
                           >
                             {typeof f.value === "string" ? `${f.label}: ${f.value}` : f.label}
