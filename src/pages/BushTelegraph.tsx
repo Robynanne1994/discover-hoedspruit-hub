@@ -356,7 +356,7 @@ const BushTelegraph = () => {
       {/* Chips */}
       <div style={{ marginTop: 32, overflowX: "auto", scrollbarWidth: "none" }}>
         <style>{`.bt-scroll::-webkit-scrollbar { display: none; }`}</style>
-        <div className="bt-scroll" style={{ display: "flex", gap: 8, padding: "0 24px", width: "max-content" }}>
+        <div className="bt-scroll" style={{ display: "flex", gap: 8, width: "max-content" }}>
           {CHIPS.map((c) => {
             const isActive = c === active;
             return (
