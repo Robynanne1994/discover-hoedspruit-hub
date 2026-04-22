@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Plus, ArrowUpRight, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,37 +27,8 @@ interface Resource {
   description: string;
   url: string;
   tone: AvatarTone;
+  is_featured: boolean;
 }
-
-const FEATURED = {
-  eyebrow: "This Week's Pick",
-  title: "Hoedspruit Helpers",
-  description:
-    "The unofficial town hall. Lost dogs, found keys, plumber recommendations and the actual road conditions to Tzaneen.",
-  platform: "Facebook Group",
-  count: "14.2k Members",
-  url: "https://www.facebook.com/groups/hoedspruithelpers",
-};
-
-const RESOURCES: Resource[] = [
-  // Facebook
-  { id: "fb-1", title: "Buy & Sell Hoedspruit", platform: "Facebook", meta: "Facebook Group · 9.8k members", description: "Furniture, bakkies, wedding dresses, the occasional zebra. Everything ends up here first.", url: "https://www.facebook.com", tone: "warm" },
-  { id: "fb-2", title: "Lost & Found Pets", platform: "Facebook", meta: "Facebook Group · 3.1k members", description: "Reunites about a dog a week. Worth joining even if you don't have one.", url: "https://www.facebook.com", tone: "coral" },
-  { id: "fb-3", title: "Khulula Tribe", platform: "Facebook", meta: "Facebook Group · 2.4k members", description: "Local community fund. Posts about projects, events, and ways to get involved.", url: "https://www.facebook.com", tone: "warm" },
-  { id: "fb-4", title: "Hoedspruit Noticeboard", platform: "Facebook", meta: "Facebook Group · 7.6k members", description: "Notices, jobs, services and the occasional opinion piece nobody asked for.", url: "https://www.facebook.com", tone: "warm-grey" },
-  // Whatsapp
-  { id: "wa-1", title: "Hoedspruit Alerts", platform: "Whatsapp", meta: "Whatsapp Channel · Broadcast only", description: "Power outages, road closures, security incidents. The first place anything breaks.", url: "https://whatsapp.com", tone: "dark" },
-  { id: "wa-2", title: "Farmers Market Updates", platform: "Whatsapp", meta: "Whatsapp Channel · Weekly", description: "Who's setting up, what's in season, what time the bread runs out.", url: "https://whatsapp.com", tone: "warm" },
-  { id: "wa-3", title: "School Run Carpool", platform: "Whatsapp", meta: "Whatsapp Group · Invite only", description: "Parents coordinating lifts to and from the local schools each week.", url: "https://whatsapp.com", tone: "warm-grey" },
-  // Instagram
-  { id: "ig-1", title: "@VisitHoedspruit", platform: "Instagram", meta: "Instagram · 28k followers", description: "The official tourism feed. Reliable for what's open, what's new and which lodges are hiring.", url: "https://instagram.com", tone: "coral" },
-  { id: "ig-2", title: "@EatOutHoedspruit", platform: "Instagram", meta: "Instagram · 6.3k followers", description: "Restaurant openings, weekly specials, who's doing pizza nights.", url: "https://instagram.com", tone: "warm" },
-  // Websites
-  { id: "web-1", title: "Hoedspruit Tourism Association", platform: "Websites", meta: "Website · Official", description: "The directory the lodges actually use. Listings, events and town updates.", url: "https://hoedspruit.co.za", tone: "warm-grey" },
-  { id: "web-2", title: "Kruger Park Daily", platform: "Websites", meta: "Website · News", description: "Park news, sightings and gate updates from the wider Kruger region.", url: "https://krugerparkdaily.com", tone: "warm" },
-  // Radio
-  { id: "ra-1", title: "HoedspruitFM 95.6", platform: "Radio", meta: "Radio · 95.6 FM", description: "Local voices, local music, traffic reports for the R40 you'll actually use.", url: "https://hoedspruitfm.co.za", tone: "dark" },
-];
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "Whatsapp", "Instagram", "Websites", "Radio"];
 const CHIPS: ("All" | Platform)[] = ["All", ...PLATFORM_ORDER];
@@ -268,13 +240,37 @@ const BushTelegraph = () => {
   const [active, setActive] = useState<"All" | Platform>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  const { data: resources = [] } = useQuery({
+    queryKey: ["bush-telegraph"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bush_telegraph_resources")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        title: r.title,
+        platform: r.platform as Platform,
+        meta: r.meta ?? "",
+        description: r.description ?? "",
+        url: r.url,
+        tone: (r.tone as AvatarTone) ?? "warm",
+        is_featured: !!r.is_featured,
+      })) as Resource[];
+    },
+  });
+
+  const featured = useMemo(() => resources.find((r) => r.is_featured) ?? null, [resources]);
+  const nonFeatured = useMemo(() => resources.filter((r) => !r.is_featured), [resources]);
+
   const sections = useMemo(() => {
     const list = active === "All" ? PLATFORM_ORDER : [active as Platform];
     return list.map((p) => ({
       platform: p,
-      items: RESOURCES.filter((r) => r.platform === p),
+      items: nonFeatured.filter((r) => r.platform === p),
     }));
-  }, [active]);
+  }, [active, nonFeatured]);
 
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
 
@@ -332,44 +328,51 @@ const BushTelegraph = () => {
       </div>
 
       {/* Featured */}
-      <div style={{ padding: "24px 24px 0" }}>
-        <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
-          <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>{FEATURED.eyebrow}</div>
-          <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 35, lineHeight: "35px", letterSpacing: "-1.05px", color: TEXT, margin: "16px 0 0" }}>
-            {FEATURED.title}
-          </h2>
-          <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "12px 0 0", paddingRight: 56 }}>
-            {FEATURED.description}
-          </p>
-          <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap", paddingRight: 56 }}>
-            <span style={{ ...baseText, display: "inline-flex", alignItems: "center", gap: 8, background: WARM, color: TEXT, fontSize: 12, padding: "6px 12px", borderRadius: 999 }}>
-              <span style={{ width: 6, height: 6, borderRadius: 999, background: CORAL, display: "inline-block" }} />
-              {FEATURED.platform}
-            </span>
-            <span style={{ ...baseText, background: WARM, color: TEXT, fontSize: 12, padding: "6px 12px", borderRadius: 999 }}>{FEATURED.count}</span>
+      {featured && (
+        <div style={{ padding: "24px 24px 0" }}>
+          <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
+            <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>This Week's Pick</div>
+            <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 35, lineHeight: "35px", letterSpacing: "-1.05px", color: TEXT, margin: "16px 0 0" }}>
+              {featured.title}
+            </h2>
+            {featured.description && (
+              <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "12px 0 0", paddingRight: 56 }}>
+                {featured.description}
+              </p>
+            )}
+            {featured.meta && (
+              <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap", paddingRight: 56 }}>
+                {featured.meta.split(" · ").map((part, i) => (
+                  <span key={i} style={{ ...baseText, display: "inline-flex", alignItems: "center", gap: 8, background: WARM, color: TEXT, fontSize: 12, padding: "6px 12px", borderRadius: 999 }}>
+                    {i === 0 && <span style={{ width: 6, height: 6, borderRadius: 999, background: CORAL, display: "inline-block" }} />}
+                    {part}
+                  </span>
+                ))}
+              </div>
+            )}
+            <button
+              onClick={() => window.open(featured.url, "_blank", "noopener,noreferrer")}
+              aria-label="Open featured resource"
+              style={{
+                position: "absolute",
+                right: 20,
+                bottom: 20,
+                width: 44,
+                height: 44,
+                borderRadius: 999,
+                background: TEXT,
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ArrowUpRight size={18} color="#FFFFFF" strokeWidth={1.75} />
+            </button>
           </div>
-          <button
-            onClick={() => window.open(FEATURED.url, "_blank", "noopener,noreferrer")}
-            aria-label="Open featured resource"
-            style={{
-              position: "absolute",
-              right: 20,
-              bottom: 20,
-              width: 44,
-              height: 44,
-              borderRadius: 999,
-              background: TEXT,
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ArrowUpRight size={18} color="#FFFFFF" strokeWidth={1.75} />
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Sections */}
       {totalShown === 0 ? (
