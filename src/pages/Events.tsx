@@ -419,10 +419,10 @@ const Events = () => {
       {/* Page header */}
       <div style={{ padding: "16px 24px 28px 24px" }}>
         <h1 style={{
-          fontFamily: FONT,
-          fontWeight: 700,
-          fontSize: 52,
-          lineHeight: "52px",
+          fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+          fontWeight: 500,
+          fontSize: 40,
+          lineHeight: 1,
           letterSpacing: "-1.56px",
           color: COLOR.text,
           margin: 0,
