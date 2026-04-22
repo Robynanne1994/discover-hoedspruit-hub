@@ -119,7 +119,7 @@ const SectionHead = ({ overline, heading, subheading, trailing }: { overline: st
       <p style={{
         fontFamily: FONT,
         fontSize: 12,
-        fontWeight: 400,
+        fontWeight: 500,
         lineHeight: "14px",
         letterSpacing: "0.24px",
         textTransform: "uppercase",
