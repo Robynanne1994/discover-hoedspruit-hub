@@ -1103,7 +1103,7 @@ const SuggestEditSheet = ({
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={suggestInputStyle} />
           <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={suggestInputStyle} />
-          <input value={editType} onChange={(e) => setEditType(e.target.value)} placeholder="What needs updating? (e.g. hours, phone, address)" style={suggestInputStyle} />
+          <input value={editType} onChange={(e) => setEditType(e.target.value)} placeholder="What needs updating?" style={suggestInputStyle} />
           <textarea value={details} onChange={(e) => setDetails(e.target.value)} placeholder="Share the correct information or describe what's wrong" rows={5} style={{ ...suggestInputStyle, resize: "none", paddingTop: 14 }} />
         </div>
         <button
