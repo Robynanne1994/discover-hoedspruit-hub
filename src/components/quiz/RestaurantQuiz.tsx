@@ -25,7 +25,7 @@ const mealOptions = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
 const vibeOptions = ["Casual", "Social", "Fancy", "Scenic"];
 const cuisineOptions = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food"];
 const seatingOptions = ["Indoor", "Outdoor", "No Seating", "Bar"];
-const serviceTypeOptions = ["Sit Down", "Take Away"];
+const serviceTypeOptions = ["Sit down", "Take away"];
 
 type QuestionDef = {
   key: keyof Answers;
