@@ -1,14 +1,39 @@
-import BackButton from "@/components/BackButton";
 import { useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, ArrowLeft, ArrowUpRight, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, ArrowUpRight, MapPin } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const FONT_DISPLAY = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FONT_BODY = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
+
+const COLORS = {
+  bg: "#EBEBEB",
+  card: "#FFFFFF",
+  text: "#0A0A0A",
+  muted: "#8A8480",
+};
+
+// Editorial aspect ratios for masonry interlock (in title order)
+const CARD_ASPECTS: Record<string, string> = {
+  "Restaurants & Cafés": "3 / 4",
+  "Activities & Adventures": "1 / 1",
+  "Accommodation": "4 / 5",
+  "Health & Medical": "5 / 4",
+  "Transport": "1 / 1",
+  "Trades & Services": "3 / 4",
+  "Community": "1 / 1",
+  "Financial & Legal": "4 / 5",
+  "Wellness & Beauty": "3 / 4",
+  "Education": "1 / 1",
+  "Property": "5 / 4",
+};
+
+const FALLBACK_ASPECTS = ["3 / 4", "1 / 1", "4 / 5", "5 / 4"];
+
 const Categories = () => {
   const [search, setSearch] = useState("");
-  const navigate = useNavigate();
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories-all"],
@@ -71,137 +96,76 @@ const Categories = () => {
     [filteredCategories, listingCounts]
   );
 
-  const renderCategoryCard = (cat: any, flex: number) => {
-    const count = listingCounts?.[cat.id] || 0;
-    const hasImage = !!cat.image_url;
-    return (
-      <Link
-        key={cat.id}
-        to={`/category/${cat.id}`}
-        style={{
-          flex,
-          position: "relative",
-          borderRadius: 16,
-          overflow: "hidden",
-          background: hasImage ? "#f0f0f0" : "#FFFFFF",
-          border: hasImage ? "none" : "1px solid rgba(18,18,20,0.06)",
-          transition: "transform 0.15s ease",
-          display: "block",
-          minHeight: 0,
-        }}
-        onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
-        onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      >
-        {hasImage && (
-          <>
-            <img
-              src={cat.image_url}
-              alt={cat.title}
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
-            />
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.05) 100%)",
-              }}
-            />
-          </>
-        )}
-        <span
-          style={{
-            position: "absolute",
-            top: 12,
-            left: 12,
-            fontSize: 15,
-            fontWeight: 400,
-            color: hasImage ? "rgba(255,255,255,0.7)" : "rgba(18,18,20,0.4)",
-          }}
-        >
-          ({count})
-        </span>
-        <ArrowUpRight
-          size={22}
-          strokeWidth={2.5}
-          style={{
-            position: "absolute",
-            top: 12,
-            right: 12,
-            color: hasImage ? "rgba(255,255,255,0.65)" : "rgba(18,18,20,0.3)",
-          }}
-        />
-        <div style={{ position: "absolute", bottom: 12, left: 12, right: 12 }}>
-          <span
-            style={{
-              fontSize: 26,
-              fontWeight: 400,
-              letterSpacing: "0.01em",
-              lineHeight: 1,
-              whiteSpace: "pre-line",
-              color: hasImage ? "#FFFFFF" : "#2B2420",
-              display: "block",
-            }}
-          >
-            {cat.title}
-          </span>
-        </div>
-      </Link>
-    );
-  };
+  const totalListings = useMemo(() => {
+    if (!listingCounts) return 0;
+    return visibleCategories.reduce((sum, c) => sum + (listingCounts[c.id] || 0), 0);
+  }, [listingCounts, visibleCategories]);
 
-  // Build asymmetric two-column blocks of 5 cards each
-  const blocks: any[][] = [];
-  for (let i = 0; i < visibleCategories.length; i += 5) {
-    blocks.push(visibleCategories.slice(i, i + 5));
-  }
+  // Featured = first visible category
+  const featured = visibleCategories[0];
+  const gridCategories = visibleCategories.slice(1);
 
   return (
     <div
       style={{
         minHeight: "100dvh",
-        background: "#EBEBEB",
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        background: COLORS.bg,
+        fontFamily: FONT_BODY,
         paddingTop: "calc(env(safe-area-inset-top) + 24px)",
         paddingLeft: 24,
         paddingRight: 24,
+        paddingBottom: 140,
       }}
     >
-      {/* Heading */}
-      <div style={{ marginBottom: 36 }}>
-        <h1
-          style={{
-            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-            fontWeight: 500,
-            textTransform: "none",
-            fontSize: 40,
-            lineHeight: 0.95,
-            letterSpacing: "-0.02em",
-            color: "#020202",
-            margin: 0,
-          }}
-        >
-          Explore Hoedspruit
-        </h1>
-      </div>
-
-      {/* Search bar */}
-      <div
-        className="flex items-center"
+      {/* Eyebrow */}
+      <p
         style={{
-          background: "#FFFFFF",
-          border: "1px solid rgba(18,18,20,0.1)",
-          borderRadius: 14,
-          padding: "12px 16px",
-          gap: 8,
-          marginBottom: 24,
+          fontFamily: FONT_BODY,
+          fontWeight: 400,
+          fontSize: 12,
+          lineHeight: "14.4px",
+          letterSpacing: "0.24px",
+          color: COLORS.muted,
+          margin: 0,
+          marginBottom: 8,
         }}
       >
-        <Search size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.35)", flexShrink: 0 }} />
+        {visibleCategories.length} Categories · {totalListings} Listings
+      </p>
+
+      {/* Page title */}
+      <h1
+        style={{
+          fontFamily: FONT_DISPLAY,
+          fontWeight: 500,
+          fontSize: 40,
+          lineHeight: "40px",
+          letterSpacing: "-1.2px",
+          color: COLORS.text,
+          margin: 0,
+          marginBottom: 20,
+        }}
+      >
+        Explore
+      </h1>
+
+      {/* Search pill */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          height: 48,
+          background: COLORS.card,
+          borderRadius: 999,
+          padding: "0 20px",
+          gap: 12,
+          marginBottom: 16,
+        }}
+      >
+        <Search size={20} strokeWidth={1.5} style={{ color: COLORS.muted, flexShrink: 0 }} />
         <input
           type="text"
-          placeholder="Search categories & listings..."
+          placeholder="Search categories and listings"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
@@ -209,113 +173,270 @@ const Categories = () => {
             background: "transparent",
             border: "none",
             outline: "none",
-            fontSize: 15,
+            fontFamily: FONT_BODY,
+            fontSize: 16,
             fontWeight: 400,
-            color: "#2B2420",
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            color: COLORS.text,
           }}
-          className="placeholder:text-[rgba(18,18,20,0.35)]"
+          className="placeholder:text-[#8A8480]"
         />
       </div>
 
-      {/* Listing results (search) */}
+      {/* Search results */}
       {listingResults.length > 0 && (
-        <div style={{ marginBottom: 16 }}>
+        <div style={{ marginBottom: 16, display: "flex", flexDirection: "column", gap: 12 }}>
           <p
             style={{
-              textTransform: "uppercase",
+              fontFamily: FONT_BODY,
               fontSize: 12,
-              fontWeight: 500,
-              color: "rgba(18,18,20,0.4)",
-              letterSpacing: "0.06em",
-              marginBottom: 12,
-              paddingLeft: 0,
+              fontWeight: 400,
+              color: COLORS.muted,
+              letterSpacing: "0.24px",
+              margin: 0,
             }}
           >
             Listings
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {listingResults.map((listing) => (
-              <Link
-                key={listing.id}
-                to={`/listing/${listing.id}`}
-                className="flex items-center"
-                style={{
-                  background: "#FFFFFF",
-                  border: "1px solid rgba(18,18,20,0.06)",
-                  borderRadius: 16,
-                  padding: 12,
-                  gap: 12,
-                }}
-              >
-                <div style={{ width: 48, height: 48, borderRadius: 12, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
-                  {listing.image_url && (
-                    <img src={listing.image_url} alt={listing.title} className="w-full h-full object-cover" />
-                  )}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 14, fontWeight: 500, color: "#2B2420", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                    {listing.title}
+          {listingResults.map((listing) => (
+            <Link
+              key={listing.id}
+              to={`/listing/${listing.id}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                background: COLORS.card,
+                borderRadius: 16,
+                padding: 12,
+                gap: 12,
+                textDecoration: "none",
+              }}
+            >
+              <div style={{ width: 48, height: 48, borderRadius: 12, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
+                {listing.image_url && (
+                  <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 14, fontWeight: 400, color: COLORS.text, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {listing.title}
+                </p>
+                {listing.location && (
+                  <p style={{ display: "flex", alignItems: "center", fontSize: 12, color: COLORS.muted, margin: 0, marginTop: 2, gap: 4 }}>
+                    <MapPin size={11} strokeWidth={1.8} />
+                    {listing.location}
                   </p>
-                  {listing.location && (
-                    <p className="flex items-center" style={{ fontSize: 12, color: "rgba(18,18,20,0.4)", margin: 0, marginTop: 2, gap: 4 }}>
-                      <MapPin size={11} strokeWidth={1.8} />
-                      {listing.location}
-                    </p>
-                  )}
-                </div>
-                <ArrowUpRight size={16} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)", flexShrink: 0 }} />
-              </Link>
-            ))}
-          </div>
+                )}
+              </div>
+              <ArrowUpRight size={16} strokeWidth={1.8} style={{ color: COLORS.muted, flexShrink: 0 }} />
+            </Link>
+          ))}
         </div>
       )}
 
-      {/* Category grid (Saved-page asymmetric) */}
-      <div style={{ paddingBottom: 84 }}>
-        {isLoading ? (
-          <div style={{ display: "flex", gap: 4, height: 520 }}>
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-              <Skeleton style={{ flex: 2, borderRadius: 16, background: "#e0e0e0" }} />
-              <Skeleton style={{ flex: 1, borderRadius: 16, background: "#e0e0e0" }} />
-            </div>
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-              <Skeleton style={{ flex: 1, borderRadius: 16, background: "#e0e0e0" }} />
-              <Skeleton style={{ flex: 1, borderRadius: 16, background: "#e0e0e0" }} />
-              <Skeleton style={{ flex: 1, borderRadius: 16, background: "#e0e0e0" }} />
-            </div>
+      {isLoading ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <Skeleton style={{ width: "100%", aspectRatio: "16 / 10", borderRadius: 24, background: "#e0e0e0" }} />
+          <div style={{ columnCount: 2, columnGap: 16 }}>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                style={{
+                  width: "100%",
+                  aspectRatio: FALLBACK_ASPECTS[i % FALLBACK_ASPECTS.length],
+                  borderRadius: 24,
+                  background: "#e0e0e0",
+                  marginBottom: 16,
+                  display: "inline-block",
+                  breakInside: "avoid",
+                }}
+              />
+            ))}
           </div>
-        ) : visibleCategories.length === 0 && listingResults.length === 0 ? (
-          <div className="text-center" style={{ paddingTop: 80 }}>
-            <p style={{ fontWeight: 500, fontSize: 18, color: "#2B2420", marginBottom: 4 }}>No results found</p>
-            <p style={{ fontSize: 14, color: "rgba(18,18,20,0.55)" }}>Try another search term</p>
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {blocks.map((block, blockIdx) => {
-              const tallOnLeft = blockIdx % 2 === 0;
-              const leftCards = tallOnLeft ? block.slice(0, 2) : block.slice(0, 3);
-              const rightCards = tallOnLeft ? block.slice(2, 5) : block.slice(3, 5);
-              return (
-                <div key={blockIdx} style={{ display: "flex", gap: 4, height: 520 }}>
-                  <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-                    {tallOnLeft
-                      ? leftCards.map((c, idx) => renderCategoryCard(c, idx === 0 ? 2 : 1))
-                      : leftCards.map((c) => renderCategoryCard(c, 1))}
-                  </div>
-                  {rightCards.length > 0 && (
-                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
-                      {tallOnLeft
-                        ? rightCards.map((c) => renderCategoryCard(c, 1))
-                        : rightCards.map((c, idx) => renderCategoryCard(c, idx === 0 ? 2 : 1))}
-                    </div>
-                  )}
+        </div>
+      ) : visibleCategories.length === 0 && listingResults.length === 0 ? (
+        <div style={{ textAlign: "center", paddingTop: 80 }}>
+          <p style={{ fontWeight: 400, fontSize: 18, color: COLORS.text, marginBottom: 4 }}>No results found</p>
+          <p style={{ fontSize: 14, color: COLORS.muted }}>Try another search term</p>
+        </div>
+      ) : (
+        <>
+          {/* Featured hero card */}
+          {featured && (
+            <Link
+              to={`/category/${featured.id}`}
+              style={{
+                display: "block",
+                background: COLORS.card,
+                borderRadius: 24,
+                overflow: "hidden",
+                marginBottom: 16,
+                textDecoration: "none",
+                transition: "transform 150ms ease-out",
+              }}
+              onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+              onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#f0f0f0", overflow: "hidden" }}>
+                {featured.image_url && (
+                  <img
+                    src={featured.image_url}
+                    alt={featured.title}
+                    style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                )}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 16,
+                    right: 16,
+                    width: 40,
+                    height: 40,
+                    borderRadius: 999,
+                    background: "rgba(255,255,255,0.95)",
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ArrowUpRight size={20} strokeWidth={1.5} color={COLORS.text} />
                 </div>
+              </div>
+              <div style={{ padding: 20 }}>
+                <p
+                  style={{
+                    fontFamily: FONT_BODY,
+                    fontSize: 12,
+                    fontWeight: 400,
+                    lineHeight: "14.4px",
+                    letterSpacing: "0.24px",
+                    color: COLORS.muted,
+                    margin: 0,
+                    marginBottom: 8,
+                  }}
+                >
+                  Featured This Week
+                </p>
+                <h2
+                  style={{
+                    fontFamily: FONT_DISPLAY,
+                    fontWeight: 500,
+                    fontSize: 35,
+                    lineHeight: "35px",
+                    letterSpacing: "-1.05px",
+                    color: COLORS.text,
+                    margin: 0,
+                    marginBottom: 8,
+                  }}
+                >
+                  {featured.title}
+                </h2>
+                <p
+                  style={{
+                    fontFamily: FONT_BODY,
+                    fontSize: 13,
+                    fontWeight: 400,
+                    lineHeight: "18.2px",
+                    letterSpacing: "0.13px",
+                    color: COLORS.muted,
+                    margin: 0,
+                  }}
+                >
+                  {listingCounts?.[featured.id] || 0} Listings
+                </p>
+              </div>
+            </Link>
+          )}
+
+          {/* Masonry grid */}
+          <div style={{ columnCount: 2, columnGap: 16 }}>
+            {gridCategories.map((cat, idx) => {
+              const count = listingCounts?.[cat.id] || 0;
+              const aspect = CARD_ASPECTS[cat.title] || FALLBACK_ASPECTS[idx % FALLBACK_ASPECTS.length];
+              return (
+                <Link
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  style={{
+                    display: "inline-block",
+                    width: "100%",
+                    background: COLORS.card,
+                    borderRadius: 24,
+                    overflow: "hidden",
+                    marginBottom: 16,
+                    breakInside: "avoid",
+                    textDecoration: "none",
+                    transition: "transform 150ms ease-out",
+                  }}
+                  onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
+                  onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                  onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                >
+                  <div style={{ position: "relative", width: "100%", aspectRatio: aspect, background: "#f0f0f0", overflow: "hidden" }}>
+                    {cat.image_url && (
+                      <img
+                        src={cat.image_url}
+                        alt={cat.title}
+                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    )}
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 12,
+                        right: 12,
+                        width: 32,
+                        height: 32,
+                        borderRadius: 999,
+                        background: "rgba(255,255,255,0.95)",
+                        backdropFilter: "blur(8px)",
+                        WebkitBackdropFilter: "blur(8px)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <ArrowUpRight size={16} strokeWidth={1.75} color={COLORS.text} />
+                    </div>
+                  </div>
+                  <div style={{ paddingTop: 14, paddingLeft: 16, paddingRight: 16, paddingBottom: 16 }}>
+                    <p
+                      style={{
+                        fontFamily: FONT_BODY,
+                        fontSize: 18,
+                        fontWeight: 400,
+                        lineHeight: "21.6px",
+                        letterSpacing: "-0.18px",
+                        color: COLORS.text,
+                        margin: 0,
+                      }}
+                    >
+                      {cat.title}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: FONT_BODY,
+                        fontSize: 12,
+                        fontWeight: 400,
+                        lineHeight: "15.6px",
+                        letterSpacing: "0.12px",
+                        color: COLORS.muted,
+                        margin: 0,
+                        marginTop: 4,
+                      }}
+                    >
+                      {count} Listings
+                    </p>
+                  </div>
+                </Link>
               );
             })}
           </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 };
