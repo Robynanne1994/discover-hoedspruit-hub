@@ -280,7 +280,7 @@ const ListingDetail = () => {
       { label: "Wi-Fi", value: hasWifi },
       { label: "Free Wi-Fi", value: hasFreeWifi },
       { label: "Smoking section", value: smokingAllowed },
-      { label: "Pets Allowed", value: petsAllowed },
+      { label: "Pets friendly", value: petsAllowed },
     ].filter(f => f.value === true) as AccField[];
     if (amenFields.length > 0) accordionSections.push({ key: "amenities", title: "Amenities", fields: amenFields });
 
