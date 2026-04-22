@@ -260,7 +260,7 @@ const ListingDetail = () => {
   if (isListingRestaurant) {
     const accessFields = [
       { label: "Wheelchair friendly", value: wheelchairFriendly },
-      { label: "Accessible Entrance", value: wheelchairEntrance },
+      { label: "Accessible entrance", value: wheelchairEntrance },
       { label: "Accessible Seating", value: wheelchairSeating },
       { label: "Accessible Toilet", value: wheelchairToilet },
       { label: "Accessible Parking", value: wheelchairCarPark },
