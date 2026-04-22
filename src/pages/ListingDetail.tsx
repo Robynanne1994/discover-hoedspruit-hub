@@ -246,7 +246,7 @@ const ListingDetail = () => {
       { label: "High chairs", value: highChairs },
       { label: "Playground", value: kidsPlayground },
     ]);
-    if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & Family", fields: kidsFields });
+    if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & family", fields: kidsFields });
 
     const accessFields = filterDefined([
       { label: "Wheelchair friendly", value: wheelchairFriendly },
