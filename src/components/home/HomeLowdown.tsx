@@ -75,8 +75,9 @@ const HomeLowdown = () => {
             <div style={{ flex: 1, minWidth: 0 }}>
               <div
                 style={{
-                  fontFamily: SANS,
-                  fontSize: 11,
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontSize: 10,
+                  fontWeight: 500,
                   color: "#F26A48",
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
