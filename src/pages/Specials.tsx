@@ -568,7 +568,6 @@ const Specials = () => {
                       {Vendor}
                       {Validity}
                       {Description}
-                      {Actions}
                     </div>
                   </>
                 ) : (
@@ -593,7 +592,6 @@ const Specials = () => {
                       {Vendor}
                       {Validity}
                       {Description}
-                      {Actions}
                     </div>
                   </>
                 )}
