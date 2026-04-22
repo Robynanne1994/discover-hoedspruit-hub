@@ -438,7 +438,7 @@ const ListingDetail = () => {
     },
     waCleanNum && {
       label: "WhatsApp",
-      value: `WhatsApp · ${formatWhatsappDisplay(whatsappNum!, waCleanNum)}`,
+      value: formatWhatsappDisplay(whatsappNum!, waCleanNum),
       icon: WhatsappIcon,
       href: `https://wa.me/${waCleanNum}`,
       isCustomIcon: true,
