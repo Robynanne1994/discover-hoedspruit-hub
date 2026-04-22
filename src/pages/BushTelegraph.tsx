@@ -226,7 +226,9 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
           <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email (optional)" style={inputStyle} />
-          <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Resource name, link, and why it's worth being on" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
+          <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="Resource name" style={inputStyle} />
+          <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="Resource link" style={inputStyle} />
+          <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Why it's worth being on" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
         </div>
         <button
           onClick={submit}
