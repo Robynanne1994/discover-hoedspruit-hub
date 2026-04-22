@@ -283,7 +283,7 @@ const ListingDetail = () => {
       { label: "Room service", value: l.has_room_service },
       { label: "Breakfast", value: l.has_breakfast },
     ]);
-    if (food.length > 0) accordionSections.push({ key: "accom-food", title: "Food & Drink", fields: food });
+    if (food.length > 0) accordionSections.push({ key: "accom-food", title: "Food & drink", fields: food });
 
     const transport = filterDefined([
       { label: "Airport shuttle", value: l.has_airport_shuttle },
