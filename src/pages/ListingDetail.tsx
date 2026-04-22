@@ -269,7 +269,7 @@ const ListingDetail = () => {
     if (seating && seating.length > 0) {
       accordionSections.push({ key: "seating", title: "Seating", fields: seating.map(s => ({ label: toTitleCase(s.replace(/ seating$/i, "")), value: true })) });
     }
-    if (meal && meal.length > 0) accordionSections.push({ key: "meals", title: "Meals Served", fields: meal.map(m => ({ label: toTitleCase(m), value: true })) });
+    if (meal && meal.length > 0) accordionSections.push({ key: "meals", title: "Meals served", fields: meal.map(m => ({ label: toTitleCase(m), value: true })) });
     if (cuisine && cuisine.length > 0) accordionSections.push({ key: "cuisine", title: "Cuisine", fields: cuisine.map(c => ({ label: toTitleCase(c), value: true })) });
     if (vibe && vibe.length > 0) accordionSections.push({ key: "vibe", title: "Vibe", fields: vibe.map(v => ({ label: toTitleCase(v), value: true })) });
   }
