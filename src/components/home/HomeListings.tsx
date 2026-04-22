@@ -92,7 +92,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                     <>
                       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                         <Star size={12} color="#F26A48" fill="#F26A48" strokeWidth={0} />
-                        <span style={{ fontFamily: SANS, fontSize: 13, color: "#0A0A0A" }}>
+                        <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "#0A0A0A" }}>
                           {Number(l.google_rating).toFixed(1)}
                         </span>
                       </div>
