@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, Plus, ArrowUpRight, X } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,37 +27,8 @@ interface Resource {
   description: string;
   url: string;
   tone: AvatarTone;
+  is_featured: boolean;
 }
-
-const FEATURED = {
-  eyebrow: "This Week's Pick",
-  title: "Hoedspruit Helpers",
-  description:
-    "The unofficial town hall. Lost dogs, found keys, plumber recommendations and the actual road conditions to Tzaneen.",
-  platform: "Facebook Group",
-  count: "14.2k Members",
-  url: "https://www.facebook.com/groups/hoedspruithelpers",
-};
-
-const RESOURCES: Resource[] = [
-  // Facebook
-  { id: "fb-1", title: "Buy & Sell Hoedspruit", platform: "Facebook", meta: "Facebook Group · 9.8k members", description: "Furniture, bakkies, wedding dresses, the occasional zebra. Everything ends up here first.", url: "https://www.facebook.com", tone: "warm" },
-  { id: "fb-2", title: "Lost & Found Pets", platform: "Facebook", meta: "Facebook Group · 3.1k members", description: "Reunites about a dog a week. Worth joining even if you don't have one.", url: "https://www.facebook.com", tone: "coral" },
-  { id: "fb-3", title: "Khulula Tribe", platform: "Facebook", meta: "Facebook Group · 2.4k members", description: "Local community fund. Posts about projects, events, and ways to get involved.", url: "https://www.facebook.com", tone: "warm" },
-  { id: "fb-4", title: "Hoedspruit Noticeboard", platform: "Facebook", meta: "Facebook Group · 7.6k members", description: "Notices, jobs, services and the occasional opinion piece nobody asked for.", url: "https://www.facebook.com", tone: "warm-grey" },
-  // Whatsapp
-  { id: "wa-1", title: "Hoedspruit Alerts", platform: "Whatsapp", meta: "Whatsapp Channel · Broadcast only", description: "Power outages, road closures, security incidents. The first place anything breaks.", url: "https://whatsapp.com", tone: "dark" },
-  { id: "wa-2", title: "Farmers Market Updates", platform: "Whatsapp", meta: "Whatsapp Channel · Weekly", description: "Who's setting up, what's in season, what time the bread runs out.", url: "https://whatsapp.com", tone: "warm" },
-  { id: "wa-3", title: "School Run Carpool", platform: "Whatsapp", meta: "Whatsapp Group · Invite only", description: "Parents coordinating lifts to and from the local schools each week.", url: "https://whatsapp.com", tone: "warm-grey" },
-  // Instagram
-  { id: "ig-1", title: "@VisitHoedspruit", platform: "Instagram", meta: "Instagram · 28k followers", description: "The official tourism feed. Reliable for what's open, what's new and which lodges are hiring.", url: "https://instagram.com", tone: "coral" },
-  { id: "ig-2", title: "@EatOutHoedspruit", platform: "Instagram", meta: "Instagram · 6.3k followers", description: "Restaurant openings, weekly specials, who's doing pizza nights.", url: "https://instagram.com", tone: "warm" },
-  // Websites
-  { id: "web-1", title: "Hoedspruit Tourism Association", platform: "Websites", meta: "Website · Official", description: "The directory the lodges actually use. Listings, events and town updates.", url: "https://hoedspruit.co.za", tone: "warm-grey" },
-  { id: "web-2", title: "Kruger Park Daily", platform: "Websites", meta: "Website · News", description: "Park news, sightings and gate updates from the wider Kruger region.", url: "https://krugerparkdaily.com", tone: "warm" },
-  // Radio
-  { id: "ra-1", title: "HoedspruitFM 95.6", platform: "Radio", meta: "Radio · 95.6 FM", description: "Local voices, local music, traffic reports for the R40 you'll actually use.", url: "https://hoedspruitfm.co.za", tone: "dark" },
-];
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "Whatsapp", "Instagram", "Websites", "Radio"];
 const CHIPS: ("All" | Platform)[] = ["All", ...PLATFORM_ORDER];
