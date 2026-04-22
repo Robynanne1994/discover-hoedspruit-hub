@@ -74,8 +74,8 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
               <div style={{ padding: "12px 14px 14px" }}>
                 <div
                   style={{
-                    fontFamily: SANS,
-                    fontSize: 17,
+                    fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                    fontSize: 14,
                     color: "#0A0A0A",
                     lineHeight: 1.2,
                     marginBottom: 6,
