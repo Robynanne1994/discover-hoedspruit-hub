@@ -112,8 +112,8 @@ const HomeWhatsOn = () => {
                       display: "flex",
                       alignItems: "center",
                       gap: 4,
-                      fontFamily: SANS,
-                      fontSize: 13,
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      fontSize: 12,
                       color: "#8A8480",
                       overflow: "hidden",
                     }}
