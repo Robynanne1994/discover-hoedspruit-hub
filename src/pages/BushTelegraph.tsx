@@ -248,7 +248,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
             opacity: submitting ? 0.6 : 1,
           }}
         >
-          {submitting ? "Sending..." : "Send Suggestion"}
+          {submitting ? "Sending..." : "Share Resource"}
         </button>
       </div>
     </div>
