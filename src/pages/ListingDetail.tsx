@@ -75,6 +75,7 @@ const ListingDetail = () => {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
+  const [galleryHintVisible, setGalleryHintVisible] = useState(true);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
