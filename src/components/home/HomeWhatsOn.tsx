@@ -99,10 +99,12 @@ const HomeWhatsOn = () => {
                     fontWeight: 500,
                     color: "#0A0A0A",
                     lineHeight: 1.25,
-                    marginBottom: 2,
+                    marginBottom: 6,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    whiteSpace: "nowrap",
+                    wordBreak: "break-word",
                   }}
                 >
                   {e.title}
