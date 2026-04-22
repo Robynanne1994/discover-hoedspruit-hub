@@ -71,6 +71,7 @@ const ListingDetail = () => {
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [suggestEditOpen, setSuggestEditOpen] = useState(false);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -988,16 +989,23 @@ const ListingDetail = () => {
         )}
 
         <div style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
-          <a
-            href={`mailto:hellohoedspruit@gmail.com?subject=${encodeURIComponent("Suggest an edit: " + listing.title)}`}
+          <button
+            onClick={() => setSuggestEditOpen(true)}
             style={{
               fontFamily: FONT_BODY, fontSize: 13, color: C.muted,
               textDecoration: "underline", textUnderlineOffset: "3px",
+              background: "transparent", border: "none", cursor: "pointer", padding: 0,
             }}
           >
             Suggest an edit to this listing
-          </a>
+          </button>
         </div>
+
+        <SuggestEditSheet
+          open={suggestEditOpen}
+          onClose={() => setSuggestEditOpen(false)}
+          listingTitle={listing.title}
+        />
       </div>
 
       <ImageLightbox
@@ -1009,6 +1017,115 @@ const ListingDetail = () => {
       />
 
       <BottomNav />
+    </div>
+  );
+};
+
+const suggestInputStyle: React.CSSProperties = {
+  fontFamily: FONT_BODY,
+  fontWeight: 400,
+  fontSize: 14,
+  color: C.text,
+  background: C.panel,
+  border: "none",
+  borderRadius: 14,
+  padding: "14px 16px",
+  outline: "none",
+  width: "100%",
+  boxSizing: "border-box",
+};
+
+const SuggestEditSheet = ({
+  open, onClose, listingTitle,
+}: { open: boolean; onClose: () => void; listingTitle: string }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [editType, setEditType] = useState("");
+  const [details, setDetails] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  if (!open) return null;
+
+  const submit = async () => {
+    if (!name.trim() || !email.trim() || !editType.trim() || !details.trim()) {
+      toast.error("Please fill in all the fields.");
+      return;
+    }
+    setSubmitting(true);
+    const composed = `[Suggest an edit]\nListing: ${listingTitle}\nWhat needs updating: ${editType.trim()}\n\nDetails:\n${details.trim()}`;
+    const { error } = await supabase.from("contact_submissions").insert({
+      name: name.trim(),
+      email: email.trim(),
+      message: composed,
+    });
+    setSubmitting(false);
+    if (error) {
+      toast.error("Couldn't send right now. Try again shortly.");
+      return;
+    }
+    toast.success("Thanks — we'll take a look.");
+    setName(""); setEmail(""); setEditType(""); setDetails("");
+    onClose();
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          fontFamily: FONT_BODY,
+          width: "100%",
+          background: C.card,
+          borderRadius: "24px 24px 0 0",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+          padding: "20px 24px 32px",
+          animation: "ld-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+          maxHeight: "90vh",
+          overflowY: "auto",
+        }}
+      >
+        <style>{`@keyframes ld-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <div style={{ fontFamily: FONT_BODY, fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: C.muted, textTransform: "uppercase" }}>Help Us Improve</div>
+          <button onClick={onClose} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
+            <XIcon size={20} color={C.text} strokeWidth={1.75} />
+          </button>
+        </div>
+        <h2 style={{ fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: C.text, margin: "0 0 8px" }}>Suggest an edit</h2>
+        <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: "20.3px", color: C.muted, margin: "0 0 20px" }}>
+          Spotted something out of date or incorrect on <strong style={{ color: C.text, fontWeight: 500 }}>{listingTitle}</strong>? Let us know and we'll update it.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={suggestInputStyle} />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={suggestInputStyle} />
+          <input value={editType} onChange={(e) => setEditType(e.target.value)} placeholder="What needs updating? (e.g. hours, phone, address)" style={suggestInputStyle} />
+          <textarea value={details} onChange={(e) => setDetails(e.target.value)} placeholder="Share the correct information or describe what's wrong" rows={5} style={{ ...suggestInputStyle, resize: "none", paddingTop: 14 }} />
+        </div>
+        <button
+          onClick={submit}
+          disabled={submitting}
+          style={{
+            fontFamily: FONT_BODY,
+            marginTop: 16,
+            width: "100%",
+            height: 52,
+            borderRadius: 999,
+            background: C.text,
+            color: "#FFFFFF",
+            border: "none",
+            fontSize: 14,
+            cursor: submitting ? "default" : "pointer",
+            opacity: submitting ? 0.6 : 1,
+          }}
+        >
+          {submitting ? "Sending..." : "Send Suggestion"}
+        </button>
+      </div>
     </div>
   );
 };
