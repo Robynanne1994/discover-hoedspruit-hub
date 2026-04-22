@@ -261,9 +261,9 @@ const ListingDetail = () => {
     const accessFields = [
       { label: "Wheelchair friendly", value: wheelchairFriendly },
       { label: "Accessible entrance", value: wheelchairEntrance },
-      { label: "Accessible Seating", value: wheelchairSeating },
-      { label: "Accessible Toilet", value: wheelchairToilet },
-      { label: "Accessible Parking", value: wheelchairCarPark },
+      { label: "Accessible seating", value: wheelchairSeating },
+      { label: "Accessible toilet", value: wheelchairToilet },
+      { label: "Accessible parking", value: wheelchairCarPark },
     ].filter(f => f.value === true) as AccField[];
     if (accessFields.length > 0) accordionSections.push({ key: "accessibility", title: "Accessibility", fields: accessFields });
 
