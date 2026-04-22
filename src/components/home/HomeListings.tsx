@@ -112,10 +112,8 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                   {l.location && (
                     <span
                       style={{
-                        fontFamily: SERIF,
-                        fontStyle: "italic",
-                        fontWeight: 300,
-                        fontSize: 13,
+                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        fontSize: 12,
                         color: "#8A8480",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
