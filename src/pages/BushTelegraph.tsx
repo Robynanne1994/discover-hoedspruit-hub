@@ -326,7 +326,7 @@ const BushTelegraph = () => {
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, ...baseText }}>
       {/* Top bar */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px 0" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 0 0" }}>
         <IconButton onClick={() => navigate(-1)} ariaLabel="Back">
           <ChevronLeft size={20} color={TEXT} strokeWidth={2} />
         </IconButton>
