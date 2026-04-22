@@ -435,15 +435,14 @@ const Specials = () => {
                   letterSpacing: "0.22px",
                   fontWeight: 400,
                   color: COLOR.text,
-                  textTransform: "uppercase",
+                  textTransform: "none",
                   display: "block",
                   margin: 0,
                   marginBottom: 4,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  textDecoration: "underline",
-                  textUnderlineOffset: 2,
+                  textDecoration: "none",
                 }}
               >
                 {s.business_name}
