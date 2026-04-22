@@ -220,7 +220,7 @@ const Categories = () => {
 
       {/* Listing results (search) */}
       {listingResults.length > 0 && (
-        <div style={{ marginLeft: -20, marginRight: -20, paddingLeft: 4, paddingRight: 4, marginBottom: 16 }}>
+        <div style={{ marginBottom: 16 }}>
           <p
             style={{
               textTransform: "uppercase",
@@ -229,12 +229,12 @@ const Categories = () => {
               color: "rgba(18,18,20,0.4)",
               letterSpacing: "0.06em",
               marginBottom: 12,
-              paddingLeft: 24,
+              paddingLeft: 0,
             }}
           >
             Listings
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingLeft: 24, paddingRight: 24 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {listingResults.map((listing) => (
               <Link
                 key={listing.id}
@@ -272,7 +272,7 @@ const Categories = () => {
       )}
 
       {/* Category grid (Saved-page asymmetric) */}
-      <div style={{ marginLeft: -20, marginRight: -20, paddingLeft: 4, paddingRight: 4, paddingBottom: 84 }}>
+      <div style={{ paddingBottom: 84 }}>
         {isLoading ? (
           <div style={{ display: "flex", gap: 4, height: 520 }}>
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 4 }}>
