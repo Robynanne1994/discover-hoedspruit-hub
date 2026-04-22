@@ -506,7 +506,7 @@ const MyAccount = () => {
                 fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 flex: 1,
                 fontSize: 16,
-                fontWeight: 500,
+                fontWeight: 400,
                 lineHeight: 1.25,
                 color: TEXT,
               }}
