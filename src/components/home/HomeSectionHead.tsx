@@ -64,18 +64,19 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
           style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontSize: 12,
+            lineHeight: 1,
             textTransform: "uppercase",
             color: "#8A8480",
             textDecoration: "none",
             whiteSpace: "nowrap",
             flexShrink: 0,
             display: "inline-flex",
-            alignItems: "center",
+            alignItems: "flex-end",
             gap: 4,
           }}
         >
           {actionLabel}
-          <ArrowUpRight size={14} strokeWidth={2} />
+          <ArrowUpRight size={14} strokeWidth={2} style={{ display: "block" }} />
         </Link>
       )}
     </div>
