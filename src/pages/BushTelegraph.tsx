@@ -143,8 +143,8 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
     setSubmitting(true);
     const { error } = await supabase.from("contact_submissions").insert({
       name: name.trim(),
-      email: email.trim() || "noreply@bush-telegraph.local",
-      message: `[Bush Telegraph suggestion]\n${message.trim()}`,
+      email: email.trim() || "noreply@local-channels.local",
+      message: `[Local Channels suggestion]\n${message.trim()}`,
     });
     setSubmitting(false);
     if (error) {
@@ -290,7 +290,7 @@ const BushTelegraph = () => {
       <div style={{ padding: "24px 24px 0" }}>
         <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>Off The App</div>
         <h1 style={{ fontFamily: HW, fontWeight: 500, fontSize: 40, lineHeight: "40px", letterSpacing: "-1.2px", color: TEXT, margin: "12px 0 0" }}>
-          The Bush Telegraph
+          Local Channels
         </h1>
         <p style={{ ...baseText, fontSize: 16, lineHeight: "23.2px", color: MUTED, margin: "12px 0 0", maxWidth: 320 }}>
           The local channels, groups and feeds worth being on. Curated, not crowdsourced.
