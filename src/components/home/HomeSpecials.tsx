@@ -90,8 +90,9 @@ const HomeSpecials = () => {
               <div style={{ padding: "14px 24px 16px" }}>
                 <div
                   style={{
-                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 18,
+                    fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                    fontSize: 16,
+                    fontWeight: 500,
                     color: "#0A0A0A",
                     lineHeight: 1.2,
                     marginBottom: 6,
