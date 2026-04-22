@@ -325,9 +325,16 @@ const BushTelegraph = () => {
         <IconButton onClick={() => navigate(-1)} ariaLabel="Back">
           <ChevronLeft size={20} color={TEXT} strokeWidth={2} />
         </IconButton>
-        <IconButton onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
-          <Plus size={20} color={TEXT} strokeWidth={2} />
-        </IconButton>
+        <div style={{ display: "flex", gap: 8 }}>
+          {isAdmin && (
+            <IconButton onClick={() => navigate("/admin/bush-telegraph")} ariaLabel="Edit local channels">
+              <Pencil size={18} color={TEXT} strokeWidth={2} />
+            </IconButton>
+          )}
+          <IconButton onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
+            <Plus size={20} color={TEXT} strokeWidth={2} />
+          </IconButton>
+        </div>
       </div>
 
       {/* Hero */}
