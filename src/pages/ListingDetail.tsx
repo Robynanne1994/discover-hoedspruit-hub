@@ -799,27 +799,52 @@ const ListingDetail = () => {
                 </div>
               )}
               <div style={{
-                background: C.card, borderRadius: 24,
-                paddingLeft: 20, paddingRight: 20, paddingTop: 4, paddingBottom: 4,
+                background: C.card, borderRadius: 24, overflow: "hidden",
               }}>
                 {openStatus && (
                   <div style={{
-                    display: "flex", alignItems: "center",
-                    height: 48,
-                    borderBottom: `1px solid ${C.border}`,
+                    background: C.panel,
+                    paddingTop: 20, paddingBottom: 22, paddingLeft: 24, paddingRight: 24,
                   }}>
-                    <span style={{
-                      width: 7, height: 7, borderRadius: "50%", background: C.coral,
-                      display: "inline-block", marginRight: 10,
-                    }} />
-                    <span style={{ fontFamily: FONT_BODY, fontSize: 16, color: C.text }}>
-                      {openStatus.open ? "Open Now" : "Closed"}
-                    </span>
-                    <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: C.muted, marginLeft: 8 }}>
-                      {openStatus.open ? `Closes ${openStatus.closes}` : `Opens later`}
-                    </span>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {openStatus.state === "open" && (
+                        <span style={{
+                          width: 10, height: 10, borderRadius: "50%", background: C.coral,
+                          display: "inline-block", marginRight: 12, flexShrink: 0,
+                        }} />
+                      )}
+                      <span style={{
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
+                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: C.text,
+                      }}>
+                        {openStatus.state === "open"
+                          ? "Open Now"
+                          : openStatus.state === "temporarily_closed"
+                          ? "Temporarily Closed"
+                          : "Closed"}
+                      </span>
+                    </div>
+                    {openStatus.state === "open" && (
+                      <div style={{
+                        marginTop: 4, marginLeft: 22,
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
+                        lineHeight: "20.3px", color: C.muted,
+                      }}>
+                        Closes {openStatus.closes}
+                      </div>
+                    )}
+                    {openStatus.state === "closed" && openStatus.opensAt && (
+                      <div style={{
+                        marginTop: 4,
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
+                        lineHeight: "20.3px", color: C.muted,
+                      }}>
+                        Opens {openStatus.opensAt} {openStatus.opensDay}
+                      </div>
+                    )}
                   </div>
                 )}
+                <div style={{ paddingLeft: 20, paddingRight: 20 }}>
                 {DAY_LABELS.map((day, i) => {
                   const key = day.toLowerCase();
                   const value = openingHours![key] || "";
