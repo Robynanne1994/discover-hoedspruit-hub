@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
+import BackButton from "@/components/BackButton";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -283,24 +284,8 @@ const CategoryPage = () => {
           justifyContent: "space-between",
         }}
       >
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            color: C.text,
-          }}
-        >
-          <ChevronLeft size={20} strokeWidth={1.6} color={C.text} />
-          <span style={{ fontFamily: font, fontWeight: 400, fontSize: 15, lineHeight: "18px", letterSpacing: 0, color: C.text }}>
-            Back
-          </span>
-        </button>
+        <BackButton />
+
 
       </div>
 
@@ -588,9 +573,9 @@ const CategoryPage = () => {
                 <div style={{ padding: 24 }}>
                   <h3
                     style={{
-                      fontFamily: font,
-                      fontSize: 24,
-                      fontWeight: 700,
+                      fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                      fontSize: 22,
+                      fontWeight: 500,
                       color: C.text,
                       letterSpacing: "-0.4px",
                       lineHeight: 1.15,
