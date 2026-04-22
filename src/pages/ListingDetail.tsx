@@ -48,7 +48,7 @@ const pressOpacity = {
 
 // Title-case helper for category names / labels (preserve & and short words like Wi-Fi)
 const toTitleCase = (s: string) =>
-  s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+  s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 
 // Section heading (H2) — Helvetica World 500, 28px, -0.84px tracking
 const SectionHeading = ({ children, mt = 32 }: { children: React.ReactNode; mt?: number }) => (
