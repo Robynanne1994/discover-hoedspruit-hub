@@ -339,7 +339,7 @@ const BushTelegraph = () => {
 
       {/* Hero */}
       <div style={{ padding: "24px 24px 0" }}>
-        <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>Off The App</div>
+        <div style={{ fontFamily: HN, fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, textTransform: "uppercase" }}>Off The App</div>
         <h1 style={{ fontFamily: HW, fontWeight: 500, fontSize: 40, lineHeight: "40px", letterSpacing: "-1.2px", color: TEXT, margin: "12px 0 0" }}>
           Local Channels
         </h1>
