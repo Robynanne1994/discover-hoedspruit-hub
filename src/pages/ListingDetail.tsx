@@ -271,7 +271,7 @@ const ListingDetail = () => {
       { label: "Good for kids", value: goodForKids },
       { label: "Kids menu", value: kidsMenu },
       { label: "High Chairs", value: highChairs },
-      { label: "Playground", value: kidsPlayground },
+      { label: "Kids playground", value: kidsPlayground },
     ].filter(f => f.value === true) as AccField[];
     if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & Family", fields: kidsFields });
 
