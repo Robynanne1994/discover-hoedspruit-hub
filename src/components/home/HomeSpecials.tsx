@@ -103,12 +103,13 @@ const HomeSpecials = () => {
                 </div>
                 <div
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
-                    fontWeight: 300,
-                    fontSize: 14,
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    fontWeight: 400,
+                    fontSize: 12,
                     color: "#8A8480",
                     marginBottom: 8,
+                    lineHeight: 1.3,
+                    wordBreak: "break-word",
                   }}
                 >
                   {s.business_name}
