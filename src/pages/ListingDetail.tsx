@@ -238,7 +238,7 @@ const ListingDetail = () => {
         serviceFields.push({ label: s, value: true });
       }
     });
-    if (serviceFields.length > 0) accordionSections.push({ key: "service", title: "Service Options", fields: serviceFields });
+    if (serviceFields.length > 0) accordionSections.push({ key: "service", title: "Service options", fields: serviceFields });
 
     const kidsFields = filterDefined([
       { label: "Good for kids", value: goodForKids },
