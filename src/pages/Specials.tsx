@@ -413,7 +413,7 @@ const Specials = () => {
                   fontSize: 28,
                   lineHeight: "32px",
                   letterSpacing: "-0.56px",
-                  fontWeight: 700,
+                  fontWeight: 500,
                   color: COLOR.text,
                   textTransform: "none",
                   margin: 0,
