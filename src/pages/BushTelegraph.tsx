@@ -122,7 +122,7 @@ const ResourceCard = ({ r }: { r: Resource }) => {
           <Avatar tone={r.tone} label={initial} />
         )}
         <div style={{ flex: 1, minWidth: 0, paddingRight: 24 }}>
-          <h4 style={{ ...baseText, fontSize: 22, lineHeight: "25.3px", letterSpacing: "-0.22px", color: TEXT, margin: 0 }}>{r.title}</h4>
+          <h4 style={{ fontFamily: HW, fontWeight: 500, fontSize: 22, lineHeight: "26px", letterSpacing: "-0.66px", color: TEXT, margin: 0 }}>{r.title}</h4>
           <div style={{ ...baseText, fontSize: 12, lineHeight: "15.6px", letterSpacing: "0.12px", color: MUTED, marginTop: 6 }}>
             {parts1}
             {parts2 && (
