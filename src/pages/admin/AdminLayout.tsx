@@ -12,6 +12,7 @@ import {
   Home,
   Tag,
   Newspaper,
+  Radio,
   Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ const navItems = [
   { label: "Events", path: "/admin/events", icon: Calendar },
   { label: "Specials", path: "/admin/specials", icon: Tag },
   { label: "Lowveld Lowdown", path: "/admin/articles", icon: Newspaper },
+  { label: "Bush Telegraph", path: "/admin/bush-telegraph", icon: Radio },
   { label: "Site Content", path: "/admin/content", icon: FileText },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
