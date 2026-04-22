@@ -588,8 +588,8 @@ const CategoryPage = () => {
                   {l.location && (
                     <p
                       style={{
-                        fontFamily: font,
-                        fontSize: 13,
+                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        fontSize: 12,
                         fontWeight: 400,
                         color: C.muted,
                         margin: 0,
