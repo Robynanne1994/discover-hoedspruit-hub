@@ -269,7 +269,7 @@ const inputStyle: React.CSSProperties = {
 };
 
 const SectionHeader = ({ title, count }: { title: string; count: string }) => (
-  <div style={{ margin: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
     <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: TEXT, margin: 0 }}>{title}</h2>
     <span style={{ ...baseText, fontSize: 12, color: MUTED }}>({count})</span>
   </div>
@@ -324,9 +324,9 @@ const BushTelegraph = () => {
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, ...baseText }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, paddingLeft: 24, paddingRight: 24, ...baseText }}>
       {/* Top bar */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 24px 0" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 0 0" }}>
         <IconButton onClick={() => navigate(-1)} ariaLabel="Back">
           <ChevronLeft size={20} color={TEXT} strokeWidth={2} />
         </IconButton>
@@ -343,7 +343,7 @@ const BushTelegraph = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "24px 24px 0" }}>
+      <div style={{ padding: "24px 0 0" }}>
         <div style={{ fontFamily: HN, fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, textTransform: "uppercase" }}>Off The App</div>
         <h1 style={{ fontFamily: HW, fontWeight: 500, fontSize: 40, lineHeight: "40px", letterSpacing: "-1.2px", color: TEXT, margin: "12px 0 0" }}>
           Local Channels
@@ -356,7 +356,7 @@ const BushTelegraph = () => {
       {/* Chips */}
       <div style={{ marginTop: 32, overflowX: "auto", scrollbarWidth: "none" }}>
         <style>{`.bt-scroll::-webkit-scrollbar { display: none; }`}</style>
-        <div className="bt-scroll" style={{ display: "flex", gap: 8, padding: "0 24px", width: "max-content" }}>
+        <div className="bt-scroll" style={{ display: "flex", gap: 8, width: "max-content" }}>
           {CHIPS.map((c) => {
             const isActive = c === active;
             return (
@@ -385,7 +385,7 @@ const BushTelegraph = () => {
 
       {/* Featured */}
       {featured && active === "All" && (
-        <div style={{ padding: "24px 24px 0" }}>
+        <div style={{ padding: "24px 0 0" }}>
           <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
             <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>FEATURED</div>
             <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 22, lineHeight: "26px", letterSpacing: "-0.66px", color: TEXT, margin: "16px 0 0", textTransform: "none" }}>
@@ -432,7 +432,7 @@ const BushTelegraph = () => {
 
       {/* Sections */}
       {totalShown === 0 ? (
-        <div style={{ padding: "64px 24px 0", textAlign: "center" }}>
+        <div style={{ padding: "64px 0 0", textAlign: "center" }}>
           <h4 style={{ ...baseText, fontSize: 22, lineHeight: "25.3px", letterSpacing: "-0.22px", color: TEXT, margin: 0 }}>Nothing here yet</h4>
           <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "8px auto 0", maxWidth: 280 }}>
             We're still scouting good ones for this category. Check back soon.
@@ -445,7 +445,7 @@ const BushTelegraph = () => {
           return (
             <div key={section.platform} style={{ marginTop: 40 }}>
               <SectionHeader title={section.platform} count={count} />
-              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16, padding: "0 24px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 16 }}>
                 {section.items.map((r) => <ResourceCard key={r.id} r={r} />)}
               </div>
             </div>
