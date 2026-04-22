@@ -293,7 +293,7 @@ const ListingDetail = () => {
       accordionSections.push({ key: "service", title: "Service options", fields: serviceArr.map(s => ({ label: s === "Take Away" ? "Take away" : s, value: true })) });
     }
 
-    if (meal && meal.length > 0) accordionSections.push({ key: "meals", title: "Meals Served", fields: meal.map(m => ({ label: m, value: true })) });
+    if (meal && meal.length > 0) accordionSections.push({ key: "meals", title: "Meals served", fields: meal.map(m => ({ label: m, value: true })) });
     if (cuisine && cuisine.length > 0) accordionSections.push({ key: "cuisine", title: "Cuisine", fields: cuisine.map(c => ({ label: c, value: true })) });
     if (vibe && vibe.length > 0) accordionSections.push({ key: "vibe", title: "Vibe", fields: vibe.map(v => ({ label: v, value: true })) });
   }
