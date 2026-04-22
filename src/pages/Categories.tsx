@@ -318,7 +318,7 @@ const Categories = () => {
                     marginBottom: 8,
                   }}
                 >
-                  Featured This Week
+                  Featured this week
                 </p>
                 <h2
                   style={{
