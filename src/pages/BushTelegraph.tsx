@@ -291,6 +291,9 @@ const BushTelegraph = () => {
         url: r.url,
         tone: (r.tone as AvatarTone) ?? "warm",
         is_featured: !!r.is_featured,
+        image_url: r.image_url ?? null,
+        tag_1: r.tag_1 ?? null,
+        tag_2: r.tag_2 ?? null,
       })) as Resource[];
     },
   });
