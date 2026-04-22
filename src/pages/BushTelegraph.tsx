@@ -309,12 +309,17 @@ const BushTelegraph = () => {
   const nonFeatured = useMemo(() => resources.filter((r) => !r.is_featured), [resources]);
 
   const sections = useMemo(() => {
-    const list = active === "All" ? PLATFORM_ORDER : [active as Platform];
-    return list.map((p) => ({
-      platform: p,
-      items: nonFeatured.filter((r) => r.platform === p),
-    }));
-  }, [active, nonFeatured]);
+    if (active === "All") {
+      return PLATFORM_ORDER.map((p) => ({
+        platform: p,
+        items: nonFeatured.filter((r) => r.platform === p),
+      }));
+    }
+    return [{
+      platform: active as Platform,
+      items: resources.filter((r) => r.platform === active),
+    }];
+  }, [active, nonFeatured, resources]);
 
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
 
@@ -379,7 +384,7 @@ const BushTelegraph = () => {
       </div>
 
       {/* Featured */}
-      {featured && (
+      {featured && active === "All" && (
         <div style={{ padding: "24px 24px 0" }}>
           <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
             <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>This week's pick</div>
