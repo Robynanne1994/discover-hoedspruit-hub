@@ -61,8 +61,9 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
         <Link
           to={actionHref}
           style={{
-            fontFamily: SANS,
-            fontSize: 13,
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 12,
+            textTransform: "uppercase",
             color: "#8A8480",
             textDecoration: "none",
             whiteSpace: "nowrap",
