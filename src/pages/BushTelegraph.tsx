@@ -17,7 +17,7 @@ const MUTED = "#8A8480";
 const WARM = "#F2EFEC";
 const WARM_GREY = "#E8E4DF";
 
-type Platform = "Facebook" | "Whatsapp" | "Instagram" | "Websites" | "Radio";
+type Platform = "Facebook" | "Whatsapp" | "Instagram" | "Websites";
 type AvatarTone = "warm" | "warm-grey" | "coral" | "dark";
 
 interface Resource {
@@ -34,7 +34,7 @@ interface Resource {
   tag_2: string | null;
 }
 
-const PLATFORM_ORDER: Platform[] = ["Facebook", "Whatsapp", "Instagram", "Websites", "Radio"];
+const PLATFORM_ORDER: Platform[] = ["Facebook", "Whatsapp", "Instagram", "Websites"];
 const CHIPS: ("All" | Platform)[] = ["All", ...PLATFORM_ORDER];
 
 const toneStyles: Record<AvatarTone, { bg: string; fg: string }> = {
