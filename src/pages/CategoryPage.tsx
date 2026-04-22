@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
+import BackButton from "@/components/BackButton";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { Skeleton } from "@/components/ui/skeleton";
 
