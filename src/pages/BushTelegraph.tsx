@@ -277,6 +277,7 @@ const SectionHeader = ({ title, count }: { title: string; count: string }) => (
 
 const BushTelegraph = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useAuth();
   const [active, setActive] = useState<"All" | Platform>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
 
