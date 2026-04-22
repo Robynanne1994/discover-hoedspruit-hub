@@ -1096,7 +1096,7 @@ const SuggestEditSheet = ({
             <XIcon size={20} color={C.text} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 className="mb-[16px]" style={{ fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: C.text, margin: 0, textTransform: "none" }}>Suggest an edit</h2>
+        <h2 style={{ fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: C.text, margin: "0 0 8px", textTransform: "none" }}>Suggest an edit</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: "20.3px", color: C.muted, margin: "0 0 20px" }}>
           Spotted something out of date or incorrect on <strong style={{ color: C.text, fontWeight: 500 }}>{listingTitle}</strong>? Please let us know and we will update it ASAP. We always strive to provide you with the most accurate listing information as possible.
         </p>
