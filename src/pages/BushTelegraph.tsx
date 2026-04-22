@@ -220,7 +220,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
             <X size={20} color={TEXT} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: TEXT, margin: "0 0 8px" }}>Suggest a resource</h2>
+        <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: TEXT, margin: "0 0 8px", textTransform: "none" }}>Suggest a resource</h2>
         <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "0 0 20px" }}>
           Know a good local channel, group or feed? Drop the details and we'll have a look.
         </p>
