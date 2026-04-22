@@ -203,11 +203,11 @@ const Specials = () => {
       <div style={{ padding: "16px 24px 24px 24px" }}>
         <h1
           style={{
-            fontFamily: FONT,
-            fontSize: 52,
-            lineHeight: "52px",
-            letterSpacing: "-1.56px",
-            fontWeight: 700,
+            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+            fontSize: 40,
+            lineHeight: 1,
+            letterSpacing: "-0.02em",
+            fontWeight: 500,
             color: COLOR.text,
             margin: 0,
             marginBottom: 12,
