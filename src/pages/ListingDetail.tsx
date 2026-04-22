@@ -280,7 +280,7 @@ const ListingDetail = () => {
       { label: "Wi-Fi", value: hasWifi },
       { label: "Free Wi-Fi", value: hasFreeWifi },
       { label: "Smoking section", value: smokingAllowed },
-      { label: "Pets Allowed", value: petsAllowed },
+      { label: "Pets friendly", value: petsAllowed },
     ].filter(f => f.value === true) as AccField[];
     if (amenFields.length > 0) accordionSections.push({ key: "amenities", title: "Amenities", fields: amenFields });
 
@@ -331,7 +331,7 @@ const ListingDetail = () => {
     if (rooms.length > 0) accordionSections.push({ key: "accom-rooms", title: "Rooms", fields: rooms });
 
     if (l.child_friendly === true) accordionSections.push({ key: "accom-children", title: "Children", fields: [{ label: "Child Friendly", value: true }] });
-    if (l.pets_allowed === true) accordionSections.push({ key: "accom-pets", title: "Pets", fields: [{ label: "Pet Friendly", value: true }] });
+    if (l.pets_allowed === true) accordionSections.push({ key: "accom-pets", title: "Pets", fields: [{ label: "Pets friendly", value: true }] });
   }
 
   // Shopping accordion
