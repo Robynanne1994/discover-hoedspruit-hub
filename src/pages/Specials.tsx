@@ -216,19 +216,6 @@ const Specials = () => {
         >
           Specials
         </h1>
-        <p
-          style={{
-            fontFamily: FONT,
-            fontSize: 16,
-            lineHeight: "23.2px",
-            letterSpacing: 0,
-            fontWeight: 400,
-            color: COLOR.muted,
-            margin: 0,
-          }}
-        >
-          The hottest deals in Hoedspruit.
-        </p>
       </div>
 
       {/* Controls row */}
