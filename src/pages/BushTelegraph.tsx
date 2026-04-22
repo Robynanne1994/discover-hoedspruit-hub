@@ -49,7 +49,10 @@ const RESOURCES: Resource[] = [
   { id: "wa-2", title: "Farmers Market Updates", platform: "Whatsapp", meta: "Whatsapp Channel · Weekly", description: "Who's setting up, what's in season, what time the bread runs out.", url: "https://whatsapp.com", tone: "warm" },
   { id: "wa-3", title: "School Run Carpool", platform: "Whatsapp", meta: "Whatsapp Group · Invite only", description: "Parents coordinating lifts to and from the local schools each week.", url: "https://whatsapp.com", tone: "warm-grey" },
   // Instagram
-...
+  { id: "ig-1", title: "@VisitHoedspruit", platform: "Instagram", meta: "Instagram · 28k followers", description: "The official tourism feed. Reliable for what's open, what's new and which lodges are hiring.", url: "https://instagram.com", tone: "coral" },
+  { id: "ig-2", title: "@EatOutHoedspruit", platform: "Instagram", meta: "Instagram · 6.3k followers", description: "Restaurant openings, weekly specials, who's doing pizza nights.", url: "https://instagram.com", tone: "warm" },
+  // Websites
+  { id: "web-1", title: "Hoedspruit Tourism Association", platform: "Websites", meta: "Website · Official", description: "The directory the lodges actually use. Listings, events and town updates.", url: "https://hoedspruit.co.za", tone: "warm-grey" },
   { id: "web-2", title: "Kruger Park Daily", platform: "Websites", meta: "Website · News", description: "Park news, sightings and gate updates from the wider Kruger region.", url: "https://krugerparkdaily.com", tone: "warm" },
   // Radio
   { id: "ra-1", title: "HoedspruitFM 95.6", platform: "Radio", meta: "Radio · 95.6 FM", description: "Local voices, local music, traffic reports for the R40 you'll actually use.", url: "https://hoedspruitfm.co.za", tone: "dark" },
