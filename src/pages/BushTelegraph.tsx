@@ -432,7 +432,7 @@ const BushTelegraph = () => {
 
       {/* Sections */}
       {totalShown === 0 ? (
-        <div style={{ padding: "64px 24px 0", textAlign: "center" }}>
+        <div style={{ padding: "64px 0 0", textAlign: "center" }}>
           <h4 style={{ ...baseText, fontSize: 22, lineHeight: "25.3px", letterSpacing: "-0.22px", color: TEXT, margin: 0 }}>Nothing here yet</h4>
           <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "8px auto 0", maxWidth: 280 }}>
             We're still scouting good ones for this category. Check back soon.
