@@ -119,6 +119,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                         color: "#8A8480",
                         whiteSpace: "normal",
                         wordBreak: "break-word",
+                        lineHeight: 1.2,
                         flex: 1,
                         minWidth: 0,
                       }}
