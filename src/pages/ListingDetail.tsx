@@ -339,24 +339,52 @@ const ListingDetail = () => {
   const todayIndex = new Date().getDay();
   const todayLabel = todayIndex === 0 ? "Sunday" : DAY_LABELS[todayIndex - 1];
 
-  const computeOpenStatus = () => {
+  const parseTimeStr = (s: string) => {
+    const norm = s.replace(".", ":").trim();
+    const [h, mm] = norm.split(":");
+    return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
+  };
+  const formatTime = (s: string) => (s.includes(":") ? s : `${s}:00`);
+
+  type OpenStatus =
+    | { state: "open"; closes: string }
+    | { state: "closed"; opensAt?: string; opensDay?: string }
+    | { state: "temporarily_closed" };
+
+  const computeOpenStatus = (): OpenStatus | null => {
     if (!openingHours) return null;
     const todayKey = todayLabel.toLowerCase();
-    const today = openingHours[todayKey];
-    if (!today || today.toLowerCase() === "closed") return null;
-    const m = today.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-    if (!m) return { open: true, closes: today };
+    const todayVal = openingHours[todayKey] || "";
+    if (todayVal && /temporarily\s*closed/i.test(todayVal)) return { state: "temporarily_closed" };
+
+    const findNextOpen = (startOffset: number): { opensAt: string; opensDay: string } | null => {
+      for (let i = startOffset; i < startOffset + 7; i++) {
+        const idx = (DAY_LABELS.indexOf(todayLabel) + i) % 7;
+        const dayName = DAY_LABELS[idx];
+        const v = openingHours[dayName.toLowerCase()] || "";
+        if (!v || v.toLowerCase() === "closed") continue;
+        const mm = v.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+        if (!mm) continue;
+        const label = i === 1 ? "tomorrow" : dayName;
+        return { opensAt: formatTime(mm[1]), opensDay: label };
+      }
+      return null;
+    };
+
+    if (!todayVal || todayVal.toLowerCase() === "closed") {
+      const next = findNextOpen(1);
+      return { state: "closed", ...(next || {}) };
+    }
+    const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+    if (!m) return { state: "open", closes: todayVal };
     const now = new Date();
     const cur = now.getHours() * 60 + now.getMinutes();
-    const parse = (s: string) => {
-      const norm = s.replace(".", ":");
-      const [h, mm] = norm.split(":");
-      return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
-    };
-    const o = parse(m[1]);
-    const c = parse(m[2]);
-    if (cur >= o && cur <= c) return { open: true, closes: m[2].includes(":") ? m[2] : `${m[2]}:00` };
-    return { open: false, closes: m[2] };
+    const o = parseTimeStr(m[1]);
+    const c = parseTimeStr(m[2]);
+    if (cur >= o && cur <= c) return { state: "open", closes: formatTime(m[2]) };
+    if (cur < o) return { state: "closed", opensAt: formatTime(m[1]), opensDay: "today" };
+    const next = findNextOpen(1);
+    return { state: "closed", ...(next || {}) };
   };
   const openStatus = computeOpenStatus();
 
@@ -531,8 +559,10 @@ const ListingDetail = () => {
             <>
               <span style={{ margin: "0 8px" }}>·</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.text }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.coral, display: "inline-block" }} />
-                {openStatus.open ? "Open Now" : "Closed"}
+                {openStatus.state !== "open" ? null : (
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.coral, display: "inline-block" }} />
+                )}
+                {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
               </span>
             </>
           )}
@@ -769,27 +799,52 @@ const ListingDetail = () => {
                 </div>
               )}
               <div style={{
-                background: C.card, borderRadius: 24,
-                paddingLeft: 20, paddingRight: 20, paddingTop: 4, paddingBottom: 4,
+                background: C.card, borderRadius: 24, overflow: "hidden",
               }}>
                 {openStatus && (
                   <div style={{
-                    display: "flex", alignItems: "center",
-                    height: 48,
-                    borderBottom: `1px solid ${C.border}`,
+                    background: C.panel,
+                    paddingTop: 20, paddingBottom: 22, paddingLeft: 24, paddingRight: 24,
                   }}>
-                    <span style={{
-                      width: 7, height: 7, borderRadius: "50%", background: C.coral,
-                      display: "inline-block", marginRight: 10,
-                    }} />
-                    <span style={{ fontFamily: FONT_BODY, fontSize: 16, color: C.text }}>
-                      {openStatus.open ? "Open Now" : "Closed"}
-                    </span>
-                    <span style={{ fontFamily: FONT_BODY, fontSize: 13, color: C.muted, marginLeft: 8 }}>
-                      {openStatus.open ? `Closes ${openStatus.closes}` : `Opens later`}
-                    </span>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {openStatus.state === "open" && (
+                        <span style={{
+                          width: 10, height: 10, borderRadius: "50%", background: C.coral,
+                          display: "inline-block", marginRight: 12, flexShrink: 0,
+                        }} />
+                      )}
+                      <span style={{
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
+                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: C.text,
+                      }}>
+                        {openStatus.state === "open"
+                          ? "Open Now"
+                          : openStatus.state === "temporarily_closed"
+                          ? "Temporarily Closed"
+                          : "Closed"}
+                      </span>
+                    </div>
+                    {openStatus.state === "open" && (
+                      <div style={{
+                        marginTop: 4, marginLeft: 22,
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
+                        lineHeight: "20.3px", color: C.muted,
+                      }}>
+                        Closes {openStatus.closes}
+                      </div>
+                    )}
+                    {openStatus.state === "closed" && openStatus.opensAt && (
+                      <div style={{
+                        marginTop: 4,
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
+                        lineHeight: "20.3px", color: C.muted,
+                      }}>
+                        Opens {openStatus.opensAt} {openStatus.opensDay}
+                      </div>
+                    )}
                   </div>
                 )}
+                <div style={{ paddingLeft: 20, paddingRight: 20 }}>
                 {DAY_LABELS.map((day, i) => {
                   const key = day.toLowerCase();
                   const value = openingHours![key] || "";
@@ -826,6 +881,7 @@ const ListingDetail = () => {
                     </div>
                   );
                 })}
+                </div>
               </div>
             </>
           );
