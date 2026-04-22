@@ -28,6 +28,9 @@ interface Resource {
   url: string;
   tone: AvatarTone;
   is_featured: boolean;
+  image_url: string | null;
+  tag_1: string | null;
+  tag_2: string | null;
 }
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "Whatsapp", "Instagram", "Websites", "Radio"];
