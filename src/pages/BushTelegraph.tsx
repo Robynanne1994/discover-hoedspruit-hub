@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, Plus, ArrowUpRight, X } from "lucide-react";
+import { ChevronLeft, Plus, ArrowUpRight, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const HW = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HN = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
