@@ -271,7 +271,7 @@ const inputStyle: React.CSSProperties = {
 const SectionHeader = ({ title, count }: { title: string; count: string }) => (
   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
     <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: TEXT, margin: 0 }}>{title}</h2>
-    <span style={{ ...baseText, fontSize: 12, color: MUTED }}>({count})</span>
+    <span style={{ ...baseText, fontSize: 28, color: MUTED }}>({count})</span>
   </div>
 );
 
