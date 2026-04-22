@@ -259,7 +259,7 @@ const ListingDetail = () => {
 
   if (isListingRestaurant) {
     const accessFields = [
-      { label: "Wheelchair Friendly", value: wheelchairFriendly },
+      { label: "Wheelchair friendly", value: wheelchairFriendly },
       { label: "Accessible Entrance", value: wheelchairEntrance },
       { label: "Accessible Seating", value: wheelchairSeating },
       { label: "Accessible Toilet", value: wheelchairToilet },
@@ -343,7 +343,7 @@ const ListingDetail = () => {
       { label: "Click & Collect", value: l.click_and_collect },
       { label: "Order Online", value: l.order_online },
       { label: "Parking Available", value: l.parking_available },
-      { label: "Wheelchair Friendly", value: l.wheelchair_friendly },
+      { label: "Wheelchair friendly", value: l.wheelchair_friendly },
       { label: "Local Products", value: l.local_products },
       { label: "Curio / Gifts", value: l.curio_or_gifts },
     ].filter(f => f.value === true) as AccField[];
