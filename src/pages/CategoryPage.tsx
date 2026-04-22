@@ -283,24 +283,8 @@ const CategoryPage = () => {
           justifyContent: "space-between",
         }}
       >
-        <button
-          onClick={() => navigate(-1)}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 4,
-            background: "none",
-            border: "none",
-            padding: 0,
-            cursor: "pointer",
-            color: C.text,
-          }}
-        >
-          <ChevronLeft size={20} strokeWidth={1.6} color={C.text} />
-          <span style={{ fontFamily: font, fontWeight: 400, fontSize: 15, lineHeight: "18px", letterSpacing: 0, color: C.text }}>
-            Back
-          </span>
-        </button>
+        <BackButton />
+
 
       </div>
 
