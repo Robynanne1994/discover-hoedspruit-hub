@@ -430,19 +430,20 @@ const Specials = () => {
                 onClick={(e) => e.stopPropagation()}
                 style={{
                   fontFamily: FONT,
-                  fontSize: 11,
-                  lineHeight: "13px",
-                  letterSpacing: "0.22px",
+                  fontSize: 12,
+                  lineHeight: "14px",
+                  letterSpacing: 0,
                   fontWeight: 400,
-                  color: COLOR.text,
-                  textTransform: "none",
+                  color: "#8A8480",
+                  textTransform: "uppercase",
                   display: "block",
                   margin: 0,
                   marginBottom: 4,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  textDecoration: "none",
+                  textDecoration: "underline",
+                  textUnderlineOffset: 2,
                 }}
               >
                 {s.business_name}
