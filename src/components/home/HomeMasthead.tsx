@@ -67,7 +67,7 @@ const HomeMasthead = () => {
           }}
         >
           Your{" "}
-          <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, color: "#0A0A0A" }}>
+          <span style={{ fontFamily: SANS, fontWeight: 400, color: "#0A0A0A" }}>
             Lowveld
           </span>{" "}
           Local
