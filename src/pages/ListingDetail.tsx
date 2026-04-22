@@ -6,6 +6,9 @@ import {
   Star, Pencil, ChevronLeft, ChevronDown,
   Heart, Share2, Check, X as XIcon, Phone, Navigation,
   MapPin, Mail, Globe, ArrowUpRight,
+  ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
+  UtensilsCrossed, Soup, Music, Coffee, Car, HeartPulse,
+  BedDouble, PawPrint, ShoppingBag, CreditCard, Package,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
