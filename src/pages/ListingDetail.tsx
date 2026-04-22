@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Star, Pencil, ChevronLeft, ChevronDown,
+  Star, Pencil, ChevronLeft, ChevronDown, ChevronRight,
   Heart, Share2, Check, X as XIcon, Phone, Navigation,
   MapPin, Mail, Globe, ArrowUpRight,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
