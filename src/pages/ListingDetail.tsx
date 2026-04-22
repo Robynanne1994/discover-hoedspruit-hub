@@ -681,8 +681,8 @@ const ListingDetail = () => {
                     >
                       <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
                         {row.isCustomIcon
-                          ? <row.icon color={C.text} />
-                          : <row.icon size={18} strokeWidth={1.5} color={C.text} />}
+                          ? <row.icon color="#898480" />
+                          : <row.icon size={18} strokeWidth={1.5} color="#898480" className="text-[#898480]" />}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
