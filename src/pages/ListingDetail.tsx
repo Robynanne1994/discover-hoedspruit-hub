@@ -269,7 +269,7 @@ const ListingDetail = () => {
 
     const kidsFields = [
       { label: "Good for kids", value: goodForKids },
-      { label: "Kids Menu", value: kidsMenu },
+      { label: "Kids menu", value: kidsMenu },
       { label: "High Chairs", value: highChairs },
       { label: "Playground", value: kidsPlayground },
     ].filter(f => f.value === true) as AccField[];
