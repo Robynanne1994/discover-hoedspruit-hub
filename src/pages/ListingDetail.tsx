@@ -719,6 +719,26 @@ const ListingDetail = () => {
             }}>
               {accordionSections.map((section, i) => {
                 const isOpen = openAccordion === section.key;
+                const sectionIconMap: Record<string, any> = {
+                  service: ConciergeBell,
+                  kids: Baby,
+                  accessibility: Accessibility,
+                  amenities: Sparkles,
+                  seating: Armchair,
+                  meals: UtensilsCrossed,
+                  cuisine: Soup,
+                  vibe: Music,
+                  "accom-food": Coffee,
+                  "accom-transport": Car,
+                  "accom-wellness": HeartPulse,
+                  "accom-rooms": BedDouble,
+                  "accom-children": Baby,
+                  "accom-pets": PawPrint,
+                  "shop-amenities": ShoppingBag,
+                  "shop-payment": CreditCard,
+                  "shop-products": Package,
+                };
+                const SectionIcon = sectionIconMap[section.key] || Sparkles;
                 return (
                   <div key={section.key} style={{
                     borderTop: i > 0 ? `1px solid ${C.border}` : "none",
@@ -732,14 +752,19 @@ const ListingDetail = () => {
                         padding: 0,
                       }}
                     >
-                      <span
-                        ref={(el) => { if (el) el.style.setProperty("text-transform", "none", "important"); }}
-                        style={{
-                          fontFamily: FONT_BODY, fontWeight: 400, fontSize: 16, lineHeight: 1.2,
-                          color: C.text,
-                        }}
-                      >
-                        {section.title}
+                      <span style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
+                        <span style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+                          <SectionIcon size={18} strokeWidth={1.5} color={C.text} />
+                        </span>
+                        <span
+                          ref={(el) => { if (el) el.style.setProperty("text-transform", "none", "important"); }}
+                          style={{
+                            fontFamily: FONT_BODY, fontWeight: 400, fontSize: 16, lineHeight: 1.2,
+                            color: C.text,
+                          }}
+                        >
+                          {section.title}
+                        </span>
                       </span>
                       <ChevronDown
                         size={20}
