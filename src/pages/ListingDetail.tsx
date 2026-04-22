@@ -268,7 +268,7 @@ const ListingDetail = () => {
     if (accessFields.length > 0) accordionSections.push({ key: "accessibility", title: "Accessibility", fields: accessFields });
 
     const kidsFields = [
-      { label: "Good For Kids", value: goodForKids },
+      { label: "Good for kids", value: goodForKids },
       { label: "Kids Menu", value: kidsMenu },
       { label: "High Chairs", value: highChairs },
       { label: "Playground", value: kidsPlayground },
