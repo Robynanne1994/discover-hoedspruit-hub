@@ -93,8 +93,8 @@ const HomeMasthead = () => {
           <Search size={16} color="#8A8480" strokeWidth={2} />
           <span
             style={{
-              fontFamily: SANS,
-              fontSize: 15,
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 12,
               color: "#8A8480",
               whiteSpace: "nowrap",
               overflow: "hidden",
