@@ -309,12 +309,17 @@ const BushTelegraph = () => {
   const nonFeatured = useMemo(() => resources.filter((r) => !r.is_featured), [resources]);
 
   const sections = useMemo(() => {
-    const list = active === "All" ? PLATFORM_ORDER : [active as Platform];
-    return list.map((p) => ({
-      platform: p,
-      items: nonFeatured.filter((r) => r.platform === p),
-    }));
-  }, [active, nonFeatured]);
+    if (active === "All") {
+      return PLATFORM_ORDER.map((p) => ({
+        platform: p,
+        items: nonFeatured.filter((r) => r.platform === p),
+      }));
+    }
+    return [{
+      platform: active as Platform,
+      items: resources.filter((r) => r.platform === active),
+    }];
+  }, [active, nonFeatured, resources]);
 
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
 
