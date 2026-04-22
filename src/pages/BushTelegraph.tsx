@@ -324,7 +324,7 @@ const BushTelegraph = () => {
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, ...baseText }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, paddingLeft: 24, paddingRight: 24, ...baseText }}>
       {/* Top bar */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 0 0" }}>
         <IconButton onClick={() => navigate(-1)} ariaLabel="Back">
