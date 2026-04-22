@@ -87,8 +87,9 @@ const HomeLowdown = () => {
               </div>
               <div
                 style={{
-                  fontFamily: SANS,
-                  fontSize: 16,
+                  fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
                   color: "#0A0A0A",
                   lineHeight: 1.25,
                   marginBottom: 4,
