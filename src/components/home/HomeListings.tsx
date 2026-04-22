@@ -117,9 +117,10 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                         fontSize: 12,
                         color: "#8A8480",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "nowrap",
+                        whiteSpace: "normal",
+                        wordBreak: "break-word",
+                        flex: 1,
+                        minWidth: 0,
                       }}
                     >
                       {l.location}
