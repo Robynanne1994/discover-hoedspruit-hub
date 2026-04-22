@@ -173,15 +173,15 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
   if (!open) return null;
 
   const submit = async () => {
-    if (!name.trim() || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
-      toast.error("Please fill in your name, the resource name, link and reason.");
+    if (!name.trim() || !email.trim() || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
+      toast.error("Please fill in all the fields.");
       return;
     }
     setSubmitting(true);
-    const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nWhy it's worth being on: ${reason.trim()}`;
+    const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nAbout: ${reason.trim()}`;
     const { error } = await supabase.from("contact_submissions").insert({
       name: name.trim(),
-      email: email.trim() || "noreply@local-channels.local",
+      email: email.trim(),
       message: composed,
     });
     setSubmitting(false);
@@ -226,10 +226,10 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
-          <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email (optional)" style={inputStyle} />
+          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={inputStyle} />
           <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="Resource name" style={inputStyle} />
           <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="Resource link" style={inputStyle} />
-          <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Why it's worth being on" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
+          <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Tell us a little about this resource and why it should be listed" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
         </div>
         <button
           onClick={submit}
