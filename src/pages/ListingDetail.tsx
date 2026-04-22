@@ -719,10 +719,14 @@ const ListingDetail = () => {
                         background: "none", border: "none", cursor: "pointer", fontFamily: font,
                       }}
                     >
-                      <span style={{
-                        fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: 1.3,
-                        color: "#2B2420",
-                      }}>
+                      <span
+                        style={{
+                          fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: 1.3,
+                          color: "#2B2420",
+                        } as React.CSSProperties}
+                        css-text-transform="none"
+                        ref={(el) => { if (el) el.style.setProperty("text-transform", "none", "important"); }}
+                      >
                         {section.title}
                       </span>
                       <ChevronDown
