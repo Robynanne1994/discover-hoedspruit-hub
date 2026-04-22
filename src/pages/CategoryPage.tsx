@@ -573,9 +573,9 @@ const CategoryPage = () => {
                 <div style={{ padding: 24 }}>
                   <h3
                     style={{
-                      fontFamily: font,
-                      fontSize: 24,
-                      fontWeight: 700,
+                      fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                      fontSize: 22,
+                      fontWeight: 500,
                       color: C.text,
                       letterSpacing: "-0.4px",
                       lineHeight: 1.15,
