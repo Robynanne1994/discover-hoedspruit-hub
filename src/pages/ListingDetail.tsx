@@ -1098,7 +1098,7 @@ const SuggestEditSheet = ({
         </div>
         <h2 style={{ fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 28, lineHeight: "30px", letterSpacing: "-0.84px", color: C.text, margin: "0 0 8px" }}>Suggest an edit</h2>
         <p style={{ fontFamily: FONT_BODY, fontSize: 14, lineHeight: "20.3px", color: C.muted, margin: "0 0 20px" }}>
-          Spotted something out of date or incorrect on <strong style={{ color: C.text, fontWeight: 500 }}>{listingTitle}</strong>? Let us know and we'll update it.
+          Spotted something out of date or incorrect on <strong style={{ color: C.text, fontWeight: 500 }}>{listingTitle}</strong>? Please let us know and we will update it ASAP. We always strive to provide you with the most accurate listing information as possible.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={suggestInputStyle} />
