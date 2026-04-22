@@ -71,6 +71,7 @@ const ListingDetail = () => {
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [suggestEditOpen, setSuggestEditOpen] = useState(false);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -988,16 +989,23 @@ const ListingDetail = () => {
         )}
 
         <div style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
-          <a
-            href={`mailto:hellohoedspruit@gmail.com?subject=${encodeURIComponent("Suggest an edit: " + listing.title)}`}
+          <button
+            onClick={() => setSuggestEditOpen(true)}
             style={{
               fontFamily: FONT_BODY, fontSize: 13, color: C.muted,
               textDecoration: "underline", textUnderlineOffset: "3px",
+              background: "transparent", border: "none", cursor: "pointer", padding: 0,
             }}
           >
             Suggest an edit to this listing
-          </a>
+          </button>
         </div>
+
+        <SuggestEditSheet
+          open={suggestEditOpen}
+          onClose={() => setSuggestEditOpen(false)}
+          listingTitle={listing.title}
+        />
       </div>
 
       <ImageLightbox
