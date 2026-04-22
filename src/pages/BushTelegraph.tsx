@@ -240,13 +240,37 @@ const BushTelegraph = () => {
   const [active, setActive] = useState<"All" | Platform>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
 
+  const { data: resources = [] } = useQuery({
+    queryKey: ["bush-telegraph"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("bush_telegraph_resources")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return (data || []).map((r: any) => ({
+        id: r.id,
+        title: r.title,
+        platform: r.platform as Platform,
+        meta: r.meta ?? "",
+        description: r.description ?? "",
+        url: r.url,
+        tone: (r.tone as AvatarTone) ?? "warm",
+        is_featured: !!r.is_featured,
+      })) as Resource[];
+    },
+  });
+
+  const featured = useMemo(() => resources.find((r) => r.is_featured) ?? null, [resources]);
+  const nonFeatured = useMemo(() => resources.filter((r) => !r.is_featured), [resources]);
+
   const sections = useMemo(() => {
     const list = active === "All" ? PLATFORM_ORDER : [active as Platform];
     return list.map((p) => ({
       platform: p,
-      items: RESOURCES.filter((r) => r.platform === p),
+      items: nonFeatured.filter((r) => r.platform === p),
     }));
-  }, [active]);
+  }, [active, nonFeatured]);
 
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
 
@@ -304,44 +328,51 @@ const BushTelegraph = () => {
       </div>
 
       {/* Featured */}
-      <div style={{ padding: "24px 24px 0" }}>
-        <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
-          <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>{FEATURED.eyebrow}</div>
-          <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 35, lineHeight: "35px", letterSpacing: "-1.05px", color: TEXT, margin: "16px 0 0" }}>
-            {FEATURED.title}
-          </h2>
-          <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "12px 0 0", paddingRight: 56 }}>
-            {FEATURED.description}
-          </p>
-          <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap", paddingRight: 56 }}>
-            <span style={{ ...baseText, display: "inline-flex", alignItems: "center", gap: 8, background: WARM, color: TEXT, fontSize: 12, padding: "6px 12px", borderRadius: 999 }}>
-              <span style={{ width: 6, height: 6, borderRadius: 999, background: CORAL, display: "inline-block" }} />
-              {FEATURED.platform}
-            </span>
-            <span style={{ ...baseText, background: WARM, color: TEXT, fontSize: 12, padding: "6px 12px", borderRadius: 999 }}>{FEATURED.count}</span>
+      {featured && (
+        <div style={{ padding: "24px 24px 0" }}>
+          <div style={{ background: SURFACE, borderRadius: 24, padding: 20, position: "relative" }}>
+            <div style={{ fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED }}>This Week's Pick</div>
+            <h2 style={{ fontFamily: HW, fontWeight: 500, fontSize: 35, lineHeight: "35px", letterSpacing: "-1.05px", color: TEXT, margin: "16px 0 0" }}>
+              {featured.title}
+            </h2>
+            {featured.description && (
+              <p style={{ ...baseText, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "12px 0 0", paddingRight: 56 }}>
+                {featured.description}
+              </p>
+            )}
+            {featured.meta && (
+              <div style={{ display: "flex", gap: 8, marginTop: 20, flexWrap: "wrap", paddingRight: 56 }}>
+                {featured.meta.split(" · ").map((part, i) => (
+                  <span key={i} style={{ ...baseText, display: "inline-flex", alignItems: "center", gap: 8, background: WARM, color: TEXT, fontSize: 12, padding: "6px 12px", borderRadius: 999 }}>
+                    {i === 0 && <span style={{ width: 6, height: 6, borderRadius: 999, background: CORAL, display: "inline-block" }} />}
+                    {part}
+                  </span>
+                ))}
+              </div>
+            )}
+            <button
+              onClick={() => window.open(featured.url, "_blank", "noopener,noreferrer")}
+              aria-label="Open featured resource"
+              style={{
+                position: "absolute",
+                right: 20,
+                bottom: 20,
+                width: 44,
+                height: 44,
+                borderRadius: 999,
+                background: TEXT,
+                border: "none",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <ArrowUpRight size={18} color="#FFFFFF" strokeWidth={1.75} />
+            </button>
           </div>
-          <button
-            onClick={() => window.open(FEATURED.url, "_blank", "noopener,noreferrer")}
-            aria-label="Open featured resource"
-            style={{
-              position: "absolute",
-              right: 20,
-              bottom: 20,
-              width: 44,
-              height: 44,
-              borderRadius: 999,
-              background: TEXT,
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <ArrowUpRight size={18} color="#FFFFFF" strokeWidth={1.75} />
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Sections */}
       {totalShown === 0 ? (
