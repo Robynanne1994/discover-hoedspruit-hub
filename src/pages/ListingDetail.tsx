@@ -245,7 +245,7 @@ const ListingDetail = () => {
       { label: "Good for kids", value: goodForKids },
       { label: "Kids' menu", value: kidsMenu },
       { label: "High chairs", value: highChairs },
-      { label: "Playground", value: kidsPlayground },
+      { label: "Kids playground", value: kidsPlayground },
     ]);
     if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & family", fields: kidsFields });
 
