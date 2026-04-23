@@ -76,6 +76,7 @@ const ListingDetail = () => {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
   const [galleryHintVisible, setGalleryHintVisible] = useState(true);
+  const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number } | null>(null);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
