@@ -886,8 +886,9 @@ const ListingDetail = () => {
                                 <XIcon size={18} strokeWidth={2} color={C.xMuted} style={{ flexShrink: 0 }} />
                               )}
                               <span style={{
-                                fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14, lineHeight: 1.3,
-                                color: isOn ? C.text : C.muted,
+                                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                                fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0,
+                                color: "#0A0A0A",
                                 textTransform: "none",
                               }}>
                                 {labelText}
