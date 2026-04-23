@@ -18,7 +18,7 @@ interface Props {
 
 const FIELDS = [
   "title", "description", "date", "start_time", "end_time", "location",
-  "tag", "sub_tag_1", "sub_tag_2", "image_url", "recurrence", "price", "notes", "booking_link",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
   "business_id", "is_featured",
 ];
@@ -92,6 +92,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
           <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => set("notes", e.target.value)} placeholder="Additional info shown under price" /></div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
+          <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground">(optional — shown instead of the URL)</span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
           <div><Label>Social Media Label</Label><Input value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Instagram, Facebook" /></div>

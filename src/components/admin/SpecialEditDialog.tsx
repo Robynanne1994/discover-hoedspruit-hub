@@ -20,7 +20,7 @@ const FIELDS: (keyof any)[] = [
   "title", "description", "business_name", "business_id", "image_url", "deal_label",
   "valid_from", "valid_until", "is_active", "special_type", "price",
   "original_price", "promo_code", "contact_phone", "contact_whatsapp",
-  "booking_link", "terms", "category",
+  "booking_link", "booking_link_label", "terms", "category",
 ];
 
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
@@ -130,6 +130,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <div><Label>WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} /></div>
           </div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
+          <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground">(optional — shown instead of the URL)</span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Category</Label><Input value={form.category || ""} onChange={(e) => set("category", e.target.value)} /></div>
           <div><Label>Special Type</Label><Input value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} /></div>
           <div><Label>Terms</Label><Textarea rows={3} value={form.terms || ""} onChange={(e) => set("terms", e.target.value)} /></div>

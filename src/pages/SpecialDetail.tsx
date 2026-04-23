@@ -585,10 +585,11 @@ const SpecialDetail = () => {
                   });
                 }
                 if (special.booking_link) {
+                  const label = (special as any).booking_link_label?.trim();
                   contactRows.push({
                     icon: <ExternalLink size={20} strokeWidth={1.5} color={MUTED} />,
                     label: "Booking",
-                    value: "Booking Link",
+                    value: label || "Booking Link",
                     href: special.booking_link,
                     external: true,
                   });
