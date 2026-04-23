@@ -88,6 +88,46 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
+  // Resolve map coordinates: parse from google_maps_link, else geocode location string via Nominatim
+  useEffect(() => {
+    if (!listing) return;
+    setMapCoords(null);
+    const link: string | null = (listing as any).google_maps_link || null;
+    const loc: string | null = listing.location || null;
+
+    // Try to parse @lat,lng or !3dlat!4dlng or q=lat,lng from a Google Maps URL
+    const tryParse = (url: string): { lat: number; lon: number } | null => {
+      const at = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (at) return { lat: parseFloat(at[1]), lon: parseFloat(at[2]) };
+      const d = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+      if (d) return { lat: parseFloat(d[1]), lon: parseFloat(d[2]) };
+      const q = url.match(/[?&]query=(-?\d+\.\d+),(-?\d+\.\d+)/) || url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (q) return { lat: parseFloat(q[1]), lon: parseFloat(q[2]) };
+      return null;
+    };
+
+    if (link) {
+      const parsed = tryParse(link);
+      if (parsed) { setMapCoords(parsed); return; }
+    }
+
+    const query = loc ? `${loc}, Hoedspruit, South Africa` : `${listing.title}, Hoedspruit, South Africa`;
+    let cancelled = false;
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`)
+      .then((r) => r.json())
+      .then((arr) => {
+        if (cancelled) return;
+        if (Array.isArray(arr) && arr[0]) {
+          setMapCoords({ lat: parseFloat(arr[0].lat), lon: parseFloat(arr[0].lon) });
+        } else {
+          // Fallback: Hoedspruit town center
+          setMapCoords({ lat: -24.3567, lon: 31.0 });
+        }
+      })
+      .catch(() => { if (!cancelled) setMapCoords({ lat: -24.3567, lon: 31.0 }); });
+    return () => { cancelled = true; };
+  }, [listing]);
+
   const { data: listingCategories } = useQuery({
     queryKey: ["listing-detail-categories", id],
     queryFn: async () => {
