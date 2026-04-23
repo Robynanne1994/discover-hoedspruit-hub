@@ -600,6 +600,7 @@ export type Database = {
           updated_at: string
           vibe: string[] | null
           website: string | null
+          website_label: string | null
           whatsapp: string | null
           wheelchair_car_park: boolean | null
           wheelchair_entrance: boolean | null
@@ -672,6 +673,7 @@ export type Database = {
           updated_at?: string
           vibe?: string[] | null
           website?: string | null
+          website_label?: string | null
           whatsapp?: string | null
           wheelchair_car_park?: boolean | null
           wheelchair_entrance?: boolean | null
@@ -744,6 +746,7 @@ export type Database = {
           updated_at?: string
           vibe?: string[] | null
           website?: string | null
+          website_label?: string | null
           whatsapp?: string | null
           wheelchair_car_park?: boolean | null
           wheelchair_entrance?: boolean | null
