@@ -183,6 +183,7 @@ const EventDetail = () => {
   const waClean = contactWhatsapp ? contactWhatsapp.replace(/[^0-9]/g, "") : null;
   const galleryImages: string[] = (event as any).gallery_images ?? [];
   const bookingLink = (event as any).booking_link || null;
+  const bookingLinkLabel = (event as any).booking_link_label?.trim() || null;
   const price = (event as any).price || null;
   const notes = (event as any).notes || null;
   const subTag1 = (event as any).sub_tag_1 || null;
@@ -368,7 +369,7 @@ const EventDetail = () => {
               onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
               onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
             >
-              Book Now
+              {bookingLinkLabel || "Book Now"}
             </a>
           </div>
         )}
