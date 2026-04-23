@@ -379,9 +379,39 @@ const EventDetail = () => {
         {event.description && (
           <section style={{ marginBottom: 24 }}>
             <SectionLabel eyebrow="Overview" title="About" />
-            <p style={{ margin: 0, fontSize: 14, fontWeight: 400, color: "#737373", lineHeight: 1.45, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>
+            <p
+              style={{
+                margin: 0,
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontWeight: 400,
+                fontSize: 14,
+                lineHeight: "20.3px",
+                letterSpacing: 0,
+                color: "#0A0A0A",
+                whiteSpace: "pre-line",
+                ...(aboutExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
+              }}
+            >
               {event.description}
             </p>
+            {event.description.length > 120 && (
+              <button
+                onClick={() => setAboutExpanded(!aboutExpanded)}
+                style={{
+                  marginTop: 8,
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#715a3d",
+                }}
+              >
+                {aboutExpanded ? "Show Less" : "Read More"}
+              </button>
+            )}
           </section>
         )}
 
