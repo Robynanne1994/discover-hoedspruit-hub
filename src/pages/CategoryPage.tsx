@@ -616,7 +616,12 @@ const CategoryPage = () => {
                           }}
                         />
                       )}
-                      {l.location && <span>{l.location}</span>}
+                      {l.location && (
+                        <>
+                          <MapPin size={12} strokeWidth={1.5} color="#8A8480" />
+                          <span>{l.location}</span>
+                        </>
+                      )}
                     </div>
                   )}
 
