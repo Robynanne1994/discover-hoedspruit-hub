@@ -8,7 +8,7 @@ import {
   MapPin, Mail, Globe, ArrowUpRight,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
   UtensilsCrossed, Soup, Music, Coffee, Car, HeartPulse,
-  BedDouble, PawPrint, ShoppingBag, CreditCard, Package,
+  BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
