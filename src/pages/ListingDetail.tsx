@@ -622,21 +622,23 @@ const ListingDetail = () => {
         </div>
 
         {(listing.phone || (listing as any).google_maps_link) && (
-          <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
+          <div style={{ display: "flex", gap: 8, marginTop: 24 }}>
             {listing.phone && (
               <a
                 href={`tel:${listing.phone}`}
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 48, borderRadius: 999,
+                  height: 44, borderRadius: 999,
                   background: C.text, color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
-                  transition: "transform 0.15s ease-out",
+                  transition: "transform 150ms ease-out",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                   fontFamily: FONT_BODY, fontSize: 15, fontWeight: 400,
+                  lineHeight: "18px", letterSpacing: 0,
                 }}
                 {...pressScale()}
               >
-                <Phone size={16} strokeWidth={1.75} color="#FFFFFF" />
+                <Phone size={18} strokeWidth={1.5} color="#FFFFFF" />
                 <span>Call Now</span>
               </a>
             )}
@@ -647,15 +649,17 @@ const ListingDetail = () => {
                 rel="noopener noreferrer"
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 48, borderRadius: 999,
+                  height: 44, borderRadius: 999,
                   background: C.text, color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
-                  transition: "transform 0.15s ease-out",
+                  transition: "transform 150ms ease-out",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                   fontFamily: FONT_BODY, fontSize: 15, fontWeight: 400,
+                  lineHeight: "18px", letterSpacing: 0,
                 }}
                 {...pressScale()}
               >
-                <Navigation size={16} strokeWidth={1.75} color="#FFFFFF" />
+                <Navigation size={18} strokeWidth={1.5} color="#FFFFFF" />
                 <span>Directions</span>
               </a>
             )}
