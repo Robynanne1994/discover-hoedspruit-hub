@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,6 +76,7 @@ const ListingDetail = () => {
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
   const [galleryHintVisible, setGalleryHintVisible] = useState(true);
+  const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number } | null>(null);
 
   const { data: listing, isLoading } = useQuery({
     queryKey: ["listing-detail", id],
@@ -86,6 +87,46 @@ const ListingDetail = () => {
     },
     enabled: !!id,
   });
+
+  // Resolve map coordinates: parse from google_maps_link, else geocode location string via Nominatim
+  useEffect(() => {
+    if (!listing) return;
+    setMapCoords(null);
+    const link: string | null = (listing as any).google_maps_link || null;
+    const loc: string | null = listing.location || null;
+
+    // Try to parse @lat,lng or !3dlat!4dlng or q=lat,lng from a Google Maps URL
+    const tryParse = (url: string): { lat: number; lon: number } | null => {
+      const at = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (at) return { lat: parseFloat(at[1]), lon: parseFloat(at[2]) };
+      const d = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+      if (d) return { lat: parseFloat(d[1]), lon: parseFloat(d[2]) };
+      const q = url.match(/[?&]query=(-?\d+\.\d+),(-?\d+\.\d+)/) || url.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (q) return { lat: parseFloat(q[1]), lon: parseFloat(q[2]) };
+      return null;
+    };
+
+    if (link) {
+      const parsed = tryParse(link);
+      if (parsed) { setMapCoords(parsed); return; }
+    }
+
+    const query = loc ? `${loc}, Hoedspruit, South Africa` : `${listing.title}, Hoedspruit, South Africa`;
+    let cancelled = false;
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`)
+      .then((r) => r.json())
+      .then((arr) => {
+        if (cancelled) return;
+        if (Array.isArray(arr) && arr[0]) {
+          setMapCoords({ lat: parseFloat(arr[0].lat), lon: parseFloat(arr[0].lon) });
+        } else {
+          // Fallback: Hoedspruit town center
+          setMapCoords({ lat: -24.3567, lon: 31.0 });
+        }
+      })
+      .catch(() => { if (!cancelled) setMapCoords({ lat: -24.3567, lon: 31.0 }); });
+    return () => { cancelled = true; };
+  }, [listing]);
 
   const { data: listingCategories } = useQuery({
     queryKey: ["listing-detail-categories", id],
@@ -974,13 +1015,25 @@ const ListingDetail = () => {
               {...pressScale("0.99")}
             >
               <div style={{
-                position: "relative", height: 160, borderRadius: 24, overflow: "hidden",
+                position: "relative", height: 200, borderRadius: 24, overflow: "hidden",
                 background: C.mapBg,
-                backgroundImage: `linear-gradient(to right, ${C.mapGrid} 1px, transparent 1px), linear-gradient(to bottom, ${C.mapGrid} 1px, transparent 1px)`,
-                backgroundSize: "32px 32px",
               }}>
+                {mapCoords && (() => {
+                  const d = 0.006; // ~600m bbox for a tight neighbourhood view
+                  const bbox = `${mapCoords.lon - d}%2C${mapCoords.lat - d}%2C${mapCoords.lon + d}%2C${mapCoords.lat + d}`;
+                  return (
+                    <iframe
+                      title="Map"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lon}`}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none" }}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  );
+                })()}
                 <div style={{
-                  position: "absolute", top: "38%", left: "50%", transform: "translate(-50%, -50%)",
+                  position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)",
+                  pointerEvents: "none",
                 }}>
                   <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14 0C6.27 0 0 6.06 0 13.55c0 9.7 12.6 21.45 13.13 21.95a1.27 1.27 0 0 0 1.74 0C15.4 35 28 23.25 28 13.55 28 6.06 21.73 0 14 0z" fill={C.coral}/>
