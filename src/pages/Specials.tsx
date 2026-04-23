@@ -532,22 +532,15 @@ const Specials = () => {
                 {hasImage ? (
                   <>
                     {/* Variant A: image */}
-                    <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: COLOR.warm }}>
+                    <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 11", background: COLOR.warm }}>
                       <img
                         src={s.image_url!}
                         alt={s.title}
                         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         loading="lazy"
                       />
-                      <div style={{ position: "absolute", left: 14, top: 12 }}>
-                        <span
-                          style={{
-                            ...dealPill,
-                            background: "rgba(255,255,255,0.92)",
-                            backdropFilter: "blur(8px)",
-                            WebkitBackdropFilter: "blur(8px)",
-                          }}
-                        >
+                      <div style={{ position: "absolute", left: 12, top: 12 }}>
+                        <span style={dealPill}>
                           {s.deal_label}
                         </span>
                       </div>
