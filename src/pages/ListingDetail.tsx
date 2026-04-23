@@ -437,7 +437,9 @@ const ListingDetail = () => {
     },
     listing.website && {
       label: "Website",
-      value: listing.website.replace(/^https?:\/\//, "").replace(/\/$/, ""),
+      value: ((listing as any).website_label && String((listing as any).website_label).trim())
+        ? String((listing as any).website_label).trim()
+        : listing.website.replace(/^https?:\/\//, "").replace(/\/$/, ""),
       icon: Globe,
       href: listing.website,
     },

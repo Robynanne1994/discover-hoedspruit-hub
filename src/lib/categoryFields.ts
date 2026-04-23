@@ -1,7 +1,7 @@
 // Shared field definitions for category-aware listing management
 
 export const UNIVERSAL_FIELDS = [
-  "title", "description", "image_url", "location", "phone", "email", "website",
+  "title", "description", "image_url", "location", "phone", "email", "website", "website_label",
   "whatsapp", "google_maps_link", "google_rating", "google_reviews_count",
   "google_reviews_url", "categories", "subcategories", "is_featured",
   "long_description", "gallery_images", "opening_hours"
