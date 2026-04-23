@@ -45,7 +45,29 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
   </button>
 );
 
-type SortKey = "default" | "favourites" | "name" | "rating";
+type SortKey = "default" | "favourites" | "name" | "rating" | "open_now";
+
+const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const isOpenNow = (openingHours: Record<string, string> | null | undefined): boolean => {
+  if (!openingHours) return false;
+  const now = new Date();
+  const todayIdx = now.getDay(); // 0 Sun..6 Sat
+  const todayLabel = todayIdx === 0 ? "Sunday" : DAY_LABELS[todayIdx - 1];
+  const todayVal = openingHours[todayLabel.toLowerCase()] || "";
+  if (!todayVal || /closed/i.test(todayVal)) return false;
+  const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+  if (!m) return false;
+  const parse = (s: string) => {
+    const [h, mm] = s.replace(".", ":").split(":");
+    return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
+  };
+  const cur = now.getHours() * 60 + now.getMinutes();
+  const o = parse(m[1]);
+  let c = parse(m[2]);
+  if (c <= o) c += 24 * 60; // crosses midnight
+  return cur >= o && cur <= c;
+};
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -209,10 +231,13 @@ const CategoryPage = () => {
     if (sortBy === "rating") {
       return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
     }
+    if (sortBy === "open_now") {
+      return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
+    }
     return result;
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy]);
 
-  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : "Rating";
+  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Rating";
   const count = filteredListings.length;
 
   // Section eyebrow style for filter panel
@@ -402,7 +427,7 @@ const CategoryPage = () => {
                 minWidth: 200,
               }}
             >
-              {(["default", "favourites", "name", "rating"] as SortKey[]).map((key) => (
+              {(["default", "open_now", "favourites", "name", "rating"] as SortKey[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => {
@@ -424,7 +449,7 @@ const CategoryPage = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {key === "default" ? "Default" : key === "favourites" ? "Saved" : key === "name" ? "Name" : "Rating"}
+                  {key === "default" ? "Default" : key === "open_now" ? "Open Now" : key === "favourites" ? "Saved" : key === "name" ? "Name" : "Rating"}
                 </button>
               ))}
             </div>
