@@ -231,10 +231,13 @@ const CategoryPage = () => {
     if (sortBy === "rating") {
       return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
     }
+    if (sortBy === "open_now") {
+      return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
+    }
     return result;
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy]);
 
-  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : "Rating";
+  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Rating";
   const count = filteredListings.length;
 
   // Section eyebrow style for filter panel
