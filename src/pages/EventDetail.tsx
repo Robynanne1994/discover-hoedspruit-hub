@@ -337,7 +337,7 @@ const EventDetail = () => {
         )}
 
         {/* Title */}
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 35, fontWeight: 400, lineHeight: 1, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", marginBottom: 8, marginTop: 0 }}>
+        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 28, fontWeight: 500, lineHeight: "28px", letterSpacing: "-0.84px", color: "#0A0A0A", textTransform: "none", marginBottom: 8, marginTop: 0 }}>
           {event.title}
         </h1>
 

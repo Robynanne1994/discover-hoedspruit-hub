@@ -321,12 +321,12 @@ const SpecialDetail = () => {
           style={{
             fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 500,
-            fontSize: 35,
-            lineHeight: "38px",
-            letterSpacing: "-1px",
-            color: TEXT,
+            fontSize: 28,
+            lineHeight: "28px",
+            letterSpacing: "-0.84px",
+            color: "#0A0A0A",
             margin: 0,
-            marginBottom: 16,
+            marginBottom: 8,
           }}
         >
           {special.title}
