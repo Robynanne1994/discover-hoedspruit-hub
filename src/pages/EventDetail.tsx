@@ -54,6 +54,7 @@ const EventDetail = () => {
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
+  const [aboutExpanded, setAboutExpanded] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: isFavourited } = useQuery({
