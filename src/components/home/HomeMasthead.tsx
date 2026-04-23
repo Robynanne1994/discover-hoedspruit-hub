@@ -157,7 +157,7 @@ const HomeMasthead = () => {
             flexShrink: 0,
           }}
         >
-          <Sun size={16} color="#F26A48" strokeWidth={2} fill="#F26A48" />
+          <WeatherIcon kind={getWeatherIconKind(weatherCode)} />
           <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 500, color: "#0A0A0A" }}>
             {temp !== null ? `${temp}°` : "—"}
           </span>
