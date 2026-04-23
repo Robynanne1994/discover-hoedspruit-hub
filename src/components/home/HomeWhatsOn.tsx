@@ -8,6 +8,55 @@ const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const MONTH_NAMES = [
+  "january", "february", "march", "april", "may", "june",
+  "july", "august", "september", "october", "november", "december",
+];
+
+type ParsedDate =
+  | { kind: "single"; day: number; monthIdx: number }
+  | { kind: "range"; startDay: number; endDay: number; monthIdx: number }
+  | { kind: "tba" };
+
+const parseEventDate = (raw: string): ParsedDate => {
+  if (!raw) return { kind: "tba" };
+  const s = raw.trim().toLowerCase();
+  if (!s || s === "tbd" || s === "tba") return { kind: "tba" };
+
+  // Find month
+  let monthIdx = -1;
+  for (let i = 0; i < MONTH_NAMES.length; i++) {
+    const m = MONTH_NAMES[i];
+    if (s.includes(m) || s.includes(m.slice(0, 3))) {
+      monthIdx = i;
+      break;
+    }
+  }
+
+  // Range: "21 - 25 May 2026" or "8 - 11 May 2026"
+  const rangeMatch = s.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})/);
+  if (rangeMatch && monthIdx >= 0) {
+    return {
+      kind: "range",
+      startDay: parseInt(rangeMatch[1], 10),
+      endDay: parseInt(rangeMatch[2], 10),
+      monthIdx,
+    };
+  }
+
+  // Single: "8 May 2026"
+  const singleMatch = s.match(/(\d{1,2})/);
+  if (singleMatch && monthIdx >= 0) {
+    return { kind: "single", day: parseInt(singleMatch[1], 10), monthIdx };
+  }
+
+  // Fallback Date parse
+  const d = new Date(raw);
+  if (!isNaN(d.getTime())) {
+    return { kind: "single", day: d.getDate(), monthIdx: d.getMonth() };
+  }
+  return { kind: "tba" };
+};
 
 const HomeWhatsOn = () => {
   const { data: events } = useQuery({
@@ -30,11 +79,8 @@ const HomeWhatsOn = () => {
         return ids
           .map((id) => map.get(id))
           .filter(Boolean)
-          .map((e: any) => {
-            const d = new Date(e.date);
-            return { ...e, parsed: isNaN(d.getTime()) ? null : d };
-          })
-          .slice(0, 6);
+          .map((e: any) => ({ ...e, parsed: parseEventDate(e.date) }))
+          .slice(0, 4);
       }
 
       // 2. Fallback: upcoming events
@@ -43,14 +89,8 @@ const HomeWhatsOn = () => {
         .select("id, title, location, date")
         .order("date", { ascending: true })
         .limit(20);
-      const now = new Date();
-      const today = new Date(now.toDateString());
       return (data || [])
-        .map((e) => {
-          const d = new Date(e.date);
-          return { ...e, parsed: isNaN(d.getTime()) ? null : d };
-        })
-        .filter((e) => !e.parsed || e.parsed >= today)
+        .map((e) => ({ ...e, parsed: parseEventDate(e.date) }))
         .slice(0, 4);
     },
   });
@@ -75,8 +115,8 @@ const HomeWhatsOn = () => {
                 textDecoration: "none",
               }}
             >
-              <div style={{ width: 44, flexShrink: 0, textAlign: "left" }}>
-                {e.parsed ? (
+              <div style={{ width: 52, flexShrink: 0, textAlign: "left" }}>
+                {e.parsed.kind === "single" && (
                   <>
                     <div
                       style={{
@@ -87,7 +127,7 @@ const HomeWhatsOn = () => {
                         color: "#0A0A0A",
                       }}
                     >
-                      {e.parsed.getDate()}
+                      {e.parsed.day}
                     </div>
                     <div
                       style={{
@@ -99,10 +139,39 @@ const HomeWhatsOn = () => {
                         color: "#8A8480",
                       }}
                     >
-                      {MONTHS[e.parsed.getMonth()]}
+                      {MONTHS[e.parsed.monthIdx]}
                     </div>
                   </>
-                ) : (
+                )}
+                {e.parsed.kind === "range" && (
+                  <>
+                    <div
+                      style={{
+                        fontFamily: SERIF,
+                        fontWeight: 300,
+                        fontSize: 22,
+                        lineHeight: 1,
+                        color: "#0A0A0A",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {e.parsed.startDay}–{e.parsed.endDay}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 6,
+                        fontFamily: SANS,
+                        fontSize: 11,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        color: "#8A8480",
+                      }}
+                    >
+                      {MONTHS[e.parsed.monthIdx]}
+                    </div>
+                  </>
+                )}
+                {e.parsed.kind === "tba" && (
                   <div
                     style={{
                       fontFamily: SANS,
