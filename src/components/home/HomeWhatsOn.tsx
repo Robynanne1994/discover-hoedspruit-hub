@@ -8,6 +8,55 @@ const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const MONTH_NAMES = [
+  "january", "february", "march", "april", "may", "june",
+  "july", "august", "september", "october", "november", "december",
+];
+
+type ParsedDate =
+  | { kind: "single"; day: number; monthIdx: number }
+  | { kind: "range"; startDay: number; endDay: number; monthIdx: number }
+  | { kind: "tba" };
+
+const parseEventDate = (raw: string): ParsedDate => {
+  if (!raw) return { kind: "tba" };
+  const s = raw.trim().toLowerCase();
+  if (!s || s === "tbd" || s === "tba") return { kind: "tba" };
+
+  // Find month
+  let monthIdx = -1;
+  for (let i = 0; i < MONTH_NAMES.length; i++) {
+    const m = MONTH_NAMES[i];
+    if (s.includes(m) || s.includes(m.slice(0, 3))) {
+      monthIdx = i;
+      break;
+    }
+  }
+
+  // Range: "21 - 25 May 2026" or "8 - 11 May 2026"
+  const rangeMatch = s.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})/);
+  if (rangeMatch && monthIdx >= 0) {
+    return {
+      kind: "range",
+      startDay: parseInt(rangeMatch[1], 10),
+      endDay: parseInt(rangeMatch[2], 10),
+      monthIdx,
+    };
+  }
+
+  // Single: "8 May 2026"
+  const singleMatch = s.match(/(\d{1,2})/);
+  if (singleMatch && monthIdx >= 0) {
+    return { kind: "single", day: parseInt(singleMatch[1], 10), monthIdx };
+  }
+
+  // Fallback Date parse
+  const d = new Date(raw);
+  if (!isNaN(d.getTime())) {
+    return { kind: "single", day: d.getDate(), monthIdx: d.getMonth() };
+  }
+  return { kind: "tba" };
+};
 
 const HomeWhatsOn = () => {
   const { data: events } = useQuery({
