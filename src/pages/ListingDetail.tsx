@@ -230,6 +230,16 @@ const ListingDetail = () => {
 
   const filterDefined = (arr: AccField[]) => arr.filter(f => f.value === true || f.value === false);
 
+  // Pricing accordion (shown for any listing with price_level)
+  if (priceLevel) {
+    const pricingLabels: Record<number, string> = { 1: "Budget-friendly", 2: "Mid-range", 3: "Upscale", 4: "Fine dining" };
+    accordionSections.push({
+      key: "pricing",
+      title: "Pricing",
+      fields: [{ label: pricingLabels[priceLevel] || "R".repeat(priceLevel), value: "R".repeat(priceLevel) }],
+    });
+  }
+
   if (isListingRestaurant) {
     const serviceArr = serviceType || [];
     const knownServices = ["Dine-in", "Takeaway", "Delivery", "Reservations"];
