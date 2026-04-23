@@ -584,21 +584,40 @@ const CategoryPage = () => {
                     {l.title}
                   </h3>
 
-                  {l.location && (
-                    <p
+                  {(l.google_rating || l.location) && (
+                    <div
                       style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        marginTop: 6,
                         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                         fontSize: 12,
                         fontWeight: 400,
                         lineHeight: "15.6px",
                         letterSpacing: "0.12px",
                         color: "#8A8480",
-                        margin: 0,
-                        marginTop: 6,
                       }}
                     >
-                      {l.location}
-                    </p>
+                      {l.google_rating && (
+                        <>
+                          <Star size={12} fill="#F26A48" stroke="#F26A48" />
+                          <span>{Number(l.google_rating).toFixed(1)}</span>
+                        </>
+                      )}
+                      {l.google_rating && l.location && (
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 3,
+                            height: 3,
+                            borderRadius: "50%",
+                            background: "#8A8480",
+                          }}
+                        />
+                      )}
+                      {l.location && <span>{l.location}</span>}
+                    </div>
                   )}
 
                   {l.description && (
