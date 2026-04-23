@@ -556,12 +556,7 @@ const ListingDetail = () => {
               )}
             </>
           )}
-          {isListingRestaurant && priceLevel ? (
-            <>
-              <span style={{ margin: "0 8px" }}>·</span>
-              <span>{"R".repeat(priceLevel)}</span>
-            </>
-          ) : null}
+          {/* Price level moved to Details > Pricing accordion */}
           {openStatus && (
             <>
               <span style={{ margin: "0 8px" }}>·</span>
