@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { X, Search, GripVertical, Pencil, Check } from "lucide-react";
 import MyHoedspruitCardEditor from "@/components/admin/MyHoedspruitCardEditor";
+import HomeWhatsOnEditor from "@/components/admin/HomeWhatsOnEditor";
 
 const SECTIONS = [
   { key: "homepage-eat", label: "Eat in Hoedspruit", categorySearch: "%restaurant%" },
@@ -302,6 +303,7 @@ const AdminHomepage = () => {
         <h1 className="text-2xl font-bold">Homepage Sections</h1>
         <p className="text-muted-foreground">Choose which 4 listings appear in each homepage section. Leave empty to auto-pick.</p>
       </div>
+      <HomeWhatsOnEditor />
       {SECTIONS.map((section) => (
         <SectionEditor key={section.key} sectionKey={section.key} label={section.label} categorySearch={section.categorySearch} />
       ))}
