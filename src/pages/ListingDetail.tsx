@@ -8,7 +8,7 @@ import {
   MapPin, Mail, Globe, ArrowUpRight,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
   UtensilsCrossed, Soup, Music, Coffee, Car, HeartPulse,
-  BedDouble, PawPrint, ShoppingBag, CreditCard, Package,
+  BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
@@ -229,6 +229,16 @@ const ListingDetail = () => {
   const accordionSections: AccSection[] = [];
 
   const filterDefined = (arr: AccField[]) => arr.filter(f => f.value === true || f.value === false);
+
+  // Pricing accordion (shown for any listing with price_level)
+  if (priceLevel) {
+    const pricingLabels: Record<number, string> = { 1: "Budget-friendly", 2: "Mid-range", 3: "Upscale", 4: "Fine dining" };
+    accordionSections.push({
+      key: "pricing",
+      title: "Pricing",
+      fields: [{ label: pricingLabels[priceLevel] || "R".repeat(priceLevel), value: "R".repeat(priceLevel) }],
+    });
+  }
 
   if (isListingRestaurant) {
     const serviceArr = serviceType || [];
@@ -556,12 +566,7 @@ const ListingDetail = () => {
               )}
             </>
           )}
-          {isListingRestaurant && priceLevel ? (
-            <>
-              <span style={{ margin: "0 8px" }}>·</span>
-              <span>{"R".repeat(priceLevel)}</span>
-            </>
-          ) : null}
+          {/* Price level moved to Details > Pricing accordion */}
           {openStatus && (
             <>
               <span style={{ margin: "0 8px" }}>·</span>
@@ -761,6 +766,7 @@ const ListingDetail = () => {
               {accordionSections.map((section, i) => {
                 const isOpen = openAccordion === section.key;
                 const sectionIconMap: Record<string, any> = {
+                  pricing: Banknote,
                   service: ConciergeBell,
                   kids: Baby,
                   accessibility: Accessibility,
