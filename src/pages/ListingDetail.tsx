@@ -1018,13 +1018,19 @@ const ListingDetail = () => {
                 position: "relative", height: 200, borderRadius: 24, overflow: "hidden",
                 background: C.mapBg,
               }}>
-                <iframe
-                  title="Map"
-                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent("31.0|-24.42|31.20|-24.30")}&layer=mapnik&marker=${encodeURIComponent("-24.3567,31.1000")}`}
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none" }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
+                {mapCoords && (() => {
+                  const d = 0.006; // ~600m bbox for a tight neighbourhood view
+                  const bbox = `${mapCoords.lon - d}%2C${mapCoords.lat - d}%2C${mapCoords.lon + d}%2C${mapCoords.lat + d}`;
+                  return (
+                    <iframe
+                      title="Map"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lon}`}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none" }}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  );
+                })()}
                 <div style={{
                   position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)",
                   pointerEvents: "none",
