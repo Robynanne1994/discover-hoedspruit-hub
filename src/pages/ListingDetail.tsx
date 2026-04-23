@@ -766,6 +766,7 @@ const ListingDetail = () => {
               {accordionSections.map((section, i) => {
                 const isOpen = openAccordion === section.key;
                 const sectionIconMap: Record<string, any> = {
+                  pricing: Banknote,
                   service: ConciergeBell,
                   kids: Baby,
                   accessibility: Accessibility,
