@@ -17,6 +17,7 @@ const COLUMNS = [
   { key: "phone", label: "Phone", type: "text", width: "130px" },
   { key: "email", label: "Email", type: "text", width: "160px" },
   { key: "website", label: "Website", type: "text", width: "160px" },
+  { key: "website_label", label: "Website Display Text", type: "text", width: "180px" },
   { key: "whatsapp", label: "WhatsApp", type: "text", width: "130px" },
   { key: "google_maps_link", label: "Google Maps", type: "text", width: "160px" },
   { key: "google_rating", label: "Rating", type: "number", width: "80px" },
