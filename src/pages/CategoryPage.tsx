@@ -573,12 +573,11 @@ const CategoryPage = () => {
                 <div style={{ padding: 24 }}>
                   <h3
                     style={{
-                      fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                       fontSize: 22,
-                      fontWeight: 500,
-                      color: C.text,
-                      letterSpacing: "-0.4px",
-                      lineHeight: 1.15,
+                      fontWeight: 400,
+                      color: "#0A0A0A",
+                      lineHeight: 1.2,
                       margin: 0,
                     }}
                   >
@@ -591,7 +590,9 @@ const CategoryPage = () => {
                         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                         fontSize: 12,
                         fontWeight: 400,
-                        color: C.muted,
+                        lineHeight: "15.6px",
+                        letterSpacing: "0.12px",
+                        color: "#8A8480",
                         margin: 0,
                         marginTop: 6,
                       }}
@@ -603,11 +604,11 @@ const CategoryPage = () => {
                   {l.description && (
                     <p
                       style={{
-                        fontFamily: font,
-                        fontSize: 15,
+                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        fontSize: 14,
                         fontWeight: 400,
-                        lineHeight: 1.5,
-                        color: C.muted,
+                        lineHeight: "20.3px",
+                        color: "#0A0A0A",
                         margin: 0,
                         marginTop: 14,
                       }}
