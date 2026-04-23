@@ -13,6 +13,31 @@ const HomeWhatsOn = () => {
   const { data: events } = useQuery({
     queryKey: ["home-whats-on"],
     queryFn: async () => {
+      // 1. Check curated picks
+      const { data: siteContent } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", "homepage-whats-on")
+        .maybeSingle();
+
+      if (siteContent?.content && Array.isArray(siteContent.content) && siteContent.content.length > 0) {
+        const ids = siteContent.content as string[];
+        const { data } = await supabase
+          .from("events")
+          .select("id, title, location, date")
+          .in("id", ids);
+        const map = new Map((data || []).map((e) => [e.id, e]));
+        return ids
+          .map((id) => map.get(id))
+          .filter(Boolean)
+          .map((e: any) => {
+            const d = new Date(e.date);
+            return { ...e, parsed: isNaN(d.getTime()) ? null : d };
+          })
+          .slice(0, 6);
+      }
+
+      // 2. Fallback: upcoming events
       const { data } = await supabase
         .from("events")
         .select("id, title, location, date")
