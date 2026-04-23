@@ -974,13 +974,19 @@ const ListingDetail = () => {
               {...pressScale("0.99")}
             >
               <div style={{
-                position: "relative", height: 160, borderRadius: 24, overflow: "hidden",
+                position: "relative", height: 200, borderRadius: 24, overflow: "hidden",
                 background: C.mapBg,
-                backgroundImage: `linear-gradient(to right, ${C.mapGrid} 1px, transparent 1px), linear-gradient(to bottom, ${C.mapGrid} 1px, transparent 1px)`,
-                backgroundSize: "32px 32px",
               }}>
+                <iframe
+                  title="Map"
+                  src={`https://www.openstreetmap.org/export/embed.html?bbox=${encodeURIComponent("31.0|-24.42|31.20|-24.30")}&layer=mapnik&marker=${encodeURIComponent("-24.3567,31.1000")}`}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none" }}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
                 <div style={{
-                  position: "absolute", top: "38%", left: "50%", transform: "translate(-50%, -50%)",
+                  position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)",
+                  pointerEvents: "none",
                 }}>
                   <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M14 0C6.27 0 0 6.06 0 13.55c0 9.7 12.6 21.45 13.13 21.95a1.27 1.27 0 0 0 1.74 0C15.4 35 28 23.25 28 13.55 28 6.06 21.73 0 14 0z" fill={C.coral}/>
