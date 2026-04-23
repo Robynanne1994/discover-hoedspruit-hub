@@ -709,12 +709,18 @@ const ListingDetail = () => {
           <>
             <SectionHeading mt={32}>About</SectionHeading>
             <div style={{
-              ...(!aboutExpanded && isAboutLong ? { display: "-webkit-box", WebkitLineClamp: 5, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
+              ...(!aboutExpanded && isAboutLong ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" } : {})
             }}>
               {aboutParagraphs.map((p, i) => (
                 <p key={i} style={{
-                  fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14, lineHeight: "22px",
-                  color: C.muted, margin: 0, marginBottom: i < aboutParagraphs.length - 1 ? 12 : 0,
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontWeight: 400,
+                  fontSize: 14,
+                  lineHeight: "20.3px",
+                  letterSpacing: 0,
+                  color: "#0A0A0A",
+                  margin: 0,
+                  marginBottom: i < aboutParagraphs.length - 1 ? 12 : 0,
                 }}>
                   {p}
                 </p>
