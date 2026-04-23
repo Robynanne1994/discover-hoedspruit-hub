@@ -79,11 +79,8 @@ const HomeWhatsOn = () => {
         return ids
           .map((id) => map.get(id))
           .filter(Boolean)
-          .map((e: any) => {
-            const d = new Date(e.date);
-            return { ...e, parsed: isNaN(d.getTime()) ? null : d };
-          })
-          .slice(0, 6);
+          .map((e: any) => ({ ...e, parsed: parseEventDate(e.date) }))
+          .slice(0, 4);
       }
 
       // 2. Fallback: upcoming events
@@ -92,14 +89,8 @@ const HomeWhatsOn = () => {
         .select("id, title, location, date")
         .order("date", { ascending: true })
         .limit(20);
-      const now = new Date();
-      const today = new Date(now.toDateString());
       return (data || [])
-        .map((e) => {
-          const d = new Date(e.date);
-          return { ...e, parsed: isNaN(d.getTime()) ? null : d };
-        })
-        .filter((e) => !e.parsed || e.parsed >= today)
+        .map((e) => ({ ...e, parsed: parseEventDate(e.date) }))
         .slice(0, 4);
     },
   });
