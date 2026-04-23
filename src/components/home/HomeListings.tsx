@@ -74,8 +74,9 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
               <div style={{ padding: "12px 14px 14px" }}>
                 <div
                   style={{
-                    fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-                    fontSize: 14,
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    fontWeight: 400,
+                    fontSize: 18,
                     color: "#0A0A0A",
                     lineHeight: 1.2,
                     marginBottom: 6,
@@ -84,7 +85,6 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    minHeight: "2.4em",
                   }}
                 >
                   {cleanName(l.title)}
