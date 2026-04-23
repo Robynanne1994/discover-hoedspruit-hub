@@ -89,12 +89,21 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                 >
                   {cleanName(l.title)}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   {l.google_rating != null && (
                     <>
-                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                         <Star size={12} color="#F26A48" fill="#F26A48" strokeWidth={0} />
-                        <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "#0A0A0A" }}>
+                        <span
+                          style={{
+                            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                            fontWeight: 400,
+                            fontSize: 12,
+                            lineHeight: "15.6px",
+                            letterSpacing: "0.12px",
+                            color: "#8A8480",
+                          }}
+                        >
                           {Number(l.google_rating).toFixed(1)}
                         </span>
                       </div>
@@ -115,12 +124,13 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                     <span
                       style={{
                         fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                        fontSize: 12,
-                        color: "#8A8480",
                         fontWeight: 400,
+                        fontSize: 12,
+                        lineHeight: "15.6px",
+                        letterSpacing: "0.12px",
+                        color: "#8A8480",
                         whiteSpace: "normal",
                         wordBreak: "break-word",
-                        lineHeight: 1.2,
                         flex: 1,
                         minWidth: 0,
                       }}
