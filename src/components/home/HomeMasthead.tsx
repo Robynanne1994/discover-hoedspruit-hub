@@ -1,20 +1,63 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search, Sun } from "lucide-react";
+import { Menu, Search, Sun, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
 const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
+type WeatherIconKind = "sun" | "cloud-sun" | "cloud" | "fog" | "drizzle" | "rain" | "snow" | "thunder";
+
+const getWeatherIconKind = (code: number | null): WeatherIconKind => {
+  if (code === null) return "sun";
+  if (code === 0) return "sun";
+  if (code === 1 || code === 2) return "cloud-sun";
+  if (code === 3) return "cloud";
+  if (code === 45 || code === 48) return "fog";
+  if (code >= 51 && code <= 57) return "drizzle";
+  if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return "rain";
+  if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "snow";
+  if (code >= 95 && code <= 99) return "thunder";
+  return "sun";
+};
+
+const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
+  const props = { size: 16, strokeWidth: 2 } as const;
+  switch (kind) {
+    case "sun":
+      return <Sun {...props} color="#F26A48" fill="#F26A48" />;
+    case "cloud-sun":
+      return <CloudSun {...props} color="#F26A48" />;
+    case "cloud":
+      return <Cloud {...props} color="#8A8480" />;
+    case "fog":
+      return <CloudFog {...props} color="#8A8480" />;
+    case "drizzle":
+      return <CloudDrizzle {...props} color="#5B8DEF" />;
+    case "rain":
+      return <CloudRain {...props} color="#3F6FD8" />;
+    case "snow":
+      return <CloudSnow {...props} color="#7BB7D9" />;
+    case "thunder":
+      return <CloudLightning {...props} color="#6B5BD8" />;
+  }
+};
+
 const HomeMasthead = () => {
   const [temp, setTemp] = useState<number | null>(null);
+  const [weatherCode, setWeatherCode] = useState<number | null>(null);
 
   useEffect(() => {
     fetch(
-      "https://api.open-meteo.com/v1/forecast?latitude=-24.35&longitude=30.95&current=temperature_2m&timezone=Africa%2FJohannesburg"
+      "https://api.open-meteo.com/v1/forecast?latitude=-24.35&longitude=30.95&current=temperature_2m,weather_code&timezone=Africa%2FJohannesburg"
     )
       .then((r) => r.json())
-      .then((d) => d?.current && setTemp(Math.round(d.current.temperature_2m)))
+      .then((d) => {
+        if (d?.current) {
+          setTemp(Math.round(d.current.temperature_2m));
+          if (typeof d.current.weather_code === "number") setWeatherCode(d.current.weather_code);
+        }
+      })
       .catch(() => {});
   }, []);
 
@@ -114,7 +157,7 @@ const HomeMasthead = () => {
             flexShrink: 0,
           }}
         >
-          <Sun size={16} color="#F26A48" strokeWidth={2} fill="#F26A48" />
+          <WeatherIcon kind={getWeatherIconKind(weatherCode)} />
           <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 500, color: "#0A0A0A" }}>
             {temp !== null ? `${temp}°` : "—"}
           </span>
