@@ -60,17 +60,15 @@ const HomeMasthead = () => {
             marginTop: 18,
             marginBottom: 0,
             fontFamily: SANS,
-            fontSize: 15,
+            fontSize: 16,
+            fontWeight: 500,
             color: "#8A8480",
             lineHeight: 1.45,
             maxWidth: 260,
+            textTransform: "none",
           }}
         >
-          Your{" "}
-          <span style={{ fontFamily: SANS, fontWeight: 400, color: "#0A0A0A" }}>
-            Lowveld
-          </span>{" "}
-          Local
+          Your Lowveld Local
         </p>
       </div>
 
