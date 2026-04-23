@@ -97,6 +97,7 @@ const SpecialDetail = () => {
   const queryClient = useQueryClient();
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
+  const [aboutExpanded, setAboutExpanded] = useState(false);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
@@ -400,17 +401,37 @@ const SpecialDetail = () => {
             <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "none", margin: 0, marginTop: 18, marginBottom: 10 }}>About</h2>
             <p
               style={{
-                fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontWeight: 400,
                 fontSize: 14,
-                lineHeight: "20px",
+                lineHeight: "20.3px",
                 letterSpacing: 0,
-                color: "rgb(115, 115, 115)",
+                color: "#0A0A0A",
                 margin: 0,
                 whiteSpace: "pre-line",
+                ...(aboutExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
               }}
             >
               {special.description}
             </p>
+            {special.description.length > 120 && (
+              <button
+                onClick={() => setAboutExpanded(!aboutExpanded)}
+                style={{
+                  marginTop: 8,
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: "#715a3d",
+                }}
+              >
+                {aboutExpanded ? "Show Less" : "Read More"}
+              </button>
+            )}
           </section>
         )}
 
