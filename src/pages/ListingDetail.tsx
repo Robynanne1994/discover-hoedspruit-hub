@@ -454,7 +454,7 @@ const ListingDetail = () => {
 
   const aboutText = (longDescription || listing.description || "").trim();
   const aboutParagraphs = aboutText.split("\n").filter(Boolean);
-  const isAboutLong = aboutText.length > 220;
+  const isAboutLong = aboutText.length > 120;
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 140, fontFamily: FONT_BODY, color: C.text }}>
