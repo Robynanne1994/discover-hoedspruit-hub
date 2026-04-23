@@ -92,7 +92,7 @@ const HomeMasthead = () => {
           <span
             style={{
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 10,
+              fontSize: 12,
               fontStyle: "italic",
               color: "#8A8480",
               whiteSpace: "nowrap",
