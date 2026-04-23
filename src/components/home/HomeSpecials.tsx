@@ -71,9 +71,13 @@ const HomeSpecials = () => {
                     position: "absolute",
                     top: 12,
                     left: 12,
+                    right: 84,
                     background: "#FFFFFF",
                     borderRadius: 999,
                     padding: "8px 14px",
+                    display: "inline-block",
+                    maxWidth: "calc(100% - 96px)",
+                    width: "fit-content",
                   }}
                 >
                   <span
@@ -81,10 +85,14 @@ const HomeSpecials = () => {
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                       fontWeight: 400,
                       fontSize: 12,
+                      lineHeight: "14.4px",
+                      letterSpacing: "0.24px",
                       color: "#0A0A0A",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                      lineHeight: 1,
+                      textTransform: "capitalize",
+                      display: "block",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                     }}
                   >
                     {s.deal_label}
