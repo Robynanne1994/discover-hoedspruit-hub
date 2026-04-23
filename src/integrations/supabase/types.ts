@@ -268,6 +268,7 @@ export type Database = {
       events: {
         Row: {
           booking_link: string | null
+          booking_link_label: string | null
           business_id: string | null
           contact_email: string | null
           contact_phone: string | null
@@ -296,6 +297,7 @@ export type Database = {
         }
         Insert: {
           booking_link?: string | null
+          booking_link_label?: string | null
           business_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
@@ -324,6 +326,7 @@ export type Database = {
         }
         Update: {
           booking_link?: string | null
+          booking_link_label?: string | null
           business_id?: string | null
           contact_email?: string | null
           contact_phone?: string | null
@@ -913,6 +916,7 @@ export type Database = {
       specials: {
         Row: {
           booking_link: string | null
+          booking_link_label: string | null
           booking_required: boolean
           business_id: string | null
           business_name: string
@@ -939,6 +943,7 @@ export type Database = {
         }
         Insert: {
           booking_link?: string | null
+          booking_link_label?: string | null
           booking_required?: boolean
           business_id?: string | null
           business_name: string
@@ -965,6 +970,7 @@ export type Database = {
         }
         Update: {
           booking_link?: string | null
+          booking_link_label?: string | null
           booking_required?: boolean
           business_id?: string | null
           business_name?: string

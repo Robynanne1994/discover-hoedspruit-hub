@@ -14,7 +14,7 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 const EXPECTED_HEADERS = [
   "title", "deal_label", "business_name", "description", "image_url",
   "special_type", "day_of_week", "valid_from", "valid_until",
-  "price", "original_price", "booking_required", "booking_link", "promo_code",
+  "price", "original_price", "booking_required", "booking_link", "booking_link_label", "promo_code",
   "contact_phone", "contact_whatsapp", "terms", "category",
   "is_active", "sort_order",
 ];
@@ -108,6 +108,7 @@ const AdminSpecialsImport = () => {
           original_price: stripTrailingZeros(row.original_price) || null,
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
           booking_link: row.booking_link || null,
+          booking_link_label: row.booking_link_label || null,
           promo_code: row.promo_code || null,
           contact_phone: row.contact_phone || null,
           contact_whatsapp: row.contact_whatsapp || null,
@@ -157,7 +158,7 @@ const AdminSpecialsImport = () => {
 
   const downloadTemplate = () => {
     const csv = EXPECTED_HEADERS.join(",") + "\n" +
-      '"Sunset Dinner Deal","50% OFF","Bush Lodge","Half-price dinner with wine pairing","https://example.com/img.jpg","weekly","friday|saturday","2026-01-01","2026-06-30","R450pp","R900pp","true","https://bookme.com/example","WINTER2026","+27 123 456 789","+27 123 456 789","T\'s & C\'s apply. Sit down only.","restaurant","true","1"\n';
+      '"Sunset Dinner Deal","50% OFF","Bush Lodge","Half-price dinner with wine pairing","https://example.com/img.jpg","weekly","friday|saturday","2026-01-01","2026-06-30","R450pp","R900pp","true","https://bookme.com/example","Book on Quicket","WINTER2026","+27 123 456 789","+27 123 456 789","T\'s & C\'s apply. Sit down only.","restaurant","true","1"\n';
     downloadCSV(csv, "specials_template.csv");
   };
 
@@ -169,7 +170,7 @@ const AdminSpecialsImport = () => {
       s.title, s.deal_label, s.business_name, s.description ?? "",
       s.image_url ?? "", s.special_type ?? "", (s.day_of_week ?? []).join("|"),
       s.valid_from ?? "", s.valid_until ?? "", stripTrailingZeros(s.price) ?? "", stripTrailingZeros(s.original_price) ?? "",
-      s.booking_required ? "true" : "false", s.booking_link ?? "", s.promo_code ?? "",
+      s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.terms ?? "", s.category ?? "",
       s.is_active ? "true" : "false", String(s.sort_order ?? 0),
     ].map(escapeCSV).join(","));
