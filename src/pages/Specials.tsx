@@ -182,14 +182,14 @@ const Specials = () => {
   const dealPill: React.CSSProperties = {
     fontFamily: FONT,
     fontSize: 12,
-    lineHeight: "14px",
-    letterSpacing: "0.22px",
-    textTransform: "uppercase" as const,
+    lineHeight: "14.4px",
+    letterSpacing: "0.24px",
+    textTransform: "none" as const,
     color: COLOR.text,
-    fontWeight: 500,
-    padding: "7px 12px",
+    fontWeight: 400,
+    padding: "8px 14px",
     borderRadius: 999,
-    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+    background: "#FFFFFF",
     display: "inline-block",
   };
 
@@ -409,63 +409,52 @@ const Specials = () => {
             const Title = (
               <h3
                 style={{
-                  fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
+                  fontFamily: FONT,
                   fontSize: 22,
-                  lineHeight: "26px",
-                  letterSpacing: "-0.44px",
-                  fontWeight: 500,
+                  lineHeight: "25.3px",
+                  letterSpacing: "-0.22px",
+                  fontWeight: 400,
                   color: COLOR.text,
                   textTransform: "none",
                   margin: 0,
-                  marginBottom: 12,
+                  marginBottom: 8,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
                 }}
               >
                 {s.title}
               </h3>
             );
 
+            const vendorStyle: React.CSSProperties = {
+              fontFamily: FONT,
+              fontSize: 12,
+              lineHeight: "15.6px",
+              letterSpacing: "0.12px",
+              fontWeight: 400,
+              color: COLOR.muted,
+              textTransform: "none",
+              display: "block",
+              margin: 0,
+              marginBottom: 8,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              textDecoration: "none",
+            };
+
             const Vendor = s.business_id ? (
               <Link
                 to={`/listing/${s.business_id}`}
                 onClick={(e) => e.stopPropagation()}
-                style={{
-                  fontFamily: FONT,
-                  fontSize: 12,
-                  lineHeight: "14px",
-                  letterSpacing: 0,
-                  fontWeight: 400,
-                  color: "#8A8480",
-                  textTransform: "none",
-                  display: "block",
-                  margin: 0,
-                  marginBottom: 4,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  textDecoration: "none",
-                }}
+                style={vendorStyle}
               >
                 {s.business_name}
               </Link>
             ) : (
-              <p
-                style={{
-                  fontFamily: FONT,
-                  fontSize: 11,
-                  lineHeight: "13px",
-                  letterSpacing: "0.22px",
-                  fontWeight: 400,
-                  color: COLOR.muted,
-                  textTransform: "uppercase",
-                  margin: 0,
-                  marginBottom: 4,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {s.business_name}
-              </p>
+              <p style={vendorStyle}>{s.business_name}</p>
             );
 
             const Validity = (
@@ -478,7 +467,7 @@ const Specials = () => {
                   fontWeight: 400,
                   color: COLOR.muted,
                   margin: 0,
-                  marginBottom: 14,
+                  marginBottom: 6,
                 }}
               >
                 {validText}
@@ -493,9 +482,13 @@ const Specials = () => {
                   lineHeight: "20.3px",
                   letterSpacing: 0,
                   fontWeight: 400,
-                  color: "rgb(138, 132, 128)",
+                  color: COLOR.text,
                   margin: 0,
-                  marginBottom: 20,
+                  marginTop: 6,
+                  display: "-webkit-box",
+                  WebkitLineClamp: 3,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
                 }}
               >
                 {s.description}
@@ -539,22 +532,15 @@ const Specials = () => {
                 {hasImage ? (
                   <>
                     {/* Variant A: image */}
-                    <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: COLOR.warm }}>
+                    <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 11", background: COLOR.warm }}>
                       <img
                         src={s.image_url!}
                         alt={s.title}
                         style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                         loading="lazy"
                       />
-                      <div style={{ position: "absolute", left: 14, top: 12 }}>
-                        <span
-                          style={{
-                            ...dealPill,
-                            background: "rgba(255,255,255,0.92)",
-                            backdropFilter: "blur(8px)",
-                            WebkitBackdropFilter: "blur(8px)",
-                          }}
-                        >
+                      <div style={{ position: "absolute", left: 12, top: 12 }}>
+                        <span style={dealPill}>
                           {s.deal_label}
                         </span>
                       </div>
