@@ -730,9 +730,18 @@ const ListingDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 12, background: "none", border: "none", padding: 0, cursor: "pointer",
-                  fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14, color: C.text,
-                  textDecoration: "underline", textUnderlineOffset: "3px",
+                  marginTop: 6,
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontWeight: 400,
+                  fontSize: 14,
+                  color: "#0A0A0A",
+                  textTransform: "none",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
                   transition: "opacity 0.12s ease",
                 }}
                 {...pressOpacity}
