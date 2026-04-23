@@ -800,8 +800,8 @@ const ListingDetail = () => {
                       }}
                     >
                       <span style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
-                        <span style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
-                          <SectionIcon size={18} strokeWidth={1.5} color={C.text} />
+                        <span style={{ marginRight: 12, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 20 }}>
+                          <SectionIcon size={20} strokeWidth={1.5} color="#8A8480" />
                         </span>
                         <span
                           ref={(el) => { if (el) el.style.setProperty("text-transform", "none", "important"); }}
