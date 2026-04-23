@@ -97,6 +97,7 @@ const SpecialDetail = () => {
   const queryClient = useQueryClient();
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
+  const [aboutExpanded, setAboutExpanded] = useState(false);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
