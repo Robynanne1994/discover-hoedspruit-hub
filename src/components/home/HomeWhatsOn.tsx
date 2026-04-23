@@ -96,10 +96,12 @@ const HomeWhatsOn = () => {
 
   if (!events || events.length === 0) return null;
 
+  const cardWidth = typeof window !== "undefined" ? Math.round(window.innerWidth * 0.72) : 262;
+
   return (
     <section>
       <HomeSectionHead primary="What's on" actionLabel="All events" actionHref="/events" />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24, scrollSnapType: "x mandatory" }}>
         <div style={{ display: "flex", gap: 12, paddingRight: 24 }}>
           {events.map((e) => (
             <Link
@@ -109,7 +111,7 @@ const HomeWhatsOn = () => {
               onPointerUp={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: 280,
+                width: cardWidth,
                 flexShrink: 0,
                 background: "#FFFFFF",
                 borderRadius: 24,
@@ -117,9 +119,10 @@ const HomeWhatsOn = () => {
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
                 display: "block",
+                scrollSnapAlign: "start",
               }}
             >
-              <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#F2EFEC" }}>
+              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#F2EFEC" }}>
                 {e.image_url && (
                   <img
                     src={e.image_url}
@@ -135,33 +138,34 @@ const HomeWhatsOn = () => {
                     left: 12,
                     background: "#FFFFFF",
                     borderRadius: 999,
-                    padding: "5px 10px",
+                    padding: "8px 14px",
                   }}
                 >
                   <span
                     style={{
-                      fontFamily: SANS,
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      fontWeight: 400,
                       fontSize: 12,
+                      lineHeight: "14.4px",
+                      letterSpacing: "0.24px",
                       color: "#0A0A0A",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.06em",
-                      lineHeight: 1,
+                      textTransform: "capitalize",
                     }}
                   >
-                    {formatDateLabel(e.parsed)}
+                    {formatDateLabel(e.parsed).toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}
                   </span>
                 </div>
               </div>
-              <div style={{ padding: "14px 24px 16px" }}>
+              <div style={{ padding: 16 }}>
                 <div
                   style={{
-                    fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-                    fontSize: 16,
-                    fontWeight: 500,
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    fontWeight: 400,
+                    fontSize: 18,
+                    lineHeight: "21.6px",
+                    letterSpacing: "-0.18px",
                     color: "#0A0A0A",
-                    lineHeight: 1.2,
                     marginBottom: 6,
-                    letterSpacing: "-0.01em",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
@@ -175,13 +179,16 @@ const HomeWhatsOn = () => {
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      gap: 4,
+                      gap: 6,
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      fontWeight: 400,
                       fontSize: 12,
+                      lineHeight: "15.6px",
+                      letterSpacing: "0.12px",
                       color: "#8A8480",
                     }}
                   >
-                    <MapPin size={12} color="#B8A89A" strokeWidth={2} style={{ flexShrink: 0 }} />
+                    <MapPin size={12} color="#8A8480" strokeWidth={1.5} fill="none" style={{ flexShrink: 0 }} />
                     <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {e.location}
                     </span>
