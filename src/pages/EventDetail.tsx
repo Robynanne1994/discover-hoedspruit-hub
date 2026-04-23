@@ -205,8 +205,8 @@ const EventDetail = () => {
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
-    <div style={{ marginBottom: 12 }}>
-      <h2 style={{ fontWeight: 400, fontSize: 28, lineHeight: 1.15, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>
+    <div style={{ marginTop: 18, marginBottom: 10 }}>
+      <h2 style={{ fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "none", margin: 0, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>
         {title}
       </h2>
     </div>
