@@ -53,11 +53,11 @@ const pressOpacity = {
 const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
-// Section heading (H2) — Helvetica World 500, 28px, -0.84px tracking
-const SectionHeading = ({ children, mt = 32 }: { children: React.ReactNode; mt?: number }) => (
+// Section heading (H2) — Helvetica World 500, 22px / 22px, -0.66px tracking
+const SectionHeading = ({ children, mt = 18 }: { children: React.ReactNode; mt?: number }) => (
   <h2 style={{
-    fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 28, lineHeight: 1.05,
-    letterSpacing: "-0.84px", color: C.text, margin: 0, marginTop: mt, marginBottom: 16,
+    fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 22, lineHeight: "22px",
+    letterSpacing: "-0.66px", color: "#0A0A0A", margin: 0, marginTop: mt, marginBottom: 10,
     textTransform: "none",
   }}>
     {children}
