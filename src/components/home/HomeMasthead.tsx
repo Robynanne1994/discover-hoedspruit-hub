@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search, Sun } from "lucide-react";
+import { Menu, Search, Sun, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
