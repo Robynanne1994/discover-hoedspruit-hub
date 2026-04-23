@@ -182,14 +182,14 @@ const Specials = () => {
   const dealPill: React.CSSProperties = {
     fontFamily: FONT,
     fontSize: 12,
-    lineHeight: "14px",
-    letterSpacing: "0.22px",
-    textTransform: "uppercase" as const,
+    lineHeight: "14.4px",
+    letterSpacing: "0.24px",
+    textTransform: "none" as const,
     color: COLOR.text,
-    fontWeight: 500,
-    padding: "7px 12px",
+    fontWeight: 400,
+    padding: "8px 14px",
     borderRadius: 999,
-    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+    background: "#FFFFFF",
     display: "inline-block",
   };
 
