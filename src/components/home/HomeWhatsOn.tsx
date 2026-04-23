@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ChevronRight, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
 const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 const MONTH_NAMES = [
@@ -18,12 +17,11 @@ type ParsedDate =
   | { kind: "range"; startDay: number; endDay: number; monthIdx: number }
   | { kind: "tba" };
 
-const parseEventDate = (raw: string): ParsedDate => {
+const parseEventDate = (raw: string | null | undefined): ParsedDate => {
   if (!raw) return { kind: "tba" };
   const s = raw.trim().toLowerCase();
   if (!s || s === "tbd" || s === "tba") return { kind: "tba" };
 
-  // Find month
   let monthIdx = -1;
   for (let i = 0; i < MONTH_NAMES.length; i++) {
     const m = MONTH_NAMES[i];
@@ -33,7 +31,6 @@ const parseEventDate = (raw: string): ParsedDate => {
     }
   }
 
-  // Range: "21 - 25 May 2026" or "8 - 11 May 2026"
   const rangeMatch = s.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})/);
   if (rangeMatch && monthIdx >= 0) {
     return {
@@ -44,13 +41,11 @@ const parseEventDate = (raw: string): ParsedDate => {
     };
   }
 
-  // Single: "8 May 2026"
   const singleMatch = s.match(/(\d{1,2})/);
   if (singleMatch && monthIdx >= 0) {
     return { kind: "single", day: parseInt(singleMatch[1], 10), monthIdx };
   }
 
-  // Fallback Date parse
   const d = new Date(raw);
   if (!isNaN(d.getTime())) {
     return { kind: "single", day: d.getDate(), monthIdx: d.getMonth() };
@@ -58,11 +53,16 @@ const parseEventDate = (raw: string): ParsedDate => {
   return { kind: "tba" };
 };
 
+const formatDateLabel = (p: ParsedDate): string => {
+  if (p.kind === "single") return `${p.day} ${MONTHS[p.monthIdx]}`;
+  if (p.kind === "range") return `${p.startDay}–${p.endDay} ${MONTHS[p.monthIdx]}`;
+  return "TBA";
+};
+
 const HomeWhatsOn = () => {
   const { data: events } = useQuery({
     queryKey: ["home-whats-on"],
     queryFn: async () => {
-      // 1. Check curated picks
       const { data: siteContent } = await supabase
         .from("site_content")
         .select("content")
@@ -73,20 +73,19 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, location, date")
+          .select("id, title, location, date, image_url")
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         return ids
           .map((id) => map.get(id))
-          .filter(Boolean)
-          .map((e: any) => ({ ...e, parsed: parseEventDate(e.date) }))
+          .filter((e): e is NonNullable<typeof e> => Boolean(e))
+          .map((e) => ({ ...e, parsed: parseEventDate(e.date) }))
           .slice(0, 4);
       }
 
-      // 2. Fallback: upcoming events
       const { data } = await supabase
         .from("events")
-        .select("id, title, location, date")
+        .select("id, title, location, date, image_url")
         .order("date", { ascending: true })
         .limit(20);
       return (data || [])
@@ -100,105 +99,73 @@ const HomeWhatsOn = () => {
   return (
     <section>
       <HomeSectionHead primary="What's on" actionLabel="All events" actionHref="/events" />
-      <div style={{ padding: "0 24px" }}>
-        <div style={{ background: "#FFFFFF", borderRadius: 24, padding: "4px 20px" }}>
-          {events.map((e, idx) => (
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
+        <div style={{ display: "flex", gap: 12, paddingRight: 24 }}>
+          {events.map((e) => (
             <Link
               key={e.id}
               to={`/events/${e.id}`}
+              onPointerDown={(ev) => (ev.currentTarget.style.transform = "scale(0.98)")}
+              onPointerUp={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
+              onPointerLeave={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 18,
-                padding: "18px 0",
-                borderBottom: idx < events.length - 1 ? "1px solid #F2EFEC" : "none",
+                width: 280,
+                flexShrink: 0,
+                background: "#FFFFFF",
+                borderRadius: 24,
+                overflow: "hidden",
                 textDecoration: "none",
+                transition: "transform 150ms ease-out",
+                display: "block",
               }}
             >
-              <div style={{ width: 52, flexShrink: 0, textAlign: "left" }}>
-                {e.parsed.kind === "single" && (
-                  <>
-                    <div
-                      style={{
-                        fontFamily: SERIF,
-                        fontWeight: 300,
-                        fontSize: 36,
-                        lineHeight: 0.9,
-                        color: "#0A0A0A",
-                      }}
-                    >
-                      {e.parsed.day}
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 6,
-                        fontFamily: SANS,
-                        fontSize: 11,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        color: "#8A8480",
-                      }}
-                    >
-                      {MONTHS[e.parsed.monthIdx]}
-                    </div>
-                  </>
+              <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#F2EFEC" }}>
+                {e.image_url && (
+                  <img
+                    src={e.image_url}
+                    alt={e.title}
+                    loading="lazy"
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
                 )}
-                {e.parsed.kind === "range" && (
-                  <>
-                    <div
-                      style={{
-                        fontFamily: SERIF,
-                        fontWeight: 300,
-                        fontSize: 22,
-                        lineHeight: 1,
-                        color: "#0A0A0A",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      {e.parsed.startDay}–{e.parsed.endDay}
-                    </div>
-                    <div
-                      style={{
-                        marginTop: 6,
-                        fontFamily: SANS,
-                        fontSize: 11,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                        color: "#8A8480",
-                      }}
-                    >
-                      {MONTHS[e.parsed.monthIdx]}
-                    </div>
-                  </>
-                )}
-                {e.parsed.kind === "tba" && (
-                  <div
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    background: "#FFFFFF",
+                    borderRadius: 999,
+                    padding: "5px 10px",
+                  }}
+                >
+                  <span
                     style={{
                       fontFamily: SANS,
-                      fontSize: 11,
+                      fontSize: 12,
+                      color: "#0A0A0A",
                       textTransform: "uppercase",
-                      letterSpacing: "0.08em",
-                      color: "#8A8480",
+                      letterSpacing: "0.06em",
+                      lineHeight: 1,
                     }}
                   >
-                    TBA
-                  </div>
-                )}
+                    {formatDateLabel(e.parsed)}
+                  </span>
+                </div>
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ padding: "14px 24px 16px" }}>
                 <div
                   style={{
                     fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: 500,
                     color: "#0A0A0A",
-                    lineHeight: 1.25,
+                    lineHeight: 1.2,
                     marginBottom: 6,
+                    letterSpacing: "-0.01em",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
                     overflow: "hidden",
-                    wordBreak: "break-word",
                   }}
                 >
                   {e.title}
@@ -212,7 +179,6 @@ const HomeWhatsOn = () => {
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                       fontSize: 12,
                       color: "#8A8480",
-                      overflow: "hidden",
                     }}
                   >
                     <MapPin size={12} color="#B8A89A" strokeWidth={2} style={{ flexShrink: 0 }} />
@@ -222,7 +188,6 @@ const HomeWhatsOn = () => {
                   </div>
                 )}
               </div>
-              <ChevronRight size={16} color="#8A8480" strokeWidth={2} />
             </Link>
           ))}
         </div>
