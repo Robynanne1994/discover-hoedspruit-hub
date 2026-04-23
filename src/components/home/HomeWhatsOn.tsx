@@ -115,8 +115,8 @@ const HomeWhatsOn = () => {
                 textDecoration: "none",
               }}
             >
-              <div style={{ width: 44, flexShrink: 0, textAlign: "left" }}>
-                {e.parsed ? (
+              <div style={{ width: 52, flexShrink: 0, textAlign: "left" }}>
+                {e.parsed.kind === "single" && (
                   <>
                     <div
                       style={{
@@ -127,7 +127,7 @@ const HomeWhatsOn = () => {
                         color: "#0A0A0A",
                       }}
                     >
-                      {e.parsed.getDate()}
+                      {e.parsed.day}
                     </div>
                     <div
                       style={{
@@ -139,10 +139,39 @@ const HomeWhatsOn = () => {
                         color: "#8A8480",
                       }}
                     >
-                      {MONTHS[e.parsed.getMonth()]}
+                      {MONTHS[e.parsed.monthIdx]}
                     </div>
                   </>
-                ) : (
+                )}
+                {e.parsed.kind === "range" && (
+                  <>
+                    <div
+                      style={{
+                        fontFamily: SERIF,
+                        fontWeight: 300,
+                        fontSize: 22,
+                        lineHeight: 1,
+                        color: "#0A0A0A",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {e.parsed.startDay}–{e.parsed.endDay}
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 6,
+                        fontFamily: SANS,
+                        fontSize: 11,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.08em",
+                        color: "#8A8480",
+                      }}
+                    >
+                      {MONTHS[e.parsed.monthIdx]}
+                    </div>
+                  </>
+                )}
+                {e.parsed.kind === "tba" && (
                   <div
                     style={{
                       fontFamily: SANS,
