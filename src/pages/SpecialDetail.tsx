@@ -503,7 +503,9 @@ const SpecialDetail = () => {
             style={{
               background: SURFACE,
               borderRadius: 24,
-              padding: "4px 20px",
+              padding: 20,
+              border: "none",
+              boxShadow: "none",
             }}
           >
             {detailRows.map((row, i) => (
