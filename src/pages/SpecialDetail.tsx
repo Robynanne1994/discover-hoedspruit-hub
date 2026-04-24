@@ -522,7 +522,7 @@ const SpecialDetail = () => {
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
                 <div style={{ minWidth: 0 }}>
-                  <p style={{ ...eyebrow, marginBottom: 2 }}>{row.label}</p>
+                  <p style={{ ...eyebrow, textTransform: "capitalize", marginBottom: 2 }}>{row.label}</p>
                   {row.href ? (
                     <Link
                       to={row.href}
