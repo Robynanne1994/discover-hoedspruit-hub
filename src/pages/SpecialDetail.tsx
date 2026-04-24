@@ -516,7 +516,7 @@ const SpecialDetail = () => {
                   gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
                   gap: 12,
                   alignItems: "center",
-                  padding: "16px 0",
+                  padding: "12px 0",
                   borderBottom: i < detailRows.length - 1 ? `1px solid ${DIVIDER}` : "none",
                 }}
               >
