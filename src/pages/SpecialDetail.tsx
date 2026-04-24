@@ -337,12 +337,12 @@ const SpecialDetail = () => {
           {special.business_id ? (
             <Link
               to={`/listing/${special.business_id}`}
-              style={{ fontFamily: FONT, fontSize: 14, lineHeight: "20px", color: TEXT, margin: 0, textDecoration: "none", display: "block" }}
+              style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 2, textTransform: "none", textDecoration: "none", display: "block" }}
             >
               {special.business_name}
             </Link>
           ) : (
-            <p style={{ fontFamily: FONT, fontSize: 14, lineHeight: "20px", color: TEXT, margin: 0 }}>
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 2, textTransform: "none" }}>
               {special.business_name}
             </p>
           )}
