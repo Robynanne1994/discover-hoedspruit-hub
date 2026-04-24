@@ -514,7 +514,7 @@ const SpecialDetail = () => {
                 style={{
                   display: "grid",
                   gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
-                  gap: 16,
+                  gap: 12,
                   alignItems: "center",
                   padding: "16px 0",
                   borderBottom: i < detailRows.length - 1 ? `1px solid ${DIVIDER}` : "none",
