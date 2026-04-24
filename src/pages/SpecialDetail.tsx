@@ -316,7 +316,7 @@ const SpecialDetail = () => {
 
       {/* Content */}
       <div style={{ padding: "28px 24px 0 24px" }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: "#8A8480", margin: 0, marginBottom: 4, textTransform: "none" }}>{special.deal_label}</p>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: "#8A8480", margin: 0, marginBottom: 4, textTransform: "capitalize" }}>{special.deal_label}</p>
 
         <h1
           style={{
