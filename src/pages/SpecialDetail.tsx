@@ -655,8 +655,10 @@ const SpecialDetail = () => {
             <p
               style={{
                 fontFamily: FONT,
-                fontSize: 14,
-                lineHeight: "20.3px",
+                fontWeight: 400,
+                fontSize: 12,
+                lineHeight: "16px",
+                letterSpacing: 0,
                 color: MUTED,
                 margin: 0,
                 whiteSpace: "pre-line",
