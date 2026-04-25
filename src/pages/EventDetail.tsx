@@ -29,21 +29,27 @@ import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
 
 const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const pressScale = (scale = "0.97") => ({
+const PAGE_BG = "#EBEBEB";
+const SURFACE = "#FFFFFF";
+const TEXT = "#0A0A0A";
+const MUTED = "#8A8480";
+const DIVIDER = "#E8E4DF";
+
+const pressScale = (scale = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${scale})`),
   onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
 });
 
 const overlayBtn: React.CSSProperties = {
-  width: 40, height: 40, borderRadius: "50%",
-  background: "rgba(255, 255, 255, 0.85)",
-  backdropFilter: "blur(8px)",
-  WebkitBackdropFilter: "blur(8px)",
+  width: 44, height: 44, borderRadius: 999,
+  background: SURFACE,
+  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
   display: "flex", alignItems: "center", justifyContent: "center",
   border: "none", cursor: "pointer",
-  transition: "transform 0.12s ease",
+  transition: "transform 150ms ease-out",
 };
 
 const EventDetail = () => {
