@@ -61,6 +61,7 @@ const HomeMasthead = () => {
         if (d?.current) {
           setTemp(Math.round(d.current.temperature_2m));
           if (typeof d.current.weather_code === "number") setWeatherCode(d.current.weather_code);
+          if (typeof d.current.is_day === "number") setIsNight(d.current.is_day === 0);
         }
       })
       .catch(() => {});
