@@ -63,10 +63,8 @@ const overlayBtn: React.CSSProperties = {
   width: 44,
   height: 44,
   borderRadius: 999,
-  background: "rgba(255,255,255,0.95)",
-  backdropFilter: "blur(8px)",
-  WebkitBackdropFilter: "blur(8px)",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+  background: SURFACE,
+  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -74,7 +72,7 @@ const overlayBtn: React.CSSProperties = {
   cursor: "pointer",
   transition: "transform 150ms ease-out",
   position: "absolute",
-  top: 16,
+  top: 12,
   zIndex: 10,
 };
 
