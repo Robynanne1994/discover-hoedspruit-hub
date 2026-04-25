@@ -456,71 +456,67 @@ const EventDetail = () => {
         {(detailRows.length > 0 || notes) && (
           <section style={{ marginBottom: 24 }}>
             <SectionLabel eyebrow="Event info" title="Details" />
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: "4px 0", overflow: "hidden" }}>
+            <div style={{ background: SURFACE, borderRadius: 24, padding: "0 20px", border: "none", boxShadow: "none" }}>
               {detailRows.map((row, idx) => {
                 const Wrapper = row.href ? "a" : "div";
                 const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
                 return (
-                  <div key={row.label}>
-                    {idx > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
-                    <Wrapper
-                      {...wrapperProps}
-                      style={{ display: "flex", alignItems: "center", padding: "14px 20px", textDecoration: "none" }}
-                    >
-                      <div style={{ marginRight: 16, flexShrink: 0 }}>
-                        <row.icon size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>
-                          {row.value}
-                        </p>
-                      </div>
-                      {row.href && (
-                        <ArrowUpRight size={18} strokeWidth={1.8} color="#2B2420" style={{ flexShrink: 0, marginLeft: 12 }} />
-                      )}
-                    </Wrapper>
-                  </div>
+                  <Wrapper
+                    key={row.label}
+                    {...wrapperProps}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
+                      gap: 12, alignItems: "center", padding: "12px 0",
+                      borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <row.icon size={20} strokeWidth={1.5} color={MUTED} />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2, textTransform: "capitalize" }}>
+                        {row.label}
+                      </p>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0, wordBreak: "break-word" }}>
+                        {row.value}
+                      </p>
+                    </div>
+                    {row.href && <ArrowUpRight size={20} strokeWidth={1.5} color={TEXT} />}
+                  </Wrapper>
                 );
               })}
               {notes && (
-                <div>
-                  {detailRows.length > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
+                <div style={{ borderTop: detailRows.length > 0 ? `1px solid ${DIVIDER}` : "none" }}>
                   <button
                     onClick={() => setNotesOpen((v) => !v)}
                     aria-expanded={notesOpen}
                     style={{
                       width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "14px 20px",
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      textAlign: "left",
+                      display: "grid",
+                      gridTemplateColumns: "32px 1fr 20px",
+                      gap: 12, alignItems: "center", padding: "12px 0",
+                      background: "transparent", border: "none", cursor: "pointer", textAlign: "left",
                     }}
                   >
-                    <div style={{ marginRight: 16, flexShrink: 0 }}>
-                      <StickyNote size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <StickyNote size={20} strokeWidth={1.5} color={MUTED} />
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, fontFamily: font }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2, textTransform: "capitalize" }}>
                         Notes
                       </p>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0 }}>
+                        {notesOpen ? "Hide" : "View"}
+                      </p>
                     </div>
-                    <ChevronDown
-                      size={18}
-                      strokeWidth={1.8}
-                      color="#2B2420"
-                      style={{
-                        transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)",
-                        transition: "transform 200ms ease-out",
-                        flexShrink: 0,
-                      }}
-                    />
+                    <ChevronDown size={20} strokeWidth={1.5} color={TEXT}
+                      style={{ transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms ease-out" }} />
                   </button>
                   {notesOpen && (
-                    <div style={{ padding: "0 20px 16px 56px" }}>
-                      <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.5, margin: 0, whiteSpace: "pre-wrap", fontFamily: font }}>
+                    <div style={{ padding: "0 0 16px 44px" }}>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: "20.3px", color: TEXT, margin: 0, whiteSpace: "pre-wrap" }}>
                         {notes}
                       </p>
                     </div>
