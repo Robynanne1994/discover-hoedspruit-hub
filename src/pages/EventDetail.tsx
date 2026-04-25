@@ -432,15 +432,18 @@ const EventDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 8,
+                  marginTop: 6,
                   background: "none",
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontFamily: font,
                   fontSize: 14,
-                  fontWeight: 500,
-                  color: "#715a3d",
+                  fontWeight: 400,
+                  color: TEXT,
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  textTransform: "capitalize",
                 }}
               >
                 {aboutExpanded ? "Show Less" : "Read More"}
