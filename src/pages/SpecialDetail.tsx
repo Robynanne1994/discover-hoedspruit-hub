@@ -530,7 +530,7 @@ const SpecialDetail = () => {
                       style={{
                         fontFamily: FONT,
                         fontWeight: 400,
-                        fontSize: 14,
+                        fontSize: 16,
                         lineHeight: "20px",
                         letterSpacing: 0,
                         color: TEXT,
@@ -546,7 +546,7 @@ const SpecialDetail = () => {
                       style={{
                         fontFamily: FONT,
                         fontWeight: 400,
-                        fontSize: 14,
+                        fontSize: 16,
                         lineHeight: "20px",
                         letterSpacing: 0,
                         color: TEXT,
