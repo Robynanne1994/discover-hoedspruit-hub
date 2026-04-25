@@ -445,7 +445,7 @@ const ListingDetail = () => {
   const openStatus = computeOpenStatus();
 
   const circleBtn: React.CSSProperties = {
-    width: 44, height: 44, borderRadius: 999,
+    width: 44, height: 48, borderRadius: 999, padding: "0 24px",
     background: C.card,
     boxShadow: SHADOW_MD,
     display: "flex", alignItems: "center", justifyContent: "center",
@@ -626,7 +626,7 @@ const ListingDetail = () => {
                 href={`tel:${listing.phone}`}
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 44, borderRadius: 999,
+                  height: 48, borderRadius: 999, padding: "0 24px",
                   background: C.text, color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
                   transition: "transform 150ms ease-out",
@@ -647,7 +647,7 @@ const ListingDetail = () => {
                 rel="noopener noreferrer"
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 44, borderRadius: 999,
+                  height: 48, borderRadius: 999, padding: "0 24px",
                   background: C.text, color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
                   transition: "transform 150ms ease-out",
