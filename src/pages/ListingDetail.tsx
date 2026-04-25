@@ -568,11 +568,9 @@ const ListingDetail = () => {
 
       <div style={{
         position: "relative",
-        marginTop: -24,
+        marginTop: 16,
         background: C.bg,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        paddingLeft: 24, paddingRight: 24, paddingTop: 28,
+        paddingLeft: 24, paddingRight: 24,
       }}>
         {firstCategory && (
           <p style={{
