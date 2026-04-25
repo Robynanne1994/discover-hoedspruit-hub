@@ -445,7 +445,7 @@ const ListingDetail = () => {
   const openStatus = computeOpenStatus();
 
   const circleBtn: React.CSSProperties = {
-    width: 44, height: 48, borderRadius: 999, padding: "0 24px",
+    width: 44, height: 44, borderRadius: 999,
     background: C.card,
     boxShadow: SHADOW_MD,
     display: "flex", alignItems: "center", justifyContent: "center",
