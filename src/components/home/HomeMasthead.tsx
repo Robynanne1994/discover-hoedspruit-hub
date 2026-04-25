@@ -50,10 +50,11 @@ const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
 const HomeMasthead = () => {
   const [temp, setTemp] = useState<number | null>(null);
   const [weatherCode, setWeatherCode] = useState<number | null>(null);
+  const [isNight, setIsNight] = useState<boolean>(false);
 
   useEffect(() => {
     fetch(
-      "https://api.open-meteo.com/v1/forecast?latitude=-24.35&longitude=30.95&current=temperature_2m,weather_code&timezone=Africa%2FJohannesburg"
+      "https://api.open-meteo.com/v1/forecast?latitude=-24.35&longitude=30.95&current=temperature_2m,weather_code,is_day&timezone=Africa%2FJohannesburg"
     )
       .then((r) => r.json())
       .then((d) => {
