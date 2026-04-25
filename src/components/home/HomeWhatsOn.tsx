@@ -109,7 +109,9 @@ const HomeWhatsOn = () => {
               onPointerUp={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: cardWidth,
+                width: "72vw",
+                maxWidth: 265,
+                minWidth: 260,
                 flexShrink: 0,
                 background: "#FFFFFF",
                 borderRadius: 24,
