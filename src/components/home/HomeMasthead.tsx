@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search, Sun, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
+import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
 const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
-type WeatherIconKind = "sun" | "cloud-sun" | "cloud" | "fog" | "drizzle" | "rain" | "snow" | "thunder";
+type WeatherIconKind = "sun" | "moon" | "cloud-sun" | "cloud-moon" | "cloud" | "fog" | "drizzle" | "rain" | "snow" | "thunder";
 
-const getWeatherIconKind = (code: number | null): WeatherIconKind => {
-  if (code === null) return "sun";
-  if (code === 0) return "sun";
-  if (code === 1 || code === 2) return "cloud-sun";
+const getWeatherIconKind = (code: number | null, isNight: boolean): WeatherIconKind => {
+  if (code === null) return isNight ? "moon" : "sun";
+  if (code === 0) return isNight ? "moon" : "sun";
+  if (code === 1 || code === 2) return isNight ? "cloud-moon" : "cloud-sun";
   if (code === 3) return "cloud";
   if (code === 45 || code === 48) return "fog";
   if (code >= 51 && code <= 57) return "drizzle";
   if ((code >= 61 && code <= 67) || (code >= 80 && code <= 82)) return "rain";
   if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "snow";
   if (code >= 95 && code <= 99) return "thunder";
-  return "sun";
+  return isNight ? "moon" : "sun";
 };
 
 const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
@@ -26,6 +26,10 @@ const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
   switch (kind) {
     case "sun":
       return <Sun {...props} color="#F26A48" fill="#F26A48" />;
+    case "moon":
+      return <Moon {...props} color="#3F4C7A" fill="#3F4C7A" />;
+    case "cloud-moon":
+      return <Cloud {...props} color="#3F4C7A" />;
     case "cloud-sun":
       return <CloudSun {...props} color="#F26A48" />;
     case "cloud":
