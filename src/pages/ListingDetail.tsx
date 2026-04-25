@@ -445,12 +445,12 @@ const ListingDetail = () => {
   const openStatus = computeOpenStatus();
 
   const circleBtn: React.CSSProperties = {
-    width: 40, height: 40, borderRadius: "50%",
+    width: 44, height: 44, borderRadius: 999,
     background: C.card,
     boxShadow: SHADOW_MD,
     display: "flex", alignItems: "center", justifyContent: "center",
     border: "none", cursor: "pointer",
-    transition: "transform 0.15s ease-out",
+    transition: "transform 150ms ease-out",
   };
 
   const whatsappNum = (listing as any).whatsapp as string | null;
@@ -516,34 +516,34 @@ const ListingDetail = () => {
         }
       `}</style>
 
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, overflow: "hidden" }}>
         {listing.image_url ? (
           <img
             src={listing.image_url}
             alt={listing.title}
-            style={{ width: "100%", height: 320, objectFit: "cover", display: "block" }}
+            style={{ width: "100%", height: 360, objectFit: "cover", display: "block" }}
           />
         ) : (
-          <div style={{ width: "100%", height: 320, background: C.panel }} />
+          <div style={{ width: "100%", height: 360, background: C.panel }} />
         )}
 
         <button
           onClick={() => navigate(-1)}
-          style={{ ...circleBtn, position: "absolute", top: 52, left: 20 }}
+          style={{ ...circleBtn, position: "absolute", top: 12, left: 12 }}
           aria-label="Back"
           {...pressScale("0.94")}
         >
-          <ChevronLeft size={20} strokeWidth={1.75} color={C.text} />
+          <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
         </button>
 
-        <div style={{ position: "absolute", top: 52, right: 20, display: "flex", gap: 10 }}>
+        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 8 }}>
           <button
             onClick={handleShare}
             style={circleBtn}
             aria-label="Share"
             {...pressScale("0.94")}
           >
-            <Share2 size={18} strokeWidth={1.75} color={C.text} />
+            <Share2 size={20} strokeWidth={1.5} color={C.text} />
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
@@ -551,7 +551,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={18} strokeWidth={1.75} color={C.text} fill={isFavourited ? C.text : "none"} />
+            <Heart size={20} strokeWidth={1.5} color={C.text} fill={isFavourited ? C.text : "none"} />
           </button>
           {isAdmin && (
             <button
@@ -560,7 +560,7 @@ const ListingDetail = () => {
               aria-label="Edit listing"
               {...pressScale("0.94")}
             >
-              <Pencil size={16} strokeWidth={1.75} color={C.text} />
+              <Pencil size={20} strokeWidth={1.5} color={C.text} />
             </button>
           )}
         </div>
@@ -568,11 +568,9 @@ const ListingDetail = () => {
 
       <div style={{
         position: "relative",
-        marginTop: -24,
+        marginTop: 16,
         background: C.bg,
-        borderTopLeftRadius: 24,
-        borderTopRightRadius: 24,
-        paddingLeft: 24, paddingRight: 24, paddingTop: 28,
+        paddingLeft: 24, paddingRight: 24,
       }}>
         {firstCategory && (
           <p style={{
@@ -628,7 +626,7 @@ const ListingDetail = () => {
                 href={`tel:${listing.phone}`}
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 44, borderRadius: 999,
+                  height: 48, borderRadius: 999, padding: "0 24px",
                   background: C.text, color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
                   transition: "transform 150ms ease-out",
@@ -649,7 +647,7 @@ const ListingDetail = () => {
                 rel="noopener noreferrer"
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 44, borderRadius: 999,
+                  height: 48, borderRadius: 999, padding: "0 24px",
                   background: C.text, color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
                   transition: "transform 150ms ease-out",

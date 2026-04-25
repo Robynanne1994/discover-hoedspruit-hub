@@ -44,7 +44,7 @@ const eyebrow: React.CSSProperties = {
   fontSize: 12,
   lineHeight: "14.4px",
   letterSpacing: "0.24px",
-  textTransform: "uppercase",
+  textTransform: "capitalize",
   color: MUTED,
   margin: 0,
 };
@@ -63,10 +63,8 @@ const overlayBtn: React.CSSProperties = {
   width: 44,
   height: 44,
   borderRadius: 999,
-  background: "rgba(255,255,255,0.95)",
-  backdropFilter: "blur(8px)",
-  WebkitBackdropFilter: "blur(8px)",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+  background: SURFACE,
+  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -74,7 +72,7 @@ const overlayBtn: React.CSSProperties = {
   cursor: "pointer",
   transition: "transform 150ms ease-out",
   position: "absolute",
-  top: 16,
+  top: 12,
   zIndex: 10,
 };
 
@@ -233,7 +231,7 @@ const SpecialDetail = () => {
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
       {/* Hero */}
-      <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", background: "linear-gradient(135deg, #C49B7A 0%, #8B5E3C 100%)" }}>
+      <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, background: "linear-gradient(135deg, #C49B7A 0%, #8B5E3C 100%)" }}>
         {special.image_url && (
           <img
             src={special.image_url}
@@ -255,7 +253,7 @@ const SpecialDetail = () => {
         />
         <button
           onClick={() => navigate(-1)}
-          style={{ ...overlayBtn, left: 24 }}
+          style={{ ...overlayBtn, left: 12 }}
           aria-label="Back"
           {...press}
         >
@@ -298,7 +296,7 @@ const SpecialDetail = () => {
             ),
           });
           return rightIcons.map((b, idx) => {
-            const rightOffset = 24 + (rightIcons.length - 1 - idx) * (44 + 8);
+            const rightOffset = 12 + (rightIcons.length - 1 - idx) * (44 + 8);
             return (
               <button
                 key={b.key}
@@ -315,7 +313,7 @@ const SpecialDetail = () => {
       </div>
 
       {/* Content */}
-      <div style={{ padding: "28px 24px 0 24px" }}>
+      <div style={{ padding: "16px 24px 0 24px" }}>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: "#8A8480", margin: 0, marginBottom: 4, textTransform: "capitalize" }}>{special.deal_label}</p>
 
         <h1
@@ -333,7 +331,7 @@ const SpecialDetail = () => {
           {special.title}
         </h1>
 
-        <div style={{ marginBottom: 28 }}>
+        <div style={{ marginBottom: 14 }}>
           {special.business_id ? (
             <Link
               to={`/listing/${special.business_id}`}
@@ -346,7 +344,7 @@ const SpecialDetail = () => {
               {special.business_name}
             </p>
           )}
-          <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 2, textTransform: "none" }}>
+          <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "16px", letterSpacing: 0, color: "#8A8480", margin: 0, textTransform: "none" }}>
             {validityText}
           </p>
         </div>
@@ -418,15 +416,18 @@ const SpecialDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 8,
+                  marginTop: 6,
                   background: "none",
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                   fontSize: 14,
-                  fontWeight: 500,
-                  color: "#715a3d",
+                  fontWeight: 400,
+                  color: "#0A0A0A",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  textTransform: "capitalize",
                 }}
               >
                 {aboutExpanded ? "Show Less" : "Read More"}
@@ -529,7 +530,7 @@ const SpecialDetail = () => {
                       style={{
                         fontFamily: FONT,
                         fontWeight: 400,
-                        fontSize: 14,
+                        fontSize: 16,
                         lineHeight: "20px",
                         letterSpacing: 0,
                         color: TEXT,
@@ -545,7 +546,7 @@ const SpecialDetail = () => {
                       style={{
                         fontFamily: FONT,
                         fontWeight: 400,
-                        fontSize: 14,
+                        fontSize: 16,
                         lineHeight: "20px",
                         letterSpacing: 0,
                         color: TEXT,
@@ -635,7 +636,7 @@ const SpecialDetail = () => {
                   >
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontFamily: FONT, fontWeight: 400, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0 }}>
+                      <p style={{ fontFamily: FONT, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0 }}>
                         {row.value}
                       </p>
                     </div>
@@ -654,8 +655,10 @@ const SpecialDetail = () => {
             <p
               style={{
                 fontFamily: FONT,
-                fontSize: 14,
-                lineHeight: "20.3px",
+                fontWeight: 400,
+                fontSize: 12,
+                lineHeight: "16px",
+                letterSpacing: 0,
                 color: MUTED,
                 margin: 0,
                 whiteSpace: "pre-line",

@@ -29,21 +29,27 @@ import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
 
 const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const pressScale = (scale = "0.97") => ({
+const PAGE_BG = "#EBEBEB";
+const SURFACE = "#FFFFFF";
+const TEXT = "#0A0A0A";
+const MUTED = "#8A8480";
+const DIVIDER = "#E8E4DF";
+
+const pressScale = (scale = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${scale})`),
   onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
 });
 
 const overlayBtn: React.CSSProperties = {
-  width: 40, height: 40, borderRadius: "50%",
-  background: "rgba(255, 255, 255, 0.85)",
-  backdropFilter: "blur(8px)",
-  WebkitBackdropFilter: "blur(8px)",
+  width: 44, height: 44, borderRadius: 999,
+  background: SURFACE,
+  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
   display: "flex", alignItems: "center", justifyContent: "center",
   border: "none", cursor: "pointer",
-  transition: "transform 0.12s ease",
+  transition: "transform 150ms ease-out",
 };
 
 const EventDetail = () => {
@@ -207,38 +213,54 @@ const EventDetail = () => {
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string }[];
 
   const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
-    <div style={{ marginTop: 18, marginBottom: 10 }}>
-      <h2 style={{ fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "none", margin: 0, fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif" }}>
-        {title}
-      </h2>
-    </div>
+    <h2 style={{
+      fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 22, lineHeight: "22px",
+      letterSpacing: "-0.66px", color: TEXT, margin: 0, marginTop: 18, marginBottom: 10,
+      textTransform: "none",
+    }}>
+      {title}
+    </h2>
   );
 
   const renderDetailCard = (rows: typeof detailRows) => (
-    <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: "4px 0", overflow: "hidden" }}>
+    <div style={{ background: SURFACE, borderRadius: 24, padding: "0 20px", border: "none", boxShadow: "none" }}>
       {rows.map((row, idx) => {
         const Wrapper = row.href ? "a" : "div";
         const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
         return (
-          <div key={row.label}>
-            {idx > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
-            <Wrapper
-              {...wrapperProps}
-              style={{ display: "flex", alignItems: "center", padding: "14px 20px", textDecoration: "none" }}
-            >
-              <div style={{ marginRight: 16, flexShrink: 0 }}>
-                <row.icon size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>
-                  {row.value}
-                </p>
-              </div>
-              {row.href && (
-                <ArrowUpRight size={18} strokeWidth={1.8} color="#2B2420" style={{ flexShrink: 0, marginLeft: 12 }} />
-              )}
-            </Wrapper>
-          </div>
+          <Wrapper
+            key={row.label}
+            {...wrapperProps}
+            style={{
+              display: "grid",
+              gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
+              gap: 12,
+              alignItems: "center",
+              padding: "12px 0",
+              borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none",
+              textDecoration: "none",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
+              <row.icon size={20} strokeWidth={1.5} color={MUTED} />
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p style={{
+                fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
+                letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2,
+                textTransform: "capitalize",
+              }}>
+                {row.label}
+              </p>
+              <p style={{
+                fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px",
+                letterSpacing: 0, color: TEXT, margin: 0, wordBreak: "break-word",
+              }}>
+                {row.value}
+              </p>
+            </div>
+            {row.href && <ArrowUpRight size={20} strokeWidth={1.5} color={TEXT} />}
+          </Wrapper>
         );
       })}
     </div>
@@ -246,14 +268,17 @@ const EventDetail = () => {
 
   return (
     <div style={pageStyle}>
-      {/* Hero image with overlay back button */}
+      {/* Hero image */}
       {event.image_url ? (
-        <div style={{ position: "relative" }}>
-          <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: 16 }}>
-            <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
+        <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, background: DIVIDER }}>
+          <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
+          <button
+            onClick={() => navigate(-1)}
+            style={{ ...overlayBtn, position: "absolute", top: 12, left: 12, zIndex: 10 }}
+            aria-label="Back"
+            {...pressScale("0.94")}
+          >
+            <ArrowLeft size={20} strokeWidth={1.5} color={TEXT} />
           </button>
           {(() => {
             const rightIcons: { key: string; onClick: () => void; ariaLabel: string; node: React.ReactNode }[] = [];
@@ -262,30 +287,30 @@ const EventDetail = () => {
                 key: "edit",
                 onClick: () => setEditOpen(true),
                 ariaLabel: "Edit event",
-                node: <Pencil size={18} strokeWidth={1.8} color="#2B2420" />,
+                node: <Pencil size={20} strokeWidth={1.5} color={TEXT} />,
               });
             }
             rightIcons.push({
               key: "share",
               onClick: handleShare,
               ariaLabel: "Share",
-              node: <Share2 size={18} strokeWidth={1.8} color="#2B2420" />,
+              node: <Share2 size={20} strokeWidth={1.5} color={TEXT} />,
             });
             rightIcons.push({
               key: "fav",
               onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); },
               ariaLabel: isFavourited ? "Unsave" : "Save",
-              node: <Heart size={18} strokeWidth={1.8} color="#2B2420" fill={isFavourited ? "#2B2420" : "none"} />,
+              node: <Heart size={20} strokeWidth={1.5} color={TEXT} fill={isFavourited ? TEXT : "none"} />,
             });
             return rightIcons.map((b, idx) => {
-              const rightOffset = 16 + (rightIcons.length - 1 - idx) * (40 + 8);
+              const rightOffset = 12 + (rightIcons.length - 1 - idx) * (44 + 8);
               return (
                 <button
                   key={b.key}
                   onClick={b.onClick}
                   aria-label={b.ariaLabel}
-                  style={{ ...overlayBtn, position: "absolute", top: 16, right: rightOffset, zIndex: 10 }}
-                  {...pressScale("0.9")}
+                  style={{ ...overlayBtn, position: "absolute", top: 12, right: rightOffset, zIndex: 10 }}
+                  {...pressScale("0.94")}
                 >
                   {b.node}
                 </button>
@@ -295,62 +320,71 @@ const EventDetail = () => {
         </div>
       ) : (
         <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
+          <button onClick={() => navigate(-1)} style={overlayBtn} {...pressScale("0.94")}>
+            <ArrowLeft size={20} strokeWidth={1.5} color={TEXT} />
           </button>
           <div style={{ display: "flex", gap: 8 }}>
             {isAdmin && (
-              <button
-                onClick={() => setEditOpen(true)}
-                aria-label="Edit event"
-                style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
-                {...pressScale("0.9")}
-              >
-                <Pencil size={18} strokeWidth={1.8} color="#2B2420" />
+              <button onClick={() => setEditOpen(true)} aria-label="Edit event" style={overlayBtn} {...pressScale("0.94")}>
+                <Pencil size={20} strokeWidth={1.5} color={TEXT} />
               </button>
             )}
-            <button
-              onClick={handleShare}
-              aria-label="Share"
-              style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
-              {...pressScale("0.9")}
-            >
-              <Share2 size={18} strokeWidth={1.8} color="#2B2420" />
+            <button onClick={handleShare} aria-label="Share" style={overlayBtn} {...pressScale("0.94")}>
+              <Share2 size={20} strokeWidth={1.5} color={TEXT} />
             </button>
             <button
               onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
               aria-label={isFavourited ? "Unsave" : "Save"}
-              style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
-              {...pressScale("0.9")}
+              style={overlayBtn}
+              {...pressScale("0.94")}
             >
-              <Heart size={18} strokeWidth={1.8} color="#2B2420" fill={isFavourited ? "#2B2420" : "none"} />
+              <Heart size={20} strokeWidth={1.5} color={TEXT} fill={isFavourited ? TEXT : "none"} />
             </button>
           </div>
         </div>
       )}
 
       {/* Content area */}
-      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
-        {/* Category overline */}
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+        {/* Eyebrow */}
         {tagParts.length > 0 && (
-          <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, fontWeight: 400, letterSpacing: "0.24px", textTransform: "none", color: "#8A8480", lineHeight: "14.4px", marginBottom: 4, marginTop: 0 }}>
-            {tagParts.join(" | ")}
+          <p style={{
+            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
+            letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 4,
+            textTransform: "capitalize",
+          }}>
+            {tagParts.join(" · ")}
           </p>
         )}
 
         {/* Title */}
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 28, fontWeight: 500, lineHeight: "28px", letterSpacing: "-0.84px", color: "#0A0A0A", textTransform: "none", marginBottom: 8, marginTop: 0 }}>
+        <h1 style={{
+          fontFamily: FONT_HEAD, fontSize: 28, fontWeight: 500, lineHeight: "28px",
+          letterSpacing: "-0.84px", color: TEXT, textTransform: "none",
+          marginTop: 0, marginBottom: 8,
+        }}>
           {event.title}
         </h1>
 
-        {/* Date line */}
-        {(event.date || timeDisplay) && (
-          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, marginBottom: 16, fontFamily: font }}>
-            {formatDate(event.date)}{timeDisplay ? ` · ${timeDisplay}` : ""}
+        {/* Subtitle line 1: date */}
+        {event.date && (
+          <p style={{
+            fontFamily: font, fontWeight: 500, fontSize: 14, lineHeight: "20px",
+            letterSpacing: 0, color: TEXT, margin: 0, marginBottom: 2,
+          }}>
+            {formatDate(event.date)}
           </p>
         )}
 
-
+        {/* Subtitle line 2: time + venue */}
+        {(timeDisplay || event.location) && (
+          <p style={{
+            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "16px",
+            letterSpacing: 0, color: MUTED, margin: 0, marginBottom: 14,
+          }}>
+            {[timeDisplay, event.location].filter(Boolean).join(" · ")}
+          </p>
+        )}
 
         {/* Book Now CTA */}
         {bookingLink && (
@@ -361,19 +395,19 @@ const EventDetail = () => {
               rel="noopener noreferrer"
               style={{
                 width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
-                textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
-                fontFamily: font, textTransform: "capitalize",
+                background: TEXT, color: "#FFFFFF", border: "none", borderRadius: 999,
+                padding: "0 24px", height: 48, fontSize: 15, fontWeight: 400, lineHeight: "18px",
+                letterSpacing: 0, textDecoration: "none", cursor: "pointer",
+                transition: "transform 150ms ease-out", fontFamily: font, textTransform: "capitalize",
+                boxSizing: "border-box",
               }}
-              onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
-              onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-              onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+              {...pressScale()}
             >
               {bookingLinkLabel || "Book Now"}
             </a>
           </div>
         )}
+
 
         {/* About */}
         {event.description && (
@@ -398,15 +432,18 @@ const EventDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 8,
+                  marginTop: 6,
                   background: "none",
                   border: "none",
                   padding: 0,
                   cursor: "pointer",
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontFamily: font,
                   fontSize: 14,
-                  fontWeight: 500,
-                  color: "#715a3d",
+                  fontWeight: 400,
+                  color: TEXT,
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  textTransform: "capitalize",
                 }}
               >
                 {aboutExpanded ? "Show Less" : "Read More"}
@@ -419,71 +456,67 @@ const EventDetail = () => {
         {(detailRows.length > 0 || notes) && (
           <section style={{ marginBottom: 24 }}>
             <SectionLabel eyebrow="Event info" title="Details" />
-            <div style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.06)", borderRadius: 16, padding: "4px 0", overflow: "hidden" }}>
+            <div style={{ background: SURFACE, borderRadius: 24, padding: "0 20px", border: "none", boxShadow: "none" }}>
               {detailRows.map((row, idx) => {
                 const Wrapper = row.href ? "a" : "div";
                 const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
                 return (
-                  <div key={row.label}>
-                    {idx > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
-                    <Wrapper
-                      {...wrapperProps}
-                      style={{ display: "flex", alignItems: "center", padding: "14px 20px", textDecoration: "none" }}
-                    >
-                      <div style={{ marginRight: 16, flexShrink: 0 }}>
-                        <row.icon size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, wordBreak: "break-word", fontFamily: font }}>
-                          {row.value}
-                        </p>
-                      </div>
-                      {row.href && (
-                        <ArrowUpRight size={18} strokeWidth={1.8} color="#2B2420" style={{ flexShrink: 0, marginLeft: 12 }} />
-                      )}
-                    </Wrapper>
-                  </div>
+                  <Wrapper
+                    key={row.label}
+                    {...wrapperProps}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
+                      gap: 12, alignItems: "center", padding: "12px 0",
+                      borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <row.icon size={20} strokeWidth={1.5} color={MUTED} />
+                    </div>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2, textTransform: "capitalize" }}>
+                        {row.label}
+                      </p>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0, wordBreak: "break-word" }}>
+                        {row.value}
+                      </p>
+                    </div>
+                    {row.href && <ArrowUpRight size={20} strokeWidth={1.5} color={TEXT} />}
+                  </Wrapper>
                 );
               })}
               {notes && (
-                <div>
-                  {detailRows.length > 0 && <div style={{ height: 1, background: "rgba(18,18,20,0.08)", marginLeft: 56 }} />}
+                <div style={{ borderTop: detailRows.length > 0 ? `1px solid ${DIVIDER}` : "none" }}>
                   <button
                     onClick={() => setNotesOpen((v) => !v)}
                     aria-expanded={notesOpen}
                     style={{
                       width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      padding: "14px 20px",
-                      background: "transparent",
-                      border: "none",
-                      cursor: "pointer",
-                      textAlign: "left",
+                      display: "grid",
+                      gridTemplateColumns: "32px 1fr 20px",
+                      gap: 12, alignItems: "center", padding: "12px 0",
+                      background: "transparent", border: "none", cursor: "pointer", textAlign: "left",
                     }}
                   >
-                    <div style={{ marginRight: 16, flexShrink: 0 }}>
-                      <StickyNote size={20} strokeWidth={1.8} style={{ color: "rgba(18,18,20,0.3)" }} />
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <StickyNote size={20} strokeWidth={1.5} color={MUTED} />
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.3, margin: 0, fontFamily: font }}>
+                    <div style={{ minWidth: 0 }}>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2, textTransform: "capitalize" }}>
                         Notes
                       </p>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0 }}>
+                        {notesOpen ? "Hide" : "View"}
+                      </p>
                     </div>
-                    <ChevronDown
-                      size={18}
-                      strokeWidth={1.8}
-                      color="#2B2420"
-                      style={{
-                        transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)",
-                        transition: "transform 200ms ease-out",
-                        flexShrink: 0,
-                      }}
-                    />
+                    <ChevronDown size={20} strokeWidth={1.5} color={TEXT}
+                      style={{ transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms ease-out" }} />
                   </button>
                   {notesOpen && (
-                    <div style={{ padding: "0 20px 16px 56px" }}>
-                      <p style={{ fontSize: 14, fontWeight: 400, color: "#2B2420", lineHeight: 1.5, margin: 0, whiteSpace: "pre-wrap", fontFamily: font }}>
+                    <div style={{ padding: "0 0 16px 44px" }}>
+                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: "20.3px", color: TEXT, margin: 0, whiteSpace: "pre-wrap" }}>
                         {notes}
                       </p>
                     </div>
