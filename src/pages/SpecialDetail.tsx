@@ -636,7 +636,7 @@ const SpecialDetail = () => {
                   >
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
                     <div style={{ minWidth: 0 }}>
-                      <p style={{ fontFamily: FONT, fontWeight: 400, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0 }}>
+                      <p style={{ fontFamily: FONT, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0 }}>
                         {row.value}
                       </p>
                     </div>
