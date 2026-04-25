@@ -516,34 +516,34 @@ const ListingDetail = () => {
         }
       `}</style>
 
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, overflow: "hidden" }}>
         {listing.image_url ? (
           <img
             src={listing.image_url}
             alt={listing.title}
-            style={{ width: "100%", height: 320, objectFit: "cover", display: "block" }}
+            style={{ width: "100%", height: 360, objectFit: "cover", display: "block" }}
           />
         ) : (
-          <div style={{ width: "100%", height: 320, background: C.panel }} />
+          <div style={{ width: "100%", height: 360, background: C.panel }} />
         )}
 
         <button
           onClick={() => navigate(-1)}
-          style={{ ...circleBtn, position: "absolute", top: 52, left: 20 }}
+          style={{ ...circleBtn, position: "absolute", top: 12, left: 12 }}
           aria-label="Back"
           {...pressScale("0.94")}
         >
-          <ChevronLeft size={20} strokeWidth={1.75} color={C.text} />
+          <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
         </button>
 
-        <div style={{ position: "absolute", top: 52, right: 20, display: "flex", gap: 10 }}>
+        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 8 }}>
           <button
             onClick={handleShare}
             style={circleBtn}
             aria-label="Share"
             {...pressScale("0.94")}
           >
-            <Share2 size={18} strokeWidth={1.75} color={C.text} />
+            <Share2 size={20} strokeWidth={1.5} color={C.text} />
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
@@ -551,7 +551,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={18} strokeWidth={1.75} color={C.text} fill={isFavourited ? C.text : "none"} />
+            <Heart size={20} strokeWidth={1.5} color={C.text} fill={isFavourited ? C.text : "none"} />
           </button>
           {isAdmin && (
             <button
@@ -560,7 +560,7 @@ const ListingDetail = () => {
               aria-label="Edit listing"
               {...pressScale("0.94")}
             >
-              <Pencil size={16} strokeWidth={1.75} color={C.text} />
+              <Pencil size={20} strokeWidth={1.5} color={C.text} />
             </button>
           )}
         </div>
