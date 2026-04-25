@@ -268,14 +268,17 @@ const EventDetail = () => {
 
   return (
     <div style={pageStyle}>
-      {/* Hero image with overlay back button */}
+      {/* Hero image */}
       {event.image_url ? (
-        <div style={{ position: "relative" }}>
-          <div style={{ width: "100%", aspectRatio: "4/3", overflow: "hidden", borderRadius: 16 }}>
-            <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          </div>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, position: "absolute", top: 16, left: 16, zIndex: 10 }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
+        <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, background: DIVIDER }}>
+          <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
+          <button
+            onClick={() => navigate(-1)}
+            style={{ ...overlayBtn, position: "absolute", top: 12, left: 12, zIndex: 10 }}
+            aria-label="Back"
+            {...pressScale("0.94")}
+          >
+            <ArrowLeft size={20} strokeWidth={1.5} color={TEXT} />
           </button>
           {(() => {
             const rightIcons: { key: string; onClick: () => void; ariaLabel: string; node: React.ReactNode }[] = [];
@@ -284,30 +287,30 @@ const EventDetail = () => {
                 key: "edit",
                 onClick: () => setEditOpen(true),
                 ariaLabel: "Edit event",
-                node: <Pencil size={18} strokeWidth={1.8} color="#2B2420" />,
+                node: <Pencil size={20} strokeWidth={1.5} color={TEXT} />,
               });
             }
             rightIcons.push({
               key: "share",
               onClick: handleShare,
               ariaLabel: "Share",
-              node: <Share2 size={18} strokeWidth={1.8} color="#2B2420" />,
+              node: <Share2 size={20} strokeWidth={1.5} color={TEXT} />,
             });
             rightIcons.push({
               key: "fav",
               onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); },
               ariaLabel: isFavourited ? "Unsave" : "Save",
-              node: <Heart size={18} strokeWidth={1.8} color="#2B2420" fill={isFavourited ? "#2B2420" : "none"} />,
+              node: <Heart size={20} strokeWidth={1.5} color={TEXT} fill={isFavourited ? TEXT : "none"} />,
             });
             return rightIcons.map((b, idx) => {
-              const rightOffset = 16 + (rightIcons.length - 1 - idx) * (40 + 8);
+              const rightOffset = 12 + (rightIcons.length - 1 - idx) * (44 + 8);
               return (
                 <button
                   key={b.key}
                   onClick={b.onClick}
                   aria-label={b.ariaLabel}
-                  style={{ ...overlayBtn, position: "absolute", top: 16, right: rightOffset, zIndex: 10 }}
-                  {...pressScale("0.9")}
+                  style={{ ...overlayBtn, position: "absolute", top: 12, right: rightOffset, zIndex: 10 }}
+                  {...pressScale("0.94")}
                 >
                   {b.node}
                 </button>
@@ -317,62 +320,71 @@ const EventDetail = () => {
         </div>
       ) : (
         <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button onClick={() => navigate(-1)} style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }} {...pressScale("0.9")}>
-            <ArrowLeft size={20} strokeWidth={1.8} color="#2B2420" />
+          <button onClick={() => navigate(-1)} style={overlayBtn} {...pressScale("0.94")}>
+            <ArrowLeft size={20} strokeWidth={1.5} color={TEXT} />
           </button>
           <div style={{ display: "flex", gap: 8 }}>
             {isAdmin && (
-              <button
-                onClick={() => setEditOpen(true)}
-                aria-label="Edit event"
-                style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
-                {...pressScale("0.9")}
-              >
-                <Pencil size={18} strokeWidth={1.8} color="#2B2420" />
+              <button onClick={() => setEditOpen(true)} aria-label="Edit event" style={overlayBtn} {...pressScale("0.94")}>
+                <Pencil size={20} strokeWidth={1.5} color={TEXT} />
               </button>
             )}
-            <button
-              onClick={handleShare}
-              aria-label="Share"
-              style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
-              {...pressScale("0.9")}
-            >
-              <Share2 size={18} strokeWidth={1.8} color="#2B2420" />
+            <button onClick={handleShare} aria-label="Share" style={overlayBtn} {...pressScale("0.94")}>
+              <Share2 size={20} strokeWidth={1.5} color={TEXT} />
             </button>
             <button
               onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
               aria-label={isFavourited ? "Unsave" : "Save"}
-              style={{ ...overlayBtn, background: "rgba(18,18,20,0.06)" }}
-              {...pressScale("0.9")}
+              style={overlayBtn}
+              {...pressScale("0.94")}
             >
-              <Heart size={18} strokeWidth={1.8} color="#2B2420" fill={isFavourited ? "#2B2420" : "none"} />
+              <Heart size={20} strokeWidth={1.5} color={TEXT} fill={isFavourited ? TEXT : "none"} />
             </button>
           </div>
         </div>
       )}
 
       {/* Content area */}
-      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24 }}>
-        {/* Category overline */}
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+        {/* Eyebrow */}
         {tagParts.length > 0 && (
-          <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, fontWeight: 400, letterSpacing: "0.24px", textTransform: "none", color: "#8A8480", lineHeight: "14.4px", marginBottom: 4, marginTop: 0 }}>
-            {tagParts.join(" | ")}
+          <p style={{
+            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
+            letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 4,
+            textTransform: "capitalize",
+          }}>
+            {tagParts.join(" · ")}
           </p>
         )}
 
         {/* Title */}
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 28, fontWeight: 500, lineHeight: "28px", letterSpacing: "-0.84px", color: "#0A0A0A", textTransform: "none", marginBottom: 8, marginTop: 0 }}>
+        <h1 style={{
+          fontFamily: FONT_HEAD, fontSize: 28, fontWeight: 500, lineHeight: "28px",
+          letterSpacing: "-0.84px", color: TEXT, textTransform: "none",
+          marginTop: 0, marginBottom: 8,
+        }}>
           {event.title}
         </h1>
 
-        {/* Date line */}
-        {(event.date || timeDisplay) && (
-          <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)", fontStyle: "italic", margin: 0, marginBottom: 16, fontFamily: font }}>
-            {formatDate(event.date)}{timeDisplay ? ` · ${timeDisplay}` : ""}
+        {/* Subtitle line 1: date */}
+        {event.date && (
+          <p style={{
+            fontFamily: font, fontWeight: 500, fontSize: 14, lineHeight: "20px",
+            letterSpacing: 0, color: TEXT, margin: 0, marginBottom: 2,
+          }}>
+            {formatDate(event.date)}
           </p>
         )}
 
-
+        {/* Subtitle line 2: time + venue */}
+        {(timeDisplay || event.location) && (
+          <p style={{
+            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "16px",
+            letterSpacing: 0, color: MUTED, margin: 0, marginBottom: 14,
+          }}>
+            {[timeDisplay, event.location].filter(Boolean).join(" · ")}
+          </p>
+        )}
 
         {/* Book Now CTA */}
         {bookingLink && (
@@ -383,19 +395,19 @@ const EventDetail = () => {
               rel="noopener noreferrer"
               style={{
                 width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                background: "#020202", color: "#FFFFFF", border: "none", borderRadius: 16,
-                padding: "12px 20px", height: 48, fontSize: 15, fontWeight: 600,
-                textDecoration: "none", cursor: "pointer", transition: "transform 0.12s ease, opacity 0.12s ease",
-                fontFamily: font, textTransform: "capitalize",
+                background: TEXT, color: "#FFFFFF", border: "none", borderRadius: 999,
+                padding: "0 24px", height: 48, fontSize: 15, fontWeight: 400, lineHeight: "18px",
+                letterSpacing: 0, textDecoration: "none", cursor: "pointer",
+                transition: "transform 150ms ease-out", fontFamily: font, textTransform: "capitalize",
+                boxSizing: "border-box",
               }}
-              onPointerDown={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.97)"; (e.currentTarget as HTMLElement).style.opacity = "0.85"; }}
-              onPointerUp={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
-              onPointerLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; (e.currentTarget as HTMLElement).style.opacity = "1"; }}
+              {...pressScale()}
             >
               {bookingLinkLabel || "Book Now"}
             </a>
           </div>
         )}
+
 
         {/* About */}
         {event.description && (
