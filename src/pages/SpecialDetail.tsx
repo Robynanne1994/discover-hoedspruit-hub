@@ -253,7 +253,7 @@ const SpecialDetail = () => {
         />
         <button
           onClick={() => navigate(-1)}
-          style={{ ...overlayBtn, left: 24 }}
+          style={{ ...overlayBtn, left: 12 }}
           aria-label="Back"
           {...press}
         >
@@ -296,7 +296,7 @@ const SpecialDetail = () => {
             ),
           });
           return rightIcons.map((b, idx) => {
-            const rightOffset = 24 + (rightIcons.length - 1 - idx) * (44 + 8);
+            const rightOffset = 12 + (rightIcons.length - 1 - idx) * (44 + 8);
             return (
               <button
                 key={b.key}
@@ -313,7 +313,7 @@ const SpecialDetail = () => {
       </div>
 
       {/* Content */}
-      <div style={{ padding: "28px 24px 0 24px" }}>
+      <div style={{ padding: "16px 24px 0 24px" }}>
         <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: "#8A8480", margin: 0, marginBottom: 4, textTransform: "capitalize" }}>{special.deal_label}</p>
 
         <h1
