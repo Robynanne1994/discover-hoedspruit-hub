@@ -445,12 +445,12 @@ const ListingDetail = () => {
   const openStatus = computeOpenStatus();
 
   const circleBtn: React.CSSProperties = {
-    width: 40, height: 40, borderRadius: "50%",
+    width: 44, height: 44, borderRadius: 999,
     background: C.card,
     boxShadow: SHADOW_MD,
     display: "flex", alignItems: "center", justifyContent: "center",
     border: "none", cursor: "pointer",
-    transition: "transform 0.15s ease-out",
+    transition: "transform 150ms ease-out",
   };
 
   const whatsappNum = (listing as any).whatsapp as string | null;
