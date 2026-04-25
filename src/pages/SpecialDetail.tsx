@@ -44,7 +44,7 @@ const eyebrow: React.CSSProperties = {
   fontSize: 12,
   lineHeight: "14.4px",
   letterSpacing: "0.24px",
-  textTransform: "uppercase",
+  textTransform: "capitalize",
   color: MUTED,
   margin: 0,
 };
