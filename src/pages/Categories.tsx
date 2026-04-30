@@ -51,13 +51,45 @@ const Categories = () => {
   const { data: listingCounts } = useQuery({
     queryKey: ["listing-counts-by-category"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("listing_categories")
-        .select("category_id");
-      if (error) throw error;
+      // Paginated fetch to bypass Supabase's default 1000-row cap
+      const fetchAllRange = async <T,>(
+        fetcher: (from: number, to: number) => Promise<{ data: T[] | null; error: any }>
+      ): Promise<T[]> => {
+        const PAGE = 1000;
+        const all: T[] = [];
+        for (let from = 0; ; from += PAGE) {
+          const to = from + PAGE - 1;
+          const { data, error } = await fetcher(from, to);
+          if (error) throw error;
+          if (!data || data.length === 0) break;
+          all.push(...data);
+          if (data.length < PAGE) break;
+        }
+        return all;
+      };
+
+      const [junctions, listingRows] = await Promise.all([
+        fetchAllRange<{ listing_id: string; category_id: string }>(async (from, to) =>
+          await supabase.from("listing_categories").select("listing_id, category_id").range(from, to)
+        ),
+        fetchAllRange<{ id: string; category_id: string | null }>(async (from, to) =>
+          await supabase.from("listings").select("id, category_id").range(from, to)
+        ),
+      ]);
+
+      // Dedupe per (listing_id, category_id) across both sources
+      const pairs = new Set<string>();
+      junctions.forEach((r) => {
+        if (r.listing_id && r.category_id) pairs.add(`${r.listing_id}::${r.category_id}`);
+      });
+      listingRows.forEach((r) => {
+        if (r.id && r.category_id) pairs.add(`${r.id}::${r.category_id}`);
+      });
+
       const counts: Record<string, number> = {};
-      data.forEach((row) => {
-        counts[row.category_id] = (counts[row.category_id] || 0) + 1;
+      pairs.forEach((key) => {
+        const cat = key.split("::")[1];
+        counts[cat] = (counts[cat] || 0) + 1;
       });
       return counts;
     },
