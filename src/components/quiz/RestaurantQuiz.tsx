@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Baby, PawPrint, Accessibility, DollarSign, ArrowRight, ArrowLeft, RotateCcw, MapPin, Phone, Globe, UtensilsCrossed, Cigarette, Coffee, Sparkles, ChefHat, Armchair, TreePine, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
+import { sanitizeDashesList } from "@/lib/sanitizeListing";
 
 type Answers = {
   kids: boolean | null;
