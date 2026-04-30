@@ -83,16 +83,7 @@ const ListingDetail = () => {
     queryFn: async () => {
       const { data, error } = await supabase.from("listings").select("*").eq("id", id!).single();
       if (error) throw error;
-      // Treat "-" (a placeholder used in CSV imports) as empty for any string field
-      if (data && typeof data === "object") {
-        for (const k of Object.keys(data)) {
-          const v = (data as any)[k];
-          if (typeof v === "string" && v.trim() === "-") {
-            (data as any)[k] = null;
-          }
-        }
-      }
-      return data;
+      return sanitizeDashes(data);
     },
     enabled: !!id,
   });
