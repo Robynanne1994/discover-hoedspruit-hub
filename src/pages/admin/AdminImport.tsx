@@ -489,6 +489,12 @@ const AdminImport = () => {
         long_description: l.long_description ?? "",
         gallery_images: l.gallery_images ? JSON.stringify(l.gallery_images) : "",
         opening_hours: l.opening_hours ? JSON.stringify(l.opening_hours) : "",
+        custom_title_1: l.custom_title_1 ?? "",
+        custom_text_1: l.custom_text_1 ?? "",
+        custom_title_2: l.custom_title_2 ?? "",
+        custom_text_2: l.custom_text_2 ?? "",
+        custom_title_3: l.custom_title_3 ?? "",
+        custom_text_3: l.custom_text_3 ?? "",
         // Restaurant fields
         good_for_kids: l.good_for_kids == null ? "" : String(l.good_for_kids),
         pets_allowed: l.pets_allowed == null ? "" : String(l.pets_allowed),
