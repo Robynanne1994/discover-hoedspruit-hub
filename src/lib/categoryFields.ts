@@ -4,7 +4,10 @@ export const UNIVERSAL_FIELDS = [
   "title", "description", "image_url", "location", "phone", "email", "website", "website_label",
   "whatsapp", "google_maps_link", "google_rating", "google_reviews_count",
   "google_reviews_url", "categories", "subcategories", "is_featured",
-  "long_description", "gallery_images", "opening_hours"
+  "long_description", "gallery_images", "opening_hours",
+  "custom_title_1", "custom_text_1",
+  "custom_title_2", "custom_text_2",
+  "custom_title_3", "custom_text_3"
 ] as const;
 
 export const RESTAURANT_ONLY_FIELDS = [

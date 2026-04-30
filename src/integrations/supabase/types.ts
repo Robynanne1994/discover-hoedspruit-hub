@@ -548,6 +548,12 @@ export type Database = {
           created_at: string
           cuisine: string[] | null
           curio_or_gifts: boolean | null
+          custom_text_1: string | null
+          custom_text_2: string | null
+          custom_text_3: string | null
+          custom_title_1: string | null
+          custom_title_2: string | null
+          custom_title_3: string | null
           delivery_available: boolean | null
           description: string | null
           email: string | null
@@ -621,6 +627,12 @@ export type Database = {
           created_at?: string
           cuisine?: string[] | null
           curio_or_gifts?: boolean | null
+          custom_text_1?: string | null
+          custom_text_2?: string | null
+          custom_text_3?: string | null
+          custom_title_1?: string | null
+          custom_title_2?: string | null
+          custom_title_3?: string | null
           delivery_available?: boolean | null
           description?: string | null
           email?: string | null
@@ -694,6 +706,12 @@ export type Database = {
           created_at?: string
           cuisine?: string[] | null
           curio_or_gifts?: boolean | null
+          custom_text_1?: string | null
+          custom_text_2?: string | null
+          custom_text_3?: string | null
+          custom_title_1?: string | null
+          custom_title_2?: string | null
+          custom_title_3?: string | null
           delivery_available?: boolean | null
           description?: string | null
           email?: string | null

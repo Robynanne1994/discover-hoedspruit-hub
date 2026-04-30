@@ -8,7 +8,7 @@ import {
   MapPin, Mail, Globe, ArrowUpRight,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
   UtensilsCrossed, Soup, Music, Coffee, Car, HeartPulse,
-  BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote,
+  BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
@@ -383,6 +383,22 @@ const ListingDetail = () => {
     }
     if (l.product_categories && l.product_categories.length > 0) {
       accordionSections.push({ key: "shop-products", title: "Products", fields: l.product_categories.map((p: string) => ({ label: toTitleCase(p), value: true })) });
+    }
+  }
+
+  // Custom detail rows (up to 3) — always last in the Details card
+  {
+    const l = listing as any;
+    for (let i = 1; i <= 3; i++) {
+      const t = (l[`custom_title_${i}`] || "").toString().trim();
+      const v = (l[`custom_text_${i}`] || "").toString().trim();
+      if (t && v) {
+        accordionSections.push({
+          key: `custom-${i}`,
+          title: t,
+          fields: [{ label: v, value: "__custom_text__" }],
+        });
+      }
     }
   }
 
@@ -827,6 +843,9 @@ const ListingDetail = () => {
                   "shop-amenities": ShoppingBag,
                   "shop-payment": CreditCard,
                   "shop-products": Package,
+                  "custom-1": Info,
+                  "custom-2": Info,
+                  "custom-3": Info,
                 };
                 const SectionIcon = sectionIconMap[section.key] || Sparkles;
                 return (
@@ -866,36 +885,58 @@ const ListingDetail = () => {
                         }}
                       />
                     </button>
-                    {isOpen && (
-                      <div style={{
-                        paddingBottom: 20, paddingTop: 4,
-                        display: "grid", gridTemplateColumns: "1fr 1fr",
-                        columnGap: 16, rowGap: 12,
-                        animation: "hh-acc-open 300ms cubic-bezier(0.2, 0.8, 0.2, 1)",
-                      }}>
-                        {section.fields.map((f, fi) => {
-                          const isOn = f.value === true || (typeof f.value === "string");
-                          const labelText = typeof f.value === "string" ? `${f.label}: ${f.value}` : f.label;
-                          return (
-                            <div key={fi} style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                              {isOn ? (
-                                <Check size={18} strokeWidth={2} color={C.coral} style={{ flexShrink: 0 }} />
-                              ) : (
-                                <XIcon size={18} strokeWidth={2} color={C.xMuted} style={{ flexShrink: 0 }} />
-                              )}
-                              <span style={{
-                                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                                fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0,
-                                color: "#0A0A0A",
-                                textTransform: "none",
-                              }}>
-                                {labelText}
-                              </span>
+                    {isOpen && (() => {
+                      const isCustomText = section.key.startsWith("custom-");
+                      if (isCustomText) {
+                        const textValue = section.fields[0]?.label || "";
+                        return (
+                          <div style={{
+                            paddingBottom: 20, paddingTop: 4,
+                            animation: "hh-acc-open 300ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+                          }}>
+                            <div style={{
+                              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                              fontWeight: 400, fontSize: 16, lineHeight: "22px", letterSpacing: 0,
+                              color: "#0A0A0A",
+                              textTransform: "none",
+                              whiteSpace: "pre-wrap",
+                            }}>
+                              {textValue}
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                          </div>
+                        );
+                      }
+                      return (
+                        <div style={{
+                          paddingBottom: 20, paddingTop: 4,
+                          display: "grid", gridTemplateColumns: "1fr 1fr",
+                          columnGap: 16, rowGap: 12,
+                          animation: "hh-acc-open 300ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+                        }}>
+                          {section.fields.map((f, fi) => {
+                            const isOn = f.value === true || (typeof f.value === "string");
+                            const labelText = typeof f.value === "string" ? `${f.label}: ${f.value}` : f.label;
+                            return (
+                              <div key={fi} style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                                {isOn ? (
+                                  <Check size={18} strokeWidth={2} color={C.coral} style={{ flexShrink: 0 }} />
+                                ) : (
+                                  <XIcon size={18} strokeWidth={2} color={C.xMuted} style={{ flexShrink: 0 }} />
+                                )}
+                                <span style={{
+                                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                                  fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0,
+                                  color: "#0A0A0A",
+                                  textTransform: "none",
+                                }}>
+                                  {labelText}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
               })}
