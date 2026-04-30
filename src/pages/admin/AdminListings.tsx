@@ -464,6 +464,31 @@ const AdminListings = () => {
                   onChange={(val) => setForm({ ...form, gallery_images: val })}
                 />
 
+                <div className="border-t border-border pt-4 mt-2 space-y-3">
+                  <p className="text-sm font-medium text-foreground">Custom Detail Rows (optional)</p>
+                  <p className="text-xs text-muted-foreground -mt-2">Add up to 3 custom rows. Each appears as the last item(s) in the Details card. Empty rows are hidden.</p>
+                  {[1, 2, 3].map((n) => {
+                    const titleKey = `custom_title_${n}` as keyof typeof form;
+                    const textKey = `custom_text_${n}` as keyof typeof form;
+                    return (
+                      <div key={n} className="border border-border rounded-lg p-3 space-y-2">
+                        <Label className="text-xs text-muted-foreground">Custom row {n}</Label>
+                        <Input
+                          placeholder="Title (e.g. Dress Code)"
+                          value={(form[titleKey] as string) || ""}
+                          onChange={(e) => setForm({ ...form, [titleKey]: e.target.value } as any)}
+                        />
+                        <Textarea
+                          placeholder="Text (shown when this row is expanded)"
+                          rows={3}
+                          value={(form[textKey] as string) || ""}
+                          onChange={(e) => setForm({ ...form, [textKey]: e.target.value } as any)}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+
                 {!isAccommodationType && (
                 <div>
                   <Label>Opening Hours</Label>
