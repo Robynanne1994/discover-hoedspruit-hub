@@ -386,6 +386,22 @@ const ListingDetail = () => {
     }
   }
 
+  // Custom detail rows (up to 3) — always last in the Details card
+  {
+    const l = listing as any;
+    for (let i = 1; i <= 3; i++) {
+      const t = (l[`custom_title_${i}`] || "").toString().trim();
+      const v = (l[`custom_text_${i}`] || "").toString().trim();
+      if (t && v) {
+        accordionSections.push({
+          key: `custom-${i}`,
+          title: t,
+          fields: [{ label: v, value: "__custom_text__" }],
+        });
+      }
+    }
+  }
+
   const descriptionText = longDescription || listing.description;
 
   const toggleAccordion = (key: string) => {
