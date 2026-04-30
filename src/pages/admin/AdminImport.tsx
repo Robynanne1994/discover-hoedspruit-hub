@@ -157,13 +157,13 @@ const AdminImport = () => {
 
       // Paginated fetch helper to bypass Supabase's 1000-row default cap
       const fetchAllListings = async () => {
-        const all: { id: string; title: string }[] = [];
+        const all: any[] = [];
         const pageSize = 1000;
         let from = 0;
         while (true) {
           const { data, error } = await supabase
             .from("listings")
-            .select("id, title")
+            .select("*")
             .range(from, from + pageSize - 1);
           if (error) throw error;
           if (!data || data.length === 0) break;
