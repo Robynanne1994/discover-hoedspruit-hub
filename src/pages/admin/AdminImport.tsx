@@ -341,6 +341,14 @@ const AdminImport = () => {
           }
         }
 
+        // Treat "-" as empty for any string field on import
+        for (const k of Object.keys(payload)) {
+          const v = (payload as any)[k];
+          if (typeof v === "string" && v.trim() === "-") {
+            (payload as any)[k] = null;
+          }
+        }
+
         const existingId = existingMap.get(title.toLowerCase());
         let listingId: string | null = null;
 
