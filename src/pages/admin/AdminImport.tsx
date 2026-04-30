@@ -501,7 +501,7 @@ const AdminImport = () => {
       return;
     }
 
-    let listings: any[] | null;
+    let listings: ListingRow[] | null;
 
     if (isAllCategories) {
       const { data } = await supabase.from("listings").select("*");
@@ -548,7 +548,7 @@ const AdminImport = () => {
     const headers = csvHeaders;
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
 
-    const rows = listings.map((l: any) => {
+    const rows = listings.map((l) => {
       const fieldMap: Record<string, string> = {
         title: l.title ?? "",
         description: l.description ?? "",
