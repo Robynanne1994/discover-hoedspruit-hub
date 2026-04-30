@@ -212,6 +212,14 @@ const AdminListings = () => {
         custom_text_3: values.custom_text_3?.trim() || null,
       };
 
+      // Treat "-" as empty for any string field on save
+      for (const k of Object.keys(payload)) {
+        const v = (payload as any)[k];
+        if (typeof v === "string" && v.trim() === "-") {
+          (payload as any)[k] = null;
+        }
+      }
+
       let listingId: string;
       if (editing) {
         const { error } = await supabase.from("listings").update(payload).eq("id", editing.id);

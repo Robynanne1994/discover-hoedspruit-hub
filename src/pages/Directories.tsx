@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Globe, Mail, MapPin, Phone } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { sanitizeDashesList } from "@/lib/sanitizeListing";
 
 const Directories = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -28,7 +29,7 @@ const Directories = () => {
         .select("id, title, phone, email, website, location, google_maps_link, category_id")
         .order("title");
       if (error) throw error;
-      return data;
+      return sanitizeDashesList(data as any[]);
     },
   });
 

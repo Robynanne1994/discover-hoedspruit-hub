@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapP
 import FavouriteButton from "@/components/FavouriteButton";
 import BackButton from "@/components/BackButton";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
+import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian"];
@@ -148,7 +149,7 @@ const CategoryPage = () => {
         .in("id", listingIds)
         .order("is_featured", { ascending: false });
       if (error) throw error;
-      return data;
+      return sanitizeDashesList(data as any[]);
     },
     enabled: !!id,
   });
