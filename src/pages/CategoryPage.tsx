@@ -148,7 +148,7 @@ const CategoryPage = () => {
         .in("id", listingIds)
         .order("is_featured", { ascending: false });
       if (error) throw error;
-      return data;
+      return sanitizeDashesList(data as any[]);
     },
     enabled: !!id,
   });
