@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { Globe, Mail, MapPin, Phone } from "lucide-react";
 import BackButton from "@/components/BackButton";
+import { sanitizeDashesList } from "@/lib/sanitizeListing";
 
 const Directories = () => {
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
