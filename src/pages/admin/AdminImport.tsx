@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
@@ -9,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
 
 const ALL_CATEGORIES_VALUE = "__all__";
+type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
+type ListingPayload = Database["public"]["Tables"]["listings"]["Insert"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -157,7 +160,7 @@ const AdminImport = () => {
 
       // Paginated fetch helper to bypass Supabase's 1000-row default cap
       const fetchAllListings = async () => {
-        const all: any[] = [];
+        const all: ListingRow[] = [];
         const pageSize = 1000;
         let from = 0;
         while (true) {
@@ -194,7 +197,7 @@ const AdminImport = () => {
       };
 
       // Build existing listings map
-      let existingMap: Map<string, any>;
+      let existingMap: Map<string, ListingRow>;
       if (isAllCategories) {
         const existing = await fetchAllListings();
         existingMap = new Map(existing.map((l) => [l.title.toLowerCase(), l]));
@@ -215,7 +218,7 @@ const AdminImport = () => {
       const importItems: {
         rowNumber: number;
         listingId: string;
-        payload: Record<string, any>;
+        payload: ListingPayload;
         resolvedCatIds: string[];
         resolvedSubIds: string[];
         isUpdate: boolean;
@@ -240,7 +243,7 @@ const AdminImport = () => {
         }
 
         for (const catName of catNames) {
-          let catId = catMap.get(catName.toLowerCase()) ?? null;
+          const catId = catMap.get(catName.toLowerCase()) ?? null;
           if (catId) {
             if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
           } else {
@@ -300,7 +303,7 @@ const AdminImport = () => {
         const listingId = existing?.id ?? crypto.randomUUID();
 
         // Build payload - universal fields only for "all categories" mode
-        const payload: Record<string, any> = {
+        const payload: ListingPayload = {
           id: listingId,
           title,
           description: row.description || null,
@@ -397,9 +400,10 @@ const AdminImport = () => {
 
         // Treat "-" as empty for any string field on import
         for (const k of Object.keys(payload)) {
-          const v = (payload as any)[k];
+          const payloadRecord = payload as Record<string, unknown>;
+          const v = payloadRecord[k];
           if (typeof v === "string" && v.trim() === "-") {
-            (payload as any)[k] = null;
+            payloadRecord[k] = null;
           }
         }
 
@@ -408,10 +412,10 @@ const AdminImport = () => {
 
       setImportStatus(`Saving ${importItems.length} listings in batches...`);
       for (const batch of chunkArray(importItems, 100)) {
-        const { error } = await supabase.from("listings").upsert(batch.map((item) => item.payload) as any[], { onConflict: "id" });
+        const { error } = await supabase.from("listings").upsert(batch.map((item) => item.payload), { onConflict: "id" });
         if (error) {
           for (const item of batch) {
-            const { error: singleError } = await supabase.from("listings").upsert(item.payload as any, { onConflict: "id" });
+            const { error: singleError } = await supabase.from("listings").upsert(item.payload, { onConflict: "id" });
             if (singleError) results.errors.push(`Row ${item.rowNumber}: Save failed - ${singleError.message}`);
             else if (item.isUpdate) results.updated++;
             else results.created++;
