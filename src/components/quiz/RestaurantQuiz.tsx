@@ -78,7 +78,7 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
         .select("*, listing_categories(category_id, categories:category_id(title))")
         .eq("show_attributes", true);
       if (error) throw error;
-      return data;
+      return sanitizeDashesList(data as any[]);
     },
   });
 
