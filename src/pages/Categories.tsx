@@ -117,22 +117,6 @@ const Categories = () => {
         paddingBottom: 140,
       }}
     >
-      {/* Eyebrow */}
-      <p
-        style={{
-          fontFamily: FONT_BODY,
-          fontWeight: 400,
-          fontSize: 12,
-          lineHeight: "14.4px",
-          letterSpacing: "0.24px",
-          color: COLORS.muted,
-          margin: 0,
-          marginBottom: 8,
-        }}
-      >
-        {visibleCategories.length} Categories · {totalListings} Listings
-      </p>
-
       {/* Page title */}
       <h1
         style={{
