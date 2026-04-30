@@ -882,36 +882,58 @@ const ListingDetail = () => {
                         }}
                       />
                     </button>
-                    {isOpen && (
-                      <div style={{
-                        paddingBottom: 20, paddingTop: 4,
-                        display: "grid", gridTemplateColumns: "1fr 1fr",
-                        columnGap: 16, rowGap: 12,
-                        animation: "hh-acc-open 300ms cubic-bezier(0.2, 0.8, 0.2, 1)",
-                      }}>
-                        {section.fields.map((f, fi) => {
-                          const isOn = f.value === true || (typeof f.value === "string");
-                          const labelText = typeof f.value === "string" ? `${f.label}: ${f.value}` : f.label;
-                          return (
-                            <div key={fi} style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                              {isOn ? (
-                                <Check size={18} strokeWidth={2} color={C.coral} style={{ flexShrink: 0 }} />
-                              ) : (
-                                <XIcon size={18} strokeWidth={2} color={C.xMuted} style={{ flexShrink: 0 }} />
-                              )}
-                              <span style={{
-                                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                                fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0,
-                                color: "#0A0A0A",
-                                textTransform: "none",
-                              }}>
-                                {labelText}
-                              </span>
+                    {isOpen && (() => {
+                      const isCustomText = section.key.startsWith("custom-");
+                      if (isCustomText) {
+                        const textValue = section.fields[0]?.label || "";
+                        return (
+                          <div style={{
+                            paddingBottom: 20, paddingTop: 4,
+                            animation: "hh-acc-open 300ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+                          }}>
+                            <div style={{
+                              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                              fontWeight: 400, fontSize: 16, lineHeight: "22px", letterSpacing: 0,
+                              color: "#0A0A0A",
+                              textTransform: "none",
+                              whiteSpace: "pre-wrap",
+                            }}>
+                              {textValue}
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
+                          </div>
+                        );
+                      }
+                      return (
+                        <div style={{
+                          paddingBottom: 20, paddingTop: 4,
+                          display: "grid", gridTemplateColumns: "1fr 1fr",
+                          columnGap: 16, rowGap: 12,
+                          animation: "hh-acc-open 300ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+                        }}>
+                          {section.fields.map((f, fi) => {
+                            const isOn = f.value === true || (typeof f.value === "string");
+                            const labelText = typeof f.value === "string" ? `${f.label}: ${f.value}` : f.label;
+                            return (
+                              <div key={fi} style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                                {isOn ? (
+                                  <Check size={18} strokeWidth={2} color={C.coral} style={{ flexShrink: 0 }} />
+                                ) : (
+                                  <XIcon size={18} strokeWidth={2} color={C.xMuted} style={{ flexShrink: 0 }} />
+                                )}
+                                <span style={{
+                                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                                  fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0,
+                                  color: "#0A0A0A",
+                                  textTransform: "none",
+                                }}>
+                                  {labelText}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    })()}
                   </div>
                 );
               })}
