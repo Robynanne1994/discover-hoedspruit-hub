@@ -638,6 +638,7 @@ const AdminImport = () => {
     setParsed(null);
     setFileName("");
     setImportResult(null);
+    setImportStatus("");
     if (fileRef.current) fileRef.current.value = "";
   };
 
@@ -722,6 +723,9 @@ const AdminImport = () => {
                 {importMutation.isPending ? "Importing..." : "Import All"}
               </Button>
             </div>
+            {importMutation.isPending && importStatus && (
+              <p className="text-xs text-muted-foreground">{importStatus}</p>
+            )}
 
             <div className="overflow-x-auto max-h-80 overflow-y-auto border border-border rounded-lg">
               <table className="w-full text-xs">
