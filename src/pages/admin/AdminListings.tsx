@@ -204,6 +204,12 @@ const AdminListings = () => {
         has_wifi_accom: values.has_wifi_accom,
         has_free_parking: values.has_free_parking,
         has_secure_parking: values.has_secure_parking,
+        custom_title_1: values.custom_title_1?.trim() || null,
+        custom_text_1: values.custom_text_1?.trim() || null,
+        custom_title_2: values.custom_title_2?.trim() || null,
+        custom_text_2: values.custom_text_2?.trim() || null,
+        custom_title_3: values.custom_title_3?.trim() || null,
+        custom_text_3: values.custom_text_3?.trim() || null,
       };
 
       let listingId: string;
