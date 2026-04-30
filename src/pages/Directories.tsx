@@ -29,7 +29,7 @@ const Directories = () => {
         .select("id, title, phone, email, website, location, google_maps_link, category_id")
         .order("title");
       if (error) throw error;
-      return data;
+      return sanitizeDashesList(data as any[]);
     },
   });
 
