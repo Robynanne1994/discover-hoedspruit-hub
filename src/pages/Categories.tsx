@@ -69,11 +69,11 @@ const Categories = () => {
       };
 
       const [junctions, listingRows] = await Promise.all([
-        fetchAllRange<{ listing_id: string; category_id: string }>((from, to) =>
-          supabase.from("listing_categories").select("listing_id, category_id").range(from, to)
+        fetchAllRange<{ listing_id: string; category_id: string }>(async (from, to) =>
+          await supabase.from("listing_categories").select("listing_id, category_id").range(from, to)
         ),
-        fetchAllRange<{ id: string; category_id: string | null }>((from, to) =>
-          supabase.from("listings").select("id, category_id").range(from, to)
+        fetchAllRange<{ id: string; category_id: string | null }>(async (from, to) =>
+          await supabase.from("listings").select("id, category_id").range(from, to)
         ),
       ]);
 
