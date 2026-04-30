@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
@@ -9,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
 
 const ALL_CATEGORIES_VALUE = "__all__";
+type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
+type ListingPayload = Database["public"]["Tables"]["listings"]["Insert"];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -75,6 +78,7 @@ const AdminImport = () => {
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
   const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
+  const [importStatus, setImportStatus] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
   const { data: categories } = useQuery({
@@ -156,13 +160,13 @@ const AdminImport = () => {
 
       // Paginated fetch helper to bypass Supabase's 1000-row default cap
       const fetchAllListings = async () => {
-        const all: { id: string; title: string }[] = [];
+        const all: ListingRow[] = [];
         const pageSize = 1000;
         let from = 0;
         while (true) {
           const { data, error } = await supabase
             .from("listings")
-            .select("id, title")
+            .select("*")
             .range(from, from + pageSize - 1);
           if (error) throw error;
           if (!data || data.length === 0) break;
@@ -193,17 +197,32 @@ const AdminImport = () => {
       };
 
       // Build existing listings map
-      let existingMap: Map<string, string>;
+      let existingMap: Map<string, ListingRow>;
       if (isAllCategories) {
         const existing = await fetchAllListings();
-        existingMap = new Map(existing.map((l) => [l.title.toLowerCase(), l.id]));
+        existingMap = new Map(existing.map((l) => [l.title.toLowerCase(), l]));
       } else {
         const catJunctions = await fetchAllCategoryJunctions(selectedCategoryId);
         const categoryListingIds = new Set(catJunctions.map((j) => j.listing_id));
         const existing = await fetchAllListings();
         const existingInCategory = existing.filter((l) => categoryListingIds.has(l.id));
-        existingMap = new Map(existingInCategory.map((l) => [l.title.toLowerCase(), l.id]));
+        existingMap = new Map(existingInCategory.map((l) => [l.title.toLowerCase(), l]));
       }
+
+      const chunkArray = <T,>(items: T[], size: number) => {
+        const chunks: T[][] = [];
+        for (let i = 0; i < items.length; i += size) chunks.push(items.slice(i, i + size));
+        return chunks;
+      };
+
+      const importItems: {
+        rowNumber: number;
+        listingId: string;
+        payload: ListingPayload;
+        resolvedCatIds: string[];
+        resolvedSubIds: string[];
+        isUpdate: boolean;
+      }[] = [];
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
@@ -224,7 +243,7 @@ const AdminImport = () => {
         }
 
         for (const catName of catNames) {
-          let catId = catMap.get(catName.toLowerCase()) ?? null;
+          const catId = catMap.get(catName.toLowerCase()) ?? null;
           if (catId) {
             if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
           } else {
@@ -279,13 +298,16 @@ const AdminImport = () => {
           }
         }
 
-        const isUpdate = !!existingMap.get(title.toLowerCase());
+        const existing = existingMap.get(title.toLowerCase());
+        const isUpdate = !!existing;
+        const listingId = existing?.id ?? crypto.randomUUID();
 
         // Build payload - universal fields only for "all categories" mode
-        const payload: Record<string, any> = {
+        const payload: ListingPayload = {
+          id: listingId,
           title,
           description: row.description || null,
-          ...(row.image_url ? { image_url: row.image_url } : (!isUpdate ? { image_url: null } : {})),
+          image_url: row.image_url?.trim() === "-" ? null : (row.image_url || (isUpdate ? existing?.image_url ?? null : null)),
           location: row.location || null,
           phone: row.phone || null,
           email: row.email || null,
@@ -299,8 +321,8 @@ const AdminImport = () => {
           category_id: resolvedCatIds[0] || null,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
           long_description: row.long_description || null,
-          ...(galleryImages && galleryImages.length > 0 ? { gallery_images: galleryImages } : (!isUpdate ? { gallery_images: null } : {})),
-          opening_hours: isAllCategories && isUpdate && !row.opening_hours ? undefined : openingHours,
+          gallery_images: row.gallery_images?.trim() === "-" ? null : (galleryImages && galleryImages.length > 0 ? galleryImages : (isUpdate ? existing?.gallery_images ?? null : null)),
+          opening_hours: row.opening_hours?.trim() === "-" ? null : (isAllCategories && isUpdate && !row.opening_hours ? existing?.opening_hours ?? null : openingHours),
           custom_title_1: row.custom_title_1 || null,
           custom_text_1: row.custom_text_1 || null,
           custom_title_2: row.custom_title_2 || null,
@@ -378,62 +400,77 @@ const AdminImport = () => {
 
         // Treat "-" as empty for any string field on import
         for (const k of Object.keys(payload)) {
-          const v = (payload as any)[k];
+          const payloadRecord = payload as Record<string, unknown>;
+          const v = payloadRecord[k];
           if (typeof v === "string" && v.trim() === "-") {
-            (payload as any)[k] = null;
+            payloadRecord[k] = null;
           }
         }
 
-        const existingId = existingMap.get(title.toLowerCase());
-        let listingId: string | null = null;
+        importItems.push({ rowNumber: i + 2, listingId, payload, resolvedCatIds, resolvedSubIds, isUpdate });
+      }
 
-        if (existingId) {
-          const { error } = await supabase.from("listings").update(payload as any).eq("id", existingId);
-          if (error) results.errors.push(`Row ${i + 2}: Update failed - ${error.message}`);
-          else { results.updated++; listingId = existingId; }
+      setImportStatus(`Saving ${importItems.length} listings in batches...`);
+      for (const batch of chunkArray(importItems, 100)) {
+        const { error } = await supabase.from("listings").upsert(batch.map((item) => item.payload), { onConflict: "id" });
+        if (error) {
+          for (const item of batch) {
+            const { error: singleError } = await supabase.from("listings").upsert(item.payload, { onConflict: "id" });
+            if (singleError) results.errors.push(`Row ${item.rowNumber}: Save failed - ${singleError.message}`);
+            else if (item.isUpdate) results.updated++;
+            else results.created++;
+          }
         } else {
-          const { data: inserted, error } = await supabase.from("listings").insert(payload as any).select("id").single();
-          if (error) results.errors.push(`Row ${i + 2}: Insert failed - ${error.message}`);
-          else { results.created++; listingId = inserted?.id ?? null; }
-        }
-
-        if (listingId) {
-          // Sync categories junction
-          await supabase.from("listing_categories").delete().eq("listing_id", listingId);
-          if (resolvedCatIds.length > 0) {
-            const catRows = resolvedCatIds.map((catId) => ({ listing_id: listingId!, category_id: catId }));
-            await supabase.from("listing_categories").insert(catRows);
-          }
-
-          // Sync subcategories junction
-          await supabase.from("listing_subcategories").delete().eq("listing_id", listingId);
-          if (resolvedSubIds.length > 0) {
-            const junctionRows = resolvedSubIds.map((subId) => ({ listing_id: listingId!, subcategory_id: subId }));
-            await supabase.from("listing_subcategories").insert(junctionRows);
-          }
+          results.updated += batch.filter((item) => item.isUpdate).length;
+          results.created += batch.filter((item) => !item.isUpdate).length;
         }
       }
 
+      const successfulItems = importItems.filter((item) => !results.errors.some((err) => err.startsWith(`Row ${item.rowNumber}: Save failed`)));
+      const successfulIds = successfulItems.map((item) => item.listingId);
+
+      setImportStatus("Syncing listing categories...");
+      for (const idBatch of chunkArray(successfulIds, 200)) {
+        const { error: catDeleteError } = await supabase.from("listing_categories").delete().in("listing_id", idBatch);
+        if (catDeleteError) results.errors.push(`Category sync failed: ${catDeleteError.message}`);
+        const { error: subDeleteError } = await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
+        if (subDeleteError) results.errors.push(`Subcategory sync failed: ${subDeleteError.message}`);
+      }
+
+      const catRows = successfulItems.flatMap((item) => item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId })));
+      for (const batch of chunkArray(catRows, 500)) {
+        const { error } = await supabase.from("listing_categories").insert(batch);
+        if (error) results.errors.push(`Category insert failed: ${error.message}`);
+      }
+
+      const subRows = successfulItems.flatMap((item) => item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId })));
+      for (const batch of chunkArray(subRows, 500)) {
+        const { error } = await supabase.from("listing_subcategories").insert(batch);
+        if (error) results.errors.push(`Subcategory insert failed: ${error.message}`);
+      }
+
       // Delete listings not in CSV
-      for (const [existingTitle, existingId] of existingMap) {
-        if (!csvTitles.has(existingTitle)) {
-          await supabase.from("listing_categories").delete().eq("listing_id", existingId);
-          await supabase.from("listing_subcategories").delete().eq("listing_id", existingId);
-          const { error } = await supabase.from("listings").delete().eq("id", existingId);
-          if (error) results.errors.push(`Delete failed for "${existingTitle}": ${error.message}`);
-          else results.deleted++;
-        }
+      const deleteItems = Array.from(existingMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
+      const deleteIds = deleteItems.map(([, listing]) => listing.id);
+      setImportStatus(`Removing ${deleteIds.length} listings not in the CSV...`);
+      for (const idBatch of chunkArray(deleteIds, 200)) {
+        await supabase.from("listing_categories").delete().in("listing_id", idBatch);
+        await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
+        const { error } = await supabase.from("listings").delete().in("id", idBatch);
+        if (error) results.errors.push(`Delete failed: ${error.message}`);
+        else results.deleted += idBatch.length;
       }
 
       return results;
     },
     onSuccess: (results) => {
+      setImportStatus("");
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
       toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
     },
-    onError: (e) => toast.error(e.message),
+    onError: (e) => { setImportStatus(""); toast.error(e.message); },
   });
 
   const downloadCSV = (content: string, filename: string) => {
@@ -464,7 +501,7 @@ const AdminImport = () => {
       return;
     }
 
-    let listings: any[] | null;
+    let listings: ListingRow[] | null;
 
     if (isAllCategories) {
       const { data } = await supabase.from("listings").select("*");
@@ -511,7 +548,7 @@ const AdminImport = () => {
     const headers = csvHeaders;
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
 
-    const rows = listings.map((l: any) => {
+    const rows = listings.map((l) => {
       const fieldMap: Record<string, string> = {
         title: l.title ?? "",
         description: l.description ?? "",
@@ -605,6 +642,7 @@ const AdminImport = () => {
     setParsed(null);
     setFileName("");
     setImportResult(null);
+    setImportStatus("");
     if (fileRef.current) fileRef.current.value = "";
   };
 
@@ -689,6 +727,9 @@ const AdminImport = () => {
                 {importMutation.isPending ? "Importing..." : "Import All"}
               </Button>
             </div>
+            {importMutation.isPending && importStatus && (
+              <p className="text-xs text-muted-foreground">{importStatus}</p>
+            )}
 
             <div className="overflow-x-auto max-h-80 overflow-y-auto border border-border rounded-lg">
               <table className="w-full text-xs">
