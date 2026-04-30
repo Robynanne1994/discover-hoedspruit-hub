@@ -154,19 +154,54 @@ const AdminImport = () => {
       const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
       const csvTitles = new Set<string>();
 
+      // Paginated fetch helper to bypass Supabase's 1000-row default cap
+      const fetchAllListings = async () => {
+        const all: { id: string; title: string }[] = [];
+        const pageSize = 1000;
+        let from = 0;
+        while (true) {
+          const { data, error } = await supabase
+            .from("listings")
+            .select("id, title")
+            .range(from, from + pageSize - 1);
+          if (error) throw error;
+          if (!data || data.length === 0) break;
+          all.push(...data);
+          if (data.length < pageSize) break;
+          from += pageSize;
+        }
+        return all;
+      };
+
+      const fetchAllCategoryJunctions = async (categoryId: string) => {
+        const all: { listing_id: string }[] = [];
+        const pageSize = 1000;
+        let from = 0;
+        while (true) {
+          const { data, error } = await supabase
+            .from("listing_categories")
+            .select("listing_id")
+            .eq("category_id", categoryId)
+            .range(from, from + pageSize - 1);
+          if (error) throw error;
+          if (!data || data.length === 0) break;
+          all.push(...data);
+          if (data.length < pageSize) break;
+          from += pageSize;
+        }
+        return all;
+      };
+
       // Build existing listings map
       let existingMap: Map<string, string>;
       if (isAllCategories) {
-        const { data: existing } = await supabase.from("listings").select("id, title");
-        existingMap = new Map((existing ?? []).map((l) => [l.title.toLowerCase(), l.id]));
+        const existing = await fetchAllListings();
+        existingMap = new Map(existing.map((l) => [l.title.toLowerCase(), l.id]));
       } else {
-        const { data: catJunctions } = await supabase
-          .from("listing_categories")
-          .select("listing_id")
-          .eq("category_id", selectedCategoryId);
-        const categoryListingIds = new Set((catJunctions ?? []).map((j) => j.listing_id));
-        const { data: existing } = await supabase.from("listings").select("id, title");
-        const existingInCategory = (existing ?? []).filter((l) => categoryListingIds.has(l.id));
+        const catJunctions = await fetchAllCategoryJunctions(selectedCategoryId);
+        const categoryListingIds = new Set(catJunctions.map((j) => j.listing_id));
+        const existing = await fetchAllListings();
+        const existingInCategory = existing.filter((l) => categoryListingIds.has(l.id));
         existingMap = new Map(existingInCategory.map((l) => [l.title.toLowerCase(), l.id]));
       }
 
