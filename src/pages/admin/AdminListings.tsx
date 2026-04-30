@@ -329,6 +329,12 @@ const AdminListings = () => {
       has_wifi_accom: (l as any).has_wifi_accom ?? null,
       has_free_parking: (l as any).has_free_parking ?? null,
       has_secure_parking: (l as any).has_secure_parking ?? null,
+      custom_title_1: (l as any).custom_title_1 ?? "",
+      custom_text_1: (l as any).custom_text_1 ?? "",
+      custom_title_2: (l as any).custom_title_2 ?? "",
+      custom_text_2: (l as any).custom_text_2 ?? "",
+      custom_title_3: (l as any).custom_title_3 ?? "",
+      custom_text_3: (l as any).custom_text_3 ?? "",
     });
     setOpen(true);
   };
