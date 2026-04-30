@@ -16,6 +16,7 @@ import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
 import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
+import { sanitizeDashes } from "@/lib/sanitizeListing";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const FONT_BODY = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
