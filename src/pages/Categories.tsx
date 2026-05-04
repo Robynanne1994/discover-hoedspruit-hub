@@ -322,20 +322,6 @@ const Categories = () => {
                 </div>
               </div>
               <div style={{ padding: 20 }}>
-                <p
-                  style={{
-                    fontFamily: FONT_BODY,
-                    fontSize: 12,
-                    fontWeight: 400,
-                    lineHeight: "14.4px",
-                    letterSpacing: "0.24px",
-                    color: COLORS.muted,
-                    margin: 0,
-                    marginBottom: 8,
-                  }}
-                >
-                  Featured this week
-                </p>
                 <h2
                   style={{
                     fontFamily: FONT_DISPLAY,
