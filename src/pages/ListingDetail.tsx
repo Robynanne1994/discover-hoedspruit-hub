@@ -951,7 +951,7 @@ const ListingDetail = () => {
                             return (
                               <div key={fi} style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
                                 {isOn ? (
-                                  <Check size={18} strokeWidth={2} color={C.coral} style={{ flexShrink: 0 }} />
+                                  <Check size={18} strokeWidth={2} color="#5b4632" style={{ flexShrink: 0 }} />
                                 ) : (
                                   <XIcon size={18} strokeWidth={2} color={C.xMuted} style={{ flexShrink: 0 }} />
                                 )}
