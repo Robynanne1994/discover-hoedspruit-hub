@@ -203,6 +203,7 @@ const AdminListings = () => {
         has_spa: values.has_spa,
         has_fitness_centre: values.has_fitness_centre,
         has_airport_shuttle: values.has_airport_shuttle,
+        airport_shuttle_free: values.airport_shuttle_free,
         has_aircon: values.has_aircon,
         has_wifi_accom: values.has_wifi_accom,
         has_free_parking: values.has_free_parking,
