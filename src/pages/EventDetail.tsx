@@ -300,7 +300,7 @@ const EventDetail = () => {
               key: "fav",
               onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); },
               ariaLabel: isFavourited ? "Unsave" : "Save",
-              node: <Heart size={20} strokeWidth={1.5} color={TEXT} fill={isFavourited ? TEXT : "none"} />,
+              node: <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : TEXT} fill={isFavourited ? "#5b4632" : "none"} />,
             });
             return rightIcons.map((b, idx) => {
               const rightOffset = 12 + (rightIcons.length - 1 - idx) * (44 + 8);
@@ -338,7 +338,7 @@ const EventDetail = () => {
               style={overlayBtn}
               {...pressScale("0.94")}
             >
-              <Heart size={20} strokeWidth={1.5} color={TEXT} fill={isFavourited ? TEXT : "none"} />
+              <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : TEXT} fill={isFavourited ? "#5b4632" : "none"} />
             </button>
           </div>
         </div>

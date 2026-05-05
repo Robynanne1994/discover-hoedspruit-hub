@@ -290,8 +290,8 @@ const SpecialDetail = () => {
               <Heart
                 size={20}
                 strokeWidth={1.5}
-                color={TEXT}
-                fill={isFavourited ? TEXT : "none"}
+                color={isFavourited ? "#5b4632" : TEXT}
+                fill={isFavourited ? "#5b4632" : "none"}
               />
             ),
           });
