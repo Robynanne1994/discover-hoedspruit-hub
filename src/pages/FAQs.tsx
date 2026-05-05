@@ -112,9 +112,6 @@ const FAQs = () => {
         >
           <ChevronLeft size={20} strokeWidth={1.8} color="#0A0A0A" />
         </button>
-        <span style={{ fontFamily: FF_PF, fontStyle: "italic", fontWeight: 300, fontSize: 16, color: "#8A8480", ...baseStyle }}>
-          Support
-        </span>
       </div>
 
       {/* Hero */}
