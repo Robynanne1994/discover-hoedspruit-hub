@@ -456,11 +456,13 @@ const MyAccount = () => {
     { label: "Advertise", href: "/advertise", icon: Megaphone },
     { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
+  const resourcesItems = [
+    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
+    { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
+  ];
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
     { label: "About", href: "/about", icon: Info },
-    { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
-    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
     { label: "Help", href: "/faqs", icon: HelpCircle },
     { label: "Terms & Policies", href: "/terms", icon: FileText },
   ];
@@ -810,6 +812,12 @@ const MyAccount = () => {
       <div style={{ padding: "28px 24px 0" }}>
         {sectionLabel("Saved")}
         {renderCard(myHoedspruitItems)}
+      </div>
+
+      {/* Resources */}
+      <div style={{ padding: "24px 24px 0" }}>
+        {sectionLabel("Resources")}
+        {renderCard(resourcesItems)}
       </div>
 
       {/* Get in touch */}
