@@ -634,7 +634,7 @@ const CategoryPage = () => {
                     >
                       {l.google_rating && (
                         <>
-                          <Star size={12} fill="#F26A48" stroke="#F26A48" />
+                          <Star size={12} fill="#5b4632" stroke="#5b4632" />
                           <span>{Number(l.google_rating).toFixed(1)}</span>
                         </>
                       )}
