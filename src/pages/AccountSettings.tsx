@@ -112,7 +112,7 @@ const AccountSettings = () => {
 function SettingsGroup({ label, rows, marginTop }: { label: string; rows: Row[]; marginTop: number }) {
   return (
     <div style={{ marginTop, paddingLeft: 24, paddingRight: 24 }}>
-      <div style={{ fontFamily: SANS, fontSize: 12, fontWeight: 400, letterSpacing: "0.02em", color: "#8A8480", marginBottom: 10, paddingLeft: 4 }}>
+      <div style={{ fontFamily: SANS, fontSize: 12, fontWeight: 400, letterSpacing: "0.02em", color: "#0a0a0a", marginBottom: 10, paddingLeft: 4 }}>
         {label}
       </div>
       <div style={{ background: "#FFFFFF", borderRadius: 24, overflow: "hidden" }}>
