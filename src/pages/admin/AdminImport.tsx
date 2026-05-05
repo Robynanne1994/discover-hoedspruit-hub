@@ -224,6 +224,17 @@ const AdminImport = () => {
         isUpdate: boolean;
       }[] = [];
 
+      // Detect duplicate titles in CSV (title-based matching is risky otherwise)
+      const titleSeen = new Map<string, number>();
+      for (const r of parsed.rows) {
+        const t = (r.title || "").trim().toLowerCase();
+        if (!t) continue;
+        titleSeen.set(t, (titleSeen.get(t) || 0) + 1);
+      }
+      for (const [t, n] of titleSeen.entries()) {
+        if (n > 1) results.errors.push(`Duplicate title in CSV: "${t}" appears ${n} times — only one row will win.`);
+      }
+
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
         const title = row.title?.trim();
@@ -233,7 +244,7 @@ const AdminImport = () => {
         }
         csvTitles.add(title.toLowerCase());
 
-        // Resolve categories from CSV
+        // Resolve categories from CSV (pipe-separated, case/whitespace insensitive)
         const catField = row.categories?.trim() || "";
         const catNames = catField ? catField.split("|").map((s) => s.trim()).filter(Boolean) : [];
         const resolvedCatIds: string[] = [];
@@ -243,20 +254,23 @@ const AdminImport = () => {
         }
 
         for (const catName of catNames) {
-          const catId = catMap.get(catName.toLowerCase()) ?? null;
+          const key = catName.toLowerCase();
+          const catId = catMap.get(key) ?? null;
           if (catId) {
             if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
           } else {
             const { data: newCat, error: catErr } = await supabase
               .from("categories").insert({ title: catName }).select("id").single();
             if (!catErr && newCat) {
-              catMap.set(catName.toLowerCase(), newCat.id);
+              catMap.set(key, newCat.id);
               resolvedCatIds.push(newCat.id);
+            } else {
+              results.errors.push(`Row ${i + 2}: Could not match or create category "${catName}"`);
             }
           }
         }
 
-        // Resolve subcategories
+        // Resolve subcategories (try every resolved category as parent)
         const subNames = row.subcategories ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean) : [];
         const resolvedSubIds: string[] = [];
         for (const subName of subNames) {
@@ -272,6 +286,8 @@ const AdminImport = () => {
             if (!subErr && newSub) {
               resolvedSubIds.push(newSub.id);
               subMap.set(`${resolvedCatIds[0]}::${subName.toLowerCase()}`, newSub.id);
+            } else {
+              results.errors.push(`Row ${i + 2}: Could not match or create subcategory "${subName}"`);
             }
           }
         }
