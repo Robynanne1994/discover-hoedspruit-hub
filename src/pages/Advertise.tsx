@@ -261,7 +261,7 @@ const Advertise = () => {
             fontFamily: FF, fontSize: 15, fontWeight: 400, lineHeight: "21.75px",
             color: "rgba(255,255,255,0.78)", maxWidth: 300, margin: "0 0 24px",
           }}>
-            Pick a plan that fits, get your business live on the app, and start reaching the community this week.
+            Pick a plan that fits, get your business live on the app and start reaching the Hoedspruit community this week.
           </p>
           <button
             onClick={() => navigate("/plans")}
