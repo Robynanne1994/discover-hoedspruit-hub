@@ -232,7 +232,7 @@ const ContactUs = () => {
         >
           <div
             style={{
-              background: "#D4654A",
+              background: "#5b4632",
               borderRadius: 16,
               padding: 20,
               color: "#FFFFFF",
