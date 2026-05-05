@@ -758,7 +758,7 @@ const ListingDetail = () => {
                         </p>
                       </div>
                       {row.href && (
-                        <ArrowUpRight size={18} strokeWidth={1.5} color={C.muted} style={{ flexShrink: 0, marginLeft: 12 }} />
+                        <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
                       )}
                     </Wrapper>
                   </div>
@@ -1097,7 +1097,7 @@ const ListingDetail = () => {
                   }}>
                     {listing.location}
                   </span>
-                  <ArrowUpRight size={18} strokeWidth={1.5} color={C.text} style={{ flexShrink: 0, marginLeft: 8 }} />
+                  <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 8 }} />
                 </div>
               )}
             </a>
