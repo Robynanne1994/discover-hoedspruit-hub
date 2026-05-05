@@ -348,6 +348,7 @@ const AdminListings = () => {
       has_spa: (l as any).has_spa ?? null,
       has_fitness_centre: (l as any).has_fitness_centre ?? null,
       has_airport_shuttle: (l as any).has_airport_shuttle ?? null,
+      airport_shuttle_free: (l as any).airport_shuttle_free ?? null,
       has_aircon: (l as any).has_aircon ?? null,
       has_wifi_accom: (l as any).has_wifi_accom ?? null,
       has_free_parking: (l as any).has_free_parking ?? null,
