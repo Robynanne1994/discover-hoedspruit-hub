@@ -194,7 +194,7 @@ const Specials = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: 120, background: COLOR.bg, fontFamily: FONT }}>
+    <div style={{ minHeight: "100vh", paddingBottom: 120, background: "transparent", fontFamily: FONT }}>
       {/* Top spacer */}
       <div style={{ height: 16 }} />
 
