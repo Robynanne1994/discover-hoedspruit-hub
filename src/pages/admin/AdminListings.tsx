@@ -718,17 +718,14 @@ const AdminListings = () => {
                         { label: "Spa", key: "has_spa" as const },
                         { label: "Fitness Centre", key: "has_fitness_centre" as const },
                         { label: "Airport Shuttle", key: "has_airport_shuttle" as const },
-                        { label: "Airport Shuttle Free (off = extra charge)", key: "airport_shuttle_free" as const },
+                        { label: "Airport Shuttle Free (No = extra charge)", key: "airport_shuttle_free" as const },
                         { label: "Aircon", key: "has_aircon" as const },
                         { label: "Wi-Fi", key: "has_wifi_accom" as const },
                         { label: "Free Parking", key: "has_free_parking" as const },
                         { label: "Secure Parking", key: "has_secure_parking" as const },
                         { label: "Pets Allowed", key: "pets_allowed" as const },
                       ].map(({ label, key }) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
-                          <Label>{label}</Label>
-                        </div>
+                        <TriStateToggle key={key} label={label} value={form[key] as boolean | null} onChange={(v) => setForm({ ...form, [key]: v })} />
                       ))}
                     </div>
 
