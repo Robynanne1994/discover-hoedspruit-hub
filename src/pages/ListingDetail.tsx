@@ -652,7 +652,7 @@ const ListingDetail = () => {
             },
             waCleanNum && {
               key: "whatsapp",
-              label: "WhatsApp",
+              label: "Whatsapp",
               href: `https://wa.me/${waCleanNum}`,
               icon: <WhatsappIcon color="#FFFFFF" />,
               external: true,
