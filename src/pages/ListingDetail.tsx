@@ -1052,7 +1052,7 @@ const ListingDetail = () => {
                         {isToday && (
                           <span style={{
                             width: 6, height: 6, borderRadius: "50%",
-                            background: C.coral, display: "inline-block", marginRight: 8,
+                            background: "#5b4632", display: "inline-block", marginRight: 8,
                           }} />
                         )}
                         <span style={{
