@@ -226,13 +226,6 @@ const SpecialDetail = () => {
     label: "Validity",
     value: validityText,
   });
-  if (special.category)
-    detailRows.push({
-      icon: <Tag size={20} strokeWidth={1.5} color={MUTED} />,
-      label: "Category",
-      value: special.category,
-      capitalize: true,
-    });
 
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
 
