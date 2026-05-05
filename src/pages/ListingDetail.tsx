@@ -1105,7 +1105,7 @@ const ListingDetail = () => {
 
         {linkedSpecials && linkedSpecials.length > 0 && (
           <>
-            <SectionHeading mt={32}>Specials Here</SectionHeading>
+            <SectionHeading mt={32}>Current Specials</SectionHeading>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {linkedSpecials.map((sp: any) => (
                 <Link
