@@ -395,7 +395,7 @@ const AdminListings = () => {
           <Button variant="outline" className="gap-2" onClick={() => navigate("/admin/import")}>
             <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Import/Export CSV</span><span className="sm:hidden">CSV</span>
           </Button>
-          <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
+          <Dialog open={open} onOpenChange={(v) => { if (!v) { const ret = returnTo; resetForm(); if (ret) { setReturnTo(null); navigate(ret); } } setOpen(v); }}>
             <DialogTrigger asChild>
               <Button className="gap-2"><Plus className="h-4 w-4" /> Add Listing</Button>
             </DialogTrigger>
