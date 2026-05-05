@@ -25,7 +25,6 @@ import Headlines from "./pages/Headlines.tsx";
 import ArticleDetail from "./pages/ArticleDetail.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
 import AdminBushTelegraph from "./pages/admin/AdminBushTelegraph.tsx";
-import AdminIcons from "./pages/admin/AdminIcons.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
@@ -135,7 +134,6 @@ const App = () => (
                 <Route path="articles" element={<AdminArticles />} />
                 <Route path="bush-telegraph" element={<AdminBushTelegraph />} />
                 <Route path="content" element={<AdminContent />} />
-                <Route path="icons" element={<AdminIcons />} />
                 <Route path="import" element={<AdminImport />} />
               </Route>
               <Route path="*" element={<NotFound />} />

@@ -14,7 +14,6 @@ import {
   Newspaper,
   Radio,
   Menu,
-  Image as ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -29,7 +28,6 @@ const navItems = [
   { label: "Lowveld Lowdown", path: "/admin/articles", icon: Newspaper },
   { label: "Local Channels", path: "/admin/bush-telegraph", icon: Radio },
   { label: "Site Content", path: "/admin/content", icon: FileText },
-  { label: "Custom Icons", path: "/admin/icons", icon: ImageIcon },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 
