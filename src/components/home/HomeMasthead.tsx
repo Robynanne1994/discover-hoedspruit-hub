@@ -90,7 +90,50 @@ const HomeMasthead = () => {
       </div>
 
       {/* Masthead */}
-      <div style={{ padding: "28px 24px 0" }}>
+      <div style={{ padding: "28px 24px 0", position: "relative" }}>
+        {/* Decorative dash burst — semi-circle, rotated 45° */}
+        <svg
+          width="180"
+          height="180"
+          viewBox="0 0 180 180"
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            top: -28,
+            right: -24,
+            pointerEvents: "none",
+            transform: "rotate(45deg)",
+            filter: "url(#mastheadRusticRough)",
+          }}
+        >
+          <defs>
+            <filter id="mastheadRusticRough" x="-10%" y="-10%" width="120%" height="120%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
+              <feDisplacementMap in="SourceGraphic" scale="1.4" />
+            </filter>
+          </defs>
+          {Array.from({ length: 13 }).map((_, i) => {
+            // Half circle: spread 13 dashes across 180°, starting at -90° (top) to 90° (bottom)
+            const angle = -90 + (i * 180) / 12;
+            const long = i % 2 === 0;
+            const inner = 70;
+            const outer = long ? 88 : 82;
+            return (
+              <line
+                key={i}
+                x1="90"
+                y1={90 - outer}
+                x2="90"
+                y2={90 - inner}
+                stroke="#E04A2F"
+                strokeWidth={long ? 3 : 2.2}
+                strokeLinecap="round"
+                transform={`rotate(${angle} 90 90)`}
+                opacity={0.95}
+              />
+            );
+          })}
+        </svg>
         <h1
           style={{
             margin: 0,
@@ -100,6 +143,7 @@ const HomeMasthead = () => {
             lineHeight: 0.92,
             letterSpacing: "-0.035em",
             color: "#0A0A0A",
+            position: "relative",
           }}
         >
           Hello<br />Hoedspruit
