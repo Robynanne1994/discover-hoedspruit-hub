@@ -236,7 +236,7 @@ const Advertise = () => {
         </div>
         <p style={{
           fontFamily: FF, fontSize: 14, fontWeight: 400, lineHeight: "20.3px",
-          color: MUTED, margin: 0,
+          color: "#5b4632", margin: 0,
         }}>
           <span style={{ fontWeight: 700, color: INK }}>{SOCIAL_PROOF.count}</span>{SOCIAL_PROOF.suffix}
         </p>
