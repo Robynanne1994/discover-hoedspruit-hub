@@ -90,17 +90,6 @@ const About = () => {
           >
             About Hello<br />Hoedspruit
           </h1>
-          <p
-            style={{
-              fontSize: 15,
-              lineHeight: 1.45,
-              color: "#8A8480",
-              margin: 0,
-              maxWidth: 240,
-            }}
-          >
-            Your full guide to Hoedspruit.
-          </p>
         </div>
       </div>
 
