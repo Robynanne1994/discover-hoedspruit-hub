@@ -92,9 +92,6 @@ const Headlines = () => {
           <ChevronLeft size={20} strokeWidth={2} color={INK} />
           <span style={{ fontFamily: SANS, fontSize: 15, color: INK, lineHeight: 1 }}>Back</span>
         </button>
-        <span style={{ fontFamily: SERIF, fontWeight: 300, fontSize: 14, lineHeight: 1, letterSpacing: "-0.005em", color: MUTED }}>
-          {monthLabel}
-        </span>
       </div>
 
       {/* Header */}
