@@ -1,12 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, SearchCheck, Tag, CalendarDays, User } from "lucide-react";
+import AppIcon from "@/components/AppIcon";
 
 const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Explore", href: "/categories", icon: SearchCheck },
-  { label: "Specials", href: "/specials", icon: Tag },
-  { label: "Events", href: "/events", icon: CalendarDays },
-  { label: "Profile", href: "/my-account", icon: User },
+  { label: "Home", href: "/", icon: Home, slot: "nav.home" },
+  { label: "Explore", href: "/categories", icon: SearchCheck, slot: "nav.explore" },
+  { label: "Specials", href: "/specials", icon: Tag, slot: "nav.specials" },
+  { label: "Events", href: "/events", icon: CalendarDays, slot: "nav.events" },
+  { label: "Profile", href: "/my-account", icon: User, slot: "nav.profile" },
 ];
 
 const ACTIVE = "#f5f0e8";
@@ -33,7 +34,6 @@ const BottomNav = () => {
             item.href === "/"
               ? location.pathname === "/"
               : location.pathname.startsWith(item.href);
-          const Icon = item.icon;
           const color = isActive ? ACTIVE : INACTIVE;
 
           return (
@@ -43,7 +43,7 @@ const BottomNav = () => {
               style={{ flex: 1, display: "flex", justifyContent: "center", textDecoration: "none" }}
             >
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                <Icon size={26} color={color} strokeWidth={isActive ? 2.25 : 1.75} fill="none" />
+                <AppIcon slot={item.slot} fallback={item.icon} size={26} color={color} strokeWidth={isActive ? 2.25 : 1.75} />
                 <span
                   style={{
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
