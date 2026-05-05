@@ -423,7 +423,7 @@ const BushTelegraph = () => {
                 justifyContent: "center",
               }}
             >
-              <ArrowUpRight size={18} color="#FFFFFF" strokeWidth={1.75} />
+              <ArrowUpRight size={18} color="#5b4632" strokeWidth={1.75} />
             </button>
           </div>
         </div>
