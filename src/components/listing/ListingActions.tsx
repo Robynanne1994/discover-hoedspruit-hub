@@ -125,7 +125,7 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
         onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
         className={`${btnBase} ${
           isFavourited
-            ? "bg-primary/8 text-primary border-primary/20"
+            ? "bg-[#5b4632]/10 text-[#5b4632] border-[#5b4632]/20"
             : btnInactive
         }`}
       >
