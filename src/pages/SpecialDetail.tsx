@@ -561,7 +561,7 @@ const SpecialDetail = () => {
                   )}
                 </div>
                 {row.href && (
-                  <ArrowUpRight size={20} color="#0A0A0A" strokeWidth={1.5} />
+                  <ArrowUpRight size={20} color="#5b4632" strokeWidth={1.5} />
                 )}
               </div>
             ))}
