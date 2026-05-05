@@ -895,10 +895,13 @@ const ListingDetail = () => {
                           }}>
                             <div style={{
                               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                              fontWeight: 400, fontSize: 16, lineHeight: "22px", letterSpacing: 0,
+                              fontWeight: 400, fontSize: 14, lineHeight: 1.45, letterSpacing: 0,
                               color: "#0A0A0A",
                               textTransform: "none",
                               whiteSpace: "pre-wrap",
+                              overflowWrap: "anywhere",
+                              wordBreak: "break-word",
+                              maxWidth: "100%",
                             }}>
                               {textValue}
                             </div>
