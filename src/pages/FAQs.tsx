@@ -129,12 +129,11 @@ const FAQs = () => {
           How can<br />we help?
         </h1>
         <p style={{
-          fontFamily: FF_PF,
-          fontStyle: "italic",
-          fontWeight: 300,
-          fontSize: 18,
+          fontFamily: FF_HN,
+          fontWeight: 400,
+          fontSize: 16,
           lineHeight: 1.4,
-          color: "#8A8480",
+          color: "#0A0A0A",
           margin: "20px 0 0",
           ...baseStyle,
         }}>
