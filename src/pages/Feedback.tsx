@@ -114,19 +114,6 @@ const Feedback = () => {
 
       {/* Editorial header */}
       <div style={{ padding: "28px 24px 0", position: "relative", zIndex: 1 }}>
-        <p
-          style={{
-            fontFamily: FF,
-            fontWeight: 400,
-            fontSize: 12,
-            letterSpacing: "0.02em",
-            color: MUTED,
-            margin: 0,
-            marginBottom: 8,
-          }}
-        >
-          Feedback
-        </p>
         <h1
           style={{
             fontFamily: FF_DISPLAY,
