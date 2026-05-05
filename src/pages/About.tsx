@@ -279,7 +279,7 @@ const About = () => {
       <div
         style={{
           position: "relative",
-          background: "#F26A48",
+          background: "#5b4632",
           padding: "36px 28px 110px",
           borderRadius: "32px 32px 0 0",
           overflow: "hidden",
@@ -295,7 +295,7 @@ const About = () => {
             width: 200,
             height: 200,
             borderRadius: "50%",
-            background: "radial-gradient(circle, #F47356 0%, #D9572F 100%)",
+            background: "radial-gradient(circle, #6d553d 0%, #4a3826 100%)",
             opacity: 0.55,
             pointerEvents: "none",
           }}
