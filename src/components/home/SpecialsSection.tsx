@@ -48,7 +48,7 @@ const SpecialsSection = () => {
             Specials
           </h2>
         </div>
-        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
+        <Link to="/specials" style={{ fontSize: 12, fontWeight: 600, color: "#5b4632", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}>
           See All ›
         </Link>
       </div>
