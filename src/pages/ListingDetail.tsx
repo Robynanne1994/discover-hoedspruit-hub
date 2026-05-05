@@ -341,8 +341,15 @@ const ListingDetail = () => {
     ]);
     if (food.length > 0) accordionSections.push({ key: "accom-food", title: "Food & drink", fields: food });
 
+    const shuttleLabel = l.has_airport_shuttle === true
+      ? (l.airport_shuttle_free === true
+          ? "Airport shuttle (free)"
+          : l.airport_shuttle_free === false
+            ? "Airport shuttle (extra charge)"
+            : "Airport shuttle")
+      : "Airport shuttle";
     const transport = filterDefined([
-      { label: "Airport shuttle", value: l.has_airport_shuttle },
+      { label: shuttleLabel, value: l.has_airport_shuttle },
       { label: "Free parking", value: l.has_free_parking },
       { label: "Secure parking", value: l.has_secure_parking },
     ]);
