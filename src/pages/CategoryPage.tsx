@@ -55,7 +55,8 @@ const isOpenNow = (openingHours: Record<string, string> | null | undefined): boo
   const now = new Date();
   const todayIdx = now.getDay(); // 0 Sun..6 Sat
   const todayLabel = todayIdx === 0 ? "Sunday" : DAY_LABELS[todayIdx - 1];
-  const todayVal = openingHours[todayLabel.toLowerCase()] || "";
+  const todayValRaw = openingHours[todayLabel.toLowerCase()];
+  const todayVal = typeof todayValRaw === "string" ? todayValRaw : "";
   if (!todayVal || /closed/i.test(todayVal)) return false;
   const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
   if (!m) return false;
