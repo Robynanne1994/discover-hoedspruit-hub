@@ -607,26 +607,63 @@ const MyAccount = () => {
       {/* Hero */}
       <div style={{ padding: "28px 24px 0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <div
-            style={{
-              width: 84,
-              height: 84,
-              borderRadius: "50%",
-              background: "#E2C9B4",
-              overflow: "hidden",
-              flexShrink: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <span style={{ ...baseTextStyle, fontSize: 28, fontWeight: 500, color: "#FFFFFF" }}>
-                {firstName.charAt(0).toUpperCase()}
-              </span>
-            )}
+          <div style={{ position: "relative", width: 132, height: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg
+              width="132"
+              height="132"
+              viewBox="0 0 132 132"
+              style={{ position: "absolute", inset: 0, pointerEvents: "none", filter: "url(#rusticRough)" }}
+              aria-hidden="true"
+            >
+              <defs>
+                <filter id="rusticRough" x="-10%" y="-10%" width="120%" height="120%">
+                  <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
+                  <feDisplacementMap in="SourceGraphic" scale="1.4" />
+                </filter>
+              </defs>
+              {Array.from({ length: 24 }).map((_, i) => {
+                const angle = (i * 360) / 24;
+                const long = i % 2 === 0;
+                const inner = 50;
+                const outer = long ? 64 : 60;
+                return (
+                  <line
+                    key={i}
+                    x1="66"
+                    y1={66 - outer}
+                    x2="66"
+                    y2={66 - inner}
+                    stroke="#5b4632"
+                    strokeWidth={long ? 3 : 2.2}
+                    strokeLinecap="round"
+                    transform={`rotate(${angle} 66 66)`}
+                    opacity={0.9}
+                  />
+                );
+              })}
+            </svg>
+            <div
+              style={{
+                width: 84,
+                height: 84,
+                borderRadius: "50%",
+                background: "#E2C9B4",
+                overflow: "hidden",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                position: "relative",
+                zIndex: 1,
+              }}
+            >
+              {profile?.avatar_url ? (
+                <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                <span style={{ ...baseTextStyle, fontSize: 28, fontWeight: 500, color: "#FFFFFF" }}>
+                  {firstName.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
           </div>
           <h1
             style={{
