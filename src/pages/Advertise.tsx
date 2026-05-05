@@ -198,7 +198,7 @@ const Advertise = () => {
             }}>
               <div style={{
                 fontFamily: FF, fontSize: 32, fontWeight: 300, lineHeight: "32px",
-                letterSpacing: "-0.64px", color: CORAL,
+                letterSpacing: "-0.64px", color: "#5b4632",
               }}>{b.n}</div>
               <div>
                 <h5 style={{
