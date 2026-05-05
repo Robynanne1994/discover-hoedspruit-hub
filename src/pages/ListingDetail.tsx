@@ -907,8 +907,8 @@ const ListingDetail = () => {
                           }}>
                             <div style={{
                               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                              fontWeight: 400, fontSize: 14, lineHeight: 1.45, letterSpacing: 0,
-                              color: "#0A0A0A",
+                              fontWeight: 400, fontSize: 14, lineHeight: 1.35, letterSpacing: 0,
+                              color: C.text,
                               textTransform: "none",
                               whiteSpace: "pre-wrap",
                               overflowWrap: "anywhere",
