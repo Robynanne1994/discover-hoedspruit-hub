@@ -519,7 +519,7 @@ const ListingDetail = () => {
       href: listing.website,
     },
     waCleanNum && {
-      label: "WhatsApp",
+      label: "Whatsapp",
       value: formatWhatsappDisplay(whatsappNum!, waCleanNum),
       icon: WhatsappIcon,
       href: `https://wa.me/${waCleanNum}`,
