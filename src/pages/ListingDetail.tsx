@@ -1052,7 +1052,8 @@ const ListingDetail = () => {
                         {isToday && (
                           <span style={{
                             width: 6, height: 6, borderRadius: "50%",
-                            background: "#5b4632", display: "inline-block", marginRight: 8,
+                            background: openStatus?.state === "open" ? "#16a34a" : "#dc2626",
+                            display: "inline-block", marginRight: 8,
                           }} />
                         )}
                         <span style={{
