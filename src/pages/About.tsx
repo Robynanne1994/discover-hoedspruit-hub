@@ -7,7 +7,7 @@ const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif"
 const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
 const CORAL_GRADIENT =
-  "radial-gradient(circle at 35% 30%, #F47356 0%, #EB6240 70%, #D9572F 100%)";
+  "radial-gradient(circle at 35% 30%, #6d553d 0%, #5b4632 70%, #4a3826 100%)";
 
 const values = [
   { num: "01", title: "Local knowledge" },
