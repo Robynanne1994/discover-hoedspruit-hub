@@ -343,11 +343,11 @@ const BushTelegraph = () => {
 
       {/* Hero */}
       <div style={{ padding: "24px 0 0" }}>
-        <div style={{ fontFamily: HN, fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, textTransform: "uppercase" }}>Off The App</div>
+        <div style={{ fontFamily: HN, fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: "#0a0a0a", textTransform: "uppercase" }}>Off The App</div>
         <h1 style={{ fontFamily: HW, fontWeight: 500, fontSize: 40, lineHeight: "40px", letterSpacing: "-1.2px", color: TEXT, margin: "12px 0 0" }}>
           Local Channels
         </h1>
-        <p style={{ ...baseText, fontFamily: HN, fontSize: 14, lineHeight: "20.3px", color: MUTED, margin: "12px 0 0", maxWidth: 320 }}>
+        <p style={{ ...baseText, fontFamily: HN, fontSize: 14, lineHeight: "20.3px", color: "#0a0a0a", margin: "12px 0 0", maxWidth: 320 }}>
           The local channels, groups and feeds worth being on. Curated, not crowdsourced.
         </p>
       </div>
