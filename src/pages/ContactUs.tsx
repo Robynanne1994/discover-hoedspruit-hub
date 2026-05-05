@@ -185,7 +185,7 @@ const ContactUs = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 120, fontFamily: FF, overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 120, fontFamily: FF, overflowX: "hidden" }}>
       {/* Back button */}
       <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 16px)", paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
         <button

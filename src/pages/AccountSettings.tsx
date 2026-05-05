@@ -45,7 +45,7 @@ const AccountSettings = () => {
   const [backPressed, setBackPressed] = useState(false);
 
   return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", paddingBottom: 140, fontFamily: SANS, position: "relative", overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 140, fontFamily: SANS, position: "relative", overflowX: "hidden" }}>
       {/* Back */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <button

@@ -19,7 +19,7 @@ const Index = () => {
       className="home-page"
       style={{
         minHeight: "100vh",
-        background: "#EBEBEB",
+        background: "transparent",
         paddingBottom: 120,
         fontFamily: "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif",
       }}

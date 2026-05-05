@@ -237,7 +237,7 @@ const Notifications = () => {
   const masterEnabled = prefs.push_enabled;
 
   return (
-    <div style={{ background: "#ebebeb", minHeight: "100vh", paddingBottom: 120 }}>
+    <div style={{ background: "transparent", minHeight: "100vh", paddingBottom: 120 }}>
       {/* Top row */}
       <div
         style={{

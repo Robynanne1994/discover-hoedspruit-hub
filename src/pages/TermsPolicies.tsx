@@ -22,7 +22,7 @@ const TermsPolicies = () => {
   const navigate = useNavigate();
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 120, ...baseTextStyle }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 120, ...baseTextStyle }}>
       {/* Top row */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px 0" }}>
         <button

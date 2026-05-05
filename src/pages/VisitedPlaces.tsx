@@ -59,7 +59,7 @@ const VisitedPlaces = () => {
 
   if (!loading && !user) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
+      <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 72 }}>
         <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
           <BackButton />
         </div>
@@ -80,7 +80,7 @@ const VisitedPlaces = () => {
 
   if (loading || isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
+      <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 72 }}>
         <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
           <BackButton />
         </div>
@@ -99,7 +99,7 @@ const VisitedPlaces = () => {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 72 }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 72 }}>
       {/* Back button */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <BackButton />

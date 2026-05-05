@@ -90,7 +90,7 @@ const FAQs = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 120, fontFamily: FF, ...baseStyle }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 120, fontFamily: FF, ...baseStyle }}>
       {/* Top row */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px 8px" }}>
         <button

@@ -33,7 +33,7 @@ const People = () => {
   });
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
+    <div className="min-h-screen pb-20" style={{ background: "transparent" }}>
       {/* Back button */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <BackButton />
