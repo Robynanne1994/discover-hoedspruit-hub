@@ -473,7 +473,7 @@ const MyAccount = () => {
     transform: "none",
   };
 
-  const renderCard = (items: { label: string; href: string; heart?: boolean }[]) => (
+  const renderCard = (items: { label: string; href: string; heart?: boolean; icon?: any }[]) => (
     <div
       style={{
         background: "#FFFFFF",
@@ -497,7 +497,7 @@ const MyAccount = () => {
             onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
-            {item.heart && (
+            {item.heart ? (
               <div
                 style={{
                   width: 28,
@@ -512,7 +512,11 @@ const MyAccount = () => {
               >
                 <Heart size={14} strokeWidth={1.8} color="#FFFFFF" fill="#FFFFFF" />
               </div>
-            )}
+            ) : item.icon ? (
+              <div style={{ width: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <item.icon size={18} strokeWidth={1.5} color="#898480" />
+              </div>
+            ) : null}
             <span
               style={{
                 ...baseTextStyle,
