@@ -661,7 +661,7 @@ const SpecialDetail = () => {
                 fontSize: 12,
                 lineHeight: "16px",
                 letterSpacing: 0,
-                color: MUTED,
+                color: "#5b4632",
                 margin: 0,
                 whiteSpace: "pre-line",
               }}
