@@ -644,7 +644,7 @@ const ListingDetail = () => {
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   height: 48, borderRadius: 999, padding: "0 24px",
-                  background: C.text, color: "#FFFFFF",
+                  background: "#5b4632", color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
                   transition: "transform 150ms ease-out",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
@@ -665,7 +665,7 @@ const ListingDetail = () => {
                 style={{
                   flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                   height: 48, borderRadius: 999, padding: "0 24px",
-                  background: C.text, color: "#FFFFFF",
+                  background: "#5b4632", color: "#FFFFFF",
                   textDecoration: "none", cursor: "pointer",
                   transition: "transform 150ms ease-out",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
