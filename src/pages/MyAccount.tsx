@@ -452,19 +452,19 @@ const MyAccount = () => {
     { label: "My Hoedspruit", href: "/saved", heart: true },
   ];
   const getInTouchItems = [
-    { label: "Contact", href: "/contact" },
-    { label: "Advertise", href: "/advertise" },
-    { label: "Feedback", href: "/feedback" },
+    { label: "Contact", href: "/contact", icon: Phone },
+    { label: "Advertise", href: "/advertise", icon: Megaphone },
+    { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
   const helpItems = [
-    { label: "Settings", href: "/account-settings" },
-    { label: "About", href: "/about" },
-    { label: "The Lowveld Lowdown", href: "/headlines" },
-    { label: "Local Channels", href: "/bush-telegraph" },
-    { label: "Help", href: "/faqs" },
-    { label: "Terms & Policies", href: "/terms" },
+    { label: "Settings", href: "/account-settings", icon: Settings },
+    { label: "About", href: "/about", icon: Info },
+    { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
+    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
+    { label: "Help", href: "/faqs", icon: HelpCircle },
+    { label: "Terms & Policies", href: "/terms", icon: FileText },
   ];
-  const adminItems = [{ label: "Admin", href: "/admin" }];
+  const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
 
   const baseTextStyle: React.CSSProperties = {
     fontFamily: FONT_STACK,
@@ -473,7 +473,7 @@ const MyAccount = () => {
     transform: "none",
   };
 
-  const renderCard = (items: { label: string; href: string; heart?: boolean }[]) => (
+  const renderCard = (items: { label: string; href: string; heart?: boolean; icon?: any }[]) => (
     <div
       style={{
         background: "#FFFFFF",
@@ -497,7 +497,7 @@ const MyAccount = () => {
             onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
-            {item.heart && (
+            {item.heart ? (
               <div
                 style={{
                   width: 28,
@@ -512,7 +512,11 @@ const MyAccount = () => {
               >
                 <Heart size={14} strokeWidth={1.8} color="#FFFFFF" fill="#FFFFFF" />
               </div>
-            )}
+            ) : item.icon ? (
+              <div style={{ width: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <item.icon size={18} strokeWidth={1.5} color="#898480" />
+              </div>
+            ) : null}
             <span
               style={{
                 ...baseTextStyle,
