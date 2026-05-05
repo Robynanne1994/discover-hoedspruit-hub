@@ -100,15 +100,15 @@ const ArticleDetail = () => {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center" style={{ background: "#ebebeb" }}><p style={{ color: "rgba(18,18,20,0.35)" }}>Loading...</p></div>;
+    return <div className="min-h-screen flex items-center justify-center" style={{ background: "transparent" }}><p style={{ color: "rgba(18,18,20,0.35)" }}>Loading...</p></div>;
   }
 
   if (!article) {
-    return <div className="min-h-screen flex items-center justify-center" style={{ background: "#ebebeb" }}><p style={{ color: "rgba(18,18,20,0.35)" }}>Article not found.</p></div>;
+    return <div className="min-h-screen flex items-center justify-center" style={{ background: "transparent" }}><p style={{ color: "rgba(18,18,20,0.35)" }}>Article not found.</p></div>;
   }
 
   return (
-    <div className="min-h-screen pb-20" style={{ background: "#ebebeb" }}>
+    <div className="min-h-screen pb-20" style={{ background: "transparent" }}>
       {/* Hero image */}
       <div style={{ position: "relative", width: "100%", height: 280, background: "#f0f0f0" }}>
         {article.image_url && <img src={article.image_url} alt={article.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}

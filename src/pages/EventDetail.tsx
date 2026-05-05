@@ -142,7 +142,7 @@ const EventDetail = () => {
     } else { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); }
   };
 
-  const pageStyle: React.CSSProperties = { minHeight: "100vh", background: "#EBEBEB", paddingBottom: 84, fontFamily: font };
+  const pageStyle: React.CSSProperties = { minHeight: "100vh", background: "transparent", paddingBottom: 84, fontFamily: font };
 
   if (isLoading) {
     return (

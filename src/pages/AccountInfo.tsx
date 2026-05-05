@@ -164,7 +164,7 @@ const AccountInfo = () => {
 
   if (loading || !user) {
     return (
-      <div style={{ minHeight: "100vh", background: "#ebebeb", fontFamily: FF }}>
+      <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FF }}>
         <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
@@ -179,7 +179,7 @@ const AccountInfo = () => {
   const flag = (AREA_CODES.find((a) => a.code === parsed.areaCode) || AREA_CODES[0]).flag;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ebebeb", paddingBottom: 100, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 100, fontFamily: FF }}>
       {/* Back */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <BackButton />

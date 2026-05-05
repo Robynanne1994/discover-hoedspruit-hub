@@ -241,7 +241,7 @@ const SavedListings = () => {
 
   if (!loading && !user) {
     return (
-      <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
+      <div className="min-h-screen" style={{ background: "transparent", paddingBottom: 84, fontFamily }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
           <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>Saved</h1>
@@ -258,7 +258,7 @@ const SavedListings = () => {
 
   if (loading || isLoading || eventsLoading || specialsLoading) {
     return (
-      <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
+      <div className="min-h-screen" style={{ background: "transparent", paddingBottom: 84, fontFamily }}>
         {backButton}
         <div style={{ paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-14 w-48 mb-2" />
@@ -312,7 +312,7 @@ const SavedListings = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "#EBEBEB", paddingBottom: 84, fontFamily }}>
+    <div className="min-h-screen" style={{ background: "transparent", paddingBottom: 84, fontFamily }}>
       {backButton}
 
       {/* Title */}

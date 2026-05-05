@@ -82,7 +82,7 @@ const PrivacySecurity = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen" style={{ background: "#ebebeb" }}>
+    <div className="min-h-screen" style={{ background: "transparent" }}>
       {/* Back button */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
         <BackButton />
