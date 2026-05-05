@@ -68,7 +68,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
         <h1 style={{ fontSize: 40, fontWeight: 400, textTransform: "none", lineHeight: 0.95, letterSpacing: -0.5, color: "#2b2420", margin: 0 }}>
           {title}
         </h1>
-        <p style={{ fontSize: 12, color: "rgba(18,18,20,0.3)", marginTop: 12, marginBottom: 32 }}>
+        <p style={{ fontSize: 12, color: "#0a0a0a", marginTop: 12, marginBottom: 32 }}>
           {lastUpdated}
         </p>
       </div>
