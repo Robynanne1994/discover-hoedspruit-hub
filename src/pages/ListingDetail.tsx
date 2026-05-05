@@ -641,50 +641,66 @@ const ListingDetail = () => {
           )}
         </div>
 
-        {(listing.phone || (listing as any).google_maps_link) && (
-          <div style={{ display: "flex", gap: 8, marginTop: 24 }}>
-            {listing.phone && (
-              <a
-                href={`tel:${listing.phone}`}
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 48, borderRadius: 999, padding: "0 24px",
-                  background: "#5b4632", color: "#FFFFFF",
-                  textDecoration: "none", cursor: "pointer",
-                  transition: "transform 150ms ease-out",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                  fontFamily: FONT_BODY, fontSize: 15, fontWeight: 400,
-                  lineHeight: "18px", letterSpacing: 0,
-                }}
-                {...pressScale()}
-              >
-                <Phone size={18} strokeWidth={1.5} color="#FFFFFF" />
-                <span>Call Now</span>
-              </a>
-            )}
-            {(listing as any).google_maps_link && (
-              <a
-                href={(listing as any).google_maps_link}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{
-                  flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                  height: 48, borderRadius: 999, padding: "0 24px",
-                  background: "#5b4632", color: "#FFFFFF",
-                  textDecoration: "none", cursor: "pointer",
-                  transition: "transform 150ms ease-out",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                  fontFamily: FONT_BODY, fontSize: 15, fontWeight: 400,
-                  lineHeight: "18px", letterSpacing: 0,
-                }}
-                {...pressScale()}
-              >
-                <Navigation size={18} strokeWidth={1.5} color="#FFFFFF" />
-                <span>Directions</span>
-              </a>
-            )}
-          </div>
-        )}
+        {(() => {
+          const actions = [
+            listing.phone && {
+              key: "call",
+              label: "Call",
+              href: `tel:${listing.phone}`,
+              icon: <Phone size={20} strokeWidth={1.5} color="#FFFFFF" />,
+              external: false,
+            },
+            waCleanNum && {
+              key: "whatsapp",
+              label: "WhatsApp",
+              href: `https://wa.me/${waCleanNum}`,
+              icon: <WhatsappIcon color="#FFFFFF" />,
+              external: true,
+            },
+            (listing as any).google_maps_link && {
+              key: "directions",
+              label: "Directions",
+              href: (listing as any).google_maps_link,
+              icon: <Navigation size={20} strokeWidth={1.5} color="#FFFFFF" />,
+              external: true,
+            },
+            listing.website && {
+              key: "website",
+              label: "Website",
+              href: listing.website,
+              icon: <Globe size={20} strokeWidth={1.5} color="#FFFFFF" />,
+              external: true,
+            },
+          ].filter(Boolean) as Array<{ key: string; label: string; href: string; icon: JSX.Element; external: boolean }>;
+
+          if (actions.length === 0) return null;
+
+          return (
+            <div style={{ display: "flex", gap: 8, marginTop: 24 }}>
+              {actions.map((a) => (
+                <a
+                  key={a.key}
+                  href={a.href}
+                  {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  style={{
+                    flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+                    padding: "12px 4px", borderRadius: 16,
+                    background: "#5b4632", color: "#FFFFFF",
+                    textDecoration: "none", cursor: "pointer",
+                    transition: "transform 150ms ease-out",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+                    fontFamily: FONT_BODY, fontSize: 12, fontWeight: 400,
+                    letterSpacing: "0.01em",
+                  }}
+                  {...pressScale()}
+                >
+                  {a.icon}
+                  <span>{a.label}</span>
+                </a>
+              ))}
+            </div>
+          );
+        })()}
 
         {hasGallery && (
           <div style={{ position: "relative", marginTop: 24, marginLeft: -24, marginRight: -24 }}>
