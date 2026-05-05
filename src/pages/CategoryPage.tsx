@@ -126,12 +126,19 @@ const CategoryPage = () => {
   const { data: listings, isLoading } = useQuery({
     queryKey: ["listings-by-category", id, activeSubId],
     queryFn: async () => {
-      const { data: junctionData, error: jErr } = await supabase
-        .from("listing_categories")
-        .select("listing_id")
-        .eq("category_id", id!);
+      // Pull listing IDs from BOTH the multi-category junction table AND the
+      // legacy single category_id column on listings, so a category page never
+      // shows blank if junction rows are missing for any reason.
+      const [{ data: junctionData, error: jErr }, { data: legacyData, error: lErr }] = await Promise.all([
+        supabase.from("listing_categories").select("listing_id").eq("category_id", id!),
+        supabase.from("listings").select("id").eq("category_id", id!),
+      ]);
       if (jErr) throw jErr;
-      let listingIds = junctionData.map((r: any) => r.listing_id as string);
+      if (lErr) throw lErr;
+      const idSet = new Set<string>();
+      (junctionData || []).forEach((r: any) => idSet.add(r.listing_id as string));
+      (legacyData || []).forEach((r: any) => idSet.add(r.id as string));
+      let listingIds = Array.from(idSet);
       if (listingIds.length === 0) return [];
       if (activeSubId) {
         const { data: subJunction, error: sErr } = await supabase
