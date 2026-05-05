@@ -99,7 +99,7 @@ const Headlines = () => {
 
       {/* Header */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
-        <div style={{ fontFamily: SANS, fontSize: 12, letterSpacing: "0.02em", color: MUTED, marginBottom: 8 }}>Stories</div>
+        
         <h1 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 52, lineHeight: 0.98, letterSpacing: "-0.03em", color: INK, margin: 0 }}>
           The Lowveld<br />Lowdown
         </h1>
