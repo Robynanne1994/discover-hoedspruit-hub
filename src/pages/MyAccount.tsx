@@ -32,7 +32,20 @@ import {
   MapPin,
   Newspaper,
   Tag,
+  Menu,
+  Bookmark,
+  MapPinned,
+  Phone,
+  Shield,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
 import FollowStats from "@/components/social/FollowStats";
 import { useFollowCounts } from "@/hooks/useFollows";
