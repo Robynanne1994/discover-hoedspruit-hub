@@ -68,7 +68,7 @@ const Feedback = () => {
   return (
     <div
       className="min-h-screen relative overflow-hidden"
-      style={{ background: PAGE, fontFamily: FF, paddingBottom: 120 }}
+      style={{ background: "transparent", fontFamily: FF, paddingBottom: 120, minHeight: "100vh" }}
     >
       {/* Decorative coral circle (placeholder for future warm image) */}
       <div
