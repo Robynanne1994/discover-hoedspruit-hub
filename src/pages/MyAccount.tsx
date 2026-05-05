@@ -461,7 +461,7 @@ const MyAccount = () => {
     { label: "About", href: "/about" },
     { label: "The Lowveld Lowdown", href: "/headlines" },
     { label: "Local Channels", href: "/bush-telegraph" },
-    { label: "Help & FAQs", href: "/faqs" },
+    { label: "Help", href: "/faqs" },
     { label: "Terms & Policies", href: "/terms" },
   ];
   const adminItems = [{ label: "Admin", href: "/admin" }];
