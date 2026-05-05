@@ -557,22 +557,10 @@ const AdminListings = () => {
                         <div className="border-t border-border pt-3 mt-2">
                           <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_car_park === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
-                              <Label>Wheelchair-accessible Car Park</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_entrance === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
-                              <Label>Wheelchair-accessible Entrance</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_seating === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
-                              <Label>Wheelchair-accessible Seating</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_toilet === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
-                              <Label>Wheelchair-accessible Toilet</Label>
-                            </div>
+                            <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
+                            <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
+                            <TriStateToggle label="Wheelchair-accessible Seating" value={form.wheelchair_seating} onChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
+                            <TriStateToggle label="Wheelchair-accessible Toilet" value={form.wheelchair_toilet} onChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
                           </div>
                         </div>
 
@@ -580,18 +568,9 @@ const AdminListings = () => {
                         <div className="border-t border-border pt-3 mt-2">
                           <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.has_toilet === true} onCheckedChange={(v) => setForm({ ...form, has_toilet: v })} />
-                              <Label>Toilet</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.has_wifi === true} onCheckedChange={(v) => setForm({ ...form, has_wifi: v })} />
-                              <Label>Wi-Fi</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.has_free_wifi === true} onCheckedChange={(v) => setForm({ ...form, has_free_wifi: v })} />
-                              <Label>Free Wi-Fi</Label>
-                            </div>
+                            <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
+                            <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
+                            <TriStateToggle label="Free Wi-Fi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
                           </div>
                         </div>
 
