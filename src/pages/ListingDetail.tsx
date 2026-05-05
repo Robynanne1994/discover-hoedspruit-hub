@@ -1162,7 +1162,7 @@ const ListingDetail = () => {
           <button
             onClick={() => setSuggestEditOpen(true)}
             style={{
-              fontFamily: FONT_BODY, fontSize: 13, color: C.muted,
+              fontFamily: FONT_BODY, fontSize: 13, color: "#5b4632",
               textDecoration: "underline", textUnderlineOffset: "3px",
               background: "transparent", border: "none", cursor: "pointer", padding: 0,
             }}
