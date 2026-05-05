@@ -67,7 +67,7 @@ const TermsPolicies = () => {
             fontWeight: 300,
             fontSize: 18,
             lineHeight: 1.4,
-            color: "#8A8480",
+            color: "#5b4632",
             margin: "18px 0 0",
           }}
         >
