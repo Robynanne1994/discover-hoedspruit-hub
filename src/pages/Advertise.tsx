@@ -245,7 +245,7 @@ const Advertise = () => {
       {/* Black CTA card */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 40 }}>
         <div style={{
-          background: INK, borderRadius: 24, padding: "28px 24px",
+          background: "#5b4632", borderRadius: 24, padding: "28px 24px",
           boxSizing: "border-box",
         }}>
           <p style={{
