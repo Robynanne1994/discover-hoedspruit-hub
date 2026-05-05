@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ImageUpload from "@/components/admin/ImageUpload";
 import GalleryUpload from "@/components/admin/GalleryUpload";
+import TriStateToggle from "@/components/admin/TriStateToggle";
 
 type Listing = Tables<"listings">;
 
