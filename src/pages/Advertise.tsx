@@ -158,7 +158,7 @@ const Advertise = () => {
           fontFamily: FF, fontSize: 16, fontWeight: 400, lineHeight: "23.2px",
           color: INK, maxWidth: 320, margin: 0,
         }}>
-          Get in front of locals, visitors and newcomers using Hello Hoedspruit to find what's open, what's on, and what's worth their time.
+          Get in front of locals, visitors and newcomers using Hello Hoedspruit to find what's open, what's on and what's worth their time.
         </p>
       </div>
 
