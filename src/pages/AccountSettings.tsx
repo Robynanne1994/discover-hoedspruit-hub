@@ -87,7 +87,7 @@ const AccountSettings = () => {
           <h1 style={{ fontFamily: DISPLAY, fontSize: 52, fontWeight: 700, lineHeight: 0.98, letterSpacing: "-0.03em", color: "#0A0A0A", margin: 0, marginBottom: 14 }}>
             Account<br />settings
           </h1>
-          <p style={{ fontFamily: SANS, fontSize: 15, fontWeight: 400, lineHeight: 1.45, color: "#8A8480", margin: 0, maxWidth: 260 }}>
+          <p style={{ fontFamily: SANS, fontSize: 15, fontWeight: 400, lineHeight: 1.45, color: "#5b4632", margin: 0, maxWidth: 260 }}>
             Manage your account and preferences.
           </p>
         </div>
