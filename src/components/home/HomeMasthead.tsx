@@ -99,7 +99,7 @@ const HomeMasthead = () => {
           aria-hidden="true"
           style={{
             position: "absolute",
-            top: 0,
+            top: 56,
             right: 8,
             pointerEvents: "none",
             transform: "rotate(45deg)",
