@@ -490,7 +490,7 @@ const MyAccount = () => {
                   width: 28,
                   height: 28,
                   borderRadius: "50%",
-                  background: "#F26A48",
+                  background: "#241F1A",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
