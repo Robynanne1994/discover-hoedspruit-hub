@@ -116,9 +116,6 @@ const FAQs = () => {
 
       {/* Hero */}
       <div style={{ padding: "20px 24px 0" }}>
-        <div style={{ fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A8480", fontFamily: FF, marginBottom: 16, ...baseStyle }}>
-          Need a hand
-        </div>
         <h1 style={{
           fontFamily: FF_HN,
           fontWeight: 700,
