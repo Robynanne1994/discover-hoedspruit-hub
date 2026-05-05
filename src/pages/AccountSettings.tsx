@@ -19,7 +19,7 @@ const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
 
 const CORAL_GRADIENT =
-  "radial-gradient(circle at 35% 30%, #F47356 0%, #EB6240 70%, #D9572F 100%)";
+  "radial-gradient(circle at 35% 30%, #6e5640 0%, #5b4632 70%, #4a3826 100%)";
 
 type Row = { title: string; desc: string; href?: string };
 
