@@ -414,7 +414,7 @@ const Events = () => {
     featuredEvents.length > 0 ? "featured" : upcomingEvents.length > 0 ? "upcoming" : "recurring";
 
   return (
-    <div className="min-h-screen" style={{ background: COLOR.bg, paddingBottom: 140, fontFamily: FONT }}>
+    <div className="min-h-screen" style={{ background: "transparent", paddingBottom: 140, fontFamily: FONT }}>
 
       {/* Page header */}
       <div style={{ padding: "16px 24px 28px 24px" }}>
