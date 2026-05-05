@@ -1084,18 +1084,18 @@ const ListingDetail = () => {
                 </div>
               </div>
               {listing.location && (
-                <div style={{
-                  marginTop: 12,
-                  background: C.card, borderRadius: 16, boxShadow: SHADOW_MD,
-                  height: 48, display: "flex", alignItems: "center",
-                  paddingLeft: 16, paddingRight: 12,
+              <div style={{
+                marginTop: 12,
+                background: C.card, borderRadius: 16, boxShadow: SHADOW_MD,
+                minHeight: 48, display: "flex", alignItems: "center",
+                paddingLeft: 16, paddingRight: 12, paddingTop: 10, paddingBottom: 10,
+              }}>
+                <span style={{
+                  flex: 1, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.4, color: C.text,
+                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden",
                 }}>
-                  <span style={{
-                    flex: 1, fontFamily: FONT_BODY, fontSize: 14, color: C.text,
-                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                  }}>
-                    {listing.location}
-                  </span>
+                  {listing.location}
+                </span>
                   <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 8 }} />
                 </div>
               )}
