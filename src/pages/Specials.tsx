@@ -293,9 +293,9 @@ const Specials = () => {
               cursor: "pointer",
             }}
           >
-            <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: COLOR.muted, fontWeight: 400 }}>
+            <span style={{ fontFamily: FONT, fontSize: 14, lineHeight: "16.8px", color: "#0a0a0a", fontWeight: 400 }}>
               Sort By:{" "}
-              <span style={{ color: COLOR.text }}>{sortLabel}</span>
+              <span style={{ color: "#5b4632" }}>{sortLabel}</span>
             </span>
             <ChevronDown size={14} strokeWidth={1.75} color={COLOR.text} />
           </button>
