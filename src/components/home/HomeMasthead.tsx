@@ -91,16 +91,16 @@ const HomeMasthead = () => {
 
       {/* Masthead */}
       <div style={{ padding: "28px 24px 0", position: "relative" }}>
-        {/* Decorative dash burst — semi-circle, rotated 45° */}
+        {/* Decorative dash burst — semi-circle, rotated 45°, matches profile avatar style */}
         <svg
-          width="180"
-          height="180"
-          viewBox="0 0 180 180"
+          width="132"
+          height="132"
+          viewBox="0 0 132 132"
           aria-hidden="true"
           style={{
             position: "absolute",
-            top: -28,
-            right: -24,
+            top: -10,
+            right: -18,
             pointerEvents: "none",
             transform: "rotate(45deg)",
             filter: "url(#mastheadRusticRough)",
@@ -113,23 +113,23 @@ const HomeMasthead = () => {
             </filter>
           </defs>
           {Array.from({ length: 13 }).map((_, i) => {
-            // Half circle: spread 13 dashes across 180°, starting at -90° (top) to 90° (bottom)
+            // Semi-circle: 13 dashes spanning 180° (-90° → 90°), same density as full 24-dash profile
             const angle = -90 + (i * 180) / 12;
             const long = i % 2 === 0;
-            const inner = 70;
-            const outer = long ? 88 : 82;
+            const inner = 50;
+            const outer = long ? 64 : 60;
             return (
               <line
                 key={i}
-                x1="90"
-                y1={90 - outer}
-                x2="90"
-                y2={90 - inner}
-                stroke="#E04A2F"
+                x1="66"
+                y1={66 - outer}
+                x2="66"
+                y2={66 - inner}
+                stroke="#5b4632"
                 strokeWidth={long ? 3 : 2.2}
                 strokeLinecap="round"
-                transform={`rotate(${angle} 90 90)`}
-                opacity={0.95}
+                transform={`rotate(${angle} 66 66)`}
+                opacity={0.9}
               />
             );
           })}
