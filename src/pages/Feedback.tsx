@@ -153,7 +153,7 @@ const Feedback = () => {
             fontWeight: 400,
             fontSize: 12,
             letterSpacing: "0.02em",
-            color: MUTED,
+            color: "#5b4632",
             margin: 0,
             marginBottom: 14,
           }}
