@@ -96,6 +96,13 @@ const SpecialDetail = () => {
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
+  const [aboutOverflows, setAboutOverflows] = useState(false);
+  const aboutRef = useRef<HTMLParagraphElement>(null);
+  useLayoutEffect(() => {
+    const el = aboutRef.current;
+    if (!el) return;
+    setAboutOverflows(el.scrollHeight > el.clientHeight + 1);
+  }, [aboutExpanded]);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
