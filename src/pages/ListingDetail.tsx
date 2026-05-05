@@ -572,7 +572,7 @@ const ListingDetail = () => {
           </button>
           {isAdmin && (
             <button
-              onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`)}
+              onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })}
               style={circleBtn}
               aria-label="Edit listing"
               {...pressScale("0.94")}
