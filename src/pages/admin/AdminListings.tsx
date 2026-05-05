@@ -257,7 +257,7 @@ const AdminListings = () => {
       resetForm();
       if (ret) {
         setReturnTo(null);
-        navigate(ret);
+        navigate(ret, { replace: true });
       }
     },
     onError: (e) => toast.error(e.message),
