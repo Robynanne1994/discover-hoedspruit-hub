@@ -122,7 +122,7 @@ const ResourceCard = ({ r }: { r: Resource }) => {
         )}
         <div style={{ flex: 1, minWidth: 0, paddingRight: 24 }}>
           <h4 style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: "-0.32px", color: TEXT, margin: 0, textTransform: "none" }}>{r.title}</h4>
-          <div style={{ ...baseText, fontSize: 12, lineHeight: "15.6px", letterSpacing: "0.12px", color: MUTED, marginTop: 6 }}>
+          <div style={{ ...baseText, fontSize: 12, lineHeight: "15.6px", letterSpacing: "0.12px", color: "#5b4632", marginTop: 6 }}>
             {parts1}
             {parts2 && (
               <>
