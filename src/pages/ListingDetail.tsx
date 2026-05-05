@@ -1085,23 +1085,23 @@ const ListingDetail = () => {
                     <circle cx="14" cy="13" r="4.5" fill="#FFFFFF"/>
                   </svg>
                 </div>
-                {listing.location && (
-                  <div style={{
-                    position: "absolute", bottom: 16, left: 16, right: 16,
-                    background: C.card, borderRadius: 16, boxShadow: SHADOW_MD,
-                    height: 48, display: "flex", alignItems: "center",
-                    paddingLeft: 16, paddingRight: 12,
-                  }}>
-                    <span style={{
-                      flex: 1, fontFamily: FONT_BODY, fontSize: 14, color: C.text,
-                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
-                    }}>
-                      {listing.location}
-                    </span>
-                    <ArrowUpRight size={18} strokeWidth={1.5} color={C.text} style={{ flexShrink: 0, marginLeft: 8 }} />
-                  </div>
-                )}
               </div>
+              {listing.location && (
+                <div style={{
+                  marginTop: 12,
+                  background: C.card, borderRadius: 16, boxShadow: SHADOW_MD,
+                  height: 48, display: "flex", alignItems: "center",
+                  paddingLeft: 16, paddingRight: 12,
+                }}>
+                  <span style={{
+                    flex: 1, fontFamily: FONT_BODY, fontSize: 14, color: C.text,
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  }}>
+                    {listing.location}
+                  </span>
+                  <ArrowUpRight size={18} strokeWidth={1.5} color={C.text} style={{ flexShrink: 0, marginLeft: 8 }} />
+                </div>
+              )}
             </a>
           </>
         )}
