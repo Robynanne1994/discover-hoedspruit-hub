@@ -614,7 +614,7 @@ const ListingDetail = () => {
           {(listing as any).google_rating != null && (
             <>
               <span style={{ color: C.text, display: "inline-flex", alignItems: "center", gap: 4 }}>
-                <Star size={13} fill={C.coral} color={C.coral} strokeWidth={1.5} />
+                <Star size={13} fill="#5b4632" color="#5b4632" strokeWidth={1.5} />
                 <span>{(listing as any).google_rating}</span>
               </span>
               {(listing as any).google_reviews_count != null && (
@@ -628,7 +628,7 @@ const ListingDetail = () => {
               <span style={{ margin: "0 8px" }}>·</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.text }}>
                 {openStatus.state !== "open" ? null : (
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.coral, display: "inline-block" }} />
+                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#5b4632", display: "inline-block" }} />
                 )}
                 {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
               </span>
