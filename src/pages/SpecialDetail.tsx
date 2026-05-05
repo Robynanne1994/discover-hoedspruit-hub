@@ -101,6 +101,7 @@ const SpecialDetail = () => {
   useLayoutEffect(() => {
     const el = aboutRef.current;
     if (!el) return;
+    if (aboutExpanded) return;
     setAboutOverflows(el.scrollHeight > el.clientHeight + 1);
   }, [aboutExpanded]);
 
