@@ -1130,7 +1130,7 @@ const ListingDetail = () => {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     {sp.deal_label && (
                       <p style={{
-                        fontFamily: FONT_BODY, fontSize: 11, color: C.coral, margin: 0, marginBottom: 2,
+                        fontFamily: FONT_BODY, fontSize: 11, color: "#5b4632", margin: 0, marginBottom: 2,
                         textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 400,
                       }}>
                         {sp.deal_label}
