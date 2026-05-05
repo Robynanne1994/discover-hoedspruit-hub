@@ -967,12 +967,11 @@ const ListingDetail = () => {
                     paddingTop: 20, paddingBottom: 22, paddingLeft: 24, paddingRight: 24,
                   }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
-                      {openStatus.state === "open" && (
-                        <span style={{
-                          width: 10, height: 10, borderRadius: "50%", background: C.coral,
-                          display: "inline-block", marginRight: 12, flexShrink: 0,
-                        }} />
-                      )}
+                      <span style={{
+                        width: 10, height: 10, borderRadius: "50%",
+                        background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f",
+                        display: "inline-block", marginRight: 12, flexShrink: 0,
+                      }} />
                       <span style={{
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
                         lineHeight: "25.3px", letterSpacing: "-0.22px", color: C.text,
