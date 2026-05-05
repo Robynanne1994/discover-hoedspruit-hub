@@ -888,6 +888,18 @@ const ListingDetail = () => {
                       const isCustomText = section.key.startsWith("custom-");
                       if (isCustomText) {
                         const textValue = section.fields[0]?.label || "";
+                        // Parse [text](url) markdown links and bare URLs
+                        const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s]+)/g;
+                        const parts: Array<string | { text: string; url: string }> = [];
+                        let lastIndex = 0;
+                        let m: RegExpExecArray | null;
+                        while ((m = linkRegex.exec(textValue)) !== null) {
+                          if (m.index > lastIndex) parts.push(textValue.slice(lastIndex, m.index));
+                          if (m[1] && m[2]) parts.push({ text: m[1], url: m[2] });
+                          else if (m[3]) parts.push({ text: m[3], url: m[3] });
+                          lastIndex = m.index + m[0].length;
+                        }
+                        if (lastIndex < textValue.length) parts.push(textValue.slice(lastIndex));
                         return (
                           <div style={{
                             paddingBottom: 20, paddingTop: 4,
@@ -903,6 +915,29 @@ const ListingDetail = () => {
                               wordBreak: "break-word",
                               maxWidth: "100%",
                             }}>
+                              {parts.map((p, idx) => typeof p === "string" ? (
+                                <span key={idx}>{p}</span>
+                              ) : (
+                                <a
+                                  key={idx}
+                                  href={p.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    color: "#5b4632",
+                                    textDecoration: "underline",
+                                    textUnderlineOffset: 2,
+                                    display: "inline",
+                                  }}
+                                >
+                                  {p.text}
+                                  <ArrowUpRight size={14} strokeWidth={2} color="#5b4632" style={{ display: "inline", verticalAlign: "-2px", marginLeft: 2 }} />
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      }
                               {textValue}
                             </div>
                           </div>
