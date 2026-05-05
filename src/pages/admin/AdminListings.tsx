@@ -547,18 +547,9 @@ const AdminListings = () => {
                         <div className="border-t border-border pt-3 mt-2">
                           <p className="text-sm font-medium text-foreground mb-3">Kids</p>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.kids_playground === true} onCheckedChange={(v) => setForm({ ...form, kids_playground: v })} />
-                              <Label>Kids Playground</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.kids_menu === true} onCheckedChange={(v) => setForm({ ...form, kids_menu: v })} />
-                              <Label>Kids Menu</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.high_chairs === true} onCheckedChange={(v) => setForm({ ...form, high_chairs: v })} />
-                              <Label>High Chairs</Label>
-                            </div>
+                            <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
+                            <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
+                            <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
                           </div>
                         </div>
 
