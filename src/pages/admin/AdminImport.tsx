@@ -445,24 +445,39 @@ const AdminImport = () => {
       const successfulItems = importItems.filter((item) => !results.errors.some((err) => err.startsWith(`Row ${item.rowNumber}: Save failed`)));
       const successfulIds = successfulItems.map((item) => item.listingId);
 
-      setImportStatus("Syncing listing categories...");
-      for (const idBatch of chunkArray(successfulIds, 200)) {
-        const { error: catDeleteError } = await supabase.from("listing_categories").delete().in("listing_id", idBatch);
-        if (catDeleteError) results.errors.push(`Category sync failed: ${catDeleteError.message}`);
-        const { error: subDeleteError } = await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
-        if (subDeleteError) results.errors.push(`Subcategory sync failed: ${subDeleteError.message}`);
-      }
+      // Per-listing safe sync: delete this listing's existing links, then insert
+      // the resolved ones. This way a single failure cannot wipe other listings'
+      // categories, and a partial failure on one listing does not leave the rest blank.
+      setImportStatus(`Syncing categories for ${successfulItems.length} listings...`);
+      for (let idx = 0; idx < successfulItems.length; idx++) {
+        const item = successfulItems[idx];
+        if (idx % 50 === 0) setImportStatus(`Syncing categories ${idx + 1}/${successfulItems.length}...`);
 
-      const catRows = successfulItems.flatMap((item) => item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId })));
-      for (const batch of chunkArray(catRows, 500)) {
-        const { error } = await supabase.from("listing_categories").insert(batch);
-        if (error) results.errors.push(`Category insert failed: ${error.message}`);
-      }
+        const { error: catDelErr } = await supabase
+          .from("listing_categories").delete().eq("listing_id", item.listingId);
+        if (catDelErr) {
+          results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
+          continue;
+        }
+        if (item.resolvedCatIds.length > 0) {
+          const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+          const { error: catInsErr } = await supabase
+            .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
+          if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+        }
 
-      const subRows = successfulItems.flatMap((item) => item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId })));
-      for (const batch of chunkArray(subRows, 500)) {
-        const { error } = await supabase.from("listing_subcategories").insert(batch);
-        if (error) results.errors.push(`Subcategory insert failed: ${error.message}`);
+        const { error: subDelErr } = await supabase
+          .from("listing_subcategories").delete().eq("listing_id", item.listingId);
+        if (subDelErr) {
+          results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
+          continue;
+        }
+        if (item.resolvedSubIds.length > 0) {
+          const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+          const { error: subInsErr } = await supabase
+            .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
+          if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+        }
       }
 
       // Delete listings not in CSV
