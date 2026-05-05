@@ -159,9 +159,6 @@ const About = () => {
 
       {/* The story */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 52 }}>
-        <div style={{ fontSize: 12, letterSpacing: "0.02em", color: "#8A8480", marginBottom: 10 }}>
-          The story
-        </div>
         <h2
           style={{
             fontFamily: DISPLAY,
