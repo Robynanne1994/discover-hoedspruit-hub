@@ -867,8 +867,8 @@ const ListingDetail = () => {
                         <span
                           ref={(el) => { if (el) el.style.setProperty("text-transform", "none", "important"); }}
                           style={{
-                            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px",
-                            color: "#8A8480",
+                            fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14, lineHeight: 1.35, letterSpacing: 0,
+                            color: C.text,
                           }}
                         >
                           {section.title}
