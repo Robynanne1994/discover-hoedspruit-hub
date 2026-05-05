@@ -814,6 +814,12 @@ const MyAccount = () => {
         {renderCard(myHoedspruitItems)}
       </div>
 
+      {/* Resources */}
+      <div style={{ padding: "24px 24px 0" }}>
+        {sectionLabel("Resources")}
+        {renderCard(resourcesItems)}
+      </div>
+
       {/* Get in touch */}
       <div style={{ padding: "24px 24px 0" }}>
         {sectionLabel("Get in touch")}
