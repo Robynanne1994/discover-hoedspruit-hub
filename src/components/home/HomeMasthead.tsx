@@ -99,8 +99,8 @@ const HomeMasthead = () => {
           aria-hidden="true"
           style={{
             position: "absolute",
-            top: -10,
-            right: -18,
+            top: 0,
+            right: 8,
             pointerEvents: "none",
             transform: "rotate(45deg)",
             filter: "url(#mastheadRusticRough)",
