@@ -253,7 +253,12 @@ const AdminListings = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       toast.success(editing ? "Listing updated" : "Listing created");
+      const ret = returnTo;
       resetForm();
+      if (ret) {
+        setReturnTo(null);
+        navigate(ret);
+      }
     },
     onError: (e) => toast.error(e.message),
   });
