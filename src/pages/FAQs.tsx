@@ -14,7 +14,7 @@ const SECTION_ORDER = [
   "Using the app",
   "Listings & information",
   "For business owners",
-  "Account and privacy",
+  "Account & privacy",
   "General",
 ];
 
@@ -28,9 +28,9 @@ const SECTION_ALIASES: Record<string, string> = {
   "Listings and information": "Listings & information",
   "For Business Owners": "For business owners",
   "For business owners": "For business owners",
-  "Account & Privacy": "Account and privacy",
-  "Account and Privacy": "Account and privacy",
-  "Account and privacy": "Account and privacy",
+  "Account & Privacy": "Account & privacy",
+  "Account and Privacy": "Account & privacy",
+  "Account and privacy": "Account & privacy",
   "General": "General",
 };
 
