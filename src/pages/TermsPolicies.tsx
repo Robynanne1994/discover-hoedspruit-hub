@@ -47,9 +47,6 @@ const TermsPolicies = () => {
 
       {/* Hero */}
       <div style={{ padding: "28px 24px 0" }}>
-        <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "#8A8480" }}>
-          The fine print
-        </div>
         <h1
           style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
