@@ -316,7 +316,7 @@ const Events = () => {
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     const monthEnd = endOfMonth(today);
     const nonRecurring = searched.filter((e) => !e.recurrence || e.recurrence.trim() === "" || e.recurrence.trim().toLowerCase() === "none");
-    if (activeFilter === "all") return nonRecurring;
+    if (activeFilter === "all") return nonRecurring.filter((e) => !e._parsed || !isBefore(e._parsed, today));
     return nonRecurring.filter((event) => {
       const date = event._parsed;
       if (!date) return activeFilter === "upcoming";
