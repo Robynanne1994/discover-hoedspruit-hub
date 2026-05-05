@@ -96,8 +96,8 @@ const AccountSettings = () => {
       {/* Group: Your account */}
       <SettingsGroup label="Your account" rows={accountRows} marginTop={40} />
 
-      {/* Group: Support and legal */}
-      <SettingsGroup label="Support and legal" rows={supportRows} marginTop={40} />
+      {/* Group: Support & Legal */}
+      <SettingsGroup label="Support & Legal" rows={supportRows} marginTop={40} />
 
       {/* Delete */}
       <div style={{ marginTop: 40, paddingLeft: 24, paddingRight: 24 }}>
