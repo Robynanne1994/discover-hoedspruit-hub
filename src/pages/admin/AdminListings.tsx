@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useNavigate, useSearchParams } from "react-router-dom";
 import ImageUpload from "@/components/admin/ImageUpload";
 import GalleryUpload from "@/components/admin/GalleryUpload";
+import TriStateToggle from "@/components/admin/TriStateToggle";
 
 type Listing = Tables<"listings">;
 
@@ -536,40 +537,19 @@ const AdminListings = () => {
                     {form.show_attributes && (
                       <>
                         <div className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.good_for_kids === true} onCheckedChange={(v) => setForm({ ...form, good_for_kids: v })} />
-                            <Label>Good for Kids</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
-                            <Label>Pets Allowed</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.wheelchair_friendly === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
-                            <Label>Wheelchair Friendly</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.smoking_allowed === true} onCheckedChange={(v) => setForm({ ...form, smoking_allowed: v })} />
-                            <Label>Smoking Allowed</Label>
-                          </div>
+                          <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
+                          <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                          <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
+                          <TriStateToggle label="Smoking Allowed" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
                         </div>
 
                         {/* Kids Section */}
                         <div className="border-t border-border pt-3 mt-2">
                           <p className="text-sm font-medium text-foreground mb-3">Kids</p>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.kids_playground === true} onCheckedChange={(v) => setForm({ ...form, kids_playground: v })} />
-                              <Label>Kids Playground</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.kids_menu === true} onCheckedChange={(v) => setForm({ ...form, kids_menu: v })} />
-                              <Label>Kids Menu</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.high_chairs === true} onCheckedChange={(v) => setForm({ ...form, high_chairs: v })} />
-                              <Label>High Chairs</Label>
-                            </div>
+                            <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
+                            <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
+                            <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
                           </div>
                         </div>
 
@@ -577,22 +557,10 @@ const AdminListings = () => {
                         <div className="border-t border-border pt-3 mt-2">
                           <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_car_park === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
-                              <Label>Wheelchair-accessible Car Park</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_entrance === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
-                              <Label>Wheelchair-accessible Entrance</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_seating === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
-                              <Label>Wheelchair-accessible Seating</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.wheelchair_toilet === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
-                              <Label>Wheelchair-accessible Toilet</Label>
-                            </div>
+                            <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
+                            <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
+                            <TriStateToggle label="Wheelchair-accessible Seating" value={form.wheelchair_seating} onChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
+                            <TriStateToggle label="Wheelchair-accessible Toilet" value={form.wheelchair_toilet} onChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
                           </div>
                         </div>
 
@@ -600,18 +568,9 @@ const AdminListings = () => {
                         <div className="border-t border-border pt-3 mt-2">
                           <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
                           <div className="space-y-3">
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.has_toilet === true} onCheckedChange={(v) => setForm({ ...form, has_toilet: v })} />
-                              <Label>Toilet</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.has_wifi === true} onCheckedChange={(v) => setForm({ ...form, has_wifi: v })} />
-                              <Label>Wi-Fi</Label>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Switch checked={form.has_free_wifi === true} onCheckedChange={(v) => setForm({ ...form, has_free_wifi: v })} />
-                              <Label>Free Wi-Fi</Label>
-                            </div>
+                            <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
+                            <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
+                            <TriStateToggle label="Free Wi-Fi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
                           </div>
                         </div>
 
@@ -675,10 +634,7 @@ const AdminListings = () => {
                         { label: "Local Products", key: "local_products" as const },
                         { label: "Curio / Gifts", key: "curio_or_gifts" as const },
                       ].map(({ label, key }) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
-                          <Label>{label}</Label>
-                        </div>
+                        <TriStateToggle key={key} label={label} value={form[key] as boolean | null} onChange={(v) => setForm({ ...form, [key]: v })} />
                       ))}
                     </div>
 
@@ -745,16 +701,12 @@ const AdminListings = () => {
                         { label: "Room Service", key: "has_room_service" as const },
                         { label: "Breakfast", key: "has_breakfast" as const },
                       ].map(({ label, key }) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
-                          <Label>{label}</Label>
-                        </div>
+                        <TriStateToggle key={key} label={label} value={form[key] as boolean | null} onChange={(v) => setForm({ ...form, [key]: v })} />
                       ))}
 
                       {form.has_breakfast === true && (
-                        <div className="ml-6 flex items-center gap-2">
-                          <Switch checked={form.breakfast_included === true} onCheckedChange={(v) => setForm({ ...form, breakfast_included: v })} />
-                          <Label>{form.breakfast_included ? "Breakfast Included (Free)" : "Breakfast Paid"}</Label>
+                        <div className="ml-6">
+                          <TriStateToggle label="Breakfast Included (Yes = free, No = paid)" value={form.breakfast_included} onChange={(v) => setForm({ ...form, breakfast_included: v })} />
                         </div>
                       )}
 
@@ -765,17 +717,14 @@ const AdminListings = () => {
                         { label: "Spa", key: "has_spa" as const },
                         { label: "Fitness Centre", key: "has_fitness_centre" as const },
                         { label: "Airport Shuttle", key: "has_airport_shuttle" as const },
-                        { label: "Airport Shuttle Free (off = extra charge)", key: "airport_shuttle_free" as const },
+                        { label: "Airport Shuttle Free (No = extra charge)", key: "airport_shuttle_free" as const },
                         { label: "Aircon", key: "has_aircon" as const },
                         { label: "Wi-Fi", key: "has_wifi_accom" as const },
                         { label: "Free Parking", key: "has_free_parking" as const },
                         { label: "Secure Parking", key: "has_secure_parking" as const },
                         { label: "Pets Allowed", key: "pets_allowed" as const },
                       ].map(({ label, key }) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
-                          <Label>{label}</Label>
-                        </div>
+                        <TriStateToggle key={key} label={label} value={form[key] as boolean | null} onChange={(v) => setForm({ ...form, [key]: v })} />
                       ))}
                     </div>
 
