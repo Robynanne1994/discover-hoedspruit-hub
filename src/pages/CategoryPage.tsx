@@ -305,7 +305,7 @@ const CategoryPage = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: 100, background: C.bg, fontFamily: font, color: C.text }}>
+    <div style={{ minHeight: "100vh", paddingBottom: 100, background: "transparent", fontFamily: font, color: C.text }}>
       {/* Top bar — 56px */}
       <div
         style={{

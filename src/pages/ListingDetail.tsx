@@ -205,7 +205,7 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT_BODY }}>
+      <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
             <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
@@ -221,7 +221,7 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT_BODY }}>
+      <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
             <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
@@ -525,7 +525,7 @@ const ListingDetail = () => {
   const isAboutLong = aboutText.length > 120;
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 140, fontFamily: FONT_BODY, color: C.text }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 140, fontFamily: FONT_BODY, color: C.text }}>
       <style>{`
         @keyframes hh-acc-open {
           from { opacity: 0; transform: translateY(-4px); }
@@ -586,7 +586,7 @@ const ListingDetail = () => {
       <div style={{
         position: "relative",
         marginTop: 16,
-        background: C.bg,
+        background: "transparent",
         paddingLeft: 24, paddingRight: 24,
       }}>
         {firstCategory && (
