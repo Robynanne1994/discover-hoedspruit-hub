@@ -407,6 +407,7 @@ const AdminImport = () => {
             payload.has_spa = parseBool(row.has_spa);
             payload.has_fitness_centre = parseBool(row.has_fitness_centre);
             payload.has_airport_shuttle = parseBool(row.has_airport_shuttle);
+            payload.airport_shuttle_free = parseBool(row.airport_shuttle_free);
             payload.has_aircon = parseBool(row.has_aircon);
             payload.has_wifi_accom = parseBool(row.has_wifi_accom);
             payload.has_free_parking = parseBool(row.has_free_parking);
