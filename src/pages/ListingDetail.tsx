@@ -568,7 +568,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={20} strokeWidth={1.5} color={C.text} fill={isFavourited ? C.text : "none"} />
+            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : C.text} fill={isFavourited ? "#5b4632" : "none"} />
           </button>
           {isAdmin && (
             <button
