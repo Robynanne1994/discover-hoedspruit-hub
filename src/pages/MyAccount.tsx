@@ -451,7 +451,7 @@ const MyAccount = () => {
     { label: "Help & FAQs", href: "/faqs" },
     { label: "Terms & Policies", href: "/terms" },
   ];
-  const adminItems = [{ label: "Admin dashboard", href: "/admin" }];
+  const adminItems = [{ label: "Admin", href: "/admin" }];
 
   const baseTextStyle: React.CSSProperties = {
     fontFamily: FONT_STACK,
