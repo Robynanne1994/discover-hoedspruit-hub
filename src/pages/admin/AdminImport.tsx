@@ -224,6 +224,17 @@ const AdminImport = () => {
         isUpdate: boolean;
       }[] = [];
 
+      // Detect duplicate titles in CSV (title-based matching is risky otherwise)
+      const titleSeen = new Map<string, number>();
+      for (const r of parsed.rows) {
+        const t = (r.title || "").trim().toLowerCase();
+        if (!t) continue;
+        titleSeen.set(t, (titleSeen.get(t) || 0) + 1);
+      }
+      for (const [t, n] of titleSeen.entries()) {
+        if (n > 1) results.errors.push(`Duplicate title in CSV: "${t}" appears ${n} times — only one row will win.`);
+      }
+
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
         const title = row.title?.trim();
@@ -233,7 +244,7 @@ const AdminImport = () => {
         }
         csvTitles.add(title.toLowerCase());
 
-        // Resolve categories from CSV
+        // Resolve categories from CSV (pipe-separated, case/whitespace insensitive)
         const catField = row.categories?.trim() || "";
         const catNames = catField ? catField.split("|").map((s) => s.trim()).filter(Boolean) : [];
         const resolvedCatIds: string[] = [];
@@ -243,20 +254,23 @@ const AdminImport = () => {
         }
 
         for (const catName of catNames) {
-          const catId = catMap.get(catName.toLowerCase()) ?? null;
+          const key = catName.toLowerCase();
+          const catId = catMap.get(key) ?? null;
           if (catId) {
             if (!resolvedCatIds.includes(catId)) resolvedCatIds.push(catId);
           } else {
             const { data: newCat, error: catErr } = await supabase
               .from("categories").insert({ title: catName }).select("id").single();
             if (!catErr && newCat) {
-              catMap.set(catName.toLowerCase(), newCat.id);
+              catMap.set(key, newCat.id);
               resolvedCatIds.push(newCat.id);
+            } else {
+              results.errors.push(`Row ${i + 2}: Could not match or create category "${catName}"`);
             }
           }
         }
 
-        // Resolve subcategories
+        // Resolve subcategories (try every resolved category as parent)
         const subNames = row.subcategories ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean) : [];
         const resolvedSubIds: string[] = [];
         for (const subName of subNames) {
@@ -272,6 +286,8 @@ const AdminImport = () => {
             if (!subErr && newSub) {
               resolvedSubIds.push(newSub.id);
               subMap.set(`${resolvedCatIds[0]}::${subName.toLowerCase()}`, newSub.id);
+            } else {
+              results.errors.push(`Row ${i + 2}: Could not match or create subcategory "${subName}"`);
             }
           }
         }
@@ -429,24 +445,39 @@ const AdminImport = () => {
       const successfulItems = importItems.filter((item) => !results.errors.some((err) => err.startsWith(`Row ${item.rowNumber}: Save failed`)));
       const successfulIds = successfulItems.map((item) => item.listingId);
 
-      setImportStatus("Syncing listing categories...");
-      for (const idBatch of chunkArray(successfulIds, 200)) {
-        const { error: catDeleteError } = await supabase.from("listing_categories").delete().in("listing_id", idBatch);
-        if (catDeleteError) results.errors.push(`Category sync failed: ${catDeleteError.message}`);
-        const { error: subDeleteError } = await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
-        if (subDeleteError) results.errors.push(`Subcategory sync failed: ${subDeleteError.message}`);
-      }
+      // Per-listing safe sync: delete this listing's existing links, then insert
+      // the resolved ones. This way a single failure cannot wipe other listings'
+      // categories, and a partial failure on one listing does not leave the rest blank.
+      setImportStatus(`Syncing categories for ${successfulItems.length} listings...`);
+      for (let idx = 0; idx < successfulItems.length; idx++) {
+        const item = successfulItems[idx];
+        if (idx % 50 === 0) setImportStatus(`Syncing categories ${idx + 1}/${successfulItems.length}...`);
 
-      const catRows = successfulItems.flatMap((item) => item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId })));
-      for (const batch of chunkArray(catRows, 500)) {
-        const { error } = await supabase.from("listing_categories").insert(batch);
-        if (error) results.errors.push(`Category insert failed: ${error.message}`);
-      }
+        const { error: catDelErr } = await supabase
+          .from("listing_categories").delete().eq("listing_id", item.listingId);
+        if (catDelErr) {
+          results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
+          continue;
+        }
+        if (item.resolvedCatIds.length > 0) {
+          const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+          const { error: catInsErr } = await supabase
+            .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
+          if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+        }
 
-      const subRows = successfulItems.flatMap((item) => item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId })));
-      for (const batch of chunkArray(subRows, 500)) {
-        const { error } = await supabase.from("listing_subcategories").insert(batch);
-        if (error) results.errors.push(`Subcategory insert failed: ${error.message}`);
+        const { error: subDelErr } = await supabase
+          .from("listing_subcategories").delete().eq("listing_id", item.listingId);
+        if (subDelErr) {
+          results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
+          continue;
+        }
+        if (item.resolvedSubIds.length > 0) {
+          const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+          const { error: subInsErr } = await supabase
+            .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
+          if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+        }
       }
 
       // Delete listings not in CSV
@@ -562,8 +593,16 @@ const AdminImport = () => {
         google_maps_link: l.google_maps_link ?? "",
         google_rating: l.google_rating == null ? "" : String(l.google_rating),
         google_reviews_count: l.google_reviews_count == null ? "" : String(l.google_reviews_count),
+        // categories: prefer junction list; fall back to legacy single category_id name so exports never lose data
+        ...(() => {
+          const fromJunction = listingCatMap.get(l.id) ?? [];
+          if (fromJunction.length === 0 && l.category_id) {
+            const legacy = catNameMap.get(l.category_id);
+            if (legacy) return { categories: legacy };
+          }
+          return { categories: fromJunction.join("|") };
+        })(),
         google_reviews_url: l.google_reviews_url ?? "",
-        categories: (listingCatMap.get(l.id) ?? []).join("|"),
         subcategories: (listingSubMap.get(l.id) ?? []).join("|"),
         is_featured: String(l.is_featured),
         long_description: l.long_description ?? "",

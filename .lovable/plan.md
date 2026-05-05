@@ -1,52 +1,50 @@
+I found the root cause.
 
-The user wants the 3 secondary buttons (Share, Save, Visited) to all fit on one row at 390px viewport width, while staying aligned with the 2 primary buttons below (Call Now, Directions).
+Your CSV format is basically correct: the `categories` column uses `|` for multiple categories, for example:
 
-## Current constraints
+```text
+Accommodation|Restaurants & Cafés
+Pets & Vets|Shopping
+Sports & Fitness|Education
+```
 
-At 390px viewport with 20px padding each side = **350px usable width**.
+The problem is in the app/data flow after the recent import changes:
 
-Current secondary button spec:
-- padding: 12px 24px (48px horizontal padding total)
-- font-size: 15px, weight 500
-- gap between buttons: 12px
-- icon + label layout
+1. The Explore category detail pages only load listings through the `listing_categories` multi-category link table.
+2. Your database currently has 447 listings, but only 3 rows in `listing_categories`.
+3. Most listings still only have the old single `listings.category_id` value, so Explore can count them on the main Explore page but cannot show them inside each category page.
+4. The current importer is fragile: it deletes category links first, then inserts new ones separately. If the insert step fails or is blocked, the app is left with empty category pages.
+5. There is also at least one duplicate title (`Splinters`), which is risky because the bulk import matches listings by title.
 
-With `flex: 1`, each button gets `(350 - 24) / 3 = ~108px`. The text "Visited" + icon + 48px padding = ~115px minimum, so labels get cramped/truncated.
+Plan to fix it:
 
-## What needs to change per button
+1. Repair the existing category links now
+   - Backfill `listing_categories` from the current `listings.category_id` values so every listing appears in its current main category again.
+   - For the attached CSV, also restore extra multi-category links from the `categories` column where a listing belongs to more than one category.
+   - This will make category pages populate again.
 
-To fit cleanly on one row at 390px while still feeling balanced and aligned with the 2 primary buttons below:
+2. Make the bulk importer safer
+   - Keep supporting `|` as the official delimiter for multiple categories and subcategories.
+   - Normalize category names before matching, including whitespace and case.
+   - Treat category sync per listing more safely so a failed category insert cannot wipe all category membership silently.
+   - Use `upsert`/conflict-safe inserts for `listing_categories` and `listing_subcategories` instead of plain inserts.
+   - Surface clear import warnings when a category or subcategory from the CSV cannot be matched/created.
 
-| Property | Current | Proposed |
-|---|---|---|
-| Horizontal padding | 24px | **12px** (keeps 48px height via vertical padding) |
-| Gap between buttons | 12px | **8px** |
-| Font size | 15px | **13px** |
-| Icon size | 16-18px | **14px** |
-| Icon ↔ label gap | 8px | **6px** |
-| Height | 48px | **48px** (unchanged — keeps alignment with primary buttons) |
-| Border radius | 24px | **24px** (unchanged — pill shape preserved) |
-| Border | 1.5px solid rgba(18,18,20,0.15) | unchanged |
-| Font weight | 500 | unchanged |
+3. Make category pages resilient
+   - Update category detail loading so it uses both:
+     - the multi-category `listing_categories` table, and
+     - the legacy `listings.category_id` fallback.
+   - This prevents blank category pages if links are temporarily missing.
+   - Add pagination-safe fetching so large categories are not affected by backend row limits.
 
-Result: each button ~111px wide, label "Visited" fits comfortably, row total = 333px + 16px gaps = 349px ✓ fits in 350px.
+4. Fix export consistency
+   - Ensure the “All Categories (Universal Fields)” export includes all category names from multi-category links.
+   - Add a fallback to include the legacy category if a listing has no `listing_categories` rows.
+   - This means future exported CSVs will preserve multi-category assignments properly.
 
-## Alignment with primary buttons
+5. Add guardrails in the admin import UI
+   - Show a preview/summary of how many category links will be created.
+   - Show warnings for duplicate titles in the uploaded CSV, because title-based matching can update the wrong listing.
+   - Explain in the UI that multiple categories must be separated with `|`.
 
-The two primary buttons below (Call Now, Directions) stay at:
-- height 48px, gap 12px between them, flex:1 each
-
-To keep visual alignment:
-- Secondary row total width = primary row total width (both span full 350px) ✓
-- Secondary row uses 8px gap, primary row keeps 12px gap — this is fine because the **outer edges align**, which is what the eye reads.
-
-Alternative if you want gap consistency: keep 12px gap on secondary too — math still works (333 + 24 = 357, slightly tight, would need font-size 12px or padding 10px).
-
-## Recommendation
-
-Go with the table above — 13px font, 12px horizontal padding, 8px gap. Cleanest fit, labels stay legible, and the 48px height + outer alignment keeps it visually tied to the primary row below.
-
-## Files to change
-
-- `src/pages/ListingDetail.tsx` — update the 3 secondary button styles + the row's gap value.
-
+Once approved, I’ll implement the code fixes and run the data repair so your Explore category pages populate correctly again.
