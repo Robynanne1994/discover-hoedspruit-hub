@@ -158,7 +158,7 @@ const HomeHero = () => {
               <Link
                 key={cat.label}
                 to={cat.href}
-                className="group active:bg-[#121214]"
+                className="group active:bg-[#5b4632]"
                 style={{
                   display: "flex",
                   alignItems: "center",
