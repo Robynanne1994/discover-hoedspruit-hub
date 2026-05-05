@@ -406,6 +406,7 @@ const SpecialDetail = () => {
           <section style={{ marginBottom: 32 }}>
             <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>About</h2>
             <p
+              ref={aboutRef}
               style={{
                 fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 fontWeight: 400,
@@ -420,7 +421,7 @@ const SpecialDetail = () => {
             >
               {special.description}
             </p>
-            {special.description.length > 120 && (
+            {(aboutOverflows || aboutExpanded) && (
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
