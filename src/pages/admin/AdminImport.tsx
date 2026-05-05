@@ -603,7 +603,6 @@ const AdminImport = () => {
           return { categories: fromJunction.join("|") };
         })(),
         google_reviews_url: l.google_reviews_url ?? "",
-        categories: (listingCatMap.get(l.id) ?? []).join("|"),
         subcategories: (listingSubMap.get(l.id) ?? []).join("|"),
         is_featured: String(l.is_featured),
         long_description: l.long_description ?? "",
