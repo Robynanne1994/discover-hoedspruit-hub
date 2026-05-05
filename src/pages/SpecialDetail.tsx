@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
