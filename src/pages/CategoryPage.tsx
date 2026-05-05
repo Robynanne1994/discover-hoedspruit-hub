@@ -617,46 +617,52 @@ const CategoryPage = () => {
                     {l.title}
                   </h3>
 
-                  {(l.google_rating || l.location) && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        marginTop: 6,
-                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                        fontSize: 12,
-                        fontWeight: 400,
-                        lineHeight: "15.6px",
-                        letterSpacing: "0.12px",
-                        color: "#8A8480",
-                      }}
-                    >
-                      {l.google_rating && (
-                        <>
-                          <Star size={12} fill="#5b4632" stroke="#5b4632" />
-                          <span>{Number(l.google_rating).toFixed(1)}</span>
-                        </>
-                      )}
-                      {l.google_rating && l.location && (
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 3,
-                            height: 3,
-                            borderRadius: "50%",
-                            background: "#8A8480",
-                          }}
-                        />
-                      )}
-                      {l.location && (
-                        <>
-                          <MapPin size={12} strokeWidth={1.5} color="#8A8480" />
-                          <span>{l.location}</span>
-                        </>
-                      )}
-                    </div>
-                  )}
+                  {(() => {
+                    const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
+                    const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
+                    const rowStyle = {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                      marginTop: 6,
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      fontSize: 12,
+                      fontWeight: 400,
+                      lineHeight: "15.6px",
+                      letterSpacing: "0.12px",
+                      color: "#8A8480",
+                    } as const;
+                    const dotSep = (
+                      <span style={{ display: "inline-block", width: 3, height: 3, borderRadius: "50%", background: "#8A8480" }} />
+                    );
+                    return (
+                      <>
+                        {(l.google_rating || open !== null) && (
+                          <div style={rowStyle}>
+                            {l.google_rating && (
+                              <>
+                                <Star size={12} fill="#5b4632" stroke="#5b4632" />
+                                <span>{Number(l.google_rating).toFixed(1)}</span>
+                              </>
+                            )}
+                            {l.google_rating && open !== null && dotSep}
+                            {open !== null && (
+                              <>
+                                <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: open ? "#1FA463" : "#D7263D" }} />
+                                <span>{open ? "Open Now" : "Closed"}</span>
+                              </>
+                            )}
+                          </div>
+                        )}
+                        {l.location && (
+                          <div style={rowStyle}>
+                            <MapPin size={12} strokeWidth={1.5} color="#8A8480" />
+                            <span>{l.location}</span>
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
 
                   {l.description && (
                     <p
