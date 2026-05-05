@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useState, useRef, useLayoutEffect } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
@@ -96,6 +96,14 @@ const SpecialDetail = () => {
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
+  const [aboutOverflows, setAboutOverflows] = useState(false);
+  const aboutRef = useRef<HTMLParagraphElement>(null);
+  useLayoutEffect(() => {
+    const el = aboutRef.current;
+    if (!el) return;
+    if (aboutExpanded) return;
+    setAboutOverflows(el.scrollHeight > el.clientHeight + 1);
+  }, [aboutExpanded]);
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
@@ -398,6 +406,7 @@ const SpecialDetail = () => {
           <section style={{ marginBottom: 32 }}>
             <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>About</h2>
             <p
+              ref={aboutRef}
               style={{
                 fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 fontWeight: 400,
@@ -412,7 +421,7 @@ const SpecialDetail = () => {
             >
               {special.description}
             </p>
-            {special.description.length > 120 && (
+            {(aboutOverflows || aboutExpanded) && (
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
