@@ -219,7 +219,7 @@ const Headlines = () => {
 
       {/* More stories */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 44 }}>
-        <div style={{ fontFamily: SANS, fontSize: 12, letterSpacing: "0.02em", color: MUTED, marginBottom: 8 }}>More stories</div>
+        
         <h2 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 40, lineHeight: 1.0, letterSpacing: "-0.03em", color: INK, margin: 0, marginBottom: 20 }}>
           Recent
         </h2>
