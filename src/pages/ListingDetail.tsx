@@ -627,9 +627,7 @@ const ListingDetail = () => {
             <>
               <span style={{ margin: "0 8px" }}>·</span>
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.text }}>
-                {openStatus.state !== "open" ? null : (
-                  <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#5b4632", display: "inline-block" }} />
-                )}
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f", display: "inline-block" }} />
                 {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
               </span>
             </>
