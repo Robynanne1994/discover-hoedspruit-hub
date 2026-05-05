@@ -407,6 +407,7 @@ const AdminImport = () => {
             payload.has_spa = parseBool(row.has_spa);
             payload.has_fitness_centre = parseBool(row.has_fitness_centre);
             payload.has_airport_shuttle = parseBool(row.has_airport_shuttle);
+            payload.airport_shuttle_free = parseBool(row.airport_shuttle_free);
             payload.has_aircon = parseBool(row.has_aircon);
             payload.has_wifi_accom = parseBool(row.has_wifi_accom);
             payload.has_free_parking = parseBool(row.has_free_parking);
@@ -663,6 +664,7 @@ const AdminImport = () => {
         has_spa: l.has_spa == null ? "" : String(l.has_spa),
         has_fitness_centre: l.has_fitness_centre == null ? "" : String(l.has_fitness_centre),
         has_airport_shuttle: l.has_airport_shuttle == null ? "" : String(l.has_airport_shuttle),
+        airport_shuttle_free: l.airport_shuttle_free == null ? "" : String(l.airport_shuttle_free),
         has_aircon: l.has_aircon == null ? "" : String(l.has_aircon),
         has_wifi_accom: l.has_wifi_accom == null ? "" : String(l.has_wifi_accom),
         has_free_parking: l.has_free_parking == null ? "" : String(l.has_free_parking),

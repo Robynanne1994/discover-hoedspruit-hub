@@ -564,6 +564,7 @@ export type Database = {
       listings: {
         Row: {
           air_conditioned: boolean | null
+          airport_shuttle_free: boolean | null
           amenities: string[] | null
           breakfast_included: boolean | null
           category_id: string | null
@@ -643,6 +644,7 @@ export type Database = {
         }
         Insert: {
           air_conditioned?: boolean | null
+          airport_shuttle_free?: boolean | null
           amenities?: string[] | null
           breakfast_included?: boolean | null
           category_id?: string | null
@@ -722,6 +724,7 @@ export type Database = {
         }
         Update: {
           air_conditioned?: boolean | null
+          airport_shuttle_free?: boolean | null
           amenities?: string[] | null
           breakfast_included?: boolean | null
           category_id?: string | null

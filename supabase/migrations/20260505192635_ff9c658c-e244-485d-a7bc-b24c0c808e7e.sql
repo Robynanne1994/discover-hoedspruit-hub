@@ -1,0 +1,1 @@
+ALTER TABLE public.listings ADD COLUMN IF NOT EXISTS airport_shuttle_free boolean DEFAULT null;

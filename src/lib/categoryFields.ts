@@ -28,7 +28,7 @@ export const ACCOMMODATION_ONLY_FIELDS = [
   "pets_allowed", "sleeps", "price_range", "km_from_town",
   "has_restaurant", "has_bar", "has_room_service", "has_breakfast", "breakfast_included",
   "has_swimming_pool", "has_laundry", "child_friendly", "has_spa", "has_fitness_centre",
-  "has_airport_shuttle", "has_aircon", "has_wifi_accom", "has_free_parking", "has_secure_parking"
+  "has_airport_shuttle", "airport_shuttle_free", "has_aircon", "has_wifi_accom", "has_free_parking", "has_secure_parking"
 ] as const;
 
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
