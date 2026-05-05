@@ -38,6 +38,7 @@ const AdminListings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Listing | null>(null);
+  const [returnTo, setReturnTo] = useState<string | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [selectedCatIds, setSelectedCatIds] = useState<string[]>([]);
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
