@@ -439,7 +439,7 @@ const SpecialDetail = () => {
         {/* Promo code */}
         {special.promo_code && (
           <section style={{ marginBottom: 32 }}>
-            <p style={{ ...eyebrow, marginBottom: 8 }}>Promo Code</p>
+            
             <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>Promo Code</h2>
             <button
               onClick={async () => {
