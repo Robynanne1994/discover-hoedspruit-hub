@@ -122,9 +122,11 @@ const AdminListings = () => {
   // Auto-open edit dialog from ?edit= query param
   useEffect(() => {
     const editId = searchParams.get("edit");
+    const ret = searchParams.get("returnTo");
     if (editId && listings && !editing) {
       const found = listings.find((l) => l.id === editId);
       if (found) {
+        if (ret) setReturnTo(ret);
         openEdit(found);
         setSearchParams({}, { replace: true });
       }
