@@ -279,7 +279,7 @@ const About = () => {
       <div
         style={{
           position: "relative",
-          background: "#F26A48",
+          background: "#5b4632",
           padding: "36px 28px 110px",
           borderRadius: "32px 32px 0 0",
           overflow: "hidden",
