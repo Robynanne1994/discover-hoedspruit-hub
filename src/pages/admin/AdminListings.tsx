@@ -705,9 +705,8 @@ const AdminListings = () => {
                       ))}
 
                       {form.has_breakfast === true && (
-                        <div className="ml-6 flex items-center gap-2">
-                          <Switch checked={form.breakfast_included === true} onCheckedChange={(v) => setForm({ ...form, breakfast_included: v })} />
-                          <Label>{form.breakfast_included ? "Breakfast Included (Free)" : "Breakfast Paid"}</Label>
+                        <div className="ml-6">
+                          <TriStateToggle label="Breakfast Included (Yes = free, No = paid)" value={form.breakfast_included} onChange={(v) => setForm({ ...form, breakfast_included: v })} />
                         </div>
                       )}
 
