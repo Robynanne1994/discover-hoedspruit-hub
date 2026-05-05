@@ -10,7 +10,7 @@ const HomeGetListed = () => {
       <div
         style={{
           position: "relative",
-          background: "#F26A48",
+          background: "#5b4632",
           borderRadius: 28,
           padding: "28px 24px 28px",
           overflow: "hidden",
@@ -26,7 +26,7 @@ const HomeGetListed = () => {
             bottom: -120,
             width: 280,
             height: 280,
-            background: "radial-gradient(circle, rgba(255,180,140,0.55) 0%, rgba(242,106,72,0) 65%)",
+            background: "radial-gradient(circle, rgba(184,145,106,0.55) 0%, rgba(91,70,50,0) 65%)",
             pointerEvents: "none",
           }}
         />
