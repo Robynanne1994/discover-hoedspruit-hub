@@ -81,7 +81,7 @@ const Feedback = () => {
           height: 260,
           borderRadius: "50%",
           background:
-            "radial-gradient(circle at 35% 30%, #F47356 0%, #EB6240 70%, #D9572F 100%)",
+            "radial-gradient(circle at 35% 30%, #6d553d 0%, #5b4632 70%, #4a3826 100%)",
           zIndex: 0,
           pointerEvents: "none",
         }}
