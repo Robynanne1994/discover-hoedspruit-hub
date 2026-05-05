@@ -701,10 +701,7 @@ const AdminListings = () => {
                         { label: "Room Service", key: "has_room_service" as const },
                         { label: "Breakfast", key: "has_breakfast" as const },
                       ].map(({ label, key }) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
-                          <Label>{label}</Label>
-                        </div>
+                        <TriStateToggle key={key} label={label} value={form[key] as boolean | null} onChange={(v) => setForm({ ...form, [key]: v })} />
                       ))}
 
                       {form.has_breakfast === true && (
