@@ -625,7 +625,7 @@ const ListingDetail = () => {
           {/* Price level moved to Details > Pricing accordion */}
           {openStatus && (
             <>
-              <span style={{ margin: "0 8px" }}>·</span>
+              <span style={{ width: 8, display: "inline-block" }} />
               <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.text }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f", display: "inline-block" }} />
                 {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
