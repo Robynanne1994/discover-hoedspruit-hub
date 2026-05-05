@@ -537,22 +537,10 @@ const AdminListings = () => {
                     {form.show_attributes && (
                       <>
                         <div className="space-y-3">
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.good_for_kids === true} onCheckedChange={(v) => setForm({ ...form, good_for_kids: v })} />
-                            <Label>Good for Kids</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.pets_allowed === true} onCheckedChange={(v) => setForm({ ...form, pets_allowed: v })} />
-                            <Label>Pets Allowed</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.wheelchair_friendly === true} onCheckedChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
-                            <Label>Wheelchair Friendly</Label>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Switch checked={form.smoking_allowed === true} onCheckedChange={(v) => setForm({ ...form, smoking_allowed: v })} />
-                            <Label>Smoking Allowed</Label>
-                          </div>
+                          <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
+                          <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                          <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
+                          <TriStateToggle label="Smoking Allowed" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
                         </div>
 
                         {/* Kids Section */}
