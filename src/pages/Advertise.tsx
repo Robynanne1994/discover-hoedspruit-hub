@@ -19,7 +19,7 @@ const DIVIDER = "#E8E4DF";
 const HERO_STAT = {
   number: "2,400+",
   eyebrow: "Active Community",
-  caption: "Locals, visitors and newcomers using Hello Hoedspruit Monthly to find what's open and what's on.",
+  caption: "Locals, visitors and newcomers using Hello Hoedspruit monthly to find what's open and what's on.",
 };
 
 const BENEFITS = [
