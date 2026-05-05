@@ -646,7 +646,7 @@ const CategoryPage = () => {
                                 <span>{Number(l.google_rating).toFixed(1)}</span>
                               </>
                             )}
-                            {l.google_rating && open !== null && dotSep}
+                            
                             {open !== null && (
                               <>
                                 <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: open ? "#1FA463" : "#D7263D" }} />
