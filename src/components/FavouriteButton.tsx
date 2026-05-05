@@ -67,7 +67,7 @@ const FavouriteButton = ({ itemId, itemType }: FavouriteButtonProps) => {
       <Heart
         strokeWidth={1.8}
         className={`h-[18px] w-[18px] transition-colors ${
-          isFavourited ? "fill-[#D4654A] text-[#D4654A]" : "text-[rgba(18,18,20,0.3)]"
+          isFavourited ? "fill-[#5b4632] text-[#5b4632]" : "text-[rgba(18,18,20,0.3)]"
         }`}
       />
     </button>
