@@ -593,6 +593,15 @@ const AdminImport = () => {
         google_maps_link: l.google_maps_link ?? "",
         google_rating: l.google_rating == null ? "" : String(l.google_rating),
         google_reviews_count: l.google_reviews_count == null ? "" : String(l.google_reviews_count),
+        // categories: prefer junction list; fall back to legacy single category_id name so exports never lose data
+        ...(() => {
+          const fromJunction = listingCatMap.get(l.id) ?? [];
+          if (fromJunction.length === 0 && l.category_id) {
+            const legacy = catNameMap.get(l.category_id);
+            if (legacy) return { categories: legacy };
+          }
+          return { categories: fromJunction.join("|") };
+        })(),
         google_reviews_url: l.google_reviews_url ?? "",
         categories: (listingCatMap.get(l.id) ?? []).join("|"),
         subcategories: (listingSubMap.get(l.id) ?? []).join("|"),
