@@ -6,8 +6,8 @@ const FONT_STACK = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-ser
 const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
 const policyRows = [
-  { label: "Terms of use", sub: "How you and we agree to use Hello Hoedspruit.", href: "/terms-of-use" },
-  { label: "Privacy policy", sub: "What we collect, why we collect it and how it's kept safe.", href: "/privacy-policy" },
+  { label: "Terms of Use", sub: "How you and we agree to use Hello Hoedspruit.", href: "/terms-of-use" },
+  { label: "Privacy Policy", sub: "What we collect, why we collect it and how it's kept safe.", href: "/privacy-policy" },
   { label: "Cookie Policy", sub: "The cookies we use to keep the app running smoothly.", href: "/cookie-policy" },
   { label: "Community Guidelines", sub: "The tone we keep, and what belongs on the app.", href: "/content-guidelines" },
 ];
