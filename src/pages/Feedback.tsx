@@ -321,7 +321,7 @@ const Feedback = () => {
               width: 8,
               height: 8,
               borderRadius: 999,
-              background: CORAL,
+              background: "#5b4632",
               marginTop: 8,
             }}
           />
@@ -331,7 +331,7 @@ const Feedback = () => {
               fontWeight: 400,
               fontSize: 14,
               lineHeight: 1.5,
-              color: MUTED,
+              color: "#0a0a0a",
               margin: 0,
             }}
           >
