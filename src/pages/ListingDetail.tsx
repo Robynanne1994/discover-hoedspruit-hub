@@ -957,8 +957,8 @@ const ListingDetail = () => {
                                 )}
                                 <span style={{
                                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                                  fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0,
-                                  color: "#0A0A0A",
+                                  fontWeight: 400, fontSize: 14, lineHeight: 1.35, letterSpacing: 0,
+                                  color: C.text,
                                   textTransform: "none",
                                 }}>
                                   {labelText}
