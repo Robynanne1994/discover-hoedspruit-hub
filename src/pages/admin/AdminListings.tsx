@@ -634,10 +634,7 @@ const AdminListings = () => {
                         { label: "Local Products", key: "local_products" as const },
                         { label: "Curio / Gifts", key: "curio_or_gifts" as const },
                       ].map(({ label, key }) => (
-                        <div key={key} className="flex items-center gap-2">
-                          <Switch checked={form[key] === true} onCheckedChange={(v) => setForm({ ...form, [key]: v })} />
-                          <Label>{label}</Label>
-                        </div>
+                        <TriStateToggle key={key} label={label} value={form[key] as boolean | null} onChange={(v) => setForm({ ...form, [key]: v })} />
                       ))}
                     </div>
 
