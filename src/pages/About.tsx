@@ -76,9 +76,6 @@ const About = () => {
           }}
         />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 12, letterSpacing: "0.02em", color: "#8A8480", marginBottom: 8 }}>
-            About
-          </div>
           <h1
             style={{
               fontFamily: DISPLAY,
