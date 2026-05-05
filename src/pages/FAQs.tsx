@@ -12,7 +12,7 @@ const FF_PF = "'Playfair Display', Georgia, serif";
 const SECTION_ORDER = [
   "About Hello Hoedspruit",
   "Using the app",
-  "Listings and information",
+  "Listings & information",
   "For business owners",
   "Account and privacy",
   "General",
