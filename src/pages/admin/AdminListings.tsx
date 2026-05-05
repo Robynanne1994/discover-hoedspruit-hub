@@ -495,11 +495,12 @@ const AdminListings = () => {
                           onChange={(e) => setForm({ ...form, [titleKey]: e.target.value } as any)}
                         />
                         <Textarea
-                          placeholder="Text (shown when this row is expanded)"
+                          placeholder="Text (shown when expanded). Add a link with [link text](https://example.com)"
                           rows={3}
                           value={(form[textKey] as string) || ""}
                           onChange={(e) => setForm({ ...form, [textKey]: e.target.value } as any)}
                         />
+                        <p className="text-[11px] text-muted-foreground">Tip: use <code>[your text](https://link.com)</code> to embed a clickable link.</p>
                       </div>
                     );
                   })}
