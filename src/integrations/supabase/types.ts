@@ -471,6 +471,30 @@ export type Database = {
         }
         Relationships: []
       }
+      icon_overrides: {
+        Row: {
+          id: string
+          image_url: string
+          slot: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          image_url: string
+          slot: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          image_url?: string
+          slot?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       listing_categories: {
         Row: {
           category_id: string
