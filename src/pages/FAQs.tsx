@@ -199,8 +199,9 @@ const FAQs = () => {
             fontSize: 11,
             letterSpacing: "0.18em",
             textTransform: "none",
-            color: "#8A8480",
-            fontFamily: FF,
+            color: "#0A0A0A",
+            fontFamily: FF_HN,
+            fontWeight: 400,
             margin: "0 0 12px 4px",
             ...baseStyle,
           }}>
