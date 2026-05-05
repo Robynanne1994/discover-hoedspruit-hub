@@ -938,11 +938,6 @@ const ListingDetail = () => {
                           </div>
                         );
                       }
-                              {textValue}
-                            </div>
-                          </div>
-                        );
-                      }
                       return (
                         <div style={{
                           paddingBottom: 20, paddingTop: 4,
