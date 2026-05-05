@@ -93,8 +93,8 @@ const AccountSettings = () => {
         </div>
       </div>
 
-      {/* Group: Your account */}
-      <SettingsGroup label="Your account" rows={accountRows} marginTop={40} />
+      {/* Group: Your Account */}
+      <SettingsGroup label="Your Account" rows={accountRows} marginTop={40} />
 
       {/* Group: Support & Legal */}
       <SettingsGroup label="Support & Legal" rows={supportRows} marginTop={40} />
