@@ -695,7 +695,7 @@ const ListingDetail = () => {
                   {...pressScale()}
                 >
                   {a.icon}
-                  <span>{a.label}</span>
+                  <span style={{ marginTop: 3 }}>{a.label}</span>
                 </a>
               ))}
             </div>
