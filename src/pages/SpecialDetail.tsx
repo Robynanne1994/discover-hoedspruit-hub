@@ -344,7 +344,7 @@ const SpecialDetail = () => {
               {special.business_name}
             </p>
           )}
-          <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "16px", letterSpacing: 0, color: "#8A8480", margin: 0, textTransform: "none" }}>
+          <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "16px", letterSpacing: 0, color: "#0A0A0A", margin: 0, textTransform: "none" }}>
             {validityText}
           </p>
         </div>
