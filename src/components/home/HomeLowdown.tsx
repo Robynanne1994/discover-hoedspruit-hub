@@ -78,7 +78,7 @@ const HomeLowdown = () => {
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                   fontSize: 10,
                   fontWeight: 500,
-                  color: "#F26A48",
+                  color: "#5b4632",
                   textTransform: "uppercase",
                   letterSpacing: "0.08em",
                   marginBottom: 4,
