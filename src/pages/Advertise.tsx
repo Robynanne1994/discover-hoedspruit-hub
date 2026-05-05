@@ -147,7 +147,7 @@ const Advertise = () => {
 
       {/* Hero */}
       <div style={{ padding: "24px 24px 40px 24px" }}>
-        <p style={{ ...eyebrow, marginBottom: 16 }}>Partner With Us</p>
+        
         <h1 style={{
           fontFamily: FF, fontSize: 52, fontWeight: 700, lineHeight: "52px",
           letterSpacing: "-1.56px", color: INK, margin: "0 0 20px",
@@ -165,7 +165,9 @@ const Advertise = () => {
       {/* Coral stat card */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
         <div style={{
-          background: CORAL, borderRadius: 24, padding: "28px 24px 32px 24px",
+          background: `linear-gradient(135deg, #6e5640 0%, #5b4632 55%, #4a3826 100%), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`,
+          backgroundBlendMode: "overlay",
+          borderRadius: 24, padding: "28px 24px 32px 24px",
           boxSizing: "border-box",
         }}>
           <p style={{
