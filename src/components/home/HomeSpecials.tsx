@@ -34,7 +34,7 @@ const HomeSpecials = () => {
   return (
     <section>
       <HomeSectionHead primary="Specials" serif="this month" actionLabel="See all" actionHref="/specials" />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24, scrollSnapType: "x mandatory", scrollPaddingLeft: 24 }}>
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24, scrollSnapType: "x mandatory" }}>
         <div style={{ display: "flex", gap: 12, paddingRight: 24 }}>
           {specials.map((s) => (
             <Link
