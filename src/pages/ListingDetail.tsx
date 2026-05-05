@@ -618,7 +618,7 @@ const ListingDetail = () => {
                 <span>{(listing as any).google_rating}</span>
               </span>
               {(listing as any).google_reviews_count != null && (
-                <span style={{ marginLeft: 4 }}>({(listing as any).google_reviews_count})</span>
+                <span style={{ marginLeft: 4, color: "#0a0a0a" }}>({(listing as any).google_reviews_count})</span>
               )}
             </>
           )}
