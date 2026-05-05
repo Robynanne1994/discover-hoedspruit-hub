@@ -14,7 +14,7 @@ const SECTION_ORDER = [
   "Using the app",
   "Listings & information",
   "For business owners",
-  "Account and privacy",
+  "Account & privacy",
   "General",
 ];
 
