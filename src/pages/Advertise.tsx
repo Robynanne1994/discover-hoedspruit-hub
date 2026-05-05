@@ -147,7 +147,7 @@ const Advertise = () => {
 
       {/* Hero */}
       <div style={{ padding: "24px 24px 40px 24px" }}>
-        <p style={{ ...eyebrow, marginBottom: 16 }}>Partner With Us</p>
+        
         <h1 style={{
           fontFamily: FF, fontSize: 52, fontWeight: 700, lineHeight: "52px",
           letterSpacing: "-1.56px", color: INK, margin: "0 0 20px",
