@@ -71,7 +71,7 @@ const Headlines = () => {
   const monthLabel = format(new Date(), "MMMM yyyy");
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 120 }}>
       <style>{`
         .lld-no-scrollbar::-webkit-scrollbar { display: none; }
         .lld-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

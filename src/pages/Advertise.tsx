@@ -126,7 +126,7 @@ const Advertise = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 140, fontFamily: FF }}>
       {/* Top bar */}
       <div style={{ height: 56, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center" }}>
         <button
