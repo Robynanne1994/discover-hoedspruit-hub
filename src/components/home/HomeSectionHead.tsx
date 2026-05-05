@@ -66,7 +66,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
             fontSize: 12,
             lineHeight: 1,
             textTransform: "uppercase",
-            color: "#8A8480",
+            color: "#5b4632",
             textDecoration: "none",
             whiteSpace: "nowrap",
             flexShrink: 0,

@@ -15,7 +15,7 @@ const HomeSectionHeader = ({ title, actionLabel, actionHref }: HomeSectionHeader
       {actionLabel && actionHref && (
         <Link
           to={actionHref}
-          style={{ fontSize: 12, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}
+          style={{ fontSize: 12, fontWeight: 600, color: "#5b4632", textTransform: "uppercase", letterSpacing: 1.5, textDecoration: "none" }}
         >
           {actionLabel} ›
         </Link>
