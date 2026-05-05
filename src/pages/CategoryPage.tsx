@@ -414,9 +414,9 @@ const CategoryPage = () => {
               cursor: "pointer",
             }}
           >
-            <span style={{ fontFamily: font, fontSize: 14, lineHeight: "16.8px", color: C.muted, fontWeight: 400 }}>
+            <span style={{ fontFamily: font, fontSize: 14, lineHeight: "16.8px", color: "#0a0a0a", fontWeight: 400 }}>
               Sort By:{" "}
-              <span style={{ color: C.text }}>{sortLabel}</span>
+              <span style={{ color: "#5b4632" }}>{sortLabel}</span>
             </span>
             <ChevronDown size={14} strokeWidth={1.75} color={C.text} />
           </button>
