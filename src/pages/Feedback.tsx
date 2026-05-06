@@ -56,7 +56,7 @@ const Feedback = () => {
       toast.success("Thanks, we've got it.");
       setSubject("");
       setMessage("");
-      setType("Suggestion");
+      setType("General");
       setErrors({});
     } catch {
       toast.error("Something went wrong. Please try again.");
