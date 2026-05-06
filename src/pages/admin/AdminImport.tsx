@@ -367,6 +367,7 @@ const AdminImport = () => {
             payload.service_type = parseArray(row.service_type) ?? [];
             payload.kids_menu = parseBool(row.kids_menu);
             payload.high_chairs = parseBool(row.high_chairs);
+            payload.nappy_changing_station = parseBool(row.nappy_changing_station);
             payload.wheelchair_car_park = parseBool(row.wheelchair_car_park);
             payload.wheelchair_entrance = parseBool(row.wheelchair_entrance);
             payload.wheelchair_seating = parseBool(row.wheelchair_seating);
