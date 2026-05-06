@@ -93,7 +93,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                   {l.google_rating != null && (
                     <>
                       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <Star size={12} color="#F26A48" fill="#F26A48" strokeWidth={0} />
+                        <Star size={12} color="#5B4632" fill="#5B4632" strokeWidth={0} />
                         <span
                           style={{
                             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
