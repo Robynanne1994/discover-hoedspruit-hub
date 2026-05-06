@@ -279,6 +279,9 @@ export type Database = {
           end_time: string | null
           gallery_images: string[] | null
           google_maps_link: string | null
+          hosted_by_image_url: string | null
+          hosted_by_name: string | null
+          hosted_by_subtitle: string | null
           id: string
           image_url: string | null
           is_featured: boolean
@@ -308,6 +311,9 @@ export type Database = {
           end_time?: string | null
           gallery_images?: string[] | null
           google_maps_link?: string | null
+          hosted_by_image_url?: string | null
+          hosted_by_name?: string | null
+          hosted_by_subtitle?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
@@ -337,6 +343,9 @@ export type Database = {
           end_time?: string | null
           gallery_images?: string[] | null
           google_maps_link?: string | null
+          hosted_by_image_url?: string | null
+          hosted_by_name?: string | null
+          hosted_by_subtitle?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean

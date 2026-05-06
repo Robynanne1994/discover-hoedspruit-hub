@@ -636,6 +636,42 @@ const EventDetail = () => {
         )}
 
 
+        {/* Hosted By */}
+        {(event as any).hosted_by_name && (
+          <section style={{ marginBottom: 24 }}>
+            <SectionLabel eyebrow="Host" title="Hosted By" />
+            <div style={{
+              background: SURFACE, borderRadius: 24, padding: "16px 20px",
+              display: "flex", alignItems: "center", gap: 14,
+            }}>
+              {(event as any).hosted_by_image_url && (
+                <img
+                  src={(event as any).hosted_by_image_url}
+                  alt={(event as any).hosted_by_name}
+                  style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                />
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                {(event as any).hosted_by_subtitle && (
+                  <p style={{
+                    margin: 0, fontFamily: font, fontSize: 11, fontWeight: 500,
+                    letterSpacing: "0.08em", textTransform: "uppercase", color: "#715a3d",
+                    marginBottom: 4,
+                  }}>
+                    {(event as any).hosted_by_subtitle}
+                  </p>
+                )}
+                <p style={{
+                  margin: 0, fontFamily: FONT_HEAD, fontSize: 18, fontWeight: 500,
+                  color: TEXT, lineHeight: 1.2,
+                }}>
+                  {(event as any).hosted_by_name}
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
+
 
         {contactRows.length > 0 && (
           <section style={{ marginBottom: 24 }}>
