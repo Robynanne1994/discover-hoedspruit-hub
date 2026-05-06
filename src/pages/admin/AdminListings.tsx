@@ -216,6 +216,11 @@ const AdminListings = () => {
         custom_text_2: values.custom_text_2?.trim() || null,
         custom_title_3: values.custom_title_3?.trim() || null,
         custom_text_3: values.custom_text_3?.trim() || null,
+        cause: values.cause?.trim() || null,
+        impact: values.impact?.trim() || null,
+        ways_to_give: values.ways_to_give?.trim() || null,
+        volunteering: values.volunteering?.trim() || null,
+        visiting: values.visiting?.trim() || null,
       };
 
       // Treat "-" as empty for any string field on save
