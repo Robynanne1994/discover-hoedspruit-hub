@@ -380,6 +380,67 @@ const EventDetail = () => {
           </p>
         )}
 
+        {/* Quick action buttons */}
+        {(() => {
+          const actions: { key: string; label: string; href: string; icon: React.ReactNode }[] = [];
+          if (contactPhone) {
+            actions.push({
+              key: "call",
+              label: "Call",
+              href: `tel:${contactPhone.replace(/\s/g, "")}`,
+              icon: <Phone size={22} strokeWidth={1.6} color="#FFFFFF" />,
+            });
+          }
+          if (mapsLink) {
+            actions.push({
+              key: "directions",
+              label: "Directions",
+              href: mapsLink,
+              icon: <MapPin size={22} strokeWidth={1.6} color="#FFFFFF" />,
+            });
+          }
+          if (waClean) {
+            actions.push({
+              key: "whatsapp",
+              label: "WhatsApp",
+              href: `https://wa.me/${waClean}`,
+              icon: <WhatsappIcon color="#FFFFFF" />,
+            });
+          } else if (contactEmail) {
+            actions.push({
+              key: "email",
+              label: "Email",
+              href: `mailto:${contactEmail}`,
+              icon: <Mail size={22} strokeWidth={1.6} color="#FFFFFF" />,
+            });
+          }
+          if (actions.length === 0) return null;
+          return (
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${actions.length}, 1fr)`, gap: 10, marginBottom: 20 }}>
+              {actions.map((a) => (
+                <a
+                  key={a.key}
+                  href={a.href}
+                  target={a.href.startsWith("http") ? "_blank" : undefined}
+                  rel={a.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  style={{
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+                    background: "#2E241C", color: "#FFFFFF", borderRadius: 18,
+                    height: 78, textDecoration: "none",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.12)",
+                    transition: "transform 150ms ease-out",
+                    fontFamily: font,
+                  }}
+                  {...pressScale("0.97")}
+                >
+                  {a.icon}
+                  <span style={{ fontSize: 13, fontWeight: 500, color: "#FFFFFF" }}>{a.label}</span>
+                </a>
+              ))}
+            </div>
+          );
+        })()}
+
         {/* Book Now CTA */}
         {bookingLink && (
           <div style={{ marginBottom: 20 }}>
