@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Heart, Calendar, Tag, MapPinCheck, Bookmark, Bell, Settings, UserCircle, Shield, HelpCircle, MessageSquare, Phone, Info, Megaphone, LogOut } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/hooks/useAuth";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
