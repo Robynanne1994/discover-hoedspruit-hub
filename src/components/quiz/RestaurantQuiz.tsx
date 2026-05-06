@@ -1,143 +1,162 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Baby, PawPrint, Accessibility, DollarSign, ArrowRight, ArrowLeft, RotateCcw, MapPin, Phone, Globe, UtensilsCrossed, Cigarette, Coffee, Sparkles, ChefHat, Armchair, TreePine, ShoppingBag } from "lucide-react";
+import {
+  Baby,
+  PawPrint,
+  Cigarette,
+  Utensils,
+  Armchair,
+  Sparkles,
+  ChefHat,
+  ShoppingBag,
+  ArrowRight,
+  ArrowLeft,
+  RotateCcw,
+  MapPin,
+  Star,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 
 type Answers = {
-  kids: boolean | null;
-  pets: boolean | null;
-  wheelchair: boolean | null;
-  priceLevel: number | null;
-  smoking: boolean | null;
-  meal: string | null;
-  vibe: string | null;
-  cuisine: string | null;
-  seating: string | null;
-  kidsPlayground: boolean | null;
-  serviceType: string | null;
+  kids: "yes" | "no" | null;
+  pets: "yes" | "no" | null;
+  smoking: "yes" | "no" | null;
+  meal: string | null; // "Any" | "Breakfast" | ...
+  seating: string | null; // "Any" | "Indoor" | "Outdoor" | "Bar"
+  vibe: string | null; // "Any" | ...
+  cuisine: string | null; // "Any" | ...
+  service: string | null; // "Any" | "Sit down" | "Take away"
 };
 
-const mealOptions = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
-const vibeOptions = ["Casual", "Social", "Fancy", "Scenic"];
-const cuisineOptions = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food"];
-const seatingOptions = ["Indoor", "Outdoor", "No Seating", "Bar"];
-const serviceTypeOptions = ["Sit down", "Take away"];
+const initialAnswers: Answers = {
+  kids: null,
+  pets: null,
+  smoking: null,
+  meal: null,
+  seating: null,
+  vibe: null,
+  cuisine: null,
+  service: null,
+};
+
+type QType = "yesno" | "options";
 
 type QuestionDef = {
   key: keyof Answers;
   title: string;
   subtitle: string;
   icon: React.ElementType;
-  type: "boolean" | "price" | "multi";
+  type: QType;
   options?: string[];
 };
 
-const questions: QuestionDef[] = [
-  { key: "kids", title: "Are you bringing kids?", subtitle: "We'll find places that are family-friendly", icon: Baby, type: "boolean" },
-  { key: "pets", title: "Bringing any furry friends?", subtitle: "We'll show pet-friendly restaurants", icon: PawPrint, type: "boolean" },
-  { key: "wheelchair", title: "Need wheelchair access?", subtitle: "We'll filter for accessible venues", icon: Accessibility, type: "boolean" },
-  { key: "smoking", title: "Do you need a smoking area?", subtitle: "We'll find places that allow smoking", icon: Cigarette, type: "boolean" },
-  { key: "kidsPlayground", title: "Need a kids playground?", subtitle: "We'll find places with play areas", icon: TreePine, type: "boolean" },
-  { key: "meal", title: "What meal are you looking for?", subtitle: "Pick your preferred meal type", icon: Coffee, type: "multi", options: mealOptions },
-  { key: "vibe", title: "What vibe are you after?", subtitle: "Choose the atmosphere you prefer", icon: Sparkles, type: "multi", options: vibeOptions },
-  { key: "cuisine", title: "What cuisine do you fancy?", subtitle: "Pick a cuisine type", icon: ChefHat, type: "multi", options: cuisineOptions },
-  { key: "seating", title: "Seating preference?", subtitle: "Where would you like to sit?", icon: Armchair, type: "multi", options: seatingOptions },
-  { key: "serviceType", title: "Sit down or take away?", subtitle: "How would you like to dine?", icon: ShoppingBag, type: "multi", options: serviceTypeOptions },
-  { key: "priceLevel", title: "What's your budget?", subtitle: "Pick your preferred price range", icon: DollarSign, type: "price" },
-];
+const MEAL_OPTIONS = ["Not sure yet", "Breakfast", "Brunch", "Lunch", "Dinner", "Snacks"];
+const SEATING_OPTIONS = ["Any", "Indoor", "Outdoor", "Bar"];
+const VIBE_OPTIONS = ["Any", "Casual", "Family", "Romantic", "Fine Dining", "Live Music"];
+const CUISINE_OPTIONS = ["Any", "African", "Italian", "Pizza", "Burgers", "Seafood", "Sushi", "Steakhouse", "Vegetarian"];
+const SERVICE_OPTIONS = ["Any", "Sit down", "Take away"];
 
-const priceLevels = [
-  { value: 1, label: "Budget", description: "Affordable & casual" },
-  { value: 2, label: "Moderate", description: "Mid-range dining" },
-  { value: 3, label: "Upscale", description: "Fine dining experience" },
-  { value: 4, label: "Premium", description: "Top-tier luxury" },
+const questions: QuestionDef[] = [
+  { key: "kids", title: "Are you bringing kids?", subtitle: "We'll filter for child-friendly spots", icon: Baby, type: "yesno" },
+  { key: "pets", title: "Are you bringing pets?", subtitle: "We'll show pet-friendly venues", icon: PawPrint, type: "yesno" },
+  { key: "smoking", title: "Do you need a smoking section?", subtitle: "We'll find places that allow smoking", icon: Cigarette, type: "yesno" },
+  { key: "meal", title: "What meal would you like?", subtitle: "Pick your preferred meal type", icon: Utensils, type: "options", options: MEAL_OPTIONS },
+  { key: "seating", title: "Seating preference?", subtitle: "Where would you like to sit?", icon: Armchair, type: "options", options: SEATING_OPTIONS },
+  { key: "vibe", title: "What vibe are you after?", subtitle: "Choose the atmosphere you prefer", icon: Sparkles, type: "options", options: VIBE_OPTIONS },
+  { key: "cuisine", title: "Any cuisine in mind?", subtitle: "Pick a cuisine type", icon: ChefHat, type: "options", options: CUISINE_OPTIONS },
+  { key: "service", title: "Sit down or take away?", subtitle: "How would you like to dine?", icon: ShoppingBag, type: "options", options: SERVICE_OPTIONS },
 ];
 
 interface RestaurantQuizProps {
   onBack: () => void;
 }
 
+const RESTAURANT_CAT_ID = "c867119f-8ca9-45a7-870e-6671f028748c";
+
 const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({
-    kids: null, pets: null, wheelchair: null, priceLevel: null,
-    smoking: null, meal: null, vibe: null, cuisine: null,
-    seating: null, kidsPlayground: null, serviceType: null,
-  });
+  const [answers, setAnswers] = useState<Answers>(initialAnswers);
   const [showResults, setShowResults] = useState(false);
 
   const { data: listings } = useQuery({
-    queryKey: ["quiz-listings"],
+    queryKey: ["restaurant-quiz-listings"],
     queryFn: async () => {
+      // Get listing IDs in the Restaurants & Cafés category (junction + legacy)
+      const [{ data: jData }, { data: lData }] = await Promise.all([
+        supabase.from("listing_categories").select("listing_id").eq("category_id", RESTAURANT_CAT_ID),
+        supabase.from("listings").select("id").eq("category_id", RESTAURANT_CAT_ID),
+      ]);
+      const ids = new Set<string>();
+      (jData || []).forEach((r: any) => ids.add(r.listing_id));
+      (lData || []).forEach((r: any) => ids.add(r.id));
+      if (ids.size === 0) return [];
       const { data, error } = await supabase
         .from("listings")
-        .select("*, listing_categories(category_id, categories:category_id(title))")
-        .eq("show_attributes", true);
+        .select("*")
+        .in("id", Array.from(ids));
       if (error) throw error;
       return sanitizeDashesList(data as any[]);
     },
   });
 
-  const filteredListings = listings?.filter((listing) => {
-    if (answers.kids === true && !listing.good_for_kids) return false;
-    if (answers.pets === true && !listing.pets_allowed) return false;
-    if (answers.wheelchair === true && !listing.wheelchair_friendly) return false;
-    if (answers.smoking === true && !listing.smoking_allowed) return false;
-    if (answers.kidsPlayground === true && !listing.kids_playground) return false;
-    if (answers.priceLevel !== null && listing.price_level !== null && listing.price_level > answers.priceLevel) return false;
-    if (answers.meal !== null && listing.meal && !listing.meal.includes(answers.meal)) return false;
-    if (answers.vibe !== null && listing.vibe && !listing.vibe.includes(answers.vibe)) return false;
-    if (answers.cuisine !== null && listing.cuisine && !listing.cuisine.includes(answers.cuisine)) return false;
-    if (answers.seating !== null && listing.seating && !listing.seating.includes(answers.seating)) return false;
-    if (answers.serviceType !== null && listing.service_type && !listing.service_type.includes(answers.serviceType)) return false;
-    return true;
-  }) ?? [];
+  const filteredListings = useMemo(() => {
+    if (!listings) return [];
+    const includesCI = (arr: string[] | null | undefined, v: string) =>
+      (arr || []).map((x) => x.toLowerCase()).includes(v.toLowerCase());
+
+    return listings.filter((l: any) => {
+      if (answers.kids === "yes" && !(l.good_for_kids || l.child_friendly)) return false;
+      if (answers.pets === "yes" && !l.pets_allowed) return false;
+      if (answers.smoking === "yes" && !l.smoking_allowed) return false;
+
+      if (answers.meal && answers.meal !== "Not sure yet") {
+        const target = answers.meal === "Snacks" ? "Pub Grub" : answers.meal;
+        if (!includesCI(l.meal, target) && !includesCI(l.meal, answers.meal)) return false;
+      }
+      if (answers.seating && answers.seating !== "Any") {
+        if (!includesCI(l.seating, answers.seating)) return false;
+      }
+      if (answers.vibe && answers.vibe !== "Any") {
+        if (!includesCI(l.vibe, answers.vibe)) return false;
+      }
+      if (answers.cuisine && answers.cuisine !== "Any") {
+        if (!includesCI(l.cuisine, answers.cuisine)) return false;
+      }
+      if (answers.service && answers.service !== "Any") {
+        if (!includesCI(l.service_type, answers.service)) return false;
+      }
+      return true;
+    });
+  }, [listings, answers]);
 
   const advance = () => {
     if (step < questions.length - 1) {
-      setTimeout(() => setStep(step + 1), 300);
+      setTimeout(() => setStep((s) => s + 1), 250);
     } else {
-      setTimeout(() => setShowResults(true), 300);
+      setTimeout(() => setShowResults(true), 250);
     }
   };
 
-  const handleBooleanAnswer = (key: keyof Answers, value: boolean) => {
-    setAnswers((prev) => ({ ...prev, [key]: value }));
+  const handleAnswer = (key: keyof Answers, value: string) => {
+    setAnswers((prev) => ({ ...prev, [key]: value as any }));
     advance();
-  };
-
-  const handleMultiAnswer = (key: keyof Answers, value: string) => {
-    setAnswers((prev) => ({ ...prev, [key]: value }));
-    advance();
-  };
-
-  const handlePriceAnswer = (value: number) => {
-    setAnswers((prev) => ({ ...prev, priceLevel: value }));
-    setTimeout(() => setShowResults(true), 300);
   };
 
   const handleSkip = () => {
     const q = questions[step];
     setAnswers((prev) => ({ ...prev, [q.key]: null }));
-    if (step < questions.length - 1) {
-      setStep(step + 1);
-    } else {
-      setShowResults(true);
-    }
+    if (step < questions.length - 1) setStep(step + 1);
+    else setShowResults(true);
   };
 
   const reset = () => {
     setStep(0);
-    setAnswers({
-      kids: null, pets: null, wheelchair: null, priceLevel: null,
-      smoking: null, meal: null, vibe: null, cuisine: null,
-      seating: null, kidsPlayground: null, serviceType: null,
-    });
+    setAnswers(initialAnswers);
     setShowResults(false);
   };
 
@@ -148,11 +167,11 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
     <div className="w-full max-w-lg mx-auto">
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-          <UtensilsCrossed className="w-4 h-4" />
-          Where to Eat in Hoedspruit
+          <Utensils className="w-4 h-4" />
+          Restaurants & Cafés
         </div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Restaurant Finder</h1>
-        <p className="text-muted-foreground">Answer a few questions and we'll match you with the perfect spot</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Where to eat or drink</h1>
+        <p className="text-muted-foreground">Answer a few quick questions and we'll match you with the perfect spot</p>
       </div>
 
       <Progress value={progress} className="mb-8 h-2" />
@@ -166,25 +185,30 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
             <h2 className="text-2xl font-semibold text-foreground mb-2">{currentQuestion.title}</h2>
             <p className="text-muted-foreground mb-8">{currentQuestion.subtitle}</p>
 
-            {currentQuestion.type === "boolean" ? (
+            {currentQuestion.type === "yesno" ? (
               <div className="flex gap-4 justify-center">
-                <Button size="lg" className="px-8 text-lg" onClick={() => handleBooleanAnswer(currentQuestion.key, true)}>Yes</Button>
-                <Button size="lg" variant="outline" className="px-8 text-lg" onClick={() => handleBooleanAnswer(currentQuestion.key, false)}>No</Button>
-              </div>
-            ) : currentQuestion.type === "multi" ? (
-              <div className="grid grid-cols-2 gap-3">
-                {currentQuestion.options?.map((option) => (
-                  <Button key={option} variant="outline" className="h-auto py-3 hover:bg-primary hover:text-primary-foreground transition-colors" onClick={() => handleMultiAnswer(currentQuestion.key, option)}>
-                    {option}
-                  </Button>
-                ))}
+                <Button size="lg" className="px-8 text-lg" onClick={() => handleAnswer(currentQuestion.key, "yes")}>
+                  Yes
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="px-8 text-lg"
+                  onClick={() => handleAnswer(currentQuestion.key, "no")}
+                >
+                  No
+                </Button>
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-3">
-                {priceLevels.map((level) => (
-                  <Button key={level.value} variant="outline" className="h-auto py-4 flex flex-col gap-1 hover:bg-primary hover:text-primary-foreground transition-colors" onClick={() => handlePriceAnswer(level.value)}>
-                    <span className="font-semibold">{level.label}</span>
-                    <span className="text-xs opacity-70">{level.description}</span>
+                {currentQuestion.options?.map((option) => (
+                  <Button
+                    key={option}
+                    variant="outline"
+                    className="h-auto py-3 hover:bg-primary hover:text-primary-foreground transition-colors"
+                    onClick={() => handleAnswer(currentQuestion.key, option)}
+                  >
+                    {option}
                   </Button>
                 ))}
               </div>
@@ -205,7 +229,7 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-xl font-semibold text-foreground">
               {filteredListings.length > 0
-                ? `We found ${filteredListings.length} match${filteredListings.length !== 1 ? "es" : ""} for you!`
+                ? `We found ${filteredListings.length} match${filteredListings.length !== 1 ? "es" : ""}!`
                 : "No exact matches found"}
             </h2>
             <Button variant="outline" size="sm" onClick={reset}>
@@ -217,13 +241,15 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
             <Card className="mb-4">
               <CardContent className="p-6 text-center text-muted-foreground">
                 <p>Try adjusting your preferences for more results.</p>
-                <Button className="mt-4" onClick={reset}>Start Over</Button>
+                <Button className="mt-4" onClick={reset}>
+                  Start Over
+                </Button>
               </CardContent>
             </Card>
           )}
 
           <div className="space-y-4">
-            {filteredListings.map((listing) => (
+            {filteredListings.map((listing: any) => (
               <Link key={listing.id} to={`/listing/${listing.id}`}>
                 <Card className="overflow-hidden hover:shadow-card transition-shadow cursor-pointer border border-border">
                   <div className="flex">
@@ -234,17 +260,20 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
                     )}
                     <CardContent className="p-4 flex-1 min-w-0">
                       <h3 className="font-semibold text-foreground text-lg truncate">{listing.title}</h3>
-                      {listing.description && <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{listing.description}</p>}
+                      {listing.description && (
+                        <p className="text-sm text-muted-foreground line-clamp-2 mt-1">{listing.description}</p>
+                      )}
                       <div className="flex flex-wrap gap-3 mt-2 text-xs text-muted-foreground">
-                        {listing.location && <span className="flex items-center gap-1"><MapPin className="w-3 h-3" /> {listing.location}</span>}
-                        {listing.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" /> {listing.phone}</span>}
-                        {listing.website && <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> Website</span>}
-                      </div>
-                      <div className="flex flex-wrap gap-1.5 mt-2">
-                        {listing.good_for_kids && <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full"><Baby className="w-3 h-3" /> Kids</span>}
-                        {listing.pets_allowed && <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full"><PawPrint className="w-3 h-3" /> Pets</span>}
-                        {listing.wheelchair_friendly && <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full"><Accessibility className="w-3 h-3" /> Accessible</span>}
-                        {listing.price_level && <span className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">{"R".repeat(listing.price_level)}</span>}
+                        {listing.location && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" /> {listing.location}
+                          </span>
+                        )}
+                        {listing.google_rating && (
+                          <span className="flex items-center gap-1">
+                            <Star className="w-3 h-3" /> {Number(listing.google_rating).toFixed(1)}
+                          </span>
+                        )}
                       </div>
                     </CardContent>
                   </div>
@@ -257,7 +286,7 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
 
       <div className="text-center mt-8">
         <Button variant="ghost" onClick={onBack}>
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Quizzes
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back
         </Button>
       </div>
     </div>
