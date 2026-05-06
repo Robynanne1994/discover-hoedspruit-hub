@@ -127,7 +127,7 @@ const Feedback = () => {
             marginBottom: 14,
           }}
         >
-          Give Us
+          Give us
           <br />
           Feedback
         </h1>
