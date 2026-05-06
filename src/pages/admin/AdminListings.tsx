@@ -367,6 +367,11 @@ const AdminListings = () => {
       custom_text_2: (l as any).custom_text_2 ?? "",
       custom_title_3: (l as any).custom_title_3 ?? "",
       custom_text_3: (l as any).custom_text_3 ?? "",
+      cause: (l as any).cause ?? "",
+      impact: (l as any).impact ?? "",
+      ways_to_give: (l as any).ways_to_give ?? "",
+      volunteering: (l as any).volunteering ?? "",
+      visiting: (l as any).visiting ?? "",
     });
     setOpen(true);
   };
