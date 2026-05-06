@@ -74,11 +74,11 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
               style={{
                 position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 20,
                 width: 44, height: 44, borderRadius: 999,
-                background: "rgba(255,255,255,0.12)", border: "none", cursor: "pointer",
+                background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >
-              <ChevronLeft size={24} color="#fff" strokeWidth={2} />
+              <ChevronLeft size={24} color="#0a0a0a" strokeWidth={2} />
             </button>
             <button
               onClick={next}
