@@ -85,7 +85,11 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           </div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
           <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
-          <div><Label>Date</Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="YYYY-MM-DD or text" /></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
+            <div><Label>End Date <span className="text-xs text-muted-foreground">(same as start for 1-day event)</span></Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
+          </div>
+          <div><Label>Date <span className="text-xs text-muted-foreground">(legacy free-text — used only when start/end dates are empty, e.g. "Every Saturday")</span></Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Time</Label><Input type="time" value={form.start_time || ""} onChange={(e) => set("start_time", e.target.value || null)} /></div>
             <div><Label>End Time</Label><Input type="time" value={form.end_time || ""} onChange={(e) => set("end_time", e.target.value || null)} /></div>
