@@ -360,9 +360,9 @@ const EventDetail = () => {
 
         {/* Title */}
         <h1 style={{
-          fontFamily: FONT_HEAD, fontSize: 28, fontWeight: 500, lineHeight: "28px",
-          letterSpacing: "-0.84px", color: TEXT, textTransform: "none",
-          marginTop: 0, marginBottom: 8,
+          fontFamily: FONT_HEAD, fontSize: 32, fontWeight: 500, lineHeight: "34px",
+          letterSpacing: "-0.96px", color: TEXT, textTransform: "none",
+          marginTop: 0, marginBottom: 8, textAlign: "center",
         }}>
           {event.title}
         </h1>
