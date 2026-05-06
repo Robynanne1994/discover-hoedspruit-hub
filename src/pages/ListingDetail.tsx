@@ -798,6 +798,34 @@ const ListingDetail = () => {
           </>
         )}
 
+        {isListingNGO && (() => {
+          const ngoSections: { label: string; value: string | null }[] = [
+            { label: "Cause", value: (listing as any).cause },
+            { label: "Impact", value: (listing as any).impact },
+            { label: "Ways To Give", value: (listing as any).ways_to_give },
+            { label: "Volunteering", value: (listing as any).volunteering },
+            { label: "Visiting", value: (listing as any).visiting },
+          ].filter((s) => s.value && s.value.trim());
+          if (ngoSections.length === 0) return null;
+          return (
+            <>
+              {ngoSections.map((s) => (
+                <div key={s.label}>
+                  <SectionHeading mt={32}>{s.label}</SectionHeading>
+                  {s.value!.split(/\n+/).map((p, i, arr) => (
+                    <p key={i} style={{
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
+                      color: "#0A0A0A", margin: 0,
+                      marginBottom: i < arr.length - 1 ? 12 : 0,
+                    }}>{p}</p>
+                  ))}
+                </div>
+              ))}
+            </>
+          );
+        })()}
+
         {accordionSections.length > 0 && (
           <>
             <SectionHeading mt={32}>Details</SectionHeading>
