@@ -360,27 +360,42 @@ const SpecialDetail = () => {
             ].filter((c) => c.headline || c.sublabel);
             if (cols.length === 0) return null;
             return (
-              <div style={{ display: "flex", alignItems: "stretch", justifyContent: "center", gap: 0, margin: "18px 0 14px" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "stretch",
+                  marginTop: 18,
+                  marginBottom: 14,
+                  background: "#F5EFE3",
+                  border: "1px solid #E5DAC5",
+                  borderRadius: 18,
+                  padding: "18px 8px",
+                }}
+              >
                 {cols.map((c, i) => (
                   <div
                     key={i}
                     style={{
                       flex: 1,
                       minWidth: 0,
-                      padding: "4px 10px",
+                      padding: "0 10px",
                       textAlign: "center",
-                      borderLeft: i === 0 ? "none" : `1px solid ${DIVIDER}`,
+                      borderLeft: i === 0 ? "none" : "1px solid #E5DAC5",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      gap: 8,
                     }}
                   >
-                    {c.headline && (
-                      <div style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "24px", letterSpacing: "-0.4px", color: "#0A0A0A" }}>
-                        {c.headline}
-                      </div>
-                    )}
                     {c.sublabel && (
-                      <div style={{ marginTop: 6, fontFamily: FONT, fontWeight: 500, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: MUTED }}>
+                      <p style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8a7a5e" }}>
                         {c.sublabel}
-                      </div>
+                      </p>
+                    )}
+                    {c.headline && (
+                      <p style={{ margin: 0, fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 13, lineHeight: 1.25, color: "#0A0A0A", wordBreak: "break-word" }}>
+                        {c.headline}
+                      </p>
                     )}
                   </div>
                 ))}
