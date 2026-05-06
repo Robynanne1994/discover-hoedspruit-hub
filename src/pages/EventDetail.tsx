@@ -369,7 +369,7 @@ const EventDetail = () => {
           ].filter((s) => s.value);
           if (stats.length === 0) return null;
           return (
-            <div style={{ display: "flex", alignItems: "stretch", marginTop: 14, marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "stretch", marginTop: 28, marginBottom: 20 }}>
               {stats.map((s, i) => (
                 <div
                   key={s.label}
@@ -382,16 +382,16 @@ const EventDetail = () => {
                   }}
                 >
                   <p style={{
-                    margin: 0, fontFamily: font, fontWeight: 500, fontSize: 15,
-                    lineHeight: 1.2, color: TEXT, wordBreak: "break-word",
-                  }}>
-                    {s.value}
-                  </p>
-                  <p style={{
                     margin: 0, fontFamily: font, fontWeight: 400, fontSize: 11,
                     letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED,
                   }}>
                     {s.label}
+                  </p>
+                  <p style={{
+                    margin: 0, fontFamily: font, fontWeight: 500, fontSize: 15,
+                    lineHeight: 1.2, color: TEXT, wordBreak: "break-word",
+                  }}>
+                    {s.value}
                   </p>
                 </div>
               ))}
