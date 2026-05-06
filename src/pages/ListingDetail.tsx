@@ -429,9 +429,11 @@ const ListingDetail = () => {
   const formatTime = (s: string) => (s.includes(":") ? s : `${s}:00`);
 
   type OpenStatus =
-    | { state: "open"; closes: string }
+    | { state: "open"; closes?: string }
     | { state: "closed"; opensAt?: string; opensDay?: string }
     | { state: "temporarily_closed" };
+
+  const isAlwaysOpen = (s: string) => /always\s*open|24\s*\/?\s*7|24\s*hours?|open\s*24/i.test(s);
 
   const computeOpenStatus = (): OpenStatus | null => {
     if (!openingHours) return null;
