@@ -217,7 +217,7 @@ const ContactUs = () => {
         </h1>
         <p style={{
           fontFamily: FF, fontSize: 15, fontWeight: 400,
-          lineHeight: 1.35, color: "rgba(18,18,20,0.55)",
+          lineHeight: 1.35, color: "#0a0a0a",
           margin: 0, maxWidth: 300,
         }}>
           Questions, feedback, or a local tip worth sharing. We read everything.
