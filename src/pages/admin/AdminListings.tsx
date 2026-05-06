@@ -774,7 +774,29 @@ const AdminListings = () => {
                   </div>
                 )}
 
-                <div className="flex gap-2">
+                {isNgoType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-sm font-medium text-foreground">NGO & Volunteering Fields</p>
+                    {[
+                      { label: "Cause", key: "cause" as const, placeholder: "What cause does this NGO support?" },
+                      { label: "Impact", key: "impact" as const, placeholder: "What impact have they made?" },
+                      { label: "Ways To Give", key: "ways_to_give" as const, placeholder: "How can supporters donate or contribute?" },
+                      { label: "Volunteering", key: "volunteering" as const, placeholder: "Volunteering opportunities..." },
+                      { label: "Visiting", key: "visiting" as const, placeholder: "Visiting information..." },
+                    ].map(({ label, key, placeholder }) => (
+                      <div key={key}>
+                        <Label>{label}</Label>
+                        <Textarea
+                          rows={3}
+                          value={form[key] as string}
+                          onChange={(e) => setForm({ ...form, [key]: e.target.value })}
+                          placeholder={placeholder}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                   {editing && (
                     <Button
                       type="button"
