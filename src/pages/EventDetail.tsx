@@ -188,6 +188,13 @@ const EventDetail = () => {
   const contactPhone = (event as any).contact_phone || null;
   const contactWhatsapp = (event as any).contact_whatsapp || null;
   const waClean = contactWhatsapp ? contactWhatsapp.replace(/[^0-9]/g, "") : null;
+  const formatWhatsapp = (digits: string) => {
+    let local = digits;
+    if (local.startsWith("27")) local = "0" + local.slice(2);
+    if (local.length === 10) return `${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`;
+    return local;
+  };
+  const waDisplay = waClean ? formatWhatsapp(waClean) : null;
   const galleryImages: string[] = (event as any).gallery_images ?? [];
   const bookingLink = (event as any).booking_link || null;
   const bookingLinkLabel = (event as any).booking_link_label?.trim() || null;
