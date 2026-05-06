@@ -57,7 +57,7 @@ type QuestionDef = {
 
 const MEAL_OPTIONS = ["Not sure yet", "Breakfast", "Brunch", "Lunch", "Dinner", "Snacks"];
 const SEATING_OPTIONS = ["Any", "Indoor", "Outdoor", "Bar"];
-const VIBE_OPTIONS = ["Any", "Casual", "Family", "Romantic", "Fine Dining", "Live Music"];
+const VIBE_OPTIONS = ["Any", "Casual", "Family", "Romantic", "Fine Dining", "Live Music", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic"];
 const CUISINE_OPTIONS = ["Any", "African", "Italian", "Pizza", "Burgers", "Seafood", "Sushi", "Steakhouse", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Mexican", "Asian", "Desserts", "Healthy Eats", "Pasta"];
 const SERVICE_OPTIONS = ["Any", "Sit down", "Take away"];
 
