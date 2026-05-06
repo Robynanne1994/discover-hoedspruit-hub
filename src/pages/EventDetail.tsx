@@ -411,7 +411,7 @@ const EventDetail = () => {
                       {s.label}
                     </p>
                     <p style={{
-                      margin: 0, fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 15,
+                      margin: 0, fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 13,
                       lineHeight: 1.25, color: TEXT, wordBreak: "break-word",
                     }}>
                       {s.value}
