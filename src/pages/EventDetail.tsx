@@ -246,20 +246,13 @@ const EventDetail = () => {
             </div>
             <div style={{ minWidth: 0 }}>
               <p style={{
-                fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-                letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2,
-                textTransform: "capitalize",
-              }}>
-                {row.label}
-              </p>
-              <p style={{
                 fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px",
                 letterSpacing: 0, color: TEXT, margin: 0, wordBreak: "break-word",
               }}>
                 {row.value}
               </p>
             </div>
-            {row.href && <ArrowUpRight size={20} strokeWidth={1.5} color={TEXT} />}
+            {row.href && <ArrowUpRight size={20} strokeWidth={1.5} color="#5b4632" />}
           </Wrapper>
         );
       })}
