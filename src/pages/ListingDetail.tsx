@@ -459,8 +459,9 @@ const ListingDetail = () => {
       const next = findNextOpen(1);
       return { state: "closed", ...(next || {}) };
     }
+    if (isAlwaysOpen(todayVal)) return { state: "open" };
     const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-    if (!m) return { state: "open", closes: todayVal };
+    if (!m) return { state: "open" };
     const now = new Date();
     const cur = now.getHours() * 60 + now.getMinutes();
     const o = parseTimeStr(m[1]);
