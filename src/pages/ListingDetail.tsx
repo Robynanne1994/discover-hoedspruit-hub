@@ -1030,7 +1030,7 @@ const ListingDetail = () => {
                       }} />
                       <span style={{
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
-                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#5b4632",
+                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#0a0a0a",
                       }}>
                         {openStatus.state === "open"
                           ? "Open Now"
