@@ -280,8 +280,14 @@ export type Database = {
           gallery_images: string[] | null
           google_maps_link: string | null
           hosted_by_image_url: string | null
+          hosted_by_image_url_2: string | null
+          hosted_by_image_url_3: string | null
           hosted_by_name: string | null
+          hosted_by_name_2: string | null
+          hosted_by_name_3: string | null
           hosted_by_subtitle: string | null
+          hosted_by_subtitle_2: string | null
+          hosted_by_subtitle_3: string | null
           id: string
           image_url: string | null
           is_featured: boolean
@@ -312,8 +318,14 @@ export type Database = {
           gallery_images?: string[] | null
           google_maps_link?: string | null
           hosted_by_image_url?: string | null
+          hosted_by_image_url_2?: string | null
+          hosted_by_image_url_3?: string | null
           hosted_by_name?: string | null
+          hosted_by_name_2?: string | null
+          hosted_by_name_3?: string | null
           hosted_by_subtitle?: string | null
+          hosted_by_subtitle_2?: string | null
+          hosted_by_subtitle_3?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
@@ -344,8 +356,14 @@ export type Database = {
           gallery_images?: string[] | null
           google_maps_link?: string | null
           hosted_by_image_url?: string | null
+          hosted_by_image_url_2?: string | null
+          hosted_by_image_url_3?: string | null
           hosted_by_name?: string | null
+          hosted_by_name_2?: string | null
+          hosted_by_name_3?: string | null
           hosted_by_subtitle?: string | null
+          hosted_by_subtitle_2?: string | null
+          hosted_by_subtitle_3?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
