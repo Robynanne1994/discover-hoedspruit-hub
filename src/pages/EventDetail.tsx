@@ -360,25 +360,44 @@ const EventDetail = () => {
           {event.title}
         </h1>
 
-        {/* Subtitle line 1: date */}
-        {event.date && (
-          <p style={{
-            fontFamily: font, fontWeight: 500, fontSize: 14, lineHeight: "20px",
-            letterSpacing: 0, color: TEXT, margin: 0, marginBottom: 2,
-          }}>
-            {formatDate(event.date)}
-          </p>
-        )}
-
-        {/* Subtitle line 2: time + venue */}
-        {(timeDisplay || event.location) && (
-          <p style={{
-            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "16px",
-            letterSpacing: 0, color: "#0a0a0a", margin: 0, marginBottom: 14,
-          }}>
-            {[timeDisplay, event.location].filter(Boolean).join(" · ")}
-          </p>
-        )}
+        {/* Stat row: Date · Time · Location */}
+        {(() => {
+          const stats = [
+            { label: "Date", value: event.date ? formatDate(event.date) : null },
+            { label: "Time", value: timeDisplay },
+            { label: "Location", value: event.location },
+          ].filter((s) => s.value);
+          if (stats.length === 0) return null;
+          return (
+            <div style={{ display: "flex", alignItems: "stretch", marginTop: 14, marginBottom: 16 }}>
+              {stats.map((s, i) => (
+                <div
+                  key={s.label}
+                  style={{
+                    flex: 1,
+                    padding: "0 8px",
+                    textAlign: "center",
+                    borderLeft: i > 0 ? `1px solid ${DIVIDER}` : "none",
+                    display: "flex", flexDirection: "column", justifyContent: "center", gap: 4,
+                  }}
+                >
+                  <p style={{
+                    margin: 0, fontFamily: font, fontWeight: 500, fontSize: 15,
+                    lineHeight: 1.2, color: TEXT, wordBreak: "break-word",
+                  }}>
+                    {s.value}
+                  </p>
+                  <p style={{
+                    margin: 0, fontFamily: font, fontWeight: 400, fontSize: 11,
+                    letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED,
+                  }}>
+                    {s.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          );
+        })()}
 
         {/* Quick action buttons */}
         {(() => {
