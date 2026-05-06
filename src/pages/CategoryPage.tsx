@@ -247,7 +247,7 @@ const CategoryPage = () => {
       return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
     }
     return result;
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy, search]);
 
   const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Rating";
   const count = filteredListings.length;
