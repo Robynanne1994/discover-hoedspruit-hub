@@ -318,6 +318,7 @@ const AdminListings = () => {
       service_type: (l as any).service_type ?? [],
       kids_menu: (l as any).kids_menu ?? null,
       high_chairs: (l as any).high_chairs ?? null,
+      nappy_changing_station: (l as any).nappy_changing_station ?? null,
       wheelchair_car_park: (l as any).wheelchair_car_park ?? null,
       wheelchair_entrance: (l as any).wheelchair_entrance ?? null,
       wheelchair_seating: (l as any).wheelchair_seating ?? null,
