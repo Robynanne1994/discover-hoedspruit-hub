@@ -11,7 +11,7 @@ import {
   BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNgoCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -240,6 +240,7 @@ const ListingDetail = () => {
   const isListingRestaurant = listingCategories?.some((cat) => isRestaurantCategory(cat.title)) ?? false;
   const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
   const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
+  const isListingNgo = listingCategories?.some((cat) => isNgoCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
