@@ -380,7 +380,7 @@ const ListingDetail = () => {
     const shop = filterDefined([
       { label: "Air conditioned", value: l.air_conditioned },
       { label: "Delivery available", value: l.delivery_available },
-      { label: "Click & collect", value: l.click_and_collect },
+      
       { label: "Order online", value: l.order_online },
       { label: "Parking available", value: l.parking_available },
       { label: "Wheelchair friendly", value: l.wheelchair_friendly },

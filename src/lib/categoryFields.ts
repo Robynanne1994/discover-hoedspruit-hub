@@ -19,7 +19,7 @@ export const RESTAURANT_ONLY_FIELDS = [
 ] as const;
 
 export const SHOPPING_ONLY_FIELDS = [
-  "air_conditioned", "payment_methods", "delivery_available", "click_and_collect",
+  "air_conditioned", "payment_methods", "delivery_available",
   "order_online", "parking_available", "wheelchair_friendly", "local_products",
   "shop_type", "curio_or_gifts", "product_categories", "price_range"
 ] as const;
