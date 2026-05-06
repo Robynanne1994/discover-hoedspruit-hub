@@ -4,14 +4,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import HomeSectionHeader from "./HomeSectionHeader";
 
+import { getEventDates } from "@/lib/eventDates";
+
 const WhatsOnToday = () => {
   const { data: events, isLoading } = useQuery({
     queryKey: ["homepage-events"],
     queryFn: async () => {
       const { data } = await supabase
         .from("events")
-        .select("id, title, location, start_time, date")
-        .order("date", { ascending: true })
+        .select("id, title, location, start_time, date, start_date, end_date")
+        .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
 
       if (!data) return [];
