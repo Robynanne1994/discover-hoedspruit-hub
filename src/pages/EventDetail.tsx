@@ -482,7 +482,7 @@ const EventDetail = () => {
           }
           if (actions.length === 0) return null;
           return (
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${actions.length}, 1fr)`, gap: 10, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${actions.length}, 1fr)`, gap: 10, marginBottom: 10 }}>
               {actions.map((a) => (
                 <a
                   key={a.key}
@@ -516,7 +516,7 @@ const EventDetail = () => {
               rel="noopener noreferrer"
               style={{
                 width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                background: "#2E241C", color: "#FFFFFF", border: "none", borderRadius: 999,
+                background: "#2E241C", color: "#FFFFFF", border: "none", borderRadius: 18,
                 padding: "0 24px", height: 48, fontSize: 15, fontWeight: 400, lineHeight: "18px",
                 letterSpacing: 0, textDecoration: "none", cursor: "pointer",
                 transition: "transform 150ms ease-out", fontFamily: font, textTransform: "capitalize",
