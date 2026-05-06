@@ -246,7 +246,7 @@ const Headlines = () => {
                   textDecoration: "none",
                 }}
               >
-                <div style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "0.04em", color: MUTED, lineHeight: 1.2, textTransform: "uppercase" }}>
+                <div style={{ fontFamily: SANS, fontSize: 11, fontWeight: 550, letterSpacing: "0.04em", color: "#5B4632", lineHeight: 1.2, textTransform: "uppercase" }}>
                   {article.category || "Story"}
                 </div>
 
