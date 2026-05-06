@@ -630,7 +630,6 @@ const AdminListings = () => {
                       {[
                         { label: "Air Conditioned", key: "air_conditioned" as const },
                         { label: "Delivery Available", key: "delivery_available" as const },
-                        { label: "Click & Collect", key: "click_and_collect" as const },
                         { label: "Order Online", key: "order_online" as const },
                         { label: "Parking Available", key: "parking_available" as const },
                         { label: "Wheelchair Friendly", key: "wheelchair_friendly" as const },
