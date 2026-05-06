@@ -576,7 +576,7 @@ const EventDetail = () => {
                         fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
                         lineHeight: 1.35, margin: 0,
                       }}>
-                        {notesOpen ? "Hide notes" : "View notes"}
+                        Notes
                       </p>
                     </div>
                     <ChevronDown size={18} strokeWidth={1.5} color="#5b4632"
