@@ -130,16 +130,46 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             )}
             <p className="text-xs text-muted-foreground mt-1">Linking allows users to tap the business name to view the full listing.</p>
           </div>
-          <div><Label>Deal Label</Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
+          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(legacy — used only if no eyebrow categories set)</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
+          <div>
+            <Label>Eyebrow Categories <span className="text-xs text-muted-foreground">(up to 3, shown above title)</span></Label>
+            <div className="grid grid-cols-3 gap-2 mt-1">
+              {[0, 1, 2].map((i) => (
+                <Input
+                  key={i}
+                  placeholder={`Category ${i + 1}`}
+                  value={(form.eyebrow_categories || [])[i] || ""}
+                  onChange={(e) => {
+                    const arr = [...(form.eyebrow_categories || ["", "", ""])];
+                    while (arr.length < 3) arr.push("");
+                    arr[i] = e.target.value;
+                    set("eyebrow_categories", arr.map((v) => (v || "").trim()).filter(Boolean));
+                  }}
+                />
+              ))}
+            </div>
+          </div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
           <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Valid From</Label><Input type="date" value={form.valid_from || ""} onChange={(e) => set("valid_from", e.target.value || null)} /></div>
             <div><Label>Valid Until</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => set("valid_until", e.target.value || null)} /></div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
-            <div><Label>Original Price</Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
+          <div className="border rounded-md p-3 space-y-3">
+            <p className="text-sm font-medium">Highlight Sections <span className="text-xs text-muted-foreground font-normal">(3-column block under title)</span></p>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
+              <div><Label>Price Sublabel</Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. PER UNIT" /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>Offer Headline</Label><Input value={form.offer_headline || ""} onChange={(e) => set("offer_headline", e.target.value)} placeholder="e.g. Buy 2" /></div>
+              <div><Label>Offer Sublabel</Label><Input value={form.offer_sublabel || ""} onChange={(e) => set("offer_sublabel", e.target.value)} placeholder="e.g. GET 1 FREE" /></div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div><Label>Duration Headline</Label><Input value={form.duration_headline || ""} onChange={(e) => set("duration_headline", e.target.value)} placeholder="e.g. 5 Months" /></div>
+              <div><Label>Duration Sublabel</Label><Input value={form.duration_sublabel || ""} onChange={(e) => set("duration_sublabel", e.target.value)} placeholder="e.g. APR — AUG" /></div>
+            </div>
+            <div><Label>Original Price <span className="text-xs text-muted-foreground">(strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
           </div>
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
