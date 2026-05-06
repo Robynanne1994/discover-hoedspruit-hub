@@ -151,20 +151,20 @@ const TermsPolicies = () => {
             width: 6,
             height: 6,
             borderRadius: 999,
-            background: "#F26A48",
+            background: "#FFFFFF",
             marginTop: 9,
             flexShrink: 0,
           }}
         />
         <p
           style={{
-            fontFamily: PLAYFAIR,
-            fontStyle: "italic",
-            fontWeight: 300,
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontWeight: 400,
             fontSize: 14,
-            color: "#8A8480",
+            color: "#5B4632",
             margin: 0,
             lineHeight: 1.5,
+            letterSpacing: "0.01em",
           }}
         >
           Last updated April 2026. We'll let you know here if anything meaningful changes.
