@@ -350,11 +350,11 @@ const EventDetail = () => {
         {/* Eyebrow */}
         {tagParts.length > 0 && (
           <p style={{
-            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "0.24px", color: "#0a0a0a", margin: 0, marginBottom: 4,
-            textTransform: "capitalize",
+            fontFamily: font, fontWeight: 500, fontSize: 12, lineHeight: "14.4px",
+            letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10,
+            textTransform: "uppercase", textAlign: "center",
           }}>
-            {tagParts.join(" · ")}
+            {tagParts.join("  ·  ")}
           </p>
         )}
 
