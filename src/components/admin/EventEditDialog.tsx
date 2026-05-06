@@ -44,6 +44,16 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
+      // `date` is required (NOT NULL). Auto-fill from start/end dates if left blank.
+      if (!payload.date || !String(payload.date).trim()) {
+        if (payload.start_date && payload.end_date && payload.start_date !== payload.end_date) {
+          payload.date = `${payload.start_date} to ${payload.end_date}`;
+        } else if (payload.start_date) {
+          payload.date = payload.start_date;
+        } else {
+          payload.date = "";
+        }
+      }
       const { error } = await supabase.from("events").update(payload).eq("id", event.id);
       if (error) throw error;
     },
