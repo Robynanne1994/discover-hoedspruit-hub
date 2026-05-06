@@ -447,7 +447,7 @@ const SpecialDetail = () => {
                   <span
                     style={{
                       flexShrink: 0,
-                      background: "#0A0A0A",
+                      background: "#5B4632",
                       color: "#FFFFFF",
                       fontFamily: FONT,
                       fontWeight: 700,
