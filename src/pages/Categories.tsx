@@ -9,7 +9,7 @@ const FONT_DISPLAY = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, san
 const FONT_BODY = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
 const COLORS = {
-  bg: "#F0EAD9",
+  bg: "#EBEBEB",
   card: "#FFFFFF",
   text: "#0A0A0A",
   muted: "#8A8480",

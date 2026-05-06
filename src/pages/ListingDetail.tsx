@@ -11,7 +11,7 @@ import {
   BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNgoCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -240,7 +240,6 @@ const ListingDetail = () => {
   const isListingRestaurant = listingCategories?.some((cat) => isRestaurantCategory(cat.title)) ?? false;
   const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
   const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
-  const isListingNgo = listingCategories?.some((cat) => isNgoCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
@@ -397,28 +396,7 @@ const ListingDetail = () => {
     }
   }
 
-  // NGO & Volunteering rich text sections
-  if (isListingNgo) {
-    const l = listing as any;
-    const ngoSections: Array<{ key: string; title: string; field: string }> = [
-      { key: "ngo-cause", title: "Cause", field: "cause" },
-      { key: "ngo-impact", title: "Impact", field: "impact" },
-      { key: "ngo-ways", title: "Ways To Give", field: "ways_to_give" },
-      { key: "ngo-volunteering", title: "Volunteering", field: "volunteering" },
-      { key: "ngo-visiting", title: "Visiting", field: "visiting" },
-    ];
-    for (const s of ngoSections) {
-      const v = (l[s.field] || "").toString().trim();
-      if (v) {
-        accordionSections.push({
-          key: s.key,
-          title: s.title,
-          fields: [{ label: v, value: "__custom_text__" }],
-        });
-      }
-    }
-  }
-
+  // Custom detail rows (up to 3) — always last in the Details card
   {
     const l = listing as any;
     for (let i = 1; i <= 3; i++) {
@@ -602,15 +580,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <path
-                d="M12 21.2c-.5 0-1-.2-1.4-.55C7.3 17.95 2 13.5 2 8.6 2 5.5 4.4 3 7.4 3c1.9 0 3.6 1 4.6 2.5C13 4 14.7 3 16.6 3 19.6 3 22 5.5 22 8.6c0 4.9-5.3 9.35-8.6 12.05-.4.35-.9.55-1.4.55Z"
-                fill={isFavourited ? "#5b4632" : C.text}
-                stroke={isFavourited ? "#5b4632" : C.text}
-                strokeWidth="2.4"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : C.text} fill={isFavourited ? "#5b4632" : "none"} />
           </button>
           {isAdmin && (
             <button

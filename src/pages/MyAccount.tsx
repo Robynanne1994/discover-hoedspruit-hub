@@ -21,7 +21,6 @@ import {
   LogOut,
   ChevronRight,
   ChevronLeft,
-  ArrowUpRight,
   Pencil,
   UserCircle,
   LayoutDashboard,
@@ -480,51 +479,86 @@ const MyAccount = () => {
     <div
       style={{
         background: "#FFFFFF",
-        borderRadius: 24,
-        paddingLeft: 20,
-        paddingRight: 20,
+        borderRadius: 20,
         overflow: "hidden",
       }}
     >
-      {items.map((item, idx) => {
-        const IconComp = item.heart ? Heart : item.icon;
-        return (
-          <div
-            key={item.label}
-            style={{ borderTop: idx > 0 ? `1px solid #E8E4DF` : "none" }}
+      {items.map((item, i) => (
+        <div key={item.label}>
+          <Link
+            to={item.href}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+              padding: "18px 20px",
+              textDecoration: "none",
+              transition: "transform 0.15s ease",
+            }}
+            onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.995)")}
+            onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
-            <Link
-              to={item.href}
+            {item.heart ? (
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: "50%",
+                  background: "#241F1A",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <Heart size={14} strokeWidth={1.8} color="#FFFFFF" fill="#FFFFFF" />
+              </div>
+            ) : item.icon ? (
+              <div style={{ width: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                <item.icon size={18} strokeWidth={1.5} color="#898480" />
+              </div>
+            ) : null}
+            <span
               style={{
-                display: "flex",
-                alignItems: "center",
-                height: 56,
-                textDecoration: "none",
+                ...baseTextStyle,
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                flex: 1,
+                fontSize: 16,
+                fontWeight: 400,
+                lineHeight: 1.25,
+                color: TEXT,
               }}
             >
-              {IconComp && (
-                <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
-                  <IconComp size={18} strokeWidth={1.5} color="#898480" />
-                </div>
-              )}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{
-                  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
-                  fontSize: 14,
-                  fontWeight: 400,
-                  color: "#0A0A0A",
-                  lineHeight: 1.35,
-                  margin: 0,
-                  wordBreak: "break-word",
-                }}>
-                  {item.label}
-                </p>
-              </div>
-              <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
-            </Link>
-          </div>
-        );
-      })}
+              {item.label}
+            </span>
+            <div
+              style={{
+                width: 28,
+                height: 28,
+                borderRadius: "50%",
+                background: IVORY,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <ChevronRight size={14} strokeWidth={2} color={TEXT} />
+            </div>
+          </Link>
+          {i < items.length - 1 && (
+            <div
+              style={{
+                height: 1,
+                background: IVORY,
+                marginLeft: 20,
+                marginRight: 20,
+              }}
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 
@@ -587,36 +621,55 @@ const MyAccount = () => {
             <Menu size={20} strokeWidth={1.8} color={TEXT} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
-            {[
-              { label: "My Hoedspruit", to: "/saved", Icon: Bookmark },
-              { label: "Settings", to: "/account-settings", Icon: Settings },
-              { label: "Help & Support", to: "/faqs", Icon: HelpCircle },
-              { label: "Advertise", to: "/advertise", Icon: Megaphone },
-            ].map(({ label, to, Icon }) => (
-              <DropdownMenuItem
-                key={to}
-                onClick={() => navigate(to)}
-                style={{
-                  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
-                  fontSize: 14,
-                  fontWeight: 400,
-                  color: "#0A0A0A",
-                }}
-              >
-                <Icon className="mr-2" size={18} strokeWidth={1.5} color="#898480" /> {label}
-              </DropdownMenuItem>
-            ))}
+            <DropdownMenuLabel>Quick links</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => signOut()}
-              className="text-destructive focus:text-destructive"
-              style={{
-                fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
-                fontSize: 14,
-                fontWeight: 400,
-              }}
-            >
-              <LogOut className="mr-2" size={18} strokeWidth={1.5} /> Sign out
+            <DropdownMenuItem onClick={() => navigate("/saved")}>
+              <Heart className="mr-2 h-4 w-4" /> Saved
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/saved?tab=events")}>
+              <Calendar className="mr-2 h-4 w-4" /> Saved events
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/saved?tab=specials")}>
+              <Tag className="mr-2 h-4 w-4" /> Saved specials
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/visited")}>
+              <MapPinCheck className="mr-2 h-4 w-4" /> Been here
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/my-hoedspruit")}>
+              <Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/notifications")}>
+              <Bell className="mr-2 h-4 w-4" /> Notifications
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/account-settings")}>
+              <Settings className="mr-2 h-4 w-4" /> Settings
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/account-settings/info")}>
+              <UserCircle className="mr-2 h-4 w-4" /> Account info
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/privacy-security")}>
+              <Shield className="mr-2 h-4 w-4" /> Privacy & security
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => navigate("/faqs")}>
+              <HelpCircle className="mr-2 h-4 w-4" /> FAQs
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/feedback")}>
+              <MessageSquare className="mr-2 h-4 w-4" /> Feedback
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/contact")}>
+              <Phone className="mr-2 h-4 w-4" /> Contact us
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/about")}>
+              <Info className="mr-2 h-4 w-4" /> About
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/advertise")}>
+              <Megaphone className="mr-2 h-4 w-4" /> Advertise
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
+              <LogOut className="mr-2 h-4 w-4" /> Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -740,7 +793,7 @@ const MyAccount = () => {
             onClick={() => setActiveSection("profile")}
             style={{
               marginLeft: "auto",
-              background: "#5B4632",
+              background: TEXT,
               color: "#FFFFFF",
               border: "none",
               borderRadius: 999,
@@ -798,7 +851,7 @@ const MyAccount = () => {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: "#5B4632",
+            background: TEXT,
             color: "#FFFFFF",
             border: "none",
             borderRadius: 999,

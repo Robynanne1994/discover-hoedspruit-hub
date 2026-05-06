@@ -601,7 +601,6 @@ export type Database = {
           amenities: string[] | null
           breakfast_included: boolean | null
           category_id: string | null
-          cause: string | null
           child_friendly: boolean | null
           click_and_collect: boolean | null
           created_at: string
@@ -641,7 +640,6 @@ export type Database = {
           high_chairs: boolean | null
           id: string
           image_url: string | null
-          impact: string | null
           is_featured: boolean
           kids_menu: boolean | null
           kids_playground: boolean | null
@@ -669,9 +667,6 @@ export type Database = {
           title: string
           updated_at: string
           vibe: string[] | null
-          visiting: string | null
-          volunteering: string | null
-          ways_to_give: string | null
           website: string | null
           website_label: string | null
           whatsapp: string | null
@@ -687,7 +682,6 @@ export type Database = {
           amenities?: string[] | null
           breakfast_included?: boolean | null
           category_id?: string | null
-          cause?: string | null
           child_friendly?: boolean | null
           click_and_collect?: boolean | null
           created_at?: string
@@ -727,7 +721,6 @@ export type Database = {
           high_chairs?: boolean | null
           id?: string
           image_url?: string | null
-          impact?: string | null
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null
@@ -755,9 +748,6 @@ export type Database = {
           title: string
           updated_at?: string
           vibe?: string[] | null
-          visiting?: string | null
-          volunteering?: string | null
-          ways_to_give?: string | null
           website?: string | null
           website_label?: string | null
           whatsapp?: string | null
@@ -773,7 +763,6 @@ export type Database = {
           amenities?: string[] | null
           breakfast_included?: boolean | null
           category_id?: string | null
-          cause?: string | null
           child_friendly?: boolean | null
           click_and_collect?: boolean | null
           created_at?: string
@@ -813,7 +802,6 @@ export type Database = {
           high_chairs?: boolean | null
           id?: string
           image_url?: string | null
-          impact?: string | null
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null
@@ -841,9 +829,6 @@ export type Database = {
           title?: string
           updated_at?: string
           vibe?: string[] | null
-          visiting?: string | null
-          volunteering?: string | null
-          ways_to_give?: string | null
           website?: string | null
           website_label?: string | null
           whatsapp?: string | null
