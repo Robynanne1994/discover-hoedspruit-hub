@@ -33,7 +33,11 @@ const BottomNav = () => {
           const isActive =
             item.href === "/"
               ? location.pathname === "/"
-              : location.pathname.startsWith(item.href);
+              : item.href === "/categories"
+                ? location.pathname.startsWith("/categories") ||
+                  location.pathname.startsWith("/category") ||
+                  location.pathname.startsWith("/listing")
+                : location.pathname.startsWith(item.href);
           const Icon = item.icon;
 
           return (
