@@ -1030,7 +1030,7 @@ const ListingDetail = () => {
                       }} />
                       <span style={{
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
-                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: C.text,
+                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#5b4632",
                       }}>
                         {openStatus.state === "open"
                           ? "Open Now"
@@ -1043,7 +1043,7 @@ const ListingDetail = () => {
                       <div style={{
                         marginTop: 4, marginLeft: 22,
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        lineHeight: "20.3px", color: C.muted,
+                        lineHeight: "20.3px", color: "#5b4632",
                       }}>
                         Closes {openStatus.closes}
                       </div>
@@ -1052,7 +1052,7 @@ const ListingDetail = () => {
                       <div style={{
                         marginTop: 4,
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        lineHeight: "20.3px", color: C.muted,
+                        lineHeight: "20.3px", color: "#5b4632",
                       }}>
                         Opens {openStatus.opensAt} {openStatus.opensDay}
                       </div>
