@@ -615,6 +615,7 @@ export type Database = {
           location: string | null
           long_description: string | null
           meal: string[] | null
+          nappy_changing_station: boolean | null
           opening_hours: Json | null
           order_online: boolean | null
           parking_available: boolean | null
@@ -695,6 +696,7 @@ export type Database = {
           location?: string | null
           long_description?: string | null
           meal?: string[] | null
+          nappy_changing_station?: boolean | null
           opening_hours?: Json | null
           order_online?: boolean | null
           parking_available?: boolean | null
@@ -775,6 +777,7 @@ export type Database = {
           location?: string | null
           long_description?: string | null
           meal?: string[] | null
+          nappy_changing_station?: boolean | null
           opening_hours?: Json | null
           order_online?: boolean | null
           parking_available?: boolean | null

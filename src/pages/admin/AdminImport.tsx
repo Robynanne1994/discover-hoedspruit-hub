@@ -367,6 +367,7 @@ const AdminImport = () => {
             payload.service_type = parseArray(row.service_type) ?? [];
             payload.kids_menu = parseBool(row.kids_menu);
             payload.high_chairs = parseBool(row.high_chairs);
+            payload.nappy_changing_station = parseBool(row.nappy_changing_station);
             payload.wheelchair_car_park = parseBool(row.wheelchair_car_park);
             payload.wheelchair_entrance = parseBool(row.wheelchair_entrance);
             payload.wheelchair_seating = parseBool(row.wheelchair_seating);
@@ -630,6 +631,7 @@ const AdminImport = () => {
         service_type: (l.service_type ?? []).join("|"),
         kids_menu: l.kids_menu == null ? "" : String(l.kids_menu),
         high_chairs: l.high_chairs == null ? "" : String(l.high_chairs),
+        nappy_changing_station: l.nappy_changing_station == null ? "" : String(l.nappy_changing_station),
         wheelchair_car_park: l.wheelchair_car_park == null ? "" : String(l.wheelchair_car_park),
         wheelchair_entrance: l.wheelchair_entrance == null ? "" : String(l.wheelchair_entrance),
         wheelchair_seating: l.wheelchair_seating == null ? "" : String(l.wheelchair_seating),

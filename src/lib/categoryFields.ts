@@ -14,7 +14,7 @@ export const RESTAURANT_ONLY_FIELDS = [
   "good_for_kids", "pets_allowed", "wheelchair_friendly", "price_level",
   "show_attributes", "meal", "vibe", "cuisine", "seating",
   "kids_playground", "smoking_allowed", "service_type",
-  "kids_menu", "high_chairs", "wheelchair_car_park", "wheelchair_entrance",
+  "kids_menu", "high_chairs", "nappy_changing_station", "wheelchair_car_park", "wheelchair_entrance",
   "wheelchair_seating", "wheelchair_toilet", "has_toilet", "has_wifi", "has_free_wifi"
 ] as const;
 

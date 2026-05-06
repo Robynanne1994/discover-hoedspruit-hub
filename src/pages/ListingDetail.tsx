@@ -258,6 +258,7 @@ const ListingDetail = () => {
   const serviceType = (listing as any).service_type as string[] | null;
   const kidsMenu = (listing as any).kids_menu as boolean | null;
   const highChairs = (listing as any).high_chairs as boolean | null;
+  const nappyChangingStation = (listing as any).nappy_changing_station as boolean | null;
   const wheelchairCarPark = (listing as any).wheelchair_car_park as boolean | null;
   const wheelchairEntrance = (listing as any).wheelchair_entrance as boolean | null;
   const wheelchairSeating = (listing as any).wheelchair_seating as boolean | null;
@@ -301,6 +302,7 @@ const ListingDetail = () => {
       { label: "Good for kids", value: goodForKids },
       { label: "Kids' menu", value: kidsMenu },
       { label: "High chairs", value: highChairs },
+      { label: "Nappy changing station", value: nappyChangingStation },
       { label: "Kids playground", value: kidsPlayground },
     ]);
     if (kidsFields.length > 0) accordionSections.push({ key: "kids", title: "Kids & family", fields: kidsFields });
