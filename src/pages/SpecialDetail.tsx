@@ -387,14 +387,14 @@ const SpecialDetail = () => {
                       gap: 8,
                     }}
                   >
-                    {c.sublabel && (
+                    {c.headline && (
                       <p style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8a7a5e" }}>
-                        {c.sublabel}
+                        {c.headline}
                       </p>
                     )}
-                    {c.headline && (
+                    {c.sublabel && (
                       <p style={{ margin: 0, fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 13, lineHeight: 1.25, color: "#0A0A0A", wordBreak: "break-word" }}>
-                        {c.headline}
+                        {c.sublabel}
                       </p>
                     )}
                   </div>
