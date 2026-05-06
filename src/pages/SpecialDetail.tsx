@@ -310,7 +310,7 @@ const SpecialDetail = () => {
 
       {/* Content */}
       <div style={{ padding: "16px 24px 0 24px" }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: "#0A0A0A", margin: 0, marginBottom: 4, textTransform: "capitalize" }}>{special.deal_label}</p>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10, textTransform: "uppercase", textAlign: "center" }}>{special.deal_label}</p>
 
         <h1
           style={{
@@ -322,25 +322,27 @@ const SpecialDetail = () => {
             color: "#0A0A0A",
             textTransform: "none",
             marginTop: 0,
-            marginBottom: 8,
+            marginBottom: 10,
             textAlign: "center",
           }}
         >
           {special.title}
         </h1>
 
-        <div style={{ marginBottom: 14 }}>
-          {special.business_id ? (
-            <Link
-              to={`/listing/${special.business_id}`}
-              style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 10, textTransform: "none", textDecoration: "none", display: "block" }}
-            >
-              {special.business_name}
-            </Link>
-          ) : (
-            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 10, textTransform: "none" }}>
-              {special.business_name}
-            </p>
+        <div style={{ marginBottom: 14, textAlign: "center" }}>
+          {special.business_name && (
+            special.business_id ? (
+              <Link
+                to={`/listing/${special.business_id}`}
+                style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 12, textTransform: "none", textDecoration: "none", display: "block" }}
+              >
+                <span style={{ fontStyle: "italic", fontWeight: 400 }}>by </span>{special.business_name}
+              </Link>
+            ) : (
+              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 12, textTransform: "none" }}>
+                <span style={{ fontStyle: "italic", fontWeight: 400 }}>by </span>{special.business_name}
+              </p>
+            )
           )}
           {(() => {
             const now = new Date();
