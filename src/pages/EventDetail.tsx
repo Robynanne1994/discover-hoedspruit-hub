@@ -27,6 +27,7 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
+import { formatEventDateRange } from "@/lib/eventDates";
 
 const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -120,18 +121,9 @@ const EventDetail = () => {
     return `${displayHour}:${String(m).padStart(2, "0")} ${ampm}`;
   };
 
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "";
-    // Strip HTML tags
-    const clean = String(dateStr).replace(/<[^>]*>/g, "").trim();
-    // Only try to parse strict ISO-style dates (YYYY-MM-DD). Otherwise show raw text.
-    if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
-      const date = new Date(clean);
-      if (!isNaN(date.getTime())) {
-        return date.toLocaleDateString("en-ZA", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-      }
-    }
-    return clean;
+  const formatDate = (_dateStr: string) => {
+    // Prefer the new structured start/end date fields; fallback to legacy free-text.
+    return formatEventDateRange(event as any, { long: true });
   };
 
   const handleShare = async () => {

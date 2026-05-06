@@ -17,7 +17,7 @@ interface Props {
 }
 
 const FIELDS = [
-  "title", "description", "date", "start_time", "end_time", "location",
+  "title", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
   "tag", "sub_tag_1", "sub_tag_2", "image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
   "business_id", "is_featured",
@@ -44,6 +44,16 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
+      // `date` is required (NOT NULL). Auto-fill from start/end dates if left blank.
+      if (!payload.date || !String(payload.date).trim()) {
+        if (payload.start_date && payload.end_date && payload.start_date !== payload.end_date) {
+          payload.date = `${payload.start_date} to ${payload.end_date}`;
+        } else if (payload.start_date) {
+          payload.date = payload.start_date;
+        } else {
+          payload.date = "";
+        }
+      }
       const { error } = await supabase.from("events").update(payload).eq("id", event.id);
       if (error) throw error;
     },
@@ -85,7 +95,11 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           </div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
           <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
-          <div><Label>Date</Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="YYYY-MM-DD or text" /></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
+            <div><Label>End Date <span className="text-xs text-muted-foreground">(same as start for 1-day event)</span></Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
+          </div>
+          <div><Label>Date <span className="text-xs text-muted-foreground">(legacy free-text — used only when start/end dates are empty, e.g. "Every Saturday")</span></Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Time</Label><Input type="time" value={form.start_time || ""} onChange={(e) => set("start_time", e.target.value || null)} /></div>
             <div><Label>End Time</Label><Input type="time" value={form.end_time || ""} onChange={(e) => set("end_time", e.target.value || null)} /></div>

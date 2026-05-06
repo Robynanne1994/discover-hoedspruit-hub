@@ -2,6 +2,7 @@ import { Calendar, MapPin, Clock, Repeat } from "lucide-react";
 import DOMPurify from "dompurify";
 import FavouriteButton from "@/components/FavouriteButton";
 import ShareButton from "@/components/ShareButton";
+import { formatEventDateRange } from "@/lib/eventDates";
 
 const sanitizeHtml = (html: string) =>
   DOMPurify.sanitize(html, { ALLOWED_URI_REGEXP: /^(?:https?|mailto|tel):/i });
@@ -12,6 +13,8 @@ interface EventCardProps {
     title: string;
     description?: string | null;
     date: string;
+    start_date?: string | null;
+    end_date?: string | null;
     start_time?: string | null;
     end_time?: string | null;
     recurrence?: string | null;
@@ -50,7 +53,7 @@ const EventCard = ({ event }: EventCardProps) => {
               <Calendar className="h-3.5 w-3.5 text-primary/70 shrink-0" />
               <span
                 className="break-words prose-a:text-primary prose-a:underline text-xs"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.date) }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(formatEventDateRange(event)) }}
               />
             </div>
             {(event.start_time || event.end_time) && (

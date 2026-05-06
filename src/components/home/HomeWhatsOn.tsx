@@ -12,43 +12,41 @@ const MONTH_NAMES = [
   "july", "august", "september", "october", "november", "december",
 ];
 
+import { getEventDates } from "@/lib/eventDates";
+
 type ParsedDate =
   | { kind: "single"; day: number; monthIdx: number }
   | { kind: "range"; startDay: number; endDay: number; monthIdx: number }
   | { kind: "tba" };
 
-const parseEventDate = (raw: string | null | undefined): ParsedDate => {
+const parseEventDate = (e: { date?: string | null; start_date?: string | null; end_date?: string | null }): ParsedDate => {
+  const { start, end } = getEventDates(e);
+  if (start) {
+    const sameDay = !end || start.getTime() === end.getTime();
+    if (sameDay) return { kind: "single", day: start.getDate(), monthIdx: start.getMonth() };
+    if (start.getMonth() === end!.getMonth() && start.getFullYear() === end!.getFullYear()) {
+      return { kind: "range", startDay: start.getDate(), endDay: end!.getDate(), monthIdx: start.getMonth() };
+    }
+    // cross-month range — show as range with start month
+    return { kind: "range", startDay: start.getDate(), endDay: end!.getDate(), monthIdx: start.getMonth() };
+  }
+  // legacy free-text fallback
+  const raw = e.date;
   if (!raw) return { kind: "tba" };
   const s = raw.trim().toLowerCase();
   if (!s || s === "tbd" || s === "tba") return { kind: "tba" };
-
   let monthIdx = -1;
   for (let i = 0; i < MONTH_NAMES.length; i++) {
     const m = MONTH_NAMES[i];
-    if (s.includes(m) || s.includes(m.slice(0, 3))) {
-      monthIdx = i;
-      break;
-    }
+    if (s.includes(m) || s.includes(m.slice(0, 3))) { monthIdx = i; break; }
   }
-
   const rangeMatch = s.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})/);
   if (rangeMatch && monthIdx >= 0) {
-    return {
-      kind: "range",
-      startDay: parseInt(rangeMatch[1], 10),
-      endDay: parseInt(rangeMatch[2], 10),
-      monthIdx,
-    };
+    return { kind: "range", startDay: parseInt(rangeMatch[1], 10), endDay: parseInt(rangeMatch[2], 10), monthIdx };
   }
-
   const singleMatch = s.match(/(\d{1,2})/);
   if (singleMatch && monthIdx >= 0) {
     return { kind: "single", day: parseInt(singleMatch[1], 10), monthIdx };
-  }
-
-  const d = new Date(raw);
-  if (!isNaN(d.getTime())) {
-    return { kind: "single", day: d.getDate(), monthIdx: d.getMonth() };
   }
   return { kind: "tba" };
 };
@@ -73,23 +71,23 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, location, date, image_url")
+          .select("id, title, location, date, start_date, end_date, image_url")
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         return ids
           .map((id) => map.get(id))
           .filter((e): e is NonNullable<typeof e> => Boolean(e))
-          .map((e) => ({ ...e, parsed: parseEventDate(e.date) }))
+          .map((e) => ({ ...e, parsed: parseEventDate(e) }))
           .slice(0, 4);
       }
 
       const { data } = await supabase
         .from("events")
-        .select("id, title, location, date, image_url")
+        .select("id, title, location, date, start_date, end_date, image_url")
         .order("date", { ascending: true })
         .limit(20);
       return (data || [])
-        .map((e) => ({ ...e, parsed: parseEventDate(e.date) }))
+        .map((e) => ({ ...e, parsed: parseEventDate(e) }))
         .slice(0, 4);
     },
   });

@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
+const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -137,7 +137,9 @@ const AdminEvents = () => {
       const payload: any = {
         title: values.title,
         description: values.description || null,
-        date: values.date,
+        date: values.date || (values.start_date && values.end_date && values.start_date !== values.end_date ? `${values.start_date} to ${values.end_date}` : (values.start_date || "")),
+        start_date: values.start_date || null,
+        end_date: values.end_date || null,
         location: values.location || null,
         tag: values.tag || null,
         sub_tag_1: values.sub_tag_1 || null,
@@ -194,6 +196,8 @@ const AdminEvents = () => {
       title: ev.title,
       description: ev.description ?? "",
       date: ev.date,
+      start_date: (ev as any).start_date ?? "",
+      end_date: (ev as any).end_date ?? "",
       location: ev.location ?? "",
       tag: ev.tag ?? "",
       sub_tag_1: (ev as any).sub_tag_1 ?? "",
@@ -235,7 +239,11 @@ const AdminEvents = () => {
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
               <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
               <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
-              <div><Label>Date <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} required placeholder="e.g. 22 March 2026 or Every Saturday" /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><Label>Start Date</Label><Input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} /></div>
+                <div><Label>End Date <span className="text-xs text-muted-foreground">(same as start for 1-day)</span></Label><Input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} /></div>
+              </div>
+              <div><Label>Date Text <span className="text-xs text-muted-foreground">(optional fallback for recurring like "Every Saturday")</span></Label><Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} placeholder="Optional — leave blank to use start/end dates" /></div>
               <div><Label>Location <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Start Time</Label><Input type="time" value={form.start_time} onChange={(e) => setForm({ ...form, start_time: e.target.value })} /></div>

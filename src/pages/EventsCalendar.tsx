@@ -24,38 +24,11 @@ import {
   parse,
 } from "date-fns";
 
-/** Try to extract concrete Date objects from the free-text date string */
-function parseDateText(raw: string): Date[] {
-  if (!raw) return [];
-  // Strip HTML tags
-  const clean = raw.replace(/<[^>]*>/g, "").trim();
+import { expandEventDates, formatEventDateRange } from "@/lib/eventDates";
 
-  const dates: Date[] = [];
-
-  // "26 to 28 June 2026" / "26-28 June 2026"
-  const rangeMatch = clean.match(/(\d{1,2})\s*(?:to|-)\s*(\d{1,2})\s+(\w+)\s+(\d{4})/i);
-  if (rangeMatch) {
-    const [, startDay, endDay, month, year] = rangeMatch;
-    for (let d = parseInt(startDay); d <= parseInt(endDay); d++) {
-      const parsed = parse(`${d} ${month} ${year}`, "d MMMM yyyy", new Date());
-      if (!isNaN(parsed.getTime())) dates.push(parsed);
-    }
-    return dates;
-  }
-
-  // "15 March 2026" or "March 15, 2026"
-  const singleDateA = parse(clean, "d MMMM yyyy", new Date());
-  if (!isNaN(singleDateA.getTime())) return [singleDateA];
-
-  const singleDateB = parse(clean, "MMMM d, yyyy", new Date());
-  if (!isNaN(singleDateB.getTime())) return [singleDateB];
-
-  const singleDateC = parse(clean, "yyyy-MM-dd", new Date());
-  if (!isNaN(singleDateC.getTime())) return [singleDateC];
-
-  const singleDateD = parse(clean, "d/MM/yyyy", new Date());
-  if (!isNaN(singleDateD.getTime())) return [singleDateD];
-
+/** Concrete dates an event spans, using new structured fields with legacy fallback. */
+function parseDateText(_raw: string, event?: any): Date[] {
+  if (event) return expandEventDates(event);
   return [];
 }
 
@@ -91,7 +64,7 @@ const EventsCalendar = () => {
     const recurring: EventRow[] = [];
 
     events?.forEach((event) => {
-      const dates = parseDateText(event.date);
+      const dates = parseDateText(event.date, event);
       if (dates.length === 0) {
         recurring.push(event);
       } else {
@@ -264,7 +237,7 @@ function EventCard({ event }: { event: EventRow }) {
               <CalendarIcon className="h-3.5 w-3.5 text-primary/70 shrink-0" />
               <span
                 className="truncate prose-a:text-primary prose-a:underline"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.date) }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(formatEventDateRange(event)) }}
               />
             </div>
             {(event.start_time || event.end_time) && (

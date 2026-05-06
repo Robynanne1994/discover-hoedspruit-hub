@@ -276,6 +276,7 @@ export type Database = {
           created_at: string
           date: string
           description: string | null
+          end_date: string | null
           end_time: string | null
           gallery_images: string[] | null
           google_maps_link: string | null
@@ -297,6 +298,7 @@ export type Database = {
           recurrence: string | null
           social_media_label: string | null
           social_media_link: string | null
+          start_date: string | null
           start_time: string | null
           sub_tag_1: string | null
           sub_tag_2: string | null
@@ -314,6 +316,7 @@ export type Database = {
           created_at?: string
           date: string
           description?: string | null
+          end_date?: string | null
           end_time?: string | null
           gallery_images?: string[] | null
           google_maps_link?: string | null
@@ -335,6 +338,7 @@ export type Database = {
           recurrence?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
+          start_date?: string | null
           start_time?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
@@ -352,6 +356,7 @@ export type Database = {
           created_at?: string
           date?: string
           description?: string | null
+          end_date?: string | null
           end_time?: string | null
           gallery_images?: string[] | null
           google_maps_link?: string | null
@@ -373,6 +378,7 @@ export type Database = {
           recurrence?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
+          start_date?: string | null
           start_time?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
