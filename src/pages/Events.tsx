@@ -48,8 +48,8 @@ function formatTime(time: string | null): string {
   return `${displayHour}:${String(m).padStart(2, "0")} ${ampm}`;
 }
 
-function buildDateMeta(event: { date: string; start_time: string | null }): string {
-  const date = formatEventDate(event.date);
+function buildDateMeta(event: any): string {
+  const date = formatEventDate(event.date, event);
   const time = formatTime(event.start_time);
   if (date && time) return `${date} · ${time}`;
   return date || time || "";
