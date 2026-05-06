@@ -51,7 +51,7 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
   const navigate = useNavigate();
 
   return (
-    <div style={{ minHeight: "100vh", background: "#ffffff", paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: "#E4D0B6", paddingBottom: 100 }}>
       {/* Back button */}
       <div style={{ paddingTop: 44, paddingLeft: 24 }}>
         <button
