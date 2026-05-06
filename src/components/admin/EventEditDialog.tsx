@@ -21,6 +21,7 @@ const FIELDS = [
   "tag", "sub_tag_1", "sub_tag_2", "image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
   "business_id", "is_featured",
+  "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url",
 ];
 
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
