@@ -740,7 +740,7 @@ const MyAccount = () => {
             onClick={() => setActiveSection("profile")}
             style={{
               marginLeft: "auto",
-              background: TEXT,
+              background: "#5B4632",
               color: "#FFFFFF",
               border: "none",
               borderRadius: 999,
@@ -798,7 +798,7 @@ const MyAccount = () => {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: TEXT,
+            background: "#5B4632",
             color: "#FFFFFF",
             border: "none",
             borderRadius: 999,
