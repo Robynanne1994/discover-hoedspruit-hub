@@ -30,10 +30,7 @@ const BottomNav = () => {
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 6 }}>
         {navItems.map((item) => {
-          const isActive =
-            item.href === "/"
-              ? location.pathname === "/"
-              : location.pathname.startsWith(item.href);
+          const isActive = item.match(location.pathname);
           const Icon = item.icon;
 
           return (
