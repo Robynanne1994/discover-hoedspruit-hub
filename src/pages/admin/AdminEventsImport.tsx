@@ -193,7 +193,7 @@ const AdminEventsImport = () => {
 
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = events.map((e: any) => [
-      e.title, e.description ?? "", e.date, e.location ?? "",
+      e.title, e.description ?? "", e.date, e.start_date ?? "", e.end_date ?? "", e.location ?? "",
       e.tag ?? "", e.sub_tag_1 ?? "", e.sub_tag_2 ?? "",
       e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", e.recurrence ?? "", e.google_maps_link ?? "",
       e.social_media_link ?? "", e.social_media_label ?? "", e.contact_email ?? "", e.contact_phone ?? "", e.contact_whatsapp ?? "",
