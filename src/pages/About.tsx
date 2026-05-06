@@ -290,8 +290,8 @@ const About = () => {
           }}
         />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 12, letterSpacing: "0.02em", color: "rgba(255,255,255,0.78)", marginBottom: 10 }}>
-            For businesses
+          <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.08em", color: "rgba(255,255,255,0.78)", marginBottom: 10, textTransform: "uppercase" }}>
+            FOR LOCAL BUSINESSES
           </div>
           <h2
             style={{
