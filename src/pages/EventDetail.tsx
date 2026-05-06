@@ -450,35 +450,32 @@ const EventDetail = () => {
         {(detailRows.length > 0 || notes) && (
           <section style={{ marginBottom: 24 }}>
             <SectionLabel eyebrow="Event info" title="Details" />
-            <div style={{ background: SURFACE, borderRadius: 24, padding: "0 20px", border: "none", boxShadow: "none" }}>
+            <div style={{ background: SURFACE, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
               {detailRows.map((row, idx) => {
-                const Wrapper = row.href ? "a" : "div";
+                const Wrapper: any = row.href ? "a" : "div";
                 const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
                 return (
-                  <Wrapper
-                    key={row.label}
-                    {...wrapperProps}
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
-                      gap: 12, alignItems: "center", padding: "12px 0",
-                      borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <row.icon size={20} strokeWidth={1.5} color={MUTED} />
-                    </div>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2, textTransform: "capitalize" }}>
-                        {row.label}
-                      </p>
-                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0, wordBreak: "break-word" }}>
-                        {row.value}
-                      </p>
-                    </div>
-                    {row.href && <ArrowUpRight size={20} strokeWidth={1.5} color={TEXT} />}
-                  </Wrapper>
+                  <div key={row.label} style={{ borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none" }}>
+                    <Wrapper
+                      {...wrapperProps}
+                      style={{ display: "flex", alignItems: "center", height: 56, textDecoration: "none" }}
+                    >
+                      <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+                        <row.icon size={18} strokeWidth={1.5} color="#898480" />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{
+                          fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
+                          lineHeight: 1.35, margin: 0, wordBreak: "break-word",
+                        }}>
+                          {row.value}
+                        </p>
+                      </div>
+                      {row.href && (
+                        <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
+                      )}
+                    </Wrapper>
+                  </div>
                 );
               })}
               {notes && (
@@ -487,29 +484,26 @@ const EventDetail = () => {
                     onClick={() => setNotesOpen((v) => !v)}
                     aria-expanded={notesOpen}
                     style={{
-                      width: "100%",
-                      display: "grid",
-                      gridTemplateColumns: "32px 1fr 20px",
-                      gap: 12, alignItems: "center", padding: "12px 0",
-                      background: "transparent", border: "none", cursor: "pointer", textAlign: "left",
+                      width: "100%", display: "flex", alignItems: "center", height: 56,
+                      background: "transparent", border: "none", cursor: "pointer", textAlign: "left", padding: 0,
                     }}
                   >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <StickyNote size={20} strokeWidth={1.5} color={MUTED} />
+                    <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+                      <StickyNote size={18} strokeWidth={1.5} color="#898480" />
                     </div>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 2, textTransform: "capitalize" }}>
-                        Notes
-                      </p>
-                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px", letterSpacing: 0, color: TEXT, margin: 0 }}>
-                        {notesOpen ? "Hide" : "View"}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{
+                        fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
+                        lineHeight: 1.35, margin: 0,
+                      }}>
+                        {notesOpen ? "Hide notes" : "View notes"}
                       </p>
                     </div>
-                    <ChevronDown size={20} strokeWidth={1.5} color={TEXT}
-                      style={{ transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms ease-out" }} />
+                    <ChevronDown size={18} strokeWidth={1.5} color="#5b4632"
+                      style={{ flexShrink: 0, marginLeft: 12, transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms ease-out" }} />
                   </button>
                   {notesOpen && (
-                    <div style={{ padding: "0 0 16px 44px" }}>
+                    <div style={{ padding: "0 0 16px 32px" }}>
                       <p style={{ fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: "20.3px", color: TEXT, margin: 0, whiteSpace: "pre-wrap" }}>
                         {notes}
                       </p>
