@@ -2,7 +2,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe, Star } from "lucide-react";
+import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe, Star, Search } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import BackButton from "@/components/BackButton";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
@@ -79,6 +79,7 @@ const CategoryPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [search, setSearch] = useState("");
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -210,7 +211,9 @@ const CategoryPage = () => {
 
   const filteredListings = useMemo(() => {
     if (!listings) return [];
+    const q = search.trim().toLowerCase();
     const result = listings.filter((l) => {
+      if (q && !(l.title || "").toLowerCase().includes(q)) return false;
       if (filterCuisine.length > 0) {
         const lc = (l.cuisine || []).map((c) => c.toLowerCase());
         if (!filterCuisine.some((c) => lc.includes(c.toLowerCase()))) return false;
@@ -244,7 +247,7 @@ const CategoryPage = () => {
       return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
     }
     return result;
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy, search]);
 
   const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Rating";
   const count = filteredListings.length;
@@ -344,6 +347,40 @@ const CategoryPage = () => {
             </>
           )}
         </h1>
+      </div>
+
+      {/* Search pill */}
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: 48,
+            background: C.card,
+            borderRadius: 999,
+            padding: "0 20px",
+            gap: 12,
+          }}
+        >
+          <Search size={20} strokeWidth={1.5} style={{ color: C.muted, flexShrink: 0 }} />
+          <input
+            type="text"
+            placeholder="Search listings"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              fontFamily: font,
+              fontSize: 16,
+              fontWeight: 400,
+              color: C.text,
+            }}
+            className="placeholder:text-[#8A8480]"
+          />
+        </div>
       </div>
 
       {/* Filter row */}
