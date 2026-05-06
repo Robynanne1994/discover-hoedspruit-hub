@@ -1008,11 +1008,17 @@ export type Database = {
           day_of_week: string[] | null
           deal_label: string
           description: string | null
+          duration_headline: string | null
+          duration_sublabel: string | null
+          eyebrow_categories: string[] | null
           id: string
           image_url: string | null
           is_active: boolean
+          offer_headline: string | null
+          offer_sublabel: string | null
           original_price: string | null
           price: string | null
+          price_label: string | null
           promo_code: string | null
           sort_order: number
           special_type: string | null
@@ -1035,11 +1041,17 @@ export type Database = {
           day_of_week?: string[] | null
           deal_label: string
           description?: string | null
+          duration_headline?: string | null
+          duration_sublabel?: string | null
+          eyebrow_categories?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          offer_headline?: string | null
+          offer_sublabel?: string | null
           original_price?: string | null
           price?: string | null
+          price_label?: string | null
           promo_code?: string | null
           sort_order?: number
           special_type?: string | null
@@ -1062,11 +1074,17 @@ export type Database = {
           day_of_week?: string[] | null
           deal_label?: string
           description?: string | null
+          duration_headline?: string | null
+          duration_sublabel?: string | null
+          eyebrow_categories?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean
+          offer_headline?: string | null
+          offer_sublabel?: string | null
           original_price?: string | null
           price?: string | null
+          price_label?: string | null
           promo_code?: string | null
           sort_order?: number
           special_type?: string | null
