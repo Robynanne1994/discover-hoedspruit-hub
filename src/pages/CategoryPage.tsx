@@ -79,6 +79,7 @@ const CategoryPage = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [search, setSearch] = useState("");
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
