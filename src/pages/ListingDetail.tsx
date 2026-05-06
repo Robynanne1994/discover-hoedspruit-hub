@@ -429,9 +429,11 @@ const ListingDetail = () => {
   const formatTime = (s: string) => (s.includes(":") ? s : `${s}:00`);
 
   type OpenStatus =
-    | { state: "open"; closes: string }
+    | { state: "open"; closes?: string }
     | { state: "closed"; opensAt?: string; opensDay?: string }
     | { state: "temporarily_closed" };
+
+  const isAlwaysOpen = (s: string) => /always\s*open|24\s*\/?\s*7|24\s*hours?|open\s*24/i.test(s);
 
   const computeOpenStatus = (): OpenStatus | null => {
     if (!openingHours) return null;
@@ -457,8 +459,9 @@ const ListingDetail = () => {
       const next = findNextOpen(1);
       return { state: "closed", ...(next || {}) };
     }
+    if (isAlwaysOpen(todayVal)) return { state: "open" };
     const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-    if (!m) return { state: "open", closes: todayVal };
+    if (!m) return { state: "open" };
     const now = new Date();
     const cur = now.getHours() * 60 + now.getMinutes();
     const o = parseTimeStr(m[1]);
@@ -995,7 +998,7 @@ const ListingDetail = () => {
                           : "Closed"}
                       </span>
                     </div>
-                    {openStatus.state === "open" && (
+                    {openStatus.state === "open" && openStatus.closes && (
                       <div style={{
                         marginTop: 4, marginLeft: 22,
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
