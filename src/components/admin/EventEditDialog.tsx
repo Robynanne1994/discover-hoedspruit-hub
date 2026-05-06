@@ -103,6 +103,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           </div>
           <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+27 ..." /></div>
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
+          <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By (optional)</Label></div>
+          <div><Label>Host Name</Label><Input value={form.hosted_by_name || ""} onChange={(e) => set("hosted_by_name", e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
+          <div><Label>Host Subtitle</Label><Input value={form.hosted_by_subtitle || ""} onChange={(e) => set("hosted_by_subtitle", e.target.value)} placeholder="e.g. Yoga Teachers" /></div>
+          <div><Label>Host Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url || ""} onChange={(url) => set("hosted_by_image_url", url)} /></div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
