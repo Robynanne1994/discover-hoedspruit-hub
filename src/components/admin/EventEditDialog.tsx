@@ -67,6 +67,21 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     onError: (e: any) => toast.error(e.message || "Failed to save"),
   });
 
+  const del = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("events").delete().eq("id", event.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Event deleted");
+      qc.invalidateQueries({ queryKey: ["events"] });
+      qc.invalidateQueries({ queryKey: ["admin-events"] });
+      qc.invalidateQueries({ queryKey: ["event-detail", event.id] });
+      onOpenChange(false);
+    },
+    onError: (e: any) => toast.error(e.message || "Failed to delete"),
+  });
+
   const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
 
   return (
@@ -139,9 +154,18 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url_3 || ""} onChange={(url) => set("hosted_by_image_url_3", url)} /></div>
           </div>
         </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={() => save.mutate()} disabled={save.isPending}>{save.isPending ? "Saving..." : "Save"}</Button>
+        <DialogFooter className="gap-2 sm:justify-between">
+          <Button
+            variant="destructive"
+            onClick={() => { if (confirm("Delete this event? This cannot be undone.")) del.mutate(); }}
+            disabled={del.isPending || save.isPending}
+          >
+            {del.isPending ? "Deleting..." : "Delete"}
+          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button onClick={() => save.mutate()} disabled={save.isPending}>{save.isPending ? "Saving..." : "Save"}</Button>
+          </div>
         </DialogFooter>
       </DialogContent>
     </Dialog>

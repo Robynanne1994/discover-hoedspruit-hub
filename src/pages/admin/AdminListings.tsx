@@ -764,7 +764,27 @@ const AdminListings = () => {
                   </div>
                 )}
 
-                <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
+                <div className="flex gap-2">
+                  {editing && (
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      onClick={() => {
+                        if (confirm("Delete this listing? This cannot be undone.")) {
+                          supabase.from("listings").delete().eq("id", editing.id).then(({ error }) => {
+                            if (error) { toast.error(error.message); return; }
+                            qc.invalidateQueries({ queryKey: ["admin-listings"] });
+                            toast.success("Listing deleted");
+                            resetForm();
+                          });
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                  <Button type="submit" className="flex-1" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
+                </div>
               </form>
             </DialogContent>
           </Dialog>
