@@ -395,6 +395,7 @@ const AdminListings = () => {
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
   const isShoppingType = categories?.some((c) => selectedCatIds.includes(c.id) && isShoppingCategory(c.title));
   const isAccommodationType = categories?.some((c) => selectedCatIds.includes(c.id) && isAccommodationCategory(c.title));
+  const isNGOType = categories?.some((c) => selectedCatIds.includes(c.id) && isNGOCategory(c.title));
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
