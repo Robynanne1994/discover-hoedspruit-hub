@@ -78,7 +78,7 @@ We encourage you to review this policy periodically to stay informed about how w
     title: "9. Contact Us",
     content: `If you have any questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us:
 
-• **Email:** hello@hellohoedspruit.com
+• **Email:** admin@hellohoedspruit.co
 • **In-app:** Visit the Help & Support section in your Account Settings.
 
 We aim to respond to all enquiries within 48 hours.`,
