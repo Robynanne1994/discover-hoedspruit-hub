@@ -290,7 +290,7 @@ const FAQs = () => {
       {!isLoading && (
         <div style={{ padding: "8px 24px 0" }}>
           <div style={{
-            background: "#F26A48",
+            background: "#5B4632",
             borderRadius: 24,
             padding: 28,
             position: "relative",
