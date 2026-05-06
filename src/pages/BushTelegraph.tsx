@@ -369,7 +369,7 @@ const BushTelegraph = () => {
                   borderRadius: 999,
                   border: "none",
                   cursor: "pointer",
-                  background: isActive ? TEXT : SURFACE,
+                  background: isActive ? "#5B4632" : SURFACE,
                   color: isActive ? "#FFFFFF" : TEXT,
                   boxShadow: isActive ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
                   whiteSpace: "nowrap",
