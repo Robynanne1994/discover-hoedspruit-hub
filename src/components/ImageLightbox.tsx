@@ -59,11 +59,11 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
           style={{
             position: "absolute", top: 16, right: 16, zIndex: 20,
             width: 44, height: 44, borderRadius: 999,
-            background: "rgba(255,255,255,0.12)", border: "none", cursor: "pointer",
+            background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
         >
-          <X size={22} color="#fff" strokeWidth={2} />
+          <X size={22} color="#0a0a0a" strokeWidth={2} />
         </button>
 
         {images.length > 1 && (
