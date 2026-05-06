@@ -175,7 +175,7 @@ const AdminEventsImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","Hoedspruit Town","Market","Family-friendly","Outdoor","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example","https://instagram.com/example","Instagram","info@example.com","+27 123 456 789","+27 123 456 789","https://img1.jpg|https://img2.jpg","https://bookme.com/example","Book on Quicket","R150","Bring cash for stalls","Some Business Name","true"\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","","","Hoedspruit Town","Market","Family-friendly","Outdoor","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example","https://instagram.com/example","Instagram","info@example.com","+27 123 456 789","+27 123 456 789","https://img1.jpg|https://img2.jpg","https://bookme.com/example","Book on Quicket","R150","Bring cash for stalls","Some Business Name","true"\n';
     downloadCSV(csv, "events_template.csv");
   };
 
