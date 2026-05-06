@@ -349,6 +349,40 @@ const CategoryPage = () => {
         </h1>
       </div>
 
+      {/* Search pill */}
+      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: 48,
+            background: C.card,
+            borderRadius: 999,
+            padding: "0 20px",
+            gap: 12,
+          }}
+        >
+          <Search size={20} strokeWidth={1.5} style={{ color: C.muted, flexShrink: 0 }} />
+          <input
+            type="text"
+            placeholder="Search listings"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              flex: 1,
+              background: "transparent",
+              border: "none",
+              outline: "none",
+              fontFamily: font,
+              fontSize: 16,
+              fontWeight: 400,
+              color: C.text,
+            }}
+            className="placeholder:text-[#8A8480]"
+          />
+        </div>
+      </div>
+
       {/* Filter row */}
       <div
         style={{
