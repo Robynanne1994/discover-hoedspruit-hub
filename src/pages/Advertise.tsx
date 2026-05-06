@@ -400,7 +400,7 @@ const Advertise = () => {
       {/* Email panel */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 40 }}>
         <a
-          href="mailto:hellohoedspruit@gmail.com"
+          href="mailto:admin@hellohoedspruit.co"
           {...tap}
           style={{
             display: "block", background: WARM, borderRadius: 16, padding: "18px 20px",
@@ -415,7 +415,7 @@ const Advertise = () => {
           }}>Or Email Us Directly</p>
           <div style={{
             fontFamily: FF, fontSize: 16, fontWeight: 400, lineHeight: "23.2px", color: INK,
-          }}>hellohoedspruit@gmail.com</div>
+          }}>admin@hellohoedspruit.co</div>
         </a>
       </div>
 

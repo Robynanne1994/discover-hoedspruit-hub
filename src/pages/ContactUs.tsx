@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const CONTACT_EMAIL = "hellohoedspruit@gmail.com";
+const CONTACT_EMAIL = "admin@hellohoedspruit.co";
 const CONTACT_PHONE = "061 332 1709";
 const PHONE_DIGITS = "27613321709";
 const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;

@@ -7,7 +7,7 @@ const sections = [
   { heading: "Managing Cookies", body: "You can manage or disable cookies through your device settings or browser preferences. Please note that disabling certain cookies may affect the functionality of the app." },
   { heading: "Your Consent", body: "In accordance with South Africa's POPIA and the Electronic Communications and Transactions Act, we will obtain your consent before placing non-essential cookies on your device. You can withdraw your consent at any time by adjusting your settings." },
   { heading: "Changes to This Policy", body: "We may update this Cookie Policy from time to time. Changes will be reflected on this page with an updated date." },
-  { heading: "Contact", body: "If you have questions about our use of cookies, contact us at hellohoedspruit@gmail.com." },
+  { heading: "Contact", body: "If you have questions about our use of cookies, contact us at admin@hellohoedspruit.co." },
 ];
 
 const CookiePolicy = () => (
