@@ -6,7 +6,31 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Star, ArrowLeft, Search, Calendar, ChevronRight, Tag } from "lucide-react";
+import { Heart, Star, ArrowLeft, Search, Calendar, ChevronRight, Tag, MapPin } from "lucide-react";
+import FavouriteButton from "@/components/FavouriteButton";
+
+const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const isOpenNow = (openingHours: Record<string, string> | null | undefined): boolean => {
+  if (!openingHours) return false;
+  const now = new Date();
+  const todayIdx = now.getDay();
+  const todayLabel = todayIdx === 0 ? "Sunday" : DAY_LABELS[todayIdx - 1];
+  const todayValRaw = openingHours[todayLabel.toLowerCase()];
+  const todayVal = typeof todayValRaw === "string" ? todayValRaw : "";
+  if (!todayVal || /closed/i.test(todayVal)) return false;
+  const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+  if (!m) return false;
+  const parse = (s: string) => {
+    const [h, mm] = s.replace(".", ":").split(":");
+    return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
+  };
+  const cur = now.getHours() * 60 + now.getMinutes();
+  const o = parse(m[1]);
+  let c = parse(m[2]);
+  if (c <= o) c += 24 * 60;
+  return cur >= o && cur <= c;
+};
+
 import { format, parseISO, isFuture, isPast } from "date-fns";
 
 type PrimaryTab = "listings" | "events" | "specials";
@@ -45,7 +69,7 @@ const SavedListings = () => {
 
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating, category_id, categories(title)")
+        .select("*, categories(title)")
         .in("id", listingIds);
 
       const { data: junctions } = await supabase
@@ -388,58 +412,102 @@ const SavedListings = () => {
             </div>
           )}
           {filteredListings.length > 0 && (
-            <div className="flex flex-col">
+            <div style={{ display: "flex", flexDirection: "column", gap: 20, paddingLeft: 24, paddingRight: 24 }}>
               {filteredListings.map((fav: any) => {
-                const detail = fav.details;
-                if (!detail) return null;
-                const rating = detail.google_rating ? Number(detail.google_rating) : null;
-                const location = detail.location;
+                const l = fav.details;
+                if (!l) return null;
+                const hasImage = !!l.image_url;
+                const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
+                const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
+                const rowStyle = {
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  marginTop: 6,
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontSize: 12,
+                  fontWeight: 400,
+                  lineHeight: "15.6px",
+                  letterSpacing: "0.12px",
+                  color: "#8A8480",
+                } as const;
                 return (
-                  <Link key={fav.id} to={`/listing/${fav.item_id}`} className="block">
-                    <div
-                      className="relative overflow-hidden active:scale-[0.98]"
-                      style={{
-                        borderRadius: 16,
-                        marginLeft: 24,
-                        marginRight: 24,
-                        marginBottom: 16,
-                        transition: "transform 0.15s ease",
-                      }}
-                    >
-                      <div style={{ width: "100%", aspectRatio: "16/10", background: "#f0f0f0", position: "relative" }}>
-                        {detail.image_url ? (
-                          <img src={detail.image_url} alt={detail.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} loading="lazy" />
-                        ) : (
-                          <div style={{ width: "100%", height: "100%", background: "#f0f0f0" }} />
-                        )}
-                        {/* Gradient overlay */}
-                        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.02) 100%)" }} />
-                        {/* Heart button */}
-                        <button
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type }); }}
-                          className="absolute flex items-center justify-center active:scale-[0.85]"
-                          style={{ top: 12, right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)", transition: "transform 0.12s ease" }}
-                          aria-label="Remove from saved"
-                        >
-                          <Heart style={{ width: 18, height: 18, color: "#FFFFFF", fill: "#FFFFFF" }} />
-                        </button>
-                        {/* Card text */}
-                        <div className="absolute bottom-0 left-0 right-0" style={{ padding: 16 }}>
-                          <h3 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 18, fontWeight: 600, color: "#FFFFFF", textTransform: "none", lineHeight: 1.2, letterSpacing: "0.01em", marginBottom: 4 }}>{detail.title?.toLowerCase()}</h3>
-                          <div className="flex items-center" style={{ gap: 6 }}>
-                            {rating && (
-                              <>
-                                <Star style={{ width: 14, height: 14, color: "#D4964A", fill: "#D4964A", flexShrink: 0 }} />
-                                <span style={{ fontFamily, fontSize: 13, fontWeight: 600, color: "#FFFFFF" }}>{rating.toFixed(1)}</span>
-                              </>
-                            )}
-                            {rating && location && <span style={{ fontFamily, fontSize: 13, color: "rgba(255,255,255,0.5)" }}>·</span>}
-                            {location && <span style={{ fontFamily, fontSize: 13, fontWeight: 400, color: "rgba(255,255,255,0.65)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{location}</span>}
-                          </div>
+                  <article
+                    key={fav.id}
+                    onClick={() => navigate(`/listing/${l.id}`)}
+                    style={{
+                      background: "#FFFFFF",
+                      border: "none",
+                      borderRadius: 24,
+                      overflow: "hidden",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {hasImage && (
+                      <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: "#F2EFEC" }}>
+                        <img
+                          src={l.image_url!}
+                          alt={l.title}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                          loading="lazy"
+                        />
+                        <div onClick={(e) => e.stopPropagation()}>
+                          <FavouriteButton itemId={l.id} itemType="listing" />
                         </div>
                       </div>
+                    )}
+                    <div style={{ padding: 24 }}>
+                      <h3
+                        style={{
+                          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                          fontSize: 22,
+                          fontWeight: 400,
+                          color: "#0A0A0A",
+                          lineHeight: 1.2,
+                          margin: 0,
+                        }}
+                      >
+                        {l.title}
+                      </h3>
+                      {(l.google_rating || open !== null) && (
+                        <div style={rowStyle}>
+                          {l.google_rating && (
+                            <>
+                              <Star size={12} fill="#5b4632" stroke="#5b4632" />
+                              <span>{Number(l.google_rating).toFixed(1)}</span>
+                            </>
+                          )}
+                          {open !== null && (
+                            <>
+                              <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: open ? "#1FA463" : "#D7263D" }} />
+                              <span>{open ? "Open Now" : "Closed"}</span>
+                            </>
+                          )}
+                        </div>
+                      )}
+                      {l.location && (
+                        <div style={rowStyle}>
+                          <MapPin size={12} strokeWidth={1.5} color="#8A8480" />
+                          <span>{l.location}</span>
+                        </div>
+                      )}
+                      {l.description && (
+                        <p
+                          style={{
+                            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                            fontSize: 14,
+                            fontWeight: 400,
+                            lineHeight: "20.3px",
+                            color: "#0A0A0A",
+                            margin: 0,
+                            marginTop: 14,
+                          }}
+                        >
+                          {l.description}
+                        </p>
+                      )}
                     </div>
-                  </Link>
+                  </article>
                 );
               })}
             </div>
