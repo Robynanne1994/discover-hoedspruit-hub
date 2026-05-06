@@ -45,9 +45,13 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="p-0 border-0 bg-black/95 max-w-none w-screen h-screen sm:rounded-none flex items-center justify-center [&>button]:hidden"
+        className="p-0 border-0 max-w-none w-screen h-screen sm:rounded-none flex items-center justify-center [&>button]:hidden"
+        style={{ background: "#ebebeb" }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onOpenChange(false);
+        }}
       >
         <button
           onClick={() => onOpenChange(false)}
@@ -55,11 +59,11 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
           style={{
             position: "absolute", top: 16, right: 16, zIndex: 20,
             width: 44, height: 44, borderRadius: 999,
-            background: "rgba(255,255,255,0.12)", border: "none", cursor: "pointer",
+            background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
             display: "flex", alignItems: "center", justifyContent: "center",
           }}
         >
-          <X size={22} color="#fff" strokeWidth={2} />
+          <X size={22} color="#0a0a0a" strokeWidth={2} />
         </button>
 
         {images.length > 1 && (
@@ -70,11 +74,11 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
               style={{
                 position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", zIndex: 20,
                 width: 44, height: 44, borderRadius: 999,
-                background: "rgba(255,255,255,0.12)", border: "none", cursor: "pointer",
+                background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >
-              <ChevronLeft size={24} color="#fff" strokeWidth={2} />
+              <ChevronLeft size={24} color="#0a0a0a" strokeWidth={2} />
             </button>
             <button
               onClick={next}
@@ -82,11 +86,11 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
               style={{
                 position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", zIndex: 20,
                 width: 44, height: 44, borderRadius: 999,
-                background: "rgba(255,255,255,0.12)", border: "none", cursor: "pointer",
+                background: "rgba(0,0,0,0.08)", border: "none", cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
             >
-              <ChevronRight size={24} color="#fff" strokeWidth={2} />
+              <ChevronRight size={24} color="#0a0a0a" strokeWidth={2} />
             </button>
           </>
         )}
@@ -104,7 +108,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
           }}>
             <div style={{
               padding: "6px 12px", borderRadius: 999,
-              background: "rgba(255,255,255,0.14)", color: "#fff",
+              background: "rgba(0,0,0,0.08)", color: "#0a0a0a",
               fontFamily: "'Pragmatica', 'Inter', 'Helvetica Neue', sans-serif",
               fontSize: 12, letterSpacing: "0.02em",
             }}>
