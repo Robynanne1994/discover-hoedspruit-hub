@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-const FEEDBACK_TYPES = ["Suggestion", "Bug", "Compliment", "Other"] as const;
+const FEEDBACK_TYPES = ["General", "Suggestion", "Bug", "Compliment", "Other"] as const;
 
 const FF = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const FF_DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
@@ -31,7 +31,7 @@ const tap = {
 const Feedback = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [type, setType] = useState<string>("Suggestion");
+  const [type, setType] = useState<string>("General");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ subject?: string; message?: string }>({});
@@ -56,7 +56,7 @@ const Feedback = () => {
       toast.success("Thanks, we've got it.");
       setSubject("");
       setMessage("");
-      setType("Suggestion");
+      setType("General");
       setErrors({});
     } catch {
       toast.error("Something went wrong. Please try again.");
@@ -169,7 +169,7 @@ const Feedback = () => {
                 onClick={() => setType(t)}
                 {...tap}
                 style={{
-                  background: active ? INK : CARD,
+                  background: active ? "#5B4632" : CARD,
                   color: active ? "#FFFFFF" : INK,
                   border: "none",
                   borderRadius: 999,
