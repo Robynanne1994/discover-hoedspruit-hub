@@ -1059,6 +1059,54 @@ const ListingDetail = () => {
           );
         })()}
 
+        {hasGallery && (
+          <div style={{ position: "relative", marginTop: 24, marginLeft: -24, marginRight: -24 }}>
+            <div
+              style={{
+                overflowX: "auto", WebkitOverflowScrolling: "touch",
+              }}
+              className="scrollbar-hide"
+              onScroll={(e) => {
+                if (e.currentTarget.scrollLeft > 8 && galleryHintVisible) setGalleryHintVisible(false);
+              }}
+            >
+              <div style={{ display: "inline-flex", gap: 10, paddingLeft: 24, paddingRight: 24 }}>
+                {galleryImages!.map((url, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
+                    style={{
+                      width: 120, height: 120, borderRadius: 16, overflow: "hidden",
+                      background: C.panel, flexShrink: 0, border: "none", padding: 0, cursor: "pointer",
+                    }}
+                    aria-label={`Open image ${i + 1}`}
+                  >
+                    <img src={url} alt={`${listing.title} ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
+            {galleryImages && galleryImages.length > 3 && (
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute", top: "50%", right: 12, transform: "translateY(-50%)",
+                  width: 32, height: 32, borderRadius: 999,
+                  background: "rgba(255,255,255,0.92)",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  pointerEvents: "none",
+                  opacity: galleryHintVisible ? 1 : 0,
+                  transition: "opacity 200ms ease-out",
+                }}
+              >
+                <ChevronRight size={18} strokeWidth={1.75} color={C.text} />
+              </div>
+            )}
+          </div>
+        )}
+
         {(listing.location || (listing as any).google_maps_link) && (
           <>
             <SectionHeading mt={32}>Location</SectionHeading>
