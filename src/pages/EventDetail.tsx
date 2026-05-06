@@ -482,7 +482,7 @@ const EventDetail = () => {
           }
           if (actions.length === 0) return null;
           return (
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${actions.length}, 1fr)`, gap: 10, marginBottom: 20 }}>
+            <div style={{ display: "grid", gridTemplateColumns: `repeat(${actions.length}, 1fr)`, gap: 10, marginBottom: 10 }}>
               {actions.map((a) => (
                 <a
                   key={a.key}
