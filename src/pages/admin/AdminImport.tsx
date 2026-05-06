@@ -307,12 +307,7 @@ const AdminImport = () => {
           try { openingHours = JSON.parse(row.opening_hours); } catch { openingHours = null; }
         }
 
-        let galleryImages: string[] | null = null;
-        if (row.gallery_images) {
-          try { galleryImages = JSON.parse(row.gallery_images); } catch {
-            galleryImages = row.gallery_images.split("|").map(s => s.trim()).filter(Boolean);
-          }
-        }
+        // Images are managed exclusively via the Lovable editor — CSV image_url and gallery_images are ignored.
 
         const existing = existingMap.get(title.toLowerCase());
         const isUpdate = !!existing;
