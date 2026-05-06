@@ -998,7 +998,7 @@ const ListingDetail = () => {
                           : "Closed"}
                       </span>
                     </div>
-                    {openStatus.state === "open" && (
+                    {openStatus.state === "open" && openStatus.closes && (
                       <div style={{
                         marginTop: 4, marginLeft: 22,
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
