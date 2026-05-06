@@ -552,6 +552,7 @@ const AdminListings = () => {
                             <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
                             <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
                             <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
+                            <TriStateToggle label="Nappy Changing Station" value={form.nappy_changing_station} onChange={(v) => setForm({ ...form, nappy_changing_station: v })} />
                           </div>
                         </div>
 
