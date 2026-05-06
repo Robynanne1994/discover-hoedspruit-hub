@@ -116,7 +116,7 @@ const AdminEventsImport = () => {
           tag: row.tag || null,
           sub_tag_1: row.sub_tag_1 || null,
           sub_tag_2: row.sub_tag_2 || null,
-          ...(row.image_url ? { image_url: row.image_url } : (!isUpdate ? { image_url: null } : {})),
+          // image_url ignored — managed via Lovable editor only
           start_time: row.start_time || null,
           end_time: row.end_time || null,
           recurrence: row.recurrence || null,
