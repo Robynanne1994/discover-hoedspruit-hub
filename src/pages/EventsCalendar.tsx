@@ -64,7 +64,7 @@ const EventsCalendar = () => {
     const recurring: EventRow[] = [];
 
     events?.forEach((event) => {
-      const dates = parseDateText(event.date);
+      const dates = parseDateText(event.date, event);
       if (dates.length === 0) {
         recurring.push(event);
       } else {
