@@ -22,6 +22,8 @@ const FIELDS = [
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
   "business_id", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url",
+  "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2",
+  "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3",
 ];
 
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
