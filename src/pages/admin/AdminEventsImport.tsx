@@ -126,7 +126,7 @@ const AdminEventsImport = () => {
           contact_email: row.contact_email || null,
           contact_phone: row.contact_phone || null,
           contact_whatsapp: row.contact_whatsapp || null,
-          ...(galleryArr.length > 0 ? { gallery_images: galleryArr } : (!isUpdate ? { gallery_images: [] } : {})),
+          // gallery_images ignored — managed via Lovable editor only
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           price: row.price || null,
