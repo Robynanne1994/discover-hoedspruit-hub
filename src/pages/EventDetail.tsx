@@ -379,7 +379,7 @@ const EventDetail = () => {
         {(timeDisplay || event.location) && (
           <p style={{
             fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "16px",
-            letterSpacing: 0, color: MUTED, margin: 0, marginBottom: 14,
+            letterSpacing: 0, color: "#0a0a0a", margin: 0, marginBottom: 14,
           }}>
             {[timeDisplay, event.location].filter(Boolean).join(" · ")}
           </p>
