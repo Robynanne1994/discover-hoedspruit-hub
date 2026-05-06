@@ -397,7 +397,28 @@ const ListingDetail = () => {
     }
   }
 
-  // Custom detail rows (up to 3) — always last in the Details card
+  // NGO & Volunteering rich text sections
+  if (isListingNgo) {
+    const l = listing as any;
+    const ngoSections: Array<{ key: string; title: string; field: string }> = [
+      { key: "ngo-cause", title: "Cause", field: "cause" },
+      { key: "ngo-impact", title: "Impact", field: "impact" },
+      { key: "ngo-ways", title: "Ways To Give", field: "ways_to_give" },
+      { key: "ngo-volunteering", title: "Volunteering", field: "volunteering" },
+      { key: "ngo-visiting", title: "Visiting", field: "visiting" },
+    ];
+    for (const s of ngoSections) {
+      const v = (l[s.field] || "").toString().trim();
+      if (v) {
+        accordionSections.push({
+          key: s.key,
+          title: s.title,
+          fields: [{ label: v, value: "__custom_text__" }],
+        });
+      }
+    }
+  }
+
   {
     const l = listing as any;
     for (let i = 1; i <= 3; i++) {
