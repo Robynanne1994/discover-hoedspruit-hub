@@ -602,7 +602,15 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : C.text} fill={isFavourited ? "#5b4632" : "none"} />
+            <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path
+                d="M12 21.2c-.5 0-1-.2-1.4-.55C7.3 17.95 2 13.5 2 8.6 2 5.5 4.4 3 7.4 3c1.9 0 3.6 1 4.6 2.5C13 4 14.7 3 16.6 3 19.6 3 22 5.5 22 8.6c0 4.9-5.3 9.35-8.6 12.05-.4.35-.9.55-1.4.55Z"
+                fill={isFavourited ? "#5b4632" : C.text}
+                stroke={isFavourited ? "#5b4632" : C.text}
+                strokeWidth="2.4"
+                strokeLinejoin="round"
+              />
+            </svg>
           </button>
           {isAdmin && (
             <button
