@@ -310,7 +310,14 @@ const SpecialDetail = () => {
 
       {/* Content */}
       <div style={{ padding: "16px 24px 0 24px" }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10, textTransform: "uppercase", textAlign: "center" }}>{special.deal_label}</p>
+        {(() => {
+          const cats = ((special as any).eyebrow_categories as string[] | null)?.filter((c) => c && c.trim()) ?? [];
+          const eyebrowText = cats.length ? cats.join("  ·  ") : special.deal_label;
+          if (!eyebrowText) return null;
+          return (
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10, textTransform: "uppercase", textAlign: "center" }}>{eyebrowText}</p>
+          );
+        })()}
 
         <h1
           style={{
