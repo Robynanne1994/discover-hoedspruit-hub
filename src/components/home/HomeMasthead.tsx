@@ -100,8 +100,6 @@ const HomeMasthead = () => {
             <Menu size={16} color="#0A0A0A" strokeWidth={2} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
-            <DropdownMenuLabel>Quick links</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate("/saved")}>
               <Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit
             </DropdownMenuItem>
