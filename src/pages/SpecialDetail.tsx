@@ -315,13 +315,15 @@ const SpecialDetail = () => {
         <h1
           style={{
             fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontSize: 32,
             fontWeight: 500,
-            fontSize: 28,
-            lineHeight: "28px",
-            letterSpacing: "-0.84px",
+            lineHeight: "34px",
+            letterSpacing: "-0.96px",
             color: "#0A0A0A",
-            margin: 0,
+            textTransform: "none",
+            marginTop: 0,
             marginBottom: 8,
+            textAlign: "center",
           }}
         >
           {special.title}
