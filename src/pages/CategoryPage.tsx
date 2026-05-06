@@ -2,7 +2,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe, Star, Search } from "lucide-react";
+import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe, Star, Search, Sparkles } from "lucide-react";
 import FavouriteButton from "@/components/FavouriteButton";
 import BackButton from "@/components/BackButton";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
@@ -323,7 +323,28 @@ const CategoryPage = () => {
       >
         <BackButton />
 
-
+        {isRestaurant && (
+          <button
+            onClick={() => navigate("/quiz")}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+              fontFamily: font,
+              fontSize: 13,
+              fontWeight: 400,
+              color: C.text,
+            }}
+            aria-label="Let us help you"
+          >
+            <Sparkles size={16} strokeWidth={1.6} color={C.text} />
+            <span>Let us help you</span>
+          </button>
+        )}
       </div>
 
       {/* Title block */}
