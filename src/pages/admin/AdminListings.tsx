@@ -797,6 +797,7 @@ const AdminListings = () => {
                   </div>
                 )}
 
+                <div className="flex gap-2">
                   {editing && (
                     <Button
                       type="button"
