@@ -221,11 +221,6 @@ const SpecialDetail = () => {
       label: "Days",
       value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
     });
-  detailRows.push({
-    icon: <Calendar size={20} strokeWidth={1.5} color={MUTED} />,
-    label: "Validity",
-    value: validityText,
-  });
 
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
 
