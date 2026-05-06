@@ -1019,7 +1019,7 @@ const ListingDetail = () => {
               }}>
                 {openStatus && (
                   <div style={{
-                    background: C.panel,
+                    background: "#F4ECE1",
                     paddingTop: 20, paddingBottom: 22, paddingLeft: 24, paddingRight: 24,
                   }}>
                     <div style={{ display: "flex", alignItems: "center" }}>
