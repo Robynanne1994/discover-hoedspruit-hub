@@ -141,7 +141,7 @@ const Categories = () => {
     <div
       style={{
         minHeight: "100dvh",
-        backgroundColor: "transparent",
+        backgroundColor: "#555340",
         fontFamily: FONT_BODY,
         paddingTop: "calc(env(safe-area-inset-top) + 24px)",
         paddingLeft: 24,
