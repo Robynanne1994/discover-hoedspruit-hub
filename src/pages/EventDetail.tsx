@@ -468,7 +468,7 @@ const EventDetail = () => {
           if (waClean) {
             actions.push({
               key: "whatsapp",
-              label: "WhatsApp",
+              label: "Whatsapp",
               href: `https://wa.me/${waClean}`,
               icon: <WhatsappIcon color="#FFFFFF" />,
             });
