@@ -22,7 +22,7 @@ type Listing = Tables<"listings">;
 
 const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
-const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub"];
+const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub", "Snacks", "Light Meals"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic"];
 const CUISINE_OPTIONS = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];

@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian"];
 const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy"];
-const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner"];
+const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Pub Grub", "Snacks", "Light Meals"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
 const font = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
