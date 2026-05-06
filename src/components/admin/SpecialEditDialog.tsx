@@ -47,6 +47,22 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     onError: (e: any) => toast.error(e.message || "Failed to save"),
   });
 
+  const del = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("specials").delete().eq("id", special.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Special deleted");
+      qc.invalidateQueries({ queryKey: ["admin-specials"] });
+      qc.invalidateQueries({ queryKey: ["home-specials"] });
+      qc.invalidateQueries({ queryKey: ["homepage-specials"] });
+      qc.invalidateQueries({ queryKey: ["special-detail", special.id] });
+      onOpenChange(false);
+    },
+    onError: (e: any) => toast.error(e.message || "Failed to delete"),
+  });
+
   const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
 
   const { data: listings } = useQuery({
