@@ -108,7 +108,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
           }}>
             <div style={{
               padding: "6px 12px", borderRadius: 999,
-              background: "rgba(255,255,255,0.14)", color: "#fff",
+              background: "rgba(0,0,0,0.08)", color: "#0a0a0a",
               fontFamily: "'Pragmatica', 'Inter', 'Helvetica Neue', sans-serif",
               fontSize: 12, letterSpacing: "0.02em",
             }}>
