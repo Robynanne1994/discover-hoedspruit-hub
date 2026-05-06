@@ -22,6 +22,8 @@ const FIELDS = [
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
   "business_id", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url",
+  "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2",
+  "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3",
 ];
 
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
@@ -103,10 +105,25 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           </div>
           <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+27 ..." /></div>
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
-          <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By (optional)</Label></div>
-          <div><Label>Host Name</Label><Input value={form.hosted_by_name || ""} onChange={(e) => set("hosted_by_name", e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
-          <div><Label>Host Subtitle</Label><Input value={form.hosted_by_subtitle || ""} onChange={(e) => set("hosted_by_subtitle", e.target.value)} placeholder="e.g. Yoga Teachers" /></div>
-          <div><Label>Host Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url || ""} onChange={(url) => set("hosted_by_image_url", url)} /></div>
+          <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By (optional, up to 3)</Label></div>
+          <div className="space-y-3 p-3 border rounded">
+            <Label className="text-sm font-semibold">Host 1</Label>
+            <div><Label>Name</Label><Input value={form.hosted_by_name || ""} onChange={(e) => set("hosted_by_name", e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
+            <div><Label>Subtitle</Label><Input value={form.hosted_by_subtitle || ""} onChange={(e) => set("hosted_by_subtitle", e.target.value)} placeholder="e.g. Yoga Teachers" /></div>
+            <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url || ""} onChange={(url) => set("hosted_by_image_url", url)} /></div>
+          </div>
+          <div className="space-y-3 p-3 border rounded">
+            <Label className="text-sm font-semibold">Host 2</Label>
+            <div><Label>Name</Label><Input value={form.hosted_by_name_2 || ""} onChange={(e) => set("hosted_by_name_2", e.target.value)} /></div>
+            <div><Label>Subtitle</Label><Input value={form.hosted_by_subtitle_2 || ""} onChange={(e) => set("hosted_by_subtitle_2", e.target.value)} /></div>
+            <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url_2 || ""} onChange={(url) => set("hosted_by_image_url_2", url)} /></div>
+          </div>
+          <div className="space-y-3 p-3 border rounded">
+            <Label className="text-sm font-semibold">Host 3</Label>
+            <div><Label>Name</Label><Input value={form.hosted_by_name_3 || ""} onChange={(e) => set("hosted_by_name_3", e.target.value)} /></div>
+            <div><Label>Subtitle</Label><Input value={form.hosted_by_subtitle_3 || ""} onChange={(e) => set("hosted_by_subtitle_3", e.target.value)} /></div>
+            <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url_3 || ""} onChange={(url) => set("hosted_by_image_url_3", url)} /></div>
+          </div>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
