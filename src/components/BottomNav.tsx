@@ -2,11 +2,11 @@ import { Link, useLocation } from "react-router-dom";
 import { Home, SearchCheck, Tag, CalendarDays, User } from "lucide-react";
 
 const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Explore", href: "/categories", icon: SearchCheck },
-  { label: "Specials", href: "/specials", icon: Tag },
-  { label: "Events", href: "/events", icon: CalendarDays },
-  { label: "Profile", href: "/my-account", icon: User },
+  { label: "Home", href: "/", icon: Home, match: (p: string) => p === "/" },
+  { label: "Explore", href: "/categories", icon: SearchCheck, match: (p: string) => p.startsWith("/categories") || p.startsWith("/category") || p.startsWith("/listing") },
+  { label: "Specials", href: "/specials", icon: Tag, match: (p: string) => p.startsWith("/specials") },
+  { label: "Events", href: "/events", icon: CalendarDays, match: (p: string) => p.startsWith("/events") },
+  { label: "Profile", href: "/my-account", icon: User, match: (p: string) => p.startsWith("/my-account") },
 ];
 
 const PILL_BG = "#f5f0e8";
@@ -30,10 +30,7 @@ const BottomNav = () => {
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 6 }}>
         {navItems.map((item) => {
-          const isActive =
-            item.href === "/"
-              ? location.pathname === "/"
-              : location.pathname.startsWith(item.href);
+          const isActive = item.match(location.pathname);
           const Icon = item.icon;
 
           return (
