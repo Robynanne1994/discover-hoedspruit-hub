@@ -1,12 +1,26 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, SearchCheck, Tag, CalendarDays, User } from "lucide-react";
+import { Home, SearchCheck, Tag, CalendarDays } from "lucide-react";
+import profileIcon from "@/assets/profile-icon.png";
+
+const ProfileIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
+  <img
+    src={profileIcon}
+    alt=""
+    style={{
+      width: size,
+      height: size,
+      objectFit: "contain",
+      filter: color === "#f5f0e8" ? "none" : "brightness(0)",
+    }}
+  />
+);
 
 const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/categories", icon: SearchCheck },
   { label: "Specials", href: "/specials", icon: Tag },
   { label: "Events", href: "/events", icon: CalendarDays },
-  { label: "Profile", href: "/my-account", icon: User },
+  { label: "Profile", href: "/my-account", icon: ProfileIcon as any },
 ];
 
 const PILL_BG = "#f5f0e8";
