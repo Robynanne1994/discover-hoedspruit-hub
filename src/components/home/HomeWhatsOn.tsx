@@ -71,23 +71,23 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, location, date, image_url")
+          .select("id, title, location, date, start_date, end_date, image_url")
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         return ids
           .map((id) => map.get(id))
           .filter((e): e is NonNullable<typeof e> => Boolean(e))
-          .map((e) => ({ ...e, parsed: parseEventDate(e.date) }))
+          .map((e) => ({ ...e, parsed: parseEventDate(e) }))
           .slice(0, 4);
       }
 
       const { data } = await supabase
         .from("events")
-        .select("id, title, location, date, image_url")
+        .select("id, title, location, date, start_date, end_date, image_url")
         .order("date", { ascending: true })
         .limit(20);
       return (data || [])
-        .map((e) => ({ ...e, parsed: parseEventDate(e.date) }))
+        .map((e) => ({ ...e, parsed: parseEventDate(e) }))
         .slice(0, 4);
     },
   });
