@@ -275,7 +275,7 @@ const Feedback = () => {
           {...tap}
           style={{
             width: "100%",
-            background: INK,
+            background: "#5B4632",
             color: "#FFFFFF",
             border: "none",
             borderRadius: 999,
