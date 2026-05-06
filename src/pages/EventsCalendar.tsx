@@ -24,7 +24,7 @@ import {
   parse,
 } from "date-fns";
 
-import { expandEventDates } from "@/lib/eventDates";
+import { expandEventDates, formatEventDateRange } from "@/lib/eventDates";
 
 /** Concrete dates an event spans, using new structured fields with legacy fallback. */
 function parseDateText(_raw: string, event?: any): Date[] {
