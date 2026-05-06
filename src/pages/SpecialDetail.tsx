@@ -310,7 +310,14 @@ const SpecialDetail = () => {
 
       {/* Content */}
       <div style={{ padding: "16px 24px 0 24px" }}>
-        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10, textTransform: "uppercase", textAlign: "center" }}>{special.deal_label}</p>
+        {(() => {
+          const cats = ((special as any).eyebrow_categories as string[] | null)?.filter((c) => c && c.trim()) ?? [];
+          const eyebrowText = cats.length ? cats.join("  ·  ") : special.deal_label;
+          if (!eyebrowText) return null;
+          return (
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10, textTransform: "uppercase", textAlign: "center" }}>{eyebrowText}</p>
+          );
+        })()}
 
         <h1
           style={{
@@ -344,6 +351,42 @@ const SpecialDetail = () => {
               </p>
             )
           )}
+          {(() => {
+            const sp: any = special;
+            const cols = [
+              { headline: sp.price, sublabel: sp.price_label },
+              { headline: sp.offer_headline, sublabel: sp.offer_sublabel },
+              { headline: sp.duration_headline, sublabel: sp.duration_sublabel },
+            ].filter((c) => c.headline || c.sublabel);
+            if (cols.length === 0) return null;
+            return (
+              <div style={{ display: "flex", alignItems: "stretch", justifyContent: "center", gap: 0, margin: "18px 0 14px" }}>
+                {cols.map((c, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      padding: "4px 10px",
+                      textAlign: "center",
+                      borderLeft: i === 0 ? "none" : `1px solid ${DIVIDER}`,
+                    }}
+                  >
+                    {c.headline && (
+                      <div style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "24px", letterSpacing: "-0.4px", color: "#0A0A0A" }}>
+                        {c.headline}
+                      </div>
+                    )}
+                    {c.sublabel && (
+                      <div style={{ marginTop: 6, fontFamily: FONT, fontWeight: 500, fontSize: 11, letterSpacing: "0.16em", textTransform: "uppercase", color: MUTED }}>
+                        {c.sublabel}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
           {(() => {
             const now = new Date();
             const isLive = (!fromDate || fromDate <= now) && (!untilDate || untilDate >= now);
