@@ -653,7 +653,7 @@ const SpecialDetail = () => {
         {/* Terms & Conditions */}
         {special.terms && (
           <section style={{ marginBottom: 16 }}>
-            <p style={{ ...eyebrow, marginBottom: 8 }}>Terms & Conditions</p>
+            <p style={{ ...eyebrow, marginBottom: 8, color: "#0a0a0a" }}>Terms & Conditions</p>
             <p
               style={{
                 fontFamily: FONT,
