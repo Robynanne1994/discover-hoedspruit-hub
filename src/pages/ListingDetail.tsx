@@ -11,7 +11,7 @@ import {
   BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNgoCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -240,6 +240,7 @@ const ListingDetail = () => {
   const isListingRestaurant = listingCategories?.some((cat) => isRestaurantCategory(cat.title)) ?? false;
   const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
   const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
+  const isListingNgo = listingCategories?.some((cat) => isNgoCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
@@ -396,7 +397,28 @@ const ListingDetail = () => {
     }
   }
 
-  // Custom detail rows (up to 3) — always last in the Details card
+  // NGO & Volunteering rich text sections
+  if (isListingNgo) {
+    const l = listing as any;
+    const ngoSections: Array<{ key: string; title: string; field: string }> = [
+      { key: "ngo-cause", title: "Cause", field: "cause" },
+      { key: "ngo-impact", title: "Impact", field: "impact" },
+      { key: "ngo-ways", title: "Ways To Give", field: "ways_to_give" },
+      { key: "ngo-volunteering", title: "Volunteering", field: "volunteering" },
+      { key: "ngo-visiting", title: "Visiting", field: "visiting" },
+    ];
+    for (const s of ngoSections) {
+      const v = (l[s.field] || "").toString().trim();
+      if (v) {
+        accordionSections.push({
+          key: s.key,
+          title: s.title,
+          fields: [{ label: v, value: "__custom_text__" }],
+        });
+      }
+    }
+  }
+
   {
     const l = listing as any;
     for (let i = 1; i <= 3; i++) {
