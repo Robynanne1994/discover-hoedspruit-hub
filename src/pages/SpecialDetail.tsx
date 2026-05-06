@@ -336,18 +336,77 @@ const SpecialDetail = () => {
           {special.business_id ? (
             <Link
               to={`/listing/${special.business_id}`}
-              style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 2, textTransform: "none", textDecoration: "none", display: "block" }}
+              style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 10, textTransform: "none", textDecoration: "none", display: "block" }}
             >
               {special.business_name}
             </Link>
           ) : (
-            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 2, textTransform: "none" }}>
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 14, lineHeight: "20px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 10, textTransform: "none" }}>
               {special.business_name}
             </p>
           )}
-          <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "16px", letterSpacing: 0, color: "#0A0A0A", margin: 0, textTransform: "none" }}>
-            {validityText}
-          </p>
+          {(() => {
+            const now = new Date();
+            const isLive = (!fromDate || fromDate <= now) && (!untilDate || untilDate >= now);
+            const labelText = (validFromTxt && validUntilTxt)
+              ? `Valid ${format(fromDate!, "d MMM")} – ${format(untilDate!, "d MMM yyyy")}`
+              : validUntilTxt
+                ? `Valid until ${validUntilTxt}`
+                : validFromTxt
+                  ? `Valid from ${validFromTxt}`
+                  : "Valid · Ongoing";
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  padding: "8px 8px 8px 16px",
+                  background: SURFACE,
+                  border: `1px solid ${DIVIDER}`,
+                  borderRadius: 999,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+                  <Clock size={16} strokeWidth={1.8} color="#0A0A0A" style={{ flexShrink: 0 }} />
+                  <span
+                    style={{
+                      fontFamily: FONT,
+                      fontWeight: 600,
+                      fontSize: 14,
+                      lineHeight: "18px",
+                      letterSpacing: 0,
+                      color: "#0A0A0A",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {labelText}
+                  </span>
+                </div>
+                {isLive && (
+                  <span
+                    style={{
+                      flexShrink: 0,
+                      background: "#0A0A0A",
+                      color: "#FFFFFF",
+                      fontFamily: FONT,
+                      fontWeight: 700,
+                      fontSize: 11,
+                      letterSpacing: "0.8px",
+                      padding: "8px 14px",
+                      borderRadius: 999,
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    Live Now
+                  </span>
+                )}
+              </div>
+            );
+          })()}
         </div>
 
         {/* Primary call/whatsapp removed — moved to Contact section below */}
