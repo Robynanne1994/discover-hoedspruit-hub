@@ -377,13 +377,13 @@ const EventDetail = () => {
                     flex: 1,
                     padding: "0 8px",
                     textAlign: "center",
-                    borderLeft: i > 0 ? `1px solid ${DIVIDER}` : "none",
+                    borderLeft: i > 0 ? `1px solid #715a3d` : "none",
                     display: "flex", flexDirection: "column", justifyContent: "center", gap: 4,
                   }}
                 >
                   <p style={{
                     margin: 0, fontFamily: font, fontWeight: 400, fontSize: 11,
-                    letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED,
+                    letterSpacing: "0.08em", textTransform: "uppercase", color: "#715a3d",
                   }}>
                     {s.label}
                   </p>
