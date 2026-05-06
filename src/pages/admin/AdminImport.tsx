@@ -631,6 +631,7 @@ const AdminImport = () => {
         service_type: (l.service_type ?? []).join("|"),
         kids_menu: l.kids_menu == null ? "" : String(l.kids_menu),
         high_chairs: l.high_chairs == null ? "" : String(l.high_chairs),
+        nappy_changing_station: l.nappy_changing_station == null ? "" : String(l.nappy_changing_station),
         wheelchair_car_park: l.wheelchair_car_park == null ? "" : String(l.wheelchair_car_park),
         wheelchair_entrance: l.wheelchair_entrance == null ? "" : String(l.wheelchair_entrance),
         wheelchair_seating: l.wheelchair_seating == null ? "" : String(l.wheelchair_seating),
