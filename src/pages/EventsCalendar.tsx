@@ -237,7 +237,7 @@ function EventCard({ event }: { event: EventRow }) {
               <CalendarIcon className="h-3.5 w-3.5 text-primary/70 shrink-0" />
               <span
                 className="truncate prose-a:text-primary prose-a:underline"
-                dangerouslySetInnerHTML={{ __html: sanitizeHtml(event.date) }}
+                dangerouslySetInnerHTML={{ __html: sanitizeHtml(formatEventDateRange(event)) }}
               />
             </div>
             {(event.start_time || event.end_time) && (
