@@ -31,9 +31,14 @@ export const ACCOMMODATION_ONLY_FIELDS = [
   "has_airport_shuttle", "airport_shuttle_free", "has_aircon", "has_wifi_accom", "has_free_parking", "has_secure_parking"
 ] as const;
 
+export const NGO_ONLY_FIELDS = [
+  "cause", "impact", "ways_to_give", "volunteering", "visiting"
+] as const;
+
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
 export const SHOPPING_CATEGORY_PATTERN = /^shopping$/i;
 export const ACCOMMODATION_CATEGORY_PATTERN = /^accommodation$/i;
+export const NGO_CATEGORY_PATTERN = /ngo|volunteer/i;
 
 export function isRestaurantCategory(categoryTitle: string): boolean {
   return RESTAURANT_CATEGORY_PATTERN.test(categoryTitle);
@@ -45,6 +50,10 @@ export function isShoppingCategory(categoryTitle: string): boolean {
 
 export function isAccommodationCategory(categoryTitle: string): boolean {
   return ACCOMMODATION_CATEGORY_PATTERN.test(categoryTitle);
+}
+
+export function isNGOCategory(categoryTitle: string): boolean {
+  return NGO_CATEGORY_PATTERN.test(categoryTitle);
 }
 
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
