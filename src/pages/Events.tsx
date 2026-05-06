@@ -276,7 +276,7 @@ const Events = () => {
   const sortedEvents = useMemo(() => {
     if (!events) return [];
     return [...events]
-      .map((e) => ({ ...e, _parsed: parseDateText(e.date) }))
+      .map((e) => ({ ...e, _parsed: parseDateText(e.date, e) }))
       .sort((a, b) => {
         if (a._parsed && b._parsed) return a._parsed.getTime() - b._parsed.getTime();
         if (a._parsed) return -1;
