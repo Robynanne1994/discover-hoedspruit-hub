@@ -211,7 +211,9 @@ const CategoryPage = () => {
 
   const filteredListings = useMemo(() => {
     if (!listings) return [];
+    const q = search.trim().toLowerCase();
     const result = listings.filter((l) => {
+      if (q && !(l.title || "").toLowerCase().includes(q)) return false;
       if (filterCuisine.length > 0) {
         const lc = (l.cuisine || []).map((c) => c.toLowerCase());
         if (!filterCuisine.some((c) => lc.includes(c.toLowerCase()))) return false;
