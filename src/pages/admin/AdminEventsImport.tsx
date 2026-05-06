@@ -109,7 +109,9 @@ const AdminEventsImport = () => {
         const payload: Record<string, any> = {
           title,
           description: row.description || null,
-          date: row.date || "",
+          date: row.date || (row.start_date && row.end_date && row.start_date !== row.end_date ? `${row.start_date} to ${row.end_date}` : (row.start_date || "")),
+          start_date: row.start_date || null,
+          end_date: row.end_date || null,
           location: row.location || null,
           tag: row.tag || null,
           sub_tag_1: row.sub_tag_1 || null,
