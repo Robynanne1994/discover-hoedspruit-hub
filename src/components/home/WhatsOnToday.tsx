@@ -18,52 +18,11 @@ const WhatsOnToday = () => {
 
       if (!data) return [];
 
-      const MONTHS_FULL = ["january","february","march","april","may","june","july","august","september","october","november","december"];
-      const parseRange = (raw: string | null | undefined): { start: Date | null; end: Date | null } => {
-        if (!raw) return { start: null, end: null };
-        const str = String(raw).trim();
-        // ISO single
-        const iso = new Date(str);
-        if (!isNaN(iso.getTime()) && /^\d{4}-\d{2}-\d{2}/.test(str)) {
-          return { start: iso, end: iso };
-        }
-        // ISO range "YYYY-MM-DD to YYYY-MM-DD" or with dash
-        const isoRange = str.match(/(\d{4}-\d{2}-\d{2})\s*(?:to|–|-|—)\s*(\d{4}-\d{2}-\d{2})/i);
-        if (isoRange) {
-          const s = new Date(isoRange[1]); const e = new Date(isoRange[2]);
-          if (!isNaN(s.getTime()) && !isNaN(e.getTime())) return { start: s, end: e };
-        }
-        // "10-12 May 2026" or "10 - 12 May 2026"
-        const dayRangeMonth = str.match(/(\d{1,2})\s*[-–—]\s*(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/);
-        if (dayRangeMonth) {
-          const m = MONTHS_FULL.findIndex((mm) => mm.startsWith(dayRangeMonth[3].toLowerCase()));
-          if (m >= 0) {
-            const s = new Date(parseInt(dayRangeMonth[4]), m, parseInt(dayRangeMonth[1]));
-            const e = new Date(parseInt(dayRangeMonth[4]), m, parseInt(dayRangeMonth[2]));
-            return { start: s, end: e };
-          }
-        }
-        // "May 10-12, 2026" or "May 10 - 12 2026"
-        const monthDayRange = str.match(/([A-Za-z]+)\s+(\d{1,2})\s*[-–—]\s*(\d{1,2})(?:,?\s*(\d{4}))?/);
-        if (monthDayRange) {
-          const m = MONTHS_FULL.findIndex((mm) => mm.startsWith(monthDayRange[1].toLowerCase()));
-          if (m >= 0) {
-            const yr = monthDayRange[4] ? parseInt(monthDayRange[4]) : new Date().getFullYear();
-            const s = new Date(yr, m, parseInt(monthDayRange[2]));
-            const e = new Date(yr, m, parseInt(monthDayRange[3]));
-            return { start: s, end: e };
-          }
-        }
-        // Generic single fallback
-        if (!isNaN(iso.getTime())) return { start: iso, end: iso };
-        return { start: null, end: null };
-      };
-
       const now = new Date();
       const todayStart = new Date(now.toDateString());
       return data
         .map((e) => {
-          const { start, end } = parseRange(e.date);
+          const { start, end } = getEventDates(e);
           return { ...e, parsedDate: start, parsedEnd: end };
         })
         .sort((a, b) => {
