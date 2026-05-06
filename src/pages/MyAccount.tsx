@@ -21,6 +21,7 @@ import {
   LogOut,
   ChevronRight,
   ChevronLeft,
+  ArrowUpRight,
   Pencil,
   UserCircle,
   LayoutDashboard,
