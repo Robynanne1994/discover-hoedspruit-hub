@@ -221,7 +221,7 @@ const EventDetail = () => {
   const contactRows = [
     contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}`, isCustomIcon: false } : null,
     contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}`, isCustomIcon: false } : null,
-    waClean ? { label: "WhatsApp", value: waDisplay as string, icon: WhatsappIcon, href: `https://wa.me/${waClean}`, isCustomIcon: true } : null,
+    waClean ? { label: "Whatsapp", value: waDisplay as string, icon: WhatsappIcon, href: `https://wa.me/${waClean}`, isCustomIcon: true } : null,
     socialLink ? { label: "Social Media", value: socialLabel || "Social Media Profile", icon: Globe, href: socialLink, isCustomIcon: false } : null,
   ].filter(Boolean) as { label: string; value: string; icon: any; href: string; isCustomIcon: boolean }[];
 
@@ -468,7 +468,7 @@ const EventDetail = () => {
           if (waClean) {
             actions.push({
               key: "whatsapp",
-              label: "WhatsApp",
+              label: "Whatsapp",
               href: `https://wa.me/${waClean}`,
               icon: <WhatsappIcon color="#FFFFFF" />,
             });
