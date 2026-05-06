@@ -67,5 +67,8 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isAccommodationCategory(categoryTitle)) {
     headers.push(...ACCOMMODATION_ONLY_FIELDS);
   }
+  if (categoryTitle && isNGOCategory(categoryTitle)) {
+    headers.push(...NGO_ONLY_FIELDS);
+  }
   return headers;
 }
