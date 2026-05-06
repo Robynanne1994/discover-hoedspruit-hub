@@ -637,40 +637,56 @@ const EventDetail = () => {
 
 
         {/* Hosted By */}
-        {(event as any).hosted_by_name && (
-          <section style={{ marginBottom: 24 }}>
-            <SectionLabel eyebrow="Host" title="Hosted By" />
-            <div style={{
-              background: SURFACE, borderRadius: 24, padding: "16px 20px",
-              display: "flex", alignItems: "center", gap: 14,
-            }}>
-              {(event as any).hosted_by_image_url && (
-                <img
-                  src={(event as any).hosted_by_image_url}
-                  alt={(event as any).hosted_by_name}
-                  style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-                />
-              )}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                {(event as any).hosted_by_subtitle && (
-                  <p style={{
-                    margin: 0, fontFamily: font, fontSize: 11, fontWeight: 500,
-                    letterSpacing: "0.08em", textTransform: "uppercase", color: "#715a3d",
-                    marginBottom: 4,
-                  }}>
-                    {(event as any).hosted_by_subtitle}
-                  </p>
-                )}
-                <p style={{
-                  margin: 0, fontFamily: FONT_HEAD, fontSize: 18, fontWeight: 500,
-                  color: TEXT, lineHeight: 1.2,
-                }}>
-                  {(event as any).hosted_by_name}
-                </p>
+        {(() => {
+          const e = event as any;
+          const hosts = [
+            { name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url },
+            { name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2 },
+            { name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3 },
+          ].filter((h) => h.name && String(h.name).trim() !== "");
+          if (hosts.length === 0) return null;
+          return (
+            <section style={{ marginBottom: 24 }}>
+              <SectionLabel eyebrow="Host" title="Hosted By" />
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {hosts.map((h, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      background: SURFACE, borderRadius: 24, padding: "16px 20px",
+                      display: "flex", alignItems: "center", gap: 14,
+                    }}
+                  >
+                    {h.image && (
+                      <img
+                        src={h.image}
+                        alt={h.name}
+                        style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
+                      />
+                    )}
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      {h.subtitle && (
+                        <p style={{
+                          margin: 0, fontFamily: font, fontSize: 11, fontWeight: 500,
+                          letterSpacing: "0.08em", textTransform: "uppercase", color: "#715a3d",
+                          marginBottom: 4,
+                        }}>
+                          {h.subtitle}
+                        </p>
+                      )}
+                      <p style={{
+                        margin: 0, fontFamily: FONT_HEAD, fontSize: 18, fontWeight: 500,
+                        color: TEXT, lineHeight: 1.2,
+                      }}>
+                        {h.name}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          </section>
-        )}
+            </section>
+          );
+        })()}
 
 
         {contactRows.length > 0 && (
