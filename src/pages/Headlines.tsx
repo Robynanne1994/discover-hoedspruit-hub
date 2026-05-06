@@ -260,10 +260,10 @@ const Headlines = () => {
                 </div>
 
                 <div style={{
-                  marginTop: 32,
-                  fontFamily: SANS, fontSize: 22, lineHeight: 1.1, letterSpacing: "-0.015em",
+                  marginTop: 24,
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, fontWeight: 400, lineHeight: 1.35, letterSpacing: "0.01em",
                   color: INK,
-                  display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as any, overflow: "hidden",
+                  display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical" as any, overflow: "hidden",
                 }}>
                   {article.title}
                 </div>
