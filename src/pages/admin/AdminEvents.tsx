@@ -137,7 +137,9 @@ const AdminEvents = () => {
       const payload: any = {
         title: values.title,
         description: values.description || null,
-        date: values.date,
+        date: values.date || (values.start_date && values.end_date && values.start_date !== values.end_date ? `${values.start_date} to ${values.end_date}` : (values.start_date || "")),
+        start_date: values.start_date || null,
+        end_date: values.end_date || null,
         location: values.location || null,
         tag: values.tag || null,
         sub_tag_1: values.sub_tag_1 || null,
