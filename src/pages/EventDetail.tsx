@@ -27,6 +27,7 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
+import { formatEventDateRange } from "@/lib/eventDates";
 
 const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
