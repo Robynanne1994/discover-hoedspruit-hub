@@ -479,86 +479,51 @@ const MyAccount = () => {
     <div
       style={{
         background: "#FFFFFF",
-        borderRadius: 20,
+        borderRadius: 24,
+        paddingLeft: 20,
+        paddingRight: 20,
         overflow: "hidden",
       }}
     >
-      {items.map((item, i) => (
-        <div key={item.label}>
-          <Link
-            to={item.href}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              padding: "18px 20px",
-              textDecoration: "none",
-              transition: "transform 0.15s ease",
-            }}
-            onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.995)")}
-            onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+      {items.map((item, idx) => {
+        const IconComp = item.heart ? Heart : item.icon;
+        return (
+          <div
+            key={item.label}
+            style={{ borderTop: idx > 0 ? `1px solid #E8E4DF` : "none" }}
           >
-            {item.heart ? (
-              <div
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  background: "#241F1A",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <Heart size={14} strokeWidth={1.8} color="#FFFFFF" fill="#FFFFFF" />
-              </div>
-            ) : item.icon ? (
-              <div style={{ width: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <item.icon size={18} strokeWidth={1.5} color="#898480" />
-              </div>
-            ) : null}
-            <span
+            <Link
+              to={item.href}
               style={{
-                ...baseTextStyle,
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                flex: 1,
-                fontSize: 16,
-                fontWeight: 400,
-                lineHeight: 1.25,
-                color: TEXT,
-              }}
-            >
-              {item.label}
-            </span>
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                background: IVORY,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
+                height: 56,
+                textDecoration: "none",
               }}
             >
-              <ChevronRight size={14} strokeWidth={2} color={TEXT} />
-            </div>
-          </Link>
-          {i < items.length - 1 && (
-            <div
-              style={{
-                height: 1,
-                background: IVORY,
-                marginLeft: 20,
-                marginRight: 20,
-              }}
-            />
-          )}
-        </div>
-      ))}
+              {IconComp && (
+                <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+                  <IconComp size={18} strokeWidth={1.5} color="#898480" />
+                </div>
+              )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{
+                  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: "#0A0A0A",
+                  lineHeight: 1.35,
+                  margin: 0,
+                  wordBreak: "break-word",
+                }}>
+                  {item.label}
+                </p>
+              </div>
+              <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
+            </Link>
+          </div>
+        );
+      })}
     </div>
   );
 
