@@ -587,8 +587,6 @@ const MyAccount = () => {
             <Menu size={20} strokeWidth={1.8} color={TEXT} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
-            <DropdownMenuLabel>Quick links</DropdownMenuLabel>
-            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate("/saved")}>
               <Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit
             </DropdownMenuItem>
