@@ -240,16 +240,19 @@ function EventCard({ event }: { event: EventRow }) {
                 dangerouslySetInnerHTML={{ __html: sanitizeHtml(formatEventDateRange(event)) }}
               />
             </div>
-            {(event.start_time || event.end_time) && (
-              <div className="flex items-center gap-2">
-                <Clock className="h-3.5 w-3.5 text-primary/70 shrink-0" />
-                <span>
-                  {event.start_time}
-                  {event.start_time && event.end_time ? " – " : ""}
-                  {event.end_time}
-                </span>
-              </div>
-            )}
+            {(() => {
+              const st = event.start_time && String(event.start_time).trim() ? event.start_time : null;
+              const et = event.end_time && String(event.end_time).trim() ? event.end_time : null;
+              if (!st && !et) return null;
+              return (
+                <div className="flex items-center gap-2">
+                  <Clock className="h-3.5 w-3.5 text-primary/70 shrink-0" />
+                  <span>
+                    {st || ""}{st && et ? " – " : ""}{et && !st ? et : (st && et ? et : "")}
+                  </span>
+                </div>
+              );
+            })()}
             {event.recurrence && (
               <div className="flex items-center gap-2">
                 <Repeat className="h-3.5 w-3.5 text-primary/70 shrink-0" />

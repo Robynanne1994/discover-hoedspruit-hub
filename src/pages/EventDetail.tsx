@@ -169,9 +169,11 @@ const EventDetail = () => {
     );
   }
 
-  const timeDisplay = event.start_time
-    ? `${formatTime(event.start_time)}${event.end_time ? ` – ${formatTime(event.end_time)}` : ""}`
-    : null;
+  const startTimeFmt = event.start_time && String(event.start_time).trim() ? formatTime(event.start_time) : null;
+  const endTimeFmt = event.end_time && String(event.end_time).trim() ? formatTime(event.end_time) : null;
+  const timeDisplay = startTimeFmt
+    ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}`
+    : (endTimeFmt || null);
 
   const mapsLink = (event as any).google_maps_link || null;
   const socialLink = (event as any).social_media_link || null;
