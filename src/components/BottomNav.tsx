@@ -1,11 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, SearchCheck, Tag, CalendarDays } from "lucide-react";
+import profileIcon from "@/assets/profile-icon.png";
 
-const ProfileIcon = ({ size = 24, color = "currentColor" }: { size?: number; color?: string }) => (
-  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
-    <circle cx="12" cy="8" r="4" />
-    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7v1H4v-1z" />
-  </svg>
+const ProfileIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
+  <img
+    src={profileIcon}
+    alt=""
+    style={{
+      width: size,
+      height: size,
+      objectFit: "contain",
+      display: "block",
+      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
+    }}
+  />
 );
 
 const navItems = [
