@@ -307,12 +307,7 @@ const AdminImport = () => {
           try { openingHours = JSON.parse(row.opening_hours); } catch { openingHours = null; }
         }
 
-        let galleryImages: string[] | null = null;
-        if (row.gallery_images) {
-          try { galleryImages = JSON.parse(row.gallery_images); } catch {
-            galleryImages = row.gallery_images.split("|").map(s => s.trim()).filter(Boolean);
-          }
-        }
+        // Images are managed exclusively via the Lovable editor — CSV image_url and gallery_images are ignored.
 
         const existing = existingMap.get(title.toLowerCase());
         const isUpdate = !!existing;
@@ -323,7 +318,7 @@ const AdminImport = () => {
           id: listingId,
           title,
           description: row.description || null,
-          image_url: row.image_url?.trim() === "-" ? null : (row.image_url || (isUpdate ? existing?.image_url ?? null : null)),
+          image_url: isUpdate ? existing?.image_url ?? null : null,
           location: row.location || null,
           phone: row.phone || null,
           email: row.email || null,
@@ -337,7 +332,7 @@ const AdminImport = () => {
           category_id: resolvedCatIds[0] || null,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
           long_description: row.long_description || null,
-          gallery_images: row.gallery_images?.trim() === "-" ? null : (galleryImages && galleryImages.length > 0 ? galleryImages : (isUpdate ? existing?.gallery_images ?? null : null)),
+          gallery_images: isUpdate ? existing?.gallery_images ?? null : null,
           opening_hours: row.opening_hours?.trim() === "-" ? null : (isAllCategories && isUpdate && !row.opening_hours ? existing?.opening_hours ?? null : openingHours),
           custom_title_1: row.custom_title_1 || null,
           custom_text_1: row.custom_text_1 || null,

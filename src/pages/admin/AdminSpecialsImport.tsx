@@ -99,7 +99,7 @@ const AdminSpecialsImport = () => {
           deal_label: row.deal_label || "Special",
           business_name: row.business_name || "",
           description: row.description || null,
-          ...(row.image_url ? { image_url: row.image_url } : (!isUpdate ? { image_url: null } : {})),
+          // image_url ignored — managed via Lovable editor only
           special_type: row.special_type || null,
           day_of_week: row.day_of_week ? row.day_of_week.split("|").map((s: string) => s.trim().toLowerCase()).filter(Boolean) : null,
           valid_from: row.valid_from || null,
