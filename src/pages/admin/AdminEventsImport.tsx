@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const EXPECTED_HEADERS = ["title", "description", "date", "location", "tag", "sub_tag_1", "sub_tag_2", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "gallery_images", "booking_link", "booking_link_label", "price", "notes", "business_name", "is_featured"];
+const EXPECTED_HEADERS = ["title", "description", "date", "start_date", "end_date", "location", "tag", "sub_tag_1", "sub_tag_2", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "gallery_images", "booking_link", "booking_link_label", "price", "notes", "business_name", "is_featured"];
 
 const parseBool = (v: string | undefined): boolean => {
   if (!v) return false;
