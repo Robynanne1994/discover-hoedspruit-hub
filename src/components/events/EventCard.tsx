@@ -2,6 +2,7 @@ import { Calendar, MapPin, Clock, Repeat } from "lucide-react";
 import DOMPurify from "dompurify";
 import FavouriteButton from "@/components/FavouriteButton";
 import ShareButton from "@/components/ShareButton";
+import { formatEventDateRange } from "@/lib/eventDates";
 
 const sanitizeHtml = (html: string) =>
   DOMPurify.sanitize(html, { ALLOWED_URI_REGEXP: /^(?:https?|mailto|tel):/i });
