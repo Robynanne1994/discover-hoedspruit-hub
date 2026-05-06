@@ -146,48 +146,54 @@ const Feedback = () => {
         </p>
       </div>
 
-      {/* Category section */}
-      <div style={{ padding: "44px 24px 0", position: "relative", zIndex: 1 }}>
-        <p
+      {/* Type dropdown */}
+      <div style={{ padding: "32px 24px 0", position: "relative", zIndex: 1 }}>
+        <div
           style={{
-            fontFamily: FF,
-            fontWeight: 400,
-            fontSize: 12,
-            letterSpacing: "0.02em",
-            color: "#0a0a0a",
-            margin: 0,
-            marginBottom: 14,
+            background: CARD,
+            borderRadius: 16,
+            padding: "18px 20px",
+            border: errors.type ? `1px solid ${CORAL}` : "1px solid transparent",
+            transition: "border-color 150ms ease-out",
           }}
         >
-          What is this about
-        </p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {FEEDBACK_TYPES.map((t) => {
-            const active = type === t;
-            return (
-              <button
-                key={t}
-                onClick={() => setType(t)}
-                {...tap}
-                style={{
-                  background: active ? "#5B4632" : CARD,
-                  color: active ? "#FFFFFF" : INK,
-                  border: "none",
-                  borderRadius: 999,
-                  padding: "12px 22px",
-                  fontFamily: FF,
-                  fontWeight: 400,
-                  fontSize: 14,
-                  lineHeight: 1,
-                  cursor: "pointer",
-                  transition: "transform 150ms ease-out, background 150ms ease-out, color 150ms ease-out",
-                }}
-              >
-                {t}
-              </button>
-            );
-          })}
+          <select
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value);
+              if (errors.type) setErrors((p) => ({ ...p, type: undefined }));
+            }}
+            style={{
+              width: "100%",
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: FF,
+              fontWeight: 400,
+              fontSize: 15,
+              color: type ? INK : MUTED,
+              appearance: "none",
+              WebkitAppearance: "none",
+              MozAppearance: "none",
+              backgroundImage:
+                "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230A0A0A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>\")",
+              backgroundRepeat: "no-repeat",
+              backgroundPosition: "right center",
+              paddingRight: 24,
+              cursor: "pointer",
+            }}
+          >
+            <option value="" disabled>What is this about</option>
+            {FEEDBACK_TYPES.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
         </div>
+        {errors.type && (
+          <p style={{ fontSize: 12, color: CORAL, margin: "6px 0 0", paddingLeft: 4, fontFamily: FF }}>
+            {errors.type}
+          </p>
+        )}
       </div>
 
       {/* Subject */}
