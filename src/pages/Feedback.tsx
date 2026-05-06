@@ -197,7 +197,7 @@ const Feedback = () => {
       </div>
 
       {/* Subject */}
-      <div style={{ padding: "32px 24px 0", position: "relative", zIndex: 1 }}>
+      <div style={{ padding: "10px 24px 0", position: "relative", zIndex: 1 }}>
         <div
           style={{
             background: CARD,
