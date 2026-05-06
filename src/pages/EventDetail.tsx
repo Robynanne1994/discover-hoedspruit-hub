@@ -643,6 +643,43 @@ const EventDetail = () => {
         )}
 
 
+        {contactRows.length > 0 && (
+          <section style={{ marginBottom: 24 }}>
+            <SectionLabel eyebrow="Reach out" title="Contact" />
+            <div style={{ background: SURFACE, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
+              {contactRows.map((row, idx) => {
+                const Wrapper: any = row.href ? "a" : "div";
+                const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
+                return (
+                  <div key={row.label} style={{ borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none" }}>
+                    <Wrapper
+                      {...wrapperProps}
+                      style={{ display: "flex", alignItems: "center", height: 56, textDecoration: "none" }}
+                    >
+                      <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+                        {row.isCustomIcon
+                          ? <row.icon color="#898480" />
+                          : <row.icon size={18} strokeWidth={1.5} color="#898480" />}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{
+                          fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
+                          lineHeight: 1.35, margin: 0, wordBreak: "break-word",
+                        }}>
+                          {row.value}
+                        </p>
+                      </div>
+                      {row.href && (
+                        <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
+                      )}
+                    </Wrapper>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
         {/* Hosted By */}
         {(() => {
           const e = event as any;
@@ -694,44 +731,6 @@ const EventDetail = () => {
             </section>
           );
         })()}
-
-
-        {contactRows.length > 0 && (
-          <section style={{ marginBottom: 24 }}>
-            <SectionLabel eyebrow="Reach out" title="Contact" />
-            <div style={{ background: SURFACE, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
-              {contactRows.map((row, idx) => {
-                const Wrapper: any = row.href ? "a" : "div";
-                const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
-                return (
-                  <div key={row.label} style={{ borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-                    <Wrapper
-                      {...wrapperProps}
-                      style={{ display: "flex", alignItems: "center", height: 56, textDecoration: "none" }}
-                    >
-                      <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
-                        {row.isCustomIcon
-                          ? <row.icon color="#898480" />
-                          : <row.icon size={18} strokeWidth={1.5} color="#898480" />}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{
-                          fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
-                          lineHeight: 1.35, margin: 0, wordBreak: "break-word",
-                        }}>
-                          {row.value}
-                        </p>
-                      </div>
-                      {row.href && (
-                        <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
-                      )}
-                    </Wrapper>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        )}
       </div>
 
       {/* Gallery (full-bleed scroll) */}
