@@ -318,7 +318,7 @@ const AdminImport = () => {
           id: listingId,
           title,
           description: row.description || null,
-          image_url: row.image_url?.trim() === "-" ? null : (row.image_url || (isUpdate ? existing?.image_url ?? null : null)),
+          image_url: isUpdate ? existing?.image_url ?? null : null,
           location: row.location || null,
           phone: row.phone || null,
           email: row.email || null,
