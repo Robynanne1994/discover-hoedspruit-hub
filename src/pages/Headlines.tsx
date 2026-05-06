@@ -135,7 +135,7 @@ const Headlines = () => {
               onPointerLeave={pressUp}
               className="lld-press"
               style={{
-                background: active ? INK : CARD,
+                background: active ? "#5B4632" : CARD,
                 color: active ? "#FFFFFF" : INK,
                 fontFamily: SANS,
                 fontSize: 14,
