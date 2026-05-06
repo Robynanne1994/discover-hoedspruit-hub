@@ -297,7 +297,7 @@ const SavedListings = () => {
   }
 
   const chipStyle = (active: boolean) => ({
-    background: active ? "#241F1A" : "rgba(18,18,20,0.06)",
+    background: active ? "#5B4632" : "rgba(18,18,20,0.06)",
     border: "none",
     borderRadius: 20,
     padding: "8px 16px",
