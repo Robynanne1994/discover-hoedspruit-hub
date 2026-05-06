@@ -349,7 +349,7 @@ const EventDetail = () => {
         {tagParts.length > 0 && (
           <p style={{
             fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "0.24px", color: MUTED, margin: 0, marginBottom: 4,
+            letterSpacing: "0.24px", color: "#0a0a0a", margin: 0, marginBottom: 4,
             textTransform: "capitalize",
           }}>
             {tagParts.join(" · ")}
