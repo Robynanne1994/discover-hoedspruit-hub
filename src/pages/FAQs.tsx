@@ -330,9 +330,8 @@ const FAQs = () => {
                 Ask us anything.
               </h3>
               <p style={{
-                fontFamily: FF_PF,
-                fontStyle: "italic",
-                fontWeight: 300,
+                fontFamily: FF,
+                fontWeight: 400,
                 fontSize: 15,
                 lineHeight: 1.5,
                 color: "rgba(255,255,255,0.85)",
