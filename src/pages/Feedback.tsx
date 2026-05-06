@@ -31,7 +31,7 @@ const tap = {
 const Feedback = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [type, setType] = useState<string>("General");
+  const [type, setType] = useState<string>("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ subject?: string; message?: string }>({});
