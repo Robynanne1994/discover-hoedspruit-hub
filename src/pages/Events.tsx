@@ -25,27 +25,17 @@ const COLOR = {
   divider: "#E8E4DF",
 };
 
-function parseDateText(raw: string): Date | null {
-  if (!raw) return null;
-  const clean = raw.replace(/<[^>]*>/g, "").trim();
-  const rangeMatch = clean.match(/(\d{1,2})\s*(?:to|-)\s*\d{1,2}\s+(\w+)\s+(\d{4})/i);
-  if (rangeMatch) {
-    const parsed = parse(`${rangeMatch[1]} ${rangeMatch[2]} ${rangeMatch[3]}`, "d MMMM yyyy", new Date());
-    if (!isNaN(parsed.getTime())) return parsed;
-  }
-  const formats = ["d MMMM yyyy", "MMMM d, yyyy", "yyyy-MM-dd", "d/MM/yyyy"];
-  for (const fmt of formats) {
-    const d = parse(clean, fmt, new Date());
-    if (!isNaN(d.getTime())) return d;
-  }
+import { getEventSortDate, formatEventDateShort } from "@/lib/eventDates";
+
+function parseDateText(_raw: string, event?: any): Date | null {
+  // Legacy signature kept for callers that only have raw text.
+  if (event) return getEventSortDate(event);
   return null;
 }
 
-function formatEventDate(raw: string): string {
-  const d = parseDateText(raw);
-  if (!d) return raw.replace(/<[^>]*>/g, "").trim();
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  return `${months[d.getMonth()]} ${d.getDate()}`;
+function formatEventDate(_raw: string, event?: any): string {
+  if (event) return formatEventDateShort(event);
+  return (_raw || "").replace(/<[^>]*>/g, "").trim();
 }
 
 function formatTime(time: string | null): string {
