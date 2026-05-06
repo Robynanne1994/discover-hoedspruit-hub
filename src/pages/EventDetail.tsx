@@ -229,37 +229,32 @@ const EventDetail = () => {
   );
 
   const renderDetailCard = (rows: typeof detailRows) => (
-    <div style={{ background: SURFACE, borderRadius: 24, padding: "0 20px", border: "none", boxShadow: "none" }}>
+    <div style={{ background: SURFACE, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
       {rows.map((row, idx) => {
-        const Wrapper = row.href ? "a" : "div";
+        const Wrapper: any = row.href ? "a" : "div";
         const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
         return (
-          <Wrapper
-            key={row.label}
-            {...wrapperProps}
-            style={{
-              display: "grid",
-              gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
-              gap: 12,
-              alignItems: "center",
-              padding: "12px 0",
-              borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none",
-              textDecoration: "none",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-              <row.icon size={20} strokeWidth={1.5} color={MUTED} />
-            </div>
-            <div style={{ minWidth: 0 }}>
-              <p style={{
-                fontFamily: font, fontWeight: 400, fontSize: 16, lineHeight: "20px",
-                letterSpacing: 0, color: TEXT, margin: 0, wordBreak: "break-word",
-              }}>
-                {row.value}
-              </p>
-            </div>
-            {row.href && <ArrowUpRight size={20} strokeWidth={1.5} color="#5b4632" />}
-          </Wrapper>
+          <div key={row.label} style={{ borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none" }}>
+            <Wrapper
+              {...wrapperProps}
+              style={{ display: "flex", alignItems: "center", height: 56, textDecoration: "none" }}
+            >
+              <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+                <row.icon size={18} strokeWidth={1.5} color="#898480" />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{
+                  fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
+                  lineHeight: 1.35, margin: 0, wordBreak: "break-word",
+                }}>
+                  {row.value}
+                </p>
+              </div>
+              {row.href && (
+                <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
+              )}
+            </Wrapper>
+          </div>
         );
       })}
     </div>
