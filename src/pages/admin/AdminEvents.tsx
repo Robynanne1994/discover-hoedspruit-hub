@@ -194,6 +194,8 @@ const AdminEvents = () => {
       title: ev.title,
       description: ev.description ?? "",
       date: ev.date,
+      start_date: (ev as any).start_date ?? "",
+      end_date: (ev as any).end_date ?? "",
       location: ev.location ?? "",
       tag: ev.tag ?? "",
       sub_tag_1: (ev as any).sub_tag_1 ?? "",
