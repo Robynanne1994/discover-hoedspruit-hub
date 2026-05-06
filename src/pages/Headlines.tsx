@@ -100,7 +100,7 @@ const Headlines = () => {
         <h1 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 52, lineHeight: 0.98, letterSpacing: "-0.03em", color: INK, margin: 0 }}>
           The Lowveld<br />Lowdown
         </h1>
-        <p style={{ fontFamily: SANS, fontSize: 15, lineHeight: 1.45, color: MUTED, marginTop: 14, marginBottom: 0, maxWidth: 280 }}>
+        <p style={{ fontFamily: SANS, fontSize: 15, lineHeight: 1.45, color: "#0a0a0a", marginTop: 14, marginBottom: 0, maxWidth: 280 }}>
           News, stories and local updates from the Lowveld.
         </p>
       </div>
