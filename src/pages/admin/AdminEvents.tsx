@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
+const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
