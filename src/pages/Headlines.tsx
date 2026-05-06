@@ -90,7 +90,6 @@ const Headlines = () => {
           style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, color: INK }}
         >
           <ChevronLeft size={20} strokeWidth={2} color={INK} />
-          <span style={{ fontFamily: SANS, fontSize: 15, color: INK, lineHeight: 1 }}>Back</span>
         </button>
       </div>
 
