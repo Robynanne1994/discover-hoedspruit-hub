@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-const FEEDBACK_TYPES = ["Suggestion", "Bug", "Compliment", "Other"] as const;
+const FEEDBACK_TYPES = ["General", "Suggestion", "Bug", "Compliment", "Other"] as const;
 
 const FF = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const FF_DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
