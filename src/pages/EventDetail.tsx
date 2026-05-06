@@ -469,7 +469,7 @@ const EventDetail = () => {
               rel="noopener noreferrer"
               style={{
                 width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                background: TEXT, color: "#FFFFFF", border: "none", borderRadius: 999,
+                background: "#2E241C", color: "#FFFFFF", border: "none", borderRadius: 999,
                 padding: "0 24px", height: 48, fontSize: 15, fontWeight: 400, lineHeight: "18px",
                 letterSpacing: 0, textDecoration: "none", cursor: "pointer",
                 transition: "transform 150ms ease-out", fontFamily: font, textTransform: "capitalize",
