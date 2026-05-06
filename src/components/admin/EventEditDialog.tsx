@@ -67,6 +67,21 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     onError: (e: any) => toast.error(e.message || "Failed to save"),
   });
 
+  const del = useMutation({
+    mutationFn: async () => {
+      const { error } = await supabase.from("events").delete().eq("id", event.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Event deleted");
+      qc.invalidateQueries({ queryKey: ["events"] });
+      qc.invalidateQueries({ queryKey: ["admin-events"] });
+      qc.invalidateQueries({ queryKey: ["event-detail", event.id] });
+      onOpenChange(false);
+    },
+    onError: (e: any) => toast.error(e.message || "Failed to delete"),
+  });
+
   const set = (k: string, v: any) => setForm((f: any) => ({ ...f, [k]: v }));
 
   return (
