@@ -6,7 +6,31 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Star, ArrowLeft, Search, Calendar, ChevronRight, Tag } from "lucide-react";
+import { Heart, Star, ArrowLeft, Search, Calendar, ChevronRight, Tag, MapPin } from "lucide-react";
+import FavouriteButton from "@/components/FavouriteButton";
+
+const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const isOpenNow = (openingHours: Record<string, string> | null | undefined): boolean => {
+  if (!openingHours) return false;
+  const now = new Date();
+  const todayIdx = now.getDay();
+  const todayLabel = todayIdx === 0 ? "Sunday" : DAY_LABELS[todayIdx - 1];
+  const todayValRaw = openingHours[todayLabel.toLowerCase()];
+  const todayVal = typeof todayValRaw === "string" ? todayValRaw : "";
+  if (!todayVal || /closed/i.test(todayVal)) return false;
+  const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+  if (!m) return false;
+  const parse = (s: string) => {
+    const [h, mm] = s.replace(".", ":").split(":");
+    return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
+  };
+  const cur = now.getHours() * 60 + now.getMinutes();
+  const o = parse(m[1]);
+  let c = parse(m[2]);
+  if (c <= o) c += 24 * 60;
+  return cur >= o && cur <= c;
+};
+
 import { format, parseISO, isFuture, isPast } from "date-fns";
 
 type PrimaryTab = "listings" | "events" | "specials";
