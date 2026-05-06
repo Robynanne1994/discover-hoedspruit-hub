@@ -39,6 +39,7 @@ const Feedback = () => {
 
   const handleSubmit = async () => {
     const errs: typeof errors = {};
+    if (!type) errs.type = "Please select what this is about";
     if (!subject.trim()) errs.subject = "Please add a subject";
     if (!message.trim()) errs.message = "Please share your feedback";
     setErrors(errs);
@@ -56,7 +57,7 @@ const Feedback = () => {
       toast.success("Thanks, we've got it.");
       setSubject("");
       setMessage("");
-      setType("General");
+      setType("");
       setErrors({});
     } catch {
       toast.error("Something went wrong. Please try again.");
