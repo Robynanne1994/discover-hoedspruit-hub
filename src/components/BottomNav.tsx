@@ -35,7 +35,7 @@ const navItems = [
   { label: "Home", href: "/", icon: Home },
   { label: "Explore", href: "/categories", icon: SearchCheck },
   { label: "Specials", href: "/specials", icon: Tag },
-  { label: "Events", href: "/events", icon: CalendarDays },
+  { label: "Events", href: "/events", icon: EventsIcon as any },
   { label: "Profile", href: "/my-account", icon: ProfileIcon as any },
 ];
 
