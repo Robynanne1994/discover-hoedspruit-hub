@@ -587,21 +587,36 @@ const MyAccount = () => {
             <Menu size={20} strokeWidth={1.8} color={TEXT} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
-            <DropdownMenuItem onClick={() => navigate("/saved")}>
-              <Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/account-settings")}>
-              <Settings className="mr-2 h-4 w-4" /> Settings
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/faqs")}>
-              <HelpCircle className="mr-2 h-4 w-4" /> Help & Support
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/advertise")}>
-              <Megaphone className="mr-2 h-4 w-4" /> Advertise
-            </DropdownMenuItem>
+            {[
+              { label: "My Hoedspruit", to: "/saved", Icon: Bookmark },
+              { label: "Settings", to: "/account-settings", Icon: Settings },
+              { label: "Help & Support", to: "/faqs", Icon: HelpCircle },
+              { label: "Advertise", to: "/advertise", Icon: Megaphone },
+            ].map(({ label, to, Icon }) => (
+              <DropdownMenuItem
+                key={to}
+                onClick={() => navigate(to)}
+                style={{
+                  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+                  fontSize: 14,
+                  fontWeight: 400,
+                  color: "#0A0A0A",
+                }}
+              >
+                <Icon className="mr-2" size={18} strokeWidth={1.5} color="#898480" /> {label}
+              </DropdownMenuItem>
+            ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
-              <LogOut className="mr-2 h-4 w-4" /> Sign out
+            <DropdownMenuItem
+              onClick={() => signOut()}
+              className="text-destructive focus:text-destructive"
+              style={{
+                fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+                fontSize: 14,
+                fontWeight: 400,
+              }}
+            >
+              <LogOut className="mr-2" size={18} strokeWidth={1.5} /> Sign out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
