@@ -57,6 +57,8 @@ const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
 };
 
 const HomeMasthead = () => {
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
   const [temp, setTemp] = useState<number | null>(null);
   const [weatherCode, setWeatherCode] = useState<number | null>(null);
   const [isNight, setIsNight] = useState<boolean>(false);
