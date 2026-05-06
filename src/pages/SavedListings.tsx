@@ -45,7 +45,7 @@ const SavedListings = () => {
 
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating, category_id, categories(title)")
+        .select("*, categories(title)")
         .in("id", listingIds);
 
       const { data: junctions } = await supabase
