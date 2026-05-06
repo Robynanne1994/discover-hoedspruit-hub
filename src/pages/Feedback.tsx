@@ -34,7 +34,7 @@ const Feedback = () => {
   const [type, setType] = useState<string>("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
-  const [errors, setErrors] = useState<{ subject?: string; message?: string }>({});
+  const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
