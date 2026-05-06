@@ -332,7 +332,7 @@ const AdminImport = () => {
           category_id: resolvedCatIds[0] || null,
           is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
           long_description: row.long_description || null,
-          gallery_images: row.gallery_images?.trim() === "-" ? null : (galleryImages && galleryImages.length > 0 ? galleryImages : (isUpdate ? existing?.gallery_images ?? null : null)),
+          gallery_images: isUpdate ? existing?.gallery_images ?? null : null,
           opening_hours: row.opening_hours?.trim() === "-" ? null : (isAllCategories && isUpdate && !row.opening_hours ? existing?.opening_hours ?? null : openingHours),
           custom_title_1: row.custom_title_1 || null,
           custom_text_1: row.custom_text_1 || null,
