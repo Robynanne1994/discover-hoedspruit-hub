@@ -54,7 +54,7 @@ const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
               </div>
               {listing.google_rating && listing.google_rating > 0 && (
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                  <Star size={12} fill="#E8A83E" color="#E8A83E" />
+                  <Star size={12} fill="#5B4632" color="#5B4632" />
                   <span style={{ fontSize: 12, color: "rgba(255,255,255,0.7)" }}>{listing.google_rating}</span>
                 </div>
               )}
