@@ -79,23 +79,8 @@ const Headlines = () => {
         .lld-input::placeholder { color: ${MUTED}; }
       `}</style>
 
-      {/* Masthead row */}
-      <div style={{ paddingTop: 52, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <button
-          onClick={() => navigate(-1)}
-          onPointerDown={pressDown(0.98)}
-          onPointerUp={pressUp}
-          onPointerLeave={pressUp}
-          className="lld-press"
-          style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0, color: INK }}
-        >
-          <ChevronLeft size={20} strokeWidth={2} color={INK} />
-          <span style={{ fontFamily: SANS, fontSize: 15, color: INK, lineHeight: 1 }}>Back</span>
-        </button>
-      </div>
-
       {/* Header */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 52 }}>
         
         <h1 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 52, lineHeight: 0.98, letterSpacing: "-0.03em", color: INK, margin: 0 }}>
           The Lowveld<br />Lowdown
