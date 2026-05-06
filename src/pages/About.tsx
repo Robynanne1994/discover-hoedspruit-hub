@@ -54,7 +54,7 @@ const About = () => {
           }}
         >
           <ChevronLeft size={20} strokeWidth={1.8} color="#0A0A0A" />
-          <span style={{ fontSize: 15, fontWeight: 400, color: "#0A0A0A" }}>Back</span>
+          
         </button>
       </div>
 
