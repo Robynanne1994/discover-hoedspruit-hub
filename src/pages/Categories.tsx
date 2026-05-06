@@ -157,7 +157,7 @@ const Categories = () => {
           fontSize: 40,
           lineHeight: "40px",
           letterSpacing: "-1.2px",
-          color: "#C5BCAA",
+          color: COLORS.text,
           margin: 0,
           marginBottom: 20,
         }}
