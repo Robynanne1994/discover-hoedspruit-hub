@@ -53,7 +53,7 @@ const BusinessDashboard = () => {
 
       {!listing && (
         <Card style={{ marginBottom: 16 }}>
-          <Small soft style={{ marginBottom: 8 }}>Listing</Small>
+          <Small soft style={{ marginBottom: 8 }}>BUSINESS</Small>
           {pendingClaim && pendingClaim.status === "pending" ? (
             <>
               <div style={{ marginBottom: 12 }}><StatusPill status="pending" /></div>
