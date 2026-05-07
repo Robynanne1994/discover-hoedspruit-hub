@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { MapPin, ArrowRight, Eye, EyeOff } from "lucide-react";
+import hhLogo from "@/assets/hh-logo.png";
 
 const Welcome = () => {
   const [mode, setMode] = useState<"welcome" | "signin" | "signup">("welcome");
@@ -40,22 +41,7 @@ const Welcome = () => {
       <div className="min-h-screen flex flex-col" style={{ background: "hsl(38, 30%, 96%)" }}>
         {/* Top section with branding */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8">
-          <div className="flex items-center gap-2 mb-3">
-            <MapPin className="text-primary" style={{ width: 28, height: 28 }} />
-          </div>
-          <h1
-            className="text-center font-heading font-bold text-foreground"
-            style={{ fontSize: 36, lineHeight: 1.1, letterSpacing: "0.01em" }}
-          >
-            Hello{" "}
-            <span className="text-primary">Hoedspruit</span>
-          </h1>
-          <p
-            className="text-center text-muted-foreground mt-3 max-w-[280px]"
-            style={{ fontFamily: "var(--font-body)", fontSize: 15, lineHeight: 1.5 }}
-          >
-            Discover local cafés, great meals and favourite places to eat.
-          </p>
+          <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 180, height: "auto" }} />
         </div>
 
         {/* Bottom action area */}
