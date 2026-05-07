@@ -56,7 +56,7 @@ const BusinessListing = () => {
 
   if (!listing) {
     return (
-      <BusinessShell title="Listing" back="/business/dashboard">
+      <BusinessShell title="BUSINESS" back="/business/dashboard">
         <Card style={{ marginTop: 24 }}>
           <Body>You have not linked a listing yet.</Body>
           <div style={{ marginTop: 12 }}>
