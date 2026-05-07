@@ -255,20 +255,6 @@ const Notifications = () => {
 
       {/* Hero */}
       <div style={{ padding: "0 24px", marginBottom: 28 }}>
-        <div
-          style={{
-            ...baseTextStyle,
-            fontFamily: FONT_STACK,
-            fontSize: 11,
-            fontWeight: 500,
-            color: "#FFFFFF",
-            textTransform: "uppercase",
-            letterSpacing: "0.18em",
-            marginBottom: 14,
-          }}
-        >
-          Your inbox
-        </div>
         <h1
           style={{
             ...baseTextStyle,
