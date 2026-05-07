@@ -61,6 +61,7 @@ const BusinessListing = () => {
       if (full) {
         setTitle(full.title ?? "");
         setDescription(full.description ?? "");
+        setLongDescription((full as any).long_description ?? "");
         setPhone(full.phone ?? "");
         setWhatsapp(full.whatsapp ?? "");
         setEmail(full.email ?? "");
