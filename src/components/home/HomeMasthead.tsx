@@ -274,7 +274,7 @@ const HomeMasthead = () => {
             margin: 0,
             fontFamily: DISPLAY,
             fontWeight: 700,
-            fontSize: 60,
+            fontSize: 58,
             lineHeight: 0.92,
             letterSpacing: "-0.035em",
             color: "#0A0A0A",
