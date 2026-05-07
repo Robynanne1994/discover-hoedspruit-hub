@@ -263,7 +263,7 @@ const BusinessEventForm = ({ mode }: Props) => {
           </label>
         </Card>
 
-        <Button full onClick={submit} disabled={busy || !title}>
+        <Button full onClick={submit} disabled={busy || !title} style={{ background: "#C5BCAA", color: "#020202" }}>
           {busy ? "Sending..." : feature ? "Pay and submit for review" : "Send for review"}
         </Button>
         <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>
