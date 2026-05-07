@@ -192,7 +192,9 @@ const Headlines = () => {
               <div style={{
                 position: "absolute", top: 20, left: 20,
                 fontFamily: SANS, fontSize: 12, letterSpacing: "0.04em",
-                color: "rgba(255,255,255,0.9)", lineHeight: 1.2,
+                color: "#0a0a0a", lineHeight: 1.2,
+                background: "#C5BCAA",
+                padding: "6px 12px", borderRadius: 999,
               }}>
                 {featured.category}
               </div>
