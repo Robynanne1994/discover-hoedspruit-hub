@@ -54,7 +54,7 @@ const BusinessClaim = () => {
 
   if (pendingClaim && pendingClaim.status === "pending") {
     return (
-      <BusinessShell title="Claim listing" back="/business/dashboard">
+      <BusinessShell title="Claim business" back="/business/dashboard">
         <Card style={{ marginTop: 24 }}>
           <div style={{ marginBottom: 12 }}><StatusPill status="pending" /></div>
           <H2>Claim under review</H2>
