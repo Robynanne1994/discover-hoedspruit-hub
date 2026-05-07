@@ -112,7 +112,7 @@ const BusinessDashboard = () => {
                   <Card key={r.kind + r.id} style={{ padding: 16 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
                       <div style={{ minWidth: 0 }}>
-                        <Small soft style={{ fontSize: 12 }}>{r.kind}</Small>
+                        <Small soft style={{ fontSize: 12 }}>{r.kind.toUpperCase()}</Small>
                         <Body style={{ marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.title}</Body>
                       </div>
                       <StatusPill status={r.status} />
