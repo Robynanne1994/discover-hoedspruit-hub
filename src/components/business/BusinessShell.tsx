@@ -7,11 +7,12 @@ interface BusinessShellProps {
   back?: string | (() => void);
   children: ReactNode;
   hideBack?: boolean;
+  theme?: "light" | "dark";
 }
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const BusinessShell = ({ title, back, children, hideBack }: BusinessShellProps) => {
+const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: BusinessShellProps) => {
   const navigate = useNavigate();
   const onBack = () => {
     if (typeof back === "function") return back();
@@ -19,14 +20,19 @@ const BusinessShell = ({ title, back, children, hideBack }: BusinessShellProps) 
     navigate(-1);
   };
 
+  const isDark = theme === "dark";
+  const bg = isDark ? "#555340" : "#EBEBEB";
+  const fg = isDark ? "#FFFFFF" : "#2B2420";
+  const headingColor = isDark ? "#FFFFFF" : "#020202";
+
   return (
-    <div style={{ minHeight: "100vh", background: "#EBEBEB", fontFamily: FONT, color: "#2B2420" }}>
+    <div style={{ minHeight: "100vh", background: bg, fontFamily: FONT, color: fg }}>
       <header
         style={{
           position: "sticky",
           top: 0,
           zIndex: 30,
-          background: "#EBEBEB",
+          background: bg,
           padding: "16px 24px 12px",
           display: "flex",
           alignItems: "center",
@@ -47,14 +53,14 @@ const BusinessShell = ({ title, back, children, hideBack }: BusinessShellProps) 
               minHeight: 44,
               minWidth: 44,
               marginLeft: -8,
-              color: "#020202",
+              color: headingColor,
             }}
             aria-label="Back"
           >
             <ChevronLeft size={24} strokeWidth={1.8} />
           </button>
         )}
-        <h1 style={{ fontSize: 20, fontWeight: 500, color: "#020202", margin: 0, fontFamily: FONT }}>
+        <h1 style={{ fontSize: 20, fontWeight: 500, color: headingColor, margin: 0, fontFamily: FONT }}>
           {title}
         </h1>
       </header>
