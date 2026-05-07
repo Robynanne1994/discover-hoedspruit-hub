@@ -169,6 +169,45 @@ const AdminModeration = () => {
     }).eq("id", item.id);
 
     if (error) { toast.error(error.message); return; }
+
+    // Send in-app notification to the business owner
+    try {
+      const ownerId = item.owner_id ?? item.user_id;
+      if (ownerId) {
+        const kindLabel =
+          tab === "listing" ? "Business edit" :
+          tab === "specials" ? "Special" :
+          tab === "events" ? "Event" :
+          tab === "claims" ? "Business claim" :
+          "Feature request";
+        const itemTitle = item.payload?.title || (tab === "listing" ? "your business details" : tab === "claims" ? "your claim" : "your submission");
+        const statusLabel = status === "approved" ? "approved" : status === "rejected" ? "rejected" : "needs changes";
+        const title = `${kindLabel} ${statusLabel}`;
+        const body = adminNote
+          ? `${itemTitle} — ${adminNote}`
+          : status === "approved" ? `${itemTitle} is now live.`
+          : status === "rejected" ? `${itemTitle} was not approved.`
+          : `Please update ${itemTitle} and resubmit.`;
+        const link =
+          tab === "specials" ? "/business/specials" :
+          tab === "events" ? "/business/events" :
+          tab === "listing" ? "/business/listing" :
+          "/business/dashboard";
+        await supabase.from("business_notifications").insert({
+          user_id: ownerId,
+          kind: tab,
+          status,
+          title,
+          body,
+          link,
+          ref_table: t,
+          ref_id: item.id,
+        });
+      }
+    } catch (e) {
+      console.warn("Notification send failed", e);
+    }
+
     toast.success(status === "approved" ? "Approved" : status === "rejected" ? "Rejected" : "Changes requested");
     setOpenId(null);
     setNote("");

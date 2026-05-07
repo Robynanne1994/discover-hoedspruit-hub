@@ -8,12 +8,40 @@ import { useAuth } from "@/hooks/useAuth";
 import { Tag, Calendar, Pencil } from "lucide-react";
 
 interface RecentItem { id: string; kind: string; title: string; status: string; created_at: string }
+interface NotifItem { id: string; title: string; body: string | null; link: string | null; status: string; is_read: boolean; created_at: string }
 
 const BusinessDashboard = () => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { account, listing, pendingClaim, loading } = useBusinessOwner();
   const [stats, setStats] = useState({ specials: 0, events: 0, featured: 0 });
   const [recent, setRecent] = useState<RecentItem[]>([]);
+  const [notifs, setNotifs] = useState<NotifItem[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    const loadNotifs = async () => {
+      const { data } = await supabase
+        .from("business_notifications")
+        .select("id,title,body,link,status,is_read,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      setNotifs((data ?? []) as NotifItem[]);
+    };
+    loadNotifs();
+  }, [user]);
+
+  const markRead = async (id: string) => {
+    setNotifs((n) => n.map((x) => x.id === id ? { ...x, is_read: true } : x));
+    await supabase.from("business_notifications").update({ is_read: true }).eq("id", id);
+  };
+  const markAllRead = async () => {
+    if (!user) return;
+    const ids = notifs.filter((n) => !n.is_read).map((n) => n.id);
+    if (!ids.length) return;
+    setNotifs((n) => n.map((x) => ({ ...x, is_read: true })));
+    await supabase.from("business_notifications").update({ is_read: true }).in("id", ids);
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -48,9 +76,45 @@ const BusinessDashboard = () => {
 1
   return (
     <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark">
-      <div style={{ marginTop: 12, marginBottom: 36 }}>
+      <div style={{ marginTop: 12, marginBottom: 24 }}>
         <H2 style={{ color: "#FFFFFF" }}>WELCOME{account?.business_name ? `, ${account.business_name.toUpperCase()}` : ""}</H2>
       </div>
+
+      {notifs.length > 0 && (
+        <div style={{ marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+            <Body style={{ fontWeight: 500, color: "#FFFFFF" }}>
+              NOTIFICATIONS{notifs.some((n) => !n.is_read) ? ` (${notifs.filter((n) => !n.is_read).length})` : ""}
+            </Body>
+            {notifs.some((n) => !n.is_read) && (
+              <button onClick={markAllRead} style={{ background: "transparent", border: "none", color: "#FFFFFF", textDecoration: "underline", fontSize: 12, cursor: "pointer", padding: 0 }}>
+                Mark all read
+              </button>
+            )}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {notifs.slice(0, 5).map((n) => {
+              const inner = (
+                <Card style={{ padding: 14, opacity: n.is_read ? 0.7 : 1, borderLeft: n.is_read ? "none" : `3px solid ${n.status === "approved" ? "#2e7d32" : n.status === "rejected" ? "#c62828" : "#b8916a"}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <Body style={{ fontWeight: 500, fontSize: 14 }}>{n.title}</Body>
+                      {n.body && <Small soft style={{ marginTop: 4, display: "block" }}>{n.body}</Small>}
+                      <Small soft style={{ marginTop: 4, display: "block", fontSize: 11 }}>{new Date(n.created_at).toLocaleString()}</Small>
+                    </div>
+                    <StatusPill status={n.status} />
+                  </div>
+                </Card>
+              );
+              return n.link ? (
+                <Link key={n.id} to={n.link} onClick={() => markRead(n.id)} style={{ textDecoration: "none" }}>{inner}</Link>
+              ) : (
+                <div key={n.id} onClick={() => markRead(n.id)} style={{ cursor: "pointer" }}>{inner}</div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {!listing && (
         <Card style={{ marginBottom: 16 }}>

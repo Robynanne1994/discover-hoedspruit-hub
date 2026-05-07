@@ -184,6 +184,48 @@ export type Database = {
         }
         Relationships: []
       }
+      business_notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          kind: string
+          link: string | null
+          ref_id: string | null
+          ref_table: string | null
+          status: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          kind: string
+          link?: string | null
+          ref_id?: string | null
+          ref_table?: string | null
+          status: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          kind?: string
+          link?: string | null
+          ref_id?: string | null
+          ref_table?: string | null
+          status?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
