@@ -59,11 +59,30 @@ import Notifications from "./pages/Notifications.tsx";
 import MyHoedspruit from "./pages/MyHoedspruit.tsx";
 import Specials from "./pages/Specials.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
+import BusinessGate from "./components/business/BusinessGate.tsx";
+import BusinessSignIn from "./pages/business/BusinessSignIn.tsx";
+import BusinessSignUp from "./pages/business/BusinessSignUp.tsx";
+import BusinessSubscribe from "./pages/business/BusinessSubscribe.tsx";
+import BusinessClaim from "./pages/business/BusinessClaim.tsx";
+import BusinessDashboard from "./pages/business/BusinessDashboard.tsx";
+import BusinessListing from "./pages/business/BusinessListing.tsx";
+import BusinessSpecials from "./pages/business/BusinessSpecials.tsx";
+import BusinessSpecialForm from "./pages/business/BusinessSpecialForm.tsx";
+import BusinessEvents from "./pages/business/BusinessEvents.tsx";
+import BusinessEventForm from "./pages/business/BusinessEventForm.tsx";
+import BusinessFeature from "./pages/business/BusinessFeature.tsx";
+import BusinessBilling from "./pages/business/BusinessBilling.tsx";
+import AdminModeration from "./pages/admin/AdminModeration.tsx";
+import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
+  // The Business Portal has its own auth flow and must be reachable without
+  // signing in to the consumer app first.
+  if (location.pathname.startsWith("/business")) return <>{children}</>;
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "hsl(38, 30%, 96%)" }}>
@@ -73,6 +92,12 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   }
   if (!user) return <Welcome />;
   return <>{children}</>;
+};
+
+const ConditionalBottomNav = () => {
+  const location = useLocation();
+  if (location.pathname.startsWith("/business") || location.pathname.startsWith("/admin")) return null;
+  return <BottomNav />;
 };
 
 const App = () => (
@@ -135,11 +160,28 @@ const App = () => (
                 <Route path="bush-telegraph" element={<AdminBushTelegraph />} />
                 <Route path="content" element={<AdminContent />} />
                 <Route path="import" element={<AdminImport />} />
+                <Route path="moderation" element={<AdminModeration />} />
+              </Route>
+              <Route path="/business/sign-in" element={<BusinessSignIn />} />
+              <Route path="/business/sign-up" element={<BusinessSignUp />} />
+              <Route element={<BusinessGate />}>
+                <Route path="/business/subscribe" element={<BusinessSubscribe />} />
+                <Route path="/business/claim" element={<BusinessClaim />} />
+                <Route path="/business/dashboard" element={<BusinessDashboard />} />
+                <Route path="/business/listing" element={<BusinessListing />} />
+                <Route path="/business/specials" element={<BusinessSpecials />} />
+                <Route path="/business/specials/new" element={<BusinessSpecialForm mode="new" />} />
+                <Route path="/business/specials/:id" element={<BusinessSpecialForm mode="edit" />} />
+                <Route path="/business/events" element={<BusinessEvents />} />
+                <Route path="/business/events/new" element={<BusinessEventForm mode="new" />} />
+                <Route path="/business/events/:id" element={<BusinessEventForm mode="edit" />} />
+                <Route path="/business/feature/:type/:id" element={<BusinessFeature />} />
+                <Route path="/business/billing" element={<BusinessBilling />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ScrollToTop />
-            <BottomNav />
+            <ConditionalBottomNav />
           </AuthGate>
         </BrowserRouter>
       </AuthProvider>

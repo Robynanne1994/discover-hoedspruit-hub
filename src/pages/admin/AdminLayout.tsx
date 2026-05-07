@@ -14,12 +14,14 @@ import {
   Newspaper,
   Radio,
   Menu,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navItems = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
+  { label: "Moderation", path: "/admin/moderation", icon: ShieldCheck },
   { label: "Homepage", path: "/admin/homepage", icon: Home },
   { label: "Categories", path: "/admin/categories", icon: FolderOpen },
   { label: "Listings", path: "/admin/listings", icon: List },
