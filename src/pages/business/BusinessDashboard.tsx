@@ -80,15 +80,15 @@ const BusinessDashboard = () => {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 24 }}>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.specials}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>Specials</Small>
+              <Small soft style={{ marginTop: 4, fontSize: 12 }}>SPECIALS</Small>
             </Card>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.events}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>Events</Small>
+              <Small soft style={{ marginTop: 4, fontSize: 12 }}>EVENTS</Small>
             </Card>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.featured}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>Featured</Small>
+              <Small soft style={{ marginTop: 4, fontSize: 12 }}>FEATURED</Small>
             </Card>
           </div>
 
