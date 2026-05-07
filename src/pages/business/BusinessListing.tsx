@@ -190,7 +190,7 @@ const BusinessListing = () => {
             style={{ display: "none" }}
           />
           {imageUrl ? (
-            <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", aspectRatio: "3/4", width: "100%" }}>
+            <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", height: 360, width: "100%" }}>
               <img src={imageUrl} alt="Cover" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               <button
                 type="button"
@@ -213,7 +213,7 @@ const BusinessListing = () => {
               onClick={() => coverInputRef.current?.click()}
               disabled={uploadingCover}
               style={{
-                width: "100%", aspectRatio: "3/4",
+                width: "100%", height: 360,
                 background: "rgba(18,18,20,0.04)",
                 border: `1px dashed ${COLORS.inputBorder}`,
                 borderRadius: 14, cursor: "pointer",
