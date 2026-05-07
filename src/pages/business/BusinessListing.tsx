@@ -67,9 +67,9 @@ const BusinessListing = () => {
         setLocation(full.location ?? "");
         setImageUrl(full.image_url ?? "");
         setGallery((full.gallery_images ?? []) as string[]);
-        const oh = (full.opening_hours ?? {}) as Hours;
+        const oh = (full.opening_hours ?? {}) as Record<string, string>;
         const merged = blankHours();
-        DAYS.forEach((d) => { if (oh[d]) merged[d] = { ...merged[d], ...oh[d] }; });
+        DAYS.forEach(({ key }) => { if (oh[key] !== undefined) merged[key] = parseDayString(oh[key] as string); });
         setHours(merged);
       }
       const { data: pend } = await supabase
