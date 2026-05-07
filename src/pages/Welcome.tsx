@@ -61,6 +61,20 @@ const Welcome = () => {
             I already have an account
           </button>
         </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col" style={{ background: "hsl(38, 30%, 96%)" }}>
+      <div className="px-6 pt-14 pb-4">
+        <button
+          onClick={() => setMode("welcome")}
+          className="text-muted-foreground text-sm font-medium"
+        >
+          ← Back
+        </button>
+      </div>
 
       <div className="flex-1 px-6 pb-12">
         <h1
