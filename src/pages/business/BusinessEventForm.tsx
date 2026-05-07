@@ -64,7 +64,13 @@ const BusinessEventForm = ({ mode }: Props) => {
         setDate(p.date ?? "");
         setStartDate(p.start_date ?? "");
         setEndDate(p.end_date ?? "");
+        setStartTime(p.start_time ?? "");
+        setEndTime(p.end_time ?? "");
         setLocation(p.location ?? "");
+        setPrice(p.price ?? "");
+        setBookingLink(p.booking_link ?? "");
+        setBookingLinkLabel(p.booking_link_label ?? "");
+        setGalleryImages(Array.isArray(p.gallery_images) ? p.gallery_images : []);
         setFeature(!!data.feature_requested);
         setStatus(data.status);
         setAdminNote(data.admin_note);
@@ -80,6 +86,20 @@ const BusinessEventForm = ({ mode }: Props) => {
     const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
     setImageUrl(data.publicUrl);
     setUploading(false);
+  };
+
+  const uploadGallery = async (files: FileList) => {
+    setUploadingGallery(true);
+    const urls: string[] = [];
+    for (const file of Array.from(files)) {
+      const path = `${user?.id}/events/gallery/${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage.from("listing-images").upload(path, file, { upsert: true });
+      if (error) { toast.error(error.message); continue; }
+      const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+      urls.push(data.publicUrl);
+    }
+    setGalleryImages((prev) => [...prev, ...urls]);
+    setUploadingGallery(false);
   };
 
   const submit = async () => {
