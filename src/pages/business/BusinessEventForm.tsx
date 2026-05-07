@@ -102,7 +102,7 @@ const BusinessEventForm = ({ mode }: Props) => {
   }
 
   return (
-    <BusinessShell title={mode === "new" ? "Post an event" : "Edit event"} back="/business/events">
+    <BusinessShell theme="dark" title={mode === "new" ? "Post an event" : "Edit event"} back="/business/events">
       {status && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
