@@ -93,15 +93,24 @@ const BusinessDashboard = () => {
             </Card>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 0, marginBottom: 36 }}>
-            <Link to="/business/specials/new" style={{ textDecoration: "none" }}>
-              <Card><div style={{ display: "flex", alignItems: "center", gap: 12 }}><Tag size={20} strokeWidth={1.5} color={COLORS.heading} /><H3 style={{ fontSize: 16, textTransform: "none" }}>Post a Special</H3></div></Card>
+          <div style={{ background: COLORS.card, borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", overflow: "hidden", marginBottom: 36 }}>
+            <Link to="/business/specials/new" style={{ textDecoration: "none", display: "block" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20, borderBottom: "1px solid rgba(18,18,20,0.06)" }}>
+                <Tag size={20} strokeWidth={1.5} color={COLORS.heading} />
+                <H3 style={{ fontSize: 16, textTransform: "none" }}>Post a Special</H3>
+              </div>
             </Link>
-            <Link to="/business/events/new" style={{ textDecoration: "none" }}>
-              <Card><div style={{ display: "flex", alignItems: "center", gap: 12 }}><Calendar size={20} strokeWidth={1.5} color={COLORS.heading} /><H3 style={{ fontSize: 16, textTransform: "none" }}>Post an Event</H3></div></Card>
+            <Link to="/business/events/new" style={{ textDecoration: "none", display: "block" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20, borderBottom: "1px solid rgba(18,18,20,0.06)" }}>
+                <Calendar size={20} strokeWidth={1.5} color={COLORS.heading} />
+                <H3 style={{ fontSize: 16, textTransform: "none" }}>Post an Event</H3>
+              </div>
             </Link>
-            <Link to="/business/listing" style={{ textDecoration: "none" }}>
-              <Card><div style={{ display: "flex", alignItems: "center", gap: 12 }}><Pencil size={20} strokeWidth={1.5} color={COLORS.heading} /><H3 style={{ fontSize: 16, textTransform: "none" }}>Edit Business</H3></div></Card>
+            <Link to="/business/listing" style={{ textDecoration: "none", display: "block" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20 }}>
+                <Pencil size={20} strokeWidth={1.5} color={COLORS.heading} />
+                <H3 style={{ fontSize: 16, textTransform: "none" }}>Edit Business</H3>
+              </div>
             </Link>
           </div>
 
