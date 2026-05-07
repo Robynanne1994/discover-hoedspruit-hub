@@ -53,19 +53,6 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
         color="#020202"
         style={{ display: "block" }}
       />
-      <span
-        style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontSize: 15,
-          fontWeight: 400,
-          color: "#020202",
-          letterSpacing: 0,
-          lineHeight: 1,
-          display: "inline-block",
-        }}
-      >
-        Back
-      </span>
     </button>
   );
 };
