@@ -48,7 +48,7 @@ const BusinessDashboard = () => {
   return (
     <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
-        <H2 style={{ color: "#FFFFFF" }}>Welcome{account?.business_name ? `, ${account.business_name}` : ""}</H2>
+        <H2 style={{ color: "#FFFFFF" }}>WELCOME{account?.business_name ? `, ${account.business_name.toUpperCase()}` : ""}</H2>
       </div>
 
       {!listing && (
