@@ -192,9 +192,6 @@ const AccountInfo = () => {
         </h1>
       </div>
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "#F0EAD9", margin: 0, fontFamily: FF }}>
-          Update your details and password
-        </p>
       </div>
 
       {/* Personal details card */}
