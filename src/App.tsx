@@ -75,7 +75,6 @@ import BusinessBilling from "./pages/business/BusinessBilling.tsx";
 import AdminModeration from "./pages/admin/AdminModeration.tsx";
 import { useLocation } from "react-router-dom";
 
-const AuthGate = ({ children }: { children: React.ReactNode }) => {
 const queryClient = new QueryClient();
 
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
