@@ -15,11 +15,22 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState("");
+  const [tagline, setTagline] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [validFrom, setValidFrom] = useState("");
   const [validUntil, setValidUntil] = useState("");
+  const [bookingLink, setBookingLink] = useState("");
+  const [terms, setTerms] = useState("");
+  const [price, setPrice] = useState("");
+  const [tag1, setTag1] = useState("");
+  const [tag2, setTag2] = useState("");
+  const [tag3, setTag3] = useState("");
   const [feature, setFeature] = useState(false);
+
+  const TAGLINE_MAX = 24;
+  const TAG_MAX = 18;
+  const TERMS_MAX = 500;
   const [status, setStatus] = useState<string | null>(null);
   const [adminNote, setAdminNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
