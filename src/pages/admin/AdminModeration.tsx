@@ -47,6 +47,7 @@ const AdminModeration = () => {
   const [openId, setOpenId] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [extra, setExtra] = useState<Record<string, any>>({});
+  const [accounts, setAccounts] = useState<Record<string, any>>({});
 
   const tableFor = (t: TabKey) =>
     t === "listing" ? "listing_edits_pending"
@@ -62,8 +63,11 @@ const AdminModeration = () => {
 
     // Hydrate live data for context (listing title, current values)
     const listingIds = new Set<string>();
+    const userIds = new Set<string>();
     (data ?? []).forEach((r: any) => {
       if (r.listing_id) listingIds.add(r.listing_id);
+      const uid = r.owner_id ?? r.user_id;
+      if (uid) userIds.add(uid);
     });
     if (listingIds.size > 0) {
       const { data: listings } = await supabase.from("listings").select("*").in("id", Array.from(listingIds));
@@ -72,6 +76,14 @@ const AdminModeration = () => {
       setExtra(m);
     } else {
       setExtra({});
+    }
+    if (userIds.size > 0) {
+      const { data: accs } = await supabase.from("business_accounts").select("user_id,business_name,contact_name,contact_email,contact_phone").in("user_id", Array.from(userIds));
+      const a: Record<string, any> = {};
+      (accs ?? []).forEach((r: any) => { a[r.user_id] = r; });
+      setAccounts(a);
+    } else {
+      setAccounts({});
     }
     setLoading(false);
   };
@@ -157,6 +169,7 @@ const AdminModeration = () => {
         {items.map((it) => {
           const open = openId === it.id;
           const live = it.listing_id ? extra[it.listing_id] : null;
+          const acc = accounts[it.owner_id ?? it.user_id];
           return (
             <div key={it.id} className="bg-card border border-border rounded-xl p-4">
               <div className="flex justify-between items-center gap-3">
@@ -167,6 +180,14 @@ const AdminModeration = () => {
                      tab === "features" ? `Feature ${it.item_type}` :
                      it.payload?.title ?? "Untitled"}
                   </div>
+                  {(acc?.business_name || acc?.contact_name || acc?.contact_email) && (
+                    <div className="text-xs text-foreground/80 mt-1">
+                      {acc.business_name && <span className="font-medium">{acc.business_name}</span>}
+                      {acc.business_name && acc.contact_name && <span className="text-muted-foreground"> · </span>}
+                      {acc.contact_name && <span>{acc.contact_name}</span>}
+                      {acc.contact_email && <span className="text-muted-foreground"> · {acc.contact_email}</span>}
+                    </div>
+                  )}
                   <div className="text-xs text-muted-foreground mt-0.5">{new Date(it.created_at).toLocaleString()}</div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -209,7 +230,10 @@ const AdminModeration = () => {
 
                   {tab === "claims" && (
                     <div className="mb-4">
-                      <KV label="User id" value={it.user_id} />
+                      <KV label="Business name" value={acc?.business_name} />
+                      <KV label="Contact name" value={acc?.contact_name} />
+                      <KV label="Contact email" value={acc?.contact_email} />
+                      <KV label="Contact phone" value={acc?.contact_phone} />
                       <KV label="Listing" value={live?.title} />
                       <KV label="Listing phone" value={live?.phone} />
                       <KV label="Listing email" value={live?.email} />
