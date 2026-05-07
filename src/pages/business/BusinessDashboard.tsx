@@ -72,7 +72,7 @@ const BusinessDashboard = () => {
       {listing && (
         <>
           <Card style={{ marginBottom: 16 }}>
-            <Small soft>Listing</Small>
+            <Small soft>BUSINESS</Small>
             <Body style={{ fontWeight: 500, marginTop: 4 }}>{listing.title}</Body>
             {listing.location && <Small soft style={{ marginTop: 4 }}>{listing.location}</Small>}
           </Card>
