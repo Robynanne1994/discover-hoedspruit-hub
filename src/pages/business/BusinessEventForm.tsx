@@ -26,6 +26,23 @@ const BusinessEventForm = ({ mode }: Props) => {
   const [adminNote, setAdminNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [locSuggestions, setLocSuggestions] = useState<{ id: string; title: string; location: string | null }[]>([]);
+  const [showLocSugg, setShowLocSugg] = useState(false);
+
+  useEffect(() => {
+    const q = location.trim();
+    if (!q || q.length < 2 || !showLocSugg) { setLocSuggestions([]); return; }
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      const { data } = await supabase
+        .from("listings")
+        .select("id,title,location")
+        .or(`title.ilike.%${q}%,location.ilike.%${q}%`)
+        .limit(6);
+      if (!cancelled) setLocSuggestions(data ?? []);
+    }, 180);
+    return () => { cancelled = true; clearTimeout(t); };
+  }, [location, showLocSugg]);
 
   useEffect(() => {
     if (mode !== "edit" || !id) return;
