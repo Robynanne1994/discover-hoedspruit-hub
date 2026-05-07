@@ -57,14 +57,6 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Qassy";
-  src: url("/fonts/Qassy.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* Playfair Display — self-hosted woff2 */
 @font-face {
   font-family: "Playfair Display";
