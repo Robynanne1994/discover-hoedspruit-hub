@@ -311,7 +311,7 @@ const Notifications = () => {
                 marginBottom: 4,
               }}
             >
-              Push notifications
+              Push Notifications
             </div>
             <div
               style={{
