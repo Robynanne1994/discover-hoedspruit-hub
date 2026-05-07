@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
@@ -58,10 +59,30 @@ const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
 
 const HomeMasthead = () => {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [temp, setTemp] = useState<number | null>(null);
   const [weatherCode, setWeatherCode] = useState<number | null>(null);
   const [isNight, setIsNight] = useState<boolean>(false);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+
+  useEffect(() => {
+    if (!user) { setUnreadCount(0); return; }
+    let cancelled = false;
+    const load = async () => {
+      const { count } = await supabase
+        .from("business_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+      if (!cancelled) setUnreadCount(count ?? 0);
+    };
+    load();
+    const channel = supabase
+      .channel("home-biz-notifs")
+      .on("postgres_changes", { event: "*", schema: "public", table: "business_notifications", filter: `user_id=eq.${user.id}` }, () => load())
+      .subscribe();
+    return () => { cancelled = true; supabase.removeChannel(channel); };
+  }, [user]);
 
   useEffect(() => {
     fetch(
@@ -81,7 +102,49 @@ const HomeMasthead = () => {
   return (
     <div style={{ paddingTop: 16 }}>
       {/* Top bar: only menu button on the right */}
-      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 24px 0" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, padding: "8px 24px 0" }}>
+        <button
+          aria-label="Notifications"
+          onClick={() => navigate("/business/dashboard")}
+          style={{
+            position: "relative",
+            width: 36,
+            height: 36,
+            borderRadius: 999,
+            background: "#FFFFFF",
+            display: user ? "flex" : "none",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <Bell size={16} color="#0A0A0A" strokeWidth={2} />
+          {unreadCount > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: -2,
+                right: -2,
+                minWidth: 18,
+                height: 18,
+                padding: "0 5px",
+                borderRadius: 999,
+                background: "#E11D48",
+                color: "#FFFFFF",
+                fontSize: 10,
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "2px solid #FFFFFF",
+                lineHeight: 1,
+              }}
+            >
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </button>
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Menu"
