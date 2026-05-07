@@ -17,17 +17,25 @@ const BusinessEventForm = ({ mode }: Props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [date, setDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [location, setLocation] = useState("");
+  const [price, setPrice] = useState("");
+  const [bookingLink, setBookingLink] = useState("");
+  const [bookingLinkLabel, setBookingLinkLabel] = useState("");
   const [feature, setFeature] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [adminNote, setAdminNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
   const [locSuggestions, setLocSuggestions] = useState<{ id: string; title: string; location: string | null }[]>([]);
   const [showLocSugg, setShowLocSugg] = useState(false);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const q = location.trim();
