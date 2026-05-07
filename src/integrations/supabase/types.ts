@@ -1443,6 +1443,7 @@ export type Database = {
       }
     }
     Functions: {
+      claim_business_owner_role: { Args: never; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
