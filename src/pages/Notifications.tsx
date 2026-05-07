@@ -291,7 +291,7 @@ const Notifications = () => {
         <div
           onClick={() => updatePref("push_enabled")}
           style={{
-            background: "#0A0A0A",
+            background: "#F0EAD9",
             borderRadius: 22,
             padding: 22,
             display: "flex",
@@ -307,7 +307,7 @@ const Notifications = () => {
                 fontFamily: FONT_STACK,
                 fontSize: 18,
                 fontWeight: 500,
-                color: "#FFFFFF",
+                color: "#0A0A0A",
                 marginBottom: 4,
               }}
             >
@@ -318,7 +318,7 @@ const Notifications = () => {
                 ...baseTextStyle,
                 fontFamily: FONT_STACK,
                 fontSize: 13,
-                color: "rgba(255,255,255,0.6)",
+                color: "rgba(10,10,10,0.6)",
                 lineHeight: 1.4,
               }}
             >
