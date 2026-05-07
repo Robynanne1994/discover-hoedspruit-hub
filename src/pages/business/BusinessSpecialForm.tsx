@@ -31,7 +31,7 @@ const BusinessSpecialForm = ({ mode }: Props) => {
     (async () => {
       const { data } = await supabase.from("specials_pending").select("*").eq("id", id).maybeSingle();
       if (data) {
-        const p = data.payload || {};
+        const p: any = data.payload || {};
         setTitle(p.title ?? "");
         setDescription(p.description ?? "");
         setImageUrl(p.image_url ?? "");
