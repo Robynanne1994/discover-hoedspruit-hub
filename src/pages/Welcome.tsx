@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { MapPin, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { MapPin, ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 
 const Welcome = () => {
@@ -71,9 +71,10 @@ const Welcome = () => {
       <div className="px-6 pt-14 pb-4">
         <button
           onClick={() => setMode("welcome")}
-          className="text-muted-foreground text-sm font-medium"
+          aria-label="Back"
+          className="text-foreground active:scale-95 transition-transform"
         >
-          ← Back
+          <ArrowLeft style={{ width: 24, height: 24, color: "#0A0A0A" }} />
         </button>
       </div>
 
@@ -94,7 +95,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" className="text-xs font-medium text-muted-foreground">
+                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
                   First Name
                 </Label>
                 <Input
@@ -108,7 +109,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="displayName" className="text-xs font-medium text-muted-foreground">
+                <Label htmlFor="displayName" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
                   Display Name
                 </Label>
                 <Input
@@ -123,7 +124,7 @@ const Welcome = () => {
             </>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs font-medium text-muted-foreground">
+            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
               Email
             </Label>
             <Input
@@ -137,7 +138,7 @@ const Welcome = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-xs font-medium text-muted-foreground">
+            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
               Password
             </Label>
             <div className="relative">
@@ -164,7 +165,8 @@ const Welcome = () => {
 
           <Button
             type="submit"
-            className="w-full h-12 text-[15px] font-semibold rounded-xl mt-2"
+            className="w-full h-12 font-semibold rounded-xl mt-2"
+            style={{ background: "#655444", color: "#ffffff", fontSize: 16 }}
             disabled={loading}
           >
             {loading
