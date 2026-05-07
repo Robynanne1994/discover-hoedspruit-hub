@@ -96,7 +96,7 @@ const BusinessClaim = () => {
               onClick={() => setPicked(null)}
               style={{ marginTop: 12, background: "none", border: "none", color: COLORS.body, textDecoration: "underline", cursor: "pointer", fontSize: 14, padding: 0 }}
             >
-              Pick a different listing
+              Pick a different business
             </button>
           </Card>
 
