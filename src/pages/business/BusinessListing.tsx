@@ -137,7 +137,7 @@ const BusinessListing = () => {
   const submit = async () => {
     setBusy(true);
     const payload = {
-      title, description, phone, whatsapp, email, website, location,
+      title, description, long_description: longDescription, phone, whatsapp, email, website, location,
       image_url: imageUrl, gallery_images: gallery, opening_hours: serializeHours(hours),
     };
     const { error } = await supabase.from("listing_edits_pending").insert({
