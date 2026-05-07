@@ -269,21 +269,6 @@ const Notifications = () => {
         >
           Notifications
         </h1>
-        <p
-          style={{
-            ...baseTextStyle,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 18,
-            lineHeight: 1.4,
-            color: "#FFFFFF",
-            marginTop: 16,
-            marginBottom: 0,
-          }}
-        >
-          Choose what you'd like to hear from us, and when.
-        </p>
       </div>
 
       {/* Master push card */}
