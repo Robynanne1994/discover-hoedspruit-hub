@@ -589,7 +589,7 @@ const MyAccount = () => {
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "transparent",
+        backgroundColor: "#555340",
         paddingBottom: 120,
         ...baseTextStyle,
       }}
