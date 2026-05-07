@@ -48,15 +48,16 @@ const Welcome = () => {
         <div className="px-6 pb-12 space-y-3">
           <Button
             onClick={() => setMode("signup")}
-            className="w-full h-12 text-[15px] font-semibold rounded-xl"
-            style={{ background: "#655444", color: "#ffffff" }}
+            className="w-full h-12 rounded-xl"
+            style={{ background: "#655444", color: "#ffffff", fontSize: 16, fontWeight: 600 }}
           >
             Create Account
             <ArrowRight className="ml-2" style={{ width: 18, height: 18 }} />
           </Button>
           <button
             onClick={() => setMode("signin")}
-            className="w-full h-12 text-[15px] font-medium rounded-xl border border-border bg-card text-foreground active:scale-[0.98] transition-transform"
+            className="w-full h-12 rounded-xl border border-border bg-card text-foreground active:scale-[0.98] transition-transform"
+            style={{ fontSize: 16, fontWeight: 600 }}
           >
             I already have an account
           </button>
