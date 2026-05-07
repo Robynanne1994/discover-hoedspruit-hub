@@ -78,7 +78,7 @@ const BusinessDashboard = () => {
             {listing.location && <Small soft style={{ marginTop: 4 }}>{listing.location}</Small>}
           </Card>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.specials}</p>
               <Small soft style={{ marginTop: 4, fontSize: 12 }}>SPECIALS</Small>
