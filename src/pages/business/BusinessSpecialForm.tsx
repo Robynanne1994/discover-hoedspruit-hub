@@ -124,7 +124,12 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   }
 
   return (
-    <BusinessShell title={mode === "new" ? "Post a special" : "Edit special"} back="/business/specials">
+    <BusinessShell title={mode === "new" ? "Post a special" : "Edit special"} back="/business/specials" theme="dark">
+      <style>{`
+        .biz-special-dark label, .biz-special-dark p, .biz-special-dark h1, .biz-special-dark h2, .biz-special-dark h3, .biz-special-dark span { color: #FFFFFF !important; }
+        .biz-special-dark input[type="date"] { color-scheme: dark; }
+      `}</style>
+      <div className="biz-special-dark">
       {status && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
@@ -183,8 +188,8 @@ const BusinessSpecialForm = ({ mode }: Props) => {
             <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
               <input type="checkbox" checked={feature} onChange={(e) => setFeature(e.target.checked)} />
               <div style={{ flex: 1 }}>
-                <Body style={{ fontWeight: 500 }}>Feature this</Body>
-                <Small soft style={{ marginTop: 4 }}>Pay a one-off fee to feature this special on the home page.</Small>
+                <Body style={{ fontWeight: 500, color: "#0a0a0a" }}>Feature this</Body>
+                <Small soft style={{ marginTop: 4, color: "#0a0a0a" }}>Pay a one-off fee to feature this special on the home page.</Small>
               </div>
             </label>
           </Card>
@@ -194,6 +199,7 @@ const BusinessSpecialForm = ({ mode }: Props) => {
           {busy ? "Sending..." : feature ? "Pay and submit for review" : "Send for review"}
         </Button>
         <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>
+      </div>
       </div>
     </BusinessShell>
   );
