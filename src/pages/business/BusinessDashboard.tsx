@@ -116,7 +116,7 @@ const BusinessDashboard = () => {
             <Link to="/business/listing" style={{ textDecoration: "none", display: "block" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20 }}>
                 <Pencil size={20} strokeWidth={1.5} color={COLORS.heading} />
-                <H3 style={{ fontSize: 16, textTransform: "none" }}>Edit Business</H3>
+                <H3 style={{ fontSize: 16, textTransform: "none" }}>Edit Business Details</H3>
               </div>
             </Link>
           </div>
