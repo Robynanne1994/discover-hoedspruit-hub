@@ -64,17 +64,29 @@ const HomeMasthead = () => {
   const [weatherCode, setWeatherCode] = useState<number | null>(null);
   const [isNight, setIsNight] = useState<boolean>(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
+  type NotifPreview = { id: string; title: string; body: string | null; link: string | null; status: string; kind: string; is_read: boolean; created_at: string };
+  const [notifs, setNotifs] = useState<NotifPreview[]>([]);
 
   useEffect(() => {
-    if (!user) { setUnreadCount(0); return; }
+    if (!user) { setUnreadCount(0); setNotifs([]); return; }
     let cancelled = false;
     const load = async () => {
-      const { count } = await supabase
-        .from("business_notifications")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .eq("is_read", false);
-      if (!cancelled) setUnreadCount(count ?? 0);
+      const [{ data }, { count }] = await Promise.all([
+        supabase
+          .from("business_notifications")
+          .select("id,title,body,link,status,kind,is_read,created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(8),
+        supabase
+          .from("business_notifications")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("is_read", false),
+      ]);
+      if (cancelled) return;
+      setNotifs((data ?? []) as NotifPreview[]);
+      setUnreadCount(count ?? 0);
     };
     load();
     const channel = supabase
@@ -103,48 +115,86 @@ const HomeMasthead = () => {
     <div style={{ paddingTop: 16 }}>
       {/* Top bar: only menu button on the right */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, padding: "8px 24px 0" }}>
-        <button
-          aria-label="Notifications"
-          onClick={() => navigate("/business/dashboard")}
-          style={{
-            position: "relative",
-            width: 36,
-            height: 36,
-            borderRadius: 999,
-            background: "#FFFFFF",
-            display: user ? "flex" : "none",
-            alignItems: "center",
-            justifyContent: "center",
-            border: "none",
-            cursor: "pointer",
-          }}
-        >
-          <Bell size={16} color="#0A0A0A" strokeWidth={2} />
-          {unreadCount > 0 && (
-            <span
+        {user && (
+          <DropdownMenu>
+            <DropdownMenuTrigger
+              aria-label="Notifications"
               style={{
-                position: "absolute",
-                top: -2,
-                right: -2,
-                minWidth: 18,
-                height: 18,
-                padding: "0 5px",
+                position: "relative",
+                width: 36,
+                height: 36,
                 borderRadius: 999,
-                background: "#E11D48",
-                color: "#FFFFFF",
-                fontSize: 10,
-                fontWeight: 700,
+                background: "#FFFFFF",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                border: "2px solid #FFFFFF",
-                lineHeight: 1,
+                border: "none",
+                cursor: "pointer",
               }}
             >
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-        </button>
+              <Bell size={16} color="#0A0A0A" strokeWidth={2} />
+              {unreadCount > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -2,
+                    right: -2,
+                    minWidth: 18,
+                    height: 18,
+                    padding: "0 5px",
+                    borderRadius: 999,
+                    background: "#E11D48",
+                    color: "#FFFFFF",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "2px solid #FFFFFF",
+                    lineHeight: 1,
+                  }}
+                >
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </span>
+              )}
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" sideOffset={8} className="w-80 max-h-96 overflow-y-auto">
+              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {notifs.length === 0 ? (
+                <div style={{ padding: "16px 12px", fontSize: 13, color: "#6B6560", textAlign: "center" }}>
+                  No notifications yet
+                </div>
+              ) : (
+                notifs.map((n) => (
+                  <DropdownMenuItem
+                    key={n.id}
+                    onSelect={async (e) => {
+                      e.preventDefault();
+                      if (!n.is_read) {
+                        await supabase.from("business_notifications").update({ is_read: true }).eq("id", n.id);
+                      }
+                      navigate(n.link || "/business/dashboard");
+                    }}
+                    className="flex flex-col items-start gap-1 py-2"
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%" }}>
+                      {!n.is_read && (
+                        <span style={{ width: 8, height: 8, borderRadius: 999, background: "#E11D48", flexShrink: 0 }} />
+                      )}
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#0A0A0A", flex: 1 }}>{n.title}</span>
+                    </div>
+                    {n.body && (
+                      <span style={{ fontSize: 12, color: "#6B6560", lineHeight: 1.35, paddingLeft: n.is_read ? 0 : 14 }}>
+                        {n.body.length > 90 ? n.body.slice(0, 90) + "…" : n.body}
+                      </span>
+                    )}
+                  </DropdownMenuItem>
+                ))
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Menu"
