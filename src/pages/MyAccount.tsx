@@ -572,7 +572,7 @@ const MyAccount = () => {
         fontWeight: 500,
         letterSpacing: "0.18em",
         textTransform: "uppercase",
-        color: "#0a0a0a",
+        color: "#F0EAD9",
         margin: 0,
         marginBottom: 10,
         paddingLeft: 4,
