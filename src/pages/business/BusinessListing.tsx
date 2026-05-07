@@ -7,12 +7,31 @@ import { Button, Input, Label, Textarea, Card, Body, Small, StatusPill, COLORS }
 import { toast } from "sonner";
 import { Upload, X, Plus } from "lucide-react";
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS: { label: string; key: string }[] = [
+  { label: "Mon", key: "monday" },
+  { label: "Tue", key: "tuesday" },
+  { label: "Wed", key: "wednesday" },
+  { label: "Thu", key: "thursday" },
+  { label: "Fri", key: "friday" },
+  { label: "Sat", key: "saturday" },
+  { label: "Sun", key: "sunday" },
+];
 
 interface Hours { [day: string]: { closed: boolean; open: string; close: string } }
 
 const blankHours = (): Hours =>
-  Object.fromEntries(DAYS.map((d) => [d, { closed: false, open: "09:00", close: "17:00" }]));
+  Object.fromEntries(DAYS.map((d) => [d.key, { closed: false, open: "09:00", close: "17:00" }]));
+
+const parseDayString = (s: string): { closed: boolean; open: string; close: string } => {
+  if (!s || /closed/i.test(s)) return { closed: true, open: "09:00", close: "17:00" };
+  const m = s.match(/(\d{1,2})[:.]?(\d{0,2})\s*[-–]\s*(\d{1,2})[:.]?(\d{0,2})/);
+  if (!m) return { closed: false, open: "09:00", close: "17:00" };
+  const pad = (h: string, mm: string) => `${h.padStart(2, "0")}:${(mm || "00").padStart(2, "0")}`;
+  return { closed: false, open: pad(m[1], m[2]), close: pad(m[3], m[4]) };
+};
+
+const serializeHours = (h: Hours): Record<string, string> =>
+  Object.fromEntries(DAYS.map(({ key }) => [key, h[key].closed ? "Closed" : `${h[key].open}-${h[key].close}`]));
 
 const BusinessListing = () => {
   const navigate = useNavigate();
@@ -48,9 +67,9 @@ const BusinessListing = () => {
         setLocation(full.location ?? "");
         setImageUrl(full.image_url ?? "");
         setGallery((full.gallery_images ?? []) as string[]);
-        const oh = (full.opening_hours ?? {}) as Hours;
+        const oh = (full.opening_hours ?? {}) as Record<string, string>;
         const merged = blankHours();
-        DAYS.forEach((d) => { if (oh[d]) merged[d] = { ...merged[d], ...oh[d] }; });
+        DAYS.forEach(({ key }) => { if (oh[key] !== undefined) merged[key] = parseDayString(oh[key] as string); });
         setHours(merged);
       }
       const { data: pend } = await supabase
@@ -117,7 +136,7 @@ const BusinessListing = () => {
     setBusy(true);
     const payload = {
       title, description, phone, whatsapp, email, website, location,
-      image_url: imageUrl, gallery_images: gallery, opening_hours: hours,
+      image_url: imageUrl, gallery_images: gallery, opening_hours: serializeHours(hours),
     };
     const { error } = await supabase.from("listing_edits_pending").insert({
       listing_id: listing.id,
@@ -264,35 +283,35 @@ const BusinessListing = () => {
         <div>
           <Label>Opening hours</Label>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {DAYS.map((d) => (
-              <Card key={d} style={{ padding: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: hours[d].closed ? 0 : 12 }}>
-                  <div style={{ fontWeight: 500, fontSize: 16 }}>{d}</div>
+            {DAYS.map(({ label, key }) => (
+              <Card key={key} style={{ padding: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: hours[key].closed ? 0 : 12 }}>
+                  <div style={{ fontWeight: 500, fontSize: 16 }}>{label}</div>
                   <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: COLORS.body }}>
                     <input
                       type="checkbox"
-                      checked={hours[d].closed}
-                      onChange={(e) => updateDay(d, { closed: e.target.checked })}
+                      checked={hours[key].closed}
+                      onChange={(e) => updateDay(key, { closed: e.target.checked })}
                     />
                     Closed
                   </label>
                 </div>
-                {!hours[d].closed && (
+                {!hours[key].closed && (
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     <div>
                       <div style={{ fontSize: 11, color: COLORS.bodySoft, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Open</div>
                       <Input
                         type="time"
-                        value={hours[d].open}
-                        onChange={(e) => updateDay(d, { open: e.target.value })}
+                        value={hours[key].open}
+                        onChange={(e) => updateDay(key, { open: e.target.value })}
                       />
                     </div>
                     <div>
                       <div style={{ fontSize: 11, color: COLORS.bodySoft, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Close</div>
                       <Input
                         type="time"
-                        value={hours[d].close}
-                        onChange={(e) => updateDay(d, { close: e.target.value })}
+                        value={hours[key].close}
+                        onChange={(e) => updateDay(key, { close: e.target.value })}
                       />
                     </div>
                   </div>
