@@ -71,16 +71,22 @@ const HomeMasthead = () => {
     if (!user) { setUnreadCount(0); setNotifs([]); return; }
     let cancelled = false;
     const load = async () => {
-      const { data, count } = await supabase
-        .from("business_notifications")
-        .select("id,title,body,link,status,kind,is_read,created_at", { count: "exact" })
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(8);
+      const [{ data }, { count }] = await Promise.all([
+        supabase
+          .from("business_notifications")
+          .select("id,title,body,link,status,kind,is_read,created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(8),
+        supabase
+          .from("business_notifications")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("is_read", false),
+      ]);
       if (cancelled) return;
       setNotifs((data ?? []) as NotifPreview[]);
-      const unread = (data ?? []).filter((n: any) => !n.is_read).length;
-      setUnreadCount(count !== null && count !== undefined ? (data ?? []).filter((n: any) => !n.is_read).length + Math.max(0, (count - (data?.length ?? 0))) : unread);
+      setUnreadCount(count ?? 0);
     };
     load();
     const channel = supabase
