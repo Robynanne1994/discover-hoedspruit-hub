@@ -62,8 +62,8 @@ const BusinessDashboard = () => {
             </>
           ) : (
             <>
-              <Body style={{ marginBottom: 12 }}>You have not linked a listing yet.</Body>
-              <Link to="/business/claim"><Button>Claim a listing</Button></Link>
+              <Body style={{ marginBottom: 12 }}>You have not linked a business yet.</Body>
+              <Link to="/business/claim"><Button>Claim a business</Button></Link>
             </>
           )}
         </Card>
