@@ -169,6 +169,7 @@ const AdminModeration = () => {
         {items.map((it) => {
           const open = openId === it.id;
           const live = it.listing_id ? extra[it.listing_id] : null;
+          const acc = accounts[it.owner_id ?? it.user_id];
           return (
             <div key={it.id} className="bg-card border border-border rounded-xl p-4">
               <div className="flex justify-between items-center gap-3">
@@ -179,6 +180,14 @@ const AdminModeration = () => {
                      tab === "features" ? `Feature ${it.item_type}` :
                      it.payload?.title ?? "Untitled"}
                   </div>
+                  {(acc?.business_name || acc?.contact_name || acc?.contact_email) && (
+                    <div className="text-xs text-foreground/80 mt-1">
+                      {acc.business_name && <span className="font-medium">{acc.business_name}</span>}
+                      {acc.business_name && acc.contact_name && <span className="text-muted-foreground"> · </span>}
+                      {acc.contact_name && <span>{acc.contact_name}</span>}
+                      {acc.contact_email && <span className="text-muted-foreground"> · {acc.contact_email}</span>}
+                    </div>
+                  )}
                   <div className="text-xs text-muted-foreground mt-0.5">{new Date(it.created_at).toLocaleString()}</div>
                 </div>
                 <div className="flex items-center gap-2">
