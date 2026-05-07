@@ -157,7 +157,7 @@ const BusinessListing = () => {
           </div>
         </div>
 
-        <Button full onClick={submit} disabled={busy}>{busy ? "Sending..." : "Send for review"}</Button>
+        <Button full onClick={submit} disabled={busy}>{busy ? "SENDING..." : "SEND FOR REVIEW"}</Button>
         <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>
       </div>
     </BusinessShell>
