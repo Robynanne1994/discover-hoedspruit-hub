@@ -155,7 +155,7 @@ const BusinessListing = () => {
     setHours((h) => ({ ...h, [d]: { ...h[d], ...patch } }));
 
   return (
-    <BusinessShell title="EDIT BUSINESS" back="/business/dashboard">
+    <BusinessShell title="EDIT BUSINESS" back="/business/dashboard" theme="dark">
       {latestPending && latestPending.status === "pending" && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
