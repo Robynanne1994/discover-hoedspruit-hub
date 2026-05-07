@@ -164,7 +164,7 @@ const AccountInfo = () => {
 
   if (loading || !user) {
     return (
-      <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FF }}>
+      <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FF }}>
         <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-4 w-20" />
           <div style={{ marginTop: 28 }}>
@@ -179,27 +179,27 @@ const AccountInfo = () => {
   const flag = (AREA_CODES.find((a) => a.code === parsed.areaCode) || AREA_CODES[0]).flag;
 
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 100, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: "#555340", paddingBottom: 100, fontFamily: FF }}>
       {/* Back */}
       <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-        <BackButton />
+        <BackButton iconColor="#F0EAD9" />
       </div>
 
       {/* Title */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: FF, fontSize: 52, fontWeight: 600, lineHeight: 1, letterSpacing: "-0.03em", color: "#0A0A0A", textTransform: "none", margin: 0 }}>
+        <h1 style={{ fontFamily: FF, fontSize: 52, fontWeight: 600, lineHeight: 1, letterSpacing: "-0.03em", color: "#F0EAD9", textTransform: "none", margin: 0 }}>
           Account Info
         </h1>
       </div>
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)", margin: 0, fontFamily: FF }}>
+        <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "#F0EAD9", margin: 0, fontFamily: FF }}>
           Update your details and password
         </p>
       </div>
 
       {/* Personal details card */}
       <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-        <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.55)", marginBottom: 8, fontFamily: FF }}>
+        <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#F0EAD9", marginBottom: 8, fontFamily: FF }}>
           Personal Details
         </div>
 
@@ -319,7 +319,7 @@ const AccountInfo = () => {
         </button>
 
         {/* Password */}
-        <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(18,18,20,0.55)", marginBottom: 8, fontFamily: FF }}>
+        <div style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.06em", textTransform: "uppercase", color: "#F0EAD9", marginBottom: 8, fontFamily: FF }}>
           Password
         </div>
         <div style={{ background: "#FFFFFF", borderRadius: 16, padding: 16, display: "flex", flexDirection: "column", gap: 16, marginBottom: 16 }}>
