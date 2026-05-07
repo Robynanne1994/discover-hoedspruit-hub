@@ -283,35 +283,35 @@ const BusinessListing = () => {
         <div>
           <Label>Opening hours</Label>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {DAYS.map((d) => (
-              <Card key={d} style={{ padding: 14 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: hours[d].closed ? 0 : 12 }}>
-                  <div style={{ fontWeight: 500, fontSize: 16 }}>{d}</div>
+            {DAYS.map(({ label, key }) => (
+              <Card key={key} style={{ padding: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: hours[key].closed ? 0 : 12 }}>
+                  <div style={{ fontWeight: 500, fontSize: 16 }}>{label}</div>
                   <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: COLORS.body }}>
                     <input
                       type="checkbox"
-                      checked={hours[d].closed}
-                      onChange={(e) => updateDay(d, { closed: e.target.checked })}
+                      checked={hours[key].closed}
+                      onChange={(e) => updateDay(key, { closed: e.target.checked })}
                     />
                     Closed
                   </label>
                 </div>
-                {!hours[d].closed && (
+                {!hours[key].closed && (
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
                     <div>
                       <div style={{ fontSize: 11, color: COLORS.bodySoft, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Open</div>
                       <Input
                         type="time"
-                        value={hours[d].open}
-                        onChange={(e) => updateDay(d, { open: e.target.value })}
+                        value={hours[key].open}
+                        onChange={(e) => updateDay(key, { open: e.target.value })}
                       />
                     </div>
                     <div>
                       <div style={{ fontSize: 11, color: COLORS.bodySoft, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Close</div>
                       <Input
                         type="time"
-                        value={hours[d].close}
-                        onChange={(e) => updateDay(d, { close: e.target.value })}
+                        value={hours[key].close}
+                        onChange={(e) => updateDay(key, { close: e.target.value })}
                       />
                     </div>
                   </div>
