@@ -148,6 +148,42 @@ export type Database = {
         }
         Relationships: []
       }
+      business_accounts: {
+        Row: {
+          business_name: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          subscription_status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          business_name?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          subscription_status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          business_name?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          subscription_status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           created_at: string
@@ -181,6 +217,42 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      claim_requests: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          id: string
+          listing_id: string
+          note: string | null
+          proof_contact: string | null
+          resolved_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          listing_id: string
+          note?: string | null
+          proof_contact?: string | null
+          resolved_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          listing_id?: string
+          note?: string | null
+          proof_contact?: string | null
+          resolved_at?: string | null
+          status?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -396,6 +468,45 @@ export type Database = {
           },
         ]
       }
+      events_pending: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          event_id: string | null
+          feature_requested: boolean
+          id: string
+          listing_id: string | null
+          owner_id: string
+          payload: Json
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          event_id?: string | null
+          feature_requested?: boolean
+          id?: string
+          listing_id?: string | null
+          owner_id: string
+          payload?: Json
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          event_id?: string | null
+          feature_requested?: boolean
+          id?: string
+          listing_id?: string | null
+          owner_id?: string
+          payload?: Json
+          resolved_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       faqs: {
         Row: {
           answer: string
@@ -450,6 +561,54 @@ export type Database = {
           item_id?: string
           item_type?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      feature_requests: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          feature_end: string | null
+          feature_start: string | null
+          id: string
+          item_id: string | null
+          item_type: string
+          owner_id: string
+          payment_intent_id: string | null
+          payment_status: string | null
+          pending_id: string | null
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          feature_end?: string | null
+          feature_start?: string | null
+          id?: string
+          item_id?: string | null
+          item_type: string
+          owner_id: string
+          payment_intent_id?: string | null
+          payment_status?: string | null
+          pending_id?: string | null
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          feature_end?: string | null
+          feature_start?: string | null
+          id?: string
+          item_id?: string | null
+          item_type?: string
+          owner_id?: string
+          payment_intent_id?: string | null
+          payment_status?: string | null
+          pending_id?: string | null
+          resolved_at?: string | null
+          status?: string
         }
         Relationships: []
       }
@@ -561,6 +720,39 @@ export type Database = {
           },
         ]
       }
+      listing_edits_pending: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          id: string
+          listing_id: string
+          owner_id: string
+          payload: Json
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          listing_id: string
+          owner_id: string
+          payload?: Json
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          id?: string
+          listing_id?: string
+          owner_id?: string
+          payload?: Json
+          resolved_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       listing_subcategories: {
         Row: {
           id: string
@@ -600,6 +792,7 @@ export type Database = {
           airport_shuttle_free: boolean | null
           amenities: string[] | null
           breakfast_included: boolean | null
+          business_owner_id: string | null
           category_id: string | null
           cause: string | null
           child_friendly: boolean | null
@@ -686,6 +879,7 @@ export type Database = {
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
           breakfast_included?: boolean | null
+          business_owner_id?: string | null
           category_id?: string | null
           cause?: string | null
           child_friendly?: boolean | null
@@ -772,6 +966,7 @@ export type Database = {
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
           breakfast_included?: boolean | null
+          business_owner_id?: string | null
           category_id?: string | null
           cause?: string | null
           child_friendly?: boolean | null
@@ -1119,6 +1314,45 @@ export type Database = {
           },
         ]
       }
+      specials_pending: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          feature_requested: boolean
+          id: string
+          listing_id: string | null
+          owner_id: string
+          payload: Json
+          resolved_at: string | null
+          special_id: string | null
+          status: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          feature_requested?: boolean
+          id?: string
+          listing_id?: string | null
+          owner_id: string
+          payload?: Json
+          resolved_at?: string | null
+          special_id?: string | null
+          status?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          feature_requested?: boolean
+          id?: string
+          listing_id?: string | null
+          owner_id?: string
+          payload?: Json
+          resolved_at?: string | null
+          special_id?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       subcategories: {
         Row: {
           category_id: string
@@ -1218,7 +1452,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "business_owner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1346,7 +1580,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "business_owner"],
     },
   },
 } as const
