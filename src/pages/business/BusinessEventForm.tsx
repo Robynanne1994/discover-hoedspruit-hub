@@ -135,7 +135,31 @@ const BusinessEventForm = ({ mode }: Props) => {
       <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 16 }}>
         <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
         <div><Label>Description</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} /></div>
-        <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} /></div>
+        <div style={{ position: "relative" }}>
+          <Label>Location</Label>
+          <Input
+            value={location}
+            onChange={(e) => { setLocation(e.target.value); setShowLocSugg(true); }}
+            onFocus={() => setShowLocSugg(true)}
+            onBlur={() => setTimeout(() => setShowLocSugg(false), 150)}
+            placeholder="Start typing a venue or address"
+          />
+          {showLocSugg && locSuggestions.length > 0 && (
+            <div style={{ position: "absolute", top: "100%", left: 0, right: 0, marginTop: 4, background: "#FFFFFF", borderRadius: 12, boxShadow: "0 8px 24px rgba(0,0,0,0.18)", zIndex: 20, overflow: "hidden" }}>
+              {locSuggestions.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onMouseDown={(e) => { e.preventDefault(); setLocation(s.location || s.title); setShowLocSugg(false); }}
+                  style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 14px", background: "transparent", border: "none", cursor: "pointer", color: "#0A0A0A", fontSize: 14, borderBottom: "1px solid #EFEAE2" }}
+                >
+                  <div style={{ fontWeight: 500 }}>{s.title}</div>
+                  {s.location && <div style={{ fontSize: 12, color: "#6B6560", marginTop: 2 }}>{s.location}</div>}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <div>
           <Label>Image</Label>
           {imageUrl && <img src={imageUrl} alt="" style={{ width: "100%", borderRadius: 14, marginBottom: 12, aspectRatio: "4/3", objectFit: "cover" }} />}
