@@ -58,7 +58,7 @@ const BusinessClaim = () => {
         <Card style={{ marginTop: 24 }}>
           <div style={{ marginBottom: 12 }}><StatusPill status="pending" /></div>
           <H2>Claim under review</H2>
-          <Body soft style={{ marginTop: 8 }}>We will review this within 48 hours. You will be able to edit the listing once we approve.</Body>
+          <Body soft style={{ marginTop: 8 }}>We will review this within 48 hours. You will be able to edit your business details once we approve.</Body>
         </Card>
       </BusinessShell>
     );
