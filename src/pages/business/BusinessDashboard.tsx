@@ -34,7 +34,7 @@ const BusinessDashboard = () => {
       const merged: RecentItem[] = [
         ...(pSp ?? []).map((r: any) => ({ id: r.id, kind: "Special", title: r.payload?.title ?? "Untitled", status: r.status, created_at: r.created_at })),
         ...(pEv ?? []).map((r: any) => ({ id: r.id, kind: "Event", title: r.payload?.title ?? "Untitled", status: r.status, created_at: r.created_at })),
-        ...(pLi ?? []).map((r: any) => ({ id: r.id, kind: "Listing edit", title: "Listing details", status: r.status, created_at: r.created_at })),
+        ...(pLi ?? []).map((r: any) => ({ id: r.id, kind: "Business edit", title: "Business details", status: r.status, created_at: r.created_at })),
       ].sort((a, b) => (a.created_at > b.created_at ? -1 : 1)).slice(0, 5);
 
       setStats({ specials: specialsCount ?? 0, events: eventsCount ?? 0, featured: featuredCount ?? 0 });
@@ -43,17 +43,17 @@ const BusinessDashboard = () => {
     load();
   }, [listing]);
 
-  if (loading) return <BusinessShell title="Dashboard" back="/my-account" theme="dark"><Small style={{ color: "rgba(255,255,255,0.7)" }}>Loading...</Small></BusinessShell>;
-
+  if (loading) return <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark"><Small style={{ color: "rgba(255,255,255,0.7)" }}>Loading...</Small></BusinessShell>;
+1
   return (
-    <BusinessShell title="Dashboard" back="/my-account" theme="dark">
+    <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
-        <H2 style={{ color: "#FFFFFF" }}>Welcome{account?.business_name ? `, ${account.business_name}` : ""}</H2>
+        <H2 style={{ color: "#FFFFFF" }}>WELCOME{account?.business_name ? `, ${account.business_name.toUpperCase()}` : ""}</H2>
       </div>
 
       {!listing && (
         <Card style={{ marginBottom: 16 }}>
-          <Small soft style={{ marginBottom: 8 }}>Listing</Small>
+          <Small soft style={{ marginBottom: 8 }}>BUSINESS</Small>
           {pendingClaim && pendingClaim.status === "pending" ? (
             <>
               <div style={{ marginBottom: 12 }}><StatusPill status="pending" /></div>
@@ -62,8 +62,8 @@ const BusinessDashboard = () => {
             </>
           ) : (
             <>
-              <Body style={{ marginBottom: 12 }}>You have not linked a listing yet.</Body>
-              <Link to="/business/claim"><Button>Claim a listing</Button></Link>
+              <Body style={{ marginBottom: 12 }}>You have not linked a business yet.</Body>
+              <Link to="/business/claim"><Button>CLAIM A BUSINESS</Button></Link>
             </>
           )}
         </Card>
@@ -72,7 +72,7 @@ const BusinessDashboard = () => {
       {listing && (
         <>
           <Card style={{ marginBottom: 16 }}>
-            <Small soft>Listing</Small>
+            <Small soft>BUSINESS</Small>
             <Body style={{ fontWeight: 500, marginTop: 4 }}>{listing.title}</Body>
             {listing.location && <Small soft style={{ marginTop: 4 }}>{listing.location}</Small>}
           </Card>
@@ -80,39 +80,39 @@ const BusinessDashboard = () => {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 24 }}>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.specials}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>Specials</Small>
+              <Small soft style={{ marginTop: 4, fontSize: 12 }}>SPECIALS</Small>
             </Card>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.events}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>Events</Small>
+              <Small soft style={{ marginTop: 4, fontSize: 12 }}>EVENTS</Small>
             </Card>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.featured}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>Featured</Small>
+              <Small soft style={{ marginTop: 4, fontSize: 12 }}>FEATURED</Small>
             </Card>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 36 }}>
             <Link to="/business/specials/new" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18 }}>Post a special</H3></Card>
+              <Card><H3 style={{ fontSize: 18 }}>POST A SPECIAL</H3></Card>
             </Link>
             <Link to="/business/events/new" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18 }}>Post an event</H3></Card>
+              <Card><H3 style={{ fontSize: 18 }}>POST AN EVENT</H3></Card>
             </Link>
             <Link to="/business/listing" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18 }}>Edit listing</H3></Card>
+              <Card><H3 style={{ fontSize: 18 }}>EDIT BUSINESS</H3></Card>
             </Link>
           </div>
 
           {recent.length > 0 && (
             <div style={{ marginBottom: 16 }}>
-              <Body style={{ fontWeight: 500, marginBottom: 12 }}>Recent submissions</Body>
+              <Body style={{ fontWeight: 500, marginBottom: 12 }}>RECENT SUBMISSIONS</Body>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {recent.map((r) => (
                   <Card key={r.kind + r.id} style={{ padding: 16 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
                       <div style={{ minWidth: 0 }}>
-                        <Small soft style={{ fontSize: 12 }}>{r.kind}</Small>
+                        <Small soft style={{ fontSize: 12 }}>{r.kind.toUpperCase()}</Small>
                         <Body style={{ marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.title}</Body>
                       </div>
                       <StatusPill status={r.status} />
@@ -127,9 +127,9 @@ const BusinessDashboard = () => {
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 24 }}>
         <Link to="/business/billing" style={{ textDecoration: "none" }}>
-          <Button variant="secondary" full>Billing</Button>
+          <Button variant="secondary" full>BILLING</Button>
         </Link>
-        <Button variant="secondary" full onClick={signOut}>Sign out</Button>
+        <Button variant="secondary" full onClick={signOut}>SIGN OUT</Button>
       </div>
     </BusinessShell>
   );

@@ -56,11 +56,11 @@ const BusinessListing = () => {
 
   if (!listing) {
     return (
-      <BusinessShell title="Listing" back="/business/dashboard">
+      <BusinessShell title="BUSINESS" back="/business/dashboard">
         <Card style={{ marginTop: 24 }}>
-          <Body>You have not linked a listing yet.</Body>
+          <Body>You have not linked a business yet.</Body>
           <div style={{ marginTop: 12 }}>
-            <Button onClick={() => navigate("/business/claim")}>Claim a listing</Button>
+            <Button onClick={() => navigate("/business/claim")}>CLAIM A BUSINESS</Button>
           </div>
         </Card>
       </BusinessShell>
@@ -85,7 +85,7 @@ const BusinessListing = () => {
     setHours((h) => ({ ...h, [d]: { ...h[d], ...patch } }));
 
   return (
-    <BusinessShell title="Edit listing" back="/business/dashboard">
+    <BusinessShell title="EDIT BUSINESS" back="/business/dashboard">
       {latestPending && latestPending.status === "pending" && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
@@ -157,7 +157,7 @@ const BusinessListing = () => {
           </div>
         </div>
 
-        <Button full onClick={submit} disabled={busy}>{busy ? "Sending..." : "Send for review"}</Button>
+        <Button full onClick={submit} disabled={busy}>{busy ? "SENDING..." : "SEND FOR REVIEW"}</Button>
         <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>
       </div>
     </BusinessShell>

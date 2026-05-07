@@ -54,21 +54,21 @@ const BusinessClaim = () => {
 
   if (pendingClaim && pendingClaim.status === "pending") {
     return (
-      <BusinessShell title="Claim listing" back="/business/dashboard">
+      <BusinessShell title="Claim business" back="/business/dashboard">
         <Card style={{ marginTop: 24 }}>
           <div style={{ marginBottom: 12 }}><StatusPill status="pending" /></div>
           <H2>Claim under review</H2>
-          <Body soft style={{ marginTop: 8 }}>We will review this within 48 hours. You will be able to edit the listing once we approve.</Body>
+          <Body soft style={{ marginTop: 8 }}>We will review this within 48 hours. You will be able to edit your business details once we approve.</Body>
         </Card>
       </BusinessShell>
     );
   }
 
   return (
-    <BusinessShell title="Claim your listing" back="/business/dashboard">
+    <BusinessShell title="Claim your business" back="/business/dashboard">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
         <H2>Find your business</H2>
-        <Body soft style={{ marginTop: 8 }}>Search by name. Pick the matching listing then send your claim.</Body>
+        <Body soft style={{ marginTop: 8 }}>Search by name. Pick the matching business then send your claim.</Body>
       </div>
 
       {!picked ? (
@@ -96,7 +96,7 @@ const BusinessClaim = () => {
               onClick={() => setPicked(null)}
               style={{ marginTop: 12, background: "none", border: "none", color: COLORS.body, textDecoration: "underline", cursor: "pointer", fontSize: 14, padding: 0 }}
             >
-              Pick a different listing
+              Pick a different business
             </button>
           </Card>
 
@@ -118,7 +118,7 @@ const BusinessClaim = () => {
                 placeholder="Tell us a little about your role at the business"
               />
             </div>
-            <Button full onClick={submit} disabled={busy}>{busy ? "Sending..." : "Send for review"}</Button>
+            <Button full onClick={submit} disabled={busy}>{busy ? "SENDING..." : "SEND FOR REVIEW"}</Button>
           </div>
         </>
       )}

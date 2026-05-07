@@ -23,9 +23,9 @@ const BusinessEvents = () => {
   }, [listing]);
 
   return (
-    <BusinessShell title="Events" back="/business/dashboard">
+    <BusinessShell title="EVENTS" back="/business/dashboard">
       <div style={{ marginTop: 12, marginBottom: 24 }}>
-        <Link to="/business/events/new"><Button full>Post an event</Button></Link>
+        <Link to="/business/events/new"><Button full>POST AN EVENT</Button></Link>
       </div>
 
       {pending.length === 0 && live.length === 0 ? (
