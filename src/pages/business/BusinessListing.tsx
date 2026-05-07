@@ -7,12 +7,31 @@ import { Button, Input, Label, Textarea, Card, Body, Small, StatusPill, COLORS }
 import { toast } from "sonner";
 import { Upload, X, Plus } from "lucide-react";
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS: { label: string; key: string }[] = [
+  { label: "Mon", key: "monday" },
+  { label: "Tue", key: "tuesday" },
+  { label: "Wed", key: "wednesday" },
+  { label: "Thu", key: "thursday" },
+  { label: "Fri", key: "friday" },
+  { label: "Sat", key: "saturday" },
+  { label: "Sun", key: "sunday" },
+];
 
 interface Hours { [day: string]: { closed: boolean; open: string; close: string } }
 
 const blankHours = (): Hours =>
-  Object.fromEntries(DAYS.map((d) => [d, { closed: false, open: "09:00", close: "17:00" }]));
+  Object.fromEntries(DAYS.map((d) => [d.key, { closed: false, open: "09:00", close: "17:00" }]));
+
+const parseDayString = (s: string): { closed: boolean; open: string; close: string } => {
+  if (!s || /closed/i.test(s)) return { closed: true, open: "09:00", close: "17:00" };
+  const m = s.match(/(\d{1,2})[:.]?(\d{0,2})\s*[-–]\s*(\d{1,2})[:.]?(\d{0,2})/);
+  if (!m) return { closed: false, open: "09:00", close: "17:00" };
+  const pad = (h: string, mm: string) => `${h.padStart(2, "0")}:${(mm || "00").padStart(2, "0")}`;
+  return { closed: false, open: pad(m[1], m[2]), close: pad(m[3], m[4]) };
+};
+
+const serializeHours = (h: Hours): Record<string, string> =>
+  Object.fromEntries(DAYS.map(({ key }) => [key, h[key].closed ? "Closed" : `${h[key].open}-${h[key].close}`]));
 
 const BusinessListing = () => {
   const navigate = useNavigate();
