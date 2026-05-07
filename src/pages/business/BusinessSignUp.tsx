@@ -87,38 +87,44 @@ const BusinessSignUp = () => {
   };
 
   return (
-    <BusinessShell title="Create business account" back="/business/sign-in">
-      <div style={{ marginTop: 12, marginBottom: 36 }}>
-        <H2>List your business</H2>
-        <Body soft style={{ marginTop: 8 }}>Set up an account to claim a listing and post specials and events.</Body>
+    <BusinessShell title="Create business account" back="/business/sign-in" theme="dark">
+      <style>{`
+        .biz-signup-dark label, .biz-signup-dark p { color: #FFFFFF !important; }
+        .biz-signup-dark h1, .biz-signup-dark h2, .biz-signup-dark h3 { color: #FFFFFF !important; }
+      `}</style>
+      <div className="biz-signup-dark">
+        <div style={{ marginTop: 12, marginBottom: 36 }}>
+          <H2>List your business</H2>
+          <Body soft style={{ marginTop: 8, color: "#FFFFFF", opacity: 0.85 }}>Set up an account to claim a listing and post specials and events.</Body>
+        </div>
+        <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div>
+            <Label htmlFor="bn">Business name</Label>
+            <Input id="bn" value={businessName} required onChange={(e) => setBusinessName(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="cn">Your name</Label>
+            <Input id="cn" value={contactName} required onChange={(e) => setContactName(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="em">Email</Label>
+            <Input id="em" type="email" value={email} required onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="ph">Phone</Label>
+            <Input id="ph" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </div>
+          <div>
+            <Label htmlFor="pw">Password</Label>
+            <Input id="pw" type="password" value={password} required minLength={6} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <FieldError>{err}</FieldError>
+          <Button type="submit" full disabled={busy}>{busy ? "Creating..." : "Create account"}</Button>
+          <Small soft style={{ textAlign: "center", color: "#FFFFFF", opacity: 0.85 }}>
+            Already have an account? <Link to="/business/sign-in" style={{ color: "#FFFFFF", textDecoration: "underline" }}>Sign in</Link>
+          </Small>
+        </form>
       </div>
-      <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-        <div>
-          <Label htmlFor="bn">Business name</Label>
-          <Input id="bn" value={businessName} required onChange={(e) => setBusinessName(e.target.value)} />
-        </div>
-        <div>
-          <Label htmlFor="cn">Your name</Label>
-          <Input id="cn" value={contactName} required onChange={(e) => setContactName(e.target.value)} />
-        </div>
-        <div>
-          <Label htmlFor="em">Email</Label>
-          <Input id="em" type="email" value={email} required onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div>
-          <Label htmlFor="ph">Phone</Label>
-          <Input id="ph" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        </div>
-        <div>
-          <Label htmlFor="pw">Password</Label>
-          <Input id="pw" type="password" value={password} required minLength={6} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <FieldError>{err}</FieldError>
-        <Button type="submit" full disabled={busy}>{busy ? "Creating..." : "Create account"}</Button>
-        <Small soft style={{ textAlign: "center" }}>
-          Already have an account? <Link to="/business/sign-in" style={{ color: "#020202", textDecoration: "underline" }}>Sign in</Link>
-        </Small>
-      </form>
     </BusinessShell>
   );
 };
