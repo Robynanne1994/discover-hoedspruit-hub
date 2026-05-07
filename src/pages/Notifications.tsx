@@ -237,7 +237,7 @@ const Notifications = () => {
   const masterEnabled = prefs.push_enabled;
 
   return (
-    <div style={{ background: "transparent", minHeight: "100vh", paddingBottom: 120 }}>
+    <div style={{ background: "#555340", minHeight: "100vh", paddingBottom: 120 }}>
       {/* Top row */}
       <div
         style={{
@@ -250,7 +250,7 @@ const Notifications = () => {
           marginBottom: 28,
         }}
       >
-        <BackButton />
+        <BackButton iconColor="#FFFFFF" />
       </div>
 
       {/* Hero */}
@@ -261,7 +261,7 @@ const Notifications = () => {
             fontFamily: FONT_STACK,
             fontSize: 11,
             fontWeight: 500,
-            color: "#8A8480",
+            color: "#FFFFFF",
             textTransform: "uppercase",
             letterSpacing: "0.18em",
             marginBottom: 14,
@@ -277,7 +277,7 @@ const Notifications = () => {
             fontSize: 54,
             lineHeight: 0.95,
             letterSpacing: "-0.02em",
-            color: "#0A0A0A",
+            color: "#FFFFFF",
             margin: 0,
           }}
         >
@@ -291,7 +291,7 @@ const Notifications = () => {
             fontWeight: 300,
             fontSize: 18,
             lineHeight: 1.4,
-            color: "#8A8480",
+            color: "#FFFFFF",
             marginTop: 16,
             marginBottom: 0,
           }}
