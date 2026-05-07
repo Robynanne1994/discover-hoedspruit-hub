@@ -63,7 +63,7 @@ const BusinessDashboard = () => {
           ) : (
             <>
               <Body style={{ marginBottom: 12 }}>You have not linked a business yet.</Body>
-              <Link to="/business/claim"><Button>Claim a business</Button></Link>
+              <Link to="/business/claim"><Button>CLAIM A BUSINESS</Button></Link>
             </>
           )}
         </Card>
