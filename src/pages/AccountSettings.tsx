@@ -62,7 +62,7 @@ const AccountSettings = () => {
           }}
         >
           <ChevronLeft size={20} strokeWidth={2} color="#0A0A0A" />
-          <span style={{ fontSize: 15, fontWeight: 400, color: "#0A0A0A", fontFamily: SANS }}>Back</span>
+          
         </button>
       </div>
 
