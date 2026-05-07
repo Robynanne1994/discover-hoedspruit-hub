@@ -27,14 +27,46 @@ const Pill = ({ status }: { status: string }) => (
   </span>
 );
 
+const isImageUrl = (s: string) =>
+  /^https?:\/\/\S+/i.test(s) && (/\.(jpe?g|png|webp|gif|avif|svg)(\?|$)/i.test(s) || /\/storage\/v1\/object\/public\//i.test(s));
+
+const extractImageUrls = (label: string, value: any): string[] => {
+  const labelLooksImage = /image|photo|gallery|cover|logo|avatar|hero|banner|thumb/i.test(label);
+  if (typeof value === "string") {
+    const parts = value.split(/\r?\n|,\s*/).map((s) => s.trim()).filter(Boolean);
+    const imgs = parts.filter((p) => isImageUrl(p) || (labelLooksImage && /^https?:\/\//i.test(p)));
+    return imgs;
+  }
+  if (Array.isArray(value)) {
+    return value.filter((v) => typeof v === "string" && (isImageUrl(v) || (labelLooksImage && /^https?:\/\//i.test(v))));
+  }
+  return [];
+};
+
 const KV = ({ label, value }: { label: string; value: any }) => {
   if (value === null || value === undefined || value === "") return null;
-  const isObj = typeof value === "object";
+  const images = extractImageUrls(label, value);
+  const isObj = typeof value === "object" && images.length === 0;
   return (
     <div className="text-sm py-1.5 border-b border-border last:border-0">
       <div className="text-xs text-muted-foreground uppercase tracking-wide">{label}</div>
-      <div className="mt-0.5 break-words">
-        {isObj ? <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(value, null, 2)}</pre> : String(value)}
+      <div className="mt-1 break-words">
+        {images.length > 0 ? (
+          <div className="space-y-2">
+            <div className="grid grid-cols-3 gap-2">
+              {images.map((src, i) => (
+                <a key={i} href={src} target="_blank" rel="noreferrer" className="block aspect-[4/3] rounded-md overflow-hidden border border-border bg-muted">
+                  <img src={src} alt={`${label} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                </a>
+              ))}
+            </div>
+            <div className="text-[10px] text-muted-foreground break-all">{images.join("\n")}</div>
+          </div>
+        ) : isObj ? (
+          <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(value, null, 2)}</pre>
+        ) : (
+          String(value)
+        )}
       </div>
     </div>
   );
