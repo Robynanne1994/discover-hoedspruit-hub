@@ -102,7 +102,49 @@ const HomeMasthead = () => {
   return (
     <div style={{ paddingTop: 16 }}>
       {/* Top bar: only menu button on the right */}
-      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 24px 0" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, padding: "8px 24px 0" }}>
+        <button
+          aria-label="Notifications"
+          onClick={() => navigate("/business/dashboard")}
+          style={{
+            position: "relative",
+            width: 36,
+            height: 36,
+            borderRadius: 999,
+            background: "#FFFFFF",
+            display: user ? "flex" : "none",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <Bell size={16} color="#0A0A0A" strokeWidth={2} />
+          {unreadCount > 0 && (
+            <span
+              style={{
+                position: "absolute",
+                top: -2,
+                right: -2,
+                minWidth: 18,
+                height: 18,
+                padding: "0 5px",
+                borderRadius: 999,
+                background: "#E11D48",
+                color: "#FFFFFF",
+                fontSize: 10,
+                fontWeight: 700,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "2px solid #FFFFFF",
+                lineHeight: 1,
+              }}
+            >
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </button>
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Menu"
