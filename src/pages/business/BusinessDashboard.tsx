@@ -92,15 +92,15 @@ const BusinessDashboard = () => {
             </Card>
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 36 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 0, marginBottom: 36 }}>
             <Link to="/business/specials/new" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18, textTransform: "none" }}>Post a Special</H3></Card>
+              <Card><div style={{ display: "flex", alignItems: "center", gap: 12 }}><Tag size={20} strokeWidth={1.5} color={COLORS.heading} /><H3 style={{ fontSize: 16, textTransform: "none" }}>Post a Special</H3></div></Card>
             </Link>
             <Link to="/business/events/new" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18, textTransform: "none" }}>Post an Event</H3></Card>
+              <Card><div style={{ display: "flex", alignItems: "center", gap: 12 }}><Calendar size={20} strokeWidth={1.5} color={COLORS.heading} /><H3 style={{ fontSize: 16, textTransform: "none" }}>Post an Event</H3></div></Card>
             </Link>
             <Link to="/business/listing" style={{ textDecoration: "none" }}>
-               <Card><H3 style={{ fontSize: 18, textTransform: "none" }}>Edit Business</H3></Card>
+              <Card><div style={{ display: "flex", alignItems: "center", gap: 12 }}><Pencil size={20} strokeWidth={1.5} color={COLORS.heading} /><H3 style={{ fontSize: 16, textTransform: "none" }}>Edit Business</H3></div></Card>
             </Link>
           </div>
 
