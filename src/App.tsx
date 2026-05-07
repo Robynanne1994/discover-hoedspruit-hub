@@ -76,7 +76,14 @@ import AdminModeration from "./pages/admin/AdminModeration.tsx";
 import { useLocation } from "react-router-dom";
 
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
+const queryClient = new QueryClient();
+
+const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  const location = useLocation();
+  // The Business Portal has its own auth flow and must be reachable without
+  // signing in to the consumer app first.
+  if (location.pathname.startsWith("/business")) return <>{children}</>;
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "hsl(38, 30%, 96%)" }}>
