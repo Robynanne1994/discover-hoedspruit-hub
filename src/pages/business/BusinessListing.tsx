@@ -155,7 +155,12 @@ const BusinessListing = () => {
     setHours((h) => ({ ...h, [d]: { ...h[d], ...patch } }));
 
   return (
-    <BusinessShell title="EDIT BUSINESS" back="/business/dashboard">
+    <BusinessShell title="EDIT BUSINESS" back="/business/dashboard" theme="dark">
+      <style>{`
+        .biz-edit-dark label, .biz-edit-dark .biz-edit-dark-text, .biz-edit-dark p { color: #FFFFFF !important; }
+        .biz-edit-dark input[type="time"] { color-scheme: dark; }
+      `}</style>
+      <div className="biz-edit-dark">
       {latestPending && latestPending.status === "pending" && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
@@ -346,6 +351,7 @@ const BusinessListing = () => {
 
         <Button full onClick={submit} disabled={busy}>{busy ? "SENDING..." : "SEND FOR REVIEW"}</Button>
         <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>
+      </div>
       </div>
     </BusinessShell>
   );
