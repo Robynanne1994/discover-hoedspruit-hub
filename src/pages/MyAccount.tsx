@@ -37,6 +37,7 @@ import {
   MapPinned,
   Phone,
   Shield,
+  Briefcase,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -459,6 +460,7 @@ const MyAccount = () => {
   const resourcesItems = [
     { label: "Local Channels", href: "/bush-telegraph", icon: Users },
     { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
+    { label: "My Business", href: "/business/sign-in", icon: Briefcase },
   ];
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
