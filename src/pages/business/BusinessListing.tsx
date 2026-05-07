@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 import BusinessShell from "@/components/business/BusinessShell";
 import { Button, Input, Label, Textarea, Card, Body, Small, StatusPill, COLORS } from "@/components/business/ui";
 import { toast } from "sonner";
+import { Upload, X, Plus } from "lucide-react";
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -19,12 +20,19 @@ const BusinessListing = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [location, setLocation] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [gallery, setGallery] = useState<string[]>([]);
   const [hours, setHours] = useState<Hours>(blankHours());
   const [latestPending, setLatestPending] = useState<any>(null);
   const [busy, setBusy] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -34,9 +42,12 @@ const BusinessListing = () => {
         setTitle(full.title ?? "");
         setDescription(full.description ?? "");
         setPhone(full.phone ?? "");
+        setWhatsapp(full.whatsapp ?? "");
         setEmail(full.email ?? "");
         setWebsite(full.website ?? "");
         setLocation(full.location ?? "");
+        setImageUrl(full.image_url ?? "");
+        setGallery((full.gallery_images ?? []) as string[]);
         const oh = (full.opening_hours ?? {}) as Hours;
         const merged = blankHours();
         DAYS.forEach((d) => { if (oh[d]) merged[d] = { ...merged[d], ...oh[d] }; });
@@ -67,9 +78,47 @@ const BusinessListing = () => {
     );
   }
 
+  const uploadFile = async (file: File): Promise<string | null> => {
+    const ext = file.name.split(".").pop();
+    const path = `${listing.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error } = await supabase.storage.from("listing-images").upload(path, file, { upsert: false });
+    if (error) { toast.error(error.message); return null; }
+    const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCover(true);
+    const url = await uploadFile(file);
+    setUploadingCover(false);
+    if (url) setImageUrl(url);
+    e.target.value = "";
+  };
+
+  const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (files.length === 0) return;
+    setUploadingGallery(true);
+    const urls: string[] = [];
+    for (const f of files) {
+      const url = await uploadFile(f);
+      if (url) urls.push(url);
+    }
+    setUploadingGallery(false);
+    setGallery((g) => [...g, ...urls]);
+    e.target.value = "";
+  };
+
+  const removeGalleryImage = (i: number) => setGallery((g) => g.filter((_, idx) => idx !== i));
+
   const submit = async () => {
     setBusy(true);
-    const payload = { title, description, phone, email, website, location, opening_hours: hours };
+    const payload = {
+      title, description, phone, whatsapp, email, website, location,
+      image_url: imageUrl, gallery_images: gallery, opening_hours: hours,
+    };
     const { error } = await supabase.from("listing_edits_pending").insert({
       listing_id: listing.id,
       owner_id: (await supabase.auth.getUser()).data.user!.id,
@@ -110,12 +159,107 @@ const BusinessListing = () => {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 16 }}>
+        <div>
+          <Label>Cover image</Label>
+          <input
+            ref={coverInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleCoverUpload}
+            style={{ display: "none" }}
+          />
+          {imageUrl ? (
+            <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", aspectRatio: "3/4", maxWidth: 240 }}>
+              <img src={imageUrl} alt="Cover" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <button
+                type="button"
+                onClick={() => coverInputRef.current?.click()}
+                disabled={uploadingCover}
+                style={{
+                  position: "absolute", bottom: 8, right: 8,
+                  background: "rgba(0,0,0,0.7)", color: "#fff",
+                  border: "none", borderRadius: 20, padding: "8px 14px",
+                  fontSize: 13, cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6,
+                }}
+              >
+                <Upload size={14} />
+                {uploadingCover ? "Uploading..." : "Replace"}
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => coverInputRef.current?.click()}
+              disabled={uploadingCover}
+              style={{
+                width: "100%", aspectRatio: "3/4", maxWidth: 240,
+                background: "rgba(18,18,20,0.04)",
+                border: `1px dashed ${COLORS.inputBorder}`,
+                borderRadius: 14, cursor: "pointer",
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                gap: 8, color: COLORS.bodySoft, fontSize: 14,
+              }}
+            >
+              <Upload size={24} />
+              {uploadingCover ? "Uploading..." : "Upload cover"}
+            </button>
+          )}
+        </div>
+
         <div><Label>Business name</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
         <div><Label>Description</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} /></div>
         <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} /></div>
         <div><Label>Phone</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
+        <div><Label>WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="e.g. +27 82 123 4567" /></div>
         <div><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
         <div><Label>Website</Label><Input value={website} onChange={(e) => setWebsite(e.target.value)} /></div>
+
+        <div>
+          <Label>Image gallery</Label>
+          <input
+            ref={galleryInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleGalleryUpload}
+            style={{ display: "none" }}
+          />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            {gallery.map((url, i) => (
+              <div key={i} style={{ position: "relative", aspectRatio: "1/1", borderRadius: 12, overflow: "hidden" }}>
+                <img src={url} alt={`Gallery ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                <button
+                  type="button"
+                  onClick={() => removeGalleryImage(i)}
+                  style={{
+                    position: "absolute", top: 4, right: 4,
+                    background: "rgba(0,0,0,0.7)", color: "#fff",
+                    border: "none", borderRadius: "50%", width: 24, height: 24,
+                    display: "inline-flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => galleryInputRef.current?.click()}
+              disabled={uploadingGallery}
+              style={{
+                aspectRatio: "1/1",
+                background: "rgba(18,18,20,0.04)",
+                border: `1px dashed ${COLORS.inputBorder}`,
+                borderRadius: 12, cursor: "pointer",
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+                gap: 4, color: COLORS.bodySoft, fontSize: 12,
+              }}
+            >
+              <Plus size={20} />
+              {uploadingGallery ? "Uploading..." : "Add"}
+            </button>
+          </div>
+        </div>
 
         <div>
           <Label>Opening hours</Label>
