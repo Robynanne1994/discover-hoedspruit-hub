@@ -208,9 +208,9 @@ const BusinessDashboard = () => {
 
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 24 }}>
         <Link to="/business/billing" style={{ textDecoration: "none" }}>
-          <Button variant="secondary" full>BILLING</Button>
+          <Button variant="secondary" full style={{ background: "#C5BCAA", borderColor: "#C5BCAA" }}>BILLING</Button>
         </Link>
-        <Button variant="secondary" full onClick={signOut}>SIGN OUT</Button>
+        <Button variant="secondary" full onClick={signOut} style={{ background: "#C5BCAA", borderColor: "#C5BCAA" }}>SIGN OUT</Button>
       </div>
     </BusinessShell>
   );
