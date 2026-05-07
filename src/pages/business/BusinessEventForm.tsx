@@ -207,6 +207,35 @@ const BusinessEventForm = ({ mode }: Props) => {
           <div><Label>Start date</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></div>
           <div><Label>End date</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></div>
         </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div><Label>Start time</Label><Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} /></div>
+          <div><Label>End time</Label><Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} /></div>
+        </div>
+        <div><Label>Price</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R150 / Free" /></div>
+        <div><Label>Booking link</Label><Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." type="url" /></div>
+        <div><Label>Booking link label</Label><Input value={bookingLinkLabel} onChange={(e) => setBookingLinkLabel(e.target.value)} placeholder="e.g. Book now" /></div>
+        <div>
+          <Label>Gallery images</Label>
+          {galleryImages.length > 0 && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+              {galleryImages.map((url, i) => (
+                <div key={i} style={{ position: "relative", aspectRatio: "1/1", borderRadius: 10, overflow: "hidden" }}>
+                  <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <button
+                    type="button"
+                    onClick={() => setGalleryImages((g) => g.filter((_, idx) => idx !== i))}
+                    style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: 999, background: "rgba(0,0,0,0.65)", color: "#FFFFFF", border: "none", cursor: "pointer", fontSize: 14, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}
+                    aria-label="Remove"
+                  >×</button>
+                </div>
+              ))}
+            </div>
+          )}
+          <input ref={galleryRef} type="file" accept="image/*" multiple hidden onChange={(e) => e.target.files && uploadGallery(e.target.files)} />
+          <Button variant="secondary" onClick={() => galleryRef.current?.click()} disabled={uploadingGallery}>
+            {uploadingGallery ? "Uploading..." : "Add gallery images"}
+          </Button>
+        </div>
 
         <Card style={{ padding: 16 }}>
           <label style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }}>
