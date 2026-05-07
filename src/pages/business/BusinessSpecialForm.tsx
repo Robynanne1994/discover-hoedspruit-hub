@@ -44,10 +44,18 @@ const BusinessSpecialForm = ({ mode }: Props) => {
       if (data) {
         const p: any = data.payload || {};
         setTitle(p.title ?? "");
+        setTagline(p.deal_label ?? "");
         setDescription(p.description ?? "");
         setImageUrl(p.image_url ?? "");
         setValidFrom(p.valid_from ?? "");
         setValidUntil(p.valid_until ?? "");
+        setBookingLink(p.booking_link ?? "");
+        setTerms(p.terms ?? "");
+        setPrice(p.price ?? "");
+        const tags = Array.isArray(p.eyebrow_categories) ? p.eyebrow_categories : [];
+        setTag1(tags[0] ?? "");
+        setTag2(tags[1] ?? "");
+        setTag3(tags[2] ?? "");
         setFeature(!!data.feature_requested);
         setStatus(data.status);
         setAdminNote(data.admin_note);
