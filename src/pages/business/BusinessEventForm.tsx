@@ -109,10 +109,16 @@ const BusinessEventForm = ({ mode }: Props) => {
       title,
       description,
       image_url: imageUrl,
+      gallery_images: galleryImages,
       date: date || startDate,
       start_date: startDate || null,
       end_date: endDate || null,
+      start_time: startTime || null,
+      end_time: endTime || null,
       location,
+      price: price || null,
+      booking_link: bookingLink || null,
+      booking_link_label: bookingLinkLabel || null,
       business_id: listing.id,
     };
     if (mode === "new") {
