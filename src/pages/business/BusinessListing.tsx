@@ -190,7 +190,7 @@ const BusinessListing = () => {
             style={{ display: "none" }}
           />
           {imageUrl ? (
-            <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", aspectRatio: "3/4", maxWidth: 240 }}>
+            <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", aspectRatio: "3/4", width: "100%" }}>
               <img src={imageUrl} alt="Cover" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               <button
                 type="button"
