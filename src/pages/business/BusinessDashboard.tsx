@@ -100,7 +100,7 @@ const BusinessDashboard = () => {
               <Card><H3 style={{ fontSize: 18 }}>Post an event</H3></Card>
             </Link>
             <Link to="/business/listing" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18 }}>Edit listing</H3></Card>
+              <Card><H3 style={{ fontSize: 18 }}>Edit Business</H3></Card>
             </Link>
           </div>
 
