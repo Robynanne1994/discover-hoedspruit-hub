@@ -94,13 +94,13 @@ const BusinessDashboard = () => {
 
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 36 }}>
             <Link to="/business/specials/new" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18 }}>POST A SPECIAL</H3></Card>
+              <Card><H3 style={{ fontSize: 18, textTransform: "none" }}>Post a Special</H3></Card>
             </Link>
             <Link to="/business/events/new" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18 }}>POST AN EVENT</H3></Card>
+              <Card><H3 style={{ fontSize: 18, textTransform: "none" }}>Post an Event</H3></Card>
             </Link>
             <Link to="/business/listing" style={{ textDecoration: "none" }}>
-              <Card><H3 style={{ fontSize: 18 }}>EDIT BUSINESS</H3></Card>
+               <Card><H3 style={{ fontSize: 18, textTransform: "none" }}>Edit Business</H3></Card>
             </Link>
           </div>
 
