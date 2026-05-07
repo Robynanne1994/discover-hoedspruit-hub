@@ -83,8 +83,6 @@ const HomeMasthead = () => {
       .subscribe();
     return () => { cancelled = true; supabase.removeChannel(channel); };
   }, [user]);
-  const [weatherCode, setWeatherCode] = useState<number | null>(null);
-  const [isNight, setIsNight] = useState<boolean>(false);
 
   useEffect(() => {
     fetch(
