@@ -5,6 +5,7 @@ import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 import BusinessShell from "@/components/business/BusinessShell";
 import { Button, Card, H2, H3, Body, Small, StatusPill, COLORS, EmptyState } from "@/components/business/ui";
 import { useAuth } from "@/hooks/useAuth";
+import { Tag, Calendar, Pencil } from "lucide-react";
 
 interface RecentItem { id: string; kind: string; title: string; status: string; created_at: string }
 
