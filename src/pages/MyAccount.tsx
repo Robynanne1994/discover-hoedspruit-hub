@@ -572,7 +572,7 @@ const MyAccount = () => {
         fontWeight: 500,
         letterSpacing: "0.18em",
         textTransform: "uppercase",
-        color: "#0a0a0a",
+        color: "#F0EAD9",
         margin: 0,
         marginBottom: 10,
         paddingLeft: 4,
@@ -589,7 +589,7 @@ const MyAccount = () => {
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "transparent",
+        backgroundColor: "#555340",
         paddingBottom: 120,
         ...baseTextStyle,
       }}
@@ -745,7 +745,7 @@ const MyAccount = () => {
               fontSize: 35,
               lineHeight: 1,
               letterSpacing: "-0.02em",
-              color: "#5b4632",
+              color: "#F0EAD9",
               margin: 0,
               flex: 1,
               minWidth: 0,
@@ -757,7 +757,7 @@ const MyAccount = () => {
         </div>
 
         {username && (
-          <p style={{ ...baseTextStyle, fontSize: 14, color: "#5b4632", margin: "16px 0 0" }}>{username}</p>
+          <p style={{ ...baseTextStyle, fontSize: 14, color: "#F0EAD9", margin: "16px 0 0" }}>{username}</p>
         )}
 
         {profile?.bio && (
@@ -768,7 +768,7 @@ const MyAccount = () => {
               fontWeight: 300,
               fontSize: 18,
               lineHeight: 1.4,
-              color: "#5b4632",
+              color: "#F0EAD9",
               maxWidth: 300,
               margin: "10px 0 0",
             }}
