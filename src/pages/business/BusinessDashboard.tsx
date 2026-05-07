@@ -34,7 +34,7 @@ const BusinessDashboard = () => {
       const merged: RecentItem[] = [
         ...(pSp ?? []).map((r: any) => ({ id: r.id, kind: "Special", title: r.payload?.title ?? "Untitled", status: r.status, created_at: r.created_at })),
         ...(pEv ?? []).map((r: any) => ({ id: r.id, kind: "Event", title: r.payload?.title ?? "Untitled", status: r.status, created_at: r.created_at })),
-        ...(pLi ?? []).map((r: any) => ({ id: r.id, kind: "Listing edit", title: "Listing details", status: r.status, created_at: r.created_at })),
+        ...(pLi ?? []).map((r: any) => ({ id: r.id, kind: "Business edit", title: "Business details", status: r.status, created_at: r.created_at })),
       ].sort((a, b) => (a.created_at > b.created_at ? -1 : 1)).slice(0, 5);
 
       setStats({ specials: specialsCount ?? 0, events: eventsCount ?? 0, featured: featuredCount ?? 0 });
