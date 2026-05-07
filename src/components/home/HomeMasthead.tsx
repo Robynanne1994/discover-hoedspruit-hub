@@ -59,8 +59,30 @@ const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
 
 const HomeMasthead = () => {
   const navigate = useNavigate();
-  const { signOut } = useAuth();
+  const { user, signOut } = useAuth();
   const [temp, setTemp] = useState<number | null>(null);
+  const [weatherCode, setWeatherCode] = useState<number | null>(null);
+  const [isNight, setIsNight] = useState<boolean>(false);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+
+  useEffect(() => {
+    if (!user) { setUnreadCount(0); return; }
+    let cancelled = false;
+    const load = async () => {
+      const { count } = await supabase
+        .from("business_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+      if (!cancelled) setUnreadCount(count ?? 0);
+    };
+    load();
+    const channel = supabase
+      .channel("home-biz-notifs")
+      .on("postgres_changes", { event: "*", schema: "public", table: "business_notifications", filter: `user_id=eq.${user.id}` }, () => load())
+      .subscribe();
+    return () => { cancelled = true; supabase.removeChannel(channel); };
+  }, [user]);
   const [weatherCode, setWeatherCode] = useState<number | null>(null);
   const [isNight, setIsNight] = useState<boolean>(false);
 
