@@ -78,7 +78,7 @@ const Welcome = () => {
         </button>
       </div>
 
-      <div className="flex-1 px-6 pb-12">
+      <div className="flex-1 px-6 pb-12 flex flex-col justify-center -mt-16">
         <h1
           className="font-heading font-bold text-foreground mb-1"
           style={{ fontSize: 28, letterSpacing: "0.01em" }}
