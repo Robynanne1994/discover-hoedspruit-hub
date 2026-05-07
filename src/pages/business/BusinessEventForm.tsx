@@ -26,7 +26,9 @@ const BusinessEventForm = ({ mode }: Props) => {
   const [location, setLocation] = useState("");
   const [price, setPrice] = useState("");
   const [bookingLink, setBookingLink] = useState("");
-  const [bookingLinkLabel, setBookingLinkLabel] = useState("");
+  const [category1, setCategory1] = useState("");
+  const [category2, setCategory2] = useState("");
+  const [category3, setCategory3] = useState("");
   const [feature, setFeature] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [adminNote, setAdminNote] = useState<string | null>(null);
@@ -69,7 +71,9 @@ const BusinessEventForm = ({ mode }: Props) => {
         setLocation(p.location ?? "");
         setPrice(p.price ?? "");
         setBookingLink(p.booking_link ?? "");
-        setBookingLinkLabel(p.booking_link_label ?? "");
+        setCategory1(p.sub_tag_1 ?? p.category_1 ?? "");
+        setCategory2(p.sub_tag_2 ?? p.category_2 ?? "");
+        setCategory3(p.category_3 ?? "");
         setGalleryImages(Array.isArray(p.gallery_images) ? p.gallery_images : []);
         setFeature(!!data.feature_requested);
         setStatus(data.status);
@@ -118,7 +122,10 @@ const BusinessEventForm = ({ mode }: Props) => {
       location,
       price: price || null,
       booking_link: bookingLink || null,
-      booking_link_label: bookingLinkLabel || null,
+      booking_link_label: bookingLink ? "Book Now" : null,
+      sub_tag_1: category1 || null,
+      sub_tag_2: category2 || null,
+      category_3: category3 || null,
       business_id: listing.id,
     };
     if (mode === "new") {
@@ -213,7 +220,16 @@ const BusinessEventForm = ({ mode }: Props) => {
         </div>
         <div><Label>Price</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R150 / Free" /></div>
         <div><Label>Booking link</Label><Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." type="url" /></div>
-        <div><Label>Booking link label</Label><Input value={bookingLinkLabel} onChange={(e) => setBookingLinkLabel(e.target.value)} placeholder="e.g. Book now" /></div>
+        {(() => {
+          const limitWords = (val: string) => val.split(/\s+/).filter(Boolean).slice(0, 2).join(" ") + (val.endsWith(" ") && val.split(/\s+/).filter(Boolean).length < 2 ? " " : "");
+          return (
+            <>
+              <div><Label>Category 1</Label><Input value={category1} onChange={(e) => setCategory1(limitWords(e.target.value))} placeholder="Max 2 words" /></div>
+              <div><Label>Category 2</Label><Input value={category2} onChange={(e) => setCategory2(limitWords(e.target.value))} placeholder="Max 2 words" /></div>
+              <div><Label>Category 3</Label><Input value={category3} onChange={(e) => setCategory3(limitWords(e.target.value))} placeholder="Max 2 words" /></div>
+            </>
+          );
+        })()}
         <div>
           <Label>Gallery images</Label>
           {galleryImages.length > 0 && (
