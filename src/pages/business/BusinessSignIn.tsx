@@ -1,16 +1,23 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import BusinessShell from "@/components/business/BusinessShell";
 import { Button, Input, Label, FieldError, Body, H2, Small } from "@/components/business/ui";
 import { toast } from "sonner";
+import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 
 const BusinessSignIn = () => {
   const navigate = useNavigate();
+  const { user, authLoading, isOwner, loading } = useBusinessOwner();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  // If we already have a session, skip sign-in entirely.
+  if (!authLoading && !loading && user) {
+    return <Navigate to={isOwner ? "/business/dashboard" : "/business/sign-up"} replace />;
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
