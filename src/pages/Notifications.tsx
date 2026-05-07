@@ -141,7 +141,7 @@ const SECTIONS: Section[] = [
     label: "Events",
     rows: [
       { key: "events_new", title: "New events nearby", description: "Fresh gigs, markets and things to do in town." },
-      { key: "events_reminders", title: "Event reminders", description: "A nudge the day before events you've saved." },
+      { key: "events_reminders", title: "Event Reminders", description: "A nudge the day before events you've saved." },
       { key: "events_updates", title: "Event updates", description: "Changes to time, venue or line-up." },
     ],
   },
