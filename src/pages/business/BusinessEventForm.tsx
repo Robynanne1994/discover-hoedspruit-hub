@@ -184,7 +184,7 @@ const BusinessEventForm = ({ mode }: Props) => {
                 <button
                   key={s.id}
                   type="button"
-                  onMouseDown={(e) => { e.preventDefault(); setLocation(s.location || s.title); setShowLocSugg(false); }}
+                  onMouseDown={(e) => { e.preventDefault(); setLocation(s.title); setShowLocSugg(false); }}
                   style={{ display: "block", width: "100%", textAlign: "left", padding: "10px 14px", background: "transparent", border: "none", cursor: "pointer", color: "#0A0A0A", fontSize: 14, borderBottom: "1px solid #EFEAE2" }}
                 >
                   <div style={{ fontWeight: 500 }}>{s.title}</div>
