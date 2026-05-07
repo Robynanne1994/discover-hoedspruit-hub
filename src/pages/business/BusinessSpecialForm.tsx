@@ -77,15 +77,20 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   const submit = async () => {
     if (!user || !listing) return;
     setBusy(true);
+    const tags = [tag1, tag2, tag3].map((t) => t.trim()).filter(Boolean);
     const payload = {
       title,
       description,
       image_url: imageUrl,
       valid_from: validFrom || null,
       valid_until: validUntil || null,
-      business_name: account?.business_name ?? listing.title,
+      business_name: listing.title,
       business_id: listing.id,
-      deal_label: title,
+      deal_label: tagline || title,
+      booking_link: bookingLink || null,
+      terms: terms || null,
+      price: price || null,
+      eyebrow_categories: tags.length ? tags : null,
     };
     if (mode === "new") {
       const { data, error } = await supabase.from("specials_pending").insert({
