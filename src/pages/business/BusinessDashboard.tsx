@@ -78,7 +78,7 @@ const BusinessDashboard = () => {
             {listing.location && <Small soft style={{ marginTop: 4 }}>{listing.location}</Small>}
           </Card>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
             <Card style={{ padding: 16, textAlign: "center" }}>
               <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.specials}</p>
               <Small soft style={{ marginTop: 4, fontSize: 12 }}>SPECIALS</Small>
@@ -93,7 +93,7 @@ const BusinessDashboard = () => {
             </Card>
           </div>
 
-          <div style={{ background: COLORS.card, borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", overflow: "hidden", marginBottom: 36 }}>
+          <div style={{ background: COLORS.card, borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", overflow: "hidden", marginBottom: 16 }}>
             <Link to="/business/specials/new" style={{ textDecoration: "none", display: "block" }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20, borderBottom: "1px solid rgba(18,18,20,0.06)" }}>
                 <Tag size={20} strokeWidth={1.5} color={COLORS.heading} />
