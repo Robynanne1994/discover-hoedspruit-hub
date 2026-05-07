@@ -94,6 +94,12 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const ConditionalBottomNav = () => {
+  const location = useLocation();
+  if (location.pathname.startsWith("/business") || location.pathname.startsWith("/admin")) return null;
+  return <BottomNav />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
