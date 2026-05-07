@@ -43,10 +43,10 @@ const BusinessDashboard = () => {
     load();
   }, [listing]);
 
-  if (loading) return <BusinessShell title="Dashboard" hideBack><Small soft>Loading...</Small></BusinessShell>;
+  if (loading) return <BusinessShell title="Dashboard" back="/my-account"><Small soft>Loading...</Small></BusinessShell>;
 
   return (
-    <BusinessShell title="Dashboard" hideBack>
+    <BusinessShell title="Dashboard" back="/my-account">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
         <H2>Welcome{account?.business_name ? `, ${account.business_name}` : ""}</H2>
       </div>
