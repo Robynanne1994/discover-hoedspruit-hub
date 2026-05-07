@@ -38,6 +38,7 @@ const BusinessListing = () => {
   const { listing } = useBusinessOwner();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [longDescription, setLongDescription] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [email, setEmail] = useState("");
@@ -60,6 +61,7 @@ const BusinessListing = () => {
       if (full) {
         setTitle(full.title ?? "");
         setDescription(full.description ?? "");
+        setLongDescription((full as any).long_description ?? "");
         setPhone(full.phone ?? "");
         setWhatsapp(full.whatsapp ?? "");
         setEmail(full.email ?? "");
@@ -135,7 +137,7 @@ const BusinessListing = () => {
   const submit = async () => {
     setBusy(true);
     const payload = {
-      title, description, phone, whatsapp, email, website, location,
+      title, description, long_description: longDescription, phone, whatsapp, email, website, location,
       image_url: imageUrl, gallery_images: gallery, opening_hours: serializeHours(hours),
     };
     const { error } = await supabase.from("listing_edits_pending").insert({
@@ -226,7 +228,28 @@ const BusinessListing = () => {
         </div>
 
         <div><Label>Business name</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
-        <div><Label>Description</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} /></div>
+        <div>
+          <Label>Short description</Label>
+          <Textarea
+            value={description}
+            maxLength={200}
+            rows={3}
+            onChange={(e) => setDescription(e.target.value.slice(0, 200))}
+            placeholder="A 1–2 sentence intro shown in listing cards"
+          />
+          <Small soft style={{ marginTop: 4, display: "block", textAlign: "right" }}>{description.length}/200</Small>
+        </div>
+        <div>
+          <Label>Long description</Label>
+          <Textarea
+            value={longDescription}
+            maxLength={1500}
+            rows={8}
+            onChange={(e) => setLongDescription(e.target.value.slice(0, 1500))}
+            placeholder="1–2 paragraphs about your business, shown on the detail page"
+          />
+          <Small soft style={{ marginTop: 4, display: "block", textAlign: "right" }}>{longDescription.length}/1500</Small>
+        </div>
         <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} /></div>
         <div><Label>Phone</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
         <div><Label>WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="e.g. +27 82 123 4567" /></div>
