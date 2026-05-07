@@ -55,7 +55,7 @@ const BusinessSignUp = () => {
 
     // 3. Assign business_owner role + create business_accounts row
     const [{ error: roleErr }, { error: accErr }] = await Promise.all([
-      supabase.from("user_roles").insert({ user_id: userId, role: "business_owner" as any }),
+      supabase.rpc("claim_business_owner_role" as any),
       supabase.from("business_accounts").insert({
         user_id: userId,
         business_name: businessName || null,
@@ -64,7 +64,7 @@ const BusinessSignUp = () => {
         contact_email: email,
       }),
     ]);
-    if (roleErr && !/duplicate/i.test(roleErr.message)) {
+    if (roleErr) {
       setErr(roleErr.message);
       setBusy(false);
       return;
