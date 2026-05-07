@@ -106,7 +106,7 @@ const BusinessDashboard = () => {
 
           {recent.length > 0 && (
             <div style={{ marginBottom: 16 }}>
-              <Body style={{ fontWeight: 500, marginBottom: 12 }}>Recent submissions</Body>
+              <Body style={{ fontWeight: 500, marginBottom: 12 }}>RECENT SUBMISSIONS</Body>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {recent.map((r) => (
                   <Card key={r.kind + r.id} style={{ padding: 16 }}>
