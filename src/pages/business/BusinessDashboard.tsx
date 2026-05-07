@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Tag, Calendar, Pencil } from "lucide-react";
 
 interface RecentItem { id: string; kind: string; title: string; status: string; created_at: string }
+interface NotifItem { id: string; title: string; body: string | null; link: string | null; status: string; is_read: boolean; created_at: string }
 
 const BusinessDashboard = () => {
   const { signOut } = useAuth();
