@@ -148,7 +148,7 @@ const SECTIONS: Section[] = [
   {
     label: "Listings",
     rows: [
-      { key: "listings_new", title: "New listings", description: "When new places join the app." },
+      { key: "listings_new", title: "New Listings", description: "When new places join the app." },
       { key: "listings_updates", title: "Listing updates", description: "Menu changes, new hours and specials from places you follow." },
     ],
   },
