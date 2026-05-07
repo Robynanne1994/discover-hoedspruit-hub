@@ -24,6 +24,7 @@ const BusinessDashboard = () => {
         .from("business_notifications")
         .select("id,title,body,link,status,is_read,created_at")
         .eq("user_id", user.id)
+        .eq("is_read", false)
         .order("created_at", { ascending: false })
         .limit(10);
       setNotifs((data ?? []) as NotifItem[]);
