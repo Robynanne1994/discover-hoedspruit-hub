@@ -11,10 +11,37 @@ interface RecentItem { id: string; kind: string; title: string; status: string; 
 interface NotifItem { id: string; title: string; body: string | null; link: string | null; status: string; is_read: boolean; created_at: string }
 
 const BusinessDashboard = () => {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth();
   const { account, listing, pendingClaim, loading } = useBusinessOwner();
   const [stats, setStats] = useState({ specials: 0, events: 0, featured: 0 });
   const [recent, setRecent] = useState<RecentItem[]>([]);
+  const [notifs, setNotifs] = useState<NotifItem[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    const loadNotifs = async () => {
+      const { data } = await supabase
+        .from("business_notifications")
+        .select("id,title,body,link,status,is_read,created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(10);
+      setNotifs((data ?? []) as NotifItem[]);
+    };
+    loadNotifs();
+  }, [user]);
+
+  const markRead = async (id: string) => {
+    setNotifs((n) => n.map((x) => x.id === id ? { ...x, is_read: true } : x));
+    await supabase.from("business_notifications").update({ is_read: true }).eq("id", id);
+  };
+  const markAllRead = async () => {
+    if (!user) return;
+    const ids = notifs.filter((n) => !n.is_read).map((n) => n.id);
+    if (!ids.length) return;
+    setNotifs((n) => n.map((x) => ({ ...x, is_read: true })));
+    await supabase.from("business_notifications").update({ is_read: true }).in("id", ids);
+  };
 
   useEffect(() => {
     const load = async () => {
