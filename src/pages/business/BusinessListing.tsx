@@ -121,28 +121,9 @@ const BusinessListing = () => {
           <Label>Opening hours</Label>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {DAYS.map((d) => (
-              <Card key={d} style={{ padding: 12 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 44, fontWeight: 500 }}>{d}</div>
-                  {hours[d].closed ? (
-                    <div style={{ flex: 1, color: COLORS.bodySoft, fontSize: 14 }}>Closed</div>
-                  ) : (
-                    <>
-                      <Input
-                        type="time"
-                        value={hours[d].open}
-                        onChange={(e) => updateDay(d, { open: e.target.value })}
-                        style={{ flex: 1, minWidth: 0 }}
-                      />
-                      <span style={{ color: COLORS.bodySoft }}>–</span>
-                      <Input
-                        type="time"
-                        value={hours[d].close}
-                        onChange={(e) => updateDay(d, { close: e.target.value })}
-                        style={{ flex: 1, minWidth: 0 }}
-                      />
-                    </>
-                  )}
+              <Card key={d} style={{ padding: 14 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: hours[d].closed ? 0 : 12 }}>
+                  <div style={{ fontWeight: 500, fontSize: 16 }}>{d}</div>
                   <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: COLORS.body }}>
                     <input
                       type="checkbox"
@@ -152,6 +133,26 @@ const BusinessListing = () => {
                     Closed
                   </label>
                 </div>
+                {!hours[d].closed && (
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: COLORS.bodySoft, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Open</div>
+                      <Input
+                        type="time"
+                        value={hours[d].open}
+                        onChange={(e) => updateDay(d, { open: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: COLORS.bodySoft, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>Close</div>
+                      <Input
+                        type="time"
+                        value={hours[d].close}
+                        onChange={(e) => updateDay(d, { close: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                )}
               </Card>
             ))}
           </div>
