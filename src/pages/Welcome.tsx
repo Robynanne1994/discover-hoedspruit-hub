@@ -13,7 +13,7 @@ const Welcome = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
-  const [displayName, setDisplayName] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
 
@@ -26,9 +26,43 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      const { error } = await signUp(email, password, displayName || firstName, firstName);
-      if (error) toast.error(error.message);
-      else toast.success("Account created! You're in.");
+      if (!username.trim()) {
+        toast.error("Please choose a username");
+        setLoading(false);
+        return;
+      }
+      // Check username availability (case-insensitive)
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data: existing, error: checkError } = await supabase
+        .from("profiles")
+        .select("id")
+        .ilike("username", username.trim())
+        .maybeSingle();
+      if (checkError) {
+        toast.error(checkError.message);
+        setLoading(false);
+        return;
+      }
+      if (existing) {
+        toast.error("That username is already taken. Please try a different one.");
+        setLoading(false);
+        return;
+      }
+      const { error } = await signUp(email, password, username.trim(), firstName);
+      if (error) {
+        if (/duplicate|unique/i.test(error.message)) {
+          toast.error("That username is already taken. Please try a different one.");
+        } else {
+          toast.error(error.message);
+        }
+      } else {
+        // Persist username on profile
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from("profiles").update({ username: username.trim() }).eq("id", user.id);
+        }
+        toast.success("Account created! You're in.");
+      }
     } else {
       const { error } = await signIn(email, password);
       if (error) toast.error(error.message);
@@ -110,15 +144,16 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="displayName" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
-                  Display Name
+                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+                  Username
                 </Label>
                 <Input
-                  id="displayName"
+                  id="username"
                   type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="How should we call you?"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  placeholder="Choose a unique username"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
                 />
               </div>
