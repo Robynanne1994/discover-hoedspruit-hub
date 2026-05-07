@@ -6,9 +6,10 @@ interface BackButtonProps {
   to?: string;
   onClick?: () => void;
   style?: CSSProperties;
+  iconColor?: string;
 }
 
-const BackButton = ({ to, onClick, style }: BackButtonProps) => {
+const BackButton = ({ to, onClick, style, iconColor = "#020202" }: BackButtonProps) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -41,7 +42,7 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
         background: "none",
         border: "none",
         cursor: "pointer",
-        color: "#020202",
+        color: iconColor,
         transition: "opacity 0.15s ease",
         opacity: 1,
         ...style,
@@ -50,7 +51,7 @@ const BackButton = ({ to, onClick, style }: BackButtonProps) => {
       <ChevronLeft
         size={22}
         strokeWidth={1.8}
-        color="#020202"
+        color={iconColor}
         style={{ display: "block" }}
       />
     </button>
