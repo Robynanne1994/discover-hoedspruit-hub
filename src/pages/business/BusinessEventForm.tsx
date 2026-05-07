@@ -71,7 +71,9 @@ const BusinessEventForm = ({ mode }: Props) => {
         setLocation(p.location ?? "");
         setPrice(p.price ?? "");
         setBookingLink(p.booking_link ?? "");
-        setBookingLinkLabel(p.booking_link_label ?? "");
+        setCategory1(p.sub_tag_1 ?? p.category_1 ?? "");
+        setCategory2(p.sub_tag_2 ?? p.category_2 ?? "");
+        setCategory3(p.category_3 ?? "");
         setGalleryImages(Array.isArray(p.gallery_images) ? p.gallery_images : []);
         setFeature(!!data.feature_requested);
         setStatus(data.status);
