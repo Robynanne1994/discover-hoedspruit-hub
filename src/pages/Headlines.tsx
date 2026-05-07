@@ -71,7 +71,7 @@ const Headlines = () => {
   const monthLabel = format(new Date(), "MMMM yyyy");
 
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: "#555340", paddingBottom: 120 }}>
       <style>{`
         .lld-no-scrollbar::-webkit-scrollbar { display: none; }
         .lld-no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -79,13 +79,38 @@ const Headlines = () => {
         .lld-input::placeholder { color: ${MUTED}; }
       `}</style>
 
+      {/* Back button */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 16 }}>
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          onPointerDown={pressDown(0.95)}
+          onPointerUp={pressUp}
+          onPointerLeave={pressUp}
+          className="lld-press"
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 44,
+            minWidth: 44,
+            padding: 0,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <ChevronLeft size={22} strokeWidth={1.8} color="#FFFFFF" />
+        </button>
+      </div>
+
       {/* Header */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 52 }}>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginTop: 20 }}>
         
-        <h1 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 52, lineHeight: 0.98, letterSpacing: "-0.03em", color: INK, margin: 0 }}>
+        <h1 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 52, lineHeight: 0.98, letterSpacing: "-0.03em", color: "#FFFFFF", margin: 0 }}>
           The Lowveld<br />Lowdown
         </h1>
-        <p style={{ fontFamily: SANS, fontSize: 15, lineHeight: 1.45, color: "#0a0a0a", marginTop: 14, marginBottom: 0, maxWidth: 280 }}>
+        <p style={{ fontFamily: SANS, fontSize: 15, lineHeight: 1.45, color: "#FFFFFF", marginTop: 14, marginBottom: 0, maxWidth: 280 }}>
           News, stories and local updates from the Lowveld.
         </p>
       </div>
