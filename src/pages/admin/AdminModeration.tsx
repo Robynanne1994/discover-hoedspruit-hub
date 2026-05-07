@@ -47,6 +47,7 @@ const AdminModeration = () => {
   const [openId, setOpenId] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [extra, setExtra] = useState<Record<string, any>>({});
+  const [accounts, setAccounts] = useState<Record<string, any>>({});
 
   const tableFor = (t: TabKey) =>
     t === "listing" ? "listing_edits_pending"
@@ -62,8 +63,11 @@ const AdminModeration = () => {
 
     // Hydrate live data for context (listing title, current values)
     const listingIds = new Set<string>();
+    const userIds = new Set<string>();
     (data ?? []).forEach((r: any) => {
       if (r.listing_id) listingIds.add(r.listing_id);
+      const uid = r.owner_id ?? r.user_id;
+      if (uid) userIds.add(uid);
     });
     if (listingIds.size > 0) {
       const { data: listings } = await supabase.from("listings").select("*").in("id", Array.from(listingIds));
@@ -72,6 +76,14 @@ const AdminModeration = () => {
       setExtra(m);
     } else {
       setExtra({});
+    }
+    if (userIds.size > 0) {
+      const { data: accs } = await supabase.from("business_accounts").select("user_id,business_name,contact_name,contact_email,contact_phone").in("user_id", Array.from(userIds));
+      const a: Record<string, any> = {};
+      (accs ?? []).forEach((r: any) => { a[r.user_id] = r; });
+      setAccounts(a);
+    } else {
+      setAccounts({});
     }
     setLoading(false);
   };
