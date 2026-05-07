@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import BusinessShell from "@/components/business/BusinessShell";
 import { Button, Input, Label, FieldError, Body, H2, Small } from "@/components/business/ui";
 import { toast } from "sonner";
+import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 
 const BusinessSignUp = () => {
   const navigate = useNavigate();
+  const { user, authLoading, isOwner, loading } = useBusinessOwner();
   const [businessName, setBusinessName] = useState("");
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,6 +16,10 @@ const BusinessSignUp = () => {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+
+  if (!authLoading && !loading && user && isOwner) {
+    return <Navigate to="/business/dashboard" replace />;
+  }
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
