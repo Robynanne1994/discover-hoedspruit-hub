@@ -460,7 +460,7 @@ const MyAccount = () => {
   const resourcesItems = [
     { label: "Local Channels", href: "/bush-telegraph", icon: Users },
     { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
-    { label: "MY BUSINESS", href: "/business/dashboard", icon: Briefcase },
+    { label: "My Business", href: "/business/dashboard", icon: Briefcase },
   ];
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
