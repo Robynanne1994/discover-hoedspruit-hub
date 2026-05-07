@@ -72,10 +72,17 @@ const BusinessDashboard = () => {
 
       {listing && (
         <>
-          <Card style={{ marginBottom: 16 }}>
-            <Small soft>BUSINESS</Small>
-            <Body style={{ fontWeight: 500, marginTop: 4 }}>{listing.title}</Body>
-            {listing.location && <Small soft style={{ marginTop: 4 }}>{listing.location}</Small>}
+          <Card style={{ marginBottom: 16, padding: 0, overflow: "hidden" }}>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
+              <div style={{ flex: 1, padding: 20, minWidth: 0 }}>
+                <Small soft>BUSINESS</Small>
+                <Body style={{ fontWeight: 500, marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{listing.title}</Body>
+                {listing.location && <Small soft style={{ marginTop: 4 }}>{listing.location}</Small>}
+              </div>
+              {listing.image_url && (
+                <div style={{ width: 96, flexShrink: 0, background: `url(${listing.image_url}) center/cover no-repeat` }} />
+              )}
+            </div>
           </Card>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
