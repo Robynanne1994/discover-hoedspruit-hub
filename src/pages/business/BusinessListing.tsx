@@ -60,7 +60,7 @@ const BusinessListing = () => {
         <Card style={{ marginTop: 24 }}>
           <Body>You have not linked a business yet.</Body>
           <div style={{ marginTop: 12 }}>
-            <Button onClick={() => navigate("/business/claim")}>Claim a business</Button>
+            <Button onClick={() => navigate("/business/claim")}>CLAIM A BUSINESS</Button>
           </div>
         </Card>
       </BusinessShell>
