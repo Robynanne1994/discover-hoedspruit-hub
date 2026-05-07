@@ -64,6 +64,8 @@ const HomeMasthead = () => {
   const [weatherCode, setWeatherCode] = useState<number | null>(null);
   const [isNight, setIsNight] = useState<boolean>(false);
   const [unreadCount, setUnreadCount] = useState<number>(0);
+  type NotifPreview = { id: string; title: string; body: string | null; link: string | null; status: string; kind: string; is_read: boolean; created_at: string };
+  const [notifs, setNotifs] = useState<NotifPreview[]>([]);
 
   useEffect(() => {
     if (!user) { setUnreadCount(0); return; }
