@@ -118,7 +118,7 @@ const BusinessClaim = () => {
                 placeholder="Tell us a little about your role at the business"
               />
             </div>
-            <Button full onClick={submit} disabled={busy}>{busy ? "Sending..." : "Send for review"}</Button>
+            <Button full onClick={submit} disabled={busy}>{busy ? "SENDING..." : "SEND FOR REVIEW"}</Button>
           </div>
         </>
       )}
