@@ -220,7 +220,16 @@ const BusinessEventForm = ({ mode }: Props) => {
         </div>
         <div><Label>Price</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R150 / Free" /></div>
         <div><Label>Booking link</Label><Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." type="url" /></div>
-        <div><Label>Booking link label</Label><Input value={bookingLinkLabel} onChange={(e) => setBookingLinkLabel(e.target.value)} placeholder="e.g. Book now" /></div>
+        {(() => {
+          const limitWords = (val: string) => val.split(/\s+/).filter(Boolean).slice(0, 2).join(" ") + (val.endsWith(" ") && val.split(/\s+/).filter(Boolean).length < 2 ? " " : "");
+          return (
+            <>
+              <div><Label>Category 1</Label><Input value={category1} onChange={(e) => setCategory1(limitWords(e.target.value))} placeholder="Max 2 words" /></div>
+              <div><Label>Category 2</Label><Input value={category2} onChange={(e) => setCategory2(limitWords(e.target.value))} placeholder="Max 2 words" /></div>
+              <div><Label>Category 3</Label><Input value={category3} onChange={(e) => setCategory3(limitWords(e.target.value))} placeholder="Max 2 words" /></div>
+            </>
+          );
+        })()}
         <div>
           <Label>Gallery images</Label>
           {galleryImages.length > 0 && (
