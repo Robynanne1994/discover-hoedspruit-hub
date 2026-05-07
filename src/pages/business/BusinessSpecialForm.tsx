@@ -15,11 +15,22 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState("");
+  const [tagline, setTagline] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [validFrom, setValidFrom] = useState("");
   const [validUntil, setValidUntil] = useState("");
+  const [bookingLink, setBookingLink] = useState("");
+  const [terms, setTerms] = useState("");
+  const [price, setPrice] = useState("");
+  const [tag1, setTag1] = useState("");
+  const [tag2, setTag2] = useState("");
+  const [tag3, setTag3] = useState("");
   const [feature, setFeature] = useState(false);
+
+  const TAGLINE_MAX = 24;
+  const TAG_MAX = 18;
+  const TERMS_MAX = 500;
   const [status, setStatus] = useState<string | null>(null);
   const [adminNote, setAdminNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -33,10 +44,18 @@ const BusinessSpecialForm = ({ mode }: Props) => {
       if (data) {
         const p: any = data.payload || {};
         setTitle(p.title ?? "");
+        setTagline(p.deal_label ?? "");
         setDescription(p.description ?? "");
         setImageUrl(p.image_url ?? "");
         setValidFrom(p.valid_from ?? "");
         setValidUntil(p.valid_until ?? "");
+        setBookingLink(p.booking_link ?? "");
+        setTerms(p.terms ?? "");
+        setPrice(p.price ?? "");
+        const tags = Array.isArray(p.eyebrow_categories) ? p.eyebrow_categories : [];
+        setTag1(tags[0] ?? "");
+        setTag2(tags[1] ?? "");
+        setTag3(tags[2] ?? "");
         setFeature(!!data.feature_requested);
         setStatus(data.status);
         setAdminNote(data.admin_note);
@@ -58,15 +77,20 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   const submit = async () => {
     if (!user || !listing) return;
     setBusy(true);
+    const tags = [tag1, tag2, tag3].map((t) => t.trim()).filter(Boolean);
     const payload = {
       title,
       description,
       image_url: imageUrl,
       valid_from: validFrom || null,
       valid_until: validUntil || null,
-      business_name: account?.business_name ?? listing.title,
+      business_name: listing.title,
       business_id: listing.id,
-      deal_label: title,
+      deal_label: tagline || title,
+      booking_link: bookingLink || null,
+      terms: terms || null,
+      price: price || null,
+      eyebrow_categories: tags.length ? tags : null,
     };
     if (mode === "new") {
       const { data, error } = await supabase.from("specials_pending").insert({
@@ -114,7 +138,17 @@ const BusinessSpecialForm = ({ mode }: Props) => {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 16 }}>
-        <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+        <div>
+          <Label>Business</Label>
+          <Input value={listing.title} disabled readOnly />
+          <Small soft style={{ marginTop: 4, display: "block" }}>This is the listing you've claimed.</Small>
+        </div>
+        <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={80} required /></div>
+        <div>
+          <Label>Tag line (used on the card pill)</Label>
+          <Input value={tagline} onChange={(e) => setTagline(e.target.value.slice(0, TAGLINE_MAX))} maxLength={TAGLINE_MAX} placeholder="e.g. 2 for 1, 20% off" />
+          <Small soft style={{ marginTop: 4, display: "block" }}>{tagline.length}/{TAGLINE_MAX}</Small>
+        </div>
         <div><Label>Description</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} /></div>
         <div>
           <Label>Image</Label>
@@ -127,6 +161,21 @@ const BusinessSpecialForm = ({ mode }: Props) => {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div><Label>Valid from</Label><Input type="date" value={validFrom} onChange={(e) => setValidFrom(e.target.value)} /></div>
           <div><Label>Valid until</Label><Input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} /></div>
+        </div>
+        <div><Label>Price (optional)</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R250 / from R99" maxLength={40} /></div>
+        <div><Label>Booking link (optional)</Label><Input type="url" value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." /></div>
+        <div>
+          <Label>Tags (up to 3, optional)</Label>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            <Input value={tag1} onChange={(e) => setTag1(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 1" />
+            <Input value={tag2} onChange={(e) => setTag2(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 2" />
+            <Input value={tag3} onChange={(e) => setTag3(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 3" />
+          </div>
+        </div>
+        <div>
+          <Label>Terms & conditions (optional)</Label>
+          <Textarea value={terms} onChange={(e) => setTerms(e.target.value.slice(0, TERMS_MAX))} maxLength={TERMS_MAX} />
+          <Small soft style={{ marginTop: 4, display: "block" }}>{terms.length}/{TERMS_MAX}</Small>
         </div>
 
         {!alreadyFeatured && (
