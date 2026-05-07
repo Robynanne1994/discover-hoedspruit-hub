@@ -144,15 +144,16 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="displayName" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
-                  Display Name
+                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+                  Username
                 </Label>
                 <Input
-                  id="displayName"
+                  id="username"
                   type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="How should we call you?"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  placeholder="Choose a unique username"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
                 />
               </div>
