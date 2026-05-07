@@ -122,7 +122,10 @@ const BusinessEventForm = ({ mode }: Props) => {
       location,
       price: price || null,
       booking_link: bookingLink || null,
-      booking_link_label: bookingLinkLabel || null,
+      booking_link_label: bookingLink ? "Book Now" : null,
+      sub_tag_1: category1 || null,
+      sub_tag_2: category2 || null,
+      category_3: category3 || null,
       business_id: listing.id,
     };
     if (mode === "new") {
