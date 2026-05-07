@@ -41,7 +41,7 @@ const Welcome = () => {
       <div className="min-h-screen flex flex-col" style={{ background: "hsl(38, 30%, 96%)" }}>
         {/* Top section with branding */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8">
-          <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 180, height: "auto" }} />
+          <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 260, height: "auto" }} />
         </div>
 
         {/* Bottom action area */}
@@ -49,6 +49,7 @@ const Welcome = () => {
           <Button
             onClick={() => setMode("signup")}
             className="w-full h-12 text-[15px] font-semibold rounded-xl"
+            style={{ background: "#655444", color: "#ffffff" }}
           >
             Create Account
             <ArrowRight className="ml-2" style={{ width: 18, height: 18 }} />
