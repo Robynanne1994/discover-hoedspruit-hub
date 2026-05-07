@@ -26,7 +26,9 @@ const BusinessEventForm = ({ mode }: Props) => {
   const [location, setLocation] = useState("");
   const [price, setPrice] = useState("");
   const [bookingLink, setBookingLink] = useState("");
-  const [bookingLinkLabel, setBookingLinkLabel] = useState("");
+  const [category1, setCategory1] = useState("");
+  const [category2, setCategory2] = useState("");
+  const [category3, setCategory3] = useState("");
   const [feature, setFeature] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [adminNote, setAdminNote] = useState<string | null>(null);
