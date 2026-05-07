@@ -43,10 +43,10 @@ const BusinessDashboard = () => {
     load();
   }, [listing]);
 
-  if (loading) return <BusinessShell title="Dashboard" back="/my-account" theme="dark"><Small style={{ color: "rgba(255,255,255,0.7)" }}>Loading...</Small></BusinessShell>;
-
+  if (loading) return <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark"><Small style={{ color: "rgba(255,255,255,0.7)" }}>Loading...</Small></BusinessShell>;
+1
   return (
-    <BusinessShell title="Dashboard" back="/my-account" theme="dark">
+    <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
         <H2 style={{ color: "#FFFFFF" }}>Welcome{account?.business_name ? `, ${account.business_name}` : ""}</H2>
       </div>
