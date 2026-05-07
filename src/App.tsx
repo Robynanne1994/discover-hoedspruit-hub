@@ -59,8 +59,21 @@ import Notifications from "./pages/Notifications.tsx";
 import MyHoedspruit from "./pages/MyHoedspruit.tsx";
 import Specials from "./pages/Specials.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
-
-const queryClient = new QueryClient();
+import BusinessGate from "./components/business/BusinessGate.tsx";
+import BusinessSignIn from "./pages/business/BusinessSignIn.tsx";
+import BusinessSignUp from "./pages/business/BusinessSignUp.tsx";
+import BusinessSubscribe from "./pages/business/BusinessSubscribe.tsx";
+import BusinessClaim from "./pages/business/BusinessClaim.tsx";
+import BusinessDashboard from "./pages/business/BusinessDashboard.tsx";
+import BusinessListing from "./pages/business/BusinessListing.tsx";
+import BusinessSpecials from "./pages/business/BusinessSpecials.tsx";
+import BusinessSpecialForm from "./pages/business/BusinessSpecialForm.tsx";
+import BusinessEvents from "./pages/business/BusinessEvents.tsx";
+import BusinessEventForm from "./pages/business/BusinessEventForm.tsx";
+import BusinessFeature from "./pages/business/BusinessFeature.tsx";
+import BusinessBilling from "./pages/business/BusinessBilling.tsx";
+import AdminModeration from "./pages/admin/AdminModeration.tsx";
+import { useLocation } from "react-router-dom";
 
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
