@@ -13,7 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
+const DISPLAY = "'Qassy', 'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
 const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
 type WeatherIconKind = "sun" | "moon" | "cloud-sun" | "cloud-moon" | "cloud" | "fog" | "drizzle" | "rain" | "snow" | "thunder";
