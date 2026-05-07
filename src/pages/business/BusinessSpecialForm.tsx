@@ -138,7 +138,17 @@ const BusinessSpecialForm = ({ mode }: Props) => {
       )}
 
       <div style={{ display: "flex", flexDirection: "column", gap: 20, marginTop: 16 }}>
-        <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} required /></div>
+        <div>
+          <Label>Business</Label>
+          <Input value={listing.title} disabled readOnly />
+          <Small soft style={{ marginTop: 4, display: "block" }}>This is the listing you've claimed.</Small>
+        </div>
+        <div><Label>Title</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} maxLength={80} required /></div>
+        <div>
+          <Label>Tag line (used on the card pill)</Label>
+          <Input value={tagline} onChange={(e) => setTagline(e.target.value.slice(0, TAGLINE_MAX))} maxLength={TAGLINE_MAX} placeholder="e.g. 2 for 1, 20% off" />
+          <Small soft style={{ marginTop: 4, display: "block" }}>{tagline.length}/{TAGLINE_MAX}</Small>
+        </div>
         <div><Label>Description</Label><Textarea value={description} onChange={(e) => setDescription(e.target.value)} /></div>
         <div>
           <Label>Image</Label>
@@ -151,6 +161,21 @@ const BusinessSpecialForm = ({ mode }: Props) => {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div><Label>Valid from</Label><Input type="date" value={validFrom} onChange={(e) => setValidFrom(e.target.value)} /></div>
           <div><Label>Valid until</Label><Input type="date" value={validUntil} onChange={(e) => setValidUntil(e.target.value)} /></div>
+        </div>
+        <div><Label>Price (optional)</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R250 / from R99" maxLength={40} /></div>
+        <div><Label>Booking link (optional)</Label><Input type="url" value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." /></div>
+        <div>
+          <Label>Tags (up to 3, optional)</Label>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+            <Input value={tag1} onChange={(e) => setTag1(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 1" />
+            <Input value={tag2} onChange={(e) => setTag2(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 2" />
+            <Input value={tag3} onChange={(e) => setTag3(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 3" />
+          </div>
+        </div>
+        <div>
+          <Label>Terms & conditions (optional)</Label>
+          <Textarea value={terms} onChange={(e) => setTerms(e.target.value.slice(0, TERMS_MAX))} maxLength={TERMS_MAX} />
+          <Small soft style={{ marginTop: 4, display: "block" }}>{terms.length}/{TERMS_MAX}</Small>
         </div>
 
         {!alreadyFeatured && (
