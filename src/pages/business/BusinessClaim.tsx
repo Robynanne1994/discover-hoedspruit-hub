@@ -65,10 +65,10 @@ const BusinessClaim = () => {
   }
 
   return (
-    <BusinessShell title="Claim your listing" back="/business/dashboard">
+    <BusinessShell title="Claim your business" back="/business/dashboard">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
         <H2>Find your business</H2>
-        <Body soft style={{ marginTop: 8 }}>Search by name. Pick the matching listing then send your claim.</Body>
+        <Body soft style={{ marginTop: 8 }}>Search by name. Pick the matching business then send your claim.</Body>
       </div>
 
       {!picked ? (
