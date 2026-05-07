@@ -104,11 +104,9 @@ const BusinessDashboard = () => {
             </Link>
           </div>
 
-          <div style={{ marginBottom: 16 }}>
-            <Body style={{ fontWeight: 500, marginBottom: 12 }}>Recent submissions</Body>
-            {recent.length === 0 ? (
-              <EmptyState message="Nothing submitted yet." />
-            ) : (
+          {recent.length > 0 && (
+            <div style={{ marginBottom: 16 }}>
+              <Body style={{ fontWeight: 500, marginBottom: 12 }}>Recent submissions</Body>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {recent.map((r) => (
                   <Card key={r.kind + r.id} style={{ padding: 16 }}>
@@ -122,8 +120,8 @@ const BusinessDashboard = () => {
                   </Card>
                 ))}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </>
       )}
 
