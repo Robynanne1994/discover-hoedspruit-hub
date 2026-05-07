@@ -23,7 +23,7 @@ const BusinessSpecials = () => {
   }, [listing]);
 
   return (
-    <BusinessShell title="Specials" back="/business/dashboard">
+    <BusinessShell title="SPECIALS" back="/business/dashboard">
       <div style={{ marginTop: 12, marginBottom: 24 }}>
         <Link to="/business/specials/new"><Button full>Post a special</Button></Link>
       </div>
