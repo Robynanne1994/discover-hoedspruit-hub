@@ -706,7 +706,7 @@ const MyAccount = () => {
                     y1={66 - outer}
                     x2="66"
                     y2={66 - inner}
-                    stroke="#5b4632"
+                    stroke="#BAA685"
                     strokeWidth={long ? 3 : 2.2}
                     strokeLinecap="round"
                     transform={`rotate(${angle} 66 66)`}
