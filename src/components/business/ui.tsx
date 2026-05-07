@@ -85,7 +85,6 @@ export const Label = ({ children, htmlFor }: { children: ReactNode; htmlFor?: st
       fontWeight: 500,
       letterSpacing: "0.06em",
       textTransform: "uppercase",
-      color: COLORS.body,
       marginBottom: 8,
     }}
   >
