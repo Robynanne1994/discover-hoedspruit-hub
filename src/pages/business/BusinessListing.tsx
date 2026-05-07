@@ -314,7 +314,7 @@ const BusinessListing = () => {
             {DAYS.map(({ label, key }) => (
               <Card key={key} style={{ padding: 14 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: hours[key].closed ? 0 : 12 }}>
-                  <div style={{ fontWeight: 500, fontSize: 16 }}>{label}</div>
+                  <div style={{ fontWeight: 500, fontSize: 16, color: "#0a0a0a" }}>{label}</div>
                   <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, color: COLORS.body }}>
                     <input
                       type="checkbox"
