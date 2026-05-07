@@ -251,18 +251,6 @@ const Notifications = () => {
         }}
       >
         <BackButton />
-        <span
-          style={{
-            ...baseTextStyle,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 16,
-            color: "#8A8480",
-          }}
-        >
-          Settings
-        </span>
       </div>
 
       {/* Hero */}
