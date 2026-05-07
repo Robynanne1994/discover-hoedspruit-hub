@@ -81,7 +81,7 @@ const BusinessSignUp = () => {
   };
 
   return (
-    <BusinessShell title="Create business account" back="/">
+    <BusinessShell title="Create business account" back="/business/sign-in">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
         <H2>List your business</H2>
         <Body soft style={{ marginTop: 8 }}>Set up an account to claim a listing and post specials and events.</Body>
