@@ -230,7 +230,10 @@ const AdminModeration = () => {
 
                   {tab === "claims" && (
                     <div className="mb-4">
-                      <KV label="User id" value={it.user_id} />
+                      <KV label="Business name" value={acc?.business_name} />
+                      <KV label="Contact name" value={acc?.contact_name} />
+                      <KV label="Contact email" value={acc?.contact_email} />
+                      <KV label="Contact phone" value={acc?.contact_phone} />
                       <KV label="Listing" value={live?.title} />
                       <KV label="Listing phone" value={live?.phone} />
                       <KV label="Listing email" value={live?.email} />
