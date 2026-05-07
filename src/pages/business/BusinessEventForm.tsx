@@ -17,17 +17,25 @@ const BusinessEventForm = ({ mode }: Props) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [date, setDate] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [location, setLocation] = useState("");
+  const [price, setPrice] = useState("");
+  const [bookingLink, setBookingLink] = useState("");
+  const [bookingLinkLabel, setBookingLinkLabel] = useState("");
   const [feature, setFeature] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [adminNote, setAdminNote] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
   const [locSuggestions, setLocSuggestions] = useState<{ id: string; title: string; location: string | null }[]>([]);
   const [showLocSugg, setShowLocSugg] = useState(false);
+  const galleryRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const q = location.trim();
@@ -56,7 +64,13 @@ const BusinessEventForm = ({ mode }: Props) => {
         setDate(p.date ?? "");
         setStartDate(p.start_date ?? "");
         setEndDate(p.end_date ?? "");
+        setStartTime(p.start_time ?? "");
+        setEndTime(p.end_time ?? "");
         setLocation(p.location ?? "");
+        setPrice(p.price ?? "");
+        setBookingLink(p.booking_link ?? "");
+        setBookingLinkLabel(p.booking_link_label ?? "");
+        setGalleryImages(Array.isArray(p.gallery_images) ? p.gallery_images : []);
         setFeature(!!data.feature_requested);
         setStatus(data.status);
         setAdminNote(data.admin_note);
@@ -74,6 +88,20 @@ const BusinessEventForm = ({ mode }: Props) => {
     setUploading(false);
   };
 
+  const uploadGallery = async (files: FileList) => {
+    setUploadingGallery(true);
+    const urls: string[] = [];
+    for (const file of Array.from(files)) {
+      const path = `${user?.id}/events/gallery/${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage.from("listing-images").upload(path, file, { upsert: true });
+      if (error) { toast.error(error.message); continue; }
+      const { data } = supabase.storage.from("listing-images").getPublicUrl(path);
+      urls.push(data.publicUrl);
+    }
+    setGalleryImages((prev) => [...prev, ...urls]);
+    setUploadingGallery(false);
+  };
+
   const submit = async () => {
     if (!user || !listing) return;
     setBusy(true);
@@ -81,10 +109,16 @@ const BusinessEventForm = ({ mode }: Props) => {
       title,
       description,
       image_url: imageUrl,
+      gallery_images: galleryImages,
       date: date || startDate,
       start_date: startDate || null,
       end_date: endDate || null,
+      start_time: startTime || null,
+      end_time: endTime || null,
       location,
+      price: price || null,
+      booking_link: bookingLink || null,
+      booking_link_label: bookingLinkLabel || null,
       business_id: listing.id,
     };
     if (mode === "new") {
@@ -172,6 +206,35 @@ const BusinessEventForm = ({ mode }: Props) => {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div><Label>Start date</Label><Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} /></div>
           <div><Label>End date</Label><Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} /></div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div><Label>Start time</Label><Input type="time" value={startTime} onChange={(e) => setStartTime(e.target.value)} /></div>
+          <div><Label>End time</Label><Input type="time" value={endTime} onChange={(e) => setEndTime(e.target.value)} /></div>
+        </div>
+        <div><Label>Price</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R150 / Free" /></div>
+        <div><Label>Booking link</Label><Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." type="url" /></div>
+        <div><Label>Booking link label</Label><Input value={bookingLinkLabel} onChange={(e) => setBookingLinkLabel(e.target.value)} placeholder="e.g. Book now" /></div>
+        <div>
+          <Label>Gallery images</Label>
+          {galleryImages.length > 0 && (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
+              {galleryImages.map((url, i) => (
+                <div key={i} style={{ position: "relative", aspectRatio: "1/1", borderRadius: 10, overflow: "hidden" }}>
+                  <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  <button
+                    type="button"
+                    onClick={() => setGalleryImages((g) => g.filter((_, idx) => idx !== i))}
+                    style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: 999, background: "rgba(0,0,0,0.65)", color: "#FFFFFF", border: "none", cursor: "pointer", fontSize: 14, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center" }}
+                    aria-label="Remove"
+                  >×</button>
+                </div>
+              ))}
+            </div>
+          )}
+          <input ref={galleryRef} type="file" accept="image/*" multiple hidden onChange={(e) => e.target.files && uploadGallery(e.target.files)} />
+          <Button variant="secondary" onClick={() => galleryRef.current?.click()} disabled={uploadingGallery}>
+            {uploadingGallery ? "Uploading..." : "Add gallery images"}
+          </Button>
         </div>
 
         <Card style={{ padding: 16 }}>
