@@ -68,17 +68,18 @@ const Welcome = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "hsl(38, 30%, 96%)" }}>
-      <div className="px-6 pt-14 pb-4">
+      <div className="px-6 pt-14 pb-4 relative z-10">
         <button
+          type="button"
           onClick={() => setMode("welcome")}
           aria-label="Back"
-          className="text-foreground active:scale-95 transition-transform"
+          className="text-foreground active:scale-95 transition-transform p-2 -ml-2"
         >
           <ArrowLeft style={{ width: 24, height: 24, color: "#0A0A0A" }} />
         </button>
       </div>
 
-      <div className="flex-1 px-6 pb-12 flex flex-col justify-center -mt-16">
+      <div className="flex-1 px-6 pb-12 flex flex-col justify-center">
         <h1
           className="font-heading font-bold text-foreground mb-1"
           style={{ fontSize: 28, letterSpacing: "0.01em" }}
