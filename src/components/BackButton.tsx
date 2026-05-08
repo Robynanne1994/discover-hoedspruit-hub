@@ -48,11 +48,9 @@ const BackButton = ({ to, onClick, style, iconColor = "#020202" }: BackButtonPro
         ...style,
       }}
     >
-      <ChevronLeft
+      <BackArrowIcon
         size={22}
-        strokeWidth={1.8}
         color={iconColor}
-        style={{ display: "block" }}
       />
     </button>
   );
