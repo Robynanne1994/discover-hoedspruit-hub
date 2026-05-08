@@ -395,9 +395,8 @@ const EventDetail = () => {
                 alignItems: "stretch",
                 marginTop: 28,
                 marginBottom: 20,
-                background: "#F5EFE3",
-                border: "1px solid #E5DAC5",
-                borderRadius: 18,
+                background: SURFACE,
+                borderRadius: 24,
                 padding: "18px 8px",
               }}
             >
@@ -410,28 +409,28 @@ const EventDetail = () => {
                       flex: 1,
                       padding: "0 10px",
                       textAlign: "center",
-                      borderLeft: i > 0 ? `1px solid #E5DAC5` : "none",
+                      borderLeft: i > 0 ? `1px solid ${DIVIDER}` : "none",
                       display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
                     }}
                   >
                     {Icon && (
                       <div style={{
                         width: 36, height: 36, borderRadius: 999,
-                        background: "#EAE0CC",
+                        background: "rgba(107,106,94,0.10)",
                         display: "flex", alignItems: "center", justifyContent: "center",
                       }}>
-                        <Icon size={18} strokeWidth={1.6} color="#5b4632" />
+                        <Icon size={18} strokeWidth={1.6} color={MUTED} />
                       </div>
                     )}
                     <p style={{
                       margin: 0, fontFamily: font, fontWeight: 400, fontSize: 11,
-                      letterSpacing: "0.08em", textTransform: "uppercase", color: "#8a7a5e",
+                      letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED,
                     }}>
                       {s.label}
                     </p>
                     <p style={{
-                      margin: 0, fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 13,
-                      lineHeight: 1.25, color: TEXT, wordBreak: "break-word",
+                      margin: 0, fontFamily: font, fontWeight: 400, fontSize: 14,
+                      lineHeight: 1.35, color: TEXT, wordBreak: "break-word",
                     }}>
                       {s.value}
                     </p>
