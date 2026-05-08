@@ -346,8 +346,8 @@ const EventDetail = () => {
         {/* Eyebrow */}
         {tagParts.length > 0 && (
           <p style={{
-            fontFamily: font, fontWeight: 500, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10,
+            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
+            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16,
             textTransform: "uppercase", textAlign: "center",
           }}>
             {tagParts.join("  ·  ")}
@@ -356,8 +356,8 @@ const EventDetail = () => {
 
         {/* Title */}
         <h1 style={{
-          fontFamily: FONT_HEAD, fontSize: 32, fontWeight: 500, lineHeight: "34px",
-          letterSpacing: "-0.96px", color: TEXT, textTransform: "none",
+          fontFamily: '"Playfair Display", Georgia, serif', fontSize: 48, fontWeight: 500, lineHeight: "45.6px",
+          letterSpacing: "-1.5px", color: CREAM, textTransform: "none",
           marginTop: 0, marginBottom: 8, textAlign: "center",
         }}>
           {event.title}
