@@ -28,14 +28,13 @@ const COLOR = {
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-type FilterType = "all" | "today" | "this-week" | "this-month" | "upcoming" | "past";
+type FilterType = "all" | "today" | "this-week" | "this-month" | "past";
 
 const FILTERS: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
   { label: "This Month", value: "this-month" },
-  { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
 ];
 
@@ -390,7 +389,7 @@ const Events = () => {
       return nonRecurring.filter((e) => !e._parsed || !isBefore(e._parsed, today));
     return nonRecurring.filter((event) => {
       const date = event._parsed;
-      if (!date) return activeFilter === "upcoming";
+      if (!date) return false;
       switch (activeFilter) {
         case "today":
           return isToday(date);
@@ -398,8 +397,6 @@ const Events = () => {
           return isWithinInterval(date, { start: today, end: weekEnd });
         case "this-month":
           return isWithinInterval(date, { start: today, end: monthEnd });
-        case "upcoming":
-          return !isBefore(date, today);
         case "past":
           return isBefore(date, today) && !isToday(date);
         default:
