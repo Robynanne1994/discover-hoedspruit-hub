@@ -374,6 +374,14 @@ const BushTelegraph = () => {
               width: 160, height: 170, background: CREAM, opacity: 0.08,
               borderRadius: "55% 45% 50% 55% / 50% 60% 45% 55%", zIndex: 1,
             }} />
+            <div style={{
+              position: "absolute", top: 22, right: 22, zIndex: 3,
+              width: 38, height: 38, borderRadius: 999,
+              background: "rgba(238, 232, 218, 0.25)", backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 16, color: CREAM, lineHeight: 1,
+            }}>↗</div>
             <div style={{ position: "relative", zIndex: 2 }}>
               <div style={{
                 fontFamily: HN, fontWeight: 400, fontSize: 11.5, letterSpacing: "2.4px",
@@ -398,13 +406,6 @@ const BushTelegraph = () => {
                     background: CREAM, padding: "8px 14px", borderRadius: 999,
                   }}>{c}</span>
                 ))}
-                <div style={{
-                  marginLeft: "auto", width: 38, height: 38, borderRadius: 999,
-                  background: "rgba(238, 232, 218, 0.25)", backdropFilter: "blur(8px)",
-                  WebkitBackdropFilter: "blur(8px)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 16, color: CREAM, lineHeight: 1,
-                }}>↗</div>
               </div>
             </div>
           </div>
