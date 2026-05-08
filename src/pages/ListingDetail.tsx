@@ -276,7 +276,7 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
+      <div style={{ minHeight: "100vh", background: "#5C6446", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
             <BackArrowIcon size={20} color="#FFFFFF" />
@@ -292,7 +292,7 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
+      <div style={{ minHeight: "100vh", background: "#5C6446", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
             <BackArrowIcon size={20} color="#FFFFFF" />
