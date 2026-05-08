@@ -28,6 +28,7 @@ import amenitiesIconSrc from "@/assets/amenities-icon.svg";
 import starRatingIconSrc from "@/assets/star-rating-icon.svg";
 import accessibilityIconSrc from "@/assets/accessibility-icon.svg";
 import pricingIconSrc from "@/assets/pricing-icon.svg";
+import cuisineIconSrc from "@/assets/cuisine-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
@@ -72,6 +73,10 @@ const AccessibilityIcon = ({ size = 20 }: { size?: number; color?: string; strok
 
 const PricingIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
   <img src={pricingIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
+);
+
+const CuisineIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
+  <img src={cuisineIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
 );
 
 const AmenitiesIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
