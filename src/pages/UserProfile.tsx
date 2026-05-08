@@ -106,21 +106,6 @@ const UserProfile = () => {
   const { data: isFollowing } = useIsFollowing(id);
   const { follow, unfollow } = useFollowMutation(id!);
 
-  // Whether they follow the current viewer (for mutual detection)
-  const { data: theyFollowMe } = useQuery({
-    queryKey: ["they-follow-me", id, user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("follows")
-        .select("id")
-        .eq("follower_id", id!)
-        .eq("following_id", user!.id)
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!user && !!id && user.id !== id,
-  });
-
   // Saved listings (favourites of type "listing")
   const { data: saved } = useQuery({
     queryKey: ["user-saved-listings", id],
