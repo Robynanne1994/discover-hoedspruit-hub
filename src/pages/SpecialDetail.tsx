@@ -499,7 +499,7 @@ const SpecialDetail = () => {
         {/* About This Deal */}
         {special.description && (
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>About</h2>
+            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>About</h2>
             <p
               ref={aboutRef}
               style={{
@@ -544,7 +544,7 @@ const SpecialDetail = () => {
         {special.promo_code && (
           <section style={{ marginBottom: 32 }}>
             
-            <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>Promo Code</h2>
+            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Promo Code</h2>
             <button
               onClick={async () => {
                 try {
@@ -603,7 +603,7 @@ const SpecialDetail = () => {
         {/* Details */}
         <section style={{ marginBottom: 32 }}>
           
-          <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>Details</h2>
+          <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Details</h2>
           <div
             style={{
               background: SURFACE,
@@ -673,7 +673,7 @@ const SpecialDetail = () => {
         {/* Contact */}
         {(phoneClean || waClean || special.booking_link) && (
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>Contact</h2>
+            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Contact</h2>
             <div
               style={{
                 background: SURFACE,
