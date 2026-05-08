@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft } from "lucide-react";
+import {  } from "lucide-react";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 interface BusinessShellProps {
   title: string;
@@ -57,7 +58,7 @@ const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: Bus
             }}
             aria-label="Back"
           >
-            <ChevronLeft size={24} strokeWidth={1.8} />
+            <BackArrowIcon size={24} />
           </button>
         )}
         <h1 style={{ fontSize: 20, fontWeight: 500, color: headingColor, margin: 0, fontFamily: FONT }}>

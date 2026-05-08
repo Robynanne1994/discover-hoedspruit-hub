@@ -2,8 +2,9 @@ import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, Search, ArrowUpRight } from "lucide-react";
+import { Search, ArrowUpRight } from "lucide-react";
 import { format } from "date-fns";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
@@ -100,7 +101,7 @@ const Headlines = () => {
             cursor: "pointer",
           }}
         >
-          <ChevronLeft size={22} strokeWidth={1.8} color="#FFFFFF" />
+          <BackArrowIcon size={22} color="#FFFFFF" />
         </button>
       </div>
 

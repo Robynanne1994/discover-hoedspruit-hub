@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useNavigate } from "react-router-dom";
 import { CSSProperties } from "react";
 
@@ -48,11 +48,9 @@ const BackButton = ({ to, onClick, style, iconColor = "#020202" }: BackButtonPro
         ...style,
       }}
     >
-      <ChevronLeft
+      <BackArrowIcon
         size={22}
-        strokeWidth={1.8}
         color={iconColor}
-        style={{ display: "block" }}
       />
     </button>
   );

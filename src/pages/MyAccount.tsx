@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import {
   Heart,
   MapPinCheck,
@@ -20,7 +21,6 @@ import {
   Info,
   LogOut,
   ChevronRight,
-  ChevronLeft,
   Pencil,
   UserCircle,
   LayoutDashboard,
@@ -260,7 +260,7 @@ const MyAccount = () => {
             onClick={() => setActiveSection(null)}
             className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium"
           >
-            <ChevronLeft className="h-4 w-4" /> Back
+            <BackArrowIcon size={16} /> Back
           </button>
         </div>
 

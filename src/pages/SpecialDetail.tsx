@@ -2,27 +2,12 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-import {
-  ChevronLeft,
-  Heart,
-  Phone,
-  Share2,
-  Store,
-  Tag,
-  Banknote,
-  Ticket,
-  Clock,
-  Calendar,
-  ExternalLink,
-  MessageCircle,
-  Copy,
-  Pencil,
-  ArrowUpRight,
-} from "lucide-react";
+import { Heart, Phone, Share2, Store, Tag, Banknote, Ticket, Clock, Calendar, ExternalLink, MessageCircle, Copy, Pencil, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, useRef, useLayoutEffect } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
@@ -171,7 +156,7 @@ const SpecialDetail = () => {
           style={{ ...overlayBtn, position: "fixed", left: 24, top: 16 }}
           aria-label="Back"
         >
-          <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
+          <BackArrowIcon size={20} color={TEXT} />
         </button>
         {!isLoading && (
           <div style={{ padding: "120px 24px", textAlign: "center" }}>
@@ -253,7 +238,7 @@ const SpecialDetail = () => {
           aria-label="Back"
           {...press}
         >
-          <ChevronLeft size={20} strokeWidth={1.5} color={TEXT} />
+          <BackArrowIcon size={20} color={TEXT} />
         </button>
         {(() => {
           const rightIcons: { key: string; onClick: () => void; ariaLabel: string; node: React.ReactNode }[] = [];

@@ -1,6 +1,7 @@
-import { ChevronLeft, ArrowUpRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
@@ -53,7 +54,7 @@ const About = () => {
             fontFamily: SANS,
           }}
         >
-          <ChevronLeft size={20} strokeWidth={1.8} color="#0A0A0A" />
+          <BackArrowIcon size={20} color="#0A0A0A" />
           <span style={{ fontSize: 15, fontWeight: 400, color: "#0A0A0A" }}>About Hello Hoedspruit</span>
         </button>
       </div>

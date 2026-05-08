@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { ChevronLeft, ArrowUpRight, Send, Check, Loader2 } from "lucide-react";
+import { ArrowUpRight, Send, Check, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const CONTACT_EMAIL = "admin@hellohoedspruit.co";
@@ -200,7 +201,7 @@ const ContactUs = () => {
           }}
           {...press}
         >
-          <ChevronLeft size={20} strokeWidth={1.8} style={{ color: "#020202" }} />
+          <BackArrowIcon size={20} color="#020202" />
         </button>
       </div>
 

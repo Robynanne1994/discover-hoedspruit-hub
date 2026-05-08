@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FEEDBACK_TYPES = ["General", "Suggestion", "Bug", "Compliment", "Other"] as const;
 
@@ -108,7 +109,7 @@ const Feedback = () => {
             transition: "transform 150ms ease-out",
           }}
         >
-          <ChevronLeft size={20} strokeWidth={2} />
+          <BackArrowIcon size={20} />
           Back
         </button>
       </div>

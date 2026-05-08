@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  Star, Pencil, ChevronLeft, ChevronDown, ChevronRight,
+  Star, Pencil, ChevronDown, ChevronRight,
   Heart, Share2, Check, X as XIcon, Phone, Navigation,
   MapPin, Mail, Globe, ArrowUpRight,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
@@ -19,6 +19,7 @@ import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import locationIconSrc from "@/assets/location-icon.svg";
 import emailIconSrc from "@/assets/email-icon.svg";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
   width: 18,
@@ -226,7 +227,7 @@ const ListingDetail = () => {
       <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
-            <ChevronLeft size={20} strokeWidth={1.5} color="#FFFFFF" />
+            <BackArrowIcon size={20} color="#FFFFFF" />
             <span style={{ fontSize: 15, color: "#FFFFFF", fontFamily: FONT_BODY }}>Back</span>
           </button>
         </div>
@@ -242,7 +243,7 @@ const ListingDetail = () => {
       <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
-            <ChevronLeft size={20} strokeWidth={1.5} color="#FFFFFF" />
+            <BackArrowIcon size={20} color="#FFFFFF" />
             <span style={{ fontSize: 15, color: "#FFFFFF", fontFamily: FONT_BODY }}>Back</span>
           </button>
         </div>
@@ -583,7 +584,7 @@ const ListingDetail = () => {
           aria-label="Back"
           {...pressScale("0.94")}
         >
-          <ChevronLeft size={20} strokeWidth={1.5} color="#FFFFFF" />
+          <BackArrowIcon size={20} color="#FFFFFF" />
         </button>
 
         <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 8 }}>
