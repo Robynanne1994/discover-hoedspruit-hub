@@ -816,7 +816,7 @@ const ListingDetail = () => {
                     <p key={i} style={{
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                       fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
-                      color: "#0A0A0A", margin: 0,
+                      color: "#F0EAD9", margin: 0,
                       marginBottom: i < arr.length - 1 ? 12 : 0,
                     }}>{p}</p>
                   ))}
