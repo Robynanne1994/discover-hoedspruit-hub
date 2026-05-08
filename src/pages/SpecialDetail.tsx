@@ -327,13 +327,13 @@ const SpecialDetail = () => {
             special.business_id ? (
               <Link
                 to={`/listing/${special.business_id}`}
-                style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 12, textTransform: "none", textDecoration: "none", display: "block" }}
+                style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "rgba(238,232,218,0.85)", margin: 0, marginBottom: 12, textTransform: "none", textDecoration: "none", display: "block" }}
               >
-                <span style={{ fontStyle: "italic", fontWeight: 400 }}>by </span>{special.business_name}
+                <span style={{ fontStyle: "italic" }}>by </span>{special.business_name}
               </Link>
             ) : (
-              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 12, textTransform: "none" }}>
-                <span style={{ fontStyle: "italic", fontWeight: 400 }}>by </span>{special.business_name}
+              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "rgba(238,232,218,0.85)", margin: 0, marginBottom: 12, textTransform: "none" }}>
+                <span style={{ fontStyle: "italic" }}>by </span>{special.business_name}
               </p>
             )
           )}
