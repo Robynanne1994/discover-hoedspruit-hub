@@ -44,7 +44,7 @@ const HomeLowdown = () => {
             onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             style={{
-              background: "#FFFFFF",
+              background: "#EEE8DA",
               borderRadius: 20,
               padding: "18px 18px 18px 20px",
               display: "flex",
@@ -60,7 +60,7 @@ const HomeLowdown = () => {
                 height: 56,
                 borderRadius: 12,
                 overflow: "hidden",
-                background: "#F2EFEC",
+                background: "#E0DAC9",
                 flexShrink: 0,
               }}
             >
@@ -113,7 +113,7 @@ const HomeLowdown = () => {
                 width: 32,
                 height: 32,
                 borderRadius: 999,
-                background: "#F2EFEC",
+                background: "#E0DAC9",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",

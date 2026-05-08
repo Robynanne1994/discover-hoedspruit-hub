@@ -19,9 +19,9 @@ const Index = () => {
       className="home-page"
       style={{
         minHeight: "100vh",
-        background: "transparent",
+        background: "#5C6446",
         paddingBottom: 120,
-        fontFamily: "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
       }}
     >
       <HomeMasthead />

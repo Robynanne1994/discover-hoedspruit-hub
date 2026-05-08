@@ -27,14 +27,14 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
       <h2
         style={{
           margin: 0,
-          fontFamily: DISPLAY,
-          fontWeight: 500,
+          fontFamily: '"Playfair Display", Georgia, serif',
+          fontWeight: 400,
+          fontStyle: "italic",
           fontSize: 28,
-          lineHeight: 1,
-          letterSpacing: "-0.02em",
-          color: "#0A0A0A",
-          fontStretch: "normal",
-          textTransform: "none",
+          lineHeight: "28px",
+          letterSpacing: "-0.5px",
+          color: "#EEE8DA",
+          textTransform: "lowercase",
         }}
       >
         {primary}
@@ -43,14 +43,13 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
             {" "}
             <span
               style={{
-                fontFamily: DISPLAY,
-                fontStyle: "normal",
-                fontWeight: 500,
+                fontFamily: '"Playfair Display", Georgia, serif',
+                fontStyle: "italic",
+                fontWeight: 400,
                 fontSize: 28,
-                color: "#0A0A0A",
-                letterSpacing: "-0.02em",
-                fontStretch: "normal",
-                textTransform: "none",
+                color: "#EEE8DA",
+                letterSpacing: "-0.5px",
+                textTransform: "lowercase",
               }}
             >
               {serif}
@@ -66,7 +65,10 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
             fontSize: 12,
             lineHeight: 1,
             textTransform: "uppercase",
-            color: "#5b4632",
+            letterSpacing: "1.6px",
+            color: "rgba(238, 232, 218, 0.85)",
+            borderBottom: "1px solid rgba(238,232,218,0.4)",
+            paddingBottom: 2,
             textDecoration: "none",
             whiteSpace: "nowrap",
             flexShrink: 0,

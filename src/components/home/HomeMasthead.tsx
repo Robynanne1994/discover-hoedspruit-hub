@@ -124,7 +124,7 @@ const HomeMasthead = () => {
                 width: 36,
                 height: 36,
                 borderRadius: 999,
-                background: "#FFFFFF",
+                background: "#EEE8DA",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -132,7 +132,7 @@ const HomeMasthead = () => {
                 cursor: "pointer",
               }}
             >
-              <Bell size={16} color="#0A0A0A" strokeWidth={2} />
+              <Bell size={16} color="#2A2A24" strokeWidth={2} />
               {unreadCount > 0 && (
                 <span
                   style={{
@@ -150,7 +150,7 @@ const HomeMasthead = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    border: "2px solid #FFFFFF",
+                    border: "2px solid #EEE8DA",
                     lineHeight: 1,
                   }}
                 >
@@ -202,7 +202,7 @@ const HomeMasthead = () => {
               width: 36,
               height: 36,
               borderRadius: 999,
-              background: "#FFFFFF",
+              background: "#EEE8DA",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -210,7 +210,7 @@ const HomeMasthead = () => {
               cursor: "pointer",
             }}
           >
-            <Menu size={16} color="#0A0A0A" strokeWidth={2} />
+            <Menu size={16} color="#2A2A24" strokeWidth={2} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
             <DropdownMenuLabel>Quick links</DropdownMenuLabel>
@@ -269,35 +269,35 @@ const HomeMasthead = () => {
 
       {/* Masthead */}
       <div style={{ padding: "28px 24px 0" }}>
+        <p
+          style={{
+            margin: 0,
+            marginBottom: 14,
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontWeight: 400,
+            fontSize: 12,
+            lineHeight: "14.4px",
+            letterSpacing: "2.4px",
+            color: "rgba(238, 232, 218, 0.7)",
+            textTransform: "uppercase",
+          }}
+        >
+          Your Lowveld Local
+        </p>
         <h1
           style={{
             margin: 0,
-            fontFamily: DISPLAY,
-            fontWeight: 700,
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontWeight: 500,
             fontSize: 58,
-            lineHeight: 0.92,
-            letterSpacing: "-0.035em",
-            color: "#0A0A0A",
+            lineHeight: 0.95,
+            letterSpacing: "-1.8px",
+            color: "#EEE8DA",
             position: "relative",
           }}
         >
           Hello<br />Hoedspruit
         </h1>
-        <p
-          style={{
-            marginTop: 18,
-            marginBottom: 0,
-            fontFamily: SANS,
-            fontSize: 18,
-            fontWeight: 600,
-            color: "#6B6560",
-            lineHeight: 1.45,
-            maxWidth: 260,
-            textTransform: "none",
-          }}
-        >
-          Your Lowveld Local
-        </p>
       </div>
 
       {/* Search row */}
@@ -306,7 +306,7 @@ const HomeMasthead = () => {
           to="/categories"
           style={{
             flex: 1,
-            background: "#FFFFFF",
+            background: "#EEE8DA",
             borderRadius: 999,
             padding: "14px 18px",
             display: "flex",
@@ -316,13 +316,13 @@ const HomeMasthead = () => {
             minWidth: 0,
           }}
         >
-          <Search size={16} color="#8A8480" strokeWidth={2} />
+          <Search size={16} color="#6B6A5E" strokeWidth={2} />
           <span
             style={{
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
               fontSize: 12,
               fontStyle: "italic",
-              color: "#8A8480",
+              color: "#6B6A5E",
               whiteSpace: "nowrap",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -333,7 +333,7 @@ const HomeMasthead = () => {
         </Link>
         <div
           style={{
-            background: "#FFFFFF",
+            background: "#EEE8DA",
             borderRadius: 999,
             padding: "14px 24px",
             display: "flex",
@@ -343,7 +343,7 @@ const HomeMasthead = () => {
           }}
         >
           <WeatherIcon kind={getWeatherIconKind(weatherCode, isNight)} />
-          <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 500, color: "#0A0A0A" }}>
+          <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, fontWeight: 500, color: "#2A2A24" }}>
             {temp !== null ? `${temp}°` : "—"}
           </span>
         </div>

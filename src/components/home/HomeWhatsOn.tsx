@@ -111,7 +111,7 @@ const HomeWhatsOn = () => {
                 maxWidth: 265,
                 minWidth: 260,
                 flexShrink: 0,
-                background: "#FFFFFF",
+                background: "#EEE8DA",
                 borderRadius: 24,
                 overflow: "hidden",
                 textDecoration: "none",
@@ -120,7 +120,7 @@ const HomeWhatsOn = () => {
                 scrollSnapAlign: "start",
               }}
             >
-              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#F2EFEC" }}>
+              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#E0DAC9" }}>
                 {e.image_url && (
                   <img
                     src={e.image_url}
@@ -134,7 +134,7 @@ const HomeWhatsOn = () => {
                     position: "absolute",
                     top: 12,
                     left: 12,
-                    background: "#FFFFFF",
+                    background: "#EEE8DA",
                     borderRadius: 999,
                     padding: "8px 14px",
                   }}
