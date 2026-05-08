@@ -1105,14 +1105,20 @@ export type Database = {
           community_activity: boolean
           community_followers: boolean
           events_new: boolean
+          events_new_categories: string[] | null
           events_reminders: boolean
           events_updates: boolean
           hh_app_updates: boolean
           hh_tips: boolean
           id: string
           listings_new: boolean
+          listings_new_categories: string[] | null
           listings_updates: boolean
+          listings_updates_categories: string[] | null
           push_enabled: boolean
+          specials_ending: boolean
+          specials_new: boolean
+          specials_new_categories: string[] | null
           updated_at: string
           user_id: string
         }
@@ -1120,14 +1126,20 @@ export type Database = {
           community_activity?: boolean
           community_followers?: boolean
           events_new?: boolean
+          events_new_categories?: string[] | null
           events_reminders?: boolean
           events_updates?: boolean
           hh_app_updates?: boolean
           hh_tips?: boolean
           id?: string
           listings_new?: boolean
+          listings_new_categories?: string[] | null
           listings_updates?: boolean
+          listings_updates_categories?: string[] | null
           push_enabled?: boolean
+          specials_ending?: boolean
+          specials_new?: boolean
+          specials_new_categories?: string[] | null
           updated_at?: string
           user_id: string
         }
@@ -1135,14 +1147,20 @@ export type Database = {
           community_activity?: boolean
           community_followers?: boolean
           events_new?: boolean
+          events_new_categories?: string[] | null
           events_reminders?: boolean
           events_updates?: boolean
           hh_app_updates?: boolean
           hh_tips?: boolean
           id?: string
           listings_new?: boolean
+          listings_new_categories?: string[] | null
           listings_updates?: boolean
+          listings_updates_categories?: string[] | null
           push_enabled?: boolean
+          specials_ending?: boolean
+          specials_new?: boolean
+          specials_new_categories?: string[] | null
           updated_at?: string
           user_id?: string
         }
