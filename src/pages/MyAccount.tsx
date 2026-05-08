@@ -260,7 +260,7 @@ const MyAccount = () => {
             onClick={() => setActiveSection(null)}
             className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium"
           >
-            <ChevronLeft className="h-4 w-4" /> Back
+            <BackArrowIcon size={16} /> Back
           </button>
         </div>
 
