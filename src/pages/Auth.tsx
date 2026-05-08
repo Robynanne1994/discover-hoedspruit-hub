@@ -77,7 +77,7 @@ const Auth = () => {
 
   if (step === "claim-prompt") {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen" style={{ background: "#5C6446" }}>
         <Navbar />
         <div className="pt-24 pb-16 flex items-center justify-center px-6">
           <div className="w-full max-w-md text-center bg-card border border-border rounded-xl p-8 space-y-6">
@@ -100,7 +100,7 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "#5C6446" }}>
       <Navbar />
       <div className="pt-24 pb-16 flex items-center justify-center px-6">
         <div className="w-full max-w-md">

@@ -7,7 +7,7 @@ const RestaurantQuiz = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col" style={{ background: "#5C6446" }}>
       <Navbar />
 
       <main className="flex-1 flex flex-col items-center px-6 pt-24 pb-12">
