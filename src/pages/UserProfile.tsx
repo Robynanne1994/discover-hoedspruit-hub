@@ -127,10 +127,19 @@ const UserProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: events } = await supabase
         .from("events")
-        .select("id, title, image_url, location, date, start_date")
+        .select("id, title, image_url, location, date, start_date, end_date")
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
-      return favs.map((f) => map[f.item_id]).filter(Boolean);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return favs
+        .map((f) => map[f.item_id])
+        .filter(Boolean)
+        .filter((e) => {
+          if (e.end_date) return new Date(e.end_date) >= today;
+          if (e.start_date) return new Date(e.start_date) >= today;
+          return true; // legacy events with no structured date
+        });
     },
     enabled: !!id,
   });
@@ -150,10 +159,19 @@ const UserProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
-        .select("id, title, image_url, business_name, deal_label")
+        .select("id, title, image_url, business_name, deal_label, valid_until, is_active")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
-      return favs.map((f) => map[f.item_id]).filter(Boolean);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return favs
+        .map((f) => map[f.item_id])
+        .filter(Boolean)
+        .filter((s) => {
+          if (s.is_active === false) return false;
+          if (s.valid_until) return new Date(s.valid_until) >= today;
+          return true;
+        });
     },
     enabled: !!id,
   });
