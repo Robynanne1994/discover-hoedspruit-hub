@@ -29,6 +29,7 @@ import starRatingIconSrc from "@/assets/star-rating-icon.svg";
 import accessibilityIconSrc from "@/assets/accessibility-icon.svg";
 import pricingIconSrc from "@/assets/pricing-icon.svg";
 import cuisineIconSrc from "@/assets/cuisine-icon.svg";
+import mealsIconSrc from "@/assets/meals-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
@@ -81,6 +82,10 @@ const CuisineIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth
 
 const AmenitiesIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
   <img src={amenitiesIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
+);
+
+const MealsIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
+  <img src={mealsIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
 );
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -909,7 +914,7 @@ const ListingDetail = () => {
                   accessibility: AccessibilityIcon,
                   amenities: AmenitiesIcon,
                   seating: SeatingIcon,
-                  meals: UtensilsCrossed,
+                  meals: MealsIcon,
                   cuisine: CuisineIcon,
                   vibe: VibeIcon,
                   "accom-food": Coffee,
