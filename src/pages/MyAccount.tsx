@@ -48,6 +48,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
+import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
 import FollowStats from "@/components/social/FollowStats";
 import { useFollowCounts } from "@/hooks/useFollows";
 import { toast } from "sonner";
@@ -69,6 +70,8 @@ const MyAccount = () => {
   const [newCollectionName, setNewCollectionName] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<ActiveSection>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth");
