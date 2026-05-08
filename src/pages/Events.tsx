@@ -28,14 +28,13 @@ const COLOR = {
 
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
-type FilterType = "all" | "today" | "this-week" | "this-month" | "upcoming" | "past";
+type FilterType = "all" | "today" | "this-week" | "this-month" | "past";
 
 const FILTERS: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
   { label: "This Month", value: "this-month" },
-  { label: "Upcoming", value: "upcoming" },
   { label: "Past", value: "past" },
 ];
 
