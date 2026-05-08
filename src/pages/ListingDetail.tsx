@@ -95,11 +95,11 @@ const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-s
 // Design tokens
 const C = {
   bg: "#5C6446",
-  card: "#FFFFFF",
+  card: "#EEE8DA",
   coral: "#F26A48",
   panel: "#F2EFEC",
   border: "#E8E4DF",
-  text: "#0A0A0A",
+  text: "#2A2A24",
   muted: "#8A8480",
   xMuted: "#B8B3AE",
   mapBg: "#D8D3CB",
