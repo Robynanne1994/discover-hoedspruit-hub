@@ -1,8 +1,6 @@
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-
 export type HomeChip = "All" | "Eat" | "Stay" | "Do" | "Shop" | "Events" | "Specials";
 
-const CHIPS: HomeChip[] = ["All", "Eat", "Stay", "Do", "Shop", "Events", "Specials"];
+const CHIPS: HomeChip[] = ["All", "Eat", "Stay", "Do", "Shop", "Events"];
 
 interface Props {
   active: HomeChip;
@@ -13,7 +11,7 @@ const HomeCategoryChips = ({ active, onChange }: Props) => {
   return (
     <div
       className="scrollbar-hide"
-      style={{ overflowX: "auto", paddingLeft: 24, marginRight: 0 }}
+      style={{ overflowX: "auto", paddingLeft: 24 }}
     >
       <div style={{ display: "flex", gap: 8, paddingRight: 24 }}>
         {CHIPS.map((chip) => {
@@ -26,11 +24,13 @@ const HomeCategoryChips = ({ active, onChange }: Props) => {
               onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               style={{
-                padding: "10px 18px",
+                height: 40,
+                padding: "0 22px",
                 borderRadius: 999,
-                background: isActive ? "#2E241C" : "#EEE8DA",
+                background: isActive ? "#2A2A24" : "#EEE8DA",
                 color: isActive ? "#EEE8DA" : "#2A2A24",
                 fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontWeight: 400,
                 fontSize: 14,
                 lineHeight: 1,
                 border: "none",
