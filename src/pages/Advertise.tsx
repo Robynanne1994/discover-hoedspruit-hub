@@ -42,9 +42,7 @@ const tap = {
 
 const formatPlus = (n: number | null | undefined, fallback: string) => {
   if (n == null) return fallback;
-  // round down to nearest 100
-  const rounded = Math.max(0, Math.floor(n / 100) * 100);
-  return `${rounded.toLocaleString("en-US")}+`;
+  return `${n.toLocaleString("en-US")}+`;
 };
 
 const Advertise = () => {
