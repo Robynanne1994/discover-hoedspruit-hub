@@ -26,6 +26,7 @@ const Index = () => {
     >
       <HomeMasthead />
       <div style={{ height: 28 }} />
+      <div style={{ height: 32 }} />
       <HomeCategoryChips active={activeChip} onChange={setActiveChip} />
 
       {showSection("Specials") && (
