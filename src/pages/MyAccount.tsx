@@ -443,24 +443,26 @@ const MyAccount = () => {
     );
   }
 
-  const FONT_STACK = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+  // === Editorial design tokens ===
+  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
   const SERIF = "'Playfair Display', Georgia, serif";
-  const TEXT = "#0A0A0A";
-  const MUTED = "#8A8480";
-  const IVORY = "#F2EFEC";
+  const OLIVE = "#5C6446";
+  const CREAM = "#EEE8DA";
+  const INK = "#2A2A24";
+  const MUTED_INK = "#6B6A5E";
+  const LINE = "#D9D2C0";
+  const RUST = "#9B5A3C";
+  const GOLD = "#D9C36B";
 
-  const myHoedspruitItems = [
-    { label: "My Hoedspruit", href: "/saved", heart: true },
+  const resourcesItems = [
+    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
+    { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
+    { label: "My Business", href: "/business/dashboard", icon: Briefcase },
   ];
   const getInTouchItems = [
     { label: "Contact", href: "/contact", icon: Phone },
     { label: "Advertise", href: "/advertise", icon: Megaphone },
     { label: "Feedback", href: "/feedback", icon: MessageSquare },
-  ];
-  const resourcesItems = [
-    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
-    { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
-    { label: "My Business", href: "/business/dashboard", icon: Briefcase },
   ];
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
@@ -470,149 +472,151 @@ const MyAccount = () => {
   ];
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
 
-  const baseTextStyle: React.CSSProperties = {
-    fontFamily: FONT_STACK,
-    fontStretch: "normal",
-    fontSynthesis: "none",
-    transform: "none",
-  };
+  const Eyebrow = ({ children }: { children: React.ReactNode }) => (
+    <p
+      style={{
+        fontFamily: SANS,
+        fontSize: 11,
+        fontWeight: 400,
+        letterSpacing: "0.24em",
+        textTransform: "uppercase",
+        color: "rgba(238,232,218,0.7)",
+        margin: "0 0 10px 0",
+        padding: "0 24px",
+      }}
+    >
+      {children}
+    </p>
+  );
 
-  const renderCard = (items: { label: string; href: string; heart?: boolean; icon?: any }[]) => (
+  const Row = ({
+    item,
+    isFirst,
+    heart = false,
+  }: {
+    item: { label: string; href: string; icon?: any };
+    isFirst: boolean;
+    heart?: boolean;
+  }) => (
+    <Link
+      to={item.href}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        padding: "18px 0",
+        textDecoration: "none",
+        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+      }}
+    >
+      {heart ? (
+        <div
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            background: RUST,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Heart size={16} strokeWidth={2} color={CREAM} fill={CREAM} />
+        </div>
+      ) : item.icon ? (
+        <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
+        </div>
+      ) : null}
+      <span
+        style={{
+          flex: 1,
+          fontFamily: SANS,
+          fontSize: 16,
+          fontWeight: 400,
+          letterSpacing: "-0.1px",
+          color: INK,
+          lineHeight: 1.25,
+        }}
+      >
+        {item.label}
+      </span>
+      <div
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: "50%",
+          background: "rgba(106,106,94,0.1)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          fontSize: 12,
+          color: INK,
+          lineHeight: 1,
+        }}
+      >
+        ↗
+      </div>
+    </Link>
+  );
+
+  const Card = ({
+    items,
+    heartFirst = false,
+  }: {
+    items: { label: string; href: string; icon?: any }[];
+    heartFirst?: boolean;
+  }) => (
     <div
       style={{
-        background: "#FFFFFF",
+        background: CREAM,
         borderRadius: 20,
-        overflow: "hidden",
+        margin: "0 24px",
+        padding: "4px 22px",
       }}
     >
       {items.map((item, i) => (
-        <div key={item.label}>
-          <Link
-            to={item.href}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              padding: "18px 20px",
-              textDecoration: "none",
-              transition: "transform 0.15s ease",
-            }}
-            onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.995)")}
-            onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-          >
-            {item.heart ? (
-              <div
-                style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: "50%",
-                  background: "#423324",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <Heart size={14} strokeWidth={1.8} color="#FFFFFF" fill="#FFFFFF" />
-              </div>
-            ) : item.icon ? (
-              <div style={{ width: 18, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <item.icon size={18} strokeWidth={1.5} color="#898480" />
-              </div>
-            ) : null}
-            <span
-              style={{
-                ...baseTextStyle,
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                flex: 1,
-                fontSize: 16,
-                fontWeight: 400,
-                lineHeight: 1.25,
-                color: TEXT,
-              }}
-            >
-              {item.label}
-            </span>
-            <div
-              style={{
-                width: 28,
-                height: 28,
-                borderRadius: "50%",
-                background: IVORY,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-              }}
-            >
-              <ChevronRight size={14} strokeWidth={2} color={TEXT} />
-            </div>
-          </Link>
-          {i < items.length - 1 && (
-            <div
-              style={{
-                height: 1,
-                background: IVORY,
-                marginLeft: 20,
-                marginRight: 20,
-              }}
-            />
-          )}
-        </div>
+        <Row key={item.label} item={item} isFirst={i === 0} heart={heartFirst && i === 0} />
       ))}
     </div>
   );
 
-  const sectionLabel = (text: string) => (
-    <p
-      style={{
-        ...baseTextStyle,
-        fontSize: 11,
-        fontWeight: 500,
-        letterSpacing: "0.18em",
-        textTransform: "uppercase",
-        color: "#F0EAD9",
-        margin: 0,
-        marginBottom: 10,
-        paddingLeft: 4,
-      }}
-    >
-      {text}
-    </p>
-  );
-
-  const firstName = (profile?.display_name?.trim() || user.email?.split("@")[0] || "You").split(" ")[0];
-  const username = user.email ? `@${user.email.split("@")[0]}` : "";
+  const displayName = (profile?.display_name?.trim() || user.email?.split("@")[0] || "You");
+  const handle = user.email ? `@${user.email.split("@")[0].toLowerCase()}` : "";
+  const initial = displayName.charAt(0).toUpperCase();
+  const bioText = profile?.bio?.trim()
+    ? /[.!?]$/.test(profile.bio.trim())
+      ? profile.bio.trim()
+      : `${profile.bio.trim()}.`
+    : null;
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        backgroundColor: "#555340",
+        background: OLIVE,
         paddingBottom: 120,
-        ...baseTextStyle,
+        fontFamily: SANS,
       }}
     >
-      {/* Top row */}
+      {/* Top bar */}
       <div
         style={{
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "calc(env(safe-area-inset-top) + 16px) 20px 0",
+          justifyContent: "flex-end",
+          padding: "calc(env(safe-area-inset-top) + 32px) 24px 0",
         }}
       >
-        <span />
         <DropdownMenu>
           <DropdownMenuTrigger
             aria-label="Menu"
             style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: "#FFFFFF",
-              boxShadow: "0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04)",
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              background: CREAM,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -620,7 +624,7 @@ const MyAccount = () => {
               cursor: "pointer",
             }}
           >
-            <Menu size={20} strokeWidth={1.8} color={TEXT} />
+            <Menu size={18} strokeWidth={1.6} color={INK} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
             <DropdownMenuLabel>Quick links</DropdownMenuLabel>
@@ -628,46 +632,14 @@ const MyAccount = () => {
             <DropdownMenuItem onClick={() => navigate("/saved")}>
               <Heart className="mr-2 h-4 w-4" /> Saved
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/saved?tab=events")}>
-              <Calendar className="mr-2 h-4 w-4" /> Saved events
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/saved?tab=specials")}>
-              <Tag className="mr-2 h-4 w-4" /> Saved specials
-            </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/visited")}>
               <MapPinCheck className="mr-2 h-4 w-4" /> Been here
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/my-hoedspruit")}>
-              <Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => navigate("/notifications")}>
               <Bell className="mr-2 h-4 w-4" /> Notifications
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/account-settings")}>
               <Settings className="mr-2 h-4 w-4" /> Settings
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/account-settings/info")}>
-              <UserCircle className="mr-2 h-4 w-4" /> Account info
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/privacy-security")}>
-              <Shield className="mr-2 h-4 w-4" /> Privacy & security
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/faqs")}>
-              <HelpCircle className="mr-2 h-4 w-4" /> FAQs
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/feedback")}>
-              <MessageSquare className="mr-2 h-4 w-4" /> Feedback
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/contact")}>
-              <Phone className="mr-2 h-4 w-4" /> Contact us
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/about")}>
-              <Info className="mr-2 h-4 w-4" /> About
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/advertise")}>
-              <Megaphone className="mr-2 h-4 w-4" /> Advertise
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
@@ -677,112 +649,131 @@ const MyAccount = () => {
         </DropdownMenu>
       </div>
 
-      {/* Hero */}
-      <div style={{ padding: "28px 24px 0" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-          <div style={{ position: "relative", width: 132, height: 132, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg
-              width="132"
-              height="132"
-              viewBox="0 0 132 132"
-              style={{ position: "absolute", inset: 0, pointerEvents: "none", filter: "url(#rusticRough)" }}
-              aria-hidden="true"
-            >
-              <defs>
-                <filter id="rusticRough" x="-10%" y="-10%" width="120%" height="120%">
-                  <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="4" />
-                  <feDisplacementMap in="SourceGraphic" scale="1.4" />
-                </filter>
-              </defs>
-              {Array.from({ length: 24 }).map((_, i) => {
-                const angle = (i * 360) / 24;
-                const long = i % 2 === 0;
-                const inner = 50;
-                const outer = long ? 64 : 60;
-                return (
-                  <line
-                    key={i}
-                    x1="66"
-                    y1={66 - outer}
-                    x2="66"
-                    y2={66 - inner}
-                    stroke="#BAA685"
-                    strokeWidth={long ? 3 : 2.2}
-                    strokeLinecap="round"
-                    transform={`rotate(${angle} 66 66)`}
-                    opacity={0.9}
-                  />
-                );
-              })}
-            </svg>
-            <div
-              style={{
-                width: 84,
-                height: 84,
-                borderRadius: "50%",
-                background: "#E2C9B4",
-                overflow: "hidden",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-                zIndex: 1,
-              }}
-            >
-              {profile?.avatar_url ? (
-                <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                <span style={{ ...baseTextStyle, fontSize: 28, fontWeight: 500, color: "#FFFFFF" }}>
-                  {firstName.charAt(0).toUpperCase()}
-                </span>
-              )}
-            </div>
-          </div>
-          <h1
+      {/* Hero: avatar + name */}
+      <div style={{ padding: "8px 24px 0", display: "flex", alignItems: "center", gap: 18 }}>
+        <div style={{ position: "relative", width: 120, height: 120, flexShrink: 0 }}>
+          <svg
+            width="120"
+            height="120"
+            viewBox="0 0 120 120"
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            aria-hidden="true"
+          >
+            {Array.from({ length: 16 }).map((_, i) => {
+              const angle = (i * 360) / 16;
+              const rad = (angle * Math.PI) / 180;
+              const inner = 54;
+              const outer = 60 + ((i % 3) - 1) * 1.2; // tiny variance, primitive feel
+              const cx = 60;
+              const cy = 60;
+              const x1 = cx + Math.sin(rad) * inner;
+              const y1 = cy - Math.cos(rad) * inner;
+              const x2 = cx + Math.sin(rad) * outer;
+              const y2 = cy - Math.cos(rad) * outer;
+              return (
+                <line
+                  key={i}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke={GOLD}
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                />
+              );
+            })}
+          </svg>
+          <div
             style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontWeight: 500,
-              fontSize: 35,
-              lineHeight: 1,
-              letterSpacing: "-0.02em",
-              color: "#F0EAD9",
-              margin: 0,
-              flex: 1,
-              minWidth: 0,
-              wordBreak: "break-word",
+              position: "absolute",
+              top: 20,
+              left: 20,
+              width: 80,
+              height: 80,
+              borderRadius: "50%",
+              overflow: "hidden",
+              background: profile?.avatar_url
+                ? "transparent"
+                : "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
-            {firstName}
-          </h1>
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <span
+                style={{
+                  fontFamily: SERIF,
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  fontSize: 34,
+                  color: CREAM,
+                  lineHeight: 1,
+                }}
+              >
+                {initial}
+              </span>
+            )}
+          </div>
         </div>
+        <h1
+          style={{
+            fontFamily: SERIF,
+            fontWeight: 400,
+            fontSize: 54,
+            lineHeight: 0.95,
+            letterSpacing: "-1.6px",
+            color: CREAM,
+            margin: 0,
+            flex: 1,
+            minWidth: 0,
+            wordBreak: "break-word",
+          }}
+        >
+          {displayName.charAt(0).toUpperCase() + displayName.slice(1)}
+        </h1>
+      </div>
 
-        {username && (
-          <p style={{ ...baseTextStyle, fontSize: 14, color: "#F0EAD9", margin: "16px 0 0" }}>{username}</p>
+      {/* Handle + bio */}
+      <div style={{ padding: "16px 24px 0" }}>
+        {handle && (
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: 400,
+              color: "rgba(238,232,218,0.65)",
+              margin: "0 0 8px 0",
+            }}
+          >
+            {handle}
+          </p>
         )}
-
-        {profile?.bio && (
+        {bioText && (
           <p
             style={{
               fontFamily: SERIF,
               fontStyle: "italic",
-              fontWeight: 300,
+              fontWeight: 400,
               fontSize: 18,
               lineHeight: 1.4,
-              color: "#F0EAD9",
-              maxWidth: 300,
-              margin: "10px 0 0",
+              color: "rgba(238,232,218,0.85)",
+              margin: 0,
             }}
           >
-            {profile.bio}
+            {bioText}
           </p>
         )}
       </div>
 
       {/* Stats card */}
-      <div style={{ padding: "24px 24px 0" }}>
+      <div style={{ padding: "24px 24px 0", marginBottom: 32 }}>
         <div
           style={{
-            background: "#FFFFFF",
+            background: CREAM,
             borderRadius: 20,
             padding: "18px 22px",
             display: "flex",
@@ -795,13 +786,14 @@ const MyAccount = () => {
             onClick={() => setActiveSection("profile")}
             style={{
               marginLeft: "auto",
-              background: TEXT,
-              color: "#FFFFFF",
+              background: INK,
+              color: CREAM,
               border: "none",
               borderRadius: 999,
-              padding: "8px 16px",
+              padding: "9px 22px",
+              fontFamily: SANS,
               fontSize: 13,
-              fontFamily: FONT_STACK,
+              fontWeight: 400,
               cursor: "pointer",
             }}
           >
@@ -810,85 +802,90 @@ const MyAccount = () => {
         </div>
       </div>
 
-      {/* My Hoedspruit */}
-      <div style={{ padding: "28px 24px 0" }}>
-        {sectionLabel("Saved")}
-        {renderCard(myHoedspruitItems)}
-      </div>
+      {/* Saved */}
+      <Eyebrow>Saved</Eyebrow>
+      <Card items={[{ label: "My Hoedspruit", href: "/saved" }]} heartFirst />
 
-      {/* Resources */}
-      <div style={{ padding: "24px 24px 0" }}>
-        {sectionLabel("Resources")}
-        {renderCard(resourcesItems)}
-      </div>
+      <div style={{ height: 28 }} />
+      <Eyebrow>Resources</Eyebrow>
+      <Card items={resourcesItems} />
 
-      {/* Get in touch */}
-      <div style={{ padding: "24px 24px 0" }}>
-        {sectionLabel("Get in touch")}
-        {renderCard(getInTouchItems)}
-      </div>
+      <div style={{ height: 28 }} />
+      <Eyebrow>Get In Touch</Eyebrow>
+      <Card items={getInTouchItems} />
 
-      {/* Help and settings */}
-      <div style={{ padding: "24px 24px 0" }}>
-        {sectionLabel("Help & settings")}
-        {renderCard(helpItems)}
-      </div>
+      <div style={{ height: 28 }} />
+      <Eyebrow>Help & Settings</Eyebrow>
+      <Card items={helpItems} />
 
-      {/* Admin */}
       {isAdmin && (
-        <div style={{ padding: "24px 24px 0" }}>
-          {sectionLabel("Admin")}
-          {renderCard(adminItems)}
-        </div>
+        <>
+          <div style={{ height: 28 }} />
+          <Eyebrow>Admin</Eyebrow>
+          <Card items={adminItems} />
+        </>
       )}
 
       {/* Log out */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 32 }}>
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 8, marginBottom: 24 }}>
         <button
           onClick={() => {
             signOut();
             navigate("/");
           }}
           style={{
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
-            gap: 8,
-            background: "#423324",
-            color: "#FFFFFF",
-            border: "none",
+            gap: 10,
+            background: "transparent",
+            color: CREAM,
+            border: "1px solid rgba(238,232,218,0.35)",
             borderRadius: 999,
-            padding: "14px 28px 14px 24px",
-            fontFamily: FONT_STACK,
+            padding: "14px 26px",
+            fontFamily: SANS,
             fontSize: 14,
-            fontWeight: 500,
+            fontWeight: 400,
             cursor: "pointer",
           }}
         >
-          <LogOut size={16} strokeWidth={1.8} color="#FFFFFF" />
-          <span>Log out</span>
+          <LogOut size={14} strokeWidth={1.6} color={CREAM} />
+          <span>Log Out</span>
         </button>
       </div>
     </div>
   );
 };
 
-// Inline editorial follow stats (followers / following stacked)
+// Editorial follow stats — Playfair number, tracked uppercase label
 const FollowStat = ({ userId }: { userId: string }) => {
   const { data: counts } = useFollowCounts(userId);
-  const TEXT = "#0A0A0A";
-  const MUTED = "#8A8480";
-  const FONT_STACK = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
+  const INK = "#2A2A24";
+  const MUTED_INK = "#6B6A5E";
+  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const SERIF = "'Playfair Display', Georgia, serif";
+  const fmt = (n: number) => n.toLocaleString("en-US");
   const Stat = ({ to, count, label }: { to: string; count: number; label: string }) => (
-    <Link to={to} style={{ textDecoration: "none", display: "flex", flexDirection: "column", gap: 4 }}>
-      <span style={{ fontFamily: FONT_STACK, fontSize: 18, fontWeight: 500, color: TEXT, lineHeight: 1 }}>{count}</span>
+    <Link to={to} style={{ textDecoration: "none", display: "flex", flexDirection: "column", gap: 2 }}>
       <span
         style={{
-          fontFamily: FONT_STACK,
-          fontSize: 11,
-          fontWeight: 500,
-          letterSpacing: "0.14em",
+          fontFamily: SERIF,
+          fontWeight: 400,
+          fontSize: 26,
+          lineHeight: 1,
+          letterSpacing: "-0.5px",
+          color: INK,
+        }}
+      >
+        {fmt(count)}
+      </span>
+      <span
+        style={{
+          fontFamily: SANS,
+          fontSize: 10.5,
+          fontWeight: 400,
+          letterSpacing: "0.18em",
           textTransform: "uppercase",
-          color: MUTED,
+          color: MUTED_INK,
           lineHeight: 1,
         }}
       >
@@ -896,10 +893,12 @@ const FollowStat = ({ userId }: { userId: string }) => {
       </span>
     </Link>
   );
+  const followers = counts?.followers ?? 0;
+  const following = counts?.following ?? 0;
   return (
     <div style={{ display: "flex", gap: 32 }}>
-      <Stat to={`/profile/${userId}/followers`} count={counts?.followers ?? 0} label={counts?.followers === 1 ? "Follower" : "Followers"} />
-      <Stat to={`/profile/${userId}/following`} count={counts?.following ?? 0} label="Following" />
+      <Stat to={`/profile/${userId}/followers`} count={followers} label={followers === 1 ? "Follower" : "Followers"} />
+      <Stat to={`/profile/${userId}/following`} count={following} label={following === 1 ? "Following" : "Following"} />
     </div>
   );
 };
