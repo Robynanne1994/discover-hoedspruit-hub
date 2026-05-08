@@ -678,7 +678,7 @@ const ListingDetail = () => {
         {firstCategory && (
           <p style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "0.24px", color: "#FFFFFF", margin: 0, marginBottom: 4,
+            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16,
             textTransform: "uppercase",
           }}>
             {firstCategory.title}
