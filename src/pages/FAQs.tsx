@@ -2,8 +2,9 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, ChevronDown, ChevronLeft, Mail } from "lucide-react";
+import { Search, ChevronDown, Mail } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FF = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const FF_HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -110,7 +111,7 @@ const FAQs = () => {
             ...baseStyle,
           }}
         >
-          <ChevronLeft size={20} strokeWidth={1.8} color="#0A0A0A" />
+          <BackArrowIcon size={20} color="#0A0A0A" />
         </button>
       </div>
 

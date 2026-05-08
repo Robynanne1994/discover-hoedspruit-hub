@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FONT_STACK = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const PLAYFAIR = "'Playfair Display', Georgia, serif";
@@ -41,7 +42,7 @@ const TermsPolicies = () => {
             boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
           }}
         >
-          <ChevronLeft size={20} strokeWidth={2} color="#0A0A0A" />
+          <BackArrowIcon size={20} color="#0A0A0A" />
         </button>
       </div>
 

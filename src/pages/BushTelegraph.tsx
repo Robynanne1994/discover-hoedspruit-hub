@@ -1,10 +1,11 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronLeft, Plus, ArrowUpRight, X, Pencil } from "lucide-react";
+import { Plus, ArrowUpRight, X, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const HW = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HN = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
@@ -327,7 +328,7 @@ const BushTelegraph = () => {
       {/* Top bar */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 0 0" }}>
         <IconButton onClick={() => navigate(-1)} ariaLabel="Back">
-          <ChevronLeft size={20} color={TEXT} strokeWidth={2} />
+          <BackArrowIcon size={20} color={TEXT} />
         </IconButton>
         <div style={{ display: "flex", gap: 8 }}>
           {isAdmin && (

@@ -1,10 +1,11 @@
-import { Loader2, Check, ChevronLeft, ArrowUpRight } from "lucide-react";
+import { Loader2, Check, ArrowUpRight } from "lucide-react";
 import { useState, useEffect, CSSProperties } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FF = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 const PLAYFAIR = "'Playfair Display', Georgia, serif";
@@ -141,7 +142,7 @@ const Advertise = () => {
           }}
           aria-label="Back"
         >
-          <ChevronLeft size={20} strokeWidth={1.8} color={INK} />
+          <BackArrowIcon size={20} color={INK} />
         </button>
       </div>
 

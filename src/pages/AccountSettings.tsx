@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,6 +14,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
@@ -61,7 +62,7 @@ const AccountSettings = () => {
             fontFamily: SANS,
           }}
         >
-          <ChevronLeft size={20} strokeWidth={2} color="#0A0A0A" />
+          <BackArrowIcon size={20} color="#0A0A0A" />
           
         </button>
       </div>
