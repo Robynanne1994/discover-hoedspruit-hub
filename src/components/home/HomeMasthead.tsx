@@ -124,7 +124,7 @@ const HomeMasthead = () => {
                 width: 36,
                 height: 36,
                 borderRadius: 999,
-                background: "#FFFFFF",
+                background: "#EEE8DA",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -132,7 +132,7 @@ const HomeMasthead = () => {
                 cursor: "pointer",
               }}
             >
-              <Bell size={16} color="#0A0A0A" strokeWidth={2} />
+              <Bell size={16} color="#2A2A24" strokeWidth={2} />
               {unreadCount > 0 && (
                 <span
                   style={{
@@ -150,7 +150,7 @@ const HomeMasthead = () => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    border: "2px solid #FFFFFF",
+                    border: "2px solid #EEE8DA",
                     lineHeight: 1,
                   }}
                 >
@@ -202,7 +202,7 @@ const HomeMasthead = () => {
               width: 36,
               height: 36,
               borderRadius: 999,
-              background: "#FFFFFF",
+              background: "#EEE8DA",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -210,7 +210,7 @@ const HomeMasthead = () => {
               cursor: "pointer",
             }}
           >
-            <Menu size={16} color="#0A0A0A" strokeWidth={2} />
+            <Menu size={16} color="#2A2A24" strokeWidth={2} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
             <DropdownMenuLabel>Quick links</DropdownMenuLabel>
