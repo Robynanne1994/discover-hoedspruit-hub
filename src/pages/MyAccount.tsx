@@ -628,47 +628,36 @@ const MyAccount = () => {
         style={{
           display: "flex",
           justifyContent: "flex-end",
+          gap: 10,
           padding: "calc(env(safe-area-inset-top) + 32px) 24px 0",
         }}
       >
-        <DropdownMenu>
-          <DropdownMenuTrigger
-            aria-label="Menu"
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: "50%",
-              background: CREAM,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            <Menu size={18} strokeWidth={1.6} color={INK} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" sideOffset={8} className="w-60">
-            <DropdownMenuLabel>Quick links</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/saved")}>
-              <Heart className="mr-2 h-4 w-4" /> Saved
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/visited")}>
-              <MapPinCheck className="mr-2 h-4 w-4" /> Been here
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/my-notifications")}>
-              <Bell className="mr-2 h-4 w-4" /> Notifications
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/account-settings")}>
-              <Settings className="mr-2 h-4 w-4" /> Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
-              <LogOut className="mr-2 h-4 w-4" /> Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <button
+          aria-label="Notifications"
+          onClick={() => navigate("/my-notifications")}
+          style={{
+            width: 44, height: 44, borderRadius: 999, background: CREAM,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            border: "none", cursor: "pointer", position: "relative", flexShrink: 0,
+          }}
+        >
+          <Bell size={18} color={INK} strokeWidth={1.6} />
+          {unreadCount > 0 && (
+            <span
+              style={{
+                position: "absolute", top: -2, right: -2,
+                minWidth: 18, height: 18, padding: "0 5px", borderRadius: 999,
+                background: "#9B5A3C", color: CREAM, fontSize: 10, fontWeight: 700,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                border: `2px solid ${CREAM}`, lineHeight: 1,
+              }}
+            >
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
+        </button>
+        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
+        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
 
       {/* Hero: avatar + name */}
