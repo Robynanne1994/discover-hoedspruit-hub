@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Heart, Calendar, Tag, MapPinCheck, Bookmark, Bell, Settings, UserCircle, Shield, HelpCircle, MessageSquare, Phone, Info, Megaphone, LogOut } from "lucide-react";
+import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Heart, Calendar, Tag, MapPinCheck, Bookmark, Bell, Settings, UserCircle, Shield, HelpCircle, MessageSquare, Phone, Info, Megaphone, LogOut, MapPin, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import {
   DropdownMenu,
   DropdownMenuContent,
