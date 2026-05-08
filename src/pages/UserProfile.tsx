@@ -159,10 +159,19 @@ const UserProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
-        .select("id, title, image_url, business_name, deal_label")
+        .select("id, title, image_url, business_name, deal_label, valid_until, is_active")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
-      return favs.map((f) => map[f.item_id]).filter(Boolean);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return favs
+        .map((f) => map[f.item_id])
+        .filter(Boolean)
+        .filter((s) => {
+          if (s.is_active === false) return false;
+          if (s.valid_until) return new Date(s.valid_until) >= today;
+          return true;
+        });
     },
     enabled: !!id,
   });
