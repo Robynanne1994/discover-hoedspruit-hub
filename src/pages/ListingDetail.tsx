@@ -896,7 +896,7 @@ const ListingDetail = () => {
                   pricing: Banknote,
                   service: ServiceIcon,
                   kids: KidsFamilyIcon,
-                  accessibility: Accessibility,
+                  accessibility: AccessibilityIcon,
                   amenities: AmenitiesIcon,
                   seating: SeatingIcon,
                   meals: UtensilsCrossed,
