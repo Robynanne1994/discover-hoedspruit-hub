@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bell, Menu, SlidersHorizontal } from "lucide-react";
+import { Search, SlidersHorizontal } from "lucide-react";
+import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -331,6 +332,7 @@ const Events = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
@@ -471,12 +473,8 @@ const Events = () => {
           gap: 10,
         }}
       >
-        <button style={iconBtn} aria-label="Notifications" onClick={() => navigate("/my-notifications")}>
-          <Bell size={18} strokeWidth={1.6} color={COLOR.ink} />
-        </button>
-        <button style={iconBtn} aria-label="Menu" onClick={() => navigate("/account")}>
-          <Menu size={18} strokeWidth={1.6} color={COLOR.ink} />
-        </button>
+        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
+        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
 
       {/* Hero */}
