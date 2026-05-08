@@ -58,7 +58,7 @@ const toTitleCase = (s: string) =>
 const SectionHeading = ({ children, mt = 18 }: { children: React.ReactNode; mt?: number }) => (
   <h2 style={{
     fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 22, lineHeight: "22px",
-    letterSpacing: "-0.66px", color: "#F0EAD9", margin: 0, marginTop: mt, marginBottom: 10,
+    letterSpacing: "-0.66px", color: "#F3EEE2", margin: 0, marginTop: mt, marginBottom: 10,
     textTransform: "none",
   }}>
     {children}
@@ -208,12 +208,12 @@ const ListingDetail = () => {
       <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
-            <ChevronLeft size={20} strokeWidth={1.5} color="#F0EAD9" />
-            <span style={{ fontSize: 15, color: "#F0EAD9", fontFamily: FONT_BODY }}>Back</span>
+            <ChevronLeft size={20} strokeWidth={1.5} color="#F3EEE2" />
+            <span style={{ fontSize: 15, color: "#F3EEE2", fontFamily: FONT_BODY }}>Back</span>
           </button>
         </div>
         <div style={{ padding: "48px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-          <p style={{ fontSize: 13, color: "#F0EAD9", fontFamily: FONT_BODY }}>Loading...</p>
+          <p style={{ fontSize: 13, color: "#F3EEE2", fontFamily: FONT_BODY }}>Loading...</p>
         </div>
       </div>
     );
@@ -224,13 +224,13 @@ const ListingDetail = () => {
       <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
-            <ChevronLeft size={20} strokeWidth={1.5} color="#F0EAD9" />
-            <span style={{ fontSize: 15, color: "#F0EAD9", fontFamily: FONT_BODY }}>Back</span>
+            <ChevronLeft size={20} strokeWidth={1.5} color="#F3EEE2" />
+            <span style={{ fontSize: 15, color: "#F3EEE2", fontFamily: FONT_BODY }}>Back</span>
           </button>
         </div>
         <div style={{ padding: "80px 20px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: "#F0EAD9", marginBottom: 16, fontFamily: FONT_BODY }}>Listing not found.</p>
-          <Link to="/" style={{ fontSize: 13, fontWeight: 500, color: "#F0EAD9", fontFamily: FONT_BODY }}>Back to Home</Link>
+          <p style={{ fontSize: 14, color: "#F3EEE2", marginBottom: 16, fontFamily: FONT_BODY }}>Listing not found.</p>
+          <Link to="/" style={{ fontSize: 13, fontWeight: 500, color: "#F3EEE2", fontFamily: FONT_BODY }}>Back to Home</Link>
         </div>
       </div>
     );
@@ -538,7 +538,7 @@ const ListingDetail = () => {
   const isAboutLong = aboutText.length > 120;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#555340", paddingBottom: 140, fontFamily: FONT_BODY, color: "#F0EAD9" }}>
+    <div style={{ minHeight: "100vh", background: "#555340", paddingBottom: 140, fontFamily: FONT_BODY, color: "#F3EEE2" }}>
       <style>{`
         @keyframes hh-acc-open {
           from { opacity: 0; transform: translateY(-4px); }
@@ -563,7 +563,7 @@ const ListingDetail = () => {
           aria-label="Back"
           {...pressScale("0.94")}
         >
-          <ChevronLeft size={20} strokeWidth={1.5} color="#F0EAD9" />
+          <ChevronLeft size={20} strokeWidth={1.5} color="#F3EEE2" />
         </button>
 
         <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 8 }}>
@@ -573,7 +573,7 @@ const ListingDetail = () => {
             aria-label="Share"
             {...pressScale("0.94")}
           >
-            <Share2 size={20} strokeWidth={1.5} color="#F0EAD9" />
+            <Share2 size={20} strokeWidth={1.5} color="#F3EEE2" />
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
@@ -581,7 +581,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : "#F0EAD9"} fill={isFavourited ? "#5b4632" : "none"} />
+            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : "#F3EEE2"} fill={isFavourited ? "#5b4632" : "none"} />
           </button>
           {isAdmin && (
             <button
@@ -590,7 +590,7 @@ const ListingDetail = () => {
               aria-label="Edit listing"
               {...pressScale("0.94")}
             >
-              <Pencil size={20} strokeWidth={1.5} color="#F0EAD9" />
+              <Pencil size={20} strokeWidth={1.5} color="#F3EEE2" />
             </button>
           )}
         </div>
@@ -605,7 +605,7 @@ const ListingDetail = () => {
         {firstCategory && (
           <p style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "0.24px", color: "#F0EAD9", margin: 0, marginBottom: 4,
+            letterSpacing: "0.24px", color: "#F3EEE2", margin: 0, marginBottom: 4,
             textTransform: "none",
           }}>
             {firstCategory.title}
@@ -614,7 +614,7 @@ const ListingDetail = () => {
 
         <h1 style={{
           fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 500, fontSize: 28, lineHeight: "28px",
-          letterSpacing: "-0.84px", color: "#F0EAD9", margin: 0, marginBottom: 8,
+          letterSpacing: "-0.84px", color: "#F3EEE2", margin: 0, marginBottom: 8,
         }}>
           {listing.title}
         </h1>
@@ -626,12 +626,12 @@ const ListingDetail = () => {
         }}>
           {(listing as any).google_rating != null && (
             <>
-              <span style={{ color: "#F0EAD9", display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <span style={{ color: "#F3EEE2", display: "inline-flex", alignItems: "center", gap: 4 }}>
                 <Star size={13} fill="#5b4632" color="#5b4632" strokeWidth={1.5} />
                 <span>{(listing as any).google_rating}</span>
               </span>
               {(listing as any).google_reviews_count != null && (
-                <span style={{ marginLeft: 4, color: "#F0EAD9" }}>({(listing as any).google_reviews_count})</span>
+                <span style={{ marginLeft: 4, color: "#F3EEE2" }}>({(listing as any).google_reviews_count})</span>
               )}
             </>
           )}
@@ -639,7 +639,7 @@ const ListingDetail = () => {
           {openStatus && (
             <>
               <span style={{ width: 8, display: "inline-block" }} />
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#F0EAD9" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#F3EEE2" }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f", display: "inline-block" }} />
                 {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
               </span>
@@ -764,7 +764,7 @@ const ListingDetail = () => {
                   fontSize: 14,
                   lineHeight: "20.3px",
                   letterSpacing: 0,
-                  color: "#F0EAD9",
+                  color: "#F3EEE2",
                   margin: 0,
                   marginBottom: i < aboutParagraphs.length - 1 ? 12 : 0,
                 }}>
@@ -784,7 +784,7 @@ const ListingDetail = () => {
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 14,
-                  color: "#F0EAD9",
+                  color: "#F3EEE2",
                   textTransform: "none",
                   textDecoration: "underline",
                   textUnderlineOffset: "3px",
@@ -816,7 +816,7 @@ const ListingDetail = () => {
                     <p key={i} style={{
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                       fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
-                      color: "#F0EAD9", margin: 0,
+                      color: "#F3EEE2", margin: 0,
                       marginBottom: i < arr.length - 1 ? 12 : 0,
                     }}>{p}</p>
                   ))}
@@ -997,7 +997,7 @@ const ListingDetail = () => {
               {holidayCheck.isHoliday && (
                 <div style={{
                   marginBottom: 12, padding: "10px 14px", background: C.panel, borderRadius: 12,
-                  fontFamily: FONT_BODY, fontSize: 13, color: "#F0EAD9",
+                  fontFamily: FONT_BODY, fontSize: 13, color: "#F3EEE2",
                 }}>
                   Public holiday — hours might differ
                 </div>
@@ -1018,7 +1018,7 @@ const ListingDetail = () => {
                       }} />
                       <span style={{
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
-                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#F0EAD9",
+                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#F3EEE2",
                       }}>
                         {openStatus.state === "open"
                           ? "Open Now"
@@ -1133,7 +1133,7 @@ const ListingDetail = () => {
                   transition: "opacity 200ms ease-out",
                 }}
               >
-                <ChevronRight size={18} strokeWidth={1.75} color="#F0EAD9" />
+                <ChevronRight size={18} strokeWidth={1.75} color="#F3EEE2" />
               </div>
             )}
           </div>
