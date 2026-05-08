@@ -21,6 +21,7 @@ import locationIconSrc from "@/assets/location-icon.svg";
 import emailIconSrc from "@/assets/email-icon.svg";
 import phoneIconSrc from "@/assets/phone-icon.svg";
 import kidsFamilyIconSrc from "@/assets/kids-family-icon.svg";
+import vibeIconSrc from "@/assets/vibe-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
@@ -45,6 +46,10 @@ const PhoneContactIcon = ({ color }: { color?: string }) => (
 
 const KidsFamilyIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
   <img src={kidsFamilyIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
+);
+
+const VibeIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
+  <img src={vibeIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
 );
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -875,7 +880,7 @@ const ListingDetail = () => {
                   seating: Armchair,
                   meals: UtensilsCrossed,
                   cuisine: Soup,
-                  vibe: Music,
+                  vibe: VibeIcon,
                   "accom-food": Coffee,
                   "accom-transport": Car,
                   "accom-wellness": HeartPulse,
