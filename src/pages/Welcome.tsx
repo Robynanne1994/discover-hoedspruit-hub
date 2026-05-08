@@ -72,7 +72,7 @@ const Welcome = () => {
 
   if (mode === "welcome") {
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: "hsl(38, 30%, 96%)" }}>
+      <div className="min-h-screen flex flex-col" style={{ background: "#5C6446" }}>
         {/* Top section with branding */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8">
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 260, height: "auto" }} />
@@ -101,7 +101,7 @@ const Welcome = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "hsl(38, 30%, 96%)" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#5C6446" }}>
       <div className="px-6 pt-14 pb-4 relative z-10">
         <button
           type="button"
