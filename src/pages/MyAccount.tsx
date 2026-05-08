@@ -254,7 +254,7 @@ const MyAccount = () => {
 
   if (activeSection) {
     return (
-      <div className="min-h-screen pb-16 bg-background">
+      <div className="min-h-screen pb-16" style={{ background: "#5C6446" }}>
         <div className="px-6 pt-5">
           <button
             onClick={() => setActiveSection(null)}
