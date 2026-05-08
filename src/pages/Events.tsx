@@ -606,7 +606,8 @@ const Events = () => {
                     ? `${format(ws, "d")}–${format(we, "d MMM")}`.toLowerCase()
                     : `${format(ws, "d MMM")} – ${format(we, "d MMM")}`.toLowerCase();
                 }
-                if (activeFilter === "this-month") return format(today, "MMMM").toLowerCase();
+                if (activeFilter === "this-month") return format(today, "MMMM yyyy").toLowerCase();
+                if (activeFilter === "past") return "past events";
                 return "upcoming";
               })()} trailing={filterIconBtn} />
               <div style={{ padding: "0 24px" }}>
