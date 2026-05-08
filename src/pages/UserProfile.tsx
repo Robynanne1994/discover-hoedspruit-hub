@@ -28,11 +28,9 @@ import BottomNav from "@/components/BottomNav";
 
 const PAGE_BG = "#5C6446";
 const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
 const INK = "#2A2A24";
 const MUTED = "#6B6A5E";
 const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Playfair Display', Georgia, serif";
 
@@ -48,31 +46,6 @@ const getInitials = (name?: string | null) => {
 };
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
-
-const relTime = (iso: string) => {
-  const then = new Date(iso).getTime();
-  const now = Date.now();
-  const diffDays = Math.floor((now - then) / 86400000);
-  if (diffDays < 1) return "TODAY";
-  if (diffDays === 1) return "1 DAY AGO";
-  if (diffDays < 7) return `${diffDays} DAYS AGO`;
-  if (diffDays < 14) return "1 WEEK AGO";
-  if (diffDays < 30)
-    return `${Math.floor(diffDays / 7)} WEEKS AGO`;
-  const d = new Date(iso);
-  return d
-    .toLocaleDateString("en-GB", { day: "numeric", month: "short" })
-    .toUpperCase();
-};
-
-type Activity = {
-  id: string;
-  type: "saved" | "recommended" | "been";
-  verb: string;
-  name: string;
-  href: string;
-  created_at: string;
-};
 
 const UserProfile = () => {
   const { id } = useParams<{ id: string }>();
