@@ -747,16 +747,16 @@ const ListingDetail = () => {
             },
             waCleanNum && {
               key: "whatsapp",
-              label: "Whatsapp",
+              label: "Chat",
               href: `https://wa.me/${waCleanNum}`,
-              icon: <WhatsappIcon color={ICON_COLOR} />,
+              icon: <MessageCircle size={20} strokeWidth={1.5} color={ICON_COLOR} />,
               external: true,
             },
             (listing as any).google_maps_link && {
               key: "directions",
               label: "Directions",
               href: (listing as any).google_maps_link,
-              icon: <Navigation size={20} strokeWidth={1.5} color={ICON_COLOR} />,
+              icon: <Send size={20} strokeWidth={1.5} color={ICON_COLOR} />,
               external: true,
             },
             listing.website && {
@@ -770,12 +770,8 @@ const ListingDetail = () => {
 
           if (actions.length === 0) return null;
 
-          const isCompact = actions.length >= 4;
-          const btnPadding = isCompact ? "14px 6px 12px 6px" : "18px 12px 16px 12px";
-          const btnFontSize = isCompact ? 11 : 13;
-          const btnGap = isCompact ? 8 : 10;
           return (
-            <div style={{ display: "flex", gap: btnGap, marginTop: 24 }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 36 }}>
               {actions.map((a) => (
                 <a
                   key={a.key}
@@ -783,25 +779,24 @@ const ListingDetail = () => {
                   {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   style={{
                     flex: "1 1 0", flexBasis: 0, width: 0, minWidth: 0, boxSizing: "border-box",
-                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
-                    padding: btnPadding, borderRadius: 20,
+                    display: "block", textAlign: "center",
+                    paddingTop: 16, paddingLeft: 8, paddingRight: 8, paddingBottom: 14,
+                    borderRadius: 20,
                     background: "#EEE8DA", color: "#2A2A24",
                     textDecoration: "none", cursor: "pointer",
                     transition: "transform 150ms ease-out",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: btnFontSize, fontWeight: 400,
-                    letterSpacing: "0.2px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    fontWeight: 400,
                   }}
                   {...pressScale()}
                 >
-                  <span style={{ width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ display: "block", width: 20, height: 20, margin: "0 auto 8px" }}>
                     {a.icon}
                   </span>
-                  <span style={{ lineHeight: 1 }}>{a.label}</span>
+                  <span style={{
+                    display: "block", fontSize: 13, letterSpacing: "0.1px", lineHeight: 1,
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  }}>{a.label}</span>
                 </a>
               ))}
             </div>
