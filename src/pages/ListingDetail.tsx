@@ -620,34 +620,34 @@ const ListingDetail = () => {
         }
       `}</style>
 
-      <div style={{ position: "relative", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, overflow: "hidden" }}>
+      <div style={{ position: "relative", overflow: "hidden" }}>
         {listing.image_url ? (
           <img
             src={listing.image_url}
             alt={listing.title}
-            style={{ width: "100%", height: 360, objectFit: "cover", display: "block" }}
+            style={{ width: "100%", height: 380, objectFit: "cover", display: "block" }}
           />
         ) : (
-          <div style={{ width: "100%", height: 360, background: C.panel }} />
+          <div style={{ width: "100%", height: 380, background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)" }} />
         )}
 
         <button
           onClick={() => navigate(-1)}
-          style={{ ...circleBtn, position: "absolute", top: 12, left: 12 }}
+          style={{ ...circleBtn, position: "absolute", top: 60, left: 24, zIndex: 5 }}
           aria-label="Back"
           {...pressScale("0.94")}
         >
-          <BackArrowIcon size={20} color="#FFFFFF" />
+          <BackArrowIcon size={16} color="#2A2A24" />
         </button>
 
-        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 8 }}>
+        <div style={{ position: "absolute", top: 60, right: 24, display: "flex", gap: 8, zIndex: 5 }}>
           <button
             onClick={handleShare}
             style={circleBtn}
             aria-label="Share"
             {...pressScale("0.94")}
           >
-            <Share2 size={20} strokeWidth={1.5} color="#FFFFFF" />
+            <Share2 size={16} strokeWidth={1.6} color="#2A2A24" />
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
@@ -655,7 +655,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : "#FFFFFF"} fill={isFavourited ? "#5b4632" : "none"} />
+            <Heart size={16} strokeWidth={1.6} color={isFavourited ? "#9B5A3C" : "#2A2A24"} fill={isFavourited ? "#9B5A3C" : "none"} />
           </button>
           {isAdmin && (
             <button
@@ -664,7 +664,7 @@ const ListingDetail = () => {
               aria-label="Edit listing"
               {...pressScale("0.94")}
             >
-              <Pencil size={20} strokeWidth={1.5} color="#FFFFFF" />
+              <Pencil size={16} strokeWidth={1.6} color="#2A2A24" />
             </button>
           )}
         </div>
