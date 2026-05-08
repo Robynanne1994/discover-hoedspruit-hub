@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Star, Pencil, ChevronDown, ChevronRight,
   Heart, Share2, Check, X as XIcon, Phone, Navigation,
-  MapPin, Mail, Globe, ArrowUpRight,
+  MapPin, Mail, Globe, ArrowUpRight, MessageCircle, Send,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
   UtensilsCrossed, Soup, Music, Coffee, Car, HeartPulse,
   BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
@@ -128,8 +128,8 @@ const toTitleCase = (s: string) =>
 const SectionHeading = ({ children, mt = 36 }: { children: React.ReactNode; mt?: number }) => (
   <h2 style={{
     fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic",
-    fontSize: 28, lineHeight: "28px",
-    letterSpacing: "-0.5px", color: "#EEE8DA", margin: 0, marginTop: mt, marginBottom: 16,
+    fontSize: 30, lineHeight: "30px",
+    letterSpacing: "-0.5px", color: "#EEE8DA", margin: 0, marginTop: mt, marginBottom: 14,
     textTransform: "lowercase",
   }}>
     {children}
@@ -276,7 +276,7 @@ const ListingDetail = () => {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
+      <div style={{ minHeight: "100vh", background: "#5C6446", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
             <BackArrowIcon size={20} color="#FFFFFF" />
@@ -292,7 +292,7 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
+      <div style={{ minHeight: "100vh", background: "#5C6446", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
             <BackArrowIcon size={20} color="#FFFFFF" />
@@ -546,7 +546,7 @@ const ListingDetail = () => {
   const openStatus = computeOpenStatus();
 
   const circleBtn: React.CSSProperties = {
-    width: 44, height: 44, borderRadius: 999,
+    width: 40, height: 40, borderRadius: 999,
     background: C.card,
     boxShadow: SHADOW_MD,
     display: "flex", alignItems: "center", justifyContent: "center",
@@ -612,7 +612,7 @@ const ListingDetail = () => {
   const isAboutLong = aboutText.length > 120;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#555340", paddingBottom: 140, fontFamily: FONT_BODY, color: "#FFFFFF" }}>
+    <div style={{ minHeight: "100vh", background: "#5C6446", paddingBottom: 140, fontFamily: FONT_BODY, color: "#FFFFFF" }}>
       <style>{`
         @keyframes hh-acc-open {
           from { opacity: 0; transform: translateY(-4px); }
@@ -620,34 +620,34 @@ const ListingDetail = () => {
         }
       `}</style>
 
-      <div style={{ position: "relative", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, overflow: "hidden" }}>
+      <div style={{ position: "relative", overflow: "hidden" }}>
         {listing.image_url ? (
           <img
             src={listing.image_url}
             alt={listing.title}
-            style={{ width: "100%", height: 360, objectFit: "cover", display: "block" }}
+            style={{ width: "100%", height: 380, objectFit: "cover", display: "block" }}
           />
         ) : (
-          <div style={{ width: "100%", height: 360, background: C.panel }} />
+          <div style={{ width: "100%", height: 380, background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)" }} />
         )}
 
         <button
           onClick={() => navigate(-1)}
-          style={{ ...circleBtn, position: "absolute", top: 12, left: 12 }}
+          style={{ ...circleBtn, position: "absolute", top: 60, left: 24, zIndex: 5 }}
           aria-label="Back"
           {...pressScale("0.94")}
         >
-          <BackArrowIcon size={20} color="#FFFFFF" />
+          <BackArrowIcon size={16} color="#2A2A24" />
         </button>
 
-        <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 8 }}>
+        <div style={{ position: "absolute", top: 60, right: 24, display: "flex", gap: 8, zIndex: 5 }}>
           <button
             onClick={handleShare}
             style={circleBtn}
             aria-label="Share"
             {...pressScale("0.94")}
           >
-            <Share2 size={20} strokeWidth={1.5} color="#FFFFFF" />
+            <Share2 size={16} strokeWidth={1.6} color="#2A2A24" />
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
@@ -655,7 +655,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : "#FFFFFF"} fill={isFavourited ? "#5b4632" : "none"} />
+            <Heart size={16} strokeWidth={1.6} color={isFavourited ? "#9B5A3C" : "#2A2A24"} fill={isFavourited ? "#9B5A3C" : "none"} />
           </button>
           {isAdmin && (
             <button
@@ -664,7 +664,7 @@ const ListingDetail = () => {
               aria-label="Edit listing"
               {...pressScale("0.94")}
             >
-              <Pencil size={20} strokeWidth={1.5} color="#FFFFFF" />
+              <Pencil size={16} strokeWidth={1.6} color="#2A2A24" />
             </button>
           )}
         </div>
@@ -672,14 +672,14 @@ const ListingDetail = () => {
 
       <div style={{
         position: "relative",
-        marginTop: 16,
+        marginTop: 24,
         background: "transparent",
         paddingLeft: 24, paddingRight: 24,
       }}>
         {firstCategory && (
           <p style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16,
+            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 14,
             textTransform: "uppercase",
           }}>
             {firstCategory.title}
@@ -687,15 +687,15 @@ const ListingDetail = () => {
         )}
 
         <h1 style={{
-          fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 500, fontSize: 48, lineHeight: "45.6px",
-          letterSpacing: "-1.5px", color: "#EEE8DA", margin: 0, marginBottom: 8,
+          fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontSize: 48, lineHeight: 1.0,
+          letterSpacing: "-1.2px", color: "#EEE8DA", margin: 0, marginBottom: 14,
         }}>
           {listing.title}
         </h1>
 
         <div style={{
-          marginTop: 20, marginBottom: 32, display: "flex", flexWrap: "wrap", alignItems: "center",
-          gap: 12,
+          marginTop: 0, marginBottom: 36, display: "flex", flexWrap: "wrap", alignItems: "center",
+          gap: 10,
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontWeight: 400, fontSize: 13, letterSpacing: 0,
           color: "rgba(238, 232, 218, 0.85)",
@@ -703,7 +703,7 @@ const ListingDetail = () => {
           {(listing as any).google_rating != null && (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <span aria-hidden="true">★</span>
-              <span>{(listing as any).google_rating}</span>
+              <span>{Number((listing as any).google_rating).toFixed(1)}</span>
               {(listing as any).google_reviews_count != null && (
                 <span>({(listing as any).google_reviews_count})</span>
               )}
@@ -711,17 +711,26 @@ const ListingDetail = () => {
           )}
           {(listing as any).google_rating != null && openStatus && (
             <span aria-hidden="true" style={{
-              width: 5, height: 5, borderRadius: "50%",
+              width: 4, height: 4, borderRadius: "50%",
               background: "rgba(238, 232, 218, 0.5)", display: "inline-block",
             }} />
           )}
-          {openStatus && (
-            <span style={{ color: openStatus.state === "open" ? "#A8B084" : "#D9C36B" }}>
-              {openStatus.state === "open"
-                ? (openStatus.closes ? `Open now · Closes ${openStatus.closes}` : "Open now")
-                : openStatus.state === "temporarily_closed"
-                ? "Temporarily closed"
-                : (openStatus.opensAt ? `Closed · Opens ${openStatus.opensAt}${openStatus.opensDay ? " " + openStatus.opensDay : ""}` : "Closed")}
+          {openStatus && openStatus.state === "open" && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#D9C36B" }}>
+              <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: "50%", background: "#D9C36B", display: "inline-block" }} />
+              <span>Open now</span>
+              {openStatus.closes && (
+                <span style={{ color: "rgba(238, 232, 218, 0.85)" }}>· Closes {openStatus.closes}</span>
+              )}
+            </span>
+          )}
+          {openStatus && openStatus.state !== "open" && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "rgba(238, 232, 218, 0.7)" }}>
+              <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(238, 232, 218, 0.4)", display: "inline-block" }} />
+              <span>{openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}</span>
+              {openStatus.state === "closed" && openStatus.opensAt && (
+                <span>· Opens {openStatus.opensAt}{openStatus.opensDay ? " " + openStatus.opensDay : ""}</span>
+              )}
             </span>
           )}
         </div>
@@ -738,16 +747,16 @@ const ListingDetail = () => {
             },
             waCleanNum && {
               key: "whatsapp",
-              label: "Whatsapp",
+              label: "Chat",
               href: `https://wa.me/${waCleanNum}`,
-              icon: <WhatsappIcon color={ICON_COLOR} />,
+              icon: <MessageCircle size={20} strokeWidth={1.5} color={ICON_COLOR} />,
               external: true,
             },
             (listing as any).google_maps_link && {
               key: "directions",
               label: "Directions",
               href: (listing as any).google_maps_link,
-              icon: <Navigation size={20} strokeWidth={1.5} color={ICON_COLOR} />,
+              icon: <Send size={20} strokeWidth={1.5} color={ICON_COLOR} />,
               external: true,
             },
             listing.website && {
@@ -761,12 +770,8 @@ const ListingDetail = () => {
 
           if (actions.length === 0) return null;
 
-          const isCompact = actions.length >= 4;
-          const btnPadding = isCompact ? "14px 6px 12px 6px" : "18px 12px 16px 12px";
-          const btnFontSize = isCompact ? 11 : 13;
-          const btnGap = isCompact ? 8 : 10;
           return (
-            <div style={{ display: "flex", gap: btnGap, marginTop: 24 }}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 36 }}>
               {actions.map((a) => (
                 <a
                   key={a.key}
@@ -774,25 +779,24 @@ const ListingDetail = () => {
                   {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   style={{
                     flex: "1 1 0", flexBasis: 0, width: 0, minWidth: 0, boxSizing: "border-box",
-                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
-                    padding: btnPadding, borderRadius: 20,
+                    display: "block", textAlign: "center",
+                    paddingTop: 16, paddingLeft: 8, paddingRight: 8, paddingBottom: 14,
+                    borderRadius: 20,
                     background: "#EEE8DA", color: "#2A2A24",
                     textDecoration: "none", cursor: "pointer",
                     transition: "transform 150ms ease-out",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: btnFontSize, fontWeight: 400,
-                    letterSpacing: "0.2px",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    fontWeight: 400,
                   }}
                   {...pressScale()}
                 >
-                  <span style={{ width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                  <span style={{ display: "block", width: 20, height: 20, margin: "0 auto 8px" }}>
                     {a.icon}
                   </span>
-                  <span style={{ lineHeight: 1 }}>{a.label}</span>
+                  <span style={{
+                    display: "block", fontSize: 13, letterSpacing: "0.1px", lineHeight: 1,
+                    whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+                  }}>{a.label}</span>
                 </a>
               ))}
             </div>
@@ -854,15 +858,15 @@ const ListingDetail = () => {
         {contactRows.length > 0 && (
           <>
             <SectionHeading mt={32}>Contact</SectionHeading>
-            <div style={{ background: "#EEE8DA", borderRadius: 24, padding: 24, marginBottom: 14 }}>
+            <div style={{ background: "#EEE8DA", borderRadius: 24, paddingLeft: 22, paddingRight: 22, paddingTop: 6, paddingBottom: 6, marginBottom: 14, overflow: "hidden" }}>
               {contactRows.map((row, idx) => {
                 const Wrapper: any = row.href ? "a" : "div";
                 const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
                 return (
                   <div key={row.label} style={{
-                    borderTop: idx > 0 ? `1px solid rgba(107, 106, 94, 0.15)` : "none",
-                    paddingTop: idx > 0 ? 14 : 0,
-                    paddingBottom: idx < contactRows.length - 1 ? 14 : 0,
+                    borderTop: idx > 0 ? `1px solid #D9D2C0` : "none",
+                    paddingTop: 16,
+                    paddingBottom: 16,
                   }}>
                     <Wrapper
                       {...wrapperProps}
@@ -1104,18 +1108,18 @@ const ListingDetail = () => {
               }}>
                 {openStatus && (
                   <div style={{
-                    background: "#F4ECE1",
-                    paddingTop: 20, paddingBottom: 22, paddingLeft: 24, paddingRight: 24,
+                    background: "#F4EFE3",
+                    paddingTop: 18, paddingBottom: 16, paddingLeft: 24, paddingRight: 24,
                   }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
                       <span style={{
-                        width: 10, height: 10, borderRadius: "50%",
-                        background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f",
-                        display: "inline-block", marginRight: 12, flexShrink: 0,
+                        width: 8, height: 8, borderRadius: "50%",
+                        background: openStatus.state === "open" ? "#D9C36B" : "#6B6A5E",
+                        display: "inline-block", flexShrink: 0,
                       }} />
                       <span style={{
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
-                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#0a0a0a",
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 18,
+                        lineHeight: 1.2, letterSpacing: "-0.2px", color: "#2A2A24",
                       }}>
                         {openStatus.state === "open"
                           ? "Open Now"
@@ -1123,28 +1127,28 @@ const ListingDetail = () => {
                           ? "Temporarily Closed"
                           : "Closed"}
                       </span>
+                      {openStatus.state === "open" && openStatus.closes && (
+                        <span style={{
+                          marginLeft: 4,
+                          fontFamily: '"Playfair Display", Georgia, serif',
+                          fontStyle: "italic", fontWeight: 400, fontSize: 14, color: "#6B6A5E",
+                        }}>
+                          closes {openStatus.closes}
+                        </span>
+                      )}
+                      {openStatus.state === "closed" && openStatus.opensAt && (
+                        <span style={{
+                          marginLeft: 4,
+                          fontFamily: '"Playfair Display", Georgia, serif',
+                          fontStyle: "italic", fontWeight: 400, fontSize: 14, color: "#6B6A5E",
+                        }}>
+                          opens {openStatus.opensAt} {openStatus.opensDay || ""}
+                        </span>
+                      )}
                     </div>
-                    {openStatus.state === "open" && openStatus.closes && (
-                      <div style={{
-                        marginTop: 4, marginLeft: 22,
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        lineHeight: "20.3px", color: "#5b4632",
-                      }}>
-                        Closes {openStatus.closes}
-                      </div>
-                    )}
-                    {openStatus.state === "closed" && openStatus.opensAt && (
-                      <div style={{
-                        marginTop: 4,
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        lineHeight: "20.3px", color: "#5b4632",
-                      }}>
-                        Opens {openStatus.opensAt} {openStatus.opensDay}
-                      </div>
-                    )}
                   </div>
                 )}
-                <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+                <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 6, paddingBottom: 6 }}>
                 {DAY_LABELS.map((day, i) => {
                   const key = day.toLowerCase();
                   const value = openingHours![key] || "";
@@ -1153,31 +1157,33 @@ const ListingDetail = () => {
                   return (
                     <div key={day} style={{
                       display: "flex", justifyContent: "space-between", alignItems: "center",
-                      height: 48,
-                      borderTop: i === 0 ? "none" : `1px solid ${C.border}`,
+                      paddingTop: 14, paddingBottom: 14,
+                      borderTop: i === 0 ? "none" : `1px solid #D9D2C0`,
                     }}>
-                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                         {isToday && (
                           <span style={{
-                            width: 6, height: 6, borderRadius: "50%",
-                            background: openStatus?.state === "open" ? "#16a34a" : "#dc2626",
-                            display: "inline-block", marginRight: 8,
+                            width: 7, height: 7, borderRadius: "50%",
+                            background: "#D9C36B",
+                            display: "inline-block",
                           }} />
                         )}
                         <span style={{
                           fontFamily: FONT_BODY,
                           fontWeight: 400,
-                          fontSize: 14,
-                          color: isToday ? C.text : C.muted,
+                          fontSize: 14.5,
+                          color: isToday ? "#2A2A24" : "#6B6A5E",
                         }}>
                           {day}{isToday ? " · Today" : ""}
                         </span>
                       </span>
                       <span style={{
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        color: isToday ? C.text : C.muted,
+                        fontFamily: isClosed ? '"Playfair Display", Georgia, serif' : FONT_BODY,
+                        fontStyle: isClosed ? "italic" : "normal",
+                        fontWeight: 400, fontSize: 14.5,
+                        color: isToday ? "#2A2A24" : "#6B6A5E",
                       }}>
-                        {isClosed ? "Closed" : value}
+                        {isClosed ? "Closed" : value.replace(/\s*-\s*/g, " to ")}
                       </span>
                     </div>
                   );
@@ -1251,7 +1257,7 @@ const ListingDetail = () => {
               {...pressScale("0.99")}
             >
               <div style={{
-                position: "relative", height: 160,
+                position: "relative", height: 170,
                 background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)",
               }}>
                 {mapCoords && (() => {
@@ -1381,16 +1387,22 @@ const ListingDetail = () => {
           </>
         )}
 
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
+        <div style={{
+          marginTop: 32, paddingTop: 18,
+          borderTop: "1px solid rgba(238, 232, 218, 0.15)",
+          textAlign: "center",
+        }}>
           <button
             onClick={() => setSuggestEditOpen(true)}
             style={{
-              fontFamily: FONT_BODY, fontSize: 13, color: "#5b4632",
-              textDecoration: "underline", textUnderlineOffset: "3px",
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: "italic", fontWeight: 400, fontSize: 15,
+              color: "rgba(238, 232, 218, 0.6)",
+              textTransform: "lowercase",
               background: "transparent", border: "none", cursor: "pointer", padding: 0,
             }}
           >
-            Suggest an edit to this listing
+            suggest an edit to this listing.
           </button>
         </div>
 
