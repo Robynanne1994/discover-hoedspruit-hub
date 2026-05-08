@@ -1,377 +1,328 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import { Search, ChevronDown, Mail } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import { Search, MessageCircle, Mail } from "lucide-react";
+import BottomNav from "@/components/BottomNav";
 
-const FF = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const FF_HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const FF_PF = "'Playfair Display', Georgia, serif";
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const SERIF = "'Playfair Display', Georgia, serif";
 
-const SECTION_ORDER = [
-  "About Hello Hoedspruit",
-  "Using the app",
-  "Listings & information",
-  "For business owners",
-  "Account & privacy",
-  "General",
+const OLIVE = "#5C6446";
+const CREAM = "#EEE8DA";
+const DEEP_INK = "#2A2A24";
+const MUTED_INK = "#6B6A5E";
+const LINE = "#D9D2C0";
+const RUST = "#9B5A3C";
+const DEEP_RUST = "#7E4530";
+
+const BLOB_1 = "50% 45% 55% 50% / 55% 50% 60% 45%";
+const BLOB_2 = "55% 45% 50% 55% / 50% 60% 45% 55%";
+
+const press = (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = "scale(0.98)";
+};
+const release = (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = "scale(1)";
+};
+
+const BackArrow = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DEEP_INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </svg>
+);
+
+type FAQ = { q: string; a: string };
+type Section = { title: string; items: FAQ[] };
+
+const SECTIONS: Section[] = [
+  {
+    title: "About Hello Hoedspruit",
+    items: [
+      { q: "What is Hello Hoedspruit?", a: "Hello Hoedspruit is a local guide to everything happening in and around Hoedspruit, from places to eat, stay, and explore to events, specials, and community news." },
+      { q: "Who is behind Hello Hoedspruit?", a: "It's a small local team led by founder Robyn Dawes, born and raised in Hoedspruit, working with local businesses to keep the guide accurate and up to date." },
+      { q: "Is the app free to use?", a: "Yes, the app is free for everyone to download and use. Listed businesses can opt into paid features like featured placement." },
+    ],
+  },
+  {
+    title: "Using The App",
+    items: [
+      { q: "How do I find a specific business?", a: "Use the search bar on the home screen, or browse by category. You can also filter by area, amenities, and other details on each category page." },
+      { q: "Can I save listings to view later?", a: "Yes. Tap the heart icon on any listing to save it to your favourites, and organise them into custom collections from your account." },
+      { q: "What does \"Visited\" mean?", a: "Marking a place as visited keeps a private log of where you've been. It doesn't get shared, and helps you remember your favourites." },
+      { q: "How do I find events in Hoedspruit?", a: "Open the Events tab to see what's on, browse by date in the calendar view, or save events you're interested in to your saved page." },
+    ],
+  },
+  {
+    title: "Listings & Information",
+    items: [
+      { q: "How are businesses chosen for listing?", a: "We aim to feature every legitimate business in and around Hoedspruit. Listings are added by our team and verified with the business owner where possible." },
+      { q: "Is the information accurate?", a: "We work hard to keep details current, but opening hours, prices, and offerings can change. Always check directly with the business for time-sensitive plans." },
+      { q: "Why are some listings missing details?", a: "Some businesses haven't shared all their information yet. If you spot something missing or incorrect, you can suggest an edit from the listing page." },
+    ],
+  },
+  {
+    title: "For Business Owners",
+    items: [
+      { q: "How do I get my business listed?", a: "Head to the Advertise page and send us an enquiry, or email hello@hellohoedspruit.com. Standard listings are free." },
+      { q: "Can I update my listing details?", a: "Yes. Claim your listing from the business portal, or send us your updates and we'll handle them for you." },
+      { q: "Can I be featured or advertise?", a: "Yes. We offer featured placement, sponsored content, and event promotion. See the Advertise page for details." },
+    ],
+  },
+  {
+    title: "Account & Privacy",
+    items: [
+      { q: "Do I need an account to use the app?", a: "Yes, a free account is required to save listings, follow people, and personalise your experience." },
+      { q: "How is my data handled?", a: "We only collect what's needed to run the app, and we never sell your data. See our Privacy Policy for the full breakdown." },
+      { q: "How do I delete my account?", a: "Go to Settings, then Account, and tap Delete Account. This permanently removes your profile and saved data." },
+    ],
+  },
+  {
+    title: "General",
+    items: [
+      { q: "First time in Hoedspruit. Where do I start?", a: "Browse the Explore tab for a feel of the area, check the Lowveld Lowdown for local stories, and see what's on this week in Events." },
+      { q: "How do I report a problem or give feedback?", a: "Use the Feedback page in your account, or message us via WhatsApp or email from the Contact page. We read every message." },
+    ],
+  },
 ];
 
-// Map possible legacy DB section names to the new sentence-case labels
-const SECTION_ALIASES: Record<string, string> = {
-  "About Hello Hoedspruit": "About Hello Hoedspruit",
-  "Using the App": "Using the app",
-  "Using the app": "Using the app",
-  "Listings & Information": "Listings & information",
-  "Listings and Information": "Listings & information",
-  "Listings and information": "Listings & information",
-  "For Business Owners": "For business owners",
-  "For business owners": "For business owners",
-  "Account & Privacy": "Account & privacy",
-  "Account and Privacy": "Account & privacy",
-  "Account and privacy": "Account & privacy",
-  "General": "General",
-};
+const Eyebrow = ({ children, opacity = 0.7, size = 11 }: { children: React.ReactNode; opacity?: number; size?: number }) => (
+  <div style={{ fontFamily: SANS, fontSize: size, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: `rgba(238,232,218,${opacity})` }}>
+    {children}
+  </div>
+);
 
-const baseStyle = {
-  fontStretch: "normal" as const,
-  fontSynthesis: "none" as const,
-  transform: "none" as const,
-};
+const FAQRow = ({ item, isFirst, open, onToggle }: { item: FAQ; isFirst: boolean; open: boolean; onToggle: () => void }) => (
+  <div style={{ borderTop: isFirst ? "none" : `1px solid ${LINE}` }}>
+    <button
+      onClick={onToggle}
+      style={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        background: "none",
+        border: "none",
+        padding: "18px 0",
+        cursor: "pointer",
+        textAlign: "left",
+        fontFamily: SANS,
+      }}
+    >
+      <span style={{ flex: 1, fontSize: 15.5, fontWeight: 400, lineHeight: 1.3, letterSpacing: "-0.1px", color: DEEP_INK }}>
+        {item.q}
+      </span>
+      <span
+        aria-hidden
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: "50%",
+          background: "rgba(106,106,94,0.1)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          transform: open ? "rotate(180deg)" : "rotate(0deg)",
+          transition: "transform 200ms ease-out",
+          fontSize: 12,
+          color: DEEP_INK,
+          lineHeight: 1,
+        }}
+      >
+        ▾
+      </span>
+    </button>
+    {open && (
+      <div style={{ fontSize: 14.5, fontFamily: SANS, fontWeight: 400, lineHeight: 1.55, color: "rgba(42,42,36,0.8)", paddingTop: 4, paddingBottom: 16 }}>
+        {item.a}
+      </div>
+    )}
+  </div>
+);
 
 const FAQs = () => {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const [openItem, setOpenItem] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [openKey, setOpenKey] = useState<string | null>(null);
 
-  const { data: faqs, isLoading } = useQuery({
-    queryKey: ["faqs"],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("faqs")
-        .select("*")
-        .eq("is_visible", true)
-        .order("sort_order", { ascending: true });
-      return data || [];
-    },
-  });
+  useEffect(() => {
+    const id = "playfair-faqs-font";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
+    document.head.appendChild(link);
+  }, []);
 
-  const sections = useMemo(() => {
-    if (!faqs) return [];
-    const grouped: Record<string, typeof faqs> = {};
-    faqs.forEach((faq) => {
-      const label = SECTION_ALIASES[faq.section] || faq.section;
-      if (!grouped[label]) grouped[label] = [];
-      grouped[label].push(faq);
-    });
-    return SECTION_ORDER
-      .filter((s) => grouped[s]?.length)
-      .map((s) => ({ title: s, items: grouped[s] }));
-  }, [faqs]);
-
-  const filteredSections = useMemo(() => {
-    if (!search.trim()) return sections;
-    const q = search.toLowerCase();
-    return sections
-      .map((section) => ({
-        ...section,
-        items: section.items.filter(
-          (item) =>
-            item.question.toLowerCase().includes(q) ||
-            item.answer.toLowerCase().includes(q)
-        ),
-      }))
-      .filter((section) => section.items.length > 0);
-  }, [search, sections]);
-
-  const toggleItem = (id: string) => {
-    setOpenItem(openItem === id ? null : id);
-  };
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return SECTIONS;
+    return SECTIONS
+      .map((s) => ({ ...s, items: s.items.filter((i) => i.q.toLowerCase().includes(q) || i.a.toLowerCase().includes(q)) }))
+      .filter((s) => s.items.length > 0);
+  }, [query]);
 
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 120, fontFamily: FF, ...baseStyle }}>
-      {/* Top row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 24px 8px" }}>
+    <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140 }}>
+      {/* Top bar */}
+      <div style={{ padding: "32px 24px 0" }}>
         <button
           onClick={() => navigate(-1)}
+          onPointerDown={press}
+          onPointerUp={release}
+          onPointerLeave={release}
           aria-label="Back"
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: "#FFFFFF",
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: CREAM,
             border: "none",
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 1px 3px rgba(10,10,10,0.08)",
             cursor: "pointer",
-            ...baseStyle,
+            transition: "transform 150ms ease-out",
           }}
         >
-          <BackArrowIcon size={20} color="#0A0A0A" />
+          <BackArrow />
         </button>
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "20px 24px 0" }}>
-        <h1 style={{
-          fontFamily: FF_HN,
-          fontWeight: 700,
-          fontSize: 60,
-          lineHeight: 0.92,
-          letterSpacing: "-0.03em",
-          color: "#0A0A0A",
-          margin: 0,
-          ...baseStyle,
-        }}>
-          How can<br />we help?
+      <div style={{ padding: "18px 24px 0" }}>
+        <div style={{ marginBottom: 14 }}>
+          <Eyebrow size={12}>FREQUENTLY ASKED</Eyebrow>
+        </div>
+        <h1 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 24 }}>
+          help.
         </h1>
       </div>
 
       {/* Search */}
-      <div style={{ padding: "28px 24px 24px" }}>
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          background: "#FFFFFF",
-          borderRadius: 999,
-          padding: "14px 20px",
-          gap: 12,
-        }}>
-          <Search size={18} strokeWidth={1.8} color="#8A8480" style={{ flexShrink: 0 }} />
+      <div style={{ padding: "0 24px", marginBottom: 32 }}>
+        <div
+          style={{
+            height: 52,
+            borderRadius: 999,
+            background: "rgba(238,232,218,0.92)",
+            display: "flex",
+            alignItems: "center",
+            padding: "0 22px",
+            gap: 12,
+          }}
+        >
+          <Search size={18} color={MUTED_INK} strokeWidth={1.6} />
           <input
-            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             placeholder="Search FAQs"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
             style={{
               flex: 1,
-              background: "transparent",
-              outline: "none",
               border: "none",
-              fontSize: 15,
-              color: "#0A0A0A",
-              fontFamily: FF,
-              ...baseStyle,
+              outline: "none",
+              background: "transparent",
+              fontFamily: SANS,
+              fontSize: 14,
+              fontWeight: 400,
+              color: DEEP_INK,
             }}
           />
         </div>
       </div>
 
-      {/* Loading */}
-      {isLoading && (
-        <div style={{ padding: "0 24px" }}>
-          {[1, 2, 3].map((i) => (
-            <div key={i} style={{ marginBottom: 24 }}>
-              <Skeleton className="h-3 w-32 mb-3" />
-              <Skeleton className="h-40 w-full rounded-[20px]" />
+      {/* Sections */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        {filtered.map((section) => (
+          <div key={section.title}>
+            <div style={{ padding: "0 24px", marginBottom: 10 }}>
+              <Eyebrow>{section.title}</Eyebrow>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* No results */}
-      {!isLoading && filteredSections.length === 0 && (
-        <div style={{ textAlign: "center", padding: "48px 20px" }}>
-          <p style={{ fontSize: 15, color: "#8A8480", fontFamily: FF, ...baseStyle }}>
-            No matching questions found.
-          </p>
-        </div>
-      )}
-
-      {/* FAQ sections */}
-      {!isLoading && filteredSections.map((section) => (
-        <div key={section.title} style={{ padding: "0 24px", marginBottom: 24 }}>
-          <h3 style={{
-            fontSize: 11,
-            letterSpacing: "0.18em",
-            textTransform: "none",
-            color: "#0A0A0A",
-            fontFamily: FF_HN,
-            fontWeight: 400,
-            margin: "0 0 12px 4px",
-            ...baseStyle,
-          }}>
-            {section.title}
-          </h3>
-          <div style={{ background: "#FFFFFF", borderRadius: 20, overflow: "hidden" }}>
-            {section.items.map((item, i) => {
-              const isOpen = openItem === item.id;
-              const hasAnswer = item.answer && item.answer.trim().length > 0;
-              return (
-                <div key={item.id}>
-                  {i > 0 && (
-                    <div style={{ height: 1, background: "#F2EFEC", margin: "0 20px" }} />
-                  )}
-                  <button
-                    onClick={() => toggleItem(item.id)}
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 12,
-                      textAlign: "left",
-                      padding: 20,
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      ...baseStyle,
-                    }}
-                  >
-                    <span style={{
-                      fontSize: 16,
-                      fontWeight: 500,
-                      color: "#0A0A0A",
-                      lineHeight: 1.3,
-                      flex: 1,
-                      fontFamily: FF,
-                      ...baseStyle,
-                    }}>
-                      {item.question}
-                    </span>
-                    <span style={{
-                      width: 28,
-                      height: 28,
-                      borderRadius: 999,
-                      background: isOpen ? "#423324" : "#F2EFEC",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                      transition: "background 0.2s ease",
-                    }}>
-                      <ChevronDown
-                        size={16}
-                        strokeWidth={2}
-                        color={isOpen ? "#FFFFFF" : "#0A0A0A"}
-                        style={{
-                          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                          transition: "transform 0.2s ease",
-                        }}
-                      />
-                    </span>
-                  </button>
-                  {isOpen && (
-                    <div style={{ padding: "0 20px 20px" }}>
-                      <p style={{
-                        fontSize: 14,
-                        lineHeight: 1.55,
-                        color: "#8A8480",
-                        margin: 0,
-                        fontFamily: FF,
-                        ...baseStyle,
-                      }}>
-                        {hasAnswer ? item.answer : "We're still writing this one. Check back soon."}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-
-      {/* Coral contact card */}
-      {!isLoading && (
-        <div style={{ padding: "8px 24px 0" }}>
-          <div style={{
-            background: "#5B4632",
-            borderRadius: 24,
-            padding: 28,
-            position: "relative",
-            overflow: "hidden",
-          }}>
-            <div style={{
-              position: "absolute",
-              top: -60,
-              right: -60,
-              width: 200,
-              height: 200,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-            }} />
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <div style={{
-                fontSize: 11,
-                letterSpacing: "0.18em",
-                textTransform: "uppercase",
-                color: "rgba(255,255,255,0.75)",
-                fontFamily: FF,
-                marginBottom: 14,
-                ...baseStyle,
-              }}>
-                Still stuck
-              </div>
-              <h3 style={{
-                fontFamily: FF_HN,
-                fontWeight: 700,
-                fontSize: 34,
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
-                color: "#FFFFFF",
-                margin: 0,
-                ...baseStyle,
-              }}>
-                Ask us anything.
-              </h3>
-              <p style={{
-                fontFamily: FF,
-                fontWeight: 400,
-                fontSize: 15,
-                lineHeight: 1.5,
-                color: "rgba(255,255,255,0.85)",
-                margin: "14px 0 22px",
-                ...baseStyle,
-              }}>
-                We're a small team but we answer every message. Drop us a line and we'll get back to you.
-              </p>
-              <div style={{ display: "flex", gap: 12 }}>
-                <a
-                  href="https://wa.me/27613321709"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="WhatsApp us"
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 999,
-                    background: "#FFFFFF",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textDecoration: "none",
-                  }}
-                >
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="#0A0A0A" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.057 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.999-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.889-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.887 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.47 3.488"/>
-                  </svg>
-                </a>
-                <a
-                  href="mailto:hellohoedspruit@gmail.com"
-                  aria-label="Email us"
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 999,
-                    background: "#FFFFFF",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    textDecoration: "none",
-                  }}
-                >
-                  <Mail size={22} strokeWidth={1.8} color="#0A0A0A" />
-                </a>
+            <div style={{ padding: "0 24px" }}>
+              <div style={{ background: CREAM, borderRadius: 20, padding: "4px 22px", overflow: "hidden" }}>
+                {section.items.map((item, idx) => {
+                  const key = `${section.title}-${item.q}`;
+                  return (
+                    <FAQRow
+                      key={key}
+                      item={item}
+                      isFirst={idx === 0}
+                      open={openKey === key}
+                      onToggle={() => setOpenKey(openKey === key ? null : key)}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <div style={{ padding: "0 24px", marginTop: 28, marginBottom: 12 }}>
+        <div style={{ position: "relative", background: RUST, borderRadius: 28, padding: "30px 28px 28px", overflow: "hidden" }}>
+          <div aria-hidden style={{ position: "absolute", right: -80, bottom: -100, width: 240, height: 260, background: DEEP_RUST, borderRadius: BLOB_1, opacity: 0.6 }} />
+          <div aria-hidden style={{ position: "absolute", right: -30, top: -60, width: 160, height: 170, background: "rgba(238,232,218,0.08)", borderRadius: BLOB_2 }} />
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <div style={{ marginBottom: 14 }}>
+              <Eyebrow opacity={0.8} size={11.5}>STILL STUCK</Eyebrow>
+            </div>
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14 }}>
+              Ask us anything.
+            </h2>
+            <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
+              We're a small team but we answer every message. Drop us a line and we'll get back to you.
+            </p>
+            <div style={{ display: "flex", gap: 10 }}>
+              <a
+                href="https://wa.me/27000000000"
+                target="_blank"
+                rel="noreferrer"
+                onPointerDown={press}
+                onPointerUp={release}
+                onPointerLeave={release}
+                aria-label="WhatsApp"
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 50,
+                  background: CREAM,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "transform 150ms ease-out",
+                }}
+              >
+                <MessageCircle size={20} color={DEEP_INK} strokeWidth={1.6} fill="none" />
+              </a>
+              <a
+                href="mailto:hello@hellohoedspruit.com"
+                onPointerDown={press}
+                onPointerUp={release}
+                onPointerLeave={release}
+                aria-label="Email"
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 50,
+                  background: CREAM,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "transform 150ms ease-out",
+                }}
+              >
+                <Mail size={20} color={DEEP_INK} strokeWidth={1.6} fill="none" />
+              </a>
+            </div>
+          </div>
         </div>
-      )}
+      </div>
+
+      <BottomNav />
     </div>
   );
 };
