@@ -19,6 +19,7 @@ import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import locationIconSrc from "@/assets/location-icon.svg";
 import emailIconSrc from "@/assets/email-icon.svg";
+import phoneIconSrc from "@/assets/phone-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
@@ -35,6 +36,10 @@ const LocationIcon = ({ color }: { color?: string }) => (
 
 const EmailIcon = ({ color }: { color?: string }) => (
   <img src={emailIconSrc} alt="" style={customIconStyle} />
+);
+
+const PhoneContactIcon = ({ color }: { color?: string }) => (
+  <img src={phoneIconSrc} alt="" style={customIconStyle} />
 );
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -527,8 +532,9 @@ const ListingDetail = () => {
     listing.phone && {
       label: "Phone",
       value: listing.phone,
-      icon: Phone,
+      icon: PhoneContactIcon,
       href: `tel:${listing.phone.replace(/\s/g, "")}`,
+      isCustomIcon: true,
     },
     listing.email && {
       label: "Email",
