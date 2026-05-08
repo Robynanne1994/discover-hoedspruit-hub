@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import {
   Star, Pencil, ChevronDown, ChevronRight,
   Heart, Share2, Check, X as XIcon, Phone, Navigation,
-  MapPin, Mail, Globe, ArrowUpRight,
+  MapPin, Mail, Globe, ArrowUpRight, MessageCircle, Send,
   ConciergeBell, Baby, Accessibility, Sparkles, Armchair,
   UtensilsCrossed, Soup, Music, Coffee, Car, HeartPulse,
   BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
