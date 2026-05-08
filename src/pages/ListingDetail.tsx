@@ -880,7 +880,7 @@ const ListingDetail = () => {
                   seating: Armchair,
                   meals: UtensilsCrossed,
                   cuisine: Soup,
-                  vibe: Music,
+                  vibe: VibeIcon,
                   "accom-food": Coffee,
                   "accom-transport": Car,
                   "accom-wellness": HeartPulse,
