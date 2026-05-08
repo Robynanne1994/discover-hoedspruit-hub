@@ -222,9 +222,10 @@ const EventDetail = () => {
 
   const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
     <h2 style={{
-      fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 22, lineHeight: "22px",
-      letterSpacing: "-0.66px", color: TEXT, margin: 0, marginTop: 18, marginBottom: 10,
-      textTransform: "none",
+      fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic",
+      fontSize: 28, lineHeight: "28px",
+      letterSpacing: "-0.5px", color: CREAM, margin: 0, marginTop: 36, marginBottom: 16,
+      textTransform: "lowercase",
     }}>
       {title}
     </h2>
