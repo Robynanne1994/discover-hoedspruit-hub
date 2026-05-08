@@ -15,7 +15,6 @@ import {
   ThumbsUp,
   Calendar as CalendarIcon,
   MapPin,
-  MessageCircle,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -106,21 +105,6 @@ const UserProfile = () => {
   const { data: counts } = useFollowCounts(id);
   const { data: isFollowing } = useIsFollowing(id);
   const { follow, unfollow } = useFollowMutation(id!);
-
-  // Whether they follow the current viewer (for mutual detection)
-  const { data: theyFollowMe } = useQuery({
-    queryKey: ["they-follow-me", id, user?.id],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from("follows")
-        .select("id")
-        .eq("follower_id", id!)
-        .eq("following_id", user!.id)
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!user && !!id && user.id !== id,
-  });
 
   // Saved listings (favourites of type "listing")
   const { data: saved } = useQuery({
@@ -275,19 +259,7 @@ const UserProfile = () => {
 
   const isOwnProfile = user?.id === id;
   const following = !!isFollowing;
-  const mutual = following && !!theyFollowMe;
   const isPending = follow.isPending || unfollow.isPending;
-
-  const firstName = useMemo(
-    () =>
-      (profile?.display_name || profile?.username || "this local")
-        .trim()
-        .split(/\s+/)[0]
-        .toLowerCase(),
-    [profile],
-  );
-
-  const possessivePronoun = "their"; // gender-neutral default
 
   const handleFollowClick = () => {
     if (!user) {
@@ -299,10 +271,6 @@ const UserProfile = () => {
     } else {
       follow.mutate();
     }
-  };
-
-  const handleMessage = () => {
-    toast("Messages coming soon");
   };
 
   const handleShare = async () => {
@@ -652,31 +620,6 @@ const UserProfile = () => {
                 </button>
               )}
 
-              {mutual && (
-                <button
-                  onClick={handleMessage}
-                  style={{
-                    flex: 1,
-                    height: 44,
-                    borderRadius: 999,
-                    background: INK,
-                    color: CREAM,
-                    border: "none",
-                    fontFamily: SANS,
-                    fontWeight: 400,
-                    fontSize: 14,
-                    letterSpacing: "0.1px",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  <MessageCircle size={14} strokeWidth={1.8} color={CREAM} fill="none" />
-                  Message
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -707,7 +650,7 @@ const UserProfile = () => {
                 textTransform: "lowercase",
               }}
             >
-              {possessivePronoun} finds
+              finds
             </h2>
             <Link
               to={`/profile/${id}/saved`}
@@ -967,34 +910,6 @@ const UserProfile = () => {
         </section>
       )}
 
-      {/* Cross-link footer */}
-      {!isOwnProfile && profile && (
-        <div
-          style={{
-            margin: "0 24px",
-            paddingTop: 16,
-            borderTop: "1px solid rgba(238, 232, 218, 0.15)",
-            textAlign: "center",
-          }}
-        >
-          <Link
-            to={`/profile/${id}/saved`}
-            style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: 15,
-              color: CREAM,
-              opacity: 0.55,
-              textDecoration: "none",
-              textTransform: "lowercase",
-            }}
-          >
-            more from {firstName}
-            <span style={{ fontSize: 12, marginLeft: 6 }}>↗</span>
-          </Link>
-        </div>
-      )}
 
       {/* Three-dots action sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
