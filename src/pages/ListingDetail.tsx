@@ -789,8 +789,10 @@ const ListingDetail = () => {
                   }}
                   {...pressScale()}
                 >
-                  {a.icon}
-                  <span>{a.label}</span>
+                  <span style={{ width: 20, height: 20, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                    {a.icon}
+                  </span>
+                  <span style={{ lineHeight: 1 }}>{a.label}</span>
                 </a>
               ))}
             </div>
