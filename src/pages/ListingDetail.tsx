@@ -563,7 +563,7 @@ const ListingDetail = () => {
           aria-label="Back"
           {...pressScale("0.94")}
         >
-          <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
+          <ChevronLeft size={20} strokeWidth={1.5} color="#F0EAD9" />
         </button>
 
         <div style={{ position: "absolute", top: 12, right: 12, display: "flex", gap: 8 }}>
@@ -573,7 +573,7 @@ const ListingDetail = () => {
             aria-label="Share"
             {...pressScale("0.94")}
           >
-            <Share2 size={20} strokeWidth={1.5} color={C.text} />
+            <Share2 size={20} strokeWidth={1.5} color="#F0EAD9" />
           </button>
           <button
             onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
@@ -581,7 +581,7 @@ const ListingDetail = () => {
             aria-label={isFavourited ? "Remove from saved" : "Save"}
             {...pressScale("0.94")}
           >
-            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : C.text} fill={isFavourited ? "#5b4632" : "none"} />
+            <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : "#F0EAD9"} fill={isFavourited ? "#5b4632" : "none"} />
           </button>
           {isAdmin && (
             <button
@@ -590,7 +590,7 @@ const ListingDetail = () => {
               aria-label="Edit listing"
               {...pressScale("0.94")}
             >
-              <Pencil size={20} strokeWidth={1.5} color={C.text} />
+              <Pencil size={20} strokeWidth={1.5} color="#F0EAD9" />
             </button>
           )}
         </div>
