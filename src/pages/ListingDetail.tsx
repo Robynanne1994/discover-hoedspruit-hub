@@ -532,8 +532,9 @@ const ListingDetail = () => {
     listing.phone && {
       label: "Phone",
       value: listing.phone,
-      icon: Phone,
+      icon: PhoneContactIcon,
       href: `tel:${listing.phone.replace(/\s/g, "")}`,
+      isCustomIcon: true,
     },
     listing.email && {
       label: "Email",
