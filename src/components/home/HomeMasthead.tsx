@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Heart, Calendar, Tag, MapPinCheck, Bookmark, Bell, Settings, UserCircle, Shield, HelpCircle, MessageSquare, Phone, Info, Megaphone, LogOut, MapPin, X } from "lucide-react";
+import { Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Bell, MapPin, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
@@ -69,6 +70,7 @@ const HomeMasthead = () => {
   const [notifs, setNotifs] = useState<NotifPreview[]>([]);
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const searchWrapRef = useRef<HTMLDivElement>(null);
 
   const q = search.trim();
@@ -224,35 +226,8 @@ const HomeMasthead = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         )}
-        <DropdownMenu>
-          <DropdownMenuTrigger aria-label="Menu" style={iconBtn}>
-            <Menu size={18} color="#2A2A24" strokeWidth={1.6} />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" sideOffset={8} className="w-60">
-            <DropdownMenuLabel>Quick links</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/saved")}><Heart className="mr-2 h-4 w-4" /> Saved</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/saved?tab=events")}><Calendar className="mr-2 h-4 w-4" /> Saved events</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/saved?tab=specials")}><Tag className="mr-2 h-4 w-4" /> Saved specials</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/visited")}><MapPinCheck className="mr-2 h-4 w-4" /> Been here</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/my-hoedspruit")}><Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/notifications")}><Bell className="mr-2 h-4 w-4" /> Notifications</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/account-settings")}><Settings className="mr-2 h-4 w-4" /> Settings</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/account-settings/info")}><UserCircle className="mr-2 h-4 w-4" /> Account info</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/privacy-security")}><Shield className="mr-2 h-4 w-4" /> Privacy & security</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/faqs")}><HelpCircle className="mr-2 h-4 w-4" /> FAQs</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/feedback")}><MessageSquare className="mr-2 h-4 w-4" /> Feedback</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/contact")}><Phone className="mr-2 h-4 w-4" /> Contact us</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/about")}><Info className="mr-2 h-4 w-4" /> About</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/advertise")}><Megaphone className="mr-2 h-4 w-4" /> Advertise</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
-              <LogOut className="mr-2 h-4 w-4" /> Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
+        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
 
       {/* Masthead */}
