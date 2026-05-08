@@ -26,10 +26,6 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
   {
     label: "Saved",
     rows: [
-      { icon: Heart, label: "Saved", to: "/saved" },
-      { icon: Calendar, label: "Saved Events", to: "/saved?tab=events" },
-      { icon: Tag, label: "Saved Specials", to: "/saved?tab=specials" },
-      { icon: MapPinCheck, label: "Been Here", to: "/visited" },
       { icon: Bookmark, label: "My Hoedspruit", to: "/my-hoedspruit" },
     ],
   },
