@@ -67,6 +67,35 @@ const HomeMasthead = () => {
   const [unreadCount, setUnreadCount] = useState<number>(0);
   type NotifPreview = { id: string; title: string; body: string | null; link: string | null; status: string; kind: string; is_read: boolean; created_at: string };
   const [notifs, setNotifs] = useState<NotifPreview[]>([]);
+  const [search, setSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchWrapRef = useRef<HTMLDivElement>(null);
+
+  const q = search.trim();
+  const { data: searchResults } = useQuery({
+    queryKey: ["home-search", q],
+    queryFn: async () => {
+      if (q.length < 2) return [];
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, image_url, location")
+        .ilike("title", `%${q}%`)
+        .limit(8);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: q.length >= 2,
+  });
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (searchWrapRef.current && !searchWrapRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
 
   useEffect(() => {
     if (!user) { setUnreadCount(0); setNotifs([]); return; }
