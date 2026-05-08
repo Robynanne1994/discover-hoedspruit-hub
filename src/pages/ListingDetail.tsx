@@ -1257,7 +1257,7 @@ const ListingDetail = () => {
               {...pressScale("0.99")}
             >
               <div style={{
-                position: "relative", height: 160,
+                position: "relative", height: 170,
                 background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)",
               }}>
                 {mapCoords && (() => {
