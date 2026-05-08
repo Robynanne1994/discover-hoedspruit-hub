@@ -146,113 +146,70 @@ const UserProfile = () => {
     enabled: !!id,
   });
 
-  // Activity (last 30 days): saves, reviews (recommendations), been_here
-  const { data: activity } = useQuery<Activity[]>({
-    queryKey: ["user-activity", id],
+  // Saved events
+  const { data: savedEvents } = useQuery({
+    queryKey: ["user-saved-events", id],
     queryFn: async () => {
-      const since = new Date(
-        Date.now() - 30 * 86400000,
-      ).toISOString();
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "event")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: events } = await supabase
+        .from("events")
+        .select("id, title, image_url, location, date, start_date")
+        .in("id", ids);
+      const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
+      return favs.map((f) => map[f.item_id]).filter(Boolean);
+    },
+    enabled: !!id,
+  });
 
-      const [favsRes, reviewsRes, beenRes] = await Promise.all([
-        supabase
-          .from("favourites")
-          .select("id, item_id, item_type, created_at")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
-        supabase
-          .from("reviews")
-          .select("id, listing_id, created_at, listings(title)")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
-        supabase
-          .from("been_here")
-          .select("id, listing_id, created_at, listings(title)")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
-      ]);
+  // Saved specials
+  const { data: savedSpecials } = useQuery({
+    queryKey: ["user-saved-specials", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "special")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: specials } = await supabase
+        .from("specials")
+        .select("id, title, image_url, business_name, deal_label")
+        .in("id", ids);
+      const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
+      return favs.map((f) => map[f.item_id]).filter(Boolean);
+    },
+    enabled: !!id,
+  });
 
-      const favListingIds = (favsRes.data || [])
-        .filter((f: any) => f.item_type === "listing")
-        .map((f: any) => f.item_id);
-      const favEventIds = (favsRes.data || [])
-        .filter((f: any) => f.item_type === "event")
-        .map((f: any) => f.item_id);
-
-      let favTitleMap: Record<string, { title: string; type: string }> = {};
-      if (favListingIds.length) {
-        const { data } = await supabase
-          .from("listings")
-          .select("id, title")
-          .in("id", favListingIds);
-        (data || []).forEach((l: any) => {
-          favTitleMap[l.id] = { title: l.title, type: "listing" };
-        });
-      }
-      if (favEventIds.length) {
-        const { data } = await supabase
-          .from("events")
-          .select("id, title")
-          .in("id", favEventIds);
-        (data || []).forEach((e: any) => {
-          favTitleMap[e.id] = { title: e.title, type: "event" };
-        });
-      }
-
-      const items: Activity[] = [];
-
-      (favsRes.data || []).forEach((f: any) => {
-        const meta = favTitleMap[f.item_id];
-        if (!meta) return;
-        items.push({
-          id: `fav-${f.id}`,
-          type: "saved",
-          verb: "saved",
-          name: meta.title,
-          href:
-            meta.type === "event"
-              ? `/event/${f.item_id}`
-              : `/listing/${f.item_id}`,
-          created_at: f.created_at,
-        });
-      });
-
-      (reviewsRes.data || []).forEach((r: any) => {
-        if (!r.listings?.title) return;
-        items.push({
-          id: `rev-${r.id}`,
-          type: "recommended",
-          verb: "recommended",
-          name: r.listings.title,
-          href: `/listing/${r.listing_id}`,
-          created_at: r.created_at,
-        });
-      });
-
-      (beenRes.data || []).forEach((b: any) => {
-        if (!b.listings?.title) return;
-        items.push({
-          id: `been-${b.id}`,
-          type: "been",
-          verb: "been to",
-          name: b.listings.title,
-          href: `/listing/${b.listing_id}`,
-          created_at: b.created_at,
-        });
-      });
-
-      items.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() -
-          new Date(a.created_at).getTime(),
-      );
-      return items.slice(0, 8);
+  // Been to (visited places)
+  const { data: beenTo } = useQuery({
+    queryKey: ["user-been-to", id],
+    queryFn: async () => {
+      const { data: rows } = await supabase
+        .from("been_here")
+        .select("listing_id, created_at")
+        .eq("user_id", id!)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!rows?.length) return [];
+      const ids = rows.map((r) => r.listing_id);
+      const { data: listings } = await supabase
+        .from("listings")
+        .select("id, title, image_url, location, google_rating")
+        .in("id", ids);
+      const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
+      return rows.map((r) => map[r.listing_id]).filter(Boolean);
     },
     enabled: !!id,
   });
