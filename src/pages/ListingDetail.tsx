@@ -721,33 +721,34 @@ const ListingDetail = () => {
         </div>
 
         {(() => {
+          const ICON_COLOR = "#2A2A24";
           const actions = [
             listing.phone && {
               key: "call",
               label: "Call",
               href: `tel:${listing.phone}`,
-              icon: <Phone size={20} strokeWidth={1.5} color="#FFFFFF" />,
+              icon: <Phone size={20} strokeWidth={1.5} color={ICON_COLOR} />,
               external: false,
             },
             waCleanNum && {
               key: "whatsapp",
               label: "Whatsapp",
               href: `https://wa.me/${waCleanNum}`,
-              icon: <WhatsappIcon color="#FFFFFF" />,
+              icon: <WhatsappIcon color={ICON_COLOR} />,
               external: true,
             },
             (listing as any).google_maps_link && {
               key: "directions",
               label: "Directions",
               href: (listing as any).google_maps_link,
-              icon: <Navigation size={20} strokeWidth={1.5} color="#FFFFFF" />,
+              icon: <Navigation size={20} strokeWidth={1.5} color={ICON_COLOR} />,
               external: true,
             },
             listing.website && {
               key: "website",
               label: "Website",
               href: listing.website,
-              icon: <Globe size={20} strokeWidth={1.5} color="#FFFFFF" />,
+              icon: <Globe size={20} strokeWidth={1.5} color={ICON_COLOR} />,
               external: true,
             },
           ].filter(Boolean) as Array<{ key: string; label: string; href: string; icon: JSX.Element; external: boolean }>;
@@ -755,26 +756,28 @@ const ListingDetail = () => {
           if (actions.length === 0) return null;
 
           return (
-            <div style={{ display: "flex", gap: 8, marginTop: 24 }}>
+            <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
               {actions.map((a) => (
                 <a
                   key={a.key}
                   href={a.href}
                   {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   style={{
-                    flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
-                    padding: "12px 4px", borderRadius: 16,
-                    background: "#5b4632", color: "#FFFFFF",
+                    flex: 1, minWidth: 0,
+                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+                    padding: "18px 12px 16px 12px", borderRadius: 20,
+                    background: "#EEE8DA", color: "#2A2A24",
                     textDecoration: "none", cursor: "pointer",
                     transition: "transform 150ms ease-out",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-                    fontFamily: FONT_BODY, fontSize: 12, fontWeight: 400,
-                    letterSpacing: "0.01em",
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    fontSize: 13, fontWeight: 400,
+                    letterSpacing: "0.2px",
                   }}
                   {...pressScale()}
                 >
                   {a.icon}
-                  <span style={{ marginTop: 3 }}>{a.label}</span>
+                  <span>{a.label}</span>
                 </a>
               ))}
             </div>
