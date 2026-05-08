@@ -259,19 +259,7 @@ const UserProfile = () => {
 
   const isOwnProfile = user?.id === id;
   const following = !!isFollowing;
-  const mutual = following && !!theyFollowMe;
   const isPending = follow.isPending || unfollow.isPending;
-
-  const firstName = useMemo(
-    () =>
-      (profile?.display_name || profile?.username || "this local")
-        .trim()
-        .split(/\s+/)[0]
-        .toLowerCase(),
-    [profile],
-  );
-
-  const possessivePronoun = "their"; // gender-neutral default
 
   const handleFollowClick = () => {
     if (!user) {
@@ -283,10 +271,6 @@ const UserProfile = () => {
     } else {
       follow.mutate();
     }
-  };
-
-  const handleMessage = () => {
-    toast("Messages coming soon");
   };
 
   const handleShare = async () => {
