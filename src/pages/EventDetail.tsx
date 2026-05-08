@@ -32,11 +32,12 @@ import { formatEventDateRange } from "@/lib/eventDates";
 const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const PAGE_BG = "#EBEBEB";
-const SURFACE = "#FFFFFF";
-const TEXT = "#0A0A0A";
-const MUTED = "#8A8480";
-const DIVIDER = "#E8E4DF";
+const PAGE_BG = "#5C6446";
+const SURFACE = "#EEE8DA";
+const TEXT = "#2A2A24";
+const MUTED = "#6B6A5E";
+const DIVIDER = "rgba(107,106,94,0.15)";
+const CREAM = "#EEE8DA";
 
 const pressScale = (scale = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${scale})`),
@@ -134,7 +135,7 @@ const EventDetail = () => {
     } else { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); }
   };
 
-  const pageStyle: React.CSSProperties = { minHeight: "100vh", background: "transparent", paddingBottom: 84, fontFamily: font };
+  const pageStyle: React.CSSProperties = { minHeight: "100vh", background: PAGE_BG, paddingBottom: 84, fontFamily: font };
 
   if (isLoading) {
     return (
@@ -221,9 +222,10 @@ const EventDetail = () => {
 
   const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
     <h2 style={{
-      fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 22, lineHeight: "22px",
-      letterSpacing: "-0.66px", color: TEXT, margin: 0, marginTop: 18, marginBottom: 10,
-      textTransform: "none",
+      fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic",
+      fontSize: 28, lineHeight: "28px",
+      letterSpacing: "-0.5px", color: CREAM, margin: 0, marginTop: 36, marginBottom: 16,
+      textTransform: "lowercase",
     }}>
       {title}
     </h2>
@@ -344,8 +346,8 @@ const EventDetail = () => {
         {/* Eyebrow */}
         {tagParts.length > 0 && (
           <p style={{
-            fontFamily: font, fontWeight: 500, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10,
+            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
+            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16,
             textTransform: "uppercase", textAlign: "center",
           }}>
             {tagParts.join("  ·  ")}
@@ -354,8 +356,8 @@ const EventDetail = () => {
 
         {/* Title */}
         <h1 style={{
-          fontFamily: FONT_HEAD, fontSize: 32, fontWeight: 500, lineHeight: "34px",
-          letterSpacing: "-0.96px", color: TEXT, textTransform: "none",
+          fontFamily: '"Playfair Display", Georgia, serif', fontSize: 48, fontWeight: 500, lineHeight: "45.6px",
+          letterSpacing: "-1.5px", color: CREAM, textTransform: "none",
           marginTop: 0, marginBottom: 8, textAlign: "center",
         }}>
           {event.title}
@@ -393,9 +395,8 @@ const EventDetail = () => {
                 alignItems: "stretch",
                 marginTop: 28,
                 marginBottom: 20,
-                background: "#F5EFE3",
-                border: "1px solid #E5DAC5",
-                borderRadius: 18,
+                background: SURFACE,
+                borderRadius: 24,
                 padding: "18px 8px",
               }}
             >
@@ -408,28 +409,28 @@ const EventDetail = () => {
                       flex: 1,
                       padding: "0 10px",
                       textAlign: "center",
-                      borderLeft: i > 0 ? `1px solid #E5DAC5` : "none",
+                      borderLeft: i > 0 ? `1px solid ${DIVIDER}` : "none",
                       display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
                     }}
                   >
                     {Icon && (
                       <div style={{
                         width: 36, height: 36, borderRadius: 999,
-                        background: "#EAE0CC",
+                        background: "rgba(107,106,94,0.10)",
                         display: "flex", alignItems: "center", justifyContent: "center",
                       }}>
-                        <Icon size={18} strokeWidth={1.6} color="#5b4632" />
+                        <Icon size={18} strokeWidth={1.6} color={MUTED} />
                       </div>
                     )}
                     <p style={{
                       margin: 0, fontFamily: font, fontWeight: 400, fontSize: 11,
-                      letterSpacing: "0.08em", textTransform: "uppercase", color: "#8a7a5e",
+                      letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED,
                     }}>
                       {s.label}
                     </p>
                     <p style={{
-                      margin: 0, fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 13,
-                      lineHeight: 1.25, color: TEXT, wordBreak: "break-word",
+                      margin: 0, fontFamily: font, fontWeight: 400, fontSize: 14,
+                      lineHeight: 1.35, color: TEXT, wordBreak: "break-word",
                     }}>
                       {s.value}
                     </p>
@@ -533,10 +534,10 @@ const EventDetail = () => {
                 margin: 0,
                 fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 fontWeight: 400,
-                fontSize: 14,
-                lineHeight: "20.3px",
+                fontSize: 15,
+                lineHeight: 1.65,
                 letterSpacing: 0,
-                color: "#0A0A0A",
+                color: "rgba(238, 232, 218, 0.9)",
                 whiteSpace: "pre-line",
                 ...(aboutExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
               }}
@@ -547,18 +548,20 @@ const EventDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 6,
+                  marginTop: 12,
                   background: "none",
                   border: "none",
-                  padding: 0,
+                  borderBottom: "1px solid rgba(238,232,218,0.4)",
+                  paddingBottom: 2,
+                  paddingLeft: 0,
+                  paddingRight: 0,
                   cursor: "pointer",
                   fontFamily: font,
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: 400,
-                  color: TEXT,
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                  textTransform: "capitalize",
+                  color: CREAM,
+                  letterSpacing: "1.6px",
+                  textTransform: "uppercase",
                 }}
               >
                 {aboutExpanded ? "Show Less" : "Read More"}
