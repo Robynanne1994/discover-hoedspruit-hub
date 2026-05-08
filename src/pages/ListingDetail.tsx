@@ -221,16 +221,16 @@ const ListingDetail = () => {
 
   if (!listing) {
     return (
-      <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FONT_BODY }}>
+      <div style={{ minHeight: "100vh", background: "#555340", fontFamily: FONT_BODY }}>
         <div style={{ padding: "52px 24px 0" }}>
           <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer" }}>
-            <ChevronLeft size={20} strokeWidth={1.5} color={C.text} />
-            <span style={{ fontSize: 15, color: C.text, fontFamily: FONT_BODY }}>Back</span>
+            <ChevronLeft size={20} strokeWidth={1.5} color="#F0EAD9" />
+            <span style={{ fontSize: 15, color: "#F0EAD9", fontFamily: FONT_BODY }}>Back</span>
           </button>
         </div>
         <div style={{ padding: "80px 20px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: C.muted, marginBottom: 16, fontFamily: FONT_BODY }}>Listing not found.</p>
-          <Link to="/" style={{ fontSize: 13, fontWeight: 500, color: C.text, fontFamily: FONT_BODY }}>Back to Home</Link>
+          <p style={{ fontSize: 14, color: "#F0EAD9", marginBottom: 16, fontFamily: FONT_BODY }}>Listing not found.</p>
+          <Link to="/" style={{ fontSize: 13, fontWeight: 500, color: "#F0EAD9", fontFamily: FONT_BODY }}>Back to Home</Link>
         </div>
       </div>
     );
