@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, Bell, Menu, MapPin } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
+import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -178,40 +179,8 @@ const Categories = () => {
           padding: "0 24px",
         }}
       >
-        <button
-          onClick={() => navigate("/my-notifications")}
-          aria-label="Notifications"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 999,
-            background: COLORS.cream,
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <Bell size={18} strokeWidth={1.6} color={COLORS.ink} />
-        </button>
-        <button
-          onClick={() => navigate("/my-account")}
-          aria-label="Menu"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 999,
-            background: COLORS.cream,
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <Menu size={18} strokeWidth={1.6} color={COLORS.ink} />
-        </button>
+        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
+        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
 
       {/* Hero block */}
