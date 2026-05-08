@@ -620,31 +620,6 @@ const UserProfile = () => {
                 </button>
               )}
 
-              {mutual && (
-                <button
-                  onClick={handleMessage}
-                  style={{
-                    flex: 1,
-                    height: 44,
-                    borderRadius: 999,
-                    background: INK,
-                    color: CREAM,
-                    border: "none",
-                    fontFamily: SANS,
-                    fontWeight: 400,
-                    fontSize: 14,
-                    letterSpacing: "0.1px",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 8,
-                  }}
-                >
-                  <MessageCircle size={14} strokeWidth={1.8} color={CREAM} fill="none" />
-                  Message
-                </button>
-              )}
             </div>
           )}
         </div>
@@ -675,7 +650,7 @@ const UserProfile = () => {
                 textTransform: "lowercase",
               }}
             >
-              {possessivePronoun} finds
+              finds
             </h2>
             <Link
               to={`/profile/${id}/saved`}
@@ -935,34 +910,6 @@ const UserProfile = () => {
         </section>
       )}
 
-      {/* Cross-link footer */}
-      {!isOwnProfile && profile && (
-        <div
-          style={{
-            margin: "0 24px",
-            paddingTop: 16,
-            borderTop: "1px solid rgba(238, 232, 218, 0.15)",
-            textAlign: "center",
-          }}
-        >
-          <Link
-            to={`/profile/${id}/saved`}
-            style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: 15,
-              color: CREAM,
-              opacity: 0.55,
-              textDecoration: "none",
-              textTransform: "lowercase",
-            }}
-          >
-            more from {firstName}
-            <span style={{ fontSize: 12, marginLeft: 6 }}>↗</span>
-          </Link>
-        </div>
-      )}
 
       {/* Three-dots action sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
