@@ -505,10 +505,10 @@ const SpecialDetail = () => {
               style={{
                 fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 fontWeight: 400,
-                fontSize: 14,
-                lineHeight: "20.3px",
+                fontSize: 15,
+                lineHeight: 1.65,
                 letterSpacing: 0,
-                color: "#0A0A0A",
+                color: "rgba(238,232,218,0.9)",
                 margin: 0,
                 whiteSpace: "pre-line",
                 ...(aboutExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
@@ -520,18 +520,21 @@ const SpecialDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 6,
+                  marginTop: 14,
+                  display: "inline-block",
                   background: "none",
                   border: "none",
+                  borderBottom: "1px solid rgba(238,232,218,0.4)",
                   padding: 0,
+                  paddingBottom: 2,
                   cursor: "pointer",
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 400,
-                  color: "#0A0A0A",
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                  textTransform: "capitalize",
+                  letterSpacing: "1.6px",
+                  color: CREAM,
+                  textDecoration: "none",
+                  textTransform: "uppercase",
                 }}
               >
                 {aboutExpanded ? "Show Less" : "Read More"}
