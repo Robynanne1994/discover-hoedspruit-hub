@@ -90,24 +90,15 @@ const HomeMasthead = () => {
   }, []);
 
   useEffect(() => {
-    if (!user) { setUnreadCount(0); setNotifs([]); return; }
+    if (!user) { setUnreadCount(0); return; }
     let cancelled = false;
     const load = async () => {
-      const [{ data }, { count }] = await Promise.all([
-        supabase
-          .from("business_notifications")
-          .select("id,title,body,link,status,kind,is_read,created_at")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(8),
-        supabase
-          .from("business_notifications")
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id)
-          .eq("is_read", false),
-      ]);
+      const { count } = await supabase
+        .from("business_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
       if (cancelled) return;
-      setNotifs((data ?? []) as NotifPreview[]);
       setUnreadCount(count ?? 0);
     };
     load();
