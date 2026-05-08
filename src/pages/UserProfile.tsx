@@ -15,7 +15,6 @@ import {
   ThumbsUp,
   Calendar as CalendarIcon,
   MapPin,
-  MessageCircle,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
