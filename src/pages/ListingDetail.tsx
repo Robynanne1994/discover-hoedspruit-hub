@@ -128,8 +128,8 @@ const toTitleCase = (s: string) =>
 const SectionHeading = ({ children, mt = 36 }: { children: React.ReactNode; mt?: number }) => (
   <h2 style={{
     fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic",
-    fontSize: 28, lineHeight: "28px",
-    letterSpacing: "-0.5px", color: "#EEE8DA", margin: 0, marginTop: mt, marginBottom: 16,
+    fontSize: 30, lineHeight: "30px",
+    letterSpacing: "-0.5px", color: "#EEE8DA", margin: 0, marginTop: mt, marginBottom: 14,
     textTransform: "lowercase",
   }}>
     {children}
