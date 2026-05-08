@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,14 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import {
-  ArrowLeft,
-  MoreVertical,
-  Heart,
-  ThumbsUp,
-  Calendar as CalendarIcon,
-  MapPin,
-} from "lucide-react";
+import { ArrowLeft, MoreVertical } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -35,11 +28,9 @@ import BottomNav from "@/components/BottomNav";
 
 const PAGE_BG = "#5C6446";
 const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
 const INK = "#2A2A24";
 const MUTED = "#6B6A5E";
 const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Playfair Display', Georgia, serif";
 
@@ -55,31 +46,6 @@ const getInitials = (name?: string | null) => {
 };
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
-
-const relTime = (iso: string) => {
-  const then = new Date(iso).getTime();
-  const now = Date.now();
-  const diffDays = Math.floor((now - then) / 86400000);
-  if (diffDays < 1) return "TODAY";
-  if (diffDays === 1) return "1 DAY AGO";
-  if (diffDays < 7) return `${diffDays} DAYS AGO`;
-  if (diffDays < 14) return "1 WEEK AGO";
-  if (diffDays < 30)
-    return `${Math.floor(diffDays / 7)} WEEKS AGO`;
-  const d = new Date(iso);
-  return d
-    .toLocaleDateString("en-GB", { day: "numeric", month: "short" })
-    .toUpperCase();
-};
-
-type Activity = {
-  id: string;
-  type: "saved" | "recommended" | "been";
-  verb: string;
-  name: string;
-  href: string;
-  created_at: string;
-};
 
 const UserProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -146,113 +112,70 @@ const UserProfile = () => {
     enabled: !!id,
   });
 
-  // Activity (last 30 days): saves, reviews (recommendations), been_here
-  const { data: activity } = useQuery<Activity[]>({
-    queryKey: ["user-activity", id],
+  // Saved events
+  const { data: savedEvents } = useQuery({
+    queryKey: ["user-saved-events", id],
     queryFn: async () => {
-      const since = new Date(
-        Date.now() - 30 * 86400000,
-      ).toISOString();
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "event")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: events } = await supabase
+        .from("events")
+        .select("id, title, image_url, location, date, start_date")
+        .in("id", ids);
+      const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
+      return favs.map((f) => map[f.item_id]).filter(Boolean);
+    },
+    enabled: !!id,
+  });
 
-      const [favsRes, reviewsRes, beenRes] = await Promise.all([
-        supabase
-          .from("favourites")
-          .select("id, item_id, item_type, created_at")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
-        supabase
-          .from("reviews")
-          .select("id, listing_id, created_at, listings(title)")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
-        supabase
-          .from("been_here")
-          .select("id, listing_id, created_at, listings(title)")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
-      ]);
+  // Saved specials
+  const { data: savedSpecials } = useQuery({
+    queryKey: ["user-saved-specials", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "special")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: specials } = await supabase
+        .from("specials")
+        .select("id, title, image_url, business_name, deal_label")
+        .in("id", ids);
+      const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
+      return favs.map((f) => map[f.item_id]).filter(Boolean);
+    },
+    enabled: !!id,
+  });
 
-      const favListingIds = (favsRes.data || [])
-        .filter((f: any) => f.item_type === "listing")
-        .map((f: any) => f.item_id);
-      const favEventIds = (favsRes.data || [])
-        .filter((f: any) => f.item_type === "event")
-        .map((f: any) => f.item_id);
-
-      let favTitleMap: Record<string, { title: string; type: string }> = {};
-      if (favListingIds.length) {
-        const { data } = await supabase
-          .from("listings")
-          .select("id, title")
-          .in("id", favListingIds);
-        (data || []).forEach((l: any) => {
-          favTitleMap[l.id] = { title: l.title, type: "listing" };
-        });
-      }
-      if (favEventIds.length) {
-        const { data } = await supabase
-          .from("events")
-          .select("id, title")
-          .in("id", favEventIds);
-        (data || []).forEach((e: any) => {
-          favTitleMap[e.id] = { title: e.title, type: "event" };
-        });
-      }
-
-      const items: Activity[] = [];
-
-      (favsRes.data || []).forEach((f: any) => {
-        const meta = favTitleMap[f.item_id];
-        if (!meta) return;
-        items.push({
-          id: `fav-${f.id}`,
-          type: "saved",
-          verb: "saved",
-          name: meta.title,
-          href:
-            meta.type === "event"
-              ? `/event/${f.item_id}`
-              : `/listing/${f.item_id}`,
-          created_at: f.created_at,
-        });
-      });
-
-      (reviewsRes.data || []).forEach((r: any) => {
-        if (!r.listings?.title) return;
-        items.push({
-          id: `rev-${r.id}`,
-          type: "recommended",
-          verb: "recommended",
-          name: r.listings.title,
-          href: `/listing/${r.listing_id}`,
-          created_at: r.created_at,
-        });
-      });
-
-      (beenRes.data || []).forEach((b: any) => {
-        if (!b.listings?.title) return;
-        items.push({
-          id: `been-${b.id}`,
-          type: "been",
-          verb: "been to",
-          name: b.listings.title,
-          href: `/listing/${b.listing_id}`,
-          created_at: b.created_at,
-        });
-      });
-
-      items.sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() -
-          new Date(a.created_at).getTime(),
-      );
-      return items.slice(0, 8);
+  // Been to (visited places)
+  const { data: beenTo } = useQuery({
+    queryKey: ["user-been-to", id],
+    queryFn: async () => {
+      const { data: rows } = await supabase
+        .from("been_here")
+        .select("listing_id, created_at")
+        .eq("user_id", id!)
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!rows?.length) return [];
+      const ids = rows.map((r) => r.listing_id);
+      const { data: listings } = await supabase
+        .from("listings")
+        .select("id, title, image_url, location, google_rating")
+        .in("id", ids);
+      const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
+      return rows.map((r) => map[r.listing_id]).filter(Boolean);
     },
     enabled: !!id,
   });
@@ -625,290 +548,187 @@ const UserProfile = () => {
         </div>
       </div>
 
-      {/* Finds */}
-      {saved && saved.length > 0 && (
-        <section style={{ marginBottom: 32 }}>
-          <div
-            style={{
-              padding: "0 24px",
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              marginBottom: 14,
-            }}
-          >
-            <h2
-              style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 28,
-                lineHeight: 1,
-                letterSpacing: "-0.5px",
-                color: CREAM,
-                margin: 0,
-                textTransform: "lowercase",
-              }}
-            >
-              finds
-            </h2>
-            <Link
-              to={`/profile/${id}/saved`}
-              style={{
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 11,
-                letterSpacing: "1.8px",
-                textTransform: "uppercase",
-                color: CREAM,
-                opacity: 0.75,
-                textDecoration: "none",
-              }}
-            >
-              See All
-            </Link>
-          </div>
+      {(() => {
+        const sections: Array<{
+          title: string;
+          items: any[];
+          hrefFor: (it: any) => string;
+          subtitleFor: (it: any) => React.ReactNode;
+        }> = [
+          {
+            title: "saved listings",
+            items: saved || [],
+            hrefFor: (l) => `/listing/${l.id}`,
+            subtitleFor: (l) => (
+              <>
+                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1)}</span>}
+                {l.google_rating && l.location && (
+                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
+                )}
+                {l.location && <span>{l.location}</span>}
+              </>
+            ),
+          },
+          {
+            title: "saved events",
+            items: savedEvents || [],
+            hrefFor: (e) => `/event/${e.id}`,
+            subtitleFor: (e) => {
+              const d = e.start_date || e.date;
+              const dateStr = d
+                ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+                : null;
+              return (
+                <>
+                  {dateStr && <span>{dateStr}</span>}
+                  {dateStr && e.location && (
+                    <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
+                  )}
+                  {e.location && <span>{e.location}</span>}
+                </>
+              );
+            },
+          },
+          {
+            title: "saved specials",
+            items: savedSpecials || [],
+            hrefFor: (s) => `/special/${s.id}`,
+            subtitleFor: (s) => (
+              <>
+                {s.deal_label && <span>{s.deal_label}</span>}
+                {s.deal_label && s.business_name && (
+                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
+                )}
+                {s.business_name && <span>{titleCase(s.business_name)}</span>}
+              </>
+            ),
+          },
+          {
+            title: "been to",
+            items: beenTo || [],
+            hrefFor: (l) => `/listing/${l.id}`,
+            subtitleFor: (l) => (
+              <>
+                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1)}</span>}
+                {l.google_rating && l.location && (
+                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
+                )}
+                {l.location && <span>{l.location}</span>}
+              </>
+            ),
+          },
+        ];
 
-          <div
-            style={{
-              display: "flex",
-              gap: 14,
-              overflowX: "auto",
-              paddingLeft: 24,
-              paddingRight: 24,
-              scrollbarWidth: "none",
-            }}
-            className="no-scrollbar"
-          >
-            {saved.map((l: any) => (
-              <Link
-                key={l.id}
-                to={`/listing/${l.id}`}
+        return sections
+          .filter((s) => s.items.length > 0)
+          .map((s) => (
+            <section key={s.title} style={{ marginBottom: 32 }}>
+              <div
                 style={{
-                  flex: "0 0 auto",
-                  width: 240,
-                  background: CREAM,
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  textDecoration: "none",
+                  padding: "0 24px",
+                  display: "flex",
+                  alignItems: "baseline",
+                  justifyContent: "space-between",
+                  marginBottom: 14,
                 }}
               >
-                <div
+                <h2
                   style={{
-                    width: "100%",
-                    height: 180,
-                    background: "#d6d6d6",
+                    fontFamily: SERIF,
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    fontSize: 28,
+                    lineHeight: 1,
+                    letterSpacing: "-0.5px",
+                    color: CREAM,
+                    margin: 0,
+                    textTransform: "lowercase",
                   }}
                 >
-                  {l.image_url && (
-                    <img
-                      src={l.image_url}
-                      alt=""
-                      loading="lazy"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                    />
-                  )}
-                </div>
-                <div style={{ padding: "16px 18px 18px" }}>
-                  <div
-                    style={{
-                      fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 17,
-                      lineHeight: 1.2,
-                      letterSpacing: "-0.2px",
-                      color: INK,
-                      marginBottom: 6,
-                    }}
-                  >
-                    {titleCase(l.title)}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      fontFamily: SANS,
-                      fontSize: 12.5,
-                      color: MUTED,
-                    }}
-                  >
-                    {l.google_rating && (
-                      <span>★ {Number(l.google_rating).toFixed(1)}</span>
-                    )}
-                    {l.google_rating && l.location && (
-                      <span
-                        style={{
-                          width: 3,
-                          height: 3,
-                          borderRadius: "50%",
-                          background: MUTED,
-                          opacity: 0.6,
-                          display: "inline-block",
-                        }}
-                      />
-                    )}
-                    {l.location && <span>{l.location}</span>}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+                  {s.title}
+                </h2>
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontWeight: 400,
+                    fontSize: 11,
+                    letterSpacing: "1.8px",
+                    textTransform: "uppercase",
+                    color: CREAM,
+                    opacity: 0.75,
+                  }}
+                >
+                  {s.items.length}
+                </span>
+              </div>
 
-      {/* Recent activity */}
-      {activity && activity.length > 0 && (
-        <section style={{ marginBottom: 32 }}>
-          <div
-            style={{
-              padding: "0 24px",
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              marginBottom: 14,
-            }}
-          >
-            <h2
-              style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 28,
-                lineHeight: 1,
-                letterSpacing: "-0.5px",
-                color: CREAM,
-                margin: 0,
-                textTransform: "lowercase",
-              }}
-            >
-              recent
-            </h2>
-            <span
-              style={{
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 11,
-                letterSpacing: "1.8px",
-                textTransform: "uppercase",
-                color: CREAM,
-                opacity: 0.75,
-              }}
-            >
-              Last 30 Days
-            </span>
-          </div>
-
-          <div style={{ padding: "0 24px" }}>
-            <div
-              style={{
-                background: CREAM,
-                borderRadius: 20,
-                padding: "6px 20px",
-                overflow: "hidden",
-              }}
-            >
-              {activity.map((a, i) => {
-                const isSave = a.type === "saved";
-                const Icon =
-                  a.type === "saved"
-                    ? Heart
-                    : a.type === "recommended"
-                    ? ThumbsUp
-                    : a.type === "been"
-                    ? MapPin
-                    : CalendarIcon;
-                return (
+              <div
+                style={{
+                  display: "flex",
+                  gap: 14,
+                  overflowX: "auto",
+                  paddingLeft: 24,
+                  paddingRight: 24,
+                  scrollbarWidth: "none",
+                }}
+                className="no-scrollbar"
+              >
+                {s.items.map((it: any) => (
                   <Link
-                    key={a.id}
-                    to={a.href}
+                    key={it.id}
+                    to={s.hrefFor(it)}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 14,
-                      padding: "14px 0",
-                      borderTop:
-                        i === 0 ? "none" : `1px solid ${LINE}`,
+                      flex: "0 0 auto",
+                      width: 240,
+                      background: CREAM,
+                      borderRadius: 20,
+                      overflow: "hidden",
                       textDecoration: "none",
                     }}
                   >
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        background: isSave ? RUST : SOFT_CREAM,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <Icon
-                        size={14}
-                        strokeWidth={1.6}
-                        color={isSave ? CREAM : MUTED}
-                        fill={isSave ? CREAM : "none"}
-                      />
+                    <div style={{ width: "100%", height: 180, background: "#d6d6d6" }}>
+                      {it.image_url && (
+                        <img
+                          src={it.image_url}
+                          alt=""
+                          loading="lazy"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                        />
+                      )}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontFamily: SERIF,
-                          fontStyle: "italic",
-                          fontWeight: 400,
-                          fontSize: 13,
-                          color: MUTED,
-                          lineHeight: 1.3,
-                        }}
-                      >
-                        {a.verb}{" "}
-                        <span
-                          style={{
-                            fontFamily: SANS,
-                            fontStyle: "normal",
-                            color: INK,
-                          }}
-                        >
-                          {titleCase(a.name)}
-                        </span>
-                      </div>
+                    <div style={{ padding: "16px 18px 18px" }}>
                       <div
                         style={{
                           fontFamily: SANS,
                           fontWeight: 400,
-                          fontSize: 11.5,
-                          letterSpacing: "1.6px",
-                          textTransform: "uppercase",
-                          color: MUTED,
-                          opacity: 0.85,
-                          marginTop: 2,
+                          fontSize: 17,
+                          lineHeight: 1.2,
+                          letterSpacing: "-0.2px",
+                          color: INK,
+                          marginBottom: 6,
                         }}
                       >
-                        {relTime(a.created_at)}
+                        {titleCase(it.title)}
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          fontFamily: SANS,
+                          fontSize: 12.5,
+                          color: MUTED,
+                        }}
+                      >
+                        {s.subtitleFor(it)}
                       </div>
                     </div>
-                    <span
-                      style={{
-                        fontSize: 13,
-                        color: MUTED,
-                        flexShrink: 0,
-                      }}
-                    >
-                      ↗
-                    </span>
                   </Link>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
+                ))}
+              </div>
+            </section>
+          ));
+      })()}
 
 
       {/* Three-dots action sheet */}
