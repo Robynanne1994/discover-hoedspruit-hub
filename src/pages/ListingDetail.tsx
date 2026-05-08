@@ -1387,16 +1387,22 @@ const ListingDetail = () => {
           </>
         )}
 
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 40 }}>
+        <div style={{
+          marginTop: 32, paddingTop: 18,
+          borderTop: "1px solid rgba(238, 232, 218, 0.15)",
+          textAlign: "center",
+        }}>
           <button
             onClick={() => setSuggestEditOpen(true)}
             style={{
-              fontFamily: FONT_BODY, fontSize: 13, color: "#5b4632",
-              textDecoration: "underline", textUnderlineOffset: "3px",
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontStyle: "italic", fontWeight: 400, fontSize: 15,
+              color: "rgba(238, 232, 218, 0.6)",
+              textTransform: "lowercase",
               background: "transparent", border: "none", cursor: "pointer", padding: 0,
             }}
           >
-            Suggest an edit to this listing
+            suggest an edit to this listing.
           </button>
         </div>
 
