@@ -48,7 +48,7 @@ const HomeSpecials = () => {
                 maxWidth: 265,
                 minWidth: 260,
                 flexShrink: 0,
-                background: "#FFFFFF",
+                background: "#EEE8DA",
                 borderRadius: 24,
                 overflow: "hidden",
                 textDecoration: "none",
@@ -57,7 +57,7 @@ const HomeSpecials = () => {
                 scrollSnapAlign: "start",
               }}
             >
-              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#F2EFEC" }}>
+              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#E0DAC9" }}>
                 {s.image_url && (
                   <img
                     src={s.image_url}
@@ -72,7 +72,7 @@ const HomeSpecials = () => {
                     top: 12,
                     left: 12,
                     right: 84,
-                    background: "#FFFFFF",
+                    background: "#EEE8DA",
                     borderRadius: 999,
                     padding: "8px 14px",
                     display: "inline-block",

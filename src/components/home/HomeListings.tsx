@@ -52,7 +52,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
               style={{
                 width: 240,
                 flexShrink: 0,
-                background: "#FFFFFF",
+                background: "#EEE8DA",
                 borderRadius: 20,
                 overflow: "hidden",
                 textDecoration: "none",
@@ -60,7 +60,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                 display: "block",
               }}
             >
-              <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 5", background: "#F2EFEC" }}>
+              <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 5", background: "#E0DAC9" }}>
                 {l.image_url && (
                   <img
                     src={l.image_url}
