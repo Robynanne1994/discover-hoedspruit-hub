@@ -1148,7 +1148,7 @@ const ListingDetail = () => {
                     </div>
                   </div>
                 )}
-                <div style={{ paddingLeft: 20, paddingRight: 20 }}>
+                <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 6, paddingBottom: 6 }}>
                 {DAY_LABELS.map((day, i) => {
                   const key = day.toLowerCase();
                   const value = openingHours![key] || "";
@@ -1157,31 +1157,33 @@ const ListingDetail = () => {
                   return (
                     <div key={day} style={{
                       display: "flex", justifyContent: "space-between", alignItems: "center",
-                      height: 48,
-                      borderTop: i === 0 ? "none" : `1px solid ${C.border}`,
+                      paddingTop: 14, paddingBottom: 14,
+                      borderTop: i === 0 ? "none" : `1px solid #D9D2C0`,
                     }}>
-                      <span style={{ display: "inline-flex", alignItems: "center" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                         {isToday && (
                           <span style={{
-                            width: 6, height: 6, borderRadius: "50%",
-                            background: openStatus?.state === "open" ? "#16a34a" : "#dc2626",
-                            display: "inline-block", marginRight: 8,
+                            width: 7, height: 7, borderRadius: "50%",
+                            background: "#D9C36B",
+                            display: "inline-block",
                           }} />
                         )}
                         <span style={{
                           fontFamily: FONT_BODY,
                           fontWeight: 400,
-                          fontSize: 14,
-                          color: isToday ? C.text : C.muted,
+                          fontSize: 14.5,
+                          color: isToday ? "#2A2A24" : "#6B6A5E",
                         }}>
                           {day}{isToday ? " · Today" : ""}
                         </span>
                       </span>
                       <span style={{
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        color: isToday ? C.text : C.muted,
+                        fontFamily: isClosed ? '"Playfair Display", Georgia, serif' : FONT_BODY,
+                        fontStyle: isClosed ? "italic" : "normal",
+                        fontWeight: 400, fontSize: 14.5,
+                        color: isToday ? "#2A2A24" : "#6B6A5E",
                       }}>
-                        {isClosed ? "Closed" : value}
+                        {isClosed ? "Closed" : value.replace(/\s*-\s*/g, " to ")}
                       </span>
                     </div>
                   );
