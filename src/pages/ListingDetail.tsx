@@ -125,11 +125,12 @@ const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
 // Section heading (H2) — Helvetica World 500, 22px / 22px, -0.66px tracking
-const SectionHeading = ({ children, mt = 18 }: { children: React.ReactNode; mt?: number }) => (
+const SectionHeading = ({ children, mt = 36 }: { children: React.ReactNode; mt?: number }) => (
   <h2 style={{
-    fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 22, lineHeight: "22px",
-    letterSpacing: "-0.66px", color: "#FFFFFF", margin: 0, marginTop: mt, marginBottom: 10,
-    textTransform: "none",
+    fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic",
+    fontSize: 28, lineHeight: "28px",
+    letterSpacing: "-0.5px", color: "#EEE8DA", margin: 0, marginTop: mt, marginBottom: 16,
+    textTransform: "lowercase",
   }}>
     {children}
   </h2>
