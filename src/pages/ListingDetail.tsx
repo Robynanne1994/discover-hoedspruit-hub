@@ -532,8 +532,9 @@ const ListingDetail = () => {
     listing.email && {
       label: "Email",
       value: listing.email,
-      icon: Mail,
+      icon: EmailIcon,
       href: `mailto:${listing.email}`,
+      isCustomIcon: true,
     },
     listing.website && {
       label: "Website",
