@@ -1236,52 +1236,85 @@ const ListingDetail = () => {
               href={(listing as any).google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{ display: "block", textDecoration: "none" }}
+              style={{
+                display: "block", textDecoration: "none",
+                background: "#EEE8DA", borderRadius: 24, overflow: "hidden",
+                marginBottom: 14,
+              }}
               {...pressScale("0.99")}
             >
               <div style={{
-                position: "relative", height: 200, borderRadius: 24, overflow: "hidden",
-                background: C.mapBg,
+                position: "relative", height: 160,
+                background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)",
               }}>
                 {mapCoords && (() => {
-                  const d = 0.006; // ~600m bbox for a tight neighbourhood view
+                  const d = 0.006;
                   const bbox = `${mapCoords.lon - d}%2C${mapCoords.lat - d}%2C${mapCoords.lon + d}%2C${mapCoords.lat + d}`;
                   return (
                     <iframe
                       title="Map"
                       src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lon}`}
-                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none" }}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0, pointerEvents: "none", opacity: 0.55, filter: "saturate(0.55) sepia(0.15)" }}
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
                     />
                   );
                 })()}
+                {/* Rust teardrop pin */}
                 <div style={{
-                  position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)",
+                  position: "absolute", top: "50%", left: "50%",
+                  transform: "translate(-50%, -100%)",
                   pointerEvents: "none",
+                  width: 14, height: 14,
                 }}>
-                  <svg width="28" height="36" viewBox="0 0 28 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M14 0C6.27 0 0 6.06 0 13.55c0 9.7 12.6 21.45 13.13 21.95a1.27 1.27 0 0 0 1.74 0C15.4 35 28 23.25 28 13.55 28 6.06 21.73 0 14 0z" fill={C.coral}/>
-                    <circle cx="14" cy="13" r="4.5" fill="#FFFFFF"/>
-                  </svg>
+                  <div style={{
+                    width: 14, height: 14,
+                    background: "#9B5A3C",
+                    borderRadius: "50% 50% 50% 0",
+                    transform: "rotate(-45deg)",
+                    boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
+                    position: "relative",
+                  }}>
+                    <div style={{
+                      position: "absolute", top: 4, left: 4,
+                      width: 6, height: 6, borderRadius: "50%", background: "#EEE8DA",
+                    }} />
+                  </div>
                 </div>
               </div>
-              {listing.location && (
-              <div style={{
-                marginTop: 12,
-                background: C.card, borderRadius: 16, boxShadow: SHADOW_MD,
-                minHeight: 48, display: "flex", alignItems: "center",
-                paddingLeft: 16, paddingRight: 12, paddingTop: 10, paddingBottom: 10,
-              }}>
-                <span style={{
-                  flex: 1, fontFamily: FONT_BODY, fontSize: 14, lineHeight: 1.4, color: C.text,
-                  display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const, overflow: "hidden",
-                }}>
-                  {listing.location}
-                </span>
-                  <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 8 }} />
-                </div>
-              )}
+              {listing.location && (() => {
+                const parts = listing.location.split(",");
+                const main = parts[0].trim();
+                const sub = parts.slice(1).join(",").trim();
+                return (
+                  <div style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "18px 24px",
+                  }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <span style={{
+                        display: "block",
+                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        fontWeight: 400, fontSize: 14, color: "#2A2A24",
+                      }}>
+                        {main}
+                      </span>
+                      {sub && (
+                        <span style={{
+                          display: "block", marginTop: 2,
+                          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                          fontWeight: 400, fontSize: 12, color: "#6B6A5E",
+                        }}>
+                          {sub}
+                        </span>
+                      )}
+                    </div>
+                    <span aria-hidden="true" style={{
+                      fontSize: 14, color: "#6B6A5E", marginLeft: 12, flexShrink: 0,
+                    }}>↗</span>
+                  </div>
+                );
+              })()}
             </a>
           </>
         )}
