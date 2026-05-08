@@ -627,7 +627,7 @@ const ListingDetail = () => {
           {(listing as any).google_rating != null && (
             <>
               <span style={{ color: "#FFFFFF", display: "inline-flex", alignItems: "center", gap: 4 }}>
-                <Star size={13} fill="#5b4632" color="#5b4632" strokeWidth={1.5} />
+                <Star size={13} fill="#BAA685" color="#BAA685" strokeWidth={1.5} />
                 <span>{(listing as any).google_rating}</span>
               </span>
               {(listing as any).google_reviews_count != null && (
