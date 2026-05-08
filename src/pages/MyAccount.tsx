@@ -853,7 +853,7 @@ const MyAccount = () => {
             display: "flex",
             alignItems: "center",
             gap: 8,
-            background: TEXT,
+            background: "#423324",
             color: "#FFFFFF",
             border: "none",
             borderRadius: 999,
