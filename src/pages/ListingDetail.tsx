@@ -869,7 +869,7 @@ const ListingDetail = () => {
                 const sectionIconMap: Record<string, any> = {
                   pricing: Banknote,
                   service: ConciergeBell,
-                  kids: Baby,
+                  kids: KidsFamilyIcon,
                   accessibility: Accessibility,
                   amenities: Sparkles,
                   seating: Armchair,
@@ -880,7 +880,7 @@ const ListingDetail = () => {
                   "accom-transport": Car,
                   "accom-wellness": HeartPulse,
                   "accom-rooms": BedDouble,
-                  "accom-children": Baby,
+                  "accom-children": KidsFamilyIcon,
                   "accom-pets": PawPrint,
                   "shop-amenities": ShoppingBag,
                   "shop-payment": CreditCard,
