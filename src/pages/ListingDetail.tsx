@@ -773,7 +773,7 @@ const ListingDetail = () => {
                   href={a.href}
                   {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   style={{
-                    flex: 1, minWidth: 0,
+                    flex: "1 1 0", flexBasis: 0, width: 0, minWidth: 0, boxSizing: "border-box",
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
                     padding: btnPadding, borderRadius: 20,
                     background: "#EEE8DA", color: "#2A2A24",
@@ -784,6 +784,8 @@ const ListingDetail = () => {
                     fontSize: btnFontSize, fontWeight: 400,
                     letterSpacing: "0.2px",
                     whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                   {...pressScale()}
                 >
