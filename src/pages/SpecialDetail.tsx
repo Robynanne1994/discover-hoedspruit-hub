@@ -11,11 +11,12 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
-const PAGE_BG = "#EBEBEB";
-const SURFACE = "#FFFFFF";
-const TEXT = "#0A0A0A";
-const MUTED = "#8A8480";
-const DIVIDER = "#E8E4DF";
+const PAGE_BG = "#5C6446";
+const SURFACE = "#EEE8DA";
+const TEXT = "#2A2A24";
+const MUTED = "#6B6A5E";
+const DIVIDER = "rgba(107,106,94,0.15)";
+const CREAM = "#EEE8DA";
 
 const press = {
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
