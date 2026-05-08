@@ -1,11 +1,8 @@
 import { Link } from "react-router-dom";
-import { Star } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import HomeSectionHead from "./HomeSectionHead";
 import FavouriteButton from "@/components/FavouriteButton";
-
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
 
 interface Props {
   sectionKey: string;
@@ -41,7 +38,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
         actionHref={seeAllHref}
       />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
-        <div style={{ display: "flex", gap: 12, paddingRight: 24 }}>
+        <div style={{ display: "flex", gap: 14, paddingRight: 40 }}>
           {listings.slice(0, 6).map((l: any) => (
             <Link
               key={l.id}
@@ -50,37 +47,36 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
               onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: 240,
+                width: 268,
                 flexShrink: 0,
                 background: "#EEE8DA",
-                borderRadius: 20,
+                borderRadius: 24,
                 overflow: "hidden",
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
                 display: "block",
               }}
             >
-              <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 5", background: "#E0DAC9" }}>
+              <div style={{ position: "relative", width: "100%", height: 230, background: "#F4EFE3" }}>
                 {l.image_url && (
                   <img
                     src={l.image_url}
                     alt={l.title}
                     loading="lazy"
-                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
                 )}
                 <FavouriteButton itemId={l.id} itemType="listing" />
               </div>
-              <div style={{ padding: "12px 14px 14px" }}>
+              <div style={{ padding: "18px 20px 22px" }}>
                 <div
                   style={{
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontWeight: 400,
                     fontSize: 18,
-                    color: "#0A0A0A",
+                    color: "#2A2A24",
                     lineHeight: 1.2,
-                    marginBottom: 6,
-                    letterSpacing: "-0.01em",
+                    letterSpacing: "-0.2px",
+                    marginBottom: 8,
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
@@ -89,32 +85,19 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                 >
                   {cleanName(l.title)}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 13 }}>
                   {l.google_rating != null && (
                     <>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        <Star size={12} color="#5B4632" fill="#5B4632" strokeWidth={0} />
-                        <span
-                          style={{
-                            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                            fontWeight: 400,
-                            fontSize: 12,
-                            lineHeight: "15.6px",
-                            letterSpacing: "0.12px",
-                            color: "#8A8480",
-                          }}
-                        >
-                          {Number(l.google_rating).toFixed(1)}
-                        </span>
-                      </div>
+                      <span style={{ color: "#2A2A24" }}>★ {Number(l.google_rating).toFixed(1)}</span>
                       {l.location && (
                         <span
                           style={{
-                            width: 3,
-                            height: 3,
+                            width: 4,
+                            height: 4,
                             borderRadius: 999,
-                            background: "#8A8480",
+                            background: "rgba(107, 106, 94, 0.6)",
                             display: "inline-block",
+                            flexShrink: 0,
                           }}
                         />
                       )}
@@ -123,14 +106,10 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                   {l.location && (
                     <span
                       style={{
-                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                        fontWeight: 400,
-                        fontSize: 12,
-                        lineHeight: "15.6px",
-                        letterSpacing: "0.12px",
-                        color: "#8A8480",
-                        whiteSpace: "normal",
-                        wordBreak: "break-word",
+                        color: "#6B6A5E",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
                         flex: 1,
                         minWidth: 0,
                       }}

@@ -3,20 +3,17 @@ import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
+import { getEventDates } from "@/lib/eventDates";
 
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-
-const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const MONTH_NAMES = [
   "january", "february", "march", "april", "may", "june",
   "july", "august", "september", "october", "november", "december",
 ];
 
-import { getEventDates } from "@/lib/eventDates";
-
 type ParsedDate =
   | { kind: "single"; day: number; monthIdx: number }
-  | { kind: "range"; startDay: number; endDay: number; monthIdx: number }
+  | { kind: "range"; startDay: number; startMonthIdx: number; endDay: number; endMonthIdx: number; sameMonth: boolean }
   | { kind: "tba" };
 
 const parseEventDate = (e: { date?: string | null; start_date?: string | null; end_date?: string | null }): ParsedDate => {
@@ -24,13 +21,16 @@ const parseEventDate = (e: { date?: string | null; start_date?: string | null; e
   if (start) {
     const sameDay = !end || start.getTime() === end.getTime();
     if (sameDay) return { kind: "single", day: start.getDate(), monthIdx: start.getMonth() };
-    if (start.getMonth() === end!.getMonth() && start.getFullYear() === end!.getFullYear()) {
-      return { kind: "range", startDay: start.getDate(), endDay: end!.getDate(), monthIdx: start.getMonth() };
-    }
-    // cross-month range — show as range with start month
-    return { kind: "range", startDay: start.getDate(), endDay: end!.getDate(), monthIdx: start.getMonth() };
+    const sameMonth = start.getMonth() === end!.getMonth() && start.getFullYear() === end!.getFullYear();
+    return {
+      kind: "range",
+      startDay: start.getDate(),
+      startMonthIdx: start.getMonth(),
+      endDay: end!.getDate(),
+      endMonthIdx: end!.getMonth(),
+      sameMonth,
+    };
   }
-  // legacy free-text fallback
   const raw = e.date;
   if (!raw) return { kind: "tba" };
   const s = raw.trim().toLowerCase();
@@ -42,7 +42,7 @@ const parseEventDate = (e: { date?: string | null; start_date?: string | null; e
   }
   const rangeMatch = s.match(/(\d{1,2})\s*[-–]\s*(\d{1,2})/);
   if (rangeMatch && monthIdx >= 0) {
-    return { kind: "range", startDay: parseInt(rangeMatch[1], 10), endDay: parseInt(rangeMatch[2], 10), monthIdx };
+    return { kind: "range", startDay: parseInt(rangeMatch[1], 10), startMonthIdx: monthIdx, endDay: parseInt(rangeMatch[2], 10), endMonthIdx: monthIdx, sameMonth: true };
   }
   const singleMatch = s.match(/(\d{1,2})/);
   if (singleMatch && monthIdx >= 0) {
@@ -52,8 +52,11 @@ const parseEventDate = (e: { date?: string | null; start_date?: string | null; e
 };
 
 const formatDateLabel = (p: ParsedDate): string => {
-  if (p.kind === "single") return `${p.day} ${MONTHS[p.monthIdx]}`;
-  if (p.kind === "range") return `${p.startDay}–${p.endDay} ${MONTHS[p.monthIdx]}`;
+  if (p.kind === "single") return `${p.day} ${MONTHS_SHORT[p.monthIdx]}`;
+  if (p.kind === "range") {
+    if (p.sameMonth) return `${p.startDay} to ${p.endDay} ${MONTHS_SHORT[p.startMonthIdx]}`;
+    return `${p.startDay} ${MONTHS_SHORT[p.startMonthIdx]} to ${p.endDay} ${MONTHS_SHORT[p.endMonthIdx]}`;
+  }
   return "TBA";
 };
 
@@ -97,8 +100,8 @@ const HomeWhatsOn = () => {
   return (
     <section>
       <HomeSectionHead primary="What's on" actionLabel="All events" actionHref="/events" />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24, scrollSnapType: "x mandatory" }}>
-        <div style={{ display: "flex", gap: 12, paddingRight: 24 }}>
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
+        <div style={{ display: "flex", gap: 14, paddingRight: 40 }}>
           {events.map((e) => (
             <Link
               key={e.id}
@@ -107,9 +110,7 @@ const HomeWhatsOn = () => {
               onPointerUp={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(ev) => (ev.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: "72vw",
-                maxWidth: 265,
-                minWidth: 260,
+                width: 268,
                 flexShrink: 0,
                 background: "#EEE8DA",
                 borderRadius: 24,
@@ -117,10 +118,9 @@ const HomeWhatsOn = () => {
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
                 display: "block",
-                scrollSnapAlign: "start",
               }}
             >
-              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#E0DAC9" }}>
+              <div style={{ position: "relative", width: "100%", height: 180, background: "#F4EFE3" }}>
                 {e.image_url && (
                   <img
                     src={e.image_url}
@@ -136,34 +136,29 @@ const HomeWhatsOn = () => {
                     left: 12,
                     background: "#EEE8DA",
                     borderRadius: 999,
-                    padding: "8px 14px",
+                    padding: "7px 14px",
                   }}
                 >
                   <span
                     style={{
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontWeight: 400,
                       fontSize: 12,
-                      lineHeight: "14.4px",
-                      letterSpacing: "0.24px",
-                      color: "#0A0A0A",
-                      textTransform: "capitalize",
+                      lineHeight: 1.2,
+                      color: "#2A2A24",
                     }}
                   >
-                    {formatDateLabel(e.parsed).toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}
+                    {formatDateLabel(e.parsed)}
                   </span>
                 </div>
               </div>
-              <div style={{ padding: 16 }}>
+              <div style={{ padding: "18px 20px 20px" }}>
                 <div
                   style={{
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 18,
-                    lineHeight: "21.6px",
-                    letterSpacing: "-0.18px",
-                    color: "#0A0A0A",
-                    marginBottom: 6,
+                    fontSize: 17,
+                    lineHeight: 1.25,
+                    color: "#2A2A24",
+                    marginBottom: 8,
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
@@ -179,14 +174,11 @@ const HomeWhatsOn = () => {
                       alignItems: "center",
                       gap: 6,
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontWeight: 400,
-                      fontSize: 12,
-                      lineHeight: "15.6px",
-                      letterSpacing: "0.12px",
-                      color: "#8A8480",
+                      fontSize: 13,
+                      color: "#6B6A5E",
                     }}
                   >
-                    <MapPin size={12} color="#8A8480" strokeWidth={1.5} fill="none" style={{ flexShrink: 0 }} />
+                    <MapPin size={13} color="#6B6A5E" strokeWidth={1.6} fill="none" style={{ flexShrink: 0 }} />
                     <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {e.location}
                     </span>

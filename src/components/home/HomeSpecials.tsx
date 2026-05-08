@@ -4,9 +4,6 @@ import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
-
 interface Special {
   id: string;
   title: string;
@@ -34,8 +31,8 @@ const HomeSpecials = () => {
   return (
     <section>
       <HomeSectionHead primary="Specials" serif="this month" actionLabel="See all" actionHref="/specials" />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24, scrollSnapType: "x mandatory" }}>
-        <div style={{ display: "flex", gap: 12, paddingRight: 24 }}>
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
+        <div style={{ display: "flex", gap: 14, paddingRight: 40 }}>
           {specials.map((s) => (
             <Link
               key={s.id}
@@ -44,9 +41,7 @@ const HomeSpecials = () => {
               onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: "72vw",
-                maxWidth: 265,
-                minWidth: 260,
+                width: 268,
                 flexShrink: 0,
                 background: "#EEE8DA",
                 borderRadius: 24,
@@ -54,10 +49,9 @@ const HomeSpecials = () => {
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
                 display: "block",
-                scrollSnapAlign: "start",
               }}
             >
-              <div style={{ position: "relative", width: "100%", aspectRatio: "16 / 10", background: "#E0DAC9" }}>
+              <div style={{ position: "relative", width: "100%", height: 180, background: "#F4EFE3" }}>
                 {s.image_url && (
                   <img
                     src={s.image_url}
@@ -71,43 +65,36 @@ const HomeSpecials = () => {
                     position: "absolute",
                     top: 12,
                     left: 12,
-                    right: 84,
                     background: "#EEE8DA",
                     borderRadius: 999,
-                    padding: "8px 14px",
-                    display: "inline-block",
-                    maxWidth: "calc(100% - 96px)",
-                    width: "fit-content",
+                    padding: "7px 14px",
+                    maxWidth: "calc(100% - 24px)",
                   }}
                 >
                   <span
                     style={{
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontWeight: 400,
                       fontSize: 12,
-                      lineHeight: "14.4px",
-                      letterSpacing: "0.24px",
-                      color: "#0A0A0A",
-                      textTransform: "capitalize",
-                      display: "block",
+                      lineHeight: 1.2,
+                      color: "#2A2A24",
                       whiteSpace: "nowrap",
                       overflow: "hidden",
                       textOverflow: "ellipsis",
+                      display: "block",
                     }}
                   >
                     {s.deal_label}
                   </span>
                 </div>
               </div>
-              <div style={{ padding: 16 }}>
+              <div style={{ padding: "18px 20px 20px" }}>
                 <div
                   style={{
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 18,
-                    lineHeight: "21.6px",
-                    letterSpacing: "-0.18px",
-                    color: "#0A0A0A",
+                    fontSize: 17,
+                    lineHeight: 1.25,
+                    letterSpacing: "-0.2px",
+                    color: "#2A2A24",
                     marginBottom: 6,
                   }}
                 >
@@ -116,12 +103,9 @@ const HomeSpecials = () => {
                 <div
                   style={{
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontWeight: 400,
-                    fontSize: 12,
-                    lineHeight: "15.6px",
-                    letterSpacing: "0.12px",
-                    color: "#8A8480",
-                    marginBottom: 6,
+                    fontSize: 13,
+                    color: "#6B6A5E",
+                    marginBottom: 4,
                     wordBreak: "break-word",
                   }}
                 >
@@ -131,11 +115,8 @@ const HomeSpecials = () => {
                   <div
                     style={{
                       fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontWeight: 400,
                       fontSize: 12,
-                      lineHeight: "15.6px",
-                      letterSpacing: "0.12px",
-                      color: "#8A8480",
+                      color: "rgba(107, 106, 94, 0.85)",
                     }}
                   >
                     Valid until {format(new Date(s.valid_until), "d MMM yyyy")}
