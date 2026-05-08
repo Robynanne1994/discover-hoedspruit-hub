@@ -802,10 +802,10 @@ const ListingDetail = () => {
                 <p key={i} style={{
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                   fontWeight: 400,
-                  fontSize: 14,
-                  lineHeight: "20.3px",
+                  fontSize: 15,
+                  lineHeight: 1.65,
                   letterSpacing: 0,
-                  color: "#FFFFFF",
+                  color: "rgba(238, 232, 218, 0.9)",
                   margin: 0,
                   marginBottom: i < aboutParagraphs.length - 1 ? 12 : 0,
                 }}>
@@ -817,18 +817,21 @@ const ListingDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 6,
+                  marginTop: 14,
+                  display: "inline-block",
                   background: "none",
                   border: "none",
+                  borderBottom: "1px solid rgba(238, 232, 218, 0.4)",
                   padding: 0,
+                  paddingBottom: 2,
                   cursor: "pointer",
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                   fontWeight: 400,
-                  fontSize: 14,
-                  color: "#FFFFFF",
-                  textTransform: "none",
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
+                  fontSize: 13,
+                  letterSpacing: "1.6px",
+                  color: "#EEE8DA",
+                  textTransform: "uppercase",
+                  textDecoration: "none",
                   transition: "opacity 0.12s ease",
                 }}
                 {...pressOpacity}
