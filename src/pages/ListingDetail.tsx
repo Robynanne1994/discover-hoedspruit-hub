@@ -764,7 +764,7 @@ const ListingDetail = () => {
                   fontSize: 14,
                   lineHeight: "20.3px",
                   letterSpacing: 0,
-                  color: "#0A0A0A",
+                  color: "#F0EAD9",
                   margin: 0,
                   marginBottom: i < aboutParagraphs.length - 1 ? 12 : 0,
                 }}>
@@ -784,7 +784,7 @@ const ListingDetail = () => {
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                   fontWeight: 400,
                   fontSize: 14,
-                  color: "#0A0A0A",
+                  color: "#F0EAD9",
                   textTransform: "none",
                   textDecoration: "underline",
                   textUnderlineOffset: "3px",
