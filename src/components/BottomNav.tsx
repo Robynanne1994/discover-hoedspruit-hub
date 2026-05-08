@@ -133,7 +133,7 @@ const BottomNav = () => {
               }}
             >
               <Icon
-                size={24}
+                size={28}
                 color={isActive ? PILL_FG : INACTIVE}
                 strokeWidth={isActive ? 2.25 : 1.75}
                 fill="none"
