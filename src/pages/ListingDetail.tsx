@@ -1108,18 +1108,18 @@ const ListingDetail = () => {
               }}>
                 {openStatus && (
                   <div style={{
-                    background: "#F4ECE1",
-                    paddingTop: 20, paddingBottom: 22, paddingLeft: 24, paddingRight: 24,
+                    background: "#F4EFE3",
+                    paddingTop: 18, paddingBottom: 16, paddingLeft: 24, paddingRight: 24,
                   }}>
-                    <div style={{ display: "flex", alignItems: "center" }}>
+                    <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10 }}>
                       <span style={{
-                        width: 10, height: 10, borderRadius: "50%",
-                        background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f",
-                        display: "inline-block", marginRight: 12, flexShrink: 0,
+                        width: 8, height: 8, borderRadius: "50%",
+                        background: openStatus.state === "open" ? "#D9C36B" : "#6B6A5E",
+                        display: "inline-block", flexShrink: 0,
                       }} />
                       <span style={{
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
-                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#0a0a0a",
+                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 18,
+                        lineHeight: 1.2, letterSpacing: "-0.2px", color: "#2A2A24",
                       }}>
                         {openStatus.state === "open"
                           ? "Open Now"
@@ -1127,25 +1127,25 @@ const ListingDetail = () => {
                           ? "Temporarily Closed"
                           : "Closed"}
                       </span>
+                      {openStatus.state === "open" && openStatus.closes && (
+                        <span style={{
+                          marginLeft: 4,
+                          fontFamily: '"Playfair Display", Georgia, serif',
+                          fontStyle: "italic", fontWeight: 400, fontSize: 14, color: "#6B6A5E",
+                        }}>
+                          closes {openStatus.closes}
+                        </span>
+                      )}
+                      {openStatus.state === "closed" && openStatus.opensAt && (
+                        <span style={{
+                          marginLeft: 4,
+                          fontFamily: '"Playfair Display", Georgia, serif',
+                          fontStyle: "italic", fontWeight: 400, fontSize: 14, color: "#6B6A5E",
+                        }}>
+                          opens {openStatus.opensAt} {openStatus.opensDay || ""}
+                        </span>
+                      )}
                     </div>
-                    {openStatus.state === "open" && openStatus.closes && (
-                      <div style={{
-                        marginTop: 4, marginLeft: 22,
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        lineHeight: "20.3px", color: "#5b4632",
-                      }}>
-                        Closes {openStatus.closes}
-                      </div>
-                    )}
-                    {openStatus.state === "closed" && openStatus.opensAt && (
-                      <div style={{
-                        marginTop: 4,
-                        fontFamily: FONT_BODY, fontWeight: 400, fontSize: 14,
-                        lineHeight: "20.3px", color: "#5b4632",
-                      }}>
-                        Opens {openStatus.opensAt} {openStatus.opensDay}
-                      </div>
-                    )}
                   </div>
                 )}
                 <div style={{ paddingLeft: 20, paddingRight: 20 }}>
