@@ -301,18 +301,18 @@ const SpecialDetail = () => {
           const eyebrowText = cats.length ? cats.join("  ·  ") : special.deal_label;
           if (!eyebrowText) return null;
           return (
-            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10, textTransform: "uppercase", textAlign: "center" }}>{eyebrowText}</p>
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16, textTransform: "uppercase", textAlign: "center" }}>{eyebrowText}</p>
           );
         })()}
 
         <h1
           style={{
-            fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: 32,
-            fontWeight: 500,
-            lineHeight: "34px",
-            letterSpacing: "-0.96px",
-            color: "#0A0A0A",
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontSize: 48,
+            fontWeight: 400,
+            lineHeight: "45.6px",
+            letterSpacing: "-1.5px",
+            color: CREAM,
             textTransform: "none",
             marginTop: 0,
             marginBottom: 10,
