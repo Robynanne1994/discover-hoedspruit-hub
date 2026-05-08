@@ -997,7 +997,7 @@ const ListingDetail = () => {
               {holidayCheck.isHoliday && (
                 <div style={{
                   marginBottom: 12, padding: "10px 14px", background: C.panel, borderRadius: 12,
-                  fontFamily: FONT_BODY, fontSize: 13, color: "#FFFFFF",
+                  fontFamily: FONT_BODY, fontSize: 13, color: "#0a0a0a",
                 }}>
                   Public holiday — hours might differ
                 </div>
@@ -1018,7 +1018,7 @@ const ListingDetail = () => {
                       }} />
                       <span style={{
                         fontFamily: FONT_BODY, fontWeight: 400, fontSize: 22,
-                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#FFFFFF",
+                        lineHeight: "25.3px", letterSpacing: "-0.22px", color: "#0a0a0a",
                       }}>
                         {openStatus.state === "open"
                           ? "Open Now"
