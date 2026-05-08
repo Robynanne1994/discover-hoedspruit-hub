@@ -27,6 +27,7 @@ import serviceIconSrc from "@/assets/service-icon.svg";
 import amenitiesIconSrc from "@/assets/amenities-icon.svg";
 import starRatingIconSrc from "@/assets/star-rating-icon.svg";
 import accessibilityIconSrc from "@/assets/accessibility-icon.svg";
+import pricingIconSrc from "@/assets/pricing-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
@@ -67,6 +68,10 @@ const ServiceIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth
 
 const AccessibilityIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
   <img src={accessibilityIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
+);
+
+const PricingIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
+  <img src={pricingIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
 );
 
 const AmenitiesIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
@@ -893,7 +898,7 @@ const ListingDetail = () => {
               {accordionSections.map((section, i) => {
                 const isOpen = openAccordion === section.key;
                 const sectionIconMap: Record<string, any> = {
-                  pricing: Banknote,
+                  pricing: PricingIcon,
                   service: ServiceIcon,
                   kids: KidsFamilyIcon,
                   accessibility: AccessibilityIcon,
