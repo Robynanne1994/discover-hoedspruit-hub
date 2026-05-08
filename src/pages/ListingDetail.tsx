@@ -53,6 +53,10 @@ const VibeIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: 
   <img src={vibeIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
 );
 
+const SeatingIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
+  <img src={seatingIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
+);
+
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 const FONT_BODY = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -878,7 +882,7 @@ const ListingDetail = () => {
                   kids: KidsFamilyIcon,
                   accessibility: Accessibility,
                   amenities: Sparkles,
-                  seating: Armchair,
+                  seating: SeatingIcon,
                   meals: UtensilsCrossed,
                   cuisine: Soup,
                   vibe: VibeIcon,
