@@ -88,7 +88,7 @@ export const useFollowersList = (userId: string | undefined) => {
       const ids = data.map((d) => d.follower_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, display_name, avatar_url, location")
+        .select("id, display_name, avatar_url, location, username")
         .in("id", ids);
       return profiles || [];
     },
@@ -108,7 +108,7 @@ export const useFollowingList = (userId: string | undefined) => {
       const ids = data.map((d) => d.following_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, display_name, avatar_url, location")
+        .select("id, display_name, avatar_url, location, username")
         .in("id", ids);
       return profiles || [];
     },
