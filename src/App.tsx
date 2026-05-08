@@ -85,7 +85,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   if (location.pathname.startsWith("/business")) return <>{children}</>;
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "hsl(38, 30%, 96%)" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#5C6446" }}>
         <div className="animate-pulse text-primary font-heading font-bold text-xl">Hello Hoedspruit</div>
       </div>
     );
