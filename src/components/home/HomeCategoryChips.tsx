@@ -28,9 +28,9 @@ const HomeCategoryChips = ({ active, onChange }: Props) => {
               style={{
                 padding: "10px 18px",
                 borderRadius: 999,
-                background: isActive ? "#423324" : "#FFFFFF",
-                color: isActive ? "#FFFFFF" : "#0A0A0A",
-                fontFamily: SANS,
+                background: isActive ? "#2E241C" : "#EEE8DA",
+                color: isActive ? "#EEE8DA" : "#2A2A24",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 fontSize: 14,
                 lineHeight: 1,
                 border: "none",
