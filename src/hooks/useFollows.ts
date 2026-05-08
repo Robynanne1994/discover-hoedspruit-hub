@@ -88,7 +88,7 @@ export const useFollowersList = (userId: string | undefined) => {
       const ids = data.map((d) => d.follower_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, display_name, avatar_url, location")
+        .select("id, display_name, avatar_url, location, username")
         .in("id", ids);
       return profiles || [];
     },
@@ -108,10 +108,25 @@ export const useFollowingList = (userId: string | undefined) => {
       const ids = data.map((d) => d.following_id);
       const { data: profiles } = await supabase
         .from("profiles")
-        .select("id, display_name, avatar_url, location")
+        .select("id, display_name, avatar_url, location, username")
         .in("id", ids);
       return profiles || [];
     },
     enabled: !!userId,
+  });
+};
+
+export const useMyFollowingIds = () => {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["my-following-ids", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("follows")
+        .select("following_id")
+        .eq("follower_id", user!.id);
+      return new Set((data || []).map((d) => d.following_id as string));
+    },
+    enabled: !!user,
   });
 };
