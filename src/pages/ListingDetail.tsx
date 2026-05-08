@@ -755,8 +755,12 @@ const ListingDetail = () => {
 
           if (actions.length === 0) return null;
 
+          const isCompact = actions.length >= 4;
+          const btnPadding = isCompact ? "14px 6px 12px 6px" : "18px 12px 16px 12px";
+          const btnFontSize = isCompact ? 11 : 13;
+          const btnGap = isCompact ? 8 : 10;
           return (
-            <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
+            <div style={{ display: "flex", gap: btnGap, marginTop: 24 }}>
               {actions.map((a) => (
                 <a
                   key={a.key}
@@ -765,14 +769,15 @@ const ListingDetail = () => {
                   style={{
                     flex: 1, minWidth: 0,
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
-                    padding: "18px 12px 16px 12px", borderRadius: 20,
+                    padding: btnPadding, borderRadius: 20,
                     background: "#EEE8DA", color: "#2A2A24",
                     textDecoration: "none", cursor: "pointer",
                     transition: "transform 150ms ease-out",
                     boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 13, fontWeight: 400,
+                    fontSize: btnFontSize, fontWeight: 400,
                     letterSpacing: "0.2px",
+                    whiteSpace: "nowrap",
                   }}
                   {...pressScale()}
                 >
