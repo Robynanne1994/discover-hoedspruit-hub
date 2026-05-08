@@ -1,61 +1,50 @@
-import { Loader2, Check, ArrowUpRight } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
 import { useState, useEffect, CSSProperties } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
-const FF = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
+const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PLAYFAIR = "'Playfair Display', Georgia, serif";
-const PAGE_BG = "#EBEBEB";
-const SURFACE = "#FFFFFF";
-const WARM = "#F2EFEC";
-const CORAL = "#F26A48";
-const INK = "#0A0A0A";
-const MUTED = "#8A8480";
-const DIVIDER = "#E8E4DF";
 
-const HERO_STAT = {
-  number: "2,400+",
-  eyebrow: "Active Community",
-  caption: "Locals, visitors and newcomers using Hello Hoedspruit monthly to find what's open and what's on.",
-};
+const OLIVE = "#5C6446";
+const CREAM = "#EEE8DA";
+const INK = "#2A2A24";
+const MUTED = "#6B6A5E";
+const LINE = "#D9D2C0";
+const RUST = "#9B5A3C";
+const DEEP_RUST = "#7E4530";
+
+const BLOB_RADIUS_A = "50% 45% 55% 50% / 55% 50% 60% 45%";
+const BLOB_RADIUS_B = "55% 45% 50% 55% / 50% 60% 45% 55%";
 
 const BENEFITS = [
-  { n: "01", title: "Local visibility", description: "Show up when people search for places to eat, stay, shop and explore in Hoedspruit." },
-  { n: "02", title: "Targeted audience", description: "Reach an engaged community already in discovery mode and ready to spend locally." },
-  { n: "03", title: "Featured placement", description: "Stand out in carousels, category pages and curated picks across the app." },
-  { n: "04", title: "Grow Your Brand", description: "Build steady, lasting awareness with the Hoedspruit community over time." },
+  { n: "i.", title: "Local Visibility", description: "Show up when people search for places to eat, stay, shop, and explore in Hoedspruit." },
+  { n: "ii.", title: "Targeted Audience", description: "Reach an engaged community already in discovery mode and ready to spend locally." },
+  { n: "iii.", title: "Featured Placement", description: "Stand out in carousels, category pages, and curated picks across the app." },
+  { n: "iv.", title: "Grow Your Brand", description: "Build steady, lasting awareness with the Hoedspruit community over time." },
 ];
 
-const SOCIAL_PROOF = { count: "389+ businesses", suffix: " already on the app." };
-
-const AVATARS = [
-  "https://i.pravatar.cc/72?img=12",
-  "https://i.pravatar.cc/72?img=32",
-  "https://i.pravatar.cc/72?img=47",
-  "https://i.pravatar.cc/72?img=58",
+const AVATAR_FALLBACKS = [
+  "linear-gradient(135deg, #C9805C, #7E4530)",
+  "linear-gradient(135deg, #B8916A, #6B4A30)",
+  "linear-gradient(135deg, #D6A687, #9B5A3C)",
+  "linear-gradient(135deg, #A57352, #5b3826)",
 ];
-
-const eyebrow: CSSProperties = {
-  fontFamily: FF, fontSize: 12, fontWeight: 400, lineHeight: "14.4px",
-  letterSpacing: "0.24px", textTransform: "uppercase", color: MUTED, margin: 0,
-};
-
-const inputBase: CSSProperties = {
-  width: "100%", background: WARM, border: "1px solid transparent",
-  borderRadius: 16, height: 52, padding: "0 18px",
-  fontFamily: FF, fontSize: 16, fontWeight: 400, lineHeight: "22.4px",
-  color: INK, outline: "none", boxSizing: "border-box",
-  transition: "background 0.15s ease, border-color 0.15s ease",
-};
 
 const tap = {
   onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.98)"; },
   onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
+};
+
+const formatPlus = (n: number | null | undefined, fallback: string) => {
+  if (n == null) return fallback;
+  // round down to nearest 100
+  const rounded = Math.max(0, Math.floor(n / 100) * 100);
+  return `${rounded.toLocaleString("en-US")}+`;
 };
 
 const Advertise = () => {
@@ -66,7 +55,6 @@ const Advertise = () => {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [focused, setFocused] = useState<string>("");
 
   // Load Playfair Display
   useEffect(() => {
@@ -75,22 +63,53 @@ const Advertise = () => {
     const link = document.createElement("link");
     link.id = id;
     link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400&display=swap";
+    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
     document.head.appendChild(link);
   }, []);
 
-  // Placeholder colour
+  // Placeholder + focus styles
   useEffect(() => {
     const id = "advertise-placeholder-style";
     if (document.getElementById(id)) return;
     const style = document.createElement("style");
     style.id = id;
     style.textContent = `
-      .adv-input::placeholder { color: ${MUTED}; opacity: 1; font-family: ${FF}; font-size: 16px; font-weight: 400; }
-      .adv-input:focus { background: ${SURFACE} !important; border-color: ${INK} !important; }
+      .adv-input::placeholder { color: ${MUTED}; opacity: 1; font-family: ${FF}; font-size: 15px; font-weight: 400; }
+      .adv-input:focus { background: ${CREAM} !important; color: ${INK}; }
     `;
     document.head.appendChild(style);
   }, []);
+
+  // Live counts
+  const { data: userCount } = useQuery({
+    queryKey: ["advertise-user-count"],
+    queryFn: async () => {
+      const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true });
+      return count ?? 0;
+    },
+  });
+  const { data: businessCount } = useQuery({
+    queryKey: ["advertise-business-count"],
+    queryFn: async () => {
+      const { count } = await supabase.from("listings").select("id", { count: "exact", head: true });
+      return count ?? 0;
+    },
+  });
+  const { data: avatarUrls } = useQuery({
+    queryKey: ["advertise-avatars"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .not("avatar_url", "is", null)
+        .limit(4);
+      return (data ?? []).map((p) => p.avatar_url as string).filter(Boolean);
+    },
+  });
+
+  const heroNumber = formatPlus(userCount, "2,400+");
+  const heroNumberSize = heroNumber.length >= 7 ? 90 : 108; // shrink if 5-digit
+  const businessNumber = formatPlus(businessCount, "389+");
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -126,91 +145,132 @@ const Advertise = () => {
     if (validate()) submitForm.mutate();
   };
 
+  const inputBase: CSSProperties = {
+    width: "100%", background: "rgba(238, 232, 218, 0.92)", border: "none",
+    borderRadius: 16, height: 52, padding: "0 20px",
+    fontFamily: FF, fontSize: 15, fontWeight: 400, color: INK,
+    outline: "none", boxSizing: "border-box",
+  };
+
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 140, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: FF }}>
       {/* Top bar */}
-      <div style={{ height: 56, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center" }}>
+      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
         <button
           onClick={() => navigate(-1)}
           {...tap}
           style={{
             width: 44, height: 44, borderRadius: "50%",
-            background: SURFACE, border: "none", cursor: "pointer",
+            background: CREAM, border: "none", cursor: "pointer",
             display: "inline-flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
             transition: "transform 0.15s ease",
           }}
           aria-label="Back"
         >
-          <BackArrowIcon size={20} color={INK} />
+          <BackArrowIcon size={18} color={INK} />
         </button>
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "24px 24px 40px 24px" }}>
-        
-        <h1 style={{
-          fontFamily: FF, fontSize: 52, fontWeight: 700, lineHeight: "52px",
-          letterSpacing: "-1.56px", color: INK, margin: "0 0 20px",
-        }}>
-          Reach the Hoedspruit community
-        </h1>
+      <div style={{ padding: "18px 24px 0" }}>
         <p style={{
-          fontFamily: FF, fontSize: 16, fontWeight: 400, lineHeight: "23.2px",
-          color: INK, maxWidth: 320, margin: 0,
+          fontFamily: FF, fontSize: 12, fontWeight: 400,
+          letterSpacing: "2.4px", textTransform: "uppercase",
+          color: "rgba(238, 232, 218, 0.7)", margin: "0 0 14px",
+        }}>For Local Businesses</p>
+        <h1 style={{
+          fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
+          fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px",
+          color: CREAM, margin: "0 0 18px",
+        }}>advertise.</h1>
+        <p style={{
+          fontFamily: FF, fontSize: 15, fontWeight: 400, lineHeight: 1.65,
+          color: "rgba(238, 232, 218, 0.9)", maxWidth: 330, margin: "0 0 32px",
         }}>
-          Get in front of locals, visitors and newcomers using Hello Hoedspruit to find what's open, what's on and what's worth their time.
+          Get in front of locals, visitors, and newcomers using Hello Hoedspruit to find what's open, what's on, and what's worth their time.
         </p>
       </div>
 
-      {/* Coral stat card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      {/* Stats card */}
+      <div style={{ padding: "0 24px", marginBottom: 18 }}>
         <div style={{
-          background: `linear-gradient(135deg, #6e5640 0%, #5b4632 55%, #4a3826 100%), url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`,
-          backgroundBlendMode: "overlay",
-          borderRadius: 24, padding: "28px 24px 32px 24px",
-          boxSizing: "border-box",
+          background: RUST, borderRadius: 28, padding: 28,
+          position: "relative", overflow: "hidden", boxSizing: "border-box",
         }}>
-          <p style={{
-            fontFamily: FF, fontSize: 12, fontWeight: 400, lineHeight: "14.4px",
-            letterSpacing: "0.24px", textTransform: "uppercase",
-            color: "rgba(255,255,255,0.78)", margin: "0 0 12px",
-          }}>{HERO_STAT.eyebrow}</p>
           <div style={{
-            fontFamily: PLAYFAIR, fontSize: 100, fontWeight: 400, lineHeight: "90px",
-            letterSpacing: "-2px", color: "#FFFFFF", margin: "0 0 20px",
-          }}>{HERO_STAT.number}</div>
-          <p style={{
-            fontFamily: FF, fontSize: 15, fontWeight: 400, lineHeight: "21.75px",
-            color: "rgba(255,255,255,0.88)", maxWidth: 280, margin: 0,
-          }}>{HERO_STAT.caption}</p>
+            position: "absolute", right: -90, bottom: -110,
+            width: 240, height: 260, background: DEEP_RUST,
+            borderRadius: BLOB_RADIUS_A, opacity: 0.55, zIndex: 1,
+          }} />
+          <div style={{
+            position: "absolute", left: -50, top: -60,
+            width: 140, height: 150, background: "rgba(238,232,218,0.08)",
+            borderRadius: BLOB_RADIUS_B, zIndex: 1,
+          }} />
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <p style={{
+              fontFamily: FF, fontSize: 11.5, fontWeight: 400,
+              letterSpacing: "2.4px", textTransform: "uppercase",
+              color: "rgba(238,232,218,0.8)", margin: "0 0 14px",
+            }}>Active Community</p>
+            <div style={{
+              fontFamily: PLAYFAIR, fontWeight: 400,
+              fontSize: heroNumberSize, lineHeight: 0.95,
+              letterSpacing: "-3px", color: CREAM, margin: "0 0 14px",
+            }}>{heroNumber}</div>
+            <p style={{
+              fontFamily: FF, fontSize: 14.5, fontWeight: 400, lineHeight: 1.55,
+              color: "rgba(238,232,218,0.9)", maxWidth: 280, margin: 0,
+            }}>
+              Locals, visitors, and newcomers using Hello Hoedspruit monthly to find what's open and what's on.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Benefits card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
+      {/* Section heading */}
+      <div style={{
+        padding: "0 24px", marginTop: 14, marginBottom: 16,
+        display: "flex", justifyContent: "space-between", alignItems: "baseline",
+      }}>
+        <h2 style={{
+          fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400,
+          fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px",
+          color: CREAM, margin: 0,
+        }}>why advertise</h2>
+        <span style={{
+          fontFamily: FF, fontSize: 11, fontWeight: 400,
+          letterSpacing: "1.8px", textTransform: "uppercase",
+          color: "rgba(238,232,218,0.75)",
+        }}>Four Reasons</span>
+      </div>
+
+      {/* Numbered features card */}
+      <div style={{ padding: "0 24px", marginBottom: 20 }}>
         <div style={{
-          background: SURFACE, borderRadius: 24, padding: "8px 20px",
-          boxSizing: "border-box",
+          background: CREAM, borderRadius: 24, padding: "6px 24px",
+          overflow: "hidden", boxSizing: "border-box",
         }}>
           {BENEFITS.map((b, i) => (
             <div key={b.n} style={{
-              padding: "24px 0",
-              display: "grid", gridTemplateColumns: "60px 1fr", columnGap: 16, alignItems: "start",
-              borderBottom: i < BENEFITS.length - 1 ? `1px solid ${DIVIDER}` : "none",
+              display: "flex", gap: 18, alignItems: "flex-start",
+              padding: "22px 0",
+              borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
             }}>
               <div style={{
-                fontFamily: FF, fontSize: 32, fontWeight: 300, lineHeight: "32px",
-                letterSpacing: "-0.64px", color: "#5b4632",
+                fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400,
+                fontSize: 34, lineHeight: 1, letterSpacing: "-0.5px",
+                color: MUTED, width: 46, flexShrink: 0,
               }}>{b.n}</div>
-              <div>
+              <div style={{ flex: 1 }}>
                 <h5 style={{
-                  fontFamily: FF, fontSize: 18, fontWeight: 400, lineHeight: "21.6px",
-                  letterSpacing: "-0.18px", color: INK, margin: "0 0 6px",
+                  fontFamily: FF, fontSize: 18, fontWeight: 400,
+                  lineHeight: 1.2, letterSpacing: "-0.2px",
+                  color: INK, margin: "0 0 7px",
                 }}>{b.title}</h5>
                 <div style={{
-                  fontFamily: FF, fontSize: 14, fontWeight: 400, lineHeight: "20.3px",
-                  color: MUTED,
+                  fontFamily: FF, fontSize: 13.5, fontWeight: 400, lineHeight: 1.5,
+                  color: "rgba(42,42,36,0.75)",
                 }}>{b.description}</div>
               </div>
             </div>
@@ -219,92 +279,119 @@ const Advertise = () => {
       </div>
 
       {/* Social proof */}
-      <div style={{ padding: "0 24px 40px 24px", display: "flex", alignItems: "center", gap: 14 }}>
+      <div style={{
+        padding: "0 24px", marginBottom: 24,
+        display: "flex", alignItems: "center", gap: 14,
+      }}>
         <div style={{ display: "flex", alignItems: "center" }}>
-          {AVATARS.map((src, i) => (
-            <img
-              key={i}
-              src={src}
-              alt=""
-              style={{
-                width: 36, height: 36, borderRadius: "50%",
-                border: `2px solid ${PAGE_BG}`,
-                marginLeft: i === 0 ? 0 : -10,
-                objectFit: "cover", display: "block",
-              }}
-            />
-          ))}
+          {[0, 1, 2, 3].map((i) => {
+            const src = avatarUrls?.[i];
+            return (
+              <div
+                key={i}
+                style={{
+                  width: 40, height: 40, borderRadius: "50%",
+                  border: `2px solid ${OLIVE}`,
+                  marginLeft: i === 0 ? 0 : -8,
+                  background: src ? "transparent" : AVATAR_FALLBACKS[i],
+                  overflow: "hidden", flexShrink: 0,
+                }}
+              >
+                {src && (
+                  <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                )}
+              </div>
+            );
+          })}
         </div>
-        <p style={{
-          fontFamily: FF, fontSize: 14, fontWeight: 400, lineHeight: "20.3px",
-          color: "#5b4632", margin: 0,
-        }}>
-          <span style={{ fontWeight: 700, color: INK }}>{SOCIAL_PROOF.count}</span>{SOCIAL_PROOF.suffix}
-        </p>
+        <div style={{ lineHeight: 1.4 }}>
+          <div style={{ fontFamily: FF, fontSize: 14.5, fontWeight: 400, color: CREAM }}>
+            {businessNumber} businesses
+          </div>
+          <div style={{
+            fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400,
+            fontSize: 14.5, color: "rgba(238,232,218,0.75)",
+          }}>already on the app.</div>
+        </div>
       </div>
 
-      {/* Black CTA card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 40 }}>
+      {/* CTA card */}
+      <div style={{ padding: "0 24px", marginBottom: 32 }}>
         <div style={{
-          background: "#5b4632", borderRadius: 24, padding: "28px 24px",
-          boxSizing: "border-box",
+          background: RUST, borderRadius: 28,
+          padding: "30px 28px 28px",
+          position: "relative", overflow: "hidden", boxSizing: "border-box",
         }}>
-          <p style={{
-            fontFamily: FF, fontSize: 12, fontWeight: 400, lineHeight: "14.4px",
-            letterSpacing: "0.24px", textTransform: "uppercase",
-            color: "rgba(255,255,255,0.6)", margin: "0 0 14px",
-          }}>For Local Businesses</p>
-          <h2 style={{
-            fontFamily: FF, fontSize: 36, fontWeight: 700, lineHeight: "38px",
-            letterSpacing: "-1.08px", color: "#FFFFFF", margin: "0 0 14px",
-          }}>Join The Directory</h2>
-          <p style={{
-            fontFamily: FF, fontSize: 15, fontWeight: 400, lineHeight: "21.75px",
-            color: "rgba(255,255,255,0.78)", maxWidth: 300, margin: "0 0 24px",
-          }}>
-            Pick a plan that fits, get your business live on the app and start reaching the Hoedspruit community this week.
-          </p>
-          <button
-            onClick={() => navigate("/plans")}
-            {...tap}
-            style={{
-              background: CORAL, color: "#FFFFFF", border: "none",
-              height: 48, padding: "0 24px", borderRadius: 999,
-              fontFamily: FF, fontSize: 15, fontWeight: 400,
-              display: "inline-flex", alignItems: "center", gap: 8,
-              cursor: "pointer", transition: "transform 0.15s ease",
-            }}
-          >
-            See Plans
-            <ArrowUpRight size={14} strokeWidth={1.5} color="#FFFFFF" />
-          </button>
+          <div style={{
+            position: "absolute", right: -80, top: -100,
+            width: 240, height: 260, background: DEEP_RUST,
+            borderRadius: BLOB_RADIUS_A, opacity: 0.55, zIndex: 1,
+          }} />
+          <div style={{
+            position: "absolute", left: -50, bottom: -70,
+            width: 160, height: 170, background: "rgba(238,232,218,0.08)",
+            borderRadius: BLOB_RADIUS_B, zIndex: 1,
+          }} />
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <p style={{
+              fontFamily: FF, fontSize: 11.5, fontWeight: 400,
+              letterSpacing: "2.4px", textTransform: "uppercase",
+              color: "rgba(238,232,218,0.8)", margin: "0 0 14px",
+            }}>For Local Businesses</p>
+            <h2 style={{
+              fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
+              fontSize: 38, lineHeight: 1, letterSpacing: "-1px",
+              color: CREAM, margin: "0 0 14px",
+            }}>Join the directory.</h2>
+            <p style={{
+              fontFamily: FF, fontSize: 14.5, fontWeight: 400, lineHeight: 1.55,
+              color: "rgba(238,232,218,0.9)", maxWidth: 280, margin: "0 0 24px",
+            }}>
+              Pick a plan that fits, get your business live on the app, and start reaching the Hoedspruit community this week.
+            </p>
+            <button
+              onClick={() => navigate("/plans")}
+              {...tap}
+              style={{
+                background: CREAM, color: INK, border: "none",
+                borderRadius: 999, padding: "14px 22px",
+                fontFamily: FF, fontSize: 14, fontWeight: 400,
+                display: "inline-flex", alignItems: "center", gap: 8,
+                cursor: "pointer", transition: "transform 0.15s ease",
+              }}
+            >
+              See Plans
+              <span style={{ fontSize: 14, color: INK, lineHeight: 1 }}>↗</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Quick Enquiry form */}
-      <div style={{ padding: "0 24px 40px 24px" }}>
+      <div style={{ padding: "0 24px", marginBottom: 18 }}>
         {submitted ? (
           <div style={{
-            background: SURFACE, borderRadius: 24, padding: 32, textAlign: "center",
+            background: CREAM, borderRadius: 24, padding: 32, textAlign: "center",
             boxSizing: "border-box",
           }}>
             <div style={{
-              width: 48, height: 48, borderRadius: "50%", background: WARM,
+              width: 48, height: 48, borderRadius: "50%", background: "rgba(106,106,94,0.1)",
               display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px",
             }}>
               <Check size={22} strokeWidth={2} color={INK} />
             </div>
             <div style={{
-              fontFamily: FF, fontWeight: 700, fontSize: 18, color: INK, marginBottom: 8,
-            }}>Thanks for your interest</div>
+              fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400,
+              fontSize: 24, color: INK, marginBottom: 8,
+            }}>Thanks for your interest.</div>
             <p style={{
-              fontFamily: FF, fontSize: 14, color: MUTED, lineHeight: "20.3px", margin: "0 0 20px",
+              fontFamily: FF, fontSize: 14, color: MUTED, lineHeight: 1.5, margin: "0 0 20px",
             }}>We've received your enquiry and will be in touch soon.</p>
             <button
               onClick={() => setSubmitted(false)}
               {...tap}
               style={{
-                background: "none", border: `1px solid ${DIVIDER}`, borderRadius: 999,
+                background: "none", border: `1px solid ${LINE}`, borderRadius: 999,
                 padding: "10px 20px", fontSize: 13, fontWeight: 400, color: INK,
                 fontFamily: FF, cursor: "pointer", transition: "transform 0.15s ease",
               }}
@@ -314,53 +401,49 @@ const Advertise = () => {
           </div>
         ) : (
           <>
-            <p style={{ ...eyebrow, marginBottom: 16 }}>Quick Enquiry</p>
+            <p style={{
+              fontFamily: FF, fontSize: 11, fontWeight: 400,
+              letterSpacing: "2.4px", textTransform: "uppercase",
+              color: "rgba(238,232,218,0.7)", margin: "0 0 10px",
+            }}>Quick Enquiry</p>
             <h2 style={{
-              fontFamily: FF, fontSize: 44, fontWeight: 700, lineHeight: "44px",
-              letterSpacing: "-1.32px", color: INK, margin: "0 0 28px",
-            }}>Say Hello...</h2>
-            <form onSubmit={handleSubmit}>
-              <div style={{ marginBottom: 12 }}>
+              fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
+              fontSize: 48, lineHeight: 0.95, letterSpacing: "-1.4px",
+              color: CREAM, margin: "0 0 24px",
+            }}>say hello.</h2>
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
                 <input
                   className="adv-input"
                   placeholder="Name and surname"
                   value={name}
                   onChange={(e) => { setName(e.target.value); if (errors.name) setErrors(p => ({ ...p, name: "" })); }}
-                  style={{
-                    ...inputBase,
-                    borderColor: errors.name ? "#e53e3e" : "transparent",
-                  }}
+                  style={inputBase}
                 />
-                {errors.name && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 18 }}>{errors.name}</p>}
+                {errors.name && <p style={{ fontSize: 12, color: "#FFD9D0", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>{errors.name}</p>}
               </div>
-              <div style={{ marginBottom: 12 }}>
+              <div>
                 <input
                   className="adv-input"
                   type="email"
                   placeholder="Email address"
                   value={email}
                   onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors(p => ({ ...p, email: "" })); }}
-                  style={{
-                    ...inputBase,
-                    borderColor: errors.email ? "#e53e3e" : "transparent",
-                  }}
+                  style={inputBase}
                 />
-                {errors.email && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 18 }}>{errors.email}</p>}
+                {errors.email && <p style={{ fontSize: 12, color: "#FFD9D0", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>{errors.email}</p>}
               </div>
-              <div style={{ marginBottom: 12 }}>
+              <div>
                 <input
                   className="adv-input"
                   placeholder="Business name"
                   value={business}
                   onChange={(e) => { setBusiness(e.target.value); if (errors.business) setErrors(p => ({ ...p, business: "" })); }}
-                  style={{
-                    ...inputBase,
-                    borderColor: errors.business ? "#e53e3e" : "transparent",
-                  }}
+                  style={inputBase}
                 />
-                {errors.business && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 18 }}>{errors.business}</p>}
+                {errors.business && <p style={{ fontSize: 12, color: "#FFD9D0", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>{errors.business}</p>}
               </div>
-              <div style={{ marginBottom: 0 }}>
+              <div>
                 <textarea
                   className="adv-input"
                   placeholder="Tell us what you're looking for"
@@ -368,21 +451,21 @@ const Advertise = () => {
                   onChange={(e) => { setMessage(e.target.value); if (errors.message) setErrors(p => ({ ...p, message: "" })); }}
                   style={{
                     ...inputBase,
-                    height: 120, paddingTop: 16, paddingBottom: 16, resize: "none",
-                    lineHeight: "22.4px",
-                    borderColor: errors.message ? "#e53e3e" : "transparent",
+                    height: "auto", minHeight: 110,
+                    paddingTop: 18, paddingBottom: 18, paddingLeft: 20, paddingRight: 20,
+                    resize: "none", lineHeight: 1.5,
                   }}
                 />
-                {errors.message && <p style={{ fontSize: 12, color: "#e53e3e", margin: "6px 0 0", paddingLeft: 18 }}>{errors.message}</p>}
+                {errors.message && <p style={{ fontSize: 12, color: "#FFD9D0", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>{errors.message}</p>}
               </div>
               <button
                 type="submit"
                 disabled={submitForm.isPending}
                 {...tap}
                 style={{
-                  width: "100%", marginTop: 20,
-                  background: INK, color: "#FFFFFF", border: "none",
-                  borderRadius: 999, height: 52,
+                  width: "100%", marginTop: 8, marginBottom: 16,
+                  background: INK, color: CREAM, border: "none",
+                  borderRadius: 999, height: 54,
                   fontFamily: FF, fontSize: 15, fontWeight: 400,
                   display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
                   cursor: "pointer", opacity: submitForm.isPending ? 0.6 : 1,
@@ -390,7 +473,7 @@ const Advertise = () => {
                 }}
               >
                 {submitForm.isPending ? (
-                  <><Loader2 size={16} color="#FFFFFF" className="animate-spin" /> Sending</>
+                  <><Loader2 size={16} color={CREAM} className="animate-spin" /> Sending</>
                 ) : "Submit"}
               </button>
             </form>
@@ -398,30 +481,37 @@ const Advertise = () => {
         )}
       </div>
 
-      {/* Email panel */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 40 }}>
+      {/* Email-direct card */}
+      <div style={{ padding: "0 24px", marginBottom: 12 }}>
         <a
           href="mailto:admin@hellohoedspruit.co"
           {...tap}
           style={{
-            display: "block", background: WARM, borderRadius: 16, padding: "18px 20px",
-            textDecoration: "none", boxSizing: "border-box",
+            display: "block", background: CREAM, borderRadius: 20,
+            padding: "18px 22px",
+            textDecoration: "none", boxSizing: "border-box", position: "relative",
             transition: "transform 0.15s ease",
           }}
         >
+          <div style={{
+            position: "absolute", top: 14, right: 14,
+            width: 30, height: 30, borderRadius: "50%",
+            background: "rgba(106,106,94,0.1)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <span style={{ fontSize: 12, color: INK, lineHeight: 1 }}>↗</span>
+          </div>
           <p style={{
-            fontFamily: FF, fontSize: 12, fontWeight: 400, lineHeight: "14.4px",
-            letterSpacing: "0.24px", textTransform: "uppercase",
-            color: MUTED, margin: "0 0 4px",
+            fontFamily: FF, fontSize: 11, fontWeight: 400,
+            letterSpacing: "2.2px", textTransform: "uppercase",
+            color: MUTED, margin: "0 0 6px",
           }}>Or Email Us Directly</p>
           <div style={{
-            fontFamily: FF, fontSize: 16, fontWeight: 400, lineHeight: "23.2px", color: INK,
+            fontFamily: FF, fontSize: 16, fontWeight: 400,
+            letterSpacing: "-0.1px", color: INK,
           }}>admin@hellohoedspruit.co</div>
         </a>
       </div>
-
-
-      <BottomNav />
     </div>
   );
 };
