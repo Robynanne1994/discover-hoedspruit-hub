@@ -259,7 +259,6 @@ const SECTIONS: SectionDef[] = [
   {
     label: "From Hello Hoedspruit",
     rows: [
-      { key: "hh_tips", title: "Tips & Recommendations", description: "Handpicked ideas for your week, from us to you." },
       { key: "hh_app_updates", title: "App Updates & News", description: "New features, small improvements, and the occasional story." },
     ],
   },
