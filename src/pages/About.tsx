@@ -1,26 +1,30 @@
-import { ArrowUpRight } from "lucide-react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', 'Inter', sans-serif";
-const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const SERIF = "'Playfair Display', Georgia, serif";
 
-const CORAL_GRADIENT =
-  "radial-gradient(circle at 35% 30%, #6d553d 0%, #5b4632 70%, #4a3826 100%)";
+const OLIVE = "#5C6446";
+const DEEP_OLIVE = "#454C36";
+const CREAM = "#EEE8DA";
+const DEEP_INK = "#2A2A24";
+const MUTED_INK = "#6B6A5E";
+const RUST = "#9B5A3C";
+const DEEP_RUST = "#7E4530";
+
+const BLOB_1 = "50% 45% 55% 50% / 55% 50% 60% 45%";
+const BLOB_2 = "55% 45% 50% 55% / 50% 60% 45% 55%";
+
+const FOUNDER_NAME = "Robyn Dawes";
+const FOUNDER_INITIALS = "RD";
+const FOUNDER_PHOTO: string | null = null;
 
 const values = [
-  { num: "01", title: "Local knowledge" },
-  { num: "02", title: "Community driven" },
-  { num: "03", title: "Always up to date" },
-  { num: "04", title: "Nature at heart" },
-];
-
-const paragraphs = [
-  "My name is Robyn Dawes, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the Lowveld, and over the years I've watched this little town blossom into something truly special.",
-  "Having spent my whole life here, I know just how much Hoedspruit has to offer, from incredible wildlife and outdoor adventures to its warm community spirit and hidden gems that only a local would know.",
-  "The idea behind Hello Hoedspruit came from a simple frustration. There was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together.",
+  { num: "i.", name: "Local Knowledge" },
+  { num: "ii.", name: "Community Driven" },
+  { num: "iii.", name: "Always Up To Date" },
+  { num: "iv.", name: "Nature At Heart" },
 ];
 
 const press = (e: React.PointerEvent<HTMLElement>) => {
@@ -30,317 +34,255 @@ const release = (e: React.PointerEvent<HTMLElement>) => {
   e.currentTarget.style.transform = "scale(1)";
 };
 
+const BackArrow = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DEEP_INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </svg>
+);
+
+const Arrow = ({ size = 12, color = DEEP_INK }: { size?: number; color?: string }) => (
+  <span style={{ fontSize: size, color, lineHeight: 1, fontFamily: SANS }}>↗</span>
+);
+
 const About = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const id = "playfair-about-font";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
+    document.head.appendChild(link);
+  }, []);
+
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", fontFamily: SANS, color: "#0A0A0A" }}>
-      {/* Back */}
-      <div style={{ paddingTop: 20, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+    <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140 }}>
+      {/* Top bar */}
+      <div style={{ position: "relative", zIndex: 3, padding: "32px 24px 0" }}>
         <button
           onClick={() => navigate(-1)}
           onPointerDown={press}
           onPointerUp={release}
           onPointerLeave={release}
+          aria-label="Back"
           style={{
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: CREAM,
+            border: "none",
             display: "inline-flex",
             alignItems: "center",
-            gap: 4,
-            background: "none",
-            border: "none",
-            padding: 0,
+            justifyContent: "center",
             cursor: "pointer",
             transition: "transform 150ms ease-out",
-            fontFamily: SANS,
           }}
         >
-          <BackArrowIcon size={20} color="#0A0A0A" />
-          <span style={{ fontSize: 15, fontWeight: 400, color: "#0A0A0A" }}>About Hello Hoedspruit</span>
+          <BackArrow />
         </button>
       </div>
 
-      {/* HEADER with coral circle */}
-      <div style={{ position: "relative", paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-        {/* coral circle */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: -30,
-            right: -120,
-            width: 240,
-            height: 240,
-            borderRadius: "50%",
-            background: CORAL_GRADIENT,
-            zIndex: 0,
-            pointerEvents: "none",
-          }}
-        />
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <h1
-            style={{
-              fontFamily: DISPLAY,
-              fontWeight: 700,
-              fontSize: 48,
-              lineHeight: 0.98,
-              letterSpacing: "-0.03em",
-              color: "#0A0A0A",
-              margin: 0,
-              marginBottom: 14,
-            }}
-          >
-            About Hello<br />Hoedspruit
+      {/* Hero */}
+      <div style={{ position: "relative", padding: "18px 24px 0", overflow: "hidden" }}>
+        <div aria-hidden style={{ position: "absolute", top: -40, right: -80, width: 220, height: 240, background: DEEP_OLIVE, borderRadius: BLOB_1, opacity: 0.85, zIndex: 1 }} />
+        <div aria-hidden style={{ position: "absolute", top: 60, right: -30, width: 120, height: 130, background: "rgba(238,232,218,0.08)", borderRadius: BLOB_2, zIndex: 1 }} />
+
+        <div style={{ position: "relative", zIndex: 2 }}>
+          <div style={{ fontSize: 12, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: "rgba(238,232,218,0.7)", marginBottom: 14 }}>
+            BEHIND THE APP
+          </div>
+          <h1 style={{ fontFamily: SERIF, fontWeight: 300, fontStyle: "italic", fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 28 }}>
+            about.
           </h1>
         </div>
       </div>
 
       {/* Founder card */}
-      <div style={{ position: "relative", zIndex: 2, paddingLeft: 24, paddingRight: 24, marginBottom: 52 }}>
-        <div
+      <div style={{ padding: "0 24px", marginBottom: 36, position: "relative", zIndex: 2 }}>
+        <button
+          onClick={() => navigate("/about")}
+          onPointerDown={press}
+          onPointerUp={release}
+          onPointerLeave={release}
           style={{
-            background: "#FFFFFF",
-            borderRadius: 24,
+            width: "100%",
+            background: CREAM,
+            borderRadius: 20,
             padding: "14px 16px",
+            border: "none",
             display: "flex",
             alignItems: "center",
             gap: 14,
+            cursor: "pointer",
+            transition: "transform 150ms ease-out",
+            textAlign: "left",
+            fontFamily: SANS,
           }}
         >
           <div
             style={{
-              width: 44,
-              height: 44,
+              width: 54,
+              height: 54,
               borderRadius: "50%",
-              background: CORAL_GRADIENT,
-              flexShrink: 0,
-            }}
-          />
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontSize: 15, letterSpacing: "-0.005em", color: "#0A0A0A", fontWeight: 400 }}>
-              Robyn Dawes
-            </div>
-            <div style={{ fontSize: 12, letterSpacing: "0.01em", color: "#8A8480", marginTop: 2 }}>
-              Founder of Hello Hoedspruit
-            </div>
-          </div>
-          <button
-            onPointerDown={press}
-            onPointerUp={release}
-            onPointerLeave={release}
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: "#F2EFEC",
-              border: "none",
+              background: FOUNDER_PHOTO
+                ? `url(${FOUNDER_PHOTO}) center/cover no-repeat`
+                : "linear-gradient(135deg, #C18866 0%, #7E4530 100%)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              cursor: "pointer",
               flexShrink: 0,
-              transition: "transform 150ms ease-out",
             }}
-            aria-label="Founder details"
           >
-            <ArrowUpRight size={14} color="#0A0A0A" strokeWidth={2} />
-          </button>
-        </div>
-      </div>
-
-      {/* The story */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 52 }}>
-        <h2
-          style={{
-            fontFamily: DISPLAY,
-            fontWeight: 700,
-            fontSize: 40,
-            lineHeight: 1.0,
-            letterSpacing: "-0.03em",
-            color: "#0A0A0A",
-            margin: 0,
-            marginBottom: 24,
-          }}
-        >
-          Meet the<br />founder
-        </h2>
-        {paragraphs.map((p, i) => (
-          <p
-            key={i}
+            {!FOUNDER_PHOTO && (
+              <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 24, color: CREAM }}>
+                {FOUNDER_INITIALS}
+              </span>
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: 16, fontWeight: 400, letterSpacing: "-0.1px", color: DEEP_INK, marginBottom: 2 }}>
+              {FOUNDER_NAME}
+            </div>
+            <div style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 13.5, color: MUTED_INK }}>
+              Founder of Hello Hoedspruit
+            </div>
+          </div>
+          <div
+            aria-hidden
             style={{
-              fontSize: 15,
-              lineHeight: 1.65,
-              letterSpacing: "-0.005em",
-              color: "#0A0A0A",
-              margin: 0,
-              marginBottom: i < paragraphs.length - 1 ? 18 : 0,
+              width: 30,
+              height: 30,
+              borderRadius: "50%",
+              background: "rgba(106,106,94,0.1)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
             }}
           >
-            {p}
-          </p>
-        ))}
+            <Arrow size={12} color={DEEP_INK} />
+          </div>
+        </button>
       </div>
 
-      {/* What we stand for */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 52 }}>
-        <h2
-          style={{
-            fontFamily: DISPLAY,
-            fontWeight: 700,
-            fontSize: 40,
-            lineHeight: 1.0,
-            letterSpacing: "-0.03em",
-            color: "#0A0A0A",
-            margin: 0,
-            marginBottom: 24,
-          }}
-        >
-          What we<br />stand for
+      {/* Meet the founder heading */}
+      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "0 0 16px" }}>
+        <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0 }}>
+          meet the founder
         </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      </div>
+
+      {/* Story */}
+      <div style={{ padding: "0 24px", marginBottom: 36 }}>
+        <p style={{ fontSize: 15, lineHeight: 1.7, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 18 }}>
+          My name is{" "}
+          <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 15 }}>Robyn Dawes</span>
+          , and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the lowveld, and over the years I've watched this little town blossom into something truly special.
+        </p>
+        <p style={{ fontSize: 15, lineHeight: 1.7, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 18 }}>
+          Having spent my whole life here, I know just how much Hoedspruit has to offer, from incredible wildlife and outdoor adventures to its warm community spirit and the hidden gems that only a local would know.
+        </p>
+        <p style={{ fontSize: 15, lineHeight: 1.7, color: "rgba(238,232,218,0.9)", margin: 0 }}>
+          The idea behind Hello Hoedspruit came from a simple frustration. There was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together.
+        </p>
+      </div>
+
+      {/* What we stand for heading */}
+      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "0 0 16px" }}>
+        <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0 }}>
+          what we stand for
+        </h2>
+        <span style={{ fontSize: 11, fontWeight: 400, letterSpacing: "1.8px", textTransform: "uppercase", color: "rgba(238,232,218,0.75)" }}>
+          Four Values
+        </span>
+      </div>
+
+      {/* Value grid */}
+      <div style={{ padding: "0 24px", marginBottom: 32 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           {values.map((v) => (
-            <button
+            <div
               key={v.num}
-              onPointerDown={press}
-              onPointerUp={release}
-              onPointerLeave={release}
               style={{
                 position: "relative",
-                background: "#FFFFFF",
+                background: CREAM,
                 borderRadius: 20,
-                padding: "18px 18px 20px",
-                minHeight: 150,
+                padding: "20px 22px 22px",
+                aspectRatio: "1 / 1",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                border: "none",
-                textAlign: "left",
-                cursor: "pointer",
-                transition: "transform 150ms ease-out",
-                fontFamily: SANS,
               }}
             >
-              <span
-                style={{
-                  fontFamily: SERIF,
-                  fontWeight: 300,
-                  fontSize: 32,
-                  lineHeight: 1,
-                  letterSpacing: "-0.02em",
-                  color: "#0A0A0A",
-                }}
-              >
-                {v.num}
-              </span>
-              <span
+              <div
                 aria-hidden
                 style={{
                   position: "absolute",
-                  top: 16,
-                  right: 16,
-                  width: 26,
-                  height: 26,
+                  top: 14,
+                  right: 14,
+                  width: 30,
+                  height: 30,
                   borderRadius: "50%",
-                  background: "#F2EFEC",
+                  background: "rgba(106,106,94,0.1)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <ArrowUpRight size={12} color="#0A0A0A" strokeWidth={2} />
+                <Arrow size={12} color={DEEP_INK} />
+              </div>
+              <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 38, lineHeight: 1, letterSpacing: "-0.6px", color: MUTED_INK }}>
+                {v.num}
               </span>
-              <span
-                style={{
-                  marginTop: "auto",
-                  fontSize: 18,
-                  lineHeight: 1.15,
-                  letterSpacing: "-0.01em",
-                  color: "#0A0A0A",
-                  fontWeight: 400,
-                }}
-              >
-                {v.title}
+              <span style={{ fontSize: 17.5, fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.2px", color: DEEP_INK }}>
+                {v.name}
               </span>
-            </button>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Full-bleed coral CTA */}
-      <div
-        style={{
-          position: "relative",
-          background: "#5b4632",
-          padding: "36px 28px 110px",
-          borderRadius: "32px 32px 0 0",
-          overflow: "hidden",
-          marginTop: 52,
-        }}
-      >
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: -60,
-            right: -60,
-            width: 200,
-            height: 200,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, #6d553d 0%, #4a3826 100%)",
-            opacity: 0.55,
-            pointerEvents: "none",
-          }}
-        />
-        <div style={{ position: "relative", zIndex: 1 }}>
-          <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.08em", color: "rgba(255,255,255,0.78)", marginBottom: 10, textTransform: "uppercase" }}>
-            FOR LOCAL BUSINESSES
+      {/* CTA card */}
+      <div style={{ padding: "0 24px", marginBottom: 12 }}>
+        <div style={{ position: "relative", background: RUST, borderRadius: 28, padding: "30px 28px 28px", overflow: "hidden" }}>
+          <div aria-hidden style={{ position: "absolute", right: -80, bottom: -100, width: 240, height: 260, background: DEEP_RUST, borderRadius: BLOB_1, opacity: 0.6 }} />
+          <div aria-hidden style={{ position: "absolute", right: -30, top: -60, width: 160, height: 170, background: "rgba(238,232,218,0.08)", borderRadius: BLOB_2 }} />
+
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <div style={{ fontSize: 11.5, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: "rgba(238,232,218,0.8)", marginBottom: 14 }}>
+              FOR LOCAL BUSINESSES
+            </div>
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14 }}>
+              Want to be listed?
+            </h2>
+            <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
+              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
+            </p>
+            <button
+              onClick={() => navigate("/advertise")}
+              onPointerDown={press}
+              onPointerUp={release}
+              onPointerLeave={release}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: CREAM,
+                borderRadius: 999,
+                padding: "14px 22px",
+                border: "none",
+                cursor: "pointer",
+                transition: "transform 150ms ease-out",
+                fontFamily: SANS,
+              }}
+            >
+              <span style={{ fontSize: 14, fontWeight: 400, color: DEEP_INK }}>Get In Touch</span>
+              <Arrow size={14} color={DEEP_INK} />
+            </button>
           </div>
-          <h2
-            style={{
-              fontFamily: DISPLAY,
-              fontWeight: 700,
-              fontSize: 42,
-              lineHeight: 0.98,
-              letterSpacing: "-0.03em",
-              color: "#FFFFFF",
-              margin: 0,
-              marginBottom: 18,
-            }}
-          >
-            Want to be<br />listed?
-          </h2>
-          <p
-            style={{
-              fontSize: 15,
-              lineHeight: 1.5,
-              color: "rgba(255,255,255,0.85)",
-              margin: 0,
-              marginBottom: 24,
-              maxWidth: 290,
-            }}
-          >
-            If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
-          </p>
-          <button
-            onClick={() => navigate("/advertise")}
-            onPointerDown={press}
-            onPointerUp={release}
-            onPointerLeave={release}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 10,
-              background: "#FFFFFF",
-              borderRadius: 999,
-              padding: "14px 22px",
-              border: "none",
-              cursor: "pointer",
-              transition: "transform 150ms ease-out",
-              fontFamily: SANS,
-            }}
-          >
-            <span style={{ fontSize: 15, color: "#0A0A0A", fontWeight: 400 }}>Get in touch</span>
-            <ArrowUpRight size={14} color="#0A0A0A" strokeWidth={2} />
-          </button>
         </div>
       </div>
 
