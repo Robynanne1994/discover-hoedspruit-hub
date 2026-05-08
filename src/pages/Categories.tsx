@@ -62,6 +62,7 @@ const ArrowOut = ({ size = 14 }: { size?: number }) => (
 
 const Categories = () => {
   const [search, setSearch] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const { data: categories, isLoading } = useQuery({

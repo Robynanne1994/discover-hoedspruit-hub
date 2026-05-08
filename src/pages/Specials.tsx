@@ -111,6 +111,7 @@ const SaveHeart = ({ id }: { id: string }) => {
 const Specials = () => {
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
