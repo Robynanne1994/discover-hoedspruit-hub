@@ -858,15 +858,15 @@ const ListingDetail = () => {
         {contactRows.length > 0 && (
           <>
             <SectionHeading mt={32}>Contact</SectionHeading>
-            <div style={{ background: "#EEE8DA", borderRadius: 24, padding: 24, marginBottom: 14 }}>
+            <div style={{ background: "#EEE8DA", borderRadius: 24, paddingLeft: 22, paddingRight: 22, paddingTop: 6, paddingBottom: 6, marginBottom: 14, overflow: "hidden" }}>
               {contactRows.map((row, idx) => {
                 const Wrapper: any = row.href ? "a" : "div";
                 const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
                 return (
                   <div key={row.label} style={{
-                    borderTop: idx > 0 ? `1px solid rgba(107, 106, 94, 0.15)` : "none",
-                    paddingTop: idx > 0 ? 14 : 0,
-                    paddingBottom: idx < contactRows.length - 1 ? 14 : 0,
+                    borderTop: idx > 0 ? `1px solid #D9D2C0` : "none",
+                    paddingTop: 16,
+                    paddingBottom: 16,
                   }}>
                     <Wrapper
                       {...wrapperProps}
