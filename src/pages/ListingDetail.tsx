@@ -605,7 +605,7 @@ const ListingDetail = () => {
         {firstCategory && (
           <p style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "0.24px", color: "#0a0a0a", margin: 0, marginBottom: 4,
+            letterSpacing: "0.24px", color: "#F0EAD9", margin: 0, marginBottom: 4,
             textTransform: "none",
           }}>
             {firstCategory.title}
@@ -614,7 +614,7 @@ const ListingDetail = () => {
 
         <h1 style={{
           fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif', fontWeight: 500, fontSize: 28, lineHeight: "28px",
-          letterSpacing: "-0.84px", color: "#0A0A0A", margin: 0, marginBottom: 8,
+          letterSpacing: "-0.84px", color: "#F0EAD9", margin: 0, marginBottom: 8,
         }}>
           {listing.title}
         </h1>
@@ -626,12 +626,12 @@ const ListingDetail = () => {
         }}>
           {(listing as any).google_rating != null && (
             <>
-              <span style={{ color: C.text, display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <span style={{ color: "#F0EAD9", display: "inline-flex", alignItems: "center", gap: 4 }}>
                 <Star size={13} fill="#5b4632" color="#5b4632" strokeWidth={1.5} />
                 <span>{(listing as any).google_rating}</span>
               </span>
               {(listing as any).google_reviews_count != null && (
-                <span style={{ marginLeft: 4, color: "#0a0a0a" }}>({(listing as any).google_reviews_count})</span>
+                <span style={{ marginLeft: 4, color: "#F0EAD9" }}>({(listing as any).google_reviews_count})</span>
               )}
             </>
           )}
@@ -639,7 +639,7 @@ const ListingDetail = () => {
           {openStatus && (
             <>
               <span style={{ width: 8, display: "inline-block" }} />
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.text }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#F0EAD9" }}>
                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f", display: "inline-block" }} />
                 {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
               </span>
