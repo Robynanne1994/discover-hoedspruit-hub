@@ -70,6 +70,7 @@ const HomeMasthead = () => {
   const [notifs, setNotifs] = useState<NotifPreview[]>([]);
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const searchWrapRef = useRef<HTMLDivElement>(null);
 
   const q = search.trim();
