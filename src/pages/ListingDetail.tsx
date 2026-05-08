@@ -20,6 +20,7 @@ import { sanitizeDashes } from "@/lib/sanitizeListing";
 import locationIconSrc from "@/assets/location-icon.svg";
 import emailIconSrc from "@/assets/email-icon.svg";
 import phoneIconSrc from "@/assets/phone-icon.svg";
+import kidsFamilyIconSrc from "@/assets/kids-family-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
@@ -40,6 +41,10 @@ const EmailIcon = ({ color }: { color?: string }) => (
 
 const PhoneContactIcon = ({ color }: { color?: string }) => (
   <img src={phoneIconSrc} alt="" style={customIconStyle} />
+);
+
+const KidsFamilyIcon = ({ size = 20 }: { size?: number; color?: string; strokeWidth?: number }) => (
+  <img src={kidsFamilyIconSrc} alt="" style={{ width: size, height: size, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)" }} />
 );
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -864,7 +869,7 @@ const ListingDetail = () => {
                 const sectionIconMap: Record<string, any> = {
                   pricing: Banknote,
                   service: ConciergeBell,
-                  kids: Baby,
+                  kids: KidsFamilyIcon,
                   accessibility: Accessibility,
                   amenities: Sparkles,
                   seating: Armchair,
@@ -875,7 +880,7 @@ const ListingDetail = () => {
                   "accom-transport": Car,
                   "accom-wellness": HeartPulse,
                   "accom-rooms": BedDouble,
-                  "accom-children": Baby,
+                  "accom-children": KidsFamilyIcon,
                   "accom-pets": PawPrint,
                   "shop-amenities": ShoppingBag,
                   "shop-payment": CreditCard,
