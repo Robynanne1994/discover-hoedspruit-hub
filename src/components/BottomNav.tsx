@@ -1,9 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
-import { Tag } from "lucide-react";
 import profileIcon from "@/assets/profile-icon.svg";
 import eventsIcon from "@/assets/events-icon.svg";
 import homeIcon from "@/assets/home-icon.svg";
 import exploreIcon from "@/assets/explore-icon.svg";
+import specialsIcon from "@/assets/specials-icon.svg";
+
+const SpecialsIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
+  <img
+    src={specialsIcon}
+    alt=""
+    style={{
+      width: size,
+      height: size,
+      objectFit: "contain",
+      display: "block",
+      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
+    }}
+  />
+);
 
 const ExploreIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
   <img
@@ -64,7 +78,7 @@ const ProfileIcon = ({ size = 24, color }: { size?: number; color?: string }) =>
 const navItems = [
   { label: "Home", href: "/", icon: HomeIcon as any },
   { label: "Explore", href: "/categories", icon: ExploreIcon as any },
-  { label: "Specials", href: "/specials", icon: Tag },
+  { label: "Specials", href: "/specials", icon: SpecialsIcon as any },
   { label: "Events", href: "/events", icon: EventsIcon as any },
   { label: "Profile", href: "/my-account", icon: ProfileIcon as any },
 ];
