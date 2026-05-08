@@ -25,6 +25,7 @@ import vibeIconSrc from "@/assets/vibe-icon.svg";
 import seatingIconSrc from "@/assets/seating-icon.svg";
 import serviceIconSrc from "@/assets/service-icon.svg";
 import amenitiesIconSrc from "@/assets/amenities-icon.svg";
+import starRatingIconSrc from "@/assets/star-rating-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
@@ -679,7 +680,7 @@ const ListingDetail = () => {
           {(listing as any).google_rating != null && (
             <>
               <span style={{ color: "#FFFFFF", display: "inline-flex", alignItems: "center", gap: 4 }}>
-                <Star size={13} fill="#BAA685" color="#BAA685" strokeWidth={1.5} />
+                <img src={starRatingIconSrc} alt="" style={{ width: 13, height: 13, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(72%) sepia(13%) saturate(534%) hue-rotate(5deg) brightness(89%) contrast(86%)" }} />
                 <span>{(listing as any).google_rating}</span>
               </span>
               {(listing as any).google_reviews_count != null && (
