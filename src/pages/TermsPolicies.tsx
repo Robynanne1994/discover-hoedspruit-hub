@@ -1,174 +1,166 @@
-import { Link, useNavigate } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import BottomNav from "@/components/BottomNav";
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
-const FONT_STACK = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const SERIF = "'Playfair Display', Georgia, serif";
 
-const policyRows = [
-  { label: "Terms of Use", sub: "How you and we agree to use Hello Hoedspruit.", href: "/terms-of-use" },
-  { label: "Privacy Policy", sub: "What we collect, why we collect it and how it's kept safe.", href: "/privacy-policy" },
-  { label: "Cookie Policy", sub: "The cookies we use to keep the app running smoothly.", href: "/cookie-policy" },
-  { label: "Community Guidelines", sub: "The tone we keep, and what belongs on the app.", href: "/content-guidelines" },
-];
+const OLIVE = "#5C6446";
+const CREAM = "#EEE8DA";
+const DEEP_INK = "#2A2A24";
+const MUTED_INK = "#6B6A5E";
+const LINE = "#D9D2C0";
+const RUST = "#9B5A3C";
 
-const baseTextStyle = {
-  fontFamily: FONT_STACK,
-  fontStretch: "normal" as const,
-  fontSynthesis: "none" as const,
+// Source of truth for "last updated" — update here when policies change.
+const LAST_UPDATED = "April 2026";
+
+const press = (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = "scale(0.98)";
 };
+const release = (e: React.PointerEvent<HTMLElement>) => {
+  e.currentTarget.style.transform = "scale(1)";
+};
+
+const BackArrow = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DEEP_INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </svg>
+);
+
+const POLICIES = [
+  { title: "Terms Of Use", subtitle: "How you and we agree to use Hello Hoedspruit.", to: "/terms-of-use" },
+  { title: "Privacy Policy", subtitle: "What we collect, why we collect it, and how it's kept safe.", to: "/privacy-policy" },
+  { title: "Cookie Policy", subtitle: "The cookies we use to keep the app running smoothly.", to: "/cookie-policy" },
+  { title: "Community Guidelines", subtitle: "The tone we keep, and what belongs on the app.", to: "/content-guidelines" },
+];
 
 const TermsPolicies = () => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const id = "playfair-terms-font";
+    if (document.getElementById(id)) return;
+    const link = document.createElement("link");
+    link.id = id;
+    link.rel = "stylesheet";
+    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
+    document.head.appendChild(link);
+  }, []);
+
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", paddingBottom: 120, ...baseTextStyle }}>
-      {/* Top row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "20px 24px 0" }}>
+    <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140 }}>
+      {/* Top bar */}
+      <div style={{ padding: "32px 24px 0" }}>
         <button
           onClick={() => navigate(-1)}
+          onPointerDown={press}
+          onPointerUp={release}
+          onPointerLeave={release}
           aria-label="Back"
           style={{
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: "#ffffff",
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: CREAM,
             border: "none",
-            cursor: "pointer",
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)",
+            cursor: "pointer",
+            transition: "transform 150ms ease-out",
           }}
         >
-          <BackArrowIcon size={20} color="#0A0A0A" />
+          <BackArrow />
         </button>
       </div>
 
       {/* Hero */}
-      <div style={{ padding: "28px 24px 0" }}>
-        <h1
-          style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 700,
-            fontSize: 56,
-            lineHeight: 0.92,
-            letterSpacing: "-0.03em",
-            color: "#0A0A0A",
-            margin: "14px 0 0",
-          }}
-        >
-          Terms & policies
+      <div style={{ padding: "18px 24px 0" }}>
+        <div style={{ fontSize: 12, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: "rgba(238,232,218,0.7)", marginBottom: 14 }}>
+          THE SMALL PRINT
+        </div>
+        <h1 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 14 }}>
+          terms.
         </h1>
-        <p
-          style={{
-            fontFamily: PLAYFAIR,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 18,
-            lineHeight: 1.4,
-            color: "#5b4632",
-            margin: "18px 0 0",
-          }}
-        >
+        <p style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 17, lineHeight: 1.4, color: "rgba(238,232,218,0.75)", margin: 0, marginBottom: 32, maxWidth: 300 }}>
           A quick look at how we run things, and how we look after you.
         </p>
       </div>
 
-      {/* Card */}
-      <div style={{ padding: "32px 24px 0" }}>
-        <div style={{ background: "#ffffff", borderRadius: 20, overflow: "hidden" }}>
-          {policyRows.map((item, i) => (
-            <Link key={item.label} to={item.href} style={{ textDecoration: "none", display: "block" }}>
+      {/* Policy directory card */}
+      <div style={{ padding: "0 24px", marginBottom: 24 }}>
+        <div style={{ background: CREAM, borderRadius: 20, padding: "4px 22px", overflow: "hidden" }}>
+          {POLICIES.map((p, idx) => (
+            <button
+              key={p.title}
+              onClick={() => navigate(p.to)}
+              onPointerDown={press}
+              onPointerUp={release}
+              onPointerLeave={release}
+              style={{
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                padding: "20px 0",
+                background: "none",
+                border: "none",
+                borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                textAlign: "left",
+                cursor: "pointer",
+                transition: "transform 150ms ease-out",
+                fontFamily: SANS,
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 16, fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.1px", color: DEEP_INK, marginBottom: 5 }}>
+                  {p.title}
+                </div>
+                <div style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 13.5, lineHeight: 1.4, color: MUTED_INK }}>
+                  {p.subtitle}
+                </div>
+              </div>
               <div
+                aria-hidden
                 style={{
+                  width: 30,
+                  height: 30,
+                  borderRadius: "50%",
+                  background: "rgba(106,106,94,0.1)",
                   display: "flex",
                   alignItems: "center",
-                  padding: "22px 20px",
-                  cursor: "pointer",
-                  position: "relative",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  fontSize: 12,
+                  color: DEEP_INK,
+                  lineHeight: 1,
+                  fontFamily: SANS,
                 }}
               >
-                <div style={{ flex: 1, paddingRight: 24 }}>
-                  <div
-                    style={{
-                      fontSize: 17,
-                      fontWeight: 500,
-                      lineHeight: 1.25,
-                      letterSpacing: "-0.01em",
-                      color: "#0A0A0A",
-                    }}
-                  >
-                    {item.label}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 13,
-                      lineHeight: 1.45,
-                      color: "#8A8480",
-                      marginTop: 6,
-                    }}
-                  >
-                    {item.sub}
-                  </div>
-                </div>
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 999,
-                    background: "#F2EFEC",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <ChevronRight size={16} strokeWidth={2} color="#0A0A0A" />
-                </div>
-                {i < policyRows.length - 1 && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      left: 20,
-                      right: 20,
-                      bottom: 0,
-                      height: 1,
-                      background: "#F2EFEC",
-                    }}
-                  />
-                )}
+                ↗
               </div>
-            </Link>
+            </button>
           ))}
         </div>
       </div>
 
-      {/* Footer note */}
-      <div style={{ padding: "28px 24px 0", display: "flex", alignItems: "flex-start", gap: 10 }}>
+      {/* Footnote */}
+      <div style={{ padding: "0 26px 0 28px", marginTop: 8, display: "flex", gap: 12, alignItems: "flex-start" }}>
         <span
+          aria-hidden
           style={{
-            width: 6,
-            height: 6,
-            borderRadius: 999,
-            background: "#FFFFFF",
-            marginTop: 9,
+            width: 7,
+            height: 7,
+            borderRadius: "50%",
+            background: RUST,
             flexShrink: 0,
+            marginTop: 8,
           }}
         />
-        <p
-          style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 400,
-            fontSize: 14,
-            color: "#5B4632",
-            margin: 0,
-            lineHeight: 1.5,
-            letterSpacing: "0.01em",
-          }}
-        >
-          Last updated April 2026. We'll let you know here if anything meaningful changes.
+        <p style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 14, lineHeight: 1.55, color: "rgba(238,232,218,0.7)", margin: 0 }}>
+          Last updated {LAST_UPDATED}. We'll let you know here if anything meaningful changes.
         </p>
       </div>
 
