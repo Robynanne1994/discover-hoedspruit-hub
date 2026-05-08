@@ -56,6 +56,7 @@ import FAQs from "./pages/FAQs.tsx";
 import PrivacySecurity from "./pages/PrivacySecurity.tsx";
 import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
+import NotificationCategories from "./pages/NotificationCategories.tsx";
 import MyHoedspruit from "./pages/MyHoedspruit.tsx";
 import Specials from "./pages/Specials.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
@@ -144,6 +145,7 @@ const App = () => (
               <Route path="/people" element={<People />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/notifications" element={<Notifications />} />
+              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />
               <Route path="/profile/:id/:type" element={<FollowList />} />
               <Route path="/admin" element={<AdminLayout />}>
