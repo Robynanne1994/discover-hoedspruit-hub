@@ -758,7 +758,7 @@ const SpecialDetail = () => {
         {/* Terms & Conditions */}
         {special.terms && (
           <section style={{ marginBottom: 16 }}>
-            <p style={{ ...eyebrow, marginBottom: 8, color: "#0a0a0a" }}>Terms & Conditions</p>
+            <p style={{ ...eyebrow, marginBottom: 8, color: "rgba(238,232,218,0.7)", letterSpacing: "2.4px" }}>Terms & Conditions</p>
             <p
               style={{
                 fontFamily: FONT,
@@ -766,7 +766,7 @@ const SpecialDetail = () => {
                 fontSize: 12,
                 lineHeight: "16px",
                 letterSpacing: 0,
-                color: "#5b4632",
+                color: "rgba(238,232,218,0.75)",
                 margin: 0,
                 whiteSpace: "pre-line",
               }}
