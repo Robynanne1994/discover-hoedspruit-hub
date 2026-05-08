@@ -47,7 +47,7 @@ const ProfileIcon = ({ size = 24, color }: { size?: number; color?: string }) =>
 );
 
 const navItems = [
-  { label: "Home", href: "/", icon: Home },
+  { label: "Home", href: "/", icon: HomeIcon as any },
   { label: "Explore", href: "/categories", icon: SearchCheck },
   { label: "Specials", href: "/specials", icon: Tag },
   { label: "Events", href: "/events", icon: EventsIcon as any },
