@@ -428,8 +428,8 @@ const Notifications = () => {
       </div>
 
       {/* Sections */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        {SECTIONS.map((section) => (
+      <div style={{ display: "flex", flexDirection: "column", gap: 24, opacity: loaded ? 1 : 0, transition: "opacity 200ms ease-out" }}>
+        {loaded && SECTIONS.map((section) => (
           <div key={section.label}>
             <Eyebrow>{section.label}</Eyebrow>
             <div style={{ padding: "0 24px" }}>
