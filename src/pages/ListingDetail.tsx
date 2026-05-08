@@ -22,6 +22,7 @@ import emailIconSrc from "@/assets/email-icon.svg";
 import phoneIconSrc from "@/assets/phone-icon.svg";
 import kidsFamilyIconSrc from "@/assets/kids-family-icon.svg";
 import vibeIconSrc from "@/assets/vibe-icon.svg";
+import seatingIconSrc from "@/assets/seating-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const customIconStyle = {
