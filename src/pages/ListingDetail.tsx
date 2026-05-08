@@ -694,30 +694,35 @@ const ListingDetail = () => {
         </h1>
 
         <div style={{
-          marginTop: 20, display: "flex", flexWrap: "wrap", alignItems: "center",
-          gap: 0,
-          fontFamily: FONT_BODY, fontSize: 13, letterSpacing: "0.13px", color: C.muted,
+          marginTop: 20, marginBottom: 32, display: "flex", flexWrap: "wrap", alignItems: "center",
+          gap: 12,
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontWeight: 400, fontSize: 13, letterSpacing: 0,
+          color: "rgba(238, 232, 218, 0.85)",
         }}>
           {(listing as any).google_rating != null && (
-            <>
-              <span style={{ color: "#FFFFFF", display: "inline-flex", alignItems: "center", gap: 4 }}>
-                <img src={starRatingIconSrc} alt="" style={{ width: 13, height: 13, objectFit: "contain", display: "block", filter: "brightness(0) saturate(100%) invert(72%) sepia(13%) saturate(534%) hue-rotate(5deg) brightness(89%) contrast(86%)" }} />
-                <span>{(listing as any).google_rating}</span>
-              </span>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <span aria-hidden="true">★</span>
+              <span>{(listing as any).google_rating}</span>
               {(listing as any).google_reviews_count != null && (
-                <span style={{ marginLeft: 4, color: "#FFFFFF" }}>({(listing as any).google_reviews_count})</span>
+                <span>({(listing as any).google_reviews_count})</span>
               )}
-            </>
+            </span>
           )}
-          {/* Price level moved to Details > Pricing accordion */}
+          {(listing as any).google_rating != null && openStatus && (
+            <span aria-hidden="true" style={{
+              width: 5, height: 5, borderRadius: "50%",
+              background: "rgba(238, 232, 218, 0.5)", display: "inline-block",
+            }} />
+          )}
           {openStatus && (
-            <>
-              <span style={{ width: 8, display: "inline-block" }} />
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#FFFFFF" }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: openStatus.state === "open" ? "#1f9d55" : "#d23f3f", display: "inline-block" }} />
-                {openStatus.state === "open" ? "Open Now" : openStatus.state === "temporarily_closed" ? "Temporarily Closed" : "Closed"}
-              </span>
-            </>
+            <span style={{ color: openStatus.state === "open" ? "#A8B084" : "#D9C36B" }}>
+              {openStatus.state === "open"
+                ? (openStatus.closes ? `Open now · Closes ${openStatus.closes}` : "Open now")
+                : openStatus.state === "temporarily_closed"
+                ? "Temporarily closed"
+                : (openStatus.opensAt ? `Closed · Opens ${openStatus.opensAt}${openStatus.opensDay ? " " + openStatus.opensDay : ""}` : "Closed")}
+            </span>
           )}
         </div>
 
