@@ -25,6 +25,8 @@ export const LISTING_CATEGORY_GROUPS: CategoryGroup[] = [
       { id: "restaurants-cafes", label: "Restaurants & Cafés", count: 52 },
       { id: "accommodation", label: "Accommodation", count: 63 },
       { id: "activities-adventures", label: "Activities & Adventures", count: 7 },
+      { id: "tours-safaris", label: "Tours & Safaris", count: 0 },
+      { id: "nightlife", label: "Nightlife", count: 0 },
     ],
   },
   {
@@ -33,6 +35,8 @@ export const LISTING_CATEGORY_GROUPS: CategoryGroup[] = [
       { id: "shopping", label: "Shopping", count: 92 },
       { id: "wellness-beauty", label: "Wellness & Beauty", count: 15 },
       { id: "art-culture", label: "Art & Culture", count: 1 },
+      { id: "sports-fitness", label: "Sports & Fitness", count: 0 },
+      { id: "weddings-events", label: "Weddings & Events", count: 0 },
     ],
   },
   {
@@ -42,6 +46,9 @@ export const LISTING_CATEGORY_GROUPS: CategoryGroup[] = [
       { id: "property", label: "Property", count: 9 },
       { id: "auto-mechanical", label: "Auto & Mechanical", count: 17 },
       { id: "trades-services", label: "Trades & Services", count: 88 },
+      { id: "building-renovation", label: "Building & Renovation", count: 0 },
+      { id: "transport", label: "Transport", count: 0 },
+      { id: "business-workspaces", label: "Business & Workspaces", count: 0 },
     ],
   },
   {
@@ -51,6 +58,9 @@ export const LISTING_CATEGORY_GROUPS: CategoryGroup[] = [
       { id: "education", label: "Education", count: 12 },
       { id: "community", label: "Community", count: 14 },
       { id: "ngos-volunteering", label: "NGOs & Volunteering", count: 7 },
+      { id: "pets-vets", label: "Pets & Vets", count: 0 },
+      { id: "emergency-services", label: "Emergency Services", count: 0 },
+      { id: "financial-legal", label: "Financial & Legal", count: 0 },
     ],
   },
 ];

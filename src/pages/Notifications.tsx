@@ -259,7 +259,6 @@ const SECTIONS: SectionDef[] = [
   {
     label: "From Hello Hoedspruit",
     rows: [
-      { key: "hh_tips", title: "Tips & Recommendations", description: "Handpicked ideas for your week, from us to you." },
       { key: "hh_app_updates", title: "App Updates & News", description: "New features, small improvements, and the occasional story." },
     ],
   },
@@ -274,6 +273,7 @@ const Notifications = () => {
     listings_updates_categories: null,
     specials_new_categories: null,
   });
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -298,6 +298,7 @@ const Notifications = () => {
       } else {
         await supabase.from("notification_preferences").insert({ user_id: user.id, ...DEFAULT_BOOLS });
       }
+      setLoaded(true);
     };
     load();
   }, [user]);
@@ -427,8 +428,8 @@ const Notifications = () => {
       </div>
 
       {/* Sections */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
-        {SECTIONS.map((section) => (
+      <div style={{ display: "flex", flexDirection: "column", gap: 24, opacity: loaded ? 1 : 0, transition: "opacity 200ms ease-out" }}>
+        {loaded && SECTIONS.map((section) => (
           <div key={section.label}>
             <Eyebrow>{section.label}</Eyebrow>
             <div style={{ padding: "0 24px" }}>
