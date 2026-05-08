@@ -211,7 +211,7 @@ const SpecialDetail = () => {
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
 
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FONT, paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
       {/* Hero */}
       <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, background: "linear-gradient(135deg, #C49B7A 0%, #8B5E3C 100%)" }}>
         {special.image_url && (
