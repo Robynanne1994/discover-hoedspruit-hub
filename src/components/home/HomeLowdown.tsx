@@ -1,42 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const SERIF = "'Playfair Display', 'Helvetica Neue', serif";
-
 const HomeLowdown = () => {
   const { data: articles } = useQuery({
     queryKey: ["home-lowdown-list"],
-      queryFn: async () => {
-        const { data } = await supabase
-          .from("articles")
-          .select("id, slug, title, category, published_at, read_time, image_url")
-          .eq("is_published", true)
-          .order("published_at", { ascending: false })
-          .limit(4);
-        return data || [];
-      },
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("articles")
+        .select("id, slug, title, category, published_at, read_time, image_url")
+        .eq("is_published", true)
+        .order("published_at", { ascending: false })
+        .limit(4);
+      return data || [];
+    },
   });
 
   if (!articles || articles.length === 0) return null;
 
   const fmt = (d: string) => {
-    try {
-      return format(new Date(d), "d MMM");
-    } catch {
-      return d;
-    }
+    try { return format(new Date(d), "d MMM"); } catch { return d; }
   };
 
   return (
     <section>
       <HomeSectionHead primary="Lowveld" serif="lowdown" actionLabel="Read all" actionHref="/headlines" />
-      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 10 }}>
-        {articles.map((a: any, idx: number) => (
+      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 12 }}>
+        {articles.map((a: any) => (
           <Link
             key={a.id}
             to={`/headlines/${a.slug}`}
@@ -46,21 +38,21 @@ const HomeLowdown = () => {
             style={{
               background: "#EEE8DA",
               borderRadius: 20,
-              padding: "18px 18px 18px 20px",
+              padding: 14,
               display: "flex",
               alignItems: "center",
-              gap: 16,
+              gap: 14,
               textDecoration: "none",
               transition: "transform 150ms ease-out",
             }}
           >
             <div
               style={{
-                width: 56,
-                height: 56,
-                borderRadius: 12,
+                width: 74,
+                height: 74,
+                borderRadius: 14,
                 overflow: "hidden",
-                background: "#E0DAC9",
+                background: "#F4EFE3",
                 flexShrink: 0,
               }}
             >
@@ -76,11 +68,10 @@ const HomeLowdown = () => {
               <div
                 style={{
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  fontSize: 10,
-                  fontWeight: 500,
-                  color: "#5b4632",
+                  fontSize: 10.5,
+                  color: "#6B6A5E",
                   textTransform: "uppercase",
-                  letterSpacing: "0.08em",
+                  letterSpacing: "1.8px",
                   marginBottom: 4,
                 }}
               >
@@ -88,13 +79,11 @@ const HomeLowdown = () => {
               </div>
               <div
                 style={{
-                  fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "#0A0A0A",
-                  lineHeight: 1.25,
-                  marginBottom: 4,
-                  letterSpacing: "-0.01em",
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontSize: 14.5,
+                  color: "#2A2A24",
+                  lineHeight: 1.3,
+                  marginBottom: 5,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
                   display: "-webkit-box",
@@ -104,23 +93,27 @@ const HomeLowdown = () => {
               >
                 {a.title}
               </div>
-              <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "#8A8480" }}>
+              <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, color: "#6B6A5E" }}>
                 {fmt(a.published_at)} · {a.read_time || 3} min read
               </div>
             </div>
             <div
               style={{
-                width: 32,
-                height: 32,
+                width: 34,
+                height: 34,
                 borderRadius: 999,
-                background: "#E0DAC9",
+                background: "rgba(107, 106, 94, 0.12)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 flexShrink: 0,
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontSize: 14,
+                color: "#2A2A24",
+                lineHeight: 1,
               }}
             >
-              <ArrowUpRight size={14} color="#0A0A0A" strokeWidth={2} />
+              ↗
             </div>
           </Link>
         ))}

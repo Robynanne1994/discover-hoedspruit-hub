@@ -32,28 +32,28 @@ const getWeatherIconKind = (code: number | null, isNight: boolean): WeatherIconK
 };
 
 const WeatherIcon = ({ kind }: { kind: WeatherIconKind }) => {
-  const props = { size: 16, strokeWidth: 2 } as const;
+  const props = { size: 22, strokeWidth: 1.6 } as const;
   switch (kind) {
     case "sun":
-      return <Sun {...props} color="#F26A48" fill="#F26A48" />;
+      return <Sun {...props} color="#9B5A3C" />;
     case "moon":
-      return <Moon {...props} color="#3F4C7A" fill="#3F4C7A" />;
+      return <Moon {...props} color="#9B5A3C" />;
     case "cloud-moon":
-      return <Cloud {...props} color="#3F4C7A" />;
+      return <Cloud {...props} color="#9B5A3C" />;
     case "cloud-sun":
-      return <CloudSun {...props} color="#F26A48" />;
+      return <CloudSun {...props} color="#9B5A3C" />;
     case "cloud":
-      return <Cloud {...props} color="#8A8480" />;
+      return <Cloud {...props} color="#9B5A3C" />;
     case "fog":
-      return <CloudFog {...props} color="#8A8480" />;
+      return <CloudFog {...props} color="#9B5A3C" />;
     case "drizzle":
-      return <CloudDrizzle {...props} color="#5B8DEF" />;
+      return <CloudDrizzle {...props} color="#9B5A3C" />;
     case "rain":
-      return <CloudRain {...props} color="#3F6FD8" />;
+      return <CloudRain {...props} color="#9B5A3C" />;
     case "snow":
-      return <CloudSnow {...props} color="#7BB7D9" />;
+      return <CloudSnow {...props} color="#9B5A3C" />;
     case "thunder":
-      return <CloudLightning {...props} color="#6B5BD8" />;
+      return <CloudLightning {...props} color="#9B5A3C" />;
   }
 };
 
@@ -111,28 +111,27 @@ const HomeMasthead = () => {
       .catch(() => {});
   }, []);
 
+  const iconBtn: React.CSSProperties = {
+    width: 44,
+    height: 44,
+    borderRadius: 999,
+    background: "#EEE8DA",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    cursor: "pointer",
+    flexShrink: 0,
+  };
+
   return (
-    <div style={{ paddingTop: 16 }}>
-      {/* Top bar: only menu button on the right */}
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, padding: "8px 24px 0" }}>
+    <div style={{ paddingTop: 32 }}>
+      {/* Top bar */}
+      <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, padding: "0 24px" }}>
         {user && (
           <DropdownMenu>
-            <DropdownMenuTrigger
-              aria-label="Notifications"
-              style={{
-                position: "relative",
-                width: 36,
-                height: 36,
-                borderRadius: 999,
-                background: "#EEE8DA",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                border: "none",
-                cursor: "pointer",
-              }}
-            >
-              <Bell size={16} color="#2A2A24" strokeWidth={2} />
+            <DropdownMenuTrigger aria-label="Notifications" style={{ ...iconBtn, position: "relative" }}>
+              <Bell size={18} color="#2A2A24" strokeWidth={1.6} />
               {unreadCount > 0 && (
                 <span
                   style={{
@@ -143,8 +142,8 @@ const HomeMasthead = () => {
                     height: 18,
                     padding: "0 5px",
                     borderRadius: 999,
-                    background: "#E11D48",
-                    color: "#FFFFFF",
+                    background: "#9B5A3C",
+                    color: "#EEE8DA",
                     fontSize: 10,
                     fontWeight: 700,
                     display: "flex",
@@ -162,7 +161,7 @@ const HomeMasthead = () => {
               <DropdownMenuLabel>Notifications</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {notifs.length === 0 ? (
-                <div style={{ padding: "16px 12px", fontSize: 13, color: "#6B6560", textAlign: "center" }}>
+                <div style={{ padding: "16px 12px", fontSize: 13, color: "#6B6A5E", textAlign: "center" }}>
                   No notifications yet
                 </div>
               ) : (
@@ -180,12 +179,12 @@ const HomeMasthead = () => {
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%" }}>
                       {!n.is_read && (
-                        <span style={{ width: 8, height: 8, borderRadius: 999, background: "#E11D48", flexShrink: 0 }} />
+                        <span style={{ width: 8, height: 8, borderRadius: 999, background: "#9B5A3C", flexShrink: 0 }} />
                       )}
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#0A0A0A", flex: 1 }}>{n.title}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#2A2A24", flex: 1 }}>{n.title}</span>
                     </div>
                     {n.body && (
-                      <span style={{ fontSize: 12, color: "#6B6560", lineHeight: 1.35, paddingLeft: n.is_read ? 0 : 14 }}>
+                      <span style={{ fontSize: 12, color: "#6B6A5E", lineHeight: 1.35, paddingLeft: n.is_read ? 0 : 14 }}>
                         {n.body.length > 90 ? n.body.slice(0, 90) + "…" : n.body}
                       </span>
                     )}
@@ -196,69 +195,28 @@ const HomeMasthead = () => {
           </DropdownMenu>
         )}
         <DropdownMenu>
-          <DropdownMenuTrigger
-            aria-label="Menu"
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 999,
-              background: "#EEE8DA",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            <Menu size={16} color="#2A2A24" strokeWidth={2} />
+          <DropdownMenuTrigger aria-label="Menu" style={iconBtn}>
+            <Menu size={18} color="#2A2A24" strokeWidth={1.6} />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" sideOffset={8} className="w-60">
             <DropdownMenuLabel>Quick links</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/saved")}>
-              <Heart className="mr-2 h-4 w-4" /> Saved
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/saved?tab=events")}>
-              <Calendar className="mr-2 h-4 w-4" /> Saved events
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/saved?tab=specials")}>
-              <Tag className="mr-2 h-4 w-4" /> Saved specials
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/visited")}>
-              <MapPinCheck className="mr-2 h-4 w-4" /> Been here
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/my-hoedspruit")}>
-              <Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/saved")}><Heart className="mr-2 h-4 w-4" /> Saved</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/saved?tab=events")}><Calendar className="mr-2 h-4 w-4" /> Saved events</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/saved?tab=specials")}><Tag className="mr-2 h-4 w-4" /> Saved specials</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/visited")}><MapPinCheck className="mr-2 h-4 w-4" /> Been here</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/my-hoedspruit")}><Bookmark className="mr-2 h-4 w-4" /> My Hoedspruit</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/notifications")}>
-              <Bell className="mr-2 h-4 w-4" /> Notifications
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/account-settings")}>
-              <Settings className="mr-2 h-4 w-4" /> Settings
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/account-settings/info")}>
-              <UserCircle className="mr-2 h-4 w-4" /> Account info
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/privacy-security")}>
-              <Shield className="mr-2 h-4 w-4" /> Privacy & security
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/notifications")}><Bell className="mr-2 h-4 w-4" /> Notifications</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/account-settings")}><Settings className="mr-2 h-4 w-4" /> Settings</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/account-settings/info")}><UserCircle className="mr-2 h-4 w-4" /> Account info</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/privacy-security")}><Shield className="mr-2 h-4 w-4" /> Privacy & security</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => navigate("/faqs")}>
-              <HelpCircle className="mr-2 h-4 w-4" /> FAQs
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/feedback")}>
-              <MessageSquare className="mr-2 h-4 w-4" /> Feedback
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/contact")}>
-              <Phone className="mr-2 h-4 w-4" /> Contact us
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/about")}>
-              <Info className="mr-2 h-4 w-4" /> About
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/advertise")}>
-              <Megaphone className="mr-2 h-4 w-4" /> Advertise
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/faqs")}><HelpCircle className="mr-2 h-4 w-4" /> FAQs</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/feedback")}><MessageSquare className="mr-2 h-4 w-4" /> Feedback</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/contact")}><Phone className="mr-2 h-4 w-4" /> Contact us</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/about")}><Info className="mr-2 h-4 w-4" /> About</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/advertise")}><Megaphone className="mr-2 h-4 w-4" /> Advertise</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
               <LogOut className="mr-2 h-4 w-4" /> Sign out
@@ -268,7 +226,7 @@ const HomeMasthead = () => {
       </div>
 
       {/* Masthead */}
-      <div style={{ padding: "28px 24px 0" }}>
+      <div style={{ padding: "24px 24px 0" }}>
         <p
           style={{
             margin: 0,
@@ -276,7 +234,7 @@ const HomeMasthead = () => {
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 400,
             fontSize: 12,
-            lineHeight: "14.4px",
+            lineHeight: 1,
             letterSpacing: "2.4px",
             color: "rgba(238, 232, 218, 0.7)",
             textTransform: "uppercase",
@@ -288,40 +246,40 @@ const HomeMasthead = () => {
           style={{
             margin: 0,
             fontFamily: '"Playfair Display", Georgia, serif',
-            fontWeight: 500,
-            fontSize: 58,
-            lineHeight: 0.95,
-            letterSpacing: "-1.8px",
+            fontSize: 64,
+            lineHeight: 0.92,
+            letterSpacing: "-2px",
             color: "#EEE8DA",
-            position: "relative",
           }}
         >
-          Hello<br />Hoedspruit
+          <span style={{ fontWeight: 400, fontStyle: "normal" }}>Hello</span>
+          <br />
+          <span style={{ fontWeight: 300, fontStyle: "italic" }}>Hoedspruit</span>
         </h1>
       </div>
 
-      {/* Search row */}
-      <div style={{ padding: "24px 24px 0", display: "flex", gap: 8 }}>
+      {/* Search + weather */}
+      <div style={{ padding: "28px 24px 0", display: "flex", gap: 8 }}>
         <Link
           to="/categories"
           style={{
             flex: 1,
-            background: "#EEE8DA",
+            height: 52,
+            background: "rgba(238, 232, 218, 0.92)",
             borderRadius: 999,
-            padding: "14px 18px",
+            padding: "0 22px",
             display: "flex",
             alignItems: "center",
-            gap: 10,
+            gap: 12,
             textDecoration: "none",
             minWidth: 0,
           }}
         >
-          <Search size={16} color="#6B6A5E" strokeWidth={2} />
+          <Search size={18} color="#6B6A5E" strokeWidth={1.6} />
           <span
             style={{
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 12,
-              fontStyle: "italic",
+              fontSize: 14,
               color: "#6B6A5E",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -333,17 +291,18 @@ const HomeMasthead = () => {
         </Link>
         <div
           style={{
-            background: "#EEE8DA",
+            height: 52,
+            background: "rgba(238, 232, 218, 0.92)",
             borderRadius: 999,
-            padding: "14px 24px",
+            padding: "0 18px",
             display: "flex",
             alignItems: "center",
-            gap: 6,
+            gap: 8,
             flexShrink: 0,
           }}
         >
           <WeatherIcon kind={getWeatherIconKind(weatherCode, isNight)} />
-          <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 14, fontWeight: 500, color: "#2A2A24" }}>
+          <span style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 15, color: "#2A2A24" }}>
             {temp !== null ? `${temp}°` : "—"}
           </span>
         </div>

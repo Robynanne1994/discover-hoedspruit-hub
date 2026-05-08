@@ -1,8 +1,4 @@
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
-
-const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
-const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
 
 const HomeGetListed = () => {
   return (
@@ -10,62 +6,79 @@ const HomeGetListed = () => {
       <div
         style={{
           position: "relative",
-          background: "#5b4632",
+          background: "#9B5A3C",
           borderRadius: 28,
-          padding: "28px 24px 28px",
+          padding: "32px 28px 28px",
           overflow: "hidden",
-          color: "#FFFFFF",
         }}
       >
-        {/* Soft glow cropped bottom-right */}
+        {/* Darker organic blob, bottom-right */}
         <div
           aria-hidden
           style={{
             position: "absolute",
             right: -80,
-            bottom: -120,
-            width: 280,
-            height: 280,
-            background: "radial-gradient(circle, rgba(184,145,106,0.55) 0%, rgba(91,70,50,0) 65%)",
+            bottom: -100,
+            width: 240,
+            height: 260,
+            background: "#7E4530",
+            opacity: 0.6,
+            borderRadius: "50% 45% 55% 50% / 55% 50% 60% 45%",
             pointerEvents: "none",
+            zIndex: 1,
           }}
         />
-        <div style={{ position: "relative" }}>
+        {/* Cream highlight, top-right */}
+        <div
+          aria-hidden
+          style={{
+            position: "absolute",
+            right: -30,
+            top: -60,
+            width: 160,
+            height: 170,
+            background: "rgba(238, 232, 218, 0.08)",
+            borderRadius: "55% 45% 50% 55% / 50% 60% 45% 55%",
+            pointerEvents: "none",
+            zIndex: 1,
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 2 }}>
           <div
             style={{
-              fontFamily: SANS,
-              fontSize: 11,
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 11.5,
               textTransform: "uppercase",
-              letterSpacing: "0.08em",
-              color: "rgba(255,255,255,0.78)",
+              letterSpacing: "2.4px",
+              color: "rgba(238, 232, 218, 0.8)",
               marginBottom: 14,
             }}
           >
-            For local businesses
+            For Local Businesses
           </div>
           <h3
             style={{
               margin: 0,
-              fontFamily: DISPLAY,
-              fontWeight: 700,
-              fontSize: 30,
-              lineHeight: 1.05,
-              letterSpacing: "-0.025em",
-              color: "#FFFFFF",
-              marginBottom: 12,
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: 38,
+              lineHeight: 1.0,
+              letterSpacing: "-1px",
+              color: "#EEE8DA",
+              marginBottom: 14,
             }}
           >
-            Stand out in Hoedspruit.
+            <span style={{ fontWeight: 400 }}>Stand out in </span>
+            <span style={{ fontWeight: 300, fontStyle: "italic" }}>Hoedspruit.</span>
           </h3>
           <p
             style={{
               margin: 0,
-              fontFamily: SANS,
-              fontSize: 14,
-              lineHeight: 1.45,
-              color: "rgba(255,255,255,0.9)",
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 14.5,
+              lineHeight: 1.55,
+              color: "rgba(238, 232, 218, 0.9)",
               maxWidth: 280,
-              marginBottom: 22,
+              marginBottom: 24,
             }}
           >
             Put your business in front of locals and visitors looking for what you do.
@@ -79,20 +92,19 @@ const HomeGetListed = () => {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              background: "#FFFFFF",
-              color: "#0A0A0A",
+              background: "#EEE8DA",
+              color: "#2A2A24",
               borderRadius: 999,
-              padding: "12px 18px",
+              padding: "14px 22px",
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 15,
-              lineHeight: "18px",
-              letterSpacing: 0,
+              fontSize: 14,
+              lineHeight: 1,
               textDecoration: "none",
               transition: "transform 150ms ease-out",
             }}
           >
-            Get in Touch
-            <ArrowUpRight size={14} color="#0A0A0A" strokeWidth={2} />
+            Get In Touch
+            <span style={{ fontSize: 14, lineHeight: 1 }}>↗</span>
           </Link>
         </div>
       </div>

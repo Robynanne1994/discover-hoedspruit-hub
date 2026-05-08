@@ -7,7 +7,7 @@ import HomeLowdown from "@/components/home/HomeLowdown";
 import HomeGetListed from "@/components/home/HomeGetListed";
 import { useState } from "react";
 
-const SECTION_GAP = 40;
+const SECTION_GAP = 36;
 
 const Index = () => {
   const [activeChip, setActiveChip] = useState<"All" | "Eat" | "Stay" | "Do" | "Shop" | "Events" | "Specials">("All");
@@ -25,7 +25,7 @@ const Index = () => {
       }}
     >
       <HomeMasthead />
-      <div style={{ height: 28 }} />
+      <div style={{ height: 32 }} />
       <HomeCategoryChips active={activeChip} onChange={setActiveChip} />
 
       {showSection("Specials") && (
