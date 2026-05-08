@@ -910,7 +910,7 @@ const ListingDetail = () => {
                   amenities: AmenitiesIcon,
                   seating: SeatingIcon,
                   meals: UtensilsCrossed,
-                  cuisine: Soup,
+                  cuisine: CuisineIcon,
                   vibe: VibeIcon,
                   "accom-food": Coffee,
                   "accom-transport": Car,
