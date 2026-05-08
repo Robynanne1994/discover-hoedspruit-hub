@@ -9,9 +9,12 @@ import {
   isToday,
   isBefore,
   startOfToday,
+  startOfWeek,
   endOfWeek,
   endOfMonth,
   isWithinInterval,
+  format,
+  isSameMonth,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 
@@ -593,7 +596,19 @@ const Events = () => {
           {/* Upcoming */}
           {datedAll.length > 0 && (
             <section style={{ marginBottom: 28 }}>
-              <SectionHead heading="upcoming" trailing={filterIconBtn} />
+              <SectionHead heading={(() => {
+                const today = startOfToday();
+                if (activeFilter === "today") return format(today, "d MMM").toLowerCase();
+                if (activeFilter === "this-week") {
+                  const ws = startOfWeek(today, { weekStartsOn: 1 });
+                  const we = endOfWeek(today, { weekStartsOn: 1 });
+                  return isSameMonth(ws, we)
+                    ? `${format(ws, "d")}–${format(we, "d MMM")}`.toLowerCase()
+                    : `${format(ws, "d MMM")} – ${format(we, "d MMM")}`.toLowerCase();
+                }
+                if (activeFilter === "this-month") return format(today, "MMMM").toLowerCase();
+                return "upcoming";
+              })()} trailing={filterIconBtn} />
               <div style={{ padding: "0 24px" }}>
                 <div
                   style={{
