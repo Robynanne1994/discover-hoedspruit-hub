@@ -192,7 +192,7 @@ const Navbar = () => {
           </div>
 
           {/* Mobile: bell icon right */}
-          <button className="md:hidden text-primary-foreground/70">
+          <button className="md:hidden text-primary-foreground/70" onClick={() => window.location.href = "/my-notifications"}>
             <Bell className="h-6 w-6" />
           </button>
         </div>

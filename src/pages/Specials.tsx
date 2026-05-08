@@ -195,7 +195,7 @@ const Specials = () => {
           gap: 10,
         }}
       >
-        <button style={iconBtn} aria-label="Notifications" onClick={() => navigate("/notifications")}>
+        <button style={iconBtn} aria-label="Notifications" onClick={() => navigate("/my-notifications")}>
           <Bell size={18} strokeWidth={1.6} color={COLOR.ink} />
         </button>
         <button style={iconBtn} aria-label="Menu" onClick={() => navigate("/account")}>

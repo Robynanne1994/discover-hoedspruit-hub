@@ -635,7 +635,7 @@ const MyAccount = () => {
             <DropdownMenuItem onClick={() => navigate("/visited")}>
               <MapPinCheck className="mr-2 h-4 w-4" /> Been here
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => navigate("/notifications")}>
+            <DropdownMenuItem onClick={() => navigate("/my-notifications")}>
               <Bell className="mr-2 h-4 w-4" /> Notifications
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => navigate("/account-settings")}>

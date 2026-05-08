@@ -179,7 +179,7 @@ const Categories = () => {
         }}
       >
         <button
-          onClick={() => navigate("/notifications")}
+          onClick={() => navigate("/my-notifications")}
           aria-label="Notifications"
           style={{
             width: 44,
