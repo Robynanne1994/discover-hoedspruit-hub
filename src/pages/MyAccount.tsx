@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
 import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
+import NotificationsBell from "@/components/NotificationsDropdown";
 import FollowStats from "@/components/social/FollowStats";
 import { useFollowCounts } from "@/hooks/useFollows";
 import { toast } from "sonner";
@@ -632,30 +633,7 @@ const MyAccount = () => {
           padding: "calc(env(safe-area-inset-top) + 32px) 24px 0",
         }}
       >
-        <button
-          aria-label="Notifications"
-          onClick={() => navigate("/my-notifications")}
-          style={{
-            width: 44, height: 44, borderRadius: 999, background: CREAM,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            border: "none", cursor: "pointer", position: "relative", flexShrink: 0,
-          }}
-        >
-          <Bell size={18} color={INK} strokeWidth={1.6} />
-          {unreadCount > 0 && (
-            <span
-              style={{
-                position: "absolute", top: -2, right: -2,
-                minWidth: 18, height: 18, padding: "0 5px", borderRadius: 999,
-                background: "#9B5A3C", color: CREAM, fontSize: 10, fontWeight: 700,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                border: `2px solid ${CREAM}`, lineHeight: 1,
-              }}
-            >
-              {unreadCount > 9 ? "9+" : unreadCount}
-            </span>
-          )}
-        </button>
+        <NotificationsBell />
         <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
         <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>

@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
+import NotificationsBell from "@/components/NotificationsDropdown";
 
 const SANS = "'Pragmatica', 'Inter', 'Helvetica Neue', Helvetica, sans-serif";
 const DISPLAY = "'Helvetica Neue', Helvetica, 'Pragmatica', sans-serif";
@@ -141,39 +142,7 @@ const HomeMasthead = () => {
     <div style={{ paddingTop: 32 }}>
       {/* Top bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, padding: "0 24px" }}>
-        {user && (
-          <button
-            aria-label="Notifications"
-            onClick={() => navigate("/my-notifications")}
-            style={{ ...iconBtn, position: "relative" }}
-          >
-            <Bell size={18} color="#2A2A24" strokeWidth={1.6} />
-            {unreadCount > 0 && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: -2,
-                  right: -2,
-                  minWidth: 18,
-                  height: 18,
-                  padding: "0 5px",
-                  borderRadius: 999,
-                  background: "#9B5A3C",
-                  color: "#EEE8DA",
-                  fontSize: 10,
-                  fontWeight: 700,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  border: "2px solid #EEE8DA",
-                  lineHeight: 1,
-                }}
-              >
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </button>
-        )}
+        {user && <NotificationsBell />}
         <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
         <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
