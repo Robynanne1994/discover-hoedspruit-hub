@@ -145,6 +145,7 @@ const App = () => (
               <Route path="/people" element={<People />} />
               <Route path="/feedback" element={<Feedback />} />
               <Route path="/notifications" element={<Notifications />} />
+              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />
               <Route path="/profile/:id/:type" element={<FollowList />} />
               <Route path="/admin" element={<AdminLayout />}>
