@@ -1,4 +1,4 @@
-import { ChevronLeft } from "lucide-react";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useNavigate } from "react-router-dom";
 import { CSSProperties } from "react";
 
