@@ -728,7 +728,7 @@ const ListingDetail = () => {
             <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "rgba(238, 232, 218, 0.7)" }}>
               <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(238, 232, 218, 0.4)", display: "inline-block" }} />
               <span>{openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}</span>
-              {openStatus.opensAt && (
+              {openStatus.state === "closed" && openStatus.opensAt && (
                 <span>· Opens {openStatus.opensAt}{openStatus.opensDay ? " " + openStatus.opensDay : ""}</span>
               )}
             </span>
