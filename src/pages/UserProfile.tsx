@@ -8,14 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import {
-  ArrowLeft,
-  MoreVertical,
-  Heart,
-  ThumbsUp,
-  Calendar as CalendarIcon,
-  MapPin,
-} from "lucide-react";
+import { ArrowLeft, MoreVertical } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
