@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Heart, Calendar, Tag, MapPinCheck, Bookmark, Bell, Settings, UserCircle, Shield, HelpCircle, MessageSquare, Phone, Info, Megaphone, LogOut } from "lucide-react";
+import { Menu, Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Heart, Calendar, Tag, MapPinCheck, Bookmark, Bell, Settings, UserCircle, Shield, HelpCircle, MessageSquare, Phone, Info, Megaphone, LogOut, MapPin, X } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,6 +67,35 @@ const HomeMasthead = () => {
   const [unreadCount, setUnreadCount] = useState<number>(0);
   type NotifPreview = { id: string; title: string; body: string | null; link: string | null; status: string; kind: string; is_read: boolean; created_at: string };
   const [notifs, setNotifs] = useState<NotifPreview[]>([]);
+  const [search, setSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchWrapRef = useRef<HTMLDivElement>(null);
+
+  const q = search.trim();
+  const { data: searchResults } = useQuery({
+    queryKey: ["home-search", q],
+    queryFn: async () => {
+      if (q.length < 2) return [];
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, image_url, location")
+        .ilike("title", `%${q}%`)
+        .limit(8);
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: q.length >= 2,
+  });
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (searchWrapRef.current && !searchWrapRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
 
   useEffect(() => {
     if (!user) { setUnreadCount(0); setNotifs([]); return; }
@@ -260,35 +290,105 @@ const HomeMasthead = () => {
 
       {/* Search + weather */}
       <div style={{ padding: "28px 24px 0", display: "flex", gap: 8 }}>
-        <Link
-          to="/categories"
-          style={{
-            flex: 1,
-            height: 52,
-            background: "rgba(238, 232, 218, 0.92)",
-            borderRadius: 999,
-            padding: "0 22px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            textDecoration: "none",
-            minWidth: 0,
-          }}
-        >
-          <Search size={18} color="#6B6A5E" strokeWidth={1.6} />
-          <span
+        <div ref={searchWrapRef} style={{ flex: 1, position: "relative", minWidth: 0 }}>
+          <div
             style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 14,
-              color: "#6B6A5E",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              height: 52,
+              background: "rgba(238, 232, 218, 0.92)",
+              borderRadius: 999,
+              padding: "0 18px 0 22px",
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
             }}
           >
-            Search the 'Hoed...
-          </span>
-        </Link>
+            <Search size={18} color="#6B6A5E" strokeWidth={1.6} />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setSearchOpen(true); }}
+              onFocus={() => setSearchOpen(true)}
+              placeholder="Search the 'Hoed..."
+              style={{
+                flex: 1,
+                minWidth: 0,
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontSize: 14,
+                color: "#2A2A24",
+              }}
+              className="placeholder:text-[#6B6A5E]"
+            />
+            {search && (
+              <button
+                onClick={() => { setSearch(""); setSearchOpen(false); }}
+                aria-label="Clear search"
+                style={{ background: "transparent", border: "none", padding: 0, display: "flex", cursor: "pointer" }}
+              >
+                <X size={16} color="#6B6A5E" strokeWidth={1.8} />
+              </button>
+            )}
+          </div>
+
+          {searchOpen && q.length >= 2 && (
+            <div
+              style={{
+                position: "absolute",
+                top: 60,
+                left: 0,
+                right: 0,
+                background: "#EEE8DA",
+                borderRadius: 18,
+                padding: 8,
+                boxShadow: "0 12px 32px rgba(0,0,0,0.2)",
+                zIndex: 50,
+                maxHeight: 360,
+                overflowY: "auto",
+              }}
+            >
+              {(searchResults?.length ?? 0) === 0 ? (
+                <div style={{ padding: "16px 12px", fontSize: 13, color: "#6B6A5E", textAlign: "center" }}>
+                  No matches found
+                </div>
+              ) : (
+                searchResults!.map((listing) => (
+                  <Link
+                    key={listing.id}
+                    to={`/listing/${listing.id}`}
+                    onClick={() => { setSearchOpen(false); setSearch(""); }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      padding: 8,
+                      borderRadius: 12,
+                      textDecoration: "none",
+                    }}
+                  >
+                    <div style={{ width: 44, height: 44, borderRadius: 10, overflow: "hidden", background: "#e6e0d2", flexShrink: 0 }}>
+                      {listing.image_url && (
+                        <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 14, color: "#2A2A24", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {listing.title}
+                      </p>
+                      {listing.location && (
+                        <p style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "#6B6A5E", margin: "2px 0 0" }}>
+                          <MapPin size={11} strokeWidth={1.8} />
+                          {listing.location}
+                        </p>
+                      )}
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          )}
+        </div>
         <div
           style={{
             height: 52,
