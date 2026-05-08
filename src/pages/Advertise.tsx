@@ -94,14 +94,16 @@ const Advertise = () => {
     },
   });
   const { data: avatarUrls } = useQuery({
-    queryKey: ["advertise-avatars"],
+    queryKey: ["advertise-business-avatars"],
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
-        .select("avatar_url")
-        .not("avatar_url", "is", null)
+        .from("listings")
+        .select("image_url")
+        .not("image_url", "is", null)
+        .order("is_featured", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(4);
-      return (data ?? []).map((p) => p.avatar_url as string).filter(Boolean);
+      return (data ?? []).map((l) => l.image_url as string).filter(Boolean);
     },
   });
 
