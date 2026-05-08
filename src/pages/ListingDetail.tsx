@@ -672,14 +672,14 @@ const ListingDetail = () => {
 
       <div style={{
         position: "relative",
-        marginTop: 16,
+        marginTop: 24,
         background: "transparent",
         paddingLeft: 24, paddingRight: 24,
       }}>
         {firstCategory && (
           <p style={{
             fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16,
+            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 14,
             textTransform: "uppercase",
           }}>
             {firstCategory.title}
@@ -687,15 +687,15 @@ const ListingDetail = () => {
         )}
 
         <h1 style={{
-          fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 500, fontSize: 48, lineHeight: "45.6px",
-          letterSpacing: "-1.5px", color: "#EEE8DA", margin: 0, marginBottom: 8,
+          fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontSize: 48, lineHeight: 1.0,
+          letterSpacing: "-1.2px", color: "#EEE8DA", margin: 0, marginBottom: 14,
         }}>
           {listing.title}
         </h1>
 
         <div style={{
-          marginTop: 20, marginBottom: 32, display: "flex", flexWrap: "wrap", alignItems: "center",
-          gap: 12,
+          marginTop: 0, marginBottom: 36, display: "flex", flexWrap: "wrap", alignItems: "center",
+          gap: 10,
           fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontWeight: 400, fontSize: 13, letterSpacing: 0,
           color: "rgba(238, 232, 218, 0.85)",
@@ -703,7 +703,7 @@ const ListingDetail = () => {
           {(listing as any).google_rating != null && (
             <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
               <span aria-hidden="true">★</span>
-              <span>{(listing as any).google_rating}</span>
+              <span>{Number((listing as any).google_rating).toFixed(1)}</span>
               {(listing as any).google_reviews_count != null && (
                 <span>({(listing as any).google_reviews_count})</span>
               )}
@@ -711,17 +711,26 @@ const ListingDetail = () => {
           )}
           {(listing as any).google_rating != null && openStatus && (
             <span aria-hidden="true" style={{
-              width: 5, height: 5, borderRadius: "50%",
+              width: 4, height: 4, borderRadius: "50%",
               background: "rgba(238, 232, 218, 0.5)", display: "inline-block",
             }} />
           )}
-          {openStatus && (
-            <span style={{ color: openStatus.state === "open" ? "#A8B084" : "#D9C36B" }}>
-              {openStatus.state === "open"
-                ? (openStatus.closes ? `Open now · Closes ${openStatus.closes}` : "Open now")
-                : openStatus.state === "temporarily_closed"
-                ? "Temporarily closed"
-                : (openStatus.opensAt ? `Closed · Opens ${openStatus.opensAt}${openStatus.opensDay ? " " + openStatus.opensDay : ""}` : "Closed")}
+          {openStatus && openStatus.state === "open" && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "#D9C36B" }}>
+              <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: "50%", background: "#D9C36B", display: "inline-block" }} />
+              <span>Open now</span>
+              {openStatus.closes && (
+                <span style={{ color: "rgba(238, 232, 218, 0.85)" }}>· Closes {openStatus.closes}</span>
+              )}
+            </span>
+          )}
+          {openStatus && openStatus.state !== "open" && (
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: "rgba(238, 232, 218, 0.7)" }}>
+              <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: "50%", background: "rgba(238, 232, 218, 0.4)", display: "inline-block" }} />
+              <span>{openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}</span>
+              {openStatus.opensAt && (
+                <span>· Opens {openStatus.opensAt}{openStatus.opensDay ? " " + openStatus.opensDay : ""}</span>
+              )}
             </span>
           )}
         </div>
