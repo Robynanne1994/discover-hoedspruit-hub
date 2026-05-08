@@ -1133,7 +1133,7 @@ const ListingDetail = () => {
                   transition: "opacity 200ms ease-out",
                 }}
               >
-                <ChevronRight size={18} strokeWidth={1.75} color={C.text} />
+                <ChevronRight size={18} strokeWidth={1.75} color="#F0EAD9" />
               </div>
             )}
           </div>
