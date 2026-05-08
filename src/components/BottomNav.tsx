@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Tag } from "lucide-react";
 import profileIcon from "@/assets/profile-icon.svg";
-import eventsIcon from "@/assets/events-icon.png";
+import eventsIcon from "@/assets/events-icon.svg";
 import homeIcon from "@/assets/home-icon.svg";
 import exploreIcon from "@/assets/explore-icon.svg";
 
