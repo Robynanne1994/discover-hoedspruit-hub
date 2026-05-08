@@ -87,7 +87,7 @@ We aim to respond to all enquiries within 48 hours.`,
 
 const PrivacyPolicy = () => {
   return (
-    <div className="min-h-screen pb-20 bg-background">
+    <div className="min-h-screen pb-20" style={{ background: "#5C6446" }}>
       {/* Top bar */}
       <div className="pt-14 pb-1 px-6 relative">
         <div className="absolute left-6 top-14">

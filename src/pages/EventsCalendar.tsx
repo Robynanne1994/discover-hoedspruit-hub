@@ -97,7 +97,7 @@ const EventsCalendar = () => {
     : [];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: "#5C6446" }}>
       <Navbar />
       <section className="pt-24 pb-32 section-padding">
         <div className="container-wide max-w-3xl mx-auto">

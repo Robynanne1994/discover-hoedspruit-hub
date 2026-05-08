@@ -22,7 +22,7 @@ const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: Bus
   };
 
   const isDark = theme === "dark";
-  const bg = isDark ? "#555340" : "#EBEBEB";
+  const bg = isDark ? "#555340" : "#5C6446";
   const fg = isDark ? "#FFFFFF" : "#2B2420";
   const headingColor = isDark ? "#FFFFFF" : "#020202";
 

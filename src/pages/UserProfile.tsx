@@ -11,7 +11,7 @@ import heroBg from "@/assets/hero-homepage.jpg";
 const TEXT_PRIMARY = "#020202";
 const TEXT_BODY = "#2B2420";
 const MUTED = "rgba(18,18,20,0.55)";
-const PAGE_BG = "#EBEBEB";
+const PAGE_BG = "#5C6446";
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const getInitials = (name?: string | null) => {
