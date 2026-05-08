@@ -58,7 +58,7 @@ const toTitleCase = (s: string) =>
 const SectionHeading = ({ children, mt = 18 }: { children: React.ReactNode; mt?: number }) => (
   <h2 style={{
     fontFamily: FONT_HEAD, fontWeight: 500, fontSize: 22, lineHeight: "22px",
-    letterSpacing: "-0.66px", color: "#0A0A0A", margin: 0, marginTop: mt, marginBottom: 10,
+    letterSpacing: "-0.66px", color: "#F0EAD9", margin: 0, marginTop: mt, marginBottom: 10,
     textTransform: "none",
   }}>
     {children}
