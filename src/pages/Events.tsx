@@ -389,7 +389,7 @@ const Events = () => {
       return nonRecurring.filter((e) => !e._parsed || !isBefore(e._parsed, today));
     return nonRecurring.filter((event) => {
       const date = event._parsed;
-      if (!date) return activeFilter === "upcoming";
+      if (!date) return false;
       switch (activeFilter) {
         case "today":
           return isToday(date);
@@ -397,8 +397,6 @@ const Events = () => {
           return isWithinInterval(date, { start: today, end: weekEnd });
         case "this-month":
           return isWithinInterval(date, { start: today, end: monthEnd });
-        case "upcoming":
-          return !isBefore(date, today);
         case "past":
           return isBefore(date, today) && !isToday(date);
         default:
