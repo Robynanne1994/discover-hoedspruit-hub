@@ -1,8 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
-import { SearchCheck, Tag } from "lucide-react";
+import { Tag } from "lucide-react";
 import profileIcon from "@/assets/profile-icon.png";
 import eventsIcon from "@/assets/events-icon.png";
 import homeIcon from "@/assets/home-icon.svg";
+import exploreIcon from "@/assets/explore-icon.svg";
+
+const ExploreIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
+  <img
+    src={exploreIcon}
+    alt=""
+    style={{
+      width: size,
+      height: size,
+      objectFit: "contain",
+      display: "block",
+      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
+    }}
+  />
+);
 
 const HomeIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
   <img
