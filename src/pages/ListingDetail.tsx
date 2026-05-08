@@ -94,7 +94,7 @@ const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-s
 
 // Design tokens
 const C = {
-  bg: "#EBEBEB",
+  bg: "#5C6446",
   card: "#FFFFFF",
   coral: "#F26A48",
   panel: "#F2EFEC",
