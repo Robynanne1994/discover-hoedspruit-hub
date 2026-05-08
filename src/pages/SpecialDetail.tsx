@@ -11,11 +11,12 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
-const PAGE_BG = "#EBEBEB";
-const SURFACE = "#FFFFFF";
-const TEXT = "#0A0A0A";
-const MUTED = "#8A8480";
-const DIVIDER = "#E8E4DF";
+const PAGE_BG = "#5C6446";
+const SURFACE = "#EEE8DA";
+const TEXT = "#2A2A24";
+const MUTED = "#6B6A5E";
+const DIVIDER = "rgba(107,106,94,0.15)";
+const CREAM = "#EEE8DA";
 
 const press = {
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
@@ -210,7 +211,7 @@ const SpecialDetail = () => {
   const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
 
   return (
-    <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FONT, paddingBottom: 120 }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
       {/* Hero */}
       <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, background: "linear-gradient(135deg, #C49B7A 0%, #8B5E3C 100%)" }}>
         {special.image_url && (
@@ -300,18 +301,18 @@ const SpecialDetail = () => {
           const eyebrowText = cats.length ? cats.join("  ·  ") : special.deal_label;
           if (!eyebrowText) return null;
           return (
-            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 12, lineHeight: "14.4px", letterSpacing: "0.18em", color: "#5b4632", margin: 0, marginBottom: 10, textTransform: "uppercase", textAlign: "center" }}>{eyebrowText}</p>
+            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16, textTransform: "uppercase", textAlign: "center" }}>{eyebrowText}</p>
           );
         })()}
 
         <h1
           style={{
-            fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontSize: 32,
-            fontWeight: 500,
-            lineHeight: "34px",
-            letterSpacing: "-0.96px",
-            color: "#0A0A0A",
+            fontFamily: '"Playfair Display", Georgia, serif',
+            fontSize: 48,
+            fontWeight: 400,
+            lineHeight: "45.6px",
+            letterSpacing: "-1.5px",
+            color: CREAM,
             textTransform: "none",
             marginTop: 0,
             marginBottom: 10,
@@ -326,13 +327,13 @@ const SpecialDetail = () => {
             special.business_id ? (
               <Link
                 to={`/listing/${special.business_id}`}
-                style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 12, textTransform: "none", textDecoration: "none", display: "block" }}
+                style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "rgba(238,232,218,0.85)", margin: 0, marginBottom: 12, textTransform: "none", textDecoration: "none", display: "block" }}
               >
-                <span style={{ fontStyle: "italic", fontWeight: 400 }}>by </span>{special.business_name}
+                <span style={{ fontStyle: "italic" }}>by </span>{special.business_name}
               </Link>
             ) : (
-              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 500, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "#0A0A0A", margin: 0, marginBottom: 12, textTransform: "none" }}>
-                <span style={{ fontStyle: "italic", fontWeight: 400 }}>by </span>{special.business_name}
+              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "rgba(238,232,218,0.85)", margin: 0, marginBottom: 12, textTransform: "none" }}>
+                <span style={{ fontStyle: "italic" }}>by </span>{special.business_name}
               </p>
             )
           )}
@@ -498,16 +499,16 @@ const SpecialDetail = () => {
         {/* About This Deal */}
         {special.description && (
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>About</h2>
+            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>About</h2>
             <p
               ref={aboutRef}
               style={{
                 fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
                 fontWeight: 400,
-                fontSize: 14,
-                lineHeight: "20.3px",
+                fontSize: 15,
+                lineHeight: 1.65,
                 letterSpacing: 0,
-                color: "#0A0A0A",
+                color: "rgba(238,232,218,0.9)",
                 margin: 0,
                 whiteSpace: "pre-line",
                 ...(aboutExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
@@ -519,18 +520,21 @@ const SpecialDetail = () => {
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 6,
+                  marginTop: 14,
+                  display: "inline-block",
                   background: "none",
                   border: "none",
+                  borderBottom: "1px solid rgba(238,232,218,0.4)",
                   padding: 0,
+                  paddingBottom: 2,
                   cursor: "pointer",
                   fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: 400,
-                  color: "#0A0A0A",
-                  textDecoration: "underline",
-                  textUnderlineOffset: "3px",
-                  textTransform: "capitalize",
+                  letterSpacing: "1.6px",
+                  color: CREAM,
+                  textDecoration: "none",
+                  textTransform: "uppercase",
                 }}
               >
                 {aboutExpanded ? "Show Less" : "Read More"}
@@ -543,7 +547,7 @@ const SpecialDetail = () => {
         {special.promo_code && (
           <section style={{ marginBottom: 32 }}>
             
-            <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>Promo Code</h2>
+            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Promo Code</h2>
             <button
               onClick={async () => {
                 try {
@@ -602,7 +606,7 @@ const SpecialDetail = () => {
         {/* Details */}
         <section style={{ marginBottom: 32 }}>
           
-          <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>Details</h2>
+          <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Details</h2>
           <div
             style={{
               background: SURFACE,
@@ -672,7 +676,7 @@ const SpecialDetail = () => {
         {/* Contact */}
         {(phoneClean || waClean || special.booking_link) && (
           <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 22, lineHeight: "22px", letterSpacing: "-0.66px", color: "#0A0A0A", textTransform: "capitalize", margin: 0, marginTop: 18, marginBottom: 10 }}>Contact</h2>
+            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Contact</h2>
             <div
               style={{
                 background: SURFACE,
@@ -754,7 +758,7 @@ const SpecialDetail = () => {
         {/* Terms & Conditions */}
         {special.terms && (
           <section style={{ marginBottom: 16 }}>
-            <p style={{ ...eyebrow, marginBottom: 8, color: "#0a0a0a" }}>Terms & Conditions</p>
+            <p style={{ ...eyebrow, marginBottom: 8, color: "rgba(238,232,218,0.7)", letterSpacing: "2.4px" }}>Terms & Conditions</p>
             <p
               style={{
                 fontFamily: FONT,
@@ -762,7 +766,7 @@ const SpecialDetail = () => {
                 fontSize: 12,
                 lineHeight: "16px",
                 letterSpacing: 0,
-                color: "#5b4632",
+                color: "rgba(238,232,218,0.75)",
                 margin: 0,
                 whiteSpace: "pre-line",
               }}
