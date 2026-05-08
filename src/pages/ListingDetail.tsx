@@ -850,35 +850,38 @@ const ListingDetail = () => {
         {contactRows.length > 0 && (
           <>
             <SectionHeading mt={32}>Contact</SectionHeading>
-            <div style={{ background: C.card, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
+            <div style={{ background: "#EEE8DA", borderRadius: 24, padding: 24, marginBottom: 14 }}>
               {contactRows.map((row, idx) => {
                 const Wrapper: any = row.href ? "a" : "div";
                 const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
                 return (
                   <div key={row.label} style={{
-                    borderTop: idx > 0 ? `1px solid ${C.border}` : "none",
+                    borderTop: idx > 0 ? `1px solid rgba(107, 106, 94, 0.15)` : "none",
+                    paddingTop: idx > 0 ? 14 : 0,
+                    paddingBottom: idx < contactRows.length - 1 ? 14 : 0,
                   }}>
                     <Wrapper
                       {...wrapperProps}
                       style={{
-                        display: "flex", alignItems: "center", height: 56, textDecoration: "none",
+                        display: "flex", alignItems: "center", textDecoration: "none",
                       }}
                     >
-                      <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
+                      <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18, height: 18 }}>
                         {row.isCustomIcon
-                          ? <row.icon color="#898480" />
-                          : <row.icon size={18} strokeWidth={1.5} color="#898480" className="text-[#898480]" />}
+                          ? <row.icon color="#6B6A5E" />
+                          : <row.icon size={18} strokeWidth={1.5} color="#6B6A5E" />}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <p style={{
-                          fontFamily: FONT_BODY, fontSize: 14, fontWeight: 400, color: C.text,
-                          lineHeight: 1.35, margin: 0, wordBreak: "break-word",
+                          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                          fontSize: 15, fontWeight: 400, color: "#2A2A24",
+                          lineHeight: 1.4, margin: 0, wordBreak: "break-word",
                         }}>
                           {row.value}
                         </p>
                       </div>
                       {row.href && (
-                        <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
+                        <span aria-hidden="true" style={{ fontSize: 14, color: "#6B6A5E", marginLeft: 12, flexShrink: 0 }}>↗</span>
                       )}
                     </Wrapper>
                   </div>
