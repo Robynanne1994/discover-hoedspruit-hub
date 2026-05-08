@@ -273,6 +273,7 @@ const Notifications = () => {
     listings_updates_categories: null,
     specials_new_categories: null,
   });
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -297,6 +298,7 @@ const Notifications = () => {
       } else {
         await supabase.from("notification_preferences").insert({ user_id: user.id, ...DEFAULT_BOOLS });
       }
+      setLoaded(true);
     };
     load();
   }, [user]);
