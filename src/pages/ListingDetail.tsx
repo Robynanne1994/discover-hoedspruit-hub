@@ -516,8 +516,9 @@ const ListingDetail = () => {
     listing.location && {
       label: "Address",
       value: listing.location,
-      icon: MapPin,
+      icon: LocationIcon,
       href: (listing as any).google_maps_link || undefined,
+      isCustomIcon: true,
     },
     listing.phone && {
       label: "Phone",
