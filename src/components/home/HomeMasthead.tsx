@@ -161,70 +161,37 @@ const HomeMasthead = () => {
       {/* Top bar */}
       <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, padding: "0 24px" }}>
         {user && (
-          <DropdownMenu>
-            <DropdownMenuTrigger aria-label="Notifications" style={{ ...iconBtn, position: "relative" }}>
-              <Bell size={18} color="#2A2A24" strokeWidth={1.6} />
-              {unreadCount > 0 && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: -2,
-                    right: -2,
-                    minWidth: 18,
-                    height: 18,
-                    padding: "0 5px",
-                    borderRadius: 999,
-                    background: "#9B5A3C",
-                    color: "#EEE8DA",
-                    fontSize: 10,
-                    fontWeight: 700,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "2px solid #EEE8DA",
-                    lineHeight: 1,
-                  }}
-                >
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </span>
-              )}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" sideOffset={8} className="w-80 max-h-96 overflow-y-auto">
-              <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {notifs.length === 0 ? (
-                <div style={{ padding: "16px 12px", fontSize: 13, color: "#6B6A5E", textAlign: "center" }}>
-                  No notifications yet
-                </div>
-              ) : (
-                notifs.map((n) => (
-                  <DropdownMenuItem
-                    key={n.id}
-                    onSelect={async (e) => {
-                      e.preventDefault();
-                      if (!n.is_read) {
-                        await supabase.from("business_notifications").update({ is_read: true }).eq("id", n.id);
-                      }
-                      navigate(n.link || "/business/dashboard");
-                    }}
-                    className="flex flex-col items-start gap-1 py-2"
-                  >
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, width: "100%" }}>
-                      {!n.is_read && (
-                        <span style={{ width: 8, height: 8, borderRadius: 999, background: "#9B5A3C", flexShrink: 0 }} />
-                      )}
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "#2A2A24", flex: 1 }}>{n.title}</span>
-                    </div>
-                    {n.body && (
-                      <span style={{ fontSize: 12, color: "#6B6A5E", lineHeight: 1.35, paddingLeft: n.is_read ? 0 : 14 }}>
-                        {n.body.length > 90 ? n.body.slice(0, 90) + "…" : n.body}
-                      </span>
-                    )}
-                  </DropdownMenuItem>
-                ))
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <button
+            aria-label="Notifications"
+            onClick={() => navigate("/my-notifications")}
+            style={{ ...iconBtn, position: "relative" }}
+          >
+            <Bell size={18} color="#2A2A24" strokeWidth={1.6} />
+            {unreadCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -2,
+                  right: -2,
+                  minWidth: 18,
+                  height: 18,
+                  padding: "0 5px",
+                  borderRadius: 999,
+                  background: "#9B5A3C",
+                  color: "#EEE8DA",
+                  fontSize: 10,
+                  fontWeight: 700,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "2px solid #EEE8DA",
+                  lineHeight: 1,
+                }}
+              >
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </button>
         )}
         <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
         <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
