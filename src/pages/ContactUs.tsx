@@ -392,7 +392,7 @@ const ContactUs = () => {
                 type="submit"
                 disabled={submitForm.isPending}
                 style={{
-                  width: "100%", background: "#241F1A",
+                  width: "100%", background: "#423324",
                   borderRadius: 16, padding: "12px 20px", height: 48,
                   border: "none", color: "#FFFFFF",
                   fontSize: 15, fontWeight: 500, cursor: "pointer",

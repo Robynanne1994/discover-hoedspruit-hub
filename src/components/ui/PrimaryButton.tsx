@@ -7,7 +7,7 @@ const baseStyle: CSSProperties = {
   alignItems: "center",
   justifyContent: "center",
   gap: 8,
-  background: "#241F1A",
+  background: "#423324",
   color: "#FFFFFF",
   border: "none",
   borderRadius: 16,

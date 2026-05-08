@@ -236,7 +236,7 @@ const FAQs = () => {
                       width: 28,
                       height: 28,
                       borderRadius: 999,
-                      background: isOpen ? "#0A0A0A" : "#F2EFEC",
+                      background: isOpen ? "#423324" : "#F2EFEC",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",

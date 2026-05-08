@@ -293,7 +293,7 @@ const AccountInfo = () => {
           disabled={savingProfile || profileLoading}
           style={{
             width: "100%",
-            background: "#0A0A0A",
+            background: "#423324",
             color: "#FFFFFF",
             border: "none",
             borderRadius: 999,
@@ -349,7 +349,7 @@ const AccountInfo = () => {
           disabled={savingPassword || !newPassword || !confirmPassword}
           style={{
             width: "100%",
-            background: "#0A0A0A",
+            background: "#423324",
             color: "#FFFFFF",
             border: "none",
             borderRadius: 999,
