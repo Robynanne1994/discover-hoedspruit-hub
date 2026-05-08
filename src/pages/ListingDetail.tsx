@@ -997,7 +997,7 @@ const ListingDetail = () => {
               {holidayCheck.isHoliday && (
                 <div style={{
                   marginBottom: 12, padding: "10px 14px", background: C.panel, borderRadius: 12,
-                  fontFamily: FONT_BODY, fontSize: 13, color: C.text,
+                  fontFamily: FONT_BODY, fontSize: 13, color: "#F0EAD9",
                 }}>
                   Public holiday — hours might differ
                 </div>
