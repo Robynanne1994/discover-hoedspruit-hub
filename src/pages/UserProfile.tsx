@@ -233,7 +233,7 @@ const UserProfile = () => {
                             fontWeight: 500,
                           }
                         : {
-                            background: "#241F1A",
+                            background: "#423324",
                             border: "none",
                             color: "#FFFFFF",
                             fontWeight: 600,

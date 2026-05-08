@@ -226,7 +226,7 @@ function DeleteAccountButton() {
             <AlertDialogAction
               onClick={(e) => { e.preventDefault(); handleDelete(); }}
               disabled={loading}
-              style={{ background: "#0A0A0A", color: "#FFFFFF", borderRadius: 999, padding: "12px 22px", fontFamily: SANS, fontSize: 15 }}
+              style={{ background: "#423324", color: "#FFFFFF", borderRadius: 999, padding: "12px 22px", fontFamily: SANS, fontSize: 15 }}
             >
               {loading ? (<><Loader2 size={16} className="animate-spin mr-2" /> Deleting...</>) : "Delete account"}
             </AlertDialogAction>

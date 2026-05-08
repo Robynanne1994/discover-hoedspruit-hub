@@ -65,7 +65,7 @@ export const Button = ({ variant = "primary", full, style, children, ...rest }: 
     lineHeight: 1.2,
   };
   let v: CSSProperties = {};
-  if (variant === "primary") v = { background: "#020202", color: "#FFFFFF" };
+  if (variant === "primary") v = { background: "#423324", color: "#FFFFFF" };
   if (variant === "secondary") v = { background: "transparent", color: COLORS.body, border: "1.5px solid rgba(18,18,20,0.15)" };
   if (variant === "accent") v = { background: COLORS.accent, color: "#FFFFFF" };
   return (
