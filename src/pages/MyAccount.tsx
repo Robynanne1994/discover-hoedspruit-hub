@@ -20,7 +20,6 @@ import {
   Info,
   LogOut,
   ChevronRight,
-  ChevronLeft,
   Pencil,
   UserCircle,
   LayoutDashboard,
