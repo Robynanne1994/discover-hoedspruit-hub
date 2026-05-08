@@ -18,19 +18,22 @@ import { toast } from "sonner";
 import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import locationIconSrc from "@/assets/location-icon.svg";
+import emailIconSrc from "@/assets/email-icon.svg";
+
+const customIconStyle = {
+  width: 18,
+  height: 18,
+  objectFit: "contain" as const,
+  display: "block",
+  filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)",
+};
 
 const LocationIcon = ({ color }: { color?: string }) => (
-  <img
-    src={locationIconSrc}
-    alt=""
-    style={{
-      width: 18,
-      height: 18,
-      objectFit: "contain",
-      display: "block",
-      filter: "brightness(0) saturate(100%) invert(57%) sepia(6%) saturate(216%) hue-rotate(7deg) brightness(94%) contrast(85%)",
-    }}
-  />
+  <img src={locationIconSrc} alt="" style={customIconStyle} />
+);
+
+const EmailIcon = ({ color }: { color?: string }) => (
+  <img src={emailIconSrc} alt="" style={customIconStyle} />
 );
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
