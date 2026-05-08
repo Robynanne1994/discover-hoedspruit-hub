@@ -612,7 +612,7 @@ const ListingDetail = () => {
   const isAboutLong = aboutText.length > 120;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#555340", paddingBottom: 140, fontFamily: FONT_BODY, color: "#FFFFFF" }}>
+    <div style={{ minHeight: "100vh", background: "#5C6446", paddingBottom: 140, fontFamily: FONT_BODY, color: "#FFFFFF" }}>
       <style>{`
         @keyframes hh-acc-open {
           from { opacity: 0; transform: translateY(-4px); }
