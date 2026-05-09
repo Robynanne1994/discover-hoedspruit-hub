@@ -170,6 +170,7 @@ const App = () => (
                 <Route path="moderation" element={<AdminModeration />} />
               </Route>
               <Route path="/business/sign-in" element={<BusinessSignIn />} />
+              <Route path="/business/start" element={<BusinessStart />} />
               <Route path="/business/sign-up" element={<BusinessSignUp />} />
               <Route element={<BusinessGate />}>
                 <Route path="/business/subscribe" element={<BusinessSubscribe />} />
