@@ -16,6 +16,9 @@ const SERIF = "'Playfair Display', Georgia, serif";
 
 const BusinessSignUp = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const intent = searchParams.get("intent");
+  const postSignupPath = intent === "claim" ? "/business/claim" : "/business/subscribe";
   const { user, authLoading, isOwner, loading } = useBusinessOwner();
 
   const [businessName, setBusinessName] = useState("");
