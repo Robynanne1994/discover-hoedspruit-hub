@@ -323,10 +323,8 @@ const MyProfile = () => {
       {/* Masthead */}
       <div
         style={{
-          padding: "0 24px",
+          padding: "20px 24px 0",
           position: "relative",
-          zIndex: 2,
-          marginTop: -66,
           textAlign: "center",
         }}
       >
