@@ -1,20 +1,3 @@
-import backArrowSrc from "@/assets/back-arrow-icon.svg";
-
-// Color filter presets generated from a black source.
-const COLOR_FILTERS: Record<string, string> = {
-  "#FFFFFF": "brightness(0) invert(1)",
-  "#ffffff": "brightness(0) invert(1)",
-  "white": "brightness(0) invert(1)",
-};
-
-const filterFor = (color?: string) => {
-  if (!color) return "none";
-  if (COLOR_FILTERS[color]) return COLOR_FILTERS[color];
-  // Default: dark — keep as-is (assumes the SVG is dark already)
-  // For non-white custom colors, just leave the SVG natural.
-  return "none";
-};
-
 interface BackArrowIconProps {
   size?: number;
   color?: string;
@@ -22,20 +5,26 @@ interface BackArrowIconProps {
   className?: string;
 }
 
-const BackArrowIcon = ({ size = 22, color, style, className }: BackArrowIconProps) => (
-  <img
-    src={backArrowSrc}
-    alt=""
+// Lucide-style left arrow built from two SVG paths inside a 24x24 viewBox.
+// Replaces the previous custom uploaded SVG asset so every back button across
+// the app shares one consistent mark.
+const BackArrowIcon = ({ size = 18, color = "#2A2A24", style, className }: BackArrowIconProps) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth={1.6}
+    strokeLinecap="round"
+    strokeLinejoin="round"
     className={className}
-    style={{
-      width: size,
-      height: size,
-      objectFit: "contain",
-      display: "block",
-      filter: filterFor(color),
-      ...style,
-    }}
-  />
+    style={{ display: "block", ...style }}
+    aria-hidden="true"
+  >
+    <line x1="19" y1="12" x2="5" y2="12" />
+    <polyline points="12 19 5 12 12 5" />
+  </svg>
 );
 
 export default BackArrowIcon;
