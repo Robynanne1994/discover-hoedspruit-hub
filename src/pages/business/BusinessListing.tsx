@@ -156,12 +156,8 @@ const BusinessListing = () => {
     setHours((h) => ({ ...h, [d]: { ...h[d], ...patch } }));
 
   return (
-    <BusinessShell title="EDIT BUSINESS" back="/business/dashboard" theme="dark">
-      <style>{`
-        .biz-edit-dark label, .biz-edit-dark .biz-edit-dark-text, .biz-edit-dark p { color: #FFFFFF !important; }
-        .biz-edit-dark input[type="time"] { color-scheme: dark; }
-      `}</style>
-      <div className="biz-edit-dark">
+    <BusinessLayout businessName={businessName}>
+      <div>
       {latestPending && latestPending.status === "pending" && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
