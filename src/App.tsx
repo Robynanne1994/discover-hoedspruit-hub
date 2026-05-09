@@ -48,7 +48,7 @@ import EventDetail from "./pages/EventDetail.tsx";
 import AccountSettings from "./pages/AccountSettings.tsx";
 import AccountInfo from "./pages/AccountInfo.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
-import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+
 import TermsOfUse from "./pages/TermsOfUse.tsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
 import CookiePolicy from "./pages/CookiePolicy.tsx";
