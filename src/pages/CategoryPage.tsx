@@ -428,7 +428,7 @@ const CategoryPage = () => {
             marginBottom: 14,
           }}
         >
-          Explore · Category
+          Explore
         </div>
         <h1
           style={{
