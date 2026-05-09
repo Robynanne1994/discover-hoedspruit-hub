@@ -2,219 +2,367 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
-import BusinessShell from "@/components/business/BusinessShell";
-import { Button, Card, H2, H3, Body, Small, StatusPill, COLORS, EmptyState } from "@/components/business/ui";
+import BusinessLayout from "@/components/business/BusinessLayout";
 import { useAuth } from "@/hooks/useAuth";
-import { Tag, Calendar, Pencil } from "lucide-react";
+import { Tag, Calendar, Pencil, ArrowUpRight, MapPin, Star } from "lucide-react";
 
-interface RecentItem { id: string; kind: string; title: string; status: string; created_at: string }
-interface NotifItem { id: string; title: string; body: string | null; link: string | null; status: string; is_read: boolean; created_at: string }
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const SERIF = "'Playfair Display', Georgia, serif";
+
+const INK = "#020202";
+const BODY = "#2B2420";
+const MUTED = "rgba(2,2,2,0.55)";
+const IVORY = "#f5f0e8";
+const DIVIDER = "rgba(2,2,2,0.08)";
+const ACCENT = "#5C6446";
+const RUST = "#9B5A3C";
+
+const Pill = ({ tone, children }: { tone: "live" | "draft" | "pending"; children: React.ReactNode }) => {
+  const map = {
+    live: { fg: "#3B7D4F", bg: "rgba(59,125,79,0.12)" },
+    draft: { fg: "#2B2420", bg: "rgba(18,18,20,0.06)" },
+    pending: { fg: "#D4964A", bg: "rgba(212,150,74,0.12)" },
+  }[tone];
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 6,
+        background: map.bg,
+        color: map.fg,
+        borderRadius: 999,
+        padding: "4px 10px",
+        fontSize: 11.5,
+        fontWeight: 500,
+        letterSpacing: "0.02em",
+        fontFamily: SANS,
+      }}
+    >
+      <span style={{ width: 6, height: 6, borderRadius: 999, background: map.fg }} />
+      {children}
+    </span>
+  );
+};
 
 const BusinessDashboard = () => {
-  const { signOut, user } = useAuth();
+  const { user } = useAuth();
   const { account, listing, pendingClaim, loading } = useBusinessOwner();
   const [stats, setStats] = useState({ specials: 0, events: 0, featured: 0 });
-  const [recent, setRecent] = useState<RecentItem[]>([]);
-  const [notifs, setNotifs] = useState<NotifItem[]>([]);
-
-  useEffect(() => {
-    if (!user) return;
-    const loadNotifs = async () => {
-      const { data } = await supabase
-        .from("business_notifications")
-        .select("id,title,body,link,status,is_read,created_at")
-        .eq("user_id", user.id)
-        .eq("is_read", false)
-        .order("created_at", { ascending: false })
-        .limit(10);
-      setNotifs((data ?? []) as NotifItem[]);
-    };
-    loadNotifs();
-  }, [user]);
-
-  const markRead = async (id: string) => {
-    setNotifs((n) => n.map((x) => x.id === id ? { ...x, is_read: true } : x));
-    await supabase.from("business_notifications").update({ is_read: true }).eq("id", id);
-  };
-  const markAllRead = async () => {
-    if (!user) return;
-    const ids = notifs.filter((n) => !n.is_read).map((n) => n.id);
-    if (!ids.length) return;
-    setNotifs((n) => n.map((x) => ({ ...x, is_read: true })));
-    await supabase.from("business_notifications").update({ is_read: true }).in("id", ids);
-  };
+  const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     const load = async () => {
-      if (!listing) return;
-
+      if (!listing || !user) return;
       const today = new Date().toISOString().slice(0, 10);
-      const [{ count: specialsCount }, { count: eventsCount }, { count: featuredCount }] = await Promise.all([
-        supabase.from("specials").select("id", { count: "exact", head: true }).eq("business_id", listing.id).eq("is_active", true),
-        supabase.from("events").select("id", { count: "exact", head: true }).eq("business_id", listing.id).gte("start_date", today),
-        supabase.from("feature_requests").select("id", { count: "exact", head: true }).eq("owner_id", user!.id).eq("status", "approved"),
-      ]);
-
-      const [{ data: pSp }, { data: pEv }, { data: pLi }] = await Promise.all([
-        supabase.from("specials_pending").select("id, status, created_at, payload").order("created_at", { ascending: false }).limit(5),
-        supabase.from("events_pending").select("id, status, created_at, payload").order("created_at", { ascending: false }).limit(5),
-        supabase.from("listing_edits_pending").select("id, status, created_at").order("created_at", { ascending: false }).limit(5),
-      ]);
-
-      const merged: RecentItem[] = [
-        ...(pSp ?? []).map((r: any) => ({ id: r.id, kind: "Special", title: r.payload?.title ?? "Untitled", status: r.status, created_at: r.created_at })),
-        ...(pEv ?? []).map((r: any) => ({ id: r.id, kind: "Event", title: r.payload?.title ?? "Untitled", status: r.status, created_at: r.created_at })),
-        ...(pLi ?? []).map((r: any) => ({ id: r.id, kind: "Business edit", title: "Business details", status: r.status, created_at: r.created_at })),
-      ].sort((a, b) => (a.created_at > b.created_at ? -1 : 1)).slice(0, 5);
-
+      const [{ count: specialsCount }, { count: eventsCount }, { count: featuredCount }, { count: pSp }, { count: pEv }] =
+        await Promise.all([
+          supabase.from("specials").select("id", { count: "exact", head: true }).eq("business_id", listing.id).eq("is_active", true),
+          supabase.from("events").select("id", { count: "exact", head: true }).eq("business_id", listing.id).gte("start_date", today),
+          supabase.from("feature_requests").select("id", { count: "exact", head: true }).eq("owner_id", user.id).eq("status", "approved"),
+          supabase.from("specials_pending").select("id", { count: "exact", head: true }).eq("status", "pending"),
+          supabase.from("events_pending").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        ]);
       setStats({ specials: specialsCount ?? 0, events: eventsCount ?? 0, featured: featuredCount ?? 0 });
-      setRecent(merged);
+      setPendingCount((pSp ?? 0) + (pEv ?? 0));
     };
     load();
-  }, [listing]);
+  }, [listing, user]);
 
-  if (loading) return <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark"><Small style={{ color: "rgba(255,255,255,0.7)" }}>Loading...</Small></BusinessShell>;
+  const businessName = account?.business_name || listing?.title || null;
+
+  // Determine the next-best action
+  const nextAction = (() => {
+    if (!listing && pendingClaim?.status === "pending") {
+      return { eyebrow: "Claim under review", title: "We'll be in touch within 48 hours.", cta: null, href: null };
+    }
+    if (!listing) {
+      return { eyebrow: "Get started", title: "Link a business to your account.", cta: "Claim or list", href: "/business/claim" };
+    }
+    if (stats.specials === 0) {
+      return { eyebrow: "Next step", title: "Post your first special.", cta: "Post a special", href: "/business/specials/new" };
+    }
+    if (stats.events === 0) {
+      return { eyebrow: "Tip", title: "Got something on this month?", cta: "Post an event", href: "/business/events/new" };
+    }
+    return null;
+  })();
 
   return (
-    <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark">
-      <div style={{ marginTop: 12, marginBottom: 24 }}>
-        <H2 style={{ color: "#FFFFFF" }}>WELCOME{account?.business_name ? `, ${account.business_name.toUpperCase()}` : ""}</H2>
-      </div>
-
-      {notifs.length > 0 && (
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-            <Body style={{ fontWeight: 500, color: "#FFFFFF" }}>
-              NOTIFICATIONS{notifs.some((n) => !n.is_read) ? ` (${notifs.filter((n) => !n.is_read).length})` : ""}
-            </Body>
-            {notifs.some((n) => !n.is_read) && (
-              <button onClick={markAllRead} style={{ background: "transparent", border: "none", color: "#FFFFFF", textDecoration: "underline", fontSize: 12, cursor: "pointer", padding: 0 }}>
-                Mark all read
-              </button>
-            )}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {notifs.slice(0, 5).map((n) => {
-              const inner = (
-                <Card style={{ padding: 14, opacity: n.is_read ? 0.7 : 1, borderLeft: n.is_read ? "none" : `3px solid ${n.status === "approved" ? "#2e7d32" : n.status === "rejected" ? "#c62828" : "#b8916a"}` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-                    <div style={{ minWidth: 0, flex: 1 }}>
-                      <Body style={{ fontWeight: 500, fontSize: 14 }}>{n.title}</Body>
-                      {n.body && <Small soft style={{ marginTop: 4, display: "block" }}>{n.body}</Small>}
-                      <Small soft style={{ marginTop: 4, display: "block", fontSize: 11 }}>{new Date(n.created_at).toLocaleString()}</Small>
-                    </div>
-                    <StatusPill status={n.status} />
-                  </div>
-                </Card>
-              );
-              return n.link ? (
-                <Link key={n.id} to={n.link} onClick={() => markRead(n.id)} style={{ textDecoration: "none" }}>{inner}</Link>
-              ) : (
-                <div key={n.id} onClick={() => markRead(n.id)} style={{ cursor: "pointer" }}>{inner}</div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {!listing && (
-        <Card style={{ marginBottom: 16 }}>
-          <Small soft style={{ marginBottom: 8 }}>BUSINESS</Small>
-          {pendingClaim && pendingClaim.status === "pending" ? (
-            <>
-              <div style={{ marginBottom: 12 }}><StatusPill status="pending" /></div>
-              <Body>Claim under review</Body>
-              <Small soft style={{ marginTop: 4 }}>We will review this within 48 hours.</Small>
-            </>
-          ) : (
-            <>
-              <Body style={{ marginBottom: 12 }}>You have not linked a business yet.</Body>
-              <Link to="/business/claim"><Button>CLAIM A BUSINESS</Button></Link>
-            </>
-          )}
-        </Card>
-      )}
-
-      {listing && (
+    <BusinessLayout businessName={businessName}>
+      {loading ? (
+        <p style={{ color: MUTED, fontFamily: SANS, fontSize: 14 }}>Loading…</p>
+      ) : (
         <>
-          <Card style={{ marginBottom: 16, padding: 0, overflow: "hidden" }}>
-            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
-              <div style={{ flex: 1, padding: 20, minWidth: 0 }}>
-                <Small soft>BUSINESS</Small>
-                <Body style={{ fontWeight: 500, marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{listing.title}</Body>
-                {listing.location && <Small soft style={{ marginTop: 4 }}>{listing.location}</Small>}
+          {/* Business hero card */}
+          {listing && (
+            <div
+              style={{
+                background: IVORY,
+                borderRadius: 16,
+                overflow: "hidden",
+                display: "flex",
+                marginBottom: 12,
+              }}
+            >
+              <div style={{ flex: 1, padding: "18px 20px", minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                  <Pill tone="live">Live</Pill>
+                  <span style={{ fontFamily: SANS, fontSize: 11, color: MUTED, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+                    {account?.subscription_status === "active" ? "Subscribed" : "Free plan"}
+                  </span>
+                </div>
+                <h2
+                  style={{
+                    fontFamily: SERIF,
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    fontSize: 26,
+                    lineHeight: 1.05,
+                    letterSpacing: "-0.4px",
+                    color: INK,
+                    margin: 0,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {listing.title}
+                </h2>
+                {listing.location && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 6, color: MUTED }}>
+                    <MapPin size={12} strokeWidth={1.5} />
+                    <span style={{ fontFamily: SANS, fontSize: 13 }}>{listing.location}</span>
+                  </div>
+                )}
               </div>
               {listing.image_url && (
-                <div style={{ width: 96, flexShrink: 0, background: `url(${listing.image_url}) center/cover no-repeat` }} />
+                <div
+                  style={{
+                    width: 110,
+                    flexShrink: 0,
+                    background: `url(${listing.image_url}) center/cover no-repeat`,
+                  }}
+                />
               )}
             </div>
-          </Card>
+          )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 16 }}>
-            <Card style={{ padding: 16, textAlign: "center" }}>
-              <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.specials}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>SPECIALS</Small>
-            </Card>
-            <Card style={{ padding: 16, textAlign: "center" }}>
-              <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.events}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>EVENTS</Small>
-            </Card>
-            <Card style={{ padding: 16, textAlign: "center" }}>
-              <p style={{ fontSize: 26, color: COLORS.heading, margin: 0, fontWeight: 400 }}>{stats.featured}</p>
-              <Small soft style={{ marginTop: 4, fontSize: 12 }}>FEATURED</Small>
-            </Card>
-          </div>
+          {/* No-listing state */}
+          {!listing && (
+            <div
+              style={{
+                background: IVORY,
+                borderRadius: 16,
+                padding: "20px",
+                marginBottom: 12,
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 11,
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase",
+                  color: MUTED,
+                  margin: 0,
+                  marginBottom: 8,
+                }}
+              >
+                {pendingClaim?.status === "pending" ? "Under review" : "No listing yet"}
+              </p>
+              <h2
+                style={{
+                  fontFamily: SERIF,
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  fontSize: 24,
+                  lineHeight: 1.1,
+                  color: INK,
+                  margin: 0,
+                }}
+              >
+                {pendingClaim?.status === "pending"
+                  ? "Your claim is with our team."
+                  : "Link a business to get going."}
+              </h2>
+            </div>
+          )}
 
-          <div style={{ background: COLORS.card, borderRadius: 16, border: "1px solid rgba(18,18,20,0.06)", overflow: "hidden", marginBottom: 16 }}>
-            <Link to="/business/specials/new" style={{ textDecoration: "none", display: "block" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20, borderBottom: "1px solid rgba(18,18,20,0.06)" }}>
-                <Tag size={20} strokeWidth={1.5} color={COLORS.heading} />
-                <H3 style={{ fontSize: 16, textTransform: "none" }}>Post a Special</H3>
+          {/* Next action */}
+          {nextAction && (
+            <Link
+              to={nextAction.href ?? "#"}
+              onClick={(e) => !nextAction.href && e.preventDefault()}
+              style={{
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: 14,
+                background: "#fff",
+                border: `1px solid ${DIVIDER}`,
+                borderRadius: 16,
+                padding: "16px 18px",
+                marginBottom: 16,
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 11,
+                    letterSpacing: "0.18em",
+                    textTransform: "uppercase",
+                    color: MUTED,
+                    margin: 0,
+                    marginBottom: 4,
+                  }}
+                >
+                  {nextAction.eyebrow}
+                </p>
+                <p style={{ fontFamily: SANS, fontSize: 15, color: INK, margin: 0, fontWeight: 400 }}>
+                  {nextAction.title}
+                </p>
               </div>
+              {nextAction.cta && (
+                <span
+                  style={{
+                    flexShrink: 0,
+                    width: 36,
+                    height: 36,
+                    borderRadius: 999,
+                    background: RUST,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ArrowUpRight size={16} strokeWidth={1.8} color="#EEE8DA" />
+                </span>
+              )}
             </Link>
-            <Link to="/business/events/new" style={{ textDecoration: "none", display: "block" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20, borderBottom: "1px solid rgba(18,18,20,0.06)" }}>
-                <Calendar size={20} strokeWidth={1.5} color={COLORS.heading} />
-                <H3 style={{ fontSize: 16, textTransform: "none" }}>Post an Event</H3>
-              </div>
-            </Link>
-            <Link to="/business/listing" style={{ textDecoration: "none", display: "block" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12, padding: 20 }}>
-                <Pencil size={20} strokeWidth={1.5} color={COLORS.heading} />
-                <H3 style={{ fontSize: 16, textTransform: "none" }}>Edit Business Details</H3>
-              </div>
-            </Link>
-          </div>
+          )}
 
-          {recent.length > 0 && (
-            <div style={{ marginBottom: 16 }}>
-              <Body style={{ fontWeight: 500, marginBottom: 12 }}>RECENT SUBMISSIONS</Body>
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {recent.map((r) => (
-                  <Card key={r.kind + r.id} style={{ padding: 16 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-                      <div style={{ minWidth: 0 }}>
-                        <Small soft style={{ fontSize: 12 }}>{r.kind.toUpperCase()}</Small>
-                        <Body style={{ marginTop: 4, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{r.title}</Body>
-                      </div>
-                      <StatusPill status={r.status} />
-                    </div>
-                  </Card>
-                ))}
+          {/* Stats */}
+          {listing && (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, marginBottom: 16 }}>
+              <Stat label="Specials" value={stats.specials} />
+              <Stat label="Events" value={stats.events} />
+              <Stat label="Featured" value={stats.featured} icon={<Star size={11} strokeWidth={1.5} />} />
+            </div>
+          )}
+
+          {/* Pending nudge */}
+          {pendingCount > 0 && (
+            <div
+              style={{
+                background: "rgba(212,150,74,0.10)",
+                border: "1px solid rgba(212,150,74,0.25)",
+                borderRadius: 14,
+                padding: "12px 16px",
+                marginBottom: 16,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 12,
+              }}
+            >
+              <div>
+                <p style={{ fontFamily: SANS, fontSize: 13, color: BODY, margin: 0 }}>
+                  {pendingCount} submission{pendingCount === 1 ? "" : "s"} awaiting review
+                </p>
               </div>
+              <Link
+                to="/business/specials"
+                style={{ fontFamily: SANS, fontSize: 13, color: ACCENT, textDecoration: "none", fontWeight: 500 }}
+              >
+                View
+              </Link>
+            </div>
+          )}
+
+          {/* Manage list */}
+          {listing && (
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: 16,
+                border: `1px solid ${DIVIDER}`,
+                overflow: "hidden",
+              }}
+            >
+              <ManageRow icon={<Tag size={18} strokeWidth={1.5} />} label="Post a special" to="/business/specials/new" />
+              <ManageRow icon={<Calendar size={18} strokeWidth={1.5} />} label="Post an event" to="/business/events/new" />
+              <ManageRow icon={<Pencil size={18} strokeWidth={1.5} />} label="Edit listing details" to="/business/listing" last />
             </div>
           )}
         </>
       )}
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 24 }}>
-        <Link to="/business/billing" style={{ textDecoration: "none" }}>
-          <Button variant="secondary" full style={{ background: "#C5BCAA", borderColor: "#C5BCAA" }}>BILLING</Button>
-        </Link>
-        <Button variant="secondary" full onClick={signOut} style={{ background: "#C5BCAA", borderColor: "#C5BCAA" }}>SIGN OUT</Button>
-      </div>
-    </BusinessShell>
+    </BusinessLayout>
   );
 };
+
+const Stat = ({ label, value, icon }: { label: string; value: number; icon?: React.ReactNode }) => (
+  <div style={{ background: "#fff", borderRadius: 14, padding: "16px 12px", textAlign: "center" }}>
+    <p
+      style={{
+        fontFamily: SERIF,
+        fontStyle: "italic",
+        fontSize: 28,
+        color: INK,
+        margin: 0,
+        fontWeight: 400,
+        lineHeight: 1,
+      }}
+    >
+      {value}
+    </p>
+    <p
+      style={{
+        fontFamily: SANS,
+        fontSize: 11,
+        letterSpacing: "0.16em",
+        textTransform: "uppercase",
+        color: MUTED,
+        margin: "8px 0 0",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 4,
+      }}
+    >
+      {icon}
+      {label}
+    </p>
+  </div>
+);
+
+const ManageRow = ({
+  icon,
+  label,
+  to,
+  last,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  to: string;
+  last?: boolean;
+}) => (
+  <Link
+    to={to}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
+      padding: "16px 18px",
+      borderBottom: last ? "none" : `1px solid ${DIVIDER}`,
+      textDecoration: "none",
+      color: INK,
+    }}
+  >
+    <span style={{ color: MUTED, display: "inline-flex" }}>{icon}</span>
+    <span style={{ flex: 1, fontFamily: SANS, fontSize: 15 }}>{label}</span>
+    <ArrowUpRight size={15} strokeWidth={1.5} color={MUTED} />
+  </Link>
+);
 
 export default BusinessDashboard;
