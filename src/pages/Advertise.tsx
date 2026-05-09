@@ -23,7 +23,7 @@ const BLOB_RADIUS_B = "55% 45% 50% 55% / 50% 60% 45% 55%";
 const BENEFITS = [
   { n: "i.", title: "Local Visibility", description: "Show up when people search for places to eat, stay, shop and explore in Hoedspruit." },
   { n: "ii.", title: "Targeted Audience", description: "Reach an engaged community already in discovery mode and ready to spend locally." },
-  { n: "iii.", title: "Featured Placement", description: "Stand out in carousels, category pages, and curated picks across the app." },
+  { n: "iii.", title: "Featured Placement", description: "Stand out in carousels, category pages and curated picks across the app." },
   { n: "iv.", title: "Grow Your Brand", description: "Build steady, lasting awareness with the Hoedspruit community over time." },
 ];
 
