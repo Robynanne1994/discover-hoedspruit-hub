@@ -235,8 +235,8 @@ const About = () => {
             <div style={{ fontSize: 11.5, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: "rgba(238,232,218,0.8)", marginBottom: 14 }}>
               FOR LOCAL BUSINESSES
             </div>
-            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14 }}>
-              Want to be listed?
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14, textTransform: "lowercase" }}>
+              ready to do more?
             </h2>
             <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
               If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
