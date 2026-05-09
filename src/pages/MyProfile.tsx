@@ -97,6 +97,36 @@ const MyProfile = () => {
   }, [authLoading, user, navigate]);
 
   const id = user?.id;
+  const queryClient = useQueryClient();
+
+  const removeFavourite = useMutation({
+    mutationFn: async ({ item_id, item_type }: { item_id: string; item_type: string }) => {
+      if (!id) return;
+      await supabase
+        .from("favourites")
+        .delete()
+        .eq("user_id", id)
+        .eq("item_id", item_id)
+        .eq("item_type", item_type);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-saved-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-events"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-specials"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-count"] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["favourite"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-events-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-specials-page"] });
+    },
+  });
+
+  const handleUnsave = (e: React.MouseEvent, item_id: string, item_type: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    removeFavourite.mutate({ item_id, item_type });
+  };
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile", id],
