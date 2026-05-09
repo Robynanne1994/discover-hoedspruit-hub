@@ -268,8 +268,8 @@ const FAQs = () => {
             <div style={{ marginBottom: 14 }}>
               <Eyebrow opacity={0.8} size={11.5}>STILL STUCK</Eyebrow>
             </div>
-            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14 }}>
-              Ask us anything.
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14, textTransform: "lowercase" }}>
+              ask us anything.
             </h2>
             <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
               We're a small team but we answer every message. Drop us a line and we'll get back to you.
