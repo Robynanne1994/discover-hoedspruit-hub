@@ -103,7 +103,7 @@ const HomeGetListed = () => {
               transition: "transform 150ms ease-out",
             }}
           >
-            <span style={{ textTransform: "none" }}>Get in Touch</span>
+            <span style={{ textTransform: "none" }}>Get Started</span>
             <span style={{ fontSize: 14, lineHeight: 1 }}>↗</span>
           </Link>
         </div>
