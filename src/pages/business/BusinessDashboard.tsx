@@ -74,7 +74,7 @@ const BusinessDashboard = () => {
   }, [listing]);
 
   if (loading) return <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark"><Small style={{ color: "rgba(255,255,255,0.7)" }}>Loading...</Small></BusinessShell>;
-1
+
   return (
     <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark">
       <div style={{ marginTop: 12, marginBottom: 24 }}>
