@@ -242,7 +242,7 @@ const About = () => {
               A business account lets you claim your listing for personal edits, post specials and share what's on. Register in a few minutes.
             </p>
             <button
-              onClick={() => navigate("/advertise")}
+              onClick={() => navigate("/business/start")}
               onPointerDown={press}
               onPointerUp={release}
               onPointerLeave={release}
