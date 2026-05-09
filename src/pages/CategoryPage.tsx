@@ -1,10 +1,11 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronLeft, ChevronDown, SlidersHorizontal, Phone, MessageCircle, MapPin, Globe, Star, Search, Sparkles } from "lucide-react";
-import FavouriteButton from "@/components/FavouriteButton";
-import BackButton from "@/components/BackButton";
+import { ChevronDown, SlidersHorizontal, MapPin, Search, Heart } from "lucide-react";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,30 +15,97 @@ const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", 
 const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Pub Grub", "Snacks", "Light Meals"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
-const font = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
+const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const serif = "'Playfair Display', Georgia, serif";
 
-// Palette
+// Editorial palette
 const C = {
-  bg: "#EBEBEB",
-  card: "#FFFFFF",
-  text: "#0A0A0A",
-  muted: "#8A8480",
-  panel: "#F2EFEC",
-  border: "#E8E4DF",
+  olive: "#5C6446",
+  cream: "#EEE8DA",
+  softCream: "#F4EFE3",
+  ink: "#2A2A24",
+  mutedInk: "#6B6A5E",
+  line: "#D9D2C0",
+  rust: "#9B5A3C",
+  gold: "#D9C36B",
 };
 
+const TAGLINES: Record<string, string> = {
+  "restaurants & cafés": "places to eat in town.",
+  "restaurants & cafes": "places to eat in town.",
+  accommodation: "places to spend the night.",
+  "activities & adventures": "places to get out and about.",
+  "health & medical": "places when you need them.",
+  shopping: "places to find what you need.",
+  "wellness & beauty": "places to slow down.",
+  property: "places on the market.",
+  "auto & mechanical": "places to keep things running.",
+  "home & garden": "places to make it home.",
+  education: "places to learn.",
+  "trades & services": "places to call when you need a hand.",
+  community: "places that bring us together.",
+  "ngos & volunteering": "places where you can pitch in.",
+  "art & culture": "place to see something made by hand.",
+};
+
+const titleSizeFor = (s: string) => {
+  const n = s.length;
+  if (n < 11) return 64;
+  if (n <= 20) return 54;
+  if (n <= 28) return 48;
+  return 42;
+};
+
+type SortKey = "default" | "favourites" | "name" | "rating" | "open_now";
+
+const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+const parseTime = (s: string) => {
+  const [h, mm] = s.replace(".", ":").split(":");
+  return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
+};
+
+const todayHours = (openingHours: Record<string, string> | null | undefined) => {
+  if (!openingHours) return null;
+  const now = new Date();
+  const todayIdx = now.getDay();
+  const todayLabel = todayIdx === 0 ? "Sunday" : DAY_LABELS[todayIdx - 1];
+  const raw = openingHours[todayLabel.toLowerCase()];
+  return typeof raw === "string" ? raw : null;
+};
+
+const isOpenNow = (openingHours: Record<string, string> | null | undefined): boolean => {
+  const v = todayHours(openingHours);
+  if (!v || /closed/i.test(v)) return false;
+  const m = v.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
+  if (!m) return false;
+  const cur = new Date().getHours() * 60 + new Date().getMinutes();
+  const o = parseTime(m[1]);
+  let c = parseTime(m[2]);
+  if (c <= o) c += 24 * 60;
+  return cur >= o && cur <= c;
+};
+
+const opensAt = (openingHours: Record<string, string> | null | undefined): string | null => {
+  const v = todayHours(openingHours);
+  if (!v || /closed/i.test(v)) return null;
+  const m = v.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]/);
+  return m ? m[1].replace(".", ":") : null;
+};
+
+// Filter chip used inside the filter sheet
 const FilterChip = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => (
   <button
     onClick={onClick}
     style={{
-      background: active ? C.text : C.card,
-      border: `1px solid ${active ? C.text : C.border}`,
+      background: active ? C.ink : "transparent",
+      border: `1px solid ${active ? C.ink : "rgba(238,232,218,0.45)"}`,
       borderRadius: 9999,
       padding: "8px 14px",
       fontSize: 13,
       fontWeight: 400,
-      fontFamily: font,
-      color: active ? "#FFFFFF" : C.text,
+      fontFamily: sans,
+      color: active ? C.cream : C.cream,
       cursor: "pointer",
       lineHeight: 1.2,
     }}
@@ -46,29 +114,84 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
   </button>
 );
 
-type SortKey = "default" | "favourites" | "name" | "rating" | "open_now";
+// Card-internal save heart (rust on save)
+const CardHeart = ({ listingId }: { listingId: string }) => {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  const { data: saved } = useQuery({
+    queryKey: ["favourite", "listing", listingId, user?.id],
+    queryFn: async () => {
+      if (!user) return false;
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("item_id", listingId)
+        .eq("item_type", "listing")
+        .maybeSingle();
+      return !!data;
+    },
+    enabled: !!user,
+  });
 
-const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const toggle = useMutation({
+    mutationFn: async () => {
+      if (!user) {
+        toast.error("Please sign in to save favourites");
+        return;
+      }
+      if (saved) {
+        await supabase
+          .from("favourites" as any)
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", listingId)
+          .eq("item_type", "listing");
+      } else {
+        await supabase
+          .from("favourites" as any)
+          .insert({ user_id: user.id, item_id: listingId, item_type: "listing" });
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["favourite", "listing", listingId] });
+      qc.invalidateQueries({ queryKey: ["favourites"] });
+    },
+  });
 
-const isOpenNow = (openingHours: Record<string, string> | null | undefined): boolean => {
-  if (!openingHours) return false;
-  const now = new Date();
-  const todayIdx = now.getDay(); // 0 Sun..6 Sat
-  const todayLabel = todayIdx === 0 ? "Sunday" : DAY_LABELS[todayIdx - 1];
-  const todayValRaw = openingHours[todayLabel.toLowerCase()];
-  const todayVal = typeof todayValRaw === "string" ? todayValRaw : "";
-  if (!todayVal || /closed/i.test(todayVal)) return false;
-  const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
-  if (!m) return false;
-  const parse = (s: string) => {
-    const [h, mm] = s.replace(".", ":").split(":");
-    return parseInt(h, 10) * 60 + (mm ? parseInt(mm, 10) : 0);
-  };
-  const cur = now.getHours() * 60 + now.getMinutes();
-  const o = parse(m[1]);
-  let c = parse(m[2]);
-  if (c <= o) c += 24 * 60; // crosses midnight
-  return cur >= o && cur <= c;
+  return (
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        toggle.mutate();
+      }}
+      aria-label={saved ? "Remove from favourites" : "Add to favourites"}
+      style={{
+        position: "absolute",
+        top: 12,
+        right: 12,
+        width: 36,
+        height: 36,
+        borderRadius: 9999,
+        background: "rgba(238, 232, 218, 0.4)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        border: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+      }}
+    >
+      <Heart
+        size={16}
+        strokeWidth={2}
+        color={saved ? C.rust : C.cream}
+        fill={saved ? C.rust : "none"}
+      />
+    </button>
+  );
 };
 
 const CategoryPage = () => {
@@ -92,6 +215,7 @@ const CategoryPage = () => {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, [showSortMenu]);
+
   const [filterCuisine, setFilterCuisine] = useState<string[]>([]);
   const [filterVibe, setFilterVibe] = useState<string[]>([]);
   const [filterMeal, setFilterMeal] = useState<string[]>([]);
@@ -128,9 +252,6 @@ const CategoryPage = () => {
   const { data: listings, isLoading } = useQuery({
     queryKey: ["listings-by-category", id, activeSubId],
     queryFn: async () => {
-      // Pull listing IDs from BOTH the multi-category junction table AND the
-      // legacy single category_id column on listings, so a category page never
-      // shows blank if junction rows are missing for any reason.
       const [{ data: junctionData, error: jErr }, { data: legacyData, error: lErr }] = await Promise.all([
         supabase.from("listing_categories").select("listing_id").eq("category_id", id!),
         supabase.from("listings").select("id").eq("category_id", id!),
@@ -197,17 +318,12 @@ const CategoryPage = () => {
   };
 
   const categoryTitle = category?.title || "Category";
-  const subtitle = category?.description || "Local cafés, great meals and favourite places to eat in Hoedspruit.";
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
 
-  // Split title into two lines (try first space, otherwise keep on one line)
-  const titleParts = useMemo(() => {
-    const t = categoryTitle.trim();
-    const firstSpace = t.indexOf(" ");
-    if (firstSpace === -1) return [t];
-    return [t.slice(0, firstSpace), t.slice(firstSpace + 1)];
-  }, [categoryTitle]);
+  const lowerTitle = categoryTitle.toLowerCase();
+  const titleWithDot = `${lowerTitle}.`;
+  const titleFontSize = titleSizeFor(titleWithDot);
 
   const filteredListings = useMemo(() => {
     if (!listings) return [];
@@ -237,156 +353,131 @@ const CategoryPage = () => {
       return true;
     });
 
-    if (sortBy === "name") {
-      return [...result].sort((a, b) => a.title.localeCompare(b.title));
-    }
-    if (sortBy === "rating") {
-      return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
-    }
-    if (sortBy === "open_now") {
-      return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
-    }
+    if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortBy === "rating") return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
+    if (sortBy === "open_now") return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
     return result;
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy, search]);
 
-  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Rating";
-  const count = filteredListings.length;
+  const totalCount = listings?.length ?? 0;
+  const tagline = TAGLINES[lowerTitle] || "places to discover.";
+  const subline = `${totalCount} ${tagline}`;
+  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Top Rated";
 
-  // Section eyebrow style for filter panel
   const sectionEyebrow: React.CSSProperties = {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 400,
-    color: C.muted,
+    color: "rgba(238,232,218,0.7)",
     textTransform: "uppercase",
-    letterSpacing: "0.24px",
+    letterSpacing: "2px",
     marginBottom: 10,
-    fontFamily: font,
+    fontFamily: sans,
   };
 
-  // Secondary action button (icon circle pill)
-  const secondaryAction: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: 8,
-    background: C.card,
-    border: `1px solid ${C.border}`,
-    borderRadius: 9999,
-    padding: "10px 18px",
-    fontSize: 13,
-    fontWeight: 400,
-    fontFamily: font,
-    color: C.text,
-    textDecoration: "none",
-    cursor: "pointer",
-    lineHeight: 1,
-  };
-  const iconCircle: React.CSSProperties = {
-    width: 24,
-    height: 24,
-    borderRadius: 9999,
-    background: C.panel,
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    flexShrink: 0,
-  };
-  const primaryCTA: React.CSSProperties = {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    background: C.card,
-    color: C.text,
-    border: `1px solid ${C.border}`,
-    borderRadius: 9999,
-    padding: "10px 18px",
-    fontSize: 13,
-    fontWeight: 400,
-    fontFamily: font,
-    textDecoration: "none",
-    cursor: "pointer",
-    lineHeight: 1,
-  };
+  const isSearchEmpty = (search.trim().length > 0 || activeFilterCount > 0) && filteredListings.length === 0 && totalCount > 0;
 
   return (
-    <div style={{ minHeight: "100vh", paddingBottom: 100, background: "transparent", fontFamily: font, color: C.text }}>
-      {/* Top bar — 56px */}
+    <div
+      style={{
+        minHeight: "100vh",
+        paddingBottom: 100,
+        background: C.olive,
+        fontFamily: sans,
+        color: C.cream,
+      }}
+    >
+      {/* Top bar */}
       <div
         style={{
-          height: 56,
+          paddingTop: 32,
           paddingLeft: 24,
           paddingRight: 24,
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
         }}
       >
-        <BackButton />
-
-        {isRestaurant && (
-          <button
-            onClick={() => navigate("/quiz")}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              fontFamily: font,
-              fontSize: 13,
-              fontWeight: 400,
-              color: C.text,
-            }}
-            aria-label="Let us help you"
-          >
-            <Sparkles size={16} strokeWidth={1.6} color={C.text} />
-            <span>Let us help you</span>
-          </button>
-        )}
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 9999,
+            background: C.cream,
+            border: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <BackArrowIcon size={18} color={C.ink} />
+        </button>
       </div>
 
-      {/* Title block */}
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+      {/* Hero */}
+      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
+        <div
+          style={{
+            fontFamily: sans,
+            fontSize: 12,
+            fontWeight: 400,
+            letterSpacing: "2.4px",
+            textTransform: "uppercase",
+            color: "rgba(238,232,218,0.7)",
+            marginBottom: 14,
+          }}
+        >
+          Explore · Category
+        </div>
         <h1
           style={{
-            fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif",
-            fontWeight: 500,
-            fontSize: 40,
-            lineHeight: 1,
-            letterSpacing: "-0.02em",
-            color: C.text,
+            fontFamily: serif,
+            fontStyle: "italic",
+            fontWeight: 300,
+            fontSize: titleFontSize,
+            lineHeight: 0.95,
+            letterSpacing: "-1.8px",
+            color: C.cream,
             margin: 0,
           }}
         >
-          {titleParts[0]}
-          {titleParts[1] && (
-            <>
-              <br />
-              {titleParts[1]}
-            </>
-          )}
+          {titleWithDot}
         </h1>
+        <p
+          style={{
+            fontFamily: serif,
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: 17,
+            lineHeight: 1.4,
+            color: "rgba(238,232,218,0.75)",
+            maxWidth: 300,
+            marginTop: 14,
+            marginBottom: 24,
+          }}
+        >
+          {subline}
+        </p>
       </div>
 
-      {/* Search pill */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
+      {/* Search */}
+      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            height: 48,
-            background: C.card,
-            borderRadius: 999,
-            padding: "0 20px",
+            height: 52,
+            background: "rgba(238, 232, 218, 0.92)",
+            borderRadius: 9999,
+            padding: "0 22px",
             gap: 12,
           }}
         >
-          <Search size={20} strokeWidth={1.5} style={{ color: C.muted, flexShrink: 0 }} />
+          <Search size={18} strokeWidth={1.6} color={C.mutedInk} style={{ flexShrink: 0 }} />
           <input
             type="text"
-            placeholder="Search listings"
+            placeholder={`Search ${lowerTitle}`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
@@ -394,20 +485,20 @@ const CategoryPage = () => {
               background: "transparent",
               border: "none",
               outline: "none",
-              fontFamily: font,
-              fontSize: 16,
+              fontFamily: sans,
+              fontSize: 15,
               fontWeight: 400,
-              color: C.text,
+              color: C.ink,
             }}
-            className="placeholder:text-[#8A8480]"
+            className="placeholder:text-[#6B6A5E]"
           />
         </div>
       </div>
 
-      {/* Filter row */}
+      {/* Filter / Sort row */}
       <div
         style={{
-          paddingTop: 16,
+          paddingTop: 22,
           paddingBottom: 24,
           paddingLeft: 24,
           paddingRight: 24,
@@ -423,27 +514,26 @@ const CategoryPage = () => {
             display: "inline-flex",
             alignItems: "center",
             gap: 8,
-            height: 40,
-            padding: "0 16px",
-            background: C.card,
+            height: 38,
+            padding: "0 18px",
+            background: C.cream,
             border: "none",
             borderRadius: 9999,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
             cursor: "pointer",
-            fontFamily: font,
+            fontFamily: sans,
             fontWeight: 400,
             fontSize: 14,
-            lineHeight: "16.8px",
-            color: C.text,
+            color: C.ink,
+            lineHeight: 1,
           }}
         >
-          <SlidersHorizontal size={16} strokeWidth={1.8} color={C.text} />
+          <SlidersHorizontal size={14} strokeWidth={1.8} color={C.ink} />
           <span>Filter</span>
           {activeFilterCount > 0 && (
             <span
               style={{
-                background: C.text,
-                color: "#FFFFFF",
+                background: C.ink,
+                color: C.cream,
                 borderRadius: 9999,
                 minWidth: 18,
                 height: 18,
@@ -466,31 +556,28 @@ const CategoryPage = () => {
             style={{
               display: "inline-flex",
               alignItems: "center",
-              gap: 6,
               background: "transparent",
               border: "none",
               padding: "8px 0",
               cursor: "pointer",
             }}
           >
-            <span style={{ fontFamily: font, fontSize: 14, lineHeight: "16.8px", color: "#0a0a0a", fontWeight: 400 }}>
-              Sort By:{" "}
-              <span style={{ color: "#5b4632" }}>{sortLabel}</span>
-            </span>
-            <ChevronDown size={14} strokeWidth={1.75} color={C.text} />
+            <span style={{ fontFamily: sans, fontSize: 13, color: "rgba(238,232,218,0.7)" }}>Sort by</span>
+            <span style={{ fontFamily: sans, fontSize: 13, color: C.cream, marginLeft: 6 }}>{sortLabel}</span>
+            <ChevronDown size={11} strokeWidth={1.8} color="rgba(238,232,218,0.85)" style={{ marginLeft: 4 }} />
           </button>
 
           {showSortMenu && (
             <div
               style={{
                 position: "absolute",
-                top: "calc(100% - 4px)",
+                top: "calc(100% + 4px)",
                 right: 0,
-                background: C.panel,
+                background: C.cream,
                 borderRadius: 16,
                 padding: 6,
                 zIndex: 20,
-                boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
                 minWidth: 200,
               }}
             >
@@ -506,17 +593,17 @@ const CategoryPage = () => {
                     width: "100%",
                     textAlign: "left",
                     padding: "10px 12px",
-                    background: sortBy === key ? C.card : "transparent",
+                    background: sortBy === key ? C.softCream : "transparent",
                     border: "none",
                     borderRadius: 10,
                     fontSize: 14,
                     fontWeight: 400,
-                    color: C.text,
-                    fontFamily: font,
+                    color: C.ink,
+                    fontFamily: sans,
                     cursor: "pointer",
                   }}
                 >
-                  {key === "default" ? "Default" : key === "open_now" ? "Open Now" : key === "favourites" ? "Saved" : key === "name" ? "Name" : "Rating"}
+                  {key === "default" ? "Default" : key === "open_now" ? "Open Now" : key === "favourites" ? "Saved" : key === "name" ? "Name" : "Top Rated"}
                 </button>
               ))}
             </div>
@@ -533,13 +620,13 @@ const CategoryPage = () => {
               style={{
                 fontSize: 13,
                 fontWeight: 400,
-                color: C.muted,
+                color: "rgba(238,232,218,0.75)",
                 textDecoration: "underline",
                 alignSelf: "flex-start",
                 background: "none",
                 border: "none",
                 cursor: "pointer",
-                fontFamily: font,
+                fontFamily: sans,
               }}
             >
               Clear all filters
@@ -611,13 +698,13 @@ const CategoryPage = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: 24, paddingRight: 24, display: "flex", flexDirection: "column", gap: 20 }}>
+        <div style={{ paddingLeft: 24, paddingRight: 24, display: "flex", flexDirection: "column", gap: 16 }}>
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="w-full" style={{ height: 320, borderRadius: 24, background: "rgba(10,10,10,0.05)" }} />
+            <Skeleton key={i} className="w-full" style={{ height: 380, borderRadius: 24, background: "rgba(238,232,218,0.12)" }} />
           ))}
         </div>
       ) : filteredListings.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 20, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 24, paddingRight: 24 }}>
           {filteredListings.map((l) => {
             const hasDetail = !!(
               l.long_description ||
@@ -625,132 +712,177 @@ const CategoryPage = () => {
               (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
               (isRestaurant && l.show_attributes)
             );
-
-            const whatsappRaw = (l as any).whatsapp as string | null | undefined;
-            const directionsHref = l.google_maps_link
-              ? l.google_maps_link
-              : l.location
-              ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.location + ", Hoedspruit")}`
-              : null;
-
-            const hasImage = !!l.image_url;
+            const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
+            const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
+            const opensTime = hasHours && open === false ? opensAt(l.opening_hours as Record<string, string>) : null;
 
             return (
               <article
                 key={l.id}
                 onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
                 style={{
-                  background: C.card,
-                  border: "none",
+                  background: C.cream,
                   borderRadius: 24,
                   overflow: "hidden",
                   cursor: hasDetail ? "pointer" : "default",
                 }}
               >
-                {hasImage && (
-                  <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", background: C.panel }}>
+                <div style={{ position: "relative", width: "100%", height: 220, background: C.softCream }}>
+                  {l.image_url ? (
                     <img
-                      src={l.image_url!}
+                      src={l.image_url}
                       alt={l.title}
                       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                       loading="lazy"
                     />
-                    <div onClick={(e) => e.stopPropagation()}>
-                      <FavouriteButton itemId={l.id} itemType="listing" />
-                    </div>
-                  </div>
-                )}
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        background: `linear-gradient(135deg, ${C.softCream}, ${C.cream})`,
+                      }}
+                    />
+                  )}
+                  <CardHeart listingId={l.id} />
+                </div>
 
-                {/* Body */}
-                <div style={{ padding: 24 }}>
+                <div style={{ padding: "18px 22px 22px" }}>
                   <h3
                     style={{
-                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontSize: 22,
+                      fontFamily: sans,
+                      fontSize: 20,
                       fontWeight: 400,
-                      color: "#0A0A0A",
+                      color: C.ink,
                       lineHeight: 1.2,
+                      letterSpacing: "-0.3px",
                       margin: 0,
+                      marginBottom: 10,
                     }}
                   >
                     {l.title}
                   </h3>
 
-                  {(() => {
-                    const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
-                    const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
-                    const rowStyle = {
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      marginTop: 6,
-                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontSize: 12,
-                      fontWeight: 400,
-                      lineHeight: "15.6px",
-                      letterSpacing: "0.12px",
-                      color: "#8A8480",
-                    } as const;
-                    const dotSep = (
-                      <span style={{ display: "inline-block", width: 3, height: 3, borderRadius: "50%", background: "#8A8480" }} />
-                    );
-                    return (
-                      <>
-                        {(l.google_rating || open !== null) && (
-                          <div style={rowStyle}>
-                            {l.google_rating && (
-                              <>
-                                <Star size={12} fill="#5b4632" stroke="#5b4632" />
-                                <span>{Number(l.google_rating).toFixed(1)}</span>
-                              </>
-                            )}
-                            
-                            {open !== null && (
-                              <>
-                                <span style={{ display: "inline-block", width: 6, height: 6, borderRadius: "50%", background: open ? "#1FA463" : "#D7263D" }} />
-                                <span>{open ? "Open Now" : "Closed"}</span>
-                              </>
-                            )}
-                          </div>
-                        )}
-                        {l.location && (
-                          <div style={rowStyle}>
-                            <MapPin size={12} strokeWidth={1.5} color="#8A8480" />
-                            <span>{l.location}</span>
-                          </div>
-                        )}
-                      </>
-                    );
-                  })()}
+                  {(l.google_rating || open !== null) && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        flexWrap: "wrap",
+                        fontFamily: sans,
+                        fontSize: 13,
+                        marginBottom: 6,
+                      }}
+                    >
+                      {l.google_rating ? (
+                        <span style={{ color: C.ink }}>
+                          <span style={{ color: C.ink }}>★</span> {Number(l.google_rating).toFixed(1)}
+                        </span>
+                      ) : null}
+                      {l.google_rating && open !== null && (
+                        <span
+                          style={{
+                            display: "inline-block",
+                            width: 4,
+                            height: 4,
+                            borderRadius: "50%",
+                            background: "rgba(107,106,94,0.6)",
+                          }}
+                        />
+                      )}
+                      {open === true && (
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.ink }}>
+                          <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: C.gold }} />
+                          Open now
+                        </span>
+                      )}
+                      {open === false && (
+                        <span style={{ color: C.mutedInk }}>
+                          {opensTime ? `Closed · Opens ${opensTime}` : "Closed"}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {l.location && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        fontFamily: sans,
+                        fontSize: 13,
+                        color: C.mutedInk,
+                        marginBottom: 12,
+                      }}
+                    >
+                      <MapPin size={13} strokeWidth={1.6} color={C.mutedInk} style={{ flexShrink: 0 }} />
+                      <span>{l.location}</span>
+                    </div>
+                  )}
 
                   {l.description && (
                     <p
                       style={{
-                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        fontFamily: sans,
                         fontSize: 14,
                         fontWeight: 400,
-                        lineHeight: "20.3px",
-                        color: "#0A0A0A",
+                        lineHeight: 1.55,
+                        color: "rgba(42,42,36,0.85)",
                         margin: 0,
-                        marginTop: 14,
+                        display: "-webkit-box",
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
                       }}
                     >
                       {l.description}
                     </p>
                   )}
-
                 </div>
               </article>
             );
           })}
         </div>
       ) : (
-        <div style={{ textAlign: "center", paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
-          <p style={{ fontFamily: font, fontWeight: 700, fontSize: 18, color: C.text, marginBottom: 6 }}>
-            No listings found
+        <div
+          style={{
+            textAlign: "center",
+            paddingTop: 60,
+            paddingLeft: 24,
+            paddingRight: 24,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <MapPin size={48} strokeWidth={1.5} color="rgba(238,232,218,0.5)" style={{ marginBottom: 16 }} />
+          <p
+            style={{
+              fontFamily: serif,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: 22,
+              color: "rgba(238,232,218,0.8)",
+              margin: 0,
+              marginBottom: 8,
+            }}
+          >
+            {isSearchEmpty ? "No matches found." : "Nothing here yet."}
           </p>
-          <p style={{ fontSize: 14, color: C.muted, fontFamily: font }}>
-            Check back soon for places in this category
+          <p
+            style={{
+              fontFamily: sans,
+              fontSize: 14,
+              fontWeight: 400,
+              lineHeight: 1.55,
+              color: "rgba(238,232,218,0.7)",
+              maxWidth: 260,
+              margin: 0,
+            }}
+          >
+            {isSearchEmpty ? "Try clearing your filters or search." : "Check back soon as new places join the app."}
           </p>
         </div>
       )}
