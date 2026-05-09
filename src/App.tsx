@@ -59,7 +59,7 @@ import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
 import MyNotifications from "./pages/MyNotifications.tsx";
 import NotificationCategories from "./pages/NotificationCategories.tsx";
-import MyHoedspruit from "./pages/MyHoedspruit.tsx";
+
 import Specials from "./pages/Specials.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
 import BusinessGate from "./components/business/BusinessGate.tsx";
@@ -133,7 +133,7 @@ const App = () => (
               <Route path="/my-account" element={<MyAccount />} />
               <Route path="/my-profile" element={<MyProfile />} />
               <Route path="/bush-telegraph" element={<BushTelegraph />} />
-              <Route path="/my-hoedspruit" element={<MyHoedspruit />} />
+              
               <Route path="/saved" element={<SavedListings />} />
               <Route path="/visited" element={<VisitedPlaces />} />
               <Route path="/account-settings" element={<AccountSettings />} />

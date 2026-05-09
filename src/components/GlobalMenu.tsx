@@ -26,7 +26,7 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
   {
     label: "Saved",
     rows: [
-      { icon: Bookmark, label: "My Hoedspruit", to: "/my-hoedspruit" },
+      { icon: Bookmark, label: "My Hoedspruit", to: "/saved" },
     ],
   },
   {
