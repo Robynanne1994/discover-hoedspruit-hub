@@ -689,7 +689,10 @@ const MyProfile = () => {
                       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                     />
                   )}
-                  <div
+                  <button
+                    type="button"
+                    onClick={(e) => handleUnsave(e, it.id, "listing")}
+                    aria-label="Remove from saved"
                     style={{
                       position: "absolute",
                       top: 12,
@@ -698,13 +701,16 @@ const MyProfile = () => {
                       height: 32,
                       borderRadius: "50%",
                       background: "rgba(255,255,255,0.92)",
+                      border: "none",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      cursor: "pointer",
+                      padding: 0,
                     }}
                   >
                     <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
-                  </div>
+                  </button>
                 </div>
                 <div style={{ padding: "16px 18px 18px" }}>
                   <div
