@@ -106,6 +106,7 @@ const Headlines = () => {
           fontFamily: SERIF, fontStyle: "italic", fontWeight: 300,
           fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px",
           color: CREAM, margin: 0, marginBottom: 14,
+          textTransform: "lowercase",
         }}>
           lowdown.
         </h1>
