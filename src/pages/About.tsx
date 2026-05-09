@@ -259,7 +259,7 @@ const About = () => {
                 fontFamily: SANS,
               }}
             >
-              <span style={{ fontSize: 14, fontWeight: 400, color: DEEP_INK }}>Get In Touch</span>
+              <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 400, letterSpacing: "0.1px", color: "#2A2A24", textTransform: "capitalize" }}>Get in Touch</span>
               <Arrow size={14} color={DEEP_INK} />
             </button>
           </div>
