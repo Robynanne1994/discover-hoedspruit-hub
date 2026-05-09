@@ -114,7 +114,7 @@ const BusinessSignUp = () => {
 
     setBusy(false);
     toast.success("Account created");
-    navigate("/business/subscribe");
+    navigate(postSignupPath);
   };
 
   const labelStyle: React.CSSProperties = {
