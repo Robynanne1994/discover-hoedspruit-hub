@@ -136,7 +136,7 @@ const Feedback = () => {
           <h1 style={{
             fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
             fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px",
-            color: CREAM, margin: "0 0 18px",
+            color: CREAM, margin: "0 0 18px", textTransform: "lowercase",
           }}>feedback.</h1>
           <p style={{
             fontFamily: FF, fontSize: 15, fontWeight: 400, lineHeight: 1.65,
