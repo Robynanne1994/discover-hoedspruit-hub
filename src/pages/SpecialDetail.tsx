@@ -390,63 +390,107 @@ const SpecialDetail = () => {
           })()}
           {(() => {
             const now = new Date();
-            const isLive = (!fromDate || fromDate <= now) && (!untilDate || untilDate >= now);
-            const labelText = (validFromTxt && validUntilTxt)
-              ? `Valid ${format(fromDate!, "d MMM")} – ${format(untilDate!, "d MMM yyyy")}`
-              : validUntilTxt
-                ? `Valid until ${validUntilTxt}`
-                : validFromTxt
-                  ? `Valid from ${validFromTxt}`
-                  : "Valid · Ongoing";
+            const SERIF = "'Playfair Display', Georgia, serif";
+            const INK = "#2A2A24";
+            const MUTED = "#6B6A5E";
+            const GOLD = "#D9C36B";
+            const RUST = "#9B5A3C";
+            const fmt = (d: Date) => format(d, "d MMM yyyy");
+            const fmtShort = (d: Date) => format(d, "d MMM");
+            const DAY = 24 * 60 * 60 * 1000;
+
+            let dotColor = GOLD;
+            let labelColor = INK;
+            let labelText = "Live now";
+            let datesText = "ongoing";
+
+            if (untilDate && now > untilDate) {
+              dotColor = MUTED;
+              labelColor = MUTED;
+              labelText = "Expired";
+              datesText = `ended ${fmt(untilDate)}`;
+            } else if (fromDate && now < fromDate) {
+              dotColor = GOLD;
+              labelColor = INK;
+              labelText = `Starts ${fmt(fromDate)}`;
+              datesText = untilDate ? `runs to ${fmt(untilDate)}` : "ongoing";
+            } else if (untilDate) {
+              const msLeft = untilDate.getTime() - now.getTime();
+              const daysLeft = Math.ceil(msLeft / DAY);
+              if (daysLeft <= 7) {
+                dotColor = RUST;
+                labelColor = RUST;
+                labelText = daysLeft <= 0
+                  ? "Ends today"
+                  : daysLeft === 1
+                    ? "Ends tomorrow"
+                    : `Ends in ${daysLeft} days`;
+                datesText = `until ${fmt(untilDate)}`;
+              } else {
+                const recent = fromDate && (now.getTime() - fromDate.getTime()) < 14 * DAY;
+                datesText = recent && fromDate
+                  ? `started ${fmtShort(fromDate)}, runs to ${fmt(untilDate)}`
+                  : `valid until ${fmt(untilDate)}`;
+              }
+            } else if (fromDate) {
+              datesText = `from ${fmt(fromDate)}`;
+            }
+
             return (
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 12,
-                  padding: "8px 8px 8px 16px",
-                  background: SURFACE,
-                  border: `1px solid ${DIVIDER}`,
+                  flexWrap: "wrap",
+                  gap: 10,
+                  padding: "14px 22px",
+                  background: "#EEE8DA",
                   borderRadius: 999,
+                  marginBottom: 26,
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
-                  <Clock size={16} strokeWidth={1.8} color="#0A0A0A" style={{ flexShrink: 0 }} />
-                  <span
-                    style={{
-                      fontFamily: FONT,
-                      fontWeight: 600,
-                      fontSize: 14,
-                      lineHeight: "18px",
-                      letterSpacing: 0,
-                      color: "#0A0A0A",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    {labelText}
-                  </span>
-                </div>
-                {isLive && (
-                  <span
-                    style={{
-                      flexShrink: 0,
-                      background: "#5B4632",
-                      color: "#FFFFFF",
-                      fontFamily: FONT,
-                      fontWeight: 700,
-                      fontSize: 11,
-                      letterSpacing: "0.8px",
-                      padding: "8px 14px",
-                      borderRadius: 999,
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Live Now
-                  </span>
-                )}
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 999,
+                    background: dotColor,
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: FONT,
+                    fontWeight: 400,
+                    fontSize: 14.5,
+                    letterSpacing: "-0.1px",
+                    color: labelColor,
+                  }}
+                >
+                  {labelText}
+                </span>
+                <span
+                  style={{
+                    width: 3,
+                    height: 3,
+                    borderRadius: 999,
+                    background: MUTED,
+                    opacity: 0.5,
+                    margin: "0 2px",
+                    flexShrink: 0,
+                  }}
+                />
+                <span
+                  style={{
+                    fontFamily: SERIF,
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    fontSize: 14,
+                    color: MUTED,
+                  }}
+                >
+                  {datesText}
+                </span>
               </div>
             );
           })()}
