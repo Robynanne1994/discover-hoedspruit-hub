@@ -33,9 +33,8 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
     label: "Account",
     rows: [
       { icon: Bell, label: "Notifications", to: "/my-notifications" },
-      { icon: Settings, label: "Settings", to: "/account-settings" },
       { icon: UserCircle, label: "Account Info", to: "/account-settings/info" },
-      { icon: Shield, label: "Privacy & Security", to: "/privacy-security" },
+      { icon: Settings, label: "Settings", to: "/account-settings" },
     ],
   },
   {
@@ -44,6 +43,7 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
       { icon: HelpCircle, label: "Help", to: "/faqs" },
       { icon: Phone, label: "Contact Us", to: "/contact" },
       { icon: Info, label: "About", to: "/about" },
+      { icon: Shield, label: "Privacy & Security", to: "/privacy-security" },
     ],
   },
 ];
