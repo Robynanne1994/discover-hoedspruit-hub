@@ -23,8 +23,8 @@ const FOUNDER_PHOTO: string | null = null;
 const values = [
   { num: "i.", name: "Local Knowledge" },
   { num: "ii.", name: "Community Driven" },
-  { num: "iii.", name: "Always Up To Date" },
-  { num: "iv.", name: "Nature At Heart" },
+  { num: "iii.", name: "Always up to Date" },
+  { num: "iv.", name: "Nature at Heart" },
 ];
 
 const press = (e: React.PointerEvent<HTMLElement>) => {
