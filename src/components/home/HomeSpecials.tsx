@@ -17,10 +17,12 @@ const HomeSpecials = () => {
   const { data: specials } = useQuery({
     queryKey: ["home-specials"],
     queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
       const { data } = await supabase
         .from("specials")
         .select("id, title, business_name, image_url, deal_label, valid_until")
         .eq("is_active", true)
+        .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("sort_order", { ascending: true });
       return (data || []) as Special[];
     },
