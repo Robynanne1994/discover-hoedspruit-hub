@@ -139,7 +139,7 @@ const App = () => (
               <Route path="/account-settings" element={<AccountSettings />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
               <Route path="/terms" element={<TermsPolicies />} />
-              <Route path="/terms/privacy" element={<PrivacyPolicy />} />
+              
               <Route path="/terms-of-use" element={<TermsOfUse />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
