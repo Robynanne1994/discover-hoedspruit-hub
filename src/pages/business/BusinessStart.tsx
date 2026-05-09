@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Store, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Store, ShieldCheck, type LucideIcon } from "lucide-react";
 
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
