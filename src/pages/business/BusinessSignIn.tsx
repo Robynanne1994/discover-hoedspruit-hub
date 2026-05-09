@@ -16,7 +16,7 @@ const BusinessSignIn = () => {
 
   // If we already have a session, skip sign-in entirely.
   if (!authLoading && !loading && user) {
-    return <Navigate to={isOwner ? "/business/dashboard" : "/business/sign-up"} replace />;
+    return <Navigate to={isOwner ? "/business/dashboard" : "/business/start"} replace />;
   }
 
   const submit = async (e: React.FormEvent) => {
