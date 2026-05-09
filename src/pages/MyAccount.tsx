@@ -1,936 +1,893 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { useFollowCounts } from "@/hooks/useFollows";
-import { ArrowLeft, MoreVertical, Pencil, Share2, Heart, MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import {
+  Heart,
+  MapPinCheck,
+  Star,
+  Plus,
+  Trash2,
+  FolderOpen,
+  Calendar,
+  Bell,
+  Settings,
+  HelpCircle,
+  Info,
+  LogOut,
+  ChevronRight,
+  Pencil,
+  UserCircle,
+  LayoutDashboard,
+  Megaphone,
+  Users,
+  MessageSquare,
+  Mail,
+  FileText,
+  MapPin,
+  Newspaper,
+  Tag,
+  Menu,
+  Bookmark,
+  MapPinned,
+  Phone,
+  Shield,
+  Briefcase,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import ProfileForm from "@/components/profile/ProfileForm";
+import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
+import NotificationsBell from "@/components/NotificationsDropdown";
+import FollowStats from "@/components/social/FollowStats";
+import { useFollowCounts } from "@/hooks/useFollows";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { ArrowLeft } from "lucide-react";
 
-const PAGE_BG = "#5C6446";
-const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
-const GOLD = "#D9C36B";
-const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
-
-const titleCase = (s?: string | null) =>
-  (s || "").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
-
-const getInitial = (s?: string | null) =>
-  (s || "?").trim().charAt(0).toUpperCase() || "?";
-
-const fmtCount = (n: number) => n.toLocaleString("en-US");
-
-const timeAgo = (iso: string) => {
-  const d = new Date(iso);
-  const diff = Date.now() - d.getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days < 1) {
-    const hours = Math.floor(diff / 3600000);
-    if (hours < 1) return "JUST NOW";
-    return `${hours} ${hours === 1 ? "HOUR" : "HOURS"} AGO`;
-  }
-  if (days < 30) return `${days} ${days === 1 ? "DAY" : "DAYS"} AGO`;
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase();
-};
-
-const SunRays = () => {
-  const cx = 66;
-  const cy = 66;
-  const inner = 60;
-  const outer = 66;
-  const rays = Array.from({ length: 16 }, (_, i) => {
-    const angle = (i * 22.5 * Math.PI) / 180;
-    const x1 = cx + Math.cos(angle) * inner;
-    const y1 = cy + Math.sin(angle) * inner;
-    const x2 = cx + Math.cos(angle) * outer;
-    const y2 = cy + Math.sin(angle) * outer;
-    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={GOLD} strokeWidth={2.5} strokeLinecap="round" />;
-  });
-  return (
-    <svg
-      width={132}
-      height={132}
-      viewBox="0 0 132 132"
-      style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-    >
-      {rays}
-    </svg>
-  );
-};
-
-const CircleBtn = ({ onClick, label, children }: { onClick?: () => void; label: string; children: React.ReactNode }) => (
-  <button
-    onClick={onClick}
-    aria-label={label}
-    style={{
-      width: 40,
-      height: 40,
-      borderRadius: "50%",
-      background: CREAM,
-      border: "none",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      cursor: "pointer",
-      padding: 0,
-    }}
-  >
-    {children}
-  </button>
-);
+type ActiveSection = null | "profile" | "favourites" | "collections" | "been-here" | "reviews" | "my-events";
 
 const MyAccount = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user, signOut, loading, isAdmin } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [newCollectionName, setNewCollectionName] = useState("");
+  const [createOpen, setCreateOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<ActiveSection>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    if (!authLoading && !user) navigate("/welcome");
-  }, [authLoading, user, navigate]);
+    if (!loading && !user) navigate("/auth");
+  }, [user, loading, navigate]);
 
-  const id = user?.id;
+  useEffect(() => {
+    if (!user) { setUnreadCount(0); return; }
+    let cancelled = false;
+    const load = async () => {
+      const { count } = await supabase
+        .from("business_notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user.id)
+        .eq("is_read", false);
+      if (!cancelled) setUnreadCount(count ?? 0);
+    };
+    load();
+    const channel = supabase
+      .channel("myaccount-biz-notifs")
+      .on("postgres_changes", { event: "*", schema: "public", table: "business_notifications", filter: `user_id=eq.${user.id}` }, () => load())
+      .subscribe();
+    return () => { cancelled = true; supabase.removeChannel(channel); };
+  }, [user]);
 
-  const { data: profile, isLoading } = useQuery({
-    queryKey: ["my-profile", id],
+  const { data: profile, isLoading: profileLoading } = useQuery({
+    queryKey: ["profile", user?.id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("*").eq("id", id!).single();
+      const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user!.id)
+        .maybeSingle();
       return data;
     },
-    enabled: !!id,
+    enabled: !!user,
   });
 
-  const { data: counts } = useFollowCounts(id);
-
-  const { data: saved } = useQuery({
-    queryKey: ["my-saved-listings", id],
+  const { data: collections } = useQuery({
+    queryKey: ["collections", user?.id],
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "listing")
-        .order("created_at", { ascending: false })
-        .limit(20);
-      if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
-      const { data: listings } = await supabase
-        .from("listings")
-        .select("id, title, image_url, location, google_rating")
-        .in("id", ids);
-      const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((l) => l.id);
+      const { data } = await supabase
+        .from("collections")
+        .select("*, collection_items(id, listing_id, listings(id, title, image_url, description))")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data;
     },
-    enabled: !!id,
+    enabled: !!user,
   });
 
-  const { data: savedCount } = useQuery({
-    queryKey: ["my-saved-count", id],
+  const { data: beenHere } = useQuery({
+    queryKey: ["been-here", user?.id],
     queryFn: async () => {
-      const { count } = await supabase
-        .from("favourites")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", id!);
-      return count ?? 0;
+      const { data } = await supabase
+        .from("been_here")
+        .select("*, listings(id, title, image_url, description)")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data;
     },
-    enabled: !!id,
+    enabled: !!user,
   });
 
-  // Activity timeline: merge recent favourites + been_here
-  const { data: activity } = useQuery({
-    queryKey: ["my-activity", id],
+  const { data: reviews } = useQuery({
+    queryKey: ["my-reviews", user?.id],
     queryFn: async () => {
-      const since = new Date(Date.now() - 30 * 86400000).toISOString();
+      const { data } = await supabase
+        .from("reviews")
+        .select("*, listings(id, title)")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data;
+    },
+    enabled: !!user,
+  });
 
-      const [{ data: favs }, { data: visits }] = await Promise.all([
-        supabase
-          .from("favourites")
-          .select("item_id, item_type, created_at")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
-        supabase
-          .from("been_here")
-          .select("listing_id, created_at")
-          .eq("user_id", id!)
-          .gte("created_at", since)
-          .order("created_at", { ascending: false })
-          .limit(15),
+  const { data: favourites } = useQuery({
+    queryKey: ["favourites", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("*")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      if (!data || data.length === 0) return [];
+
+      const listingIds = data.filter((f: any) => f.item_type === "listing").map((f: any) => f.item_id);
+      const eventIds = data.filter((f: any) => f.item_type === "event").map((f: any) => f.item_id);
+
+      const [listingsRes, eventsRes] = await Promise.all([
+        listingIds.length > 0
+          ? supabase.from("listings").select("id, title, image_url").in("id", listingIds)
+          : { data: [] },
+        eventIds.length > 0
+          ? supabase.from("events").select("id, title, image_url").in("id", eventIds)
+          : { data: [] },
       ]);
 
-      const listingIds = new Set<string>();
-      const eventIds = new Set<string>();
-      const specialIds = new Set<string>();
-      (favs || []).forEach((f) => {
-        if (f.item_type === "listing") listingIds.add(f.item_id);
-        if (f.item_type === "event") eventIds.add(f.item_id);
-        if (f.item_type === "special") specialIds.add(f.item_id);
-      });
-      (visits || []).forEach((v) => listingIds.add(v.listing_id));
+      const listingsMap = Object.fromEntries((listingsRes.data || []).map((l: any) => [l.id, l]));
+      const eventsMap = Object.fromEntries((eventsRes.data || []).map((e: any) => [e.id, e]));
 
-      const [listingsRes, eventsRes, specialsRes] = await Promise.all([
-        listingIds.size
-          ? supabase.from("listings").select("id, title").in("id", Array.from(listingIds))
-          : Promise.resolve({ data: [] as any[] }),
-        eventIds.size
-          ? supabase.from("events").select("id, title").in("id", Array.from(eventIds))
-          : Promise.resolve({ data: [] as any[] }),
-        specialIds.size
-          ? supabase.from("specials").select("id, title").in("id", Array.from(specialIds))
-          : Promise.resolve({ data: [] as any[] }),
-      ]);
-
-      const lMap = Object.fromEntries((listingsRes.data || []).map((x: any) => [x.id, x]));
-      const eMap = Object.fromEntries((eventsRes.data || []).map((x: any) => [x.id, x]));
-      const sMap = Object.fromEntries((specialsRes.data || []).map((x: any) => [x.id, x]));
-
-      type Row = { kind: "save" | "visit"; verb: string; name: string; href: string; created_at: string; itemType?: string };
-      const rows: Row[] = [];
-
-      (favs || []).forEach((f) => {
-        if (f.item_type === "listing" && lMap[f.item_id]) {
-          rows.push({
-            kind: "save",
-            verb: "you saved",
-            name: titleCase(lMap[f.item_id].title),
-            href: `/listing/${f.item_id}`,
-            created_at: f.created_at,
-            itemType: "listing",
-          });
-        } else if (f.item_type === "event" && eMap[f.item_id]) {
-          rows.push({
-            kind: "save",
-            verb: "you're going to",
-            name: titleCase(eMap[f.item_id].title),
-            href: `/event/${f.item_id}`,
-            created_at: f.created_at,
-            itemType: "event",
-          });
-        } else if (f.item_type === "special" && sMap[f.item_id]) {
-          rows.push({
-            kind: "save",
-            verb: "you saved",
-            name: titleCase(sMap[f.item_id].title),
-            href: `/special/${f.item_id}`,
-            created_at: f.created_at,
-            itemType: "special",
-          });
-        }
-      });
-
-      (visits || []).forEach((v) => {
-        if (lMap[v.listing_id]) {
-          rows.push({
-            kind: "visit",
-            verb: "you've been to",
-            name: titleCase(lMap[v.listing_id].title),
-            href: `/listing/${v.listing_id}`,
-            created_at: v.created_at,
-          });
-        }
-      });
-
-      rows.sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
-      return rows.slice(0, 12);
+      return data.map((f: any) => ({
+        ...f,
+        details: f.item_type === "listing" ? listingsMap[f.item_id] : eventsMap[f.item_id],
+      }));
     },
-    enabled: !!id,
+    enabled: !!user,
   });
 
-  const handleShare = async () => {
-    setMenuOpen(false);
-    const url = id ? `${window.location.origin}/profile/${id}` : window.location.href;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: profile?.display_name || "My Profile", url });
-      } else {
-        await navigator.clipboard.writeText(url);
-        toast("Link copied");
-      }
-    } catch {
-      /* cancelled */
-    }
-  };
+  const savedEvents = favourites?.filter((f: any) => f.item_type === "event") || [];
 
-  const handleCopyLink = async () => {
-    setMenuOpen(false);
-    const url = id ? `${window.location.origin}/profile/${id}` : window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      toast("Link copied");
-    } catch {
-      toast("Could not copy link");
-    }
-  };
+  const createCollection = useMutation({
+    mutationFn: async (name: string) => {
+      const { error } = await supabase.from("collections").insert({ name, user_id: user!.id });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      setNewCollectionName("");
+      setCreateOpen(false);
+      toast.success("Collection created!");
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
 
-  const coverUrl = (profile as any)?.cover_url || (profile as any)?.cover_photo_url;
+  const deleteCollection = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("collections").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+      toast.success("Collection deleted");
+    },
+  });
 
-  return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: PAGE_BG,
-        paddingBottom: 100,
-        fontFamily: SANS,
-        color: CREAM,
-      }}
-    >
-      {/* Cover */}
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: 240,
-          overflow: "hidden",
-          background: coverUrl
-            ? `url(${coverUrl}) center/cover no-repeat`
-            : "linear-gradient(180deg, #C18866 0%, #8B5C3E 50%, #5C6446 100%)",
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(ellipse at 30% 60%, rgba(0,0,0,0.18) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 60%)",
-          }}
-        />
-        {/* Top icons */}
-        <div
-          style={{
-            position: "absolute",
-            top: 60,
-            left: 20,
-            right: 20,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            zIndex: 3,
-          }}
-        >
-          <CircleBtn label="Back" onClick={() => navigate(-1)}>
-            <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
-          </CircleBtn>
-          <div style={{ display: "flex", gap: 8 }}>
-            <CircleBtn label="Share profile" onClick={handleShare}>
-              <Share2 size={16} strokeWidth={1.6} color={INK} />
-            </CircleBtn>
-            <CircleBtn label="More" onClick={() => setMenuOpen(true)}>
-              <MoreVertical size={16} strokeWidth={1.6} color={INK} />
-            </CircleBtn>
-          </div>
+  const removeFromCollection = useMutation({
+    mutationFn: async (itemId: string) => {
+      const { error } = await supabase.from("collection_items").delete().eq("id", itemId);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["collections"] }),
+  });
+
+  const removeBeenHere = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("been_here").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["been-here"] }),
+  });
+
+  const removeFavourite = useMutation({
+    mutationFn: async (fav: { item_id: string; item_type: string }) => {
+      const { error } = await supabase
+        .from("favourites" as any)
+        .delete()
+        .eq("user_id", user!.id)
+        .eq("item_id", fav.item_id)
+        .eq("item_type", fav.item_type);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["favourite"] });
+    },
+  });
+
+  // Not signed in
+  if (!loading && !user) {
+    return (
+      <div className="min-h-screen pb-20" style={{ background: "transparent", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
+          <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>Profile</h1>
         </div>
-
-        {/* Cover eyebrow */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 14,
-            left: 24,
-            fontFamily: SANS,
-            fontSize: 11,
-            fontWeight: 400,
-            letterSpacing: 2.4,
-            textTransform: "uppercase",
-            color: CREAM,
-            opacity: 0.85,
-            zIndex: 3,
-          }}
-        >
-          Your Profile · Public View
+        <div className="text-center" style={{ paddingTop: 60 }}>
+          <UserCircle style={{ width: 48, height: 48, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#020202", marginTop: 16, marginBottom: 8 }}>Welcome to Hello Hoedspruit</h3>
+          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", maxWidth: 260, margin: "0 auto 24px" }}>Sign in to access your profile, saved listings, and events.</p>
+          <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button></Link>
         </div>
       </div>
+    );
+  }
 
-      {/* Masthead */}
-      <div
-        style={{
-          padding: "0 24px",
-          position: "relative",
-          zIndex: 2,
-          marginTop: -66,
-          textAlign: "center",
-        }}
-      >
-        <div style={{ display: "inline-block", width: 132, height: 132, position: "relative" }}>
-          <SunRays />
-          <div
-            style={{
-              position: "absolute",
-              top: 18,
-              left: 18,
-              width: 96,
-              height: 96,
-              borderRadius: "50%",
-              overflow: "hidden",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
-            }}
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen pb-20" style={{ background: "transparent", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
+          <Skeleton className="h-10 w-48 mb-4" />
+          <Skeleton className="h-4 w-40 mb-7" />
+          <Skeleton className="h-28 w-full rounded-[16px] mb-6" />
+        </div>
+      </div>
+    );
+  }
+
+  // Detail section view
+  if (activeSection === "profile") {
+    return <ProfileForm profile={profile as any} />;
+  }
+
+  if (activeSection) {
+    return (
+      <div className="min-h-screen pb-16" style={{ background: "#5C6446" }}>
+        <div className="px-6 pt-5">
+          <button
+            onClick={() => setActiveSection(null)}
+            className="flex items-center gap-1 text-muted-foreground hover:text-foreground text-[13px] font-medium"
           >
-            {profile?.avatar_url ? (
-              <img
-                src={profile.avatar_url}
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              <span style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 38, color: CREAM }}>
-                {getInitial(profile?.display_name || profile?.username)}
-              </span>
-            )}
-          </div>
+            <BackArrowIcon size={16} /> Back
+          </button>
         </div>
 
-        <div style={{ marginTop: 14 }}>
-          {isLoading ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-              <Skeleton className="h-10 w-48 bg-white/10" />
-              <Skeleton className="h-4 w-24 bg-white/10" />
-            </div>
-          ) : (
-            <>
-              <h1
-                style={{
-                  fontFamily: SERIF,
-                  fontWeight: 400,
-                  fontSize: 42,
-                  lineHeight: 1.0,
-                  letterSpacing: "-1px",
-                  color: CREAM,
-                  margin: 0,
-                  marginBottom: 6,
-                }}
-              >
-                {titleCase(profile?.display_name) || "You"}
-              </h1>
+        <div className="px-6 pt-6 pb-8">
+          <h1
+            className="text-[26px] font-semibold text-foreground tracking-tight mb-6"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            {activeSection === "favourites" && "Saved Listings"}
+            {activeSection === "my-events" && "My Events"}
+            {activeSection === "collections" && "Collections"}
+            {activeSection === "been-here" && "Been Here"}
+            {activeSection === "reviews" && "My Reviews"}
+          </h1>
 
-              {profile?.username && (
-                <div
-                  style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
-                    fontWeight: 400,
-                    fontSize: 14,
-                    color: CREAM,
-                    opacity: 0.65,
-                    marginBottom: 14,
-                  }}
-                >
-                  @{profile.username.toLowerCase()}
+          {activeSection === "favourites" && (
+            <>
+              {!favourites?.filter((f: any) => f.item_type === "listing").length ? (
+                <div className="text-center py-16">
+                  <Heart className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No saved listings yet</p>
+                  <p className="text-muted-foreground/60 text-[12px] mt-1">Tap the heart on listings you love!</p>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {favourites.filter((f: any) => f.item_type === "listing").map((fav: any) => (
+                    <div key={fav.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
+                      {fav.details?.image_url && (
+                        <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-2xl object-cover" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <Link to={`/listing/${fav.item_id}`} className="font-medium text-[14px] hover:text-primary truncate block">
+                          {fav.details?.title || "Unknown"}
+                        </Link>
+                      </div>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground" onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
                 </div>
               )}
+            </>
+          )}
 
-              {profile?.bio && (
-                <p
-                  style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
-                    fontWeight: 400,
-                    fontSize: 16,
-                    lineHeight: 1.5,
-                    color: CREAM,
-                    opacity: 0.85,
-                    maxWidth: 280,
-                    margin: "0 auto 24px",
-                  }}
-                >
-                  {profile.bio}
-                </p>
+          {activeSection === "my-events" && (
+            <>
+              {!savedEvents.length ? (
+                <div className="text-center py-16">
+                  <Calendar className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No saved events yet</p>
+                  <p className="text-muted-foreground/60 text-[12px] mt-1">Save events you're interested in!</p>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {savedEvents.map((fav: any) => (
+                    <div key={fav.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
+                      {fav.details?.image_url && (
+                        <img src={fav.details.image_url} alt="" className="w-14 h-14 rounded-2xl object-cover" />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <Link to="/events" className="font-medium text-[14px] hover:text-primary truncate block">
+                          {fav.details?.title || "Unknown"}
+                        </Link>
+                      </div>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground" onClick={() => removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type })}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {activeSection === "collections" && (
+            <>
+              <div className="flex items-center justify-between mb-5">
+                <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="sm" className="gap-2 rounded-full text-[13px]"><Plus className="h-4 w-4" /> New Collection</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader><DialogTitle>Create Collection</DialogTitle></DialogHeader>
+                    <form onSubmit={(e) => { e.preventDefault(); createCollection.mutate(newCollectionName); }} className="space-y-4">
+                      <Input placeholder="e.g. Date Night, Weekend Plans" value={newCollectionName} onChange={(e) => setNewCollectionName(e.target.value)} required />
+                      <Button type="submit" className="w-full" disabled={createCollection.isPending}>Create</Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </div>
+              {!collections?.length ? (
+                <div className="text-center py-16">
+                  <FolderOpen className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No collections yet</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {collections.map((col: any) => (
+                    <div key={col.id} className="bg-card border border-border/60 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-medium text-foreground text-[14px]">{col.name}</h3>
+                        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground" onClick={() => deleteCollection.mutate(col.id)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                      {!col.collection_items?.length ? (
+                        <p className="text-[12px] text-muted-foreground">No listings saved yet</p>
+                      ) : (
+                        <div className="space-y-2">
+                          {col.collection_items.map((item: any) => (
+                            <div key={item.id} className="flex items-center gap-3 bg-background rounded-2xl p-2">
+                              {item.listings?.image_url && <img src={item.listings.image_url} alt="" className="w-10 h-10 rounded-2xl object-cover" />}
+                              <Link to={`/listing/${item.listings?.id}`} className="text-[12px] font-medium hover:text-primary truncate flex-1">{item.listings?.title}</Link>
+                              <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0 text-muted-foreground" onClick={() => removeFromCollection.mutate(item.id)}>
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {activeSection === "been-here" && (
+            <>
+              {!beenHere?.length ? (
+                <div className="text-center py-16">
+                  <MapPinCheck className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No places visited yet</p>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {beenHere.map((bh: any) => (
+                    <div key={bh.id} className="flex items-center gap-3.5 bg-card border border-border/60 rounded-xl p-3">
+                      {bh.listings?.image_url && <img src={bh.listings.image_url} alt="" className="w-14 h-14 rounded-2xl object-cover" />}
+                      <Link to={`/listing/${bh.listings?.id}`} className="font-medium text-[14px] hover:text-primary truncate flex-1">{bh.listings?.title}</Link>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-muted-foreground" onClick={() => removeBeenHere.mutate(bh.id)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {activeSection === "reviews" && (
+            <>
+              {!reviews?.length ? (
+                <div className="text-center py-16">
+                  <Star className="h-10 w-10 mx-auto text-primary/15 mb-5" />
+                  <p className="text-muted-foreground text-[13px]">No reviews yet</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {reviews.map((review: any) => (
+                    <div key={review.id} className="bg-card border border-border/60 rounded-xl p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <Link to={`/listing/${review.listings?.id}`} className="font-medium text-[14px] hover:text-primary">{review.listings?.title}</Link>
+                        <div className="flex gap-0.5">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star key={s} className={`h-3 w-3 ${s <= review.rating ? "text-accent fill-accent" : "text-muted-foreground/20"}`} />
+                          ))}
+                        </div>
+                      </div>
+                      {review.comment && <p className="text-[12px] text-muted-foreground leading-relaxed">{review.comment}</p>}
+                    </div>
+                  ))}
+                </div>
               )}
             </>
           )}
         </div>
       </div>
+    );
+  }
 
-      {/* Stats + actions card */}
-      <div style={{ padding: "0 24px", marginBottom: 32 }}>
-        <div style={{ background: CREAM, borderRadius: 20, padding: "20px 22px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 36,
-              paddingBottom: 16,
-              borderBottom: `1px solid ${LINE}`,
-              marginBottom: 16,
-            }}
-          >
-            {[
-              {
-                n: counts?.followers ?? 0,
-                label: (counts?.followers ?? 0) === 1 ? "Follower" : "Followers",
-                href: id ? `/profile/${id}/followers` : null,
-              },
-              {
-                n: counts?.following ?? 0,
-                label: "Following",
-                href: id ? `/profile/${id}/following` : null,
-              },
-              {
-                n: savedCount ?? 0,
-                label: "Saved",
-                href: "/my-hoedspruit",
-              },
-            ].map((s, i) => {
-              const inner = (
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                  <span
-                    style={{
-                      fontFamily: SERIF,
-                      fontWeight: 400,
-                      fontSize: 24,
-                      lineHeight: 1,
-                      letterSpacing: "-0.4px",
-                      color: INK,
-                    }}
-                  >
-                    {fmtCount(s.n)}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 10.5,
-                      letterSpacing: "1.8px",
-                      textTransform: "uppercase",
-                      color: MUTED,
-                    }}
-                  >
-                    {s.label}
-                  </span>
-                </div>
-              );
-              return s.href ? (
-                <Link key={i} to={s.href} style={{ textDecoration: "none" }}>
-                  {inner}
-                </Link>
-              ) : (
-                <div key={i}>{inner}</div>
-              );
-            })}
-          </div>
+  // === Editorial design tokens ===
+  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const SERIF = "'Playfair Display', Georgia, serif";
+  const OLIVE = "#5C6446";
+  const CREAM = "#EEE8DA";
+  const INK = "#2A2A24";
+  const MUTED_INK = "#6B6A5E";
+  const LINE = "#D9D2C0";
+  const RUST = "#9B5A3C";
+  const GOLD = "#D9C36B";
 
-          {/* Actions */}
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              onClick={() => navigate("/account/info")}
-              style={{
-                flex: 1,
-                height: 44,
-                borderRadius: 999,
-                background: INK,
-                color: CREAM,
-                border: "none",
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 14,
-                letterSpacing: "0.1px",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Pencil size={14} strokeWidth={1.8} color={CREAM} />
-              Edit Profile
-            </button>
-            <button
-              onClick={handleShare}
-              style={{
-                flex: 1,
-                height: 44,
-                borderRadius: 999,
-                background: "transparent",
-                color: INK,
-                border: `1px solid ${LINE}`,
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 14,
-                letterSpacing: "0.1px",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Share2 size={14} strokeWidth={1.8} color={INK} />
-              Share
-            </button>
-          </div>
-        </div>
-      </div>
+  const resourcesItems = [
+    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
+    { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
+    { label: "My Business", href: "/business/dashboard", icon: Briefcase },
+  ];
+  const getInTouchItems = [
+    { label: "Contact", href: "/contact", icon: Phone },
+    { label: "Advertise", href: "/advertise", icon: Megaphone },
+    { label: "Feedback", href: "/feedback", icon: MessageSquare },
+  ];
+  const helpItems = [
+    { label: "Settings", href: "/account-settings", icon: Settings },
+    { label: "About", href: "/about", icon: Info },
+    { label: "Help", href: "/faqs", icon: HelpCircle },
+    { label: "Terms & Policies", href: "/terms", icon: FileText },
+  ];
+  const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
 
-      {/* Your finds */}
-      {!!saved?.length && (
-        <section style={{ marginBottom: 32 }}>
-          <div
-            style={{
-              padding: "0 24px",
-              display: "flex",
-              alignItems: "baseline",
-              justifyContent: "space-between",
-              marginBottom: 14,
-            }}
-          >
-            <h2
-              style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 28,
-                lineHeight: 1,
-                letterSpacing: "-0.5px",
-                color: CREAM,
-                margin: 0,
-                textTransform: "lowercase",
-              }}
-            >
-              your finds
-            </h2>
-            <Link
-              to="/my-hoedspruit"
-              style={{
-                fontFamily: SANS,
-                fontSize: 11,
-                letterSpacing: "1.8px",
-                textTransform: "uppercase",
-                color: CREAM,
-                opacity: 0.75,
-                textDecoration: "none",
-              }}
-            >
-              See All
-            </Link>
-          </div>
+  const Eyebrow = ({ children }: { children: React.ReactNode }) => (
+    <p
+      style={{
+        fontFamily: SANS,
+        fontSize: 11,
+        fontWeight: 400,
+        letterSpacing: "0.24em",
+        textTransform: "uppercase",
+        color: "rgba(238,232,218,0.7)",
+        margin: "0 0 10px 0",
+        padding: "0 24px",
+      }}
+    >
+      {children}
+    </p>
+  );
 
-          <div
-            style={{
-              display: "flex",
-              gap: 14,
-              overflowX: "auto",
-              paddingLeft: 24,
-              paddingRight: 24,
-              scrollbarWidth: "none",
-            }}
-            className="no-scrollbar"
-          >
-            {saved.map((it: any) => (
-              <Link
-                key={it.id}
-                to={`/listing/${it.id}`}
-                style={{
-                  flex: "0 0 auto",
-                  width: 240,
-                  background: CREAM,
-                  borderRadius: 20,
-                  overflow: "hidden",
-                  textDecoration: "none",
-                }}
-              >
-                <div style={{ position: "relative", width: "100%", height: 180, background: "#d6d6d6" }}>
-                  {it.image_url && (
-                    <img
-                      src={it.image_url}
-                      alt=""
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                    />
-                  )}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 12,
-                      right: 12,
-                      width: 32,
-                      height: 32,
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.92)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
-                  </div>
-                </div>
-                <div style={{ padding: "16px 18px 18px" }}>
-                  <div
-                    style={{
-                      fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 17,
-                      lineHeight: 1.2,
-                      letterSpacing: "-0.2px",
-                      color: INK,
-                      marginBottom: 6,
-                    }}
-                  >
-                    {titleCase(it.title)}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 8,
-                      fontFamily: SANS,
-                      fontSize: 12.5,
-                      color: MUTED,
-                    }}
-                  >
-                    {it.google_rating && <span>★ {Number(it.google_rating).toFixed(1)}</span>}
-                    {it.google_rating && it.location && (
-                      <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6 }} />
-                    )}
-                    {it.location && <span>{it.location}</span>}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Your activity */}
-      <section style={{ marginBottom: 8 }}>
+  const Row = ({
+    item,
+    isFirst,
+    heart = false,
+  }: {
+    item: { label: string; href: string; icon?: any };
+    isFirst: boolean;
+    heart?: boolean;
+  }) => (
+    <Link
+      to={item.href}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        padding: "18px 0",
+        textDecoration: "none",
+        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+      }}
+    >
+      {heart ? (
         <div
           style={{
-            padding: "0 24px",
+            width: 34,
+            height: 34,
+            borderRadius: "50%",
+            background: RUST,
             display: "flex",
-            alignItems: "baseline",
-            justifyContent: "space-between",
-            marginBottom: 14,
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
           }}
         >
-          <h2
+          <Heart size={16} strokeWidth={2} color={CREAM} fill={CREAM} />
+        </div>
+      ) : item.icon ? (
+        <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
+        </div>
+      ) : null}
+      <span
+        style={{
+          flex: 1,
+          fontFamily: SANS,
+          fontSize: 16,
+          fontWeight: 400,
+          letterSpacing: "-0.1px",
+          color: INK,
+          lineHeight: 1.25,
+        }}
+      >
+        {item.label}
+      </span>
+      <div
+        style={{
+          width: 30,
+          height: 30,
+          borderRadius: "50%",
+          background: "rgba(106,106,94,0.1)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          fontSize: 12,
+          color: INK,
+          lineHeight: 1,
+        }}
+      >
+        ↗
+      </div>
+    </Link>
+  );
+
+  const Card = ({
+    items,
+    heartFirst = false,
+  }: {
+    items: { label: string; href: string; icon?: any }[];
+    heartFirst?: boolean;
+  }) => (
+    <div
+      style={{
+        background: CREAM,
+        borderRadius: 20,
+        margin: "0 24px",
+        padding: "4px 22px",
+      }}
+    >
+      {items.map((item, i) => (
+        <Row key={item.label} item={item} isFirst={i === 0} heart={heartFirst && i === 0} />
+      ))}
+    </div>
+  );
+
+  const displayName = (profile?.display_name?.trim() || user.email?.split("@")[0] || "You");
+  const handle = user.email ? `@${user.email.split("@")[0].toLowerCase()}` : "";
+  const initial = displayName.charAt(0).toUpperCase();
+  const bioText = profile?.bio?.trim()
+    ? /[.!?]$/.test(profile.bio.trim())
+      ? profile.bio.trim()
+      : `${profile.bio.trim()}.`
+    : null;
+
+  return (
+    <div
+      style={{
+        minHeight: "100vh",
+        background: OLIVE,
+        paddingBottom: 120,
+        fontFamily: SANS,
+      }}
+    >
+      {/* Top bar */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: 10,
+          padding: "calc(env(safe-area-inset-top) + 32px) 24px 0",
+        }}
+      >
+        <NotificationsBell />
+        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
+        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
+      </div>
+
+      {/* Hero: avatar + name */}
+      <div style={{ padding: "8px 24px 0", display: "flex", alignItems: "center", gap: 18 }}>
+        <div style={{ position: "relative", width: 120, height: 120, flexShrink: 0 }}>
+          <svg
+            width="120"
+            height="120"
+            viewBox="0 0 120 120"
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            aria-hidden="true"
+          >
+            {Array.from({ length: 16 }).map((_, i) => {
+              const angle = (i * 360) / 16;
+              const rad = (angle * Math.PI) / 180;
+              const inner = 54;
+              const outer = 60 + ((i % 3) - 1) * 1.2; // tiny variance, primitive feel
+              const cx = 60;
+              const cy = 60;
+              const x1 = cx + Math.sin(rad) * inner;
+              const y1 = cy - Math.cos(rad) * inner;
+              const x2 = cx + Math.sin(rad) * outer;
+              const y2 = cy - Math.cos(rad) * outer;
+              return (
+                <line
+                  key={i}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke={GOLD}
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                />
+              );
+            })}
+          </svg>
+          <div
+            style={{
+              position: "absolute",
+              top: 20,
+              left: 20,
+              width: 80,
+              height: 80,
+              borderRadius: "50%",
+              overflow: "hidden",
+              background: profile?.avatar_url
+                ? "transparent"
+                : "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <span
+                style={{
+                  fontFamily: SERIF,
+                  fontStyle: "italic",
+                  fontWeight: 400,
+                  fontSize: 34,
+                  color: CREAM,
+                  lineHeight: 1,
+                }}
+              >
+                {initial}
+              </span>
+            )}
+          </div>
+        </div>
+        <h1
+          style={{
+            fontFamily: SERIF,
+            fontWeight: 400,
+            fontSize: 54,
+            lineHeight: 0.95,
+            letterSpacing: "-1.6px",
+            color: CREAM,
+            margin: 0,
+            flex: 1,
+            minWidth: 0,
+            wordBreak: "break-word",
+          }}
+        >
+          {displayName.charAt(0).toUpperCase() + displayName.slice(1)}
+        </h1>
+      </div>
+
+      {/* Handle + bio */}
+      <div style={{ padding: "16px 24px 0" }}>
+        {handle && (
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: 400,
+              color: "rgba(238,232,218,0.65)",
+              margin: "0 0 8px 0",
+            }}
+          >
+            {handle}
+          </p>
+        )}
+        {bioText && (
+          <p
             style={{
               fontFamily: SERIF,
               fontStyle: "italic",
               fontWeight: 400,
-              fontSize: 28,
-              lineHeight: 1,
-              letterSpacing: "-0.5px",
-              color: CREAM,
+              fontSize: 18,
+              lineHeight: 1.4,
+              color: "rgba(238,232,218,0.85)",
               margin: 0,
-              textTransform: "lowercase",
             }}
           >
-            your activity
-          </h2>
-          <span
-            style={{
-              fontFamily: SANS,
-              fontSize: 11,
-              letterSpacing: "1.8px",
-              textTransform: "uppercase",
-              color: CREAM,
-              opacity: 0.75,
-            }}
-          >
-            Last 30 Days
-          </span>
-        </div>
-
-        <div style={{ padding: "0 24px" }}>
-          <div style={{ background: CREAM, borderRadius: 20, padding: "4px 22px" }}>
-            {!activity?.length ? (
-              <div
-                style={{
-                  padding: "22px 0",
-                  fontFamily: SERIF,
-                  fontStyle: "italic",
-                  fontSize: 14,
-                  color: INK,
-                  opacity: 0.7,
-                  textAlign: "center",
-                }}
-              >
-                No activity yet. Save a place, save an event, or follow someone to start your story.
-              </div>
-            ) : (
-              activity.map((row, i) => {
-                const isSave = row.kind === "save";
-                return (
-                  <Link
-                    key={i}
-                    to={row.href}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 14,
-                      padding: "14px 0",
-                      borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
-                      textDecoration: "none",
-                      color: "inherit",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        background: isSave ? RUST : SOFT_CREAM,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {isSave ? (
-                        <Heart size={14} strokeWidth={1.6} color={CREAM} fill={CREAM} />
-                      ) : (
-                        <MapPin size={14} strokeWidth={1.6} color={MUTED} />
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div
-                        style={{
-                          fontFamily: SERIF,
-                          fontStyle: "italic",
-                          fontSize: 13,
-                          lineHeight: 1.4,
-                          color: INK,
-                        }}
-                      >
-                        {row.verb}{" "}
-                        <span
-                          style={{
-                            fontFamily: SANS,
-                            fontStyle: "normal",
-                            fontWeight: 400,
-                            color: INK,
-                          }}
-                        >
-                          {row.name}
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          fontFamily: SANS,
-                          fontSize: 10.5,
-                          letterSpacing: "1.8px",
-                          textTransform: "uppercase",
-                          color: MUTED,
-                          marginTop: 3,
-                        }}
-                      >
-                        {timeAgo(row.created_at)}
-                      </div>
-                    </div>
-                    <span style={{ fontSize: 13, color: MUTED, fontFamily: SANS }}>↗</span>
-                  </Link>
-                );
-              })
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Privacy hint */}
-      <div
-        style={{
-          paddingLeft: 28,
-          paddingRight: 26,
-          marginBottom: 24,
-          marginTop: 16,
-          display: "flex",
-          gap: 10,
-          alignItems: "flex-start",
-        }}
-      >
-        <span
-          style={{
-            width: 6,
-            height: 6,
-            borderRadius: 3,
-            background: RUST,
-            flexShrink: 0,
-            marginTop: 7,
-            display: "inline-block",
-          }}
-        />
-        <p
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 13.5,
-            lineHeight: 1.55,
-            color: CREAM,
-            opacity: 0.65,
-            margin: 0,
-          }}
-        >
-          This is what your followers see. Make your finds and activity private in{" "}
-          <Link
-            to="/privacy-security"
-            style={{ color: CREAM, opacity: 1, textDecoration: "underline", fontStyle: "italic" }}
-          >
-            Privacy & Security
-          </Link>
-          .
-        </p>
+            {bioText}
+          </p>
+        )}
       </div>
 
-      {/* Action sheet */}
-      <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-        <SheetContent
-          side="bottom"
-          style={{ background: CREAM, borderTopLeftRadius: 20, borderTopRightRadius: 20, border: "none" }}
+      {/* Stats card */}
+      <div style={{ padding: "24px 24px 0", marginBottom: 32 }}>
+        <div
+          style={{
+            background: CREAM,
+            borderRadius: 20,
+            padding: "18px 22px",
+            display: "flex",
+            alignItems: "center",
+            gap: 32,
+          }}
         >
-          <SheetHeader>
-            <SheetTitle
-              style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                color: INK,
-                textTransform: "lowercase",
-              }}
-            >
-              options
-            </SheetTitle>
-          </SheetHeader>
-          <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
-            {[
-              { label: "Edit Cover Photo", onClick: () => { setMenuOpen(false); navigate("/account/info"); } },
-              { label: "View As Someone Else", onClick: () => { setMenuOpen(false); if (id) navigate(`/profile/${id}`); } },
-              { label: "Copy Profile Link", onClick: handleCopyLink },
-              { label: "Report A Bug", onClick: () => { setMenuOpen(false); navigate("/feedback"); } },
-            ].map((o) => (
-              <button
-                key={o.label}
-                onClick={o.onClick}
-                style={{
-                  textAlign: "left",
-                  padding: "16px 0",
-                  borderTop: `1px solid ${LINE}`,
-                  background: "transparent",
-                  border: "none",
-                  borderBottom: 0,
-                  borderLeft: 0,
-                  borderRight: 0,
-                  fontFamily: SANS,
-                  fontSize: 15,
-                  color: INK,
-                  cursor: "pointer",
-                }}
-              >
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </SheetContent>
-      </Sheet>
+          <FollowStat userId={user.id} />
+          <button
+            onClick={() => navigate("/my-profile")}
+            style={{
+              marginLeft: "auto",
+              background: INK,
+              color: CREAM,
+              border: "none",
+              borderRadius: 999,
+              padding: "9px 22px",
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: 400,
+              cursor: "pointer",
+            }}
+          >
+            My Profile
+          </button>
+        </div>
+      </div>
+
+      {/* Saved */}
+      <Eyebrow>Saved</Eyebrow>
+      <Card items={[{ label: "My Hoedspruit", href: "/saved" }]} heartFirst />
+
+      <div style={{ height: 28 }} />
+      <Eyebrow>Resources</Eyebrow>
+      <Card items={resourcesItems} />
+
+      <div style={{ height: 28 }} />
+      <Eyebrow>Get In Touch</Eyebrow>
+      <Card items={getInTouchItems} />
+
+      <div style={{ height: 28 }} />
+      <Eyebrow>Help & Settings</Eyebrow>
+      <Card items={helpItems} />
+
+      {isAdmin && (
+        <>
+          <div style={{ height: 28 }} />
+          <Eyebrow>Admin</Eyebrow>
+          <Card items={adminItems} />
+        </>
+      )}
+
+      {/* Log out */}
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 8, marginBottom: 24 }}>
+        <button
+          onClick={() => {
+            signOut();
+            navigate("/");
+          }}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 10,
+            background: "transparent",
+            color: CREAM,
+            border: "1px solid rgba(238,232,218,0.35)",
+            borderRadius: 999,
+            padding: "14px 26px",
+            fontFamily: SANS,
+            fontSize: 14,
+            fontWeight: 400,
+            cursor: "pointer",
+          }}
+        >
+          <LogOut size={14} strokeWidth={1.6} color={CREAM} />
+          <span>Log Out</span>
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// Editorial follow stats — Playfair number, tracked uppercase label
+const FollowStat = ({ userId }: { userId: string }) => {
+  const { data: counts } = useFollowCounts(userId);
+  const INK = "#2A2A24";
+  const MUTED_INK = "#6B6A5E";
+  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const SERIF = "'Playfair Display', Georgia, serif";
+  const fmt = (n: number) => n.toLocaleString("en-US");
+  const Stat = ({ to, count, label }: { to: string; count: number; label: string }) => (
+    <Link to={to} style={{ textDecoration: "none", display: "flex", flexDirection: "column", gap: 2 }}>
+      <span
+        style={{
+          fontFamily: SERIF,
+          fontWeight: 400,
+          fontSize: 26,
+          lineHeight: 1,
+          letterSpacing: "-0.5px",
+          color: INK,
+        }}
+      >
+        {fmt(count)}
+      </span>
+      <span
+        style={{
+          fontFamily: SANS,
+          fontSize: 10.5,
+          fontWeight: 400,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          color: MUTED_INK,
+          lineHeight: 1,
+        }}
+      >
+        {label}
+      </span>
+    </Link>
+  );
+  const followers = counts?.followers ?? 0;
+  const following = counts?.following ?? 0;
+  return (
+    <div style={{ display: "flex", gap: 32 }}>
+      <Stat to={`/profile/${userId}/followers`} count={followers} label={followers === 1 ? "Follower" : "Followers"} />
+      <Stat to={`/profile/${userId}/following`} count={following} label={following === 1 ? "Following" : "Following"} />
     </div>
   );
 };
