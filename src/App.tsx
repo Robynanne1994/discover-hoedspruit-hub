@@ -130,6 +130,7 @@ const App = () => (
               <Route path="/directories" element={<Directories />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/my-account" element={<MyAccount />} />
+              <Route path="/my-profile" element={<MyProfile />} />
               <Route path="/bush-telegraph" element={<BushTelegraph />} />
               <Route path="/my-hoedspruit" element={<MyHoedspruit />} />
               <Route path="/saved" element={<SavedListings />} />
