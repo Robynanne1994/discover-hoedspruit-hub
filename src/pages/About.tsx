@@ -239,7 +239,7 @@ const About = () => {
               ready to do more?
             </h2>
             <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
-              If you run a business in Hoedspruit and want to reach more people, we'd love to feature you.
+              A business account lets you claim your listing for personal edits, post specials and share what's on. Register in a few minutes.
             </p>
             <button
               onClick={() => navigate("/advertise")}
