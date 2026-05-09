@@ -1,23 +1,86 @@
-import PolicyPageLayout from "@/components/PolicyPageLayout";
+import { LegalPage, Section, P, List, Em, A } from "@/components/legal/LegalPage";
 
-const sections = [
-  { heading: "Introduction", body: "Hello Hoedspruit respects your privacy and is committed to protecting your personal information in accordance with the Protection of Personal Information Act (POPIA) of South Africa. This policy explains what information we collect, how we use it and your rights as a user." },
-  { heading: "Responsible Party", body: "The responsible party for the processing of your personal information is:\nName: Robyn Dawes\nApp: Hello Hoedspruit\nEmail: admin@hellohoedspruit.co\nLocation: Hoedspruit, Limpopo, South Africa" },
-  { heading: "What We Collect", body: "We may collect the following personal information:\n- Account information: name, email address, profile photo, phone number, location and bio that you provide when creating or editing your account\n- Activity in the app: saved listings, visited places, event interactions, follows and profile activity\n- Device and usage data: basic technical information like device type, operating system, app activity and performance data\n- Contact actions: if you tap to call, email, visit a website, open WhatsApp or use maps from a listing, we may record the action for analytics purposes\n- Content you add: profile photo, comments, event submissions, listing enquiries or other optional content you submit\n- Location data: only if location-based features are enabled on your device or in the app\nWe only collect information that helps run, improve and protect the app experience." },
-  { heading: "How We Use Your Information", body: "We use your personal information to:\n- Create and manage your account\n- Save listings, visited places and event activity\n- Personalise discovery and improve relevance\n- Respond to support requests and enquiries\n- Keep the app secure and prevent misuse\n- Improve app performance, features and content quality\n- Send essential service messages and optional updates based on your preferences" },
-  { heading: "Legal Basis for Processing", body: "Under POPIA, we process your personal information based on one or more of the following grounds: your consent, the performance of a contract (providing you with the app service), compliance with a legal obligation, or our legitimate interest in operating and improving the app." },
-  { heading: "Your Rights Under POPIA", body: "As a user in South Africa, you have the right to:\n- Access the personal information we hold about you\n- Request correction of inaccurate or incomplete information\n- Request deletion of your personal information\n- Object to the processing of your personal information\n- Withdraw your consent at any time\n- Lodge a complaint with the Information Regulator\nTo exercise any of these rights, contact us at admin@hellohoedspruit.co." },
-  { heading: "Data Sharing and Third Parties", body: "We may use trusted service providers to support hosting, analytics, security, communication or app functionality. Listings may link to external websites, Google Maps, Google Business Profiles, WhatsApp, social platforms or booking services. When you leave Hello Hoedspruit, the privacy and security practices of those third parties apply. We do not sell personal data." },
-  { heading: "Data Security", body: "We take reasonable technical and organisational measures to protect your personal information from unauthorised access, loss, misuse or alteration. These include secure data transmission, protected servers and platform security measures, access controls for account-related information, and monitoring and updates to help keep the app safe. No digital system can ever be guaranteed 100% secure, but we take privacy and security seriously and follow sensible best practices." },
-  { heading: "Data Retention", body: "We retain your personal information for as long as your account is active or as needed to provide you with the app service. If you delete your account, we will delete or anonymise your personal information within a reasonable timeframe, unless we are required by law to retain it." },
-  { heading: "Children's Privacy", body: "Hello Hoedspruit is not intended for children under the age of 18 without appropriate supervision. We do not knowingly collect personal information from children. If you believe a child has provided us with personal information, please contact us and we will take steps to remove it." },
-  { heading: "Changes to This Policy", body: "We may update this Privacy Policy from time to time. If we make significant changes, we will notify users through the app. Continued use of the app after changes are posted constitutes acceptance of the updated policy." },
-  { heading: "Information Regulator", body: "If you are not satisfied with how we handle your personal information, you have the right to lodge a complaint with the South African Information Regulator:\nWebsite: https://inforegulator.org.za\nEmail: enquiries@inforegulator.org.za" },
-  { heading: "Contact", body: "For any questions about this Privacy Policy or your personal information, contact us at admin@hellohoedspruit.co." },
-];
+const EMAIL = "hellohoedspruit@gmail.com";
 
 const PrivacyPolicyPage = () => (
-  <PolicyPageLayout title="Privacy Policy" lastUpdated="Last updated: April 2026" sections={sections} />
+  <LegalPage
+    title="privacy policy."
+    footer="Your data is yours. We treat it the way we'd want ours treated. Questions welcome."
+  >
+    <Section heading="information we collect">
+      <P>
+        When you use Hello Hoedspruit, we collect a small amount of information needed to make the app work. This includes the details you give us when you sign up, the actions you take inside the app, and basic technical data sent by your device.
+      </P>
+      <P last>The kinds of information we collect include:</P>
+      <List
+        items={[
+          "Account details such as your name, email address, and profile photo if you choose to add one.",
+          "Activity inside the app, including the listings, events, and specials you save or visit.",
+          "Device and usage data such as your device type, operating system, and approximate location.",
+          "Anything you choose to send us through feedback forms, contact forms, or business enquiries.",
+        ]}
+      />
+    </Section>
+
+    <Section heading="how we use your information">
+      <P>
+        We use your information to run the app, save your favourites across devices, recommend places that fit what you're into, respond to your messages, and improve the service over time. We don't use your data to build profiles for advertising, and we don't sell it to anyone.
+      </P>
+    </Section>
+
+    <Section heading="data sharing">
+      <P last>We share information only when we genuinely need to:</P>
+      <List
+        items={[
+          "With trusted service providers who help us run the app, such as hosting and authentication.",
+          "When required by law, a court order, or a legitimate request from a public authority.",
+          "To protect the rights, safety, or property of Hello Hoedspruit, our users, or the public.",
+        ]}
+      />
+    </Section>
+
+    <Section heading="cookies and tracking">
+      <P>
+        We use a small number of cookies and similar technologies to keep you signed in, remember your preferences, and understand how the app is used. You can read more in our <A href="/cookie-policy">Cookie Policy</A>.
+      </P>
+    </Section>
+
+    <Section heading="your rights">
+      <P last>You have the right to:</P>
+      <List
+        items={[
+          "Ask for a copy of the personal information we hold about you.",
+          "Correct anything that's inaccurate or out of date.",
+          "Ask us to delete your account and the data tied to it.",
+          "Object to or restrict certain ways we use your information.",
+        ]}
+      />
+    </Section>
+
+    <Section heading="data security">
+      <P>
+        We take reasonable steps to protect your information against loss, misuse, and unauthorised access. No system is perfect, but we treat your data the way we'd want ours treated, and we work with reputable providers who do the same.
+      </P>
+    </Section>
+
+    <Section heading="children's privacy">
+      <P>
+        The app isn't aimed at children under the age of 13, and we don't knowingly collect personal information from them. If you believe a child has given us information, please contact us and we'll remove it.
+      </P>
+    </Section>
+
+    <Section heading="changes to this policy">
+      <P>
+        We may update this policy from time to time. When we do, we'll change the date at the top of this page. If the changes are significant, we'll let you know inside the app.
+      </P>
+    </Section>
+
+    <Section heading="contact">
+      <P last>
+        For privacy questions or to exercise any of your rights, email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+      </P>
+    </Section>
+  </LegalPage>
 );
 
 export default PrivacyPolicyPage;
