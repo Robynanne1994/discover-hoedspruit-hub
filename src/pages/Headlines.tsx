@@ -114,7 +114,7 @@ const Headlines = () => {
           fontSize: 17, color: CREAM, opacity: 0.75,
           margin: 0, marginBottom: 24, lineHeight: 1.35,
         }}>
-          News, stories, and local updates.
+          News, stories & local updates.
         </p>
       </div>
 
