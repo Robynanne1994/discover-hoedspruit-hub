@@ -1,6 +1,6 @@
 import { LegalPage, Section, P, List, Em, A } from "@/components/legal/LegalPage";
 
-const EMAIL = "hellohoedspruit@gmail.com";
+const EMAIL = "admin@hellohoedspruit.co";
 
 const CookiePolicy = () => (
   <LegalPage
