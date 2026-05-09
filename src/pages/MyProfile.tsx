@@ -87,7 +87,7 @@ const CircleBtn = ({ onClick, label, children }: { onClick?: () => void; label: 
   </button>
 );
 
-const MyAccount = () => {
+const MyProfile = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -935,4 +935,4 @@ const MyAccount = () => {
   );
 };
 
-export default MyAccount;
+export default MyProfile;
