@@ -267,7 +267,7 @@ const Headlines = () => {
         <h2 style={{
           fontFamily: SERIF, fontStyle: "italic", fontWeight: 400,
           fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px",
-          color: CREAM, margin: 0,
+          color: CREAM, margin: 0, textTransform: "lowercase",
         }}>
           recent
         </h2>
