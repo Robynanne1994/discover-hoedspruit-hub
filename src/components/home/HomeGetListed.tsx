@@ -81,7 +81,7 @@ const HomeGetListed = () => {
               marginBottom: 24,
             }}
           >
-            Put your business in front of locals and visitors looking for what you do.
+            A business account lets you claim your listing for personal edits, post specials and share what's on. Register in a few minutes.
           </p>
           <Link
             to="/advertise"
