@@ -762,31 +762,41 @@ const MyAccount = () => {
       <div style={{ padding: "24px 24px 0", marginBottom: 32 }}>
         <div
           style={{
-            background: CREAM,
+            background: "#EEE8DA",
             borderRadius: 20,
-            padding: "18px 22px",
-            display: "flex",
-            alignItems: "center",
-            gap: 32,
+            padding: "20px 22px",
           }}
         >
-          <FollowStat userId={user.id} />
-          <button
-            onClick={() => navigate("/my-profile")}
+          <div
             style={{
-              marginLeft: "auto",
-              background: INK,
-              color: CREAM,
-              border: "none",
-              borderRadius: 999,
-              padding: "9px 22px",
-              fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: 400,
-              cursor: "pointer",
+              paddingBottom: 16,
+              marginBottom: 16,
+              borderBottom: "1px solid #D9D2C0",
             }}
           >
-            My Profile
+            <FollowStat userId={user.id} />
+          </div>
+          <button
+            onClick={() => navigate("/my-profile")}
+            onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.98)"; }}
+            onPointerUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+            onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+            style={{
+              width: "100%",
+              height: 42,
+              background: "#2A2A24",
+              color: "#EEE8DA",
+              border: "none",
+              borderRadius: 999,
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontSize: 14,
+              fontWeight: 400,
+              letterSpacing: "0.1px",
+              cursor: "pointer",
+              transition: "transform 150ms ease-out",
+            }}
+          >
+            View My Profile
           </button>
         </div>
       </div>
@@ -885,7 +895,7 @@ const FollowStat = ({ userId }: { userId: string }) => {
   const followers = counts?.followers ?? 0;
   const following = counts?.following ?? 0;
   return (
-    <div style={{ display: "flex", gap: 32 }}>
+    <div style={{ display: "flex", gap: 48 }}>
       <Stat to={`/profile/${userId}/followers`} count={followers} label={followers === 1 ? "Follower" : "Followers"} />
       <Stat to={`/profile/${userId}/following`} count={following} label={following === 1 ? "Following" : "Following"} />
     </div>
