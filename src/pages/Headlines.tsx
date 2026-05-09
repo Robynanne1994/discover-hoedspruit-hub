@@ -186,7 +186,7 @@ const Headlines = () => {
             </h2>
             <span style={{
               fontFamily: SANS, fontSize: 11, fontWeight: 400,
-              letterSpacing: "1.8px", textTransform: "uppercase",
+              letterSpacing: "1.8px", textTransform: "lowercase",
               color: CREAM, opacity: 0.75,
             }}>
               Featured
