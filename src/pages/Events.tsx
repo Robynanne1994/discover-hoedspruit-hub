@@ -360,16 +360,35 @@ const Events = () => {
       });
   }, [events]);
 
+  const availableTags = useMemo(() => {
+    const set = new Set<string>();
+    sortedEvents.forEach((e) => {
+      [e.tag, e.sub_tag_1, e.sub_tag_2].forEach((t: string | null) => {
+        if (t && t.trim()) set.add(t.trim());
+      });
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [sortedEvents]);
+
   const searched = useMemo(() => {
-    if (!search.trim()) return sortedEvents;
+    let list = sortedEvents;
+    if (tagFilter) {
+      const tf = tagFilter.toLowerCase();
+      list = list.filter((e) =>
+        [e.tag, e.sub_tag_1, e.sub_tag_2].some(
+          (t: string | null) => t && t.toLowerCase() === tf
+        )
+      );
+    }
+    if (!search.trim()) return list;
     const q = search.toLowerCase();
-    return sortedEvents.filter(
+    return list.filter(
       (e) =>
         e.title.toLowerCase().includes(q) ||
         (e.location && e.location.toLowerCase().includes(q)) ||
         (e.tag && e.tag.toLowerCase().includes(q))
     );
-  }, [sortedEvents, search]);
+  }, [sortedEvents, search, tagFilter]);
 
   const recurringAll = useMemo(
     () =>
