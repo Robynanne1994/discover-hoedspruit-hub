@@ -336,6 +336,8 @@ const Events = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [tagMenuOpen, setTagMenuOpen] = useState(false);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
