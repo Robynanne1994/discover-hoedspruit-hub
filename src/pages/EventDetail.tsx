@@ -355,7 +355,7 @@ const EventDetail = () => {
         )}
 
         {/* Title */}
-        <h1 style={{
+        <h1 className="title-cap" style={{
           fontFamily: '"Playfair Display", Georgia, serif', fontSize: 48, fontWeight: 500, lineHeight: "45.6px",
           letterSpacing: "-1.5px", color: CREAM, textTransform: "none",
           marginTop: 0, marginBottom: 8, textAlign: "center",

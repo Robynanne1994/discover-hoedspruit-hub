@@ -686,7 +686,7 @@ const ListingDetail = () => {
           </p>
         )}
 
-        <h1 style={{
+        <h1 className="title-cap" style={{
           fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontSize: 48, lineHeight: 1.0,
           letterSpacing: "-1.2px", color: "#EEE8DA", margin: 0, marginBottom: 14,
         }}>
