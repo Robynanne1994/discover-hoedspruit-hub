@@ -8,9 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Search, ArrowLeft } from "lucide-react";
 import { format, parseISO, isFuture, isPast, differenceInDays } from "date-fns";
 
-type PrimaryTab = "listings" | "events" | "specials";
-
-// Tokens
+type PrimaryTab = "all" | "listings" | "events" | "specials";
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
 const CREAM_92 = "rgba(238, 232, 218, 0.92)";
@@ -54,9 +52,9 @@ const SavedListings = () => {
 
   const [primaryTab, setPrimaryTab] = useState<PrimaryTab>(() => {
     const tab = searchParams.get("tab");
-    if (tab === "events" || tab === "specials" || tab === "listings") return tab;
+    if (tab === "all" || tab === "events" || tab === "specials" || tab === "listings") return tab;
     if (persisted.tab) return persisted.tab;
-    return "listings";
+    return "all";
   });
   const [listingFilter, setListingFilter] = useState(persisted.listingFilter ?? "All");
   const [eventFilter, setEventFilter] = useState(persisted.eventFilter ?? "All");
@@ -259,16 +257,24 @@ const SavedListings = () => {
   const listingsCount = (favourites || []).length;
   const eventsCount = (savedEvents || []).length;
   const specialsCount = (savedSpecials || []).length;
+  const totalCount = listingsCount + eventsCount + specialsCount;
 
   const activeCount =
-    primaryTab === "listings"
-      ? listingsCount
-      : primaryTab === "events"
-        ? eventsCount
-        : specialsCount;
+    primaryTab === "all"
+      ? totalCount
+      : primaryTab === "listings"
+        ? listingsCount
+        : primaryTab === "events"
+          ? eventsCount
+          : specialsCount;
 
   // Lede
   const lede = (() => {
+    if (primaryTab === "all") {
+      return activeCount === 1
+        ? "1 thing, kept close."
+        : `${activeCount} things, kept close.`;
+    }
     if (primaryTab === "listings") {
       return activeCount === 1
         ? "1 place, kept for when you need it."
@@ -285,30 +291,36 @@ const SavedListings = () => {
   })();
 
   const searchPlaceholder =
-    primaryTab === "listings"
-      ? "Search saved places"
-      : primaryTab === "events"
-        ? "Search saved events"
-        : "Search saved specials";
+    primaryTab === "all"
+      ? "Search everything saved"
+      : primaryTab === "listings"
+        ? "Search saved places"
+        : primaryTab === "events"
+          ? "Search saved events"
+          : "Search saved specials";
 
   const subFilters: string[] =
-    primaryTab === "listings"
-      ? ["All", ...listingCategories]
-      : primaryTab === "events"
-        ? ["All", "Upcoming", "Past", ...eventTags]
-        : ["All", "Active", "Expiring Soon", ...specialTypes];
+    primaryTab === "all"
+      ? ["All"]
+      : primaryTab === "listings"
+        ? ["All", ...listingCategories]
+        : primaryTab === "events"
+          ? ["All", "Upcoming", "Past", ...eventTags]
+          : ["All", "Active", "Expiring Soon", ...specialTypes];
 
   const activeSubFilter =
-    primaryTab === "listings"
-      ? listingFilter
-      : primaryTab === "events"
-        ? eventFilter
-        : specialFilter;
+    primaryTab === "all"
+      ? "All"
+      : primaryTab === "listings"
+        ? listingFilter
+        : primaryTab === "events"
+          ? eventFilter
+          : specialFilter;
 
   const setActiveSubFilter = (v: string) => {
     if (primaryTab === "listings") setListingFilter(v);
     else if (primaryTab === "events") setEventFilter(v);
-    else setSpecialFilter(v);
+    else if (primaryTab === "specials") setSpecialFilter(v);
   };
 
   // ------- shells -------
@@ -445,17 +457,21 @@ const SavedListings = () => {
   // ------- Empty states -------
   const renderEmpty = () => {
     const headline =
-      primaryTab === "listings"
+      primaryTab === "all"
         ? "Nothing saved yet."
-        : primaryTab === "events"
-          ? "No events saved yet."
-          : "No specials saved yet.";
+        : primaryTab === "listings"
+          ? "Nothing saved yet."
+          : primaryTab === "events"
+            ? "No events saved yet."
+            : "No specials saved yet.";
     const sub =
-      primaryTab === "listings"
-        ? "Tap the heart on any listing to save it here."
-        : primaryTab === "events"
-          ? "Tap the heart on any event to save it here."
-          : "Tap the heart on any special to save it here.";
+      primaryTab === "all"
+        ? "Tap the heart on any listing, event or special to save it here."
+        : primaryTab === "listings"
+          ? "Tap the heart on any listing to save it here."
+          : primaryTab === "events"
+            ? "Tap the heart on any event to save it here."
+            : "Tap the heart on any special to save it here.";
     return (
       <div style={{ textAlign: "center", paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
         <Heart
@@ -875,6 +891,342 @@ const SavedListings = () => {
     );
   };
 
+  // ------- All (combined) -------
+  const renderAll = () => {
+    const allItems = [
+      ...(favourites || []).map((f: any) => ({
+        ...f,
+        kind: "listing" as const,
+        sortAt: f.created_at,
+      })),
+      ...(savedEvents || []).map((f: any) => ({
+        ...f,
+        kind: "event" as const,
+        sortAt: f.created_at,
+      })),
+      ...(savedSpecials || []).map((f: any) => ({
+        ...f,
+        kind: "special" as const,
+        sortAt: f.created_at,
+      })),
+    ]
+      .filter((it) => {
+        if (!search.trim()) return true;
+        const d = it.details;
+        const hay = d?.title || "";
+        return hay.toLowerCase().includes(search.toLowerCase());
+      })
+      .sort((a, b) => {
+        const ta = new Date(a.sortAt || 0).getTime();
+        const tb = new Date(b.sortAt || 0).getTime();
+        return tb - ta;
+      });
+
+    if (allItems.length === 0) return renderEmpty();
+
+    return (
+      <div
+        style={{
+          background: CREAM,
+          borderRadius: 24,
+          marginLeft: 24,
+          marginRight: 24,
+          padding: "6px 20px",
+          overflow: "hidden",
+        }}
+      >
+        {allItems.map((it: any, idx: number) => {
+          if (it.kind === "listing") {
+            const d = it.details;
+            const rating = d.google_rating ? Number(d.google_rating) : null;
+            return (
+              <Link
+                key={it.id}
+                to={`/listing/${it.item_id}`}
+                className="flex items-center"
+                style={{
+                  gap: 14,
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                  borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                }}
+              >
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    background: "#e6dfcf",
+                    flexShrink: 0,
+                  }}
+                >
+                  {d.image_url && (
+                    <img
+                      src={d.image_url}
+                      alt={d.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 11.5,
+                      color: MUTED,
+                      letterSpacing: "1.6px",
+                      textTransform: "uppercase",
+                      margin: 0,
+                      marginBottom: 3,
+                    }}
+                  >
+                    {(d.categoryNames || []).slice(0, 1).join("") || "Place"}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 15,
+                      color: INK,
+                      lineHeight: 1.25,
+                      margin: 0,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {d.title}
+                  </p>
+                  <div className="flex items-center" style={{ gap: 8, marginTop: 2 }}>
+                    {rating && (
+                      <span style={{ fontFamily: SANS, fontSize: 12.5, color: MUTED }}>
+                        ★ {rating.toFixed(1)}
+                      </span>
+                    )}
+                    {rating && d.location && (
+                      <span
+                        style={{
+                          width: 4,
+                          height: 4,
+                          borderRadius: "50%",
+                          background: MUTED,
+                          opacity: 0.6,
+                          display: "inline-block",
+                        }}
+                      />
+                    )}
+                    {d.location && (
+                      <span
+                        style={{
+                          fontFamily: SANS,
+                          fontSize: 12.5,
+                          color: MUTED,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {d.location}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 14,
+                    color: INK,
+                    opacity: 0.7,
+                    flexShrink: 0,
+                  }}
+                >
+                  ↗
+                </span>
+              </Link>
+            );
+          }
+
+          if (it.kind === "event") {
+            const e = it.details;
+            return (
+              <Link
+                key={it.id}
+                to={`/event/${it.item_id}`}
+                className="flex items-center"
+                style={{
+                  gap: 14,
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                  borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                }}
+              >
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    background: "#e6dfcf",
+                    flexShrink: 0,
+                  }}
+                >
+                  {e.image_url && (
+                    <img
+                      src={e.image_url}
+                      alt={e.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 11.5,
+                      color: MUTED,
+                      letterSpacing: "1.6px",
+                      textTransform: "uppercase",
+                      margin: 0,
+                      marginBottom: 3,
+                    }}
+                  >
+                    {formatEventDate(e)}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 15,
+                      color: INK,
+                      lineHeight: 1.25,
+                      letterSpacing: "-0.1px",
+                      margin: 0,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {e.title}
+                  </p>
+                  {e.location && (
+                    <p
+                      style={{
+                        fontFamily: SANS,
+                        fontSize: 12.5,
+                        color: MUTED,
+                        margin: 0,
+                        marginTop: 2,
+                      }}
+                    >
+                      {e.location}
+                    </p>
+                  )}
+                </div>
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 14,
+                    color: INK,
+                    opacity: 0.7,
+                    flexShrink: 0,
+                  }}
+                >
+                  ↗
+                </span>
+              </Link>
+            );
+          }
+
+          // special
+          const s = it.details;
+          return (
+            <Link
+              key={it.id}
+              to={`/specials/${it.item_id}`}
+              className="flex items-center"
+              style={{
+                gap: 14,
+                paddingTop: 16,
+                paddingBottom: 16,
+                borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+              }}
+            >
+              <div
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  background: "#e6dfcf",
+                  flexShrink: 0,
+                }}
+              >
+                {s.image_url && (
+                  <img
+                    src={s.image_url}
+                    alt={s.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 11.5,
+                    color: MUTED,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    margin: 0,
+                    marginBottom: 3,
+                  }}
+                >
+                  {s.deal_label || s.special_type || "Special"}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 15,
+                    color: INK,
+                    lineHeight: 1.25,
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {s.title}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SERIF,
+                    fontStyle: "italic",
+                    fontSize: 12.5,
+                    color: MUTED,
+                    margin: 0,
+                    marginTop: 2,
+                  }}
+                >
+                  {formatValidity(s)}
+                </p>
+              </div>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  color: INK,
+                  opacity: 0.7,
+                  flexShrink: 0,
+                }}
+              >
+                ↗
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <PageShell>
       {/* Hero */}
@@ -960,9 +1312,10 @@ const SavedListings = () => {
         <div className="flex" style={{ gap: 8 }}>
           {(
             [
-              { key: "listings", label: "Listings", count: listingsCount },
-              { key: "events", label: "Events", count: eventsCount },
-              { key: "specials", label: "Specials", count: specialsCount },
+              { key: "all" as const, label: "All", count: totalCount },
+              { key: "listings" as const, label: "Listings", count: listingsCount },
+              { key: "events" as const, label: "Events", count: eventsCount },
+              { key: "specials" as const, label: "Specials", count: specialsCount },
             ] as const
           ).map((t) => {
             const active = primaryTab === t.key;
@@ -1010,46 +1363,49 @@ const SavedListings = () => {
       </div>
 
       {/* Sub-filter pills */}
-      <div
-        style={{
-          paddingLeft: 24,
-          paddingRight: 24,
-          marginBottom: 24,
-          overflowX: "auto",
-          scrollbarWidth: "none",
-        }}
-        className="[&::-webkit-scrollbar]:hidden"
-      >
-        <div className="flex" style={{ gap: 8 }}>
-          {subFilters.map((f) => {
-            const active = activeSubFilter === f;
-            return (
-              <button
-                key={f}
-                onClick={() => setActiveSubFilter(f)}
-                className="whitespace-nowrap"
-                style={{
-                  height: 32,
-                  padding: "0 16px",
-                  borderRadius: 999,
-                  background: active ? CREAM : "transparent",
-                  border: active ? "none" : `1px solid ${CREAM_BORDER}`,
-                  color: active ? INK : CREAM,
-                  fontFamily: SANS,
-                  fontSize: 12.5,
-                  fontWeight: 400,
-                  cursor: "pointer",
-                  flexShrink: 0,
-                }}
-              >
-                {f}
-              </button>
-            );
-          })}
+      {primaryTab !== "all" && (
+        <div
+          style={{
+            paddingLeft: 24,
+            paddingRight: 24,
+            marginBottom: 24,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+          className="[&::-webkit-scrollbar]:hidden"
+        >
+          <div className="flex" style={{ gap: 8 }}>
+            {subFilters.map((f) => {
+              const active = activeSubFilter === f;
+              return (
+                <button
+                  key={f}
+                  onClick={() => setActiveSubFilter(f)}
+                  className="whitespace-nowrap"
+                  style={{
+                    height: 32,
+                    padding: "0 16px",
+                    borderRadius: 999,
+                    background: active ? CREAM : "transparent",
+                    border: active ? "none" : `1px solid ${CREAM_BORDER}`,
+                    color: active ? INK : CREAM,
+                    fontFamily: SANS,
+                    fontSize: 12.5,
+                    fontWeight: 400,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  {f}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Content */}
+      {primaryTab === "all" && renderAll()}
       {primaryTab === "listings" && renderListings()}
       {primaryTab === "events" && renderEvents()}
       {primaryTab === "specials" && renderSpecials()}
