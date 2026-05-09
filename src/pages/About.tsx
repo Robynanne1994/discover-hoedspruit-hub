@@ -191,13 +191,10 @@ const About = () => {
       </div>
 
       {/* What we stand for heading */}
-      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "0 0 16px" }}>
+      <div style={{ padding: "0 24px", margin: "0 0 16px" }}>
         <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0 }}>
           what we stand for
         </h2>
-        <span style={{ fontSize: 11, fontWeight: 400, letterSpacing: "1.8px", textTransform: "uppercase", color: "rgba(238,232,218,0.75)" }}>
-          Four Values
-        </span>
       </div>
 
       {/* Value grid */}
