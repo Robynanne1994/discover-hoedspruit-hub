@@ -131,6 +131,49 @@ const MyProfile = () => {
     enabled: !!id,
   });
 
+  const { data: savedEvents } = useQuery({
+    queryKey: ["my-saved-events", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "event")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: events } = await supabase
+        .from("events")
+        .select("id, title, image_url, location, start_date")
+        .in("id", ids);
+      const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
+    },
+    enabled: !!id,
+  });
+
+  const { data: savedSpecials } = useQuery({
+    queryKey: ["my-saved-specials", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "special")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: specials } = await supabase
+        .from("specials")
+        .select("id, title, image_url, business_name")
+        .in("id", ids);
+      const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
+    },
+    enabled: !!id,
+  });
   const { data: savedCount } = useQuery({
     queryKey: ["my-saved-count", id],
     queryFn: async () => {
