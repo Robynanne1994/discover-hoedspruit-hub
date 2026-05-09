@@ -1,35 +1,79 @@
-import BackButton from "@/components/BackButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Heart, Star, ArrowLeft, Search, Calendar, ChevronRight, Tag } from "lucide-react";
-import { format, parseISO, isFuture, isPast } from "date-fns";
+import { Heart, Search, ArrowLeft } from "lucide-react";
+import { format, parseISO, isFuture, isPast, differenceInDays } from "date-fns";
 
 type PrimaryTab = "listings" | "events" | "specials";
 
-const fontFamily = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+// Tokens
+const OLIVE = "#5C6446";
+const CREAM = "#EEE8DA";
+const CREAM_92 = "rgba(238, 232, 218, 0.92)";
+const CREAM_70 = "rgba(238, 232, 218, 0.70)";
+const CREAM_75 = "rgba(238, 232, 218, 0.75)";
+const CREAM_80 = "rgba(238, 232, 218, 0.80)";
+const CREAM_50 = "rgba(238, 232, 218, 0.50)";
+const CREAM_BORDER = "rgba(238, 232, 218, 0.35)";
+const INK = "#2A2A24";
+const MUTED = "#6B6A5E";
+const LINE = "#D9D2C0";
+const RUST = "#9B5A3C";
+
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const SERIF = "'Playfair Display', Georgia, serif";
+
+const STORAGE_KEY = "saved-page-state-v2";
+
+type Persisted = {
+  tab: PrimaryTab;
+  listingFilter: string;
+  eventFilter: string;
+  specialFilter: string;
+};
+
+const loadPersisted = (): Partial<Persisted> => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+};
 
 const SavedListings = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
+  const persisted = loadPersisted();
+
   const [primaryTab, setPrimaryTab] = useState<PrimaryTab>(() => {
     const tab = searchParams.get("tab");
-    if (tab === "events") return "events";
-    if (tab === "specials") return "specials";
+    if (tab === "events" || tab === "specials" || tab === "listings") return tab;
+    if (persisted.tab) return persisted.tab;
     return "listings";
   });
-  const [listingFilter, setListingFilter] = useState("All");
-  const [eventFilter, setEventFilter] = useState("All");
-  const [specialFilter, setSpecialFilter] = useState("All");
+  const [listingFilter, setListingFilter] = useState(persisted.listingFilter ?? "All");
+  const [eventFilter, setEventFilter] = useState(persisted.eventFilter ?? "All");
+  const [specialFilter, setSpecialFilter] = useState(persisted.specialFilter ?? "All");
   const [search, setSearch] = useState("");
 
-  // Fetch saved listings
+  // Persist
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ tab: primaryTab, listingFilter, eventFilter, specialFilter }),
+      );
+    } catch {}
+  }, [primaryTab, listingFilter, eventFilter, specialFilter]);
+
+  // Saved listings
   const { data: favourites, isLoading } = useQuery({
     queryKey: ["saved-listings-page", user?.id],
     queryFn: async () => {
@@ -41,41 +85,40 @@ const SavedListings = () => {
         .order("created_at", { ascending: false });
       if (!favs || favs.length === 0) return [];
 
-      const listingIds = favs.map((f) => f.item_id);
-
+      const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
         .select("id, title, image_url, location, google_rating, category_id, categories(title)")
-        .in("id", listingIds);
-
+        .in("id", ids);
       const { data: junctions } = await supabase
         .from("listing_categories")
         .select("listing_id, categories(id, title)")
-        .in("listing_id", listingIds);
+        .in("listing_id", ids);
 
-      const junctionMap: Record<string, string[]> = {};
+      const jmap: Record<string, string[]> = {};
       (junctions || []).forEach((j: any) => {
-        if (!junctionMap[j.listing_id]) junctionMap[j.listing_id] = [];
-        if (j.categories?.title) junctionMap[j.listing_id].push(j.categories.title);
+        if (!jmap[j.listing_id]) jmap[j.listing_id] = [];
+        if (j.categories?.title) jmap[j.listing_id].push(j.categories.title);
       });
 
-      const listingsMap = Object.fromEntries((listings || []).map((l: any) => [l.id, {
-        ...l,
-        categoryNames: [
-          ...(l.categories?.title ? [l.categories.title] : []),
-          ...(junctionMap[l.id] || []),
-        ].filter((v, i, a) => a.indexOf(v) === i),
-      }]));
-
-      return favs.map((f) => ({
-        ...f,
-        details: listingsMap[f.item_id],
-      })).filter((f) => f.details);
+      const lmap = Object.fromEntries(
+        (listings || []).map((l: any) => [
+          l.id,
+          {
+            ...l,
+            categoryNames: [
+              ...(l.categories?.title ? [l.categories.title] : []),
+              ...(jmap[l.id] || []),
+            ].filter((v, i, a) => a.indexOf(v) === i),
+          },
+        ]),
+      );
+      return favs.map((f) => ({ ...f, details: lmap[f.item_id] })).filter((f) => f.details);
     },
     enabled: !!user,
   });
 
-  // Fetch saved events
+  // Saved events
   const { data: savedEvents, isLoading: eventsLoading } = useQuery({
     queryKey: ["saved-events-page", user?.id],
     queryFn: async () => {
@@ -86,24 +129,15 @@ const SavedListings = () => {
         .eq("item_type", "event")
         .order("created_at", { ascending: false });
       if (!favs || favs.length === 0) return [];
-
-      const eventIds = favs.map((f) => f.item_id);
-      const { data: events } = await supabase
-        .from("events")
-        .select("*")
-        .in("id", eventIds);
-
-      const eventsMap = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
-
-      return favs.map((f) => ({
-        ...f,
-        details: eventsMap[f.item_id],
-      })).filter((f) => f.details);
+      const ids = favs.map((f) => f.item_id);
+      const { data: events } = await supabase.from("events").select("*").in("id", ids);
+      const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
+      return favs.map((f) => ({ ...f, details: map[f.item_id] })).filter((f) => f.details);
     },
     enabled: !!user,
   });
 
-  // Fetch saved specials
+  // Saved specials
   const { data: savedSpecials, isLoading: specialsLoading } = useQuery({
     queryKey: ["saved-specials-page", user?.id],
     queryFn: async () => {
@@ -114,19 +148,10 @@ const SavedListings = () => {
         .eq("item_type", "special")
         .order("created_at", { ascending: false });
       if (!favs || favs.length === 0) return [];
-
-      const specialIds = favs.map((f) => f.item_id);
-      const { data: specials } = await supabase
-        .from("specials")
-        .select("*")
-        .in("id", specialIds);
-
-      const specialsMap = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
-
-      return favs.map((f) => ({
-        ...f,
-        details: specialsMap[f.item_id],
-      })).filter((f) => f.details);
+      const ids = favs.map((f) => f.item_id);
+      const { data: specials } = await supabase.from("specials").select("*").in("id", ids);
+      const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
+      return favs.map((f) => ({ ...f, details: map[f.item_id] })).filter((f) => f.details);
     },
     enabled: !!user,
   });
@@ -149,429 +174,886 @@ const SavedListings = () => {
     },
   });
 
-  // Listing category filters
+  // Sub-filter pools
   const listingCategories = (() => {
-    if (!favourites || favourites.length === 0) return [];
-    const cats = new Set<string>();
-    favourites.forEach((f: any) => {
-      (f.details?.categoryNames || []).forEach((c: string) => cats.add(c));
-    });
-    return Array.from(cats).sort();
+    const set = new Set<string>();
+    (favourites || []).forEach((f: any) =>
+      (f.details?.categoryNames || []).forEach((c: string) => set.add(c)),
+    );
+    return Array.from(set).sort();
   })();
 
-  // Event tag filters
   const eventTags = (() => {
-    if (!savedEvents || savedEvents.length === 0) return [];
-    const tags = new Set<string>();
-    savedEvents.forEach((f: any) => {
-      if (f.details?.tag) tags.add(f.details.tag);
+    const set = new Set<string>();
+    (savedEvents || []).forEach((f: any) => {
+      if (f.details?.tag) set.add(f.details.tag);
     });
-    return Array.from(tags).sort();
+    return Array.from(set).sort();
   })();
 
-  // Special type filters
   const specialTypes = (() => {
-    if (!savedSpecials || savedSpecials.length === 0) return [];
-    const types = new Set<string>();
-    savedSpecials.forEach((f: any) => {
-      if (f.details?.special_type) types.add(f.details.special_type);
+    const set = new Set<string>();
+    (savedSpecials || []).forEach((f: any) => {
+      if (f.details?.special_type) set.add(f.details.special_type);
     });
-    return Array.from(types).sort();
+    return Array.from(set).sort();
   })();
 
-  // Filter listings
-  const filteredListings = (favourites?.filter((f: any) => {
+  // Filtered lists
+  const filteredListings = (favourites || []).filter((f: any) => {
     if (listingFilter !== "All") {
-      if (!(f.details?.categoryNames || []).some((c: string) => c.toLowerCase() === listingFilter.toLowerCase())) return false;
+      if (
+        !(f.details?.categoryNames || []).some(
+          (c: string) => c.toLowerCase() === listingFilter.toLowerCase(),
+        )
+      )
+        return false;
     }
-    if (search.trim()) {
-      if (!f.details?.title?.toLowerCase().includes(search.toLowerCase())) return false;
-    }
+    if (search.trim() && !f.details?.title?.toLowerCase().includes(search.toLowerCase()))
+      return false;
     return true;
-  }) || []);
+  });
 
-  // Filter events
-  const filteredEvents = (savedEvents?.filter((f: any) => {
+  const filteredEvents = (savedEvents || []).filter((f: any) => {
     const d = f.details;
     if (!d) return false;
     if (eventFilter === "Upcoming") {
-      try { if (!isFuture(parseISO(d.date))) return false; } catch { return false; }
+      try {
+        if (!isFuture(parseISO(d.start_date || d.date))) return false;
+      } catch {
+        return false;
+      }
     } else if (eventFilter === "Past") {
-      try { if (!isPast(parseISO(d.date))) return false; } catch { return false; }
+      try {
+        if (!isPast(parseISO(d.end_date || d.start_date || d.date))) return false;
+      } catch {
+        return false;
+      }
     } else if (eventFilter !== "All") {
       if (d.tag !== eventFilter) return false;
     }
-    if (search.trim()) {
-      if (!d.title?.toLowerCase().includes(search.toLowerCase())) return false;
-    }
+    if (search.trim() && !d.title?.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
-  }) || []);
+  });
 
-  // Filter specials
-  const filteredSpecials = (savedSpecials?.filter((f: any) => {
+  const filteredSpecials = (savedSpecials || []).filter((f: any) => {
     const d = f.details;
     if (!d) return false;
-    if (specialFilter !== "All") {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (specialFilter === "Active") {
+      if (!d.is_active) return false;
+      if (d.valid_until && new Date(d.valid_until) < today) return false;
+    } else if (specialFilter === "Expiring Soon") {
+      if (!d.valid_until) return false;
+      const days = differenceInDays(new Date(d.valid_until), today);
+      if (days < 0 || days > 7) return false;
+    } else if (specialFilter !== "All") {
       if (d.special_type !== specialFilter) return false;
     }
-    if (search.trim()) {
-      if (!d.title?.toLowerCase().includes(search.toLowerCase())) return false;
-    }
+    if (search.trim() && !d.title?.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
-  }) || []);
+  });
 
-  // Counts & subtitle
-  const activeCount = primaryTab === "listings"
-    ? filteredListings.length
-    : primaryTab === "events"
-      ? filteredEvents.length
-      : filteredSpecials.length;
+  // Counts (total saved per tab, not filtered)
+  const listingsCount = (favourites || []).length;
+  const eventsCount = (savedEvents || []).length;
+  const specialsCount = (savedSpecials || []).length;
 
-  const subtitleText = primaryTab === "listings"
-    ? `${activeCount} ${activeCount === 1 ? "place" : "places"} saved for later`
-    : primaryTab === "events"
-      ? `${activeCount} ${activeCount === 1 ? "event" : "events"} saved`
-      : `${activeCount} ${activeCount === 1 ? "special" : "specials"} saved`;
+  const activeCount =
+    primaryTab === "listings"
+      ? listingsCount
+      : primaryTab === "events"
+        ? eventsCount
+        : specialsCount;
 
-  const backButton = (
-    <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-      <BackButton />
+  // Lede
+  const lede = (() => {
+    if (primaryTab === "listings") {
+      return activeCount === 1
+        ? "1 place, kept for when you need it."
+        : `${activeCount} places, kept for when you need them.`;
+    }
+    if (primaryTab === "events") {
+      return activeCount === 1
+        ? "1 event, saved for the diary."
+        : `${activeCount} events, saved for the diary.`;
+    }
+    return activeCount === 1
+      ? "1 special, before it goes."
+      : `${activeCount} specials, before they go.`;
+  })();
+
+  const searchPlaceholder =
+    primaryTab === "listings"
+      ? "Search saved places"
+      : primaryTab === "events"
+        ? "Search saved events"
+        : "Search saved specials";
+
+  const subFilters: string[] =
+    primaryTab === "listings"
+      ? ["All", ...listingCategories]
+      : primaryTab === "events"
+        ? ["All", "Upcoming", "Past", ...eventTags]
+        : ["All", "Active", "Expiring Soon", ...specialTypes];
+
+  const activeSubFilter =
+    primaryTab === "listings"
+      ? listingFilter
+      : primaryTab === "events"
+        ? eventFilter
+        : specialFilter;
+
+  const setActiveSubFilter = (v: string) => {
+    if (primaryTab === "listings") setListingFilter(v);
+    else if (primaryTab === "events") setEventFilter(v);
+    else setSpecialFilter(v);
+  };
+
+  // ------- shells -------
+  const PageShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+    <div
+      className="min-h-screen"
+      style={{ background: OLIVE, paddingBottom: 100, fontFamily: SANS }}
+    >
+      {/* Top bar */}
+      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24, marginBottom: 0 }}>
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: "50%",
+            background: CREAM,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "none",
+            cursor: "pointer",
+          }}
+        >
+          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 1.6, color: INK }} />
+        </button>
+      </div>
+      {children}
     </div>
   );
 
   if (!loading && !user) {
     return (
-      <div className="min-h-screen" style={{ background: "transparent", paddingBottom: 84, fontFamily }}>
-        {backButton}
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-          <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>Saved</h1>
+      <PageShell>
+        <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 12,
+              fontWeight: 400,
+              letterSpacing: "2.4px",
+              textTransform: "uppercase",
+              color: CREAM_70,
+              marginBottom: 14,
+            }}
+          >
+            My Hoedspruit
+          </p>
+          <h1
+            style={{
+              fontFamily: SERIF,
+              fontStyle: "italic",
+              fontWeight: 300,
+              fontSize: 72,
+              lineHeight: 0.92,
+              letterSpacing: "-2.5px",
+              color: CREAM,
+              margin: 0,
+            }}
+          >
+            saved.
+          </h1>
         </div>
-        <div className="text-center" style={{ paddingTop: 60 }}>
-          <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-          <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
-          <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Sign in to see your saved items</p>
-          <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium mt-6">Sign In / Create Account</Button></Link>
+        <div style={{ textAlign: "center", paddingTop: 80, paddingLeft: 24, paddingRight: 24 }}>
+          <Heart
+            style={{
+              width: 48,
+              height: 48,
+              strokeWidth: 1.5,
+              color: CREAM_50,
+              margin: "0 auto",
+            }}
+          />
+          <h3
+            style={{
+              fontFamily: SERIF,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: 22,
+              color: CREAM_80,
+              marginTop: 16,
+            }}
+          >
+            Sign in to see your saved.
+          </h3>
+          <Link to="/auth">
+            <Button
+              className="rounded-full px-8 mt-6"
+              style={{ background: INK, color: CREAM, fontFamily: SANS }}
+            >
+              Sign In
+            </Button>
+          </Link>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   if (loading || isLoading || eventsLoading || specialsLoading) {
     return (
-      <div className="min-h-screen" style={{ background: "transparent", paddingBottom: 84, fontFamily }}>
-        {backButton}
-        <div style={{ paddingLeft: 24, paddingRight: 24 }}>
-          <Skeleton className="h-14 w-48 mb-2" />
-          <Skeleton className="h-4 w-40 mb-6" />
-          <Skeleton className="h-12 w-full rounded-[14px] mb-4" />
-          <div className="flex gap-2 mb-2">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-9 w-20 rounded-[20px]" />)}</div>
-          <div className="flex gap-2 mb-5">{[1, 2].map((i) => <Skeleton key={i} className="h-9 w-24 rounded-[20px]" />)}</div>
-          <div className="flex flex-col gap-4">{[1, 2, 3].map((i) => <Skeleton key={i} className="h-[200px] w-full rounded-[16px]" />)}</div>
+      <PageShell>
+        <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
+          <Skeleton className="h-3 w-28 mb-3" style={{ background: CREAM_BORDER }} />
+          <Skeleton className="h-16 w-40 mb-4" style={{ background: CREAM_BORDER }} />
+          <Skeleton className="h-5 w-64 mb-6" style={{ background: CREAM_BORDER }} />
+          <Skeleton
+            className="h-[52px] w-full rounded-full mb-5"
+            style={{ background: CREAM_BORDER }}
+          />
+          <div className="flex gap-2 mb-4">
+            {[1, 2, 3].map((i) => (
+              <Skeleton
+                key={i}
+                className="h-10 flex-1 rounded-full"
+                style={{ background: CREAM_BORDER }}
+              />
+            ))}
+          </div>
+          <div className="flex flex-col gap-4">
+            {[1, 2, 3].map((i) => (
+              <Skeleton
+                key={i}
+                className="h-[260px] w-full"
+                style={{ background: CREAM_BORDER, borderRadius: 24 }}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
-  const chipStyle = (active: boolean) => ({
-    background: active ? "#5B4632" : "rgba(18,18,20,0.06)",
-    border: "none",
-    borderRadius: 20,
-    padding: "8px 16px",
-    fontSize: 13,
-    fontWeight: 500,
-    color: active ? "#FFFFFF" : "#2B2420",
-    fontFamily,
-  } as const);
+  // ------- Empty states -------
+  const renderEmpty = () => {
+    const headline =
+      primaryTab === "listings"
+        ? "Nothing saved yet."
+        : primaryTab === "events"
+          ? "No events saved yet."
+          : "No specials saved yet.";
+    const sub =
+      primaryTab === "listings"
+        ? "Tap the heart on any listing to save it here."
+        : primaryTab === "events"
+          ? "Tap the heart on any event to save it here."
+          : "Tap the heart on any special to save it here.";
+    return (
+      <div style={{ textAlign: "center", paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
+        <Heart
+          style={{
+            width: 48,
+            height: 48,
+            strokeWidth: 1.5,
+            color: CREAM_50,
+            margin: "0 auto 16px",
+          }}
+        />
+        <h3
+          style={{
+            fontFamily: SERIF,
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: 22,
+            color: CREAM_80,
+            margin: 0,
+            marginBottom: 12,
+          }}
+        >
+          {headline}
+        </h3>
+        <p
+          style={{
+            fontFamily: SANS,
+            fontSize: 14,
+            fontWeight: 400,
+            lineHeight: 1.55,
+            color: CREAM_70,
+            maxWidth: 260,
+            margin: "0 auto",
+          }}
+        >
+          {sub}
+        </p>
+      </div>
+    );
+  };
 
-  const listingFilterOptions = ["All", ...listingCategories];
-  const eventFilterOptions = ["All", "Upcoming", "Past", ...eventTags];
-  const specialFilterOptions = ["All", ...specialTypes];
+  // ------- Listing card -------
+  const renderListings = () => {
+    if (filteredListings.length === 0) return renderEmpty();
+    return (
+      <div className="flex flex-col">
+        {filteredListings.map((fav: any) => {
+          const d = fav.details;
+          const rating = d.google_rating ? Number(d.google_rating) : null;
+          return (
+            <Link
+              key={fav.id}
+              to={`/listing/${fav.item_id}`}
+              className="block"
+              style={{
+                background: CREAM,
+                borderRadius: 24,
+                overflow: "hidden",
+                marginLeft: 24,
+                marginRight: 24,
+                marginBottom: 14,
+                transition: "opacity 200ms ease",
+              }}
+            >
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  height: 200,
+                  background: "#e6dfcf",
+                }}
+              >
+                {d.image_url && (
+                  <img
+                    src={d.image_url}
+                    alt={d.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                    loading="lazy"
+                  />
+                )}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeFavourite.mutate({
+                      item_id: fav.item_id,
+                      item_type: fav.item_type,
+                    });
+                  }}
+                  aria-label="Remove from saved"
+                  style={{
+                    position: "absolute",
+                    top: 12,
+                    right: 12,
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    background: "rgba(238, 232, 218, 0.4)",
+                    backdropFilter: "blur(10px)",
+                    WebkitBackdropFilter: "blur(10px)",
+                    border: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Heart
+                    style={{
+                      width: 16,
+                      height: 16,
+                      strokeWidth: 2,
+                      color: RUST,
+                      fill: RUST,
+                    }}
+                  />
+                </button>
+              </div>
+              <div style={{ padding: "18px 22px 22px" }}>
+                <h3
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 18,
+                    fontWeight: 400,
+                    lineHeight: 1.2,
+                    letterSpacing: "-0.2px",
+                    color: INK,
+                    margin: 0,
+                    marginBottom: 8,
+                  }}
+                >
+                  {d.title}
+                </h3>
+                <div className="flex items-center" style={{ gap: 8 }}>
+                  {rating && (
+                    <span style={{ fontFamily: SANS, fontSize: 13, color: MUTED }}>
+                      ★ {rating.toFixed(1)}
+                    </span>
+                  )}
+                  {rating && d.location && (
+                    <span
+                      style={{
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        background: MUTED,
+                        opacity: 0.6,
+                        display: "inline-block",
+                      }}
+                    />
+                  )}
+                  {d.location && (
+                    <span
+                      style={{
+                        fontFamily: SANS,
+                        fontSize: 13,
+                        color: MUTED,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {d.location}
+                    </span>
+                  )}
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    );
+  };
 
-  const searchPlaceholder = primaryTab === "listings"
-    ? "Search saved places..."
-    : primaryTab === "events"
-      ? "Search saved events..."
-      : "Search saved specials...";
+  // ------- Event/Special row card -------
+  const formatEventDate = (e: any) => {
+    if (e.recurrence) {
+      const base = String(e.recurrence).toUpperCase();
+      return e.start_time ? `${base} · ${e.start_time.toUpperCase()}` : base;
+    }
+    try {
+      const d = parseISO(e.start_date || e.date);
+      const dateStr = format(d, "d MMM").toUpperCase();
+      return e.start_time ? `${dateStr} · ${e.start_time.toUpperCase()}` : dateStr;
+    } catch {
+      return (e.date || "").toUpperCase();
+    }
+  };
 
-  const currentFilterOptions = primaryTab === "listings"
-    ? listingFilterOptions
-    : primaryTab === "events"
-      ? eventFilterOptions
-      : specialFilterOptions;
+  const renderEvents = () => {
+    if (filteredEvents.length === 0) return renderEmpty();
+    return (
+      <div
+        style={{
+          background: CREAM,
+          borderRadius: 24,
+          marginLeft: 24,
+          marginRight: 24,
+          padding: "6px 20px",
+          overflow: "hidden",
+        }}
+      >
+        {filteredEvents.map((fav: any, idx: number) => {
+          const e = fav.details;
+          return (
+            <Link
+              key={fav.id}
+              to={`/event/${fav.item_id}`}
+              className="flex items-center"
+              style={{
+                gap: 14,
+                paddingTop: 16,
+                paddingBottom: 16,
+                borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+              }}
+            >
+              <div
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: "50%",
+                  overflow: "hidden",
+                  background: "#e6dfcf",
+                  flexShrink: 0,
+                }}
+              >
+                {e.image_url && (
+                  <img
+                    src={e.image_url}
+                    alt={e.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 11.5,
+                    color: MUTED,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    margin: 0,
+                    marginBottom: 3,
+                  }}
+                >
+                  {formatEventDate(e)}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 15,
+                    color: INK,
+                    lineHeight: 1.25,
+                    letterSpacing: "-0.1px",
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {e.title}
+                </p>
+                {e.location && (
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 12.5,
+                      color: MUTED,
+                      margin: 0,
+                      marginTop: 2,
+                    }}
+                  >
+                    {e.location}
+                  </p>
+                )}
+              </div>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  color: INK,
+                  opacity: 0.7,
+                  flexShrink: 0,
+                }}
+              >
+                ↗
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    );
+  };
 
-  const activeFilter = primaryTab === "listings"
-    ? listingFilter
-    : primaryTab === "events"
-      ? eventFilter
-      : specialFilter;
+  const formatValidity = (sp: any) => {
+    if (!sp.valid_until) return "ongoing";
+    try {
+      const end = new Date(sp.valid_until);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const days = differenceInDays(end, today);
+      if (days < 0) return "expired";
+      if (days === 0) return "ends today";
+      if (days <= 7) return `ends in ${days} ${days === 1 ? "day" : "days"}`;
+      return `valid until ${format(end, "d MMM yyyy")}`;
+    } catch {
+      return "ongoing";
+    }
+  };
 
-  const setActiveFilter = (filter: string) => {
-    if (primaryTab === "listings") setListingFilter(filter);
-    else if (primaryTab === "events") setEventFilter(filter);
-    else setSpecialFilter(filter);
+  const renderSpecials = () => {
+    if (filteredSpecials.length === 0) return renderEmpty();
+    return (
+      <div
+        style={{
+          background: CREAM,
+          borderRadius: 24,
+          marginLeft: 24,
+          marginRight: 24,
+          padding: "6px 20px",
+          overflow: "hidden",
+        }}
+      >
+        {filteredSpecials.map((fav: any, idx: number) => {
+          const s = fav.details;
+          return (
+            <Link
+              key={fav.id}
+              to={`/specials/${fav.item_id}`}
+              className="flex items-center"
+              style={{
+                gap: 14,
+                paddingTop: 16,
+                paddingBottom: 16,
+                borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+              }}
+            >
+              <div
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  background: "#e6dfcf",
+                  flexShrink: 0,
+                }}
+              >
+                {s.image_url && (
+                  <img
+                    src={s.image_url}
+                    alt={s.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 11.5,
+                    color: MUTED,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    margin: 0,
+                    marginBottom: 3,
+                  }}
+                >
+                  {s.deal_label || s.special_type || "Special"}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 15,
+                    color: INK,
+                    lineHeight: 1.25,
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {s.title}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SERIF,
+                    fontStyle: "italic",
+                    fontSize: 12.5,
+                    color: MUTED,
+                    margin: 0,
+                    marginTop: 2,
+                  }}
+                >
+                  {formatValidity(s)}
+                </p>
+              </div>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  color: INK,
+                  opacity: 0.7,
+                  flexShrink: 0,
+                }}
+              >
+                ↗
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    );
   };
 
   return (
-    <div className="min-h-screen" style={{ background: "transparent", paddingBottom: 84, fontFamily }}>
-      {backButton}
-
-      {/* Title */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 4 }}>
-        <h1 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>Saved</h1>
-      </div>
-
-      {/* Subtitle */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
-        <p style={{ fontFamily, fontStyle: "italic", fontSize: 15, fontWeight: 400, lineHeight: 1.35, color: "rgba(18,18,20,0.55)" }}>{subtitleText}</p>
+    <PageShell>
+      {/* Hero */}
+      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <p
+          style={{
+            fontFamily: SANS,
+            fontSize: 12,
+            fontWeight: 400,
+            letterSpacing: "2.4px",
+            textTransform: "uppercase",
+            color: CREAM_70,
+            margin: 0,
+            marginBottom: 14,
+          }}
+        >
+          My Hoedspruit
+        </p>
+        <h1
+          style={{
+            fontFamily: SERIF,
+            fontStyle: "italic",
+            fontWeight: 300,
+            fontSize: 72,
+            lineHeight: 0.92,
+            letterSpacing: "-2.5px",
+            color: CREAM,
+            margin: 0,
+            marginBottom: 14,
+          }}
+        >
+          saved.
+        </h1>
+        <p
+          style={{
+            fontFamily: SERIF,
+            fontStyle: "italic",
+            fontWeight: 400,
+            fontSize: 17,
+            lineHeight: 1.4,
+            color: CREAM_75,
+            margin: 0,
+            maxWidth: 300,
+          }}
+        >
+          {lede}
+        </p>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 16 }}>
-        <div className="flex items-center" style={{ background: "#FFFFFF", border: "1px solid rgba(18,18,20,0.1)", borderRadius: 14, padding: "12px 16px", gap: 10 }}>
-          <Search style={{ width: 20, height: 20, strokeWidth: 1.8, color: "rgba(18,18,20,0.35)", flexShrink: 0 }} />
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 22 }}>
+        <div
+          className="flex items-center"
+          style={{
+            background: CREAM_92,
+            borderRadius: 999,
+            height: 52,
+            padding: "0 22px",
+            gap: 12,
+          }}
+        >
+          <Search
+            style={{ width: 18, height: 18, strokeWidth: 1.6, color: MUTED, flexShrink: 0 }}
+          />
           <input
             type="text"
             placeholder={searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="flex-1 bg-transparent outline-none"
-            style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "#2B2420" }}
+            style={{
+              fontFamily: SANS,
+              fontSize: 15,
+              fontWeight: 400,
+              color: INK,
+            }}
           />
         </div>
       </div>
 
-      {/* Primary type chips */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 8 }}>
-        <div className="flex flex-wrap" style={{ gap: 8 }}>
-          {(["listings", "events", "specials"] as const).map((tab) => {
-            const active = primaryTab === tab;
-            const label = tab === "listings" ? "Listings" : tab === "events" ? "Events" : "Specials";
+      {/* Master tabs */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
+        <div className="flex" style={{ gap: 8 }}>
+          {(
+            [
+              { key: "listings", label: "Listings", count: listingsCount },
+              { key: "events", label: "Events", count: eventsCount },
+              { key: "specials", label: "Specials", count: specialsCount },
+            ] as const
+          ).map((t) => {
+            const active = primaryTab === t.key;
             return (
               <button
-                key={tab}
-                onClick={() => { setPrimaryTab(tab); setSearch(""); }}
-                style={chipStyle(active)}
+                key={t.key}
+                onClick={() => {
+                  setPrimaryTab(t.key);
+                  setSearch("");
+                }}
+                style={{
+                  flex: 1,
+                  height: 40,
+                  borderRadius: 999,
+                  background: active ? INK : CREAM,
+                  color: active ? CREAM : INK,
+                  border: "none",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 6,
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  fontWeight: 400,
+                  letterSpacing: "0.1px",
+                }}
               >
-                {label}
+                <span>{t.label}</span>
+                <span
+                  style={{
+                    fontFamily: SERIF,
+                    fontStyle: "italic",
+                    fontWeight: 400,
+                    fontSize: 12,
+                    opacity: active ? 0.85 : 0.7,
+                  }}
+                >
+                  {t.count}
+                </span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Secondary category chips */}
-      {currentFilterOptions.length > 1 && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 20 }}>
-          <div className="flex flex-wrap" style={{ gap: 8 }}>
-            {currentFilterOptions.map((filter) => (
+      {/* Sub-filter pills */}
+      <div
+        style={{
+          paddingLeft: 24,
+          paddingRight: 24,
+          marginBottom: 24,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+        }}
+        className="[&::-webkit-scrollbar]:hidden"
+      >
+        <div className="flex" style={{ gap: 8 }}>
+          {subFilters.map((f) => {
+            const active = activeSubFilter === f;
+            return (
               <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
+                key={f}
+                onClick={() => setActiveSubFilter(f)}
                 className="whitespace-nowrap"
-                style={chipStyle(activeFilter === filter)}
+                style={{
+                  height: 32,
+                  padding: "0 16px",
+                  borderRadius: 999,
+                  background: active ? CREAM : "transparent",
+                  border: active ? "none" : `1px solid ${CREAM_BORDER}`,
+                  color: active ? INK : CREAM,
+                  fontFamily: SANS,
+                  fontSize: 12.5,
+                  fontWeight: 400,
+                  cursor: "pointer",
+                  flexShrink: 0,
+                }}
               >
-                {filter}
+                {f}
               </button>
-            ))}
-          </div>
+            );
+          })}
         </div>
-      )}
+      </div>
 
-      {/* Listings view */}
-      {primaryTab === "listings" && (
-        <>
-          {filteredListings.length === 0 && (
-            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
-              <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
-              <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Tap the heart on any listing to save it here</p>
-            </div>
-          )}
-          {filteredListings.length > 0 && (
-            <div className="flex flex-col">
-              {filteredListings.map((fav: any) => {
-                const detail = fav.details;
-                if (!detail) return null;
-                const rating = detail.google_rating ? Number(detail.google_rating) : null;
-                const location = detail.location;
-                return (
-                  <Link key={fav.id} to={`/listing/${fav.item_id}`} className="block">
-                    <div
-                      className="relative overflow-hidden active:scale-[0.98]"
-                      style={{
-                        borderRadius: 16,
-                        marginLeft: 24,
-                        marginRight: 24,
-                        marginBottom: 16,
-                        transition: "transform 0.15s ease",
-                      }}
-                    >
-                      <div style={{ width: "100%", aspectRatio: "16/10", background: "#f0f0f0", position: "relative" }}>
-                        {detail.image_url ? (
-                          <img src={detail.image_url} alt={detail.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }} loading="lazy" />
-                        ) : (
-                          <div style={{ width: "100%", height: "100%", background: "#f0f0f0" }} />
-                        )}
-                        {/* Gradient overlay */}
-                        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.02) 100%)" }} />
-                        {/* Heart button */}
-                        <button
-                          onClick={(e) => { e.preventDefault(); e.stopPropagation(); removeFavourite.mutate({ item_id: fav.item_id, item_type: fav.item_type }); }}
-                          className="absolute flex items-center justify-center active:scale-[0.85]"
-                          style={{ top: 12, right: 12, width: 36, height: 36, borderRadius: "50%", background: "rgba(255,255,255,0.2)", backdropFilter: "blur(8px)", transition: "transform 0.12s ease" }}
-                          aria-label="Remove from saved"
-                        >
-                          <Heart style={{ width: 18, height: 18, color: "#FFFFFF", fill: "#FFFFFF" }} />
-                        </button>
-                        {/* Card text */}
-                        <div className="absolute bottom-0 left-0 right-0" style={{ padding: 16 }}>
-                          <h3 style={{ fontFamily: "'Helvetica World', Helvetica, Arial, sans-serif", fontSize: 18, fontWeight: 600, color: "#FFFFFF", textTransform: "none", lineHeight: 1.2, letterSpacing: "0.01em", marginBottom: 4 }}>{detail.title?.toLowerCase()}</h3>
-                          <div className="flex items-center" style={{ gap: 6 }}>
-                            {rating && (
-                              <>
-                                <Star style={{ width: 14, height: 14, color: "#D4964A", fill: "#D4964A", flexShrink: 0 }} />
-                                <span style={{ fontFamily, fontSize: 13, fontWeight: 600, color: "#FFFFFF" }}>{rating.toFixed(1)}</span>
-                              </>
-                            )}
-                            {rating && location && <span style={{ fontFamily, fontSize: 13, color: "rgba(255,255,255,0.5)" }}>·</span>}
-                            {location && <span style={{ fontFamily, fontSize: 13, fontWeight: 400, color: "rgba(255,255,255,0.65)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{location}</span>}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Events view */}
-      {primaryTab === "events" && (
-        <>
-          {filteredEvents.length === 0 && (
-            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
-              <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
-              <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save events from the events page to keep track of them here</p>
-            </div>
-          )}
-          {filteredEvents.length > 0 && (
-            <div className="flex flex-col" style={{ paddingLeft: 24, paddingRight: 24 }}>
-              {filteredEvents.map((fav: any, idx: number) => {
-                const evt = fav.details;
-                if (!evt) return null;
-                let dateLabel = "";
-                let timeLabel = "";
-                try {
-                  const d = parseISO(evt.date);
-                  dateLabel = format(d, "d MMM yyyy").toUpperCase();
-                } catch { dateLabel = evt.date || ""; }
-                if (evt.start_time) timeLabel = ` · ${evt.start_time}`;
-
-                return (
-                  <Link
-                    key={fav.id}
-                    to={`/event/${fav.item_id}`}
-                    className="flex items-center active:scale-[0.98]"
-                    style={{
-                      gap: 14,
-                      paddingTop: 14,
-                      paddingBottom: 14,
-                      borderBottom: idx < filteredEvents.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                      transition: "transform 0.15s ease",
-                    }}
-                  >
-                    <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0 }}>
-                      {evt.image_url ? (
-                        <img src={evt.image_url} alt={evt.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      ) : (
-                        <div className="flex items-center justify-center w-full h-full">
-                          <Calendar style={{ width: 22, height: 22, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)" }} />
-                        </div>
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontFamily, fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-                        {dateLabel}{timeLabel}
-                      </p>
-                      <p style={{ fontFamily, fontSize: 15, fontWeight: 500, color: "#2B2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {evt.title}
-                      </p>
-                      {evt.location && <p style={{ fontFamily, fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{evt.location}</p>}
-                    </div>
-                    <ChevronRight style={{ width: 16, height: 16, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Specials view */}
-      {primaryTab === "specials" && (
-        <>
-          {filteredSpecials.length === 0 && (
-            <div className="text-center" style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
-              <Heart style={{ width: 48, height: 48, strokeWidth: 1.5, color: "rgba(18,18,20,0.2)", margin: "0 auto" }} />
-              <h3 style={{ fontFamily, fontSize: 20, fontWeight: 400, color: "#020202", marginTop: 16, textTransform: "none" }}>Nothing saved yet</h3>
-              <p style={{ fontFamily, fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.45)", marginTop: 4, textAlign: "center" }}>Save specials from the specials page to keep track of them here</p>
-            </div>
-          )}
-          {filteredSpecials.length > 0 && (
-            <div className="flex flex-col" style={{ paddingLeft: 24, paddingRight: 24 }}>
-              {filteredSpecials.map((fav: any, idx: number) => {
-                const sp = fav.details;
-                if (!sp) return null;
-                let validLabel = "Ongoing";
-                if (sp.valid_until) {
-                  try {
-                    validLabel = `Valid until ${format(new Date(sp.valid_until), "d MMM yyyy")}`;
-                  } catch { validLabel = "Ongoing"; }
-                }
-
-                return (
-                  <Link
-                    key={fav.id}
-                    to={`/specials/${fav.item_id}`}
-                    className="flex items-center active:scale-[0.98]"
-                    style={{
-                      gap: 14,
-                      paddingTop: 14,
-                      paddingBottom: 14,
-                      borderBottom: idx < filteredSpecials.length - 1 ? "1px solid rgba(18,18,20,0.06)" : "none",
-                      transition: "transform 0.15s ease",
-                    }}
-                  >
-                    <div style={{ width: 60, height: 60, borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, position: "relative" }}>
-                      {sp.image_url ? (
-                        <img src={sp.image_url} alt={sp.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      ) : (
-                        <div className="flex items-center justify-center w-full h-full">
-                          <Tag style={{ width: 22, height: 22, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)" }} />
-                        </div>
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontFamily, fontSize: 11, fontWeight: 600, color: "rgba(18,18,20,0.35)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 4 }}>
-                        {sp.deal_label} · {sp.business_name}
-                      </p>
-                      <p style={{ fontFamily, fontSize: 15, fontWeight: 500, color: "#2B2420", lineHeight: 1.2, marginBottom: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {sp.title}
-                      </p>
-                      <p style={{ fontFamily, fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{validLabel}</p>
-                    </div>
-                    <ChevronRight style={{ width: 16, height: 16, strokeWidth: 1.8, color: "rgba(18,18,20,0.2)", flexShrink: 0 }} />
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </>
-      )}
-    </div>
+      {/* Content */}
+      {primaryTab === "listings" && renderListings()}
+      {primaryTab === "events" && renderEvents()}
+      {primaryTab === "specials" && renderSpecials()}
+    </PageShell>
   );
 };
 
