@@ -782,10 +782,34 @@ const Events = () => {
                   fontSize: 18,
                   color: "rgba(238,232,218,0.85)",
                   margin: 0,
+                  marginBottom: tagFilter ? 14 : 0,
                 }}
               >
-                Nothing on for this view. Try another time period.
+                {tagFilter
+                  ? `Nothing on for this view with the "${tagFilter}" filter. Try another time period or remove filters to see what else is on.`
+                  : "Nothing on for this view. Try another time period."}
               </p>
+              {tagFilter && (
+                <button
+                  onClick={() => setTagFilter(null)}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    padding: 0,
+                    fontFamily: SANS,
+                    fontSize: 13,
+                    fontWeight: 400,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    color: COLOR.cream,
+                    textDecoration: "underline",
+                    textUnderlineOffset: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  Remove filters
+                </button>
+              )}
             </div>
           )}
         </>
