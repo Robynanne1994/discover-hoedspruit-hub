@@ -160,7 +160,7 @@ const BusinessEventForm = ({ mode }: Props) => {
   }
 
   return (
-    <BusinessShell theme="dark" title={mode === "new" ? "Post an event" : "Edit event"} back="/business/events">
+    <BusinessShell title={mode === "new" ? "Post an event" : "Edit event"} back="/business/events">
       {status && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
@@ -263,7 +263,7 @@ const BusinessEventForm = ({ mode }: Props) => {
           </label>
         </Card>
 
-        <Button full onClick={submit} disabled={busy || !title} style={{ background: "#C5BCAA", color: "#020202" }}>
+        <Button full onClick={submit} disabled={busy || !title}>
           {busy ? "Sending..." : feature ? "Pay and submit for review" : "Send for review"}
         </Button>
         <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>

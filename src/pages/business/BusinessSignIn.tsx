@@ -34,7 +34,7 @@ const BusinessSignIn = () => {
   };
 
   return (
-    <BusinessShell title="Business sign in" back="/my-account">
+    <BusinessShell title="Welcome back" back="/business/start">
       <div style={{ marginTop: 12, marginBottom: 36 }}>
         <H2>Welcome back</H2>
         <Body soft style={{ marginTop: 8 }}>Sign in to manage your listing.</Body>
