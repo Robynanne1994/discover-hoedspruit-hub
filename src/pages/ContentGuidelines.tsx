@@ -43,7 +43,7 @@ const ContentGuidelines = () => (
       </P>
     </Section>
 
-    <Section heading="reporting and enforcement">
+    <Section heading="reporting & enforcement">
       <P>
         If you see something that breaks these guidelines, report it through the app or email us. We review reports as quickly as we can and may remove content, warn users, or suspend accounts depending on what we find. Serious or repeated breaches can lead to a permanent ban.
       </P>
