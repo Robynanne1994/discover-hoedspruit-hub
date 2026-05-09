@@ -1,17 +1,54 @@
-import PolicyPageLayout from "@/components/PolicyPageLayout";
+import { LegalPage, Section, P, List, Em, A } from "@/components/legal/LegalPage";
 
-const sections = [
-  { heading: "What Are Cookies", body: "Cookies are small text files stored on your device when you use a website or app. They help remember your preferences, improve performance and provide a better experience." },
-  { heading: "How We Use Cookies", body: "Hello Hoedspruit uses cookies and similar technologies for the following purposes:\n- Essential cookies: these are necessary for the app to function correctly, including keeping you logged in and remembering your session\n- Analytics cookies: these help us understand how users interact with the app so we can improve features and performance\n- Preference cookies: these remember your settings and choices to personalise your experience" },
-  { heading: "Third-Party Cookies", body: "Some features of the app may use third-party services (such as analytics providers or embedded content) that set their own cookies. We do not control these cookies. Please refer to the relevant third party's cookie policy for more information." },
-  { heading: "Managing Cookies", body: "You can manage or disable cookies through your device settings or browser preferences. Please note that disabling certain cookies may affect the functionality of the app." },
-  { heading: "Your Consent", body: "In accordance with South Africa's POPIA and the Electronic Communications and Transactions Act, we will obtain your consent before placing non-essential cookies on your device. You can withdraw your consent at any time by adjusting your settings." },
-  { heading: "Changes to This Policy", body: "We may update this Cookie Policy from time to time. Changes will be reflected on this page with an updated date." },
-  { heading: "Contact", body: "If you have questions about our use of cookies, contact us at admin@hellohoedspruit.co." },
-];
+const EMAIL = "hellohoedspruit@gmail.com";
 
 const CookiePolicy = () => (
-  <PolicyPageLayout title="Cookie Policy" lastUpdated="Last updated: April 2026" sections={sections} />
+  <LegalPage
+    title="cookie policy."
+    footer="We use cookies, but only the polite ones. Tap below if you'd like to know more."
+  >
+    <Section heading="what are cookies">
+      <P>
+        Cookies are small text files placed on your device when you visit a website or app. They help the service remember things about you, like whether you're signed in or what you've looked at, so it doesn't have to ask you the same question every time.
+      </P>
+    </Section>
+
+    <Section heading="how we use cookies">
+      <P last>We use cookies and similar technologies for a few practical reasons:</P>
+      <List
+        items={[
+          "To keep you signed in to your account between visits.",
+          "To remember your preferences, like which tabs you last opened on the saved page.",
+          "To understand how the app is used so we can make it better.",
+          "To keep the service secure and detect unusual activity.",
+        ]}
+      />
+    </Section>
+
+    <Section heading="third-party cookies">
+      <P>
+        Some cookies are set by third parties we work with, such as our authentication and analytics providers. These providers have their own privacy policies, and we only use ones we trust to handle your data with the same care we do.
+      </P>
+    </Section>
+
+    <Section heading="managing your preferences">
+      <P>
+        Most browsers and devices let you control cookies through their settings. You can block them, delete them, or be warned before one is set. Keep in mind that turning off cookies may break parts of the app, like staying signed in.
+      </P>
+    </Section>
+
+    <Section heading="changes to this policy">
+      <P>
+        We may update this policy from time to time. When we do, we'll change the date at the top of this page. Continued use of the app after changes are posted means you accept the updated policy.
+      </P>
+    </Section>
+
+    <Section heading="contact">
+      <P last>
+        Questions about cookies or anything else on this page, write to us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+      </P>
+    </Section>
+  </LegalPage>
 );
 
 export default CookiePolicy;
