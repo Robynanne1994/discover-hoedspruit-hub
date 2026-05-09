@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
@@ -97,6 +97,36 @@ const MyProfile = () => {
   }, [authLoading, user, navigate]);
 
   const id = user?.id;
+  const queryClient = useQueryClient();
+
+  const removeFavourite = useMutation({
+    mutationFn: async ({ item_id, item_type }: { item_id: string; item_type: string }) => {
+      if (!id) return;
+      await supabase
+        .from("favourites")
+        .delete()
+        .eq("user_id", id)
+        .eq("item_id", item_id)
+        .eq("item_type", item_type);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-saved-listings"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-events"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-specials"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-count"] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["favourite"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-events-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-specials-page"] });
+    },
+  });
+
+  const handleUnsave = (e: React.MouseEvent, item_id: string, item_type: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    removeFavourite.mutate({ item_id, item_type });
+  };
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["my-profile", id],
@@ -659,7 +689,10 @@ const MyProfile = () => {
                       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                     />
                   )}
-                  <div
+                  <button
+                    type="button"
+                    onClick={(e) => handleUnsave(e, it.id, "listing")}
+                    aria-label="Remove from saved"
                     style={{
                       position: "absolute",
                       top: 12,
@@ -668,13 +701,16 @@ const MyProfile = () => {
                       height: 32,
                       borderRadius: "50%",
                       background: "rgba(255,255,255,0.92)",
+                      border: "none",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      cursor: "pointer",
+                      padding: 0,
                     }}
                   >
                     <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
-                  </div>
+                  </button>
                 </div>
                 <div style={{ padding: "16px 18px 18px" }}>
                   <div
@@ -731,9 +767,9 @@ const MyProfile = () => {
                   {it.image_url && (
                     <img src={it.image_url} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   )}
-                  <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <button type="button" onClick={(e) => handleUnsave(e, it.id, "event")} aria-label="Remove from saved" style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 }}>
                     <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
-                  </div>
+                  </button>
                 </div>
                 <div style={{ padding: "16px 18px 18px" }}>
                   <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 17, lineHeight: 1.2, letterSpacing: "-0.2px", color: INK, marginBottom: 6 }}>
@@ -769,9 +805,9 @@ const MyProfile = () => {
                   {it.image_url && (
                     <img src={it.image_url} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   )}
-                  <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <button type="button" onClick={(e) => handleUnsave(e, it.id, "special")} aria-label="Remove from saved" style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 }}>
                     <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
-                  </div>
+                  </button>
                 </div>
                 <div style={{ padding: "16px 18px 18px" }}>
                   <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 17, lineHeight: 1.2, letterSpacing: "-0.2px", color: INK, marginBottom: 6 }}>
