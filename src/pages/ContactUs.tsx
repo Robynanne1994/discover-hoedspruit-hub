@@ -205,6 +205,7 @@ const ContactUs = () => {
             color: CREAM,
             margin: 0,
             marginBottom: 18,
+            textTransform: "lowercase",
           }}
         >
           get in touch.
