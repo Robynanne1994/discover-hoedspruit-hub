@@ -337,11 +337,13 @@ const Categories = () => {
       ) : (
         <>
           {/* In the spotlight */}
-          {featured && (
+          {featuredCategories.length > 0 && (
             <>
               <SectionHead title="the essentials" />
-              <div style={{ padding: "0 24px", marginBottom: 28 }}>
+              <div style={{ padding: "0 24px", marginBottom: 28, display: "flex", flexDirection: "column", gap: 16 }}>
+                {featuredCategories.map((featured) => (
                 <Link
+                  key={featured.id}
                   to={`/category/${featured.id}`}
                   style={{
                     display: "block",
@@ -408,6 +410,7 @@ const Categories = () => {
                     </p>
                   </div>
                 </Link>
+                ))}
               </div>
             </>
           )}
