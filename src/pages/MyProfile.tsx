@@ -713,6 +713,82 @@ const MyProfile = () => {
         </section>
       )}
 
+      {/* Your events */}
+      {!!savedEvents?.length && (
+        <section style={{ marginBottom: 32 }}>
+          <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 28, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0, textTransform: "lowercase" }}>
+              your events
+            </h2>
+            <Link to="/saved?tab=events" style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "1.8px", textTransform: "uppercase", color: CREAM, opacity: 0.75, textDecoration: "none" }}>
+              See All
+            </Link>
+          </div>
+          <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingLeft: 24, paddingRight: 24, scrollbarWidth: "none" }} className="no-scrollbar">
+            {savedEvents.map((it: any) => (
+              <Link key={it.id} to={`/events/${it.id}`} style={{ flex: "0 0 auto", width: 240, background: CREAM, borderRadius: 20, overflow: "hidden", textDecoration: "none" }}>
+                <div style={{ position: "relative", width: "100%", height: 180, background: "#d6d6d6" }}>
+                  {it.image_url && (
+                    <img src={it.image_url} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  )}
+                  <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
+                  </div>
+                </div>
+                <div style={{ padding: "16px 18px 18px" }}>
+                  <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 17, lineHeight: 1.2, letterSpacing: "-0.2px", color: INK, marginBottom: 6 }}>
+                    {titleCase(it.title)}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: SANS, fontSize: 12.5, color: MUTED }}>
+                    {it.start_date && <span>{new Date(it.start_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>}
+                    {it.start_date && it.location && <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6 }} />}
+                    {it.location && <span>{it.location}</span>}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Your deals */}
+      {!!savedSpecials?.length && (
+        <section style={{ marginBottom: 32 }}>
+          <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 28, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0, textTransform: "lowercase" }}>
+              your deals
+            </h2>
+            <Link to="/saved?tab=specials" style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "1.8px", textTransform: "uppercase", color: CREAM, opacity: 0.75, textDecoration: "none" }}>
+              See All
+            </Link>
+          </div>
+          <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingLeft: 24, paddingRight: 24, scrollbarWidth: "none" }} className="no-scrollbar">
+            {savedSpecials.map((it: any) => (
+              <Link key={it.id} to={`/specials/${it.id}`} style={{ flex: "0 0 auto", width: 240, background: CREAM, borderRadius: 20, overflow: "hidden", textDecoration: "none" }}>
+                <div style={{ position: "relative", width: "100%", height: 180, background: "#d6d6d6" }}>
+                  {it.image_url && (
+                    <img src={it.image_url} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  )}
+                  <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
+                  </div>
+                </div>
+                <div style={{ padding: "16px 18px 18px" }}>
+                  <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 17, lineHeight: 1.2, letterSpacing: "-0.2px", color: INK, marginBottom: 6 }}>
+                    {titleCase(it.title)}
+                  </div>
+                  {it.business_name && (
+                    <div style={{ fontFamily: SANS, fontSize: 12.5, color: MUTED }}>
+                      {titleCase(it.business_name)}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Your activity */}
       <section style={{ marginBottom: 8 }}>
         <div
