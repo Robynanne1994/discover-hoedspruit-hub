@@ -282,70 +282,42 @@ const MyProfile = () => {
         color: CREAM,
       }}
     >
-      {/* Cover */}
+      {/* Top bar */}
       <div
         style={{
-          position: "relative",
-          width: "100%",
-          height: 240,
-          overflow: "hidden",
-          background: coverUrl
-            ? `url(${coverUrl}) center/cover no-repeat`
-            : "linear-gradient(180deg, #C18866 0%, #8B5C3E 50%, #5C6446 100%)",
+          padding: "60px 20px 0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(ellipse at 30% 60%, rgba(0,0,0,0.18) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 60%)",
-          }}
-        />
-        {/* Top icons */}
-        <div
-          style={{
-            position: "absolute",
-            top: 60,
-            left: 20,
-            right: 20,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            zIndex: 3,
-          }}
-        >
-          <CircleBtn label="Back" onClick={() => navigate(-1)}>
-            <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
+        <CircleBtn label="Back" onClick={() => navigate(-1)}>
+          <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
+        </CircleBtn>
+        <div style={{ display: "flex", gap: 8 }}>
+          <CircleBtn label="Share profile" onClick={handleShare}>
+            <Share2 size={16} strokeWidth={1.6} color={INK} />
           </CircleBtn>
-          <div style={{ display: "flex", gap: 8 }}>
-            <CircleBtn label="Share profile" onClick={handleShare}>
-              <Share2 size={16} strokeWidth={1.6} color={INK} />
-            </CircleBtn>
-            <CircleBtn label="More" onClick={() => setMenuOpen(true)}>
-              <MoreVertical size={16} strokeWidth={1.6} color={INK} />
-            </CircleBtn>
-          </div>
+          <CircleBtn label="More" onClick={() => setMenuOpen(true)}>
+            <MoreVertical size={16} strokeWidth={1.6} color={INK} />
+          </CircleBtn>
         </div>
+      </div>
 
-        {/* Cover eyebrow */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 14,
-            left: 24,
-            fontFamily: SANS,
-            fontSize: 11,
-            fontWeight: 400,
-            letterSpacing: 2.4,
-            textTransform: "uppercase",
-            color: CREAM,
-            opacity: 0.85,
-            zIndex: 3,
-          }}
-        >
-          Your Profile · Public View
-        </div>
+      {/* Eyebrow */}
+      <div
+        style={{
+          padding: "18px 24px 0",
+          fontFamily: SANS,
+          fontSize: 11,
+          fontWeight: 400,
+          letterSpacing: 2.4,
+          textTransform: "uppercase",
+          color: CREAM,
+          opacity: 0.85,
+        }}
+      >
+        Your Profile · Public View
       </div>
 
       {/* Masthead */}
