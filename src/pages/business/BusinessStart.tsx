@@ -30,7 +30,7 @@ const BusinessStart = () => {
     onClick: () => void;
     bg: string;
     iconBg: string;
-    Icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
+    Icon: LucideIcon;
     title: string;
     description: string;
     tag: string;
