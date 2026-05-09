@@ -360,6 +360,7 @@ const Notifications = () => {
             color: COLORS.cream,
             margin: 0,
             marginBottom: 14,
+            textTransform: "lowercase",
           }}
         >
           notifications.
