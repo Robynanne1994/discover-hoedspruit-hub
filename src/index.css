@@ -261,6 +261,9 @@ body {
     @apply text-[53px] leading-[1];
     text-transform: lowercase !important;
   }
+  h1.title-cap {
+    text-transform: capitalize !important;
+  }
   h2 {
     @apply text-[28px] leading-[1];
   }
