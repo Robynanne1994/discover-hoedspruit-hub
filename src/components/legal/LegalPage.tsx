@@ -161,6 +161,7 @@ export const Section = ({ heading, children }: { heading: string; children: Reac
         color: C.cream,
         margin: 0,
         marginBottom: 14,
+        textTransform: "lowercase",
       }}
     >
       {heading}
