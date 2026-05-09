@@ -48,7 +48,7 @@ import EventDetail from "./pages/EventDetail.tsx";
 import AccountSettings from "./pages/AccountSettings.tsx";
 import AccountInfo from "./pages/AccountInfo.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
-import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+
 import TermsOfUse from "./pages/TermsOfUse.tsx";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage.tsx";
 import CookiePolicy from "./pages/CookiePolicy.tsx";
@@ -139,7 +139,7 @@ const App = () => (
               <Route path="/account-settings" element={<AccountSettings />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
               <Route path="/terms" element={<TermsPolicies />} />
-              <Route path="/terms/privacy" element={<PrivacyPolicy />} />
+              
               <Route path="/terms-of-use" element={<TermsOfUse />} />
               <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
               <Route path="/cookie-policy" element={<CookiePolicy />} />
