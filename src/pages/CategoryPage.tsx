@@ -440,6 +440,7 @@ const CategoryPage = () => {
             letterSpacing: "-1.8px",
             color: C.cream,
             margin: 0,
+            textTransform: "lowercase",
           }}
         >
           {titleWithDot}
