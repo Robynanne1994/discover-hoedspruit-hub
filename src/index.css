@@ -259,6 +259,7 @@ body {
 
   h1 {
     @apply text-[53px] leading-[1];
+    text-transform: lowercase !important;
   }
   h2 {
     @apply text-[28px] leading-[1];
