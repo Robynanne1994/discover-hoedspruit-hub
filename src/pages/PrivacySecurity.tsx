@@ -315,7 +315,7 @@ const PrivacySecurity = () => {
       {/* Bottom links */}
       <div style={{ ...cardBase, marginBottom: 12 }}>
         {[
-          { icon: FileText, label: "Read Full Privacy Policy", to: "/terms/privacy" },
+          { icon: FileText, label: "Read Full Privacy Policy", to: "/privacy-policy" },
           { icon: FileText, label: "View Terms & Policies", to: "/terms" },
           { icon: Mail, label: "Contact Us About Privacy", to: "/contact", external: false },
         ].map((row, i, arr) => {
