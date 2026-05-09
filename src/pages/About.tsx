@@ -176,7 +176,7 @@ const About = () => {
               A business account lets you claim your listing for personal edits, post specials and share what's on. Register in a few minutes.
             </p>
             <button
-              onClick={() => navigate("/business/start")}
+              onClick={() => navigate("/for-business")}
               onPointerDown={press}
               onPointerUp={release}
               onPointerLeave={release}

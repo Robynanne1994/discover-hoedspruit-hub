@@ -171,6 +171,8 @@ const App = () => (
               </Route>
               <Route path="/business/sign-in" element={<BusinessSignIn />} />
               <Route path="/business/start" element={<BusinessStart />} />
+              <Route path="/for-business" element={<BusinessStart />} />
+              <Route path="/plans" element={<BusinessStart />} />
               <Route path="/business/sign-up" element={<BusinessSignUp />} />
               <Route path="/business/claim" element={<BusinessClaim />} />
               <Route element={<BusinessGate />}>

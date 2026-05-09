@@ -345,7 +345,7 @@ const Advertise = () => {
               Pick a plan that fits, get your business live on the app, and start reaching the Hoedspruit community this week.
             </p>
             <button
-              onClick={() => navigate("/plans")}
+              onClick={() => navigate("/for-business")}
               {...tap}
               style={{
                 background: CREAM, color: INK, border: "none",

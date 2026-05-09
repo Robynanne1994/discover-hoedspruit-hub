@@ -52,7 +52,7 @@ const BusinessDashboard = () => {
       const [{ count: specialsCount }, { count: eventsCount }, { count: featuredCount }] = await Promise.all([
         supabase.from("specials").select("id", { count: "exact", head: true }).eq("business_id", listing.id).eq("is_active", true),
         supabase.from("events").select("id", { count: "exact", head: true }).eq("business_id", listing.id).gte("start_date", today),
-        supabase.from("specials").select("id", { count: "exact", head: true }).eq("business_id", listing.id).eq("is_active", true),
+        supabase.from("feature_requests").select("id", { count: "exact", head: true }).eq("owner_id", user!.id).eq("status", "approved"),
       ]);
 
       const [{ data: pSp }, { data: pEv }, { data: pLi }] = await Promise.all([
@@ -74,7 +74,7 @@ const BusinessDashboard = () => {
   }, [listing]);
 
   if (loading) return <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark"><Small style={{ color: "rgba(255,255,255,0.7)" }}>Loading...</Small></BusinessShell>;
-1
+
   return (
     <BusinessShell title="BUSINESS HUB" back="/my-account" theme="dark">
       <div style={{ marginTop: 12, marginBottom: 24 }}>

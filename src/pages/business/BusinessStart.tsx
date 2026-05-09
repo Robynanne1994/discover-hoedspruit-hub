@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, Store, ShieldCheck, type LucideIcon } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Search } from "lucide-react";
 
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
@@ -25,109 +25,6 @@ const BusinessStart = () => {
       "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
     document.head.appendChild(link);
   }, []);
-
-  const renderCard = (opts: {
-    onClick: () => void;
-    bg: string;
-    iconBg: string;
-    Icon: LucideIcon;
-    title: string;
-    description: string;
-    tag: string;
-  }) => (
-    <button
-      onClick={opts.onClick}
-      style={{
-        position: "relative",
-        display: "flex",
-        gap: 16,
-        alignItems: "flex-start",
-        width: "calc(100% - 48px)",
-        marginLeft: 24,
-        marginRight: 24,
-        marginBottom: 14,
-        background: opts.bg,
-        borderRadius: 24,
-        border: "none",
-        padding: "24px 22px",
-        cursor: "pointer",
-        textAlign: "left",
-        transition: "transform 150ms ease-out",
-      }}
-      onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.985)")}
-      onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-      onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-    >
-      <div
-        style={{
-          width: 48,
-          height: 48,
-          borderRadius: "50%",
-          background: opts.iconBg,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <opts.Icon size={22} color={CREAM} strokeWidth={1.6} />
-      </div>
-      <div style={{ flex: 1, minWidth: 0, paddingRight: 32 }}>
-        <h3
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 24,
-            lineHeight: 1.05,
-            letterSpacing: "-0.4px",
-            color: INK,
-            margin: 0,
-          }}
-        >
-          {opts.title}
-        </h3>
-        <p
-          style={{
-            fontFamily: SANS,
-            fontSize: 14,
-            fontWeight: 400,
-            lineHeight: 1.55,
-            color: "rgba(42, 42, 36, 0.8)",
-            marginTop: 8,
-            marginBottom: 10,
-          }}
-        >
-          {opts.description}
-        </p>
-        <p
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 12.5,
-            color: MUTED,
-            margin: 0,
-          }}
-        >
-          {opts.tag}
-        </p>
-      </div>
-      <span
-        aria-hidden
-        style={{
-          position: "absolute",
-          top: 24,
-          right: 22,
-          fontSize: 18,
-          color: INK,
-          lineHeight: 1,
-        }}
-      >
-        ›
-      </span>
-    </button>
-  );
 
   return (
     <div
@@ -160,7 +57,7 @@ const BusinessStart = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, marginBottom: 36 }}>
+      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
         <p
           style={{
             fontFamily: SANS,
@@ -188,7 +85,7 @@ const BusinessStart = () => {
             marginBottom: 14,
           }}
         >
-          first things<br />first.
+          run a business<br />in Hoedspruit?
         </h1>
         <p
           style={{
@@ -202,69 +99,129 @@ const BusinessStart = () => {
             maxWidth: 320,
           }}
         >
-          Are you adding a new business, or claiming one that's already on the app?
+          Get on the app locals already use. Post specials, share what's on, and reach the community.
         </p>
       </div>
 
-      {/* Path cards */}
-      {renderCard({
-        onClick: () => navigate("/business/sign-up"),
-        bg: CREAM,
-        iconBg: RUST,
-        Icon: Store,
-        title: "List a new business.",
-        description:
-          "Add your spot to Hello Hoedspruit so locals can find you, save you, and visit.",
-        tag: "Most owners start here.",
-      })}
-      {renderCard({
-        onClick: () => navigate("/business/claim"),
-        bg: SOFT_CREAM,
-        iconBg: INK,
-        Icon: ShieldCheck,
-        title: "Claim a listing.",
-        description:
-          "Already on the app? Take ownership to update details, post specials, and share events.",
-        tag: "For listings already live.",
-      })}
-
-      {/* Bridge note */}
-      <div
+      {/* Primary CTA card */}
+      <button
+        onClick={() => navigate("/business/sign-up")}
         style={{
-          marginTop: 8,
+          position: "relative",
+          display: "flex",
+          gap: 16,
+          alignItems: "center",
+          width: "calc(100% - 48px)",
           marginLeft: 24,
           marginRight: 24,
-          paddingTop: 24,
-          borderTop: "1px solid rgba(238, 232, 218, 0.18)",
-          textAlign: "center",
+          marginBottom: 14,
+          background: CREAM,
+          borderRadius: 24,
+          border: "none",
+          padding: "26px 24px",
+          cursor: "pointer",
+          textAlign: "left",
+          transition: "transform 150ms ease-out",
         }}
+        onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.985)")}
+        onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
+        onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
       >
-        <p
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 14,
-            lineHeight: 1.55,
-            color: "rgba(238, 232, 218, 0.65)",
-            margin: 0,
-          }}
-        >
-          Not sure which to pick?
-          <br />
-          <Link
-            to="/business/claim"
+        <div style={{ flex: 1, minWidth: 0, paddingRight: 32 }}>
+          <p
             style={{
-              color: "rgba(238, 232, 218, 0.65)",
-              borderBottom: "1px solid rgba(238, 232, 218, 0.4)",
-              textDecoration: "none",
-              paddingBottom: 1,
+              fontFamily: SANS,
+              fontSize: 11,
+              fontWeight: 400,
+              letterSpacing: "2px",
+              textTransform: "uppercase",
+              color: MUTED,
+              margin: 0,
+              marginBottom: 8,
             }}
           >
-            Search for your business first.
-          </Link>
-        </p>
-      </div>
+            Get Started
+          </p>
+          <h3
+            style={{
+              fontFamily: SERIF,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: 28,
+              lineHeight: 1.05,
+              letterSpacing: "-0.5px",
+              color: INK,
+              margin: 0,
+              marginBottom: 8,
+            }}
+          >
+            Create a business account.
+          </h3>
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 14,
+              fontWeight: 400,
+              lineHeight: 1.55,
+              color: "rgba(42, 42, 36, 0.75)",
+              margin: 0,
+            }}
+          >
+            Takes a few minutes. We'll help you list a new business or claim one already on the app.
+          </p>
+        </div>
+        <span
+          aria-hidden
+          style={{
+            position: "absolute",
+            top: 26,
+            right: 22,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: RUST,
+          }}
+        >
+          <ArrowUpRight size={16} strokeWidth={1.8} color={CREAM} />
+        </span>
+      </button>
+
+      {/* Secondary search-first link */}
+      <button
+        onClick={() => navigate("/business/claim")}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          width: "calc(100% - 48px)",
+          marginLeft: 24,
+          marginRight: 24,
+          marginBottom: 8,
+          background: "transparent",
+          border: `1px solid rgba(238, 232, 218, 0.22)`,
+          borderRadius: 18,
+          padding: "16px 18px",
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <Search size={16} strokeWidth={1.6} color={CREAM} style={{ opacity: 0.7, flexShrink: 0 }} />
+        <span
+          style={{
+            flex: 1,
+            fontFamily: SERIF,
+            fontStyle: "italic",
+            fontSize: 15,
+            color: "rgba(238, 232, 218, 0.85)",
+          }}
+        >
+          Already on Hello Hoedspruit? Search & claim.
+        </span>
+        <span style={{ color: CREAM, opacity: 0.6, fontSize: 18, lineHeight: 1 }}>›</span>
+      </button>
 
       {/* Sign in link */}
       <div
@@ -272,7 +229,7 @@ const BusinessStart = () => {
           marginTop: 24,
           marginLeft: 24,
           marginRight: 24,
-          paddingTop: 18,
+          paddingTop: 20,
           borderTop: "1px solid rgba(238, 232, 218, 0.15)",
           textAlign: "center",
         }}

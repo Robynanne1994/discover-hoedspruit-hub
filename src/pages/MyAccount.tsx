@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -66,6 +67,7 @@ type ActiveSection = null | "profile" | "favourites" | "collections" | "been-her
 
 const MyAccount = () => {
   const { user, signOut, loading, isAdmin } = useAuth();
+  const { isOwner: isBusinessOwner, listing: ownedListing } = useBusinessOwner();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newCollectionName, setNewCollectionName] = useState("");
@@ -480,7 +482,9 @@ const MyAccount = () => {
   const resourcesItems = [
     { label: "Local Channels", href: "/bush-telegraph", icon: Users },
     { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
-    { label: "My Business", href: "/business/dashboard", icon: Briefcase },
+    isBusinessOwner || ownedListing
+      ? { label: "Business Hub", href: "/business/dashboard", icon: Briefcase }
+      : { label: "List Your Business", href: "/for-business", icon: Briefcase },
   ];
   const getInTouchItems = [
     { label: "Contact", href: "/contact", icon: Phone },
