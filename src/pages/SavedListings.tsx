@@ -257,16 +257,24 @@ const SavedListings = () => {
   const listingsCount = (favourites || []).length;
   const eventsCount = (savedEvents || []).length;
   const specialsCount = (savedSpecials || []).length;
+  const totalCount = listingsCount + eventsCount + specialsCount;
 
   const activeCount =
-    primaryTab === "listings"
-      ? listingsCount
-      : primaryTab === "events"
-        ? eventsCount
-        : specialsCount;
+    primaryTab === "all"
+      ? totalCount
+      : primaryTab === "listings"
+        ? listingsCount
+        : primaryTab === "events"
+          ? eventsCount
+          : specialsCount;
 
   // Lede
   const lede = (() => {
+    if (primaryTab === "all") {
+      return activeCount === 1
+        ? "1 thing, kept close."
+        : `${activeCount} things, kept close.`;
+    }
     if (primaryTab === "listings") {
       return activeCount === 1
         ? "1 place, kept for when you need it."
@@ -283,30 +291,36 @@ const SavedListings = () => {
   })();
 
   const searchPlaceholder =
-    primaryTab === "listings"
-      ? "Search saved places"
-      : primaryTab === "events"
-        ? "Search saved events"
-        : "Search saved specials";
+    primaryTab === "all"
+      ? "Search everything saved"
+      : primaryTab === "listings"
+        ? "Search saved places"
+        : primaryTab === "events"
+          ? "Search saved events"
+          : "Search saved specials";
 
   const subFilters: string[] =
-    primaryTab === "listings"
-      ? ["All", ...listingCategories]
-      : primaryTab === "events"
-        ? ["All", "Upcoming", "Past", ...eventTags]
-        : ["All", "Active", "Expiring Soon", ...specialTypes];
+    primaryTab === "all"
+      ? ["All"]
+      : primaryTab === "listings"
+        ? ["All", ...listingCategories]
+        : primaryTab === "events"
+          ? ["All", "Upcoming", "Past", ...eventTags]
+          : ["All", "Active", "Expiring Soon", ...specialTypes];
 
   const activeSubFilter =
-    primaryTab === "listings"
-      ? listingFilter
-      : primaryTab === "events"
-        ? eventFilter
-        : specialFilter;
+    primaryTab === "all"
+      ? "All"
+      : primaryTab === "listings"
+        ? listingFilter
+        : primaryTab === "events"
+          ? eventFilter
+          : specialFilter;
 
   const setActiveSubFilter = (v: string) => {
     if (primaryTab === "listings") setListingFilter(v);
     else if (primaryTab === "events") setEventFilter(v);
-    else setSpecialFilter(v);
+    else if (primaryTab === "specials") setSpecialFilter(v);
   };
 
   // ------- shells -------
