@@ -306,6 +306,7 @@ const SpecialDetail = () => {
         })()}
 
         <h1
+          className="title-cap"
           style={{
             fontFamily: '"Playfair Display", Georgia, serif',
             fontSize: 48,
