@@ -805,9 +805,9 @@ const MyProfile = () => {
                   {it.image_url && (
                     <img src={it.image_url} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                   )}
-                  <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <button type="button" onClick={(e) => handleUnsave(e, it.id, "special")} aria-label="Remove from saved" style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 }}>
                     <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
-                  </div>
+                  </button>
                 </div>
                 <div style={{ padding: "16px 18px 18px" }}>
                   <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 17, lineHeight: 1.2, letterSpacing: "-0.2px", color: INK, marginBottom: 6 }}>
