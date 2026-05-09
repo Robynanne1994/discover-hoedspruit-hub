@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
-import BusinessShell from "@/components/business/BusinessShell";
+import BusinessLayout from "@/components/business/BusinessLayout";
 import { Button, Input, Label, Textarea, Card, Body, Small, StatusPill, COLORS } from "@/components/business/ui";
 import { toast } from "sonner";
 import { Upload, X, Plus } from "lucide-react";
@@ -35,7 +35,8 @@ const serializeHours = (h: Hours): Record<string, string> =>
 
 const BusinessListing = () => {
   const navigate = useNavigate();
-  const { listing } = useBusinessOwner();
+  const { listing, account } = useBusinessOwner();
+  const businessName = account?.business_name || listing?.title || null;
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
@@ -88,14 +89,14 @@ const BusinessListing = () => {
 
   if (!listing) {
     return (
-      <BusinessShell title="BUSINESS" back="/business/dashboard">
-        <Card style={{ marginTop: 24 }}>
+      <BusinessLayout businessName={businessName}>
+        <Card style={{ marginTop: 4 }}>
           <Body>You have not linked a business yet.</Body>
           <div style={{ marginTop: 12 }}>
             <Button onClick={() => navigate("/business/claim")}>CLAIM A BUSINESS</Button>
           </div>
         </Card>
-      </BusinessShell>
+      </BusinessLayout>
     );
   }
 
@@ -155,12 +156,8 @@ const BusinessListing = () => {
     setHours((h) => ({ ...h, [d]: { ...h[d], ...patch } }));
 
   return (
-    <BusinessShell title="EDIT BUSINESS" back="/business/dashboard" theme="dark">
-      <style>{`
-        .biz-edit-dark label, .biz-edit-dark .biz-edit-dark-text, .biz-edit-dark p { color: #FFFFFF !important; }
-        .biz-edit-dark input[type="time"] { color-scheme: dark; }
-      `}</style>
-      <div className="biz-edit-dark">
+    <BusinessLayout businessName={businessName}>
+      <div>
       {latestPending && latestPending.status === "pending" && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
@@ -353,7 +350,7 @@ const BusinessListing = () => {
         <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>
       </div>
       </div>
-    </BusinessShell>
+    </BusinessLayout>
   );
 };
 
