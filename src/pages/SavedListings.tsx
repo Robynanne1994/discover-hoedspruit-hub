@@ -52,9 +52,9 @@ const SavedListings = () => {
 
   const [primaryTab, setPrimaryTab] = useState<PrimaryTab>(() => {
     const tab = searchParams.get("tab");
-    if (tab === "events" || tab === "specials" || tab === "listings") return tab;
+    if (tab === "all" || tab === "events" || tab === "specials" || tab === "listings") return tab;
     if (persisted.tab) return persisted.tab;
-    return "listings";
+    return "all";
   });
   const [listingFilter, setListingFilter] = useState(persisted.listingFilter ?? "All");
   const [eventFilter, setEventFilter] = useState(persisted.eventFilter ?? "All");
