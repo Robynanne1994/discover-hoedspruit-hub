@@ -131,6 +131,49 @@ const MyProfile = () => {
     enabled: !!id,
   });
 
+  const { data: savedEvents } = useQuery({
+    queryKey: ["my-saved-events", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "event")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: events } = await supabase
+        .from("events")
+        .select("id, title, image_url, location, start_date")
+        .in("id", ids);
+      const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
+    },
+    enabled: !!id,
+  });
+
+  const { data: savedSpecials } = useQuery({
+    queryKey: ["my-saved-specials", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "special")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: specials } = await supabase
+        .from("specials")
+        .select("id, title, image_url, business_name")
+        .in("id", ids);
+      const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
+    },
+    enabled: !!id,
+  });
   const { data: savedCount } = useQuery({
     queryKey: ["my-saved-count", id],
     queryFn: async () => {
@@ -282,79 +325,49 @@ const MyProfile = () => {
         color: CREAM,
       }}
     >
-      {/* Cover */}
+      {/* Top bar */}
       <div
         style={{
-          position: "relative",
-          width: "100%",
-          height: 240,
-          overflow: "hidden",
-          background: coverUrl
-            ? `url(${coverUrl}) center/cover no-repeat`
-            : "linear-gradient(180deg, #C18866 0%, #8B5C3E 50%, #5C6446 100%)",
+          padding: "60px 20px 0",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(ellipse at 30% 60%, rgba(0,0,0,0.18) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 60%)",
-          }}
-        />
-        {/* Top icons */}
-        <div
-          style={{
-            position: "absolute",
-            top: 60,
-            left: 20,
-            right: 20,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            zIndex: 3,
-          }}
-        >
-          <CircleBtn label="Back" onClick={() => navigate(-1)}>
-            <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
+        <CircleBtn label="Back" onClick={() => navigate(-1)}>
+          <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
+        </CircleBtn>
+        <div style={{ display: "flex", gap: 8 }}>
+          <CircleBtn label="Share profile" onClick={handleShare}>
+            <Share2 size={16} strokeWidth={1.6} color={INK} />
           </CircleBtn>
-          <div style={{ display: "flex", gap: 8 }}>
-            <CircleBtn label="Share profile" onClick={handleShare}>
-              <Share2 size={16} strokeWidth={1.6} color={INK} />
-            </CircleBtn>
-            <CircleBtn label="More" onClick={() => setMenuOpen(true)}>
-              <MoreVertical size={16} strokeWidth={1.6} color={INK} />
-            </CircleBtn>
-          </div>
+          <CircleBtn label="More" onClick={() => setMenuOpen(true)}>
+            <MoreVertical size={16} strokeWidth={1.6} color={INK} />
+          </CircleBtn>
         </div>
+      </div>
 
-        {/* Cover eyebrow */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 14,
-            left: 24,
-            fontFamily: SANS,
-            fontSize: 11,
-            fontWeight: 400,
-            letterSpacing: 2.4,
-            textTransform: "uppercase",
-            color: CREAM,
-            opacity: 0.85,
-            zIndex: 3,
-          }}
-        >
-          Your Profile · Public View
-        </div>
+      {/* Eyebrow */}
+      <div
+        style={{
+          padding: "18px 24px 0",
+          fontFamily: SANS,
+          fontSize: 11,
+          fontWeight: 400,
+          letterSpacing: 2.4,
+          textTransform: "uppercase",
+          color: CREAM,
+          opacity: 0.85,
+        }}
+      >
+        Your Profile · Public View
       </div>
 
       {/* Masthead */}
       <div
         style={{
-          padding: "0 24px",
+          padding: "20px 24px 0",
           position: "relative",
-          zIndex: 2,
-          marginTop: -66,
           textAlign: "center",
         }}
       >
@@ -700,6 +713,82 @@ const MyProfile = () => {
         </section>
       )}
 
+      {/* Your events */}
+      {!!savedEvents?.length && (
+        <section style={{ marginBottom: 32 }}>
+          <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 28, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0, textTransform: "lowercase" }}>
+              your events
+            </h2>
+            <Link to="/saved?tab=events" style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "1.8px", textTransform: "uppercase", color: CREAM, opacity: 0.75, textDecoration: "none" }}>
+              See All
+            </Link>
+          </div>
+          <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingLeft: 24, paddingRight: 24, scrollbarWidth: "none" }} className="no-scrollbar">
+            {savedEvents.map((it: any) => (
+              <Link key={it.id} to={`/events/${it.id}`} style={{ flex: "0 0 auto", width: 240, background: CREAM, borderRadius: 20, overflow: "hidden", textDecoration: "none" }}>
+                <div style={{ position: "relative", width: "100%", height: 180, background: "#d6d6d6" }}>
+                  {it.image_url && (
+                    <img src={it.image_url} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  )}
+                  <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
+                  </div>
+                </div>
+                <div style={{ padding: "16px 18px 18px" }}>
+                  <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 17, lineHeight: 1.2, letterSpacing: "-0.2px", color: INK, marginBottom: 6 }}>
+                    {titleCase(it.title)}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: SANS, fontSize: 12.5, color: MUTED }}>
+                    {it.start_date && <span>{new Date(it.start_date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>}
+                    {it.start_date && it.location && <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6 }} />}
+                    {it.location && <span>{it.location}</span>}
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Your deals */}
+      {!!savedSpecials?.length && (
+        <section style={{ marginBottom: 32 }}>
+          <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
+            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 28, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0, textTransform: "lowercase" }}>
+              your deals
+            </h2>
+            <Link to="/saved?tab=specials" style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "1.8px", textTransform: "uppercase", color: CREAM, opacity: 0.75, textDecoration: "none" }}>
+              See All
+            </Link>
+          </div>
+          <div style={{ display: "flex", gap: 14, overflowX: "auto", paddingLeft: 24, paddingRight: 24, scrollbarWidth: "none" }} className="no-scrollbar">
+            {savedSpecials.map((it: any) => (
+              <Link key={it.id} to={`/specials/${it.id}`} style={{ flex: "0 0 auto", width: 240, background: CREAM, borderRadius: 20, overflow: "hidden", textDecoration: "none" }}>
+                <div style={{ position: "relative", width: "100%", height: 180, background: "#d6d6d6" }}>
+                  {it.image_url && (
+                    <img src={it.image_url} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                  )}
+                  <div style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.92)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Heart size={16} strokeWidth={1.6} color={RUST} fill={RUST} />
+                  </div>
+                </div>
+                <div style={{ padding: "16px 18px 18px" }}>
+                  <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 17, lineHeight: 1.2, letterSpacing: "-0.2px", color: INK, marginBottom: 6 }}>
+                    {titleCase(it.title)}
+                  </div>
+                  {it.business_name && (
+                    <div style={{ fontFamily: SANS, fontSize: 12.5, color: MUTED }}>
+                      {titleCase(it.business_name)}
+                    </div>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Your activity */}
       <section style={{ marginBottom: 8 }}>
         <div
@@ -902,7 +991,7 @@ const MyProfile = () => {
           </SheetHeader>
           <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
             {[
-              { label: "Edit Cover Photo", onClick: () => { setMenuOpen(false); navigate("/account/info"); } },
+              { label: "Edit Profile", onClick: () => { setMenuOpen(false); navigate("/account-settings/info"); } },
               { label: "View As Someone Else", onClick: () => { setMenuOpen(false); if (id) navigate(`/profile/${id}`); } },
               { label: "Copy Profile Link", onClick: handleCopyLink },
               { label: "Report A Bug", onClick: () => { setMenuOpen(false); navigate("/feedback"); } },
