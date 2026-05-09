@@ -1237,7 +1237,7 @@ const SavedListings = () => {
             fontSize: 12,
             fontWeight: 400,
             letterSpacing: "2.4px",
-            textTransform: "uppercase",
+            textTransform: "lowercase",
             color: CREAM_70,
             margin: 0,
             marginBottom: 14,
