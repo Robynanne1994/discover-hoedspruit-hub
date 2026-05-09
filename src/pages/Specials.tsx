@@ -159,8 +159,8 @@ const Specials = () => {
 
   const totalCount = specials?.length || 0;
   const subline = totalCount > 0
-    ? `${totalCount} ${totalCount === 1 ? "deal" : "deals"} this month, refreshed weekly.`
-    : "Refreshed weekly.";
+    ? `${totalCount} active deals, refreshed daily.`
+    : "Refreshed daily.";
 
   const toggleFilter = (val: string) => {
     setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
