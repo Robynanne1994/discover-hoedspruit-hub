@@ -129,10 +129,12 @@ const Specials = () => {
   const { data: specials, isLoading } = useQuery({
     queryKey: ["all-specials"],
     queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
       const { data } = await supabase
         .from("specials")
         .select("*")
         .eq("is_active", true)
+        .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("sort_order", { ascending: true });
       return data || [];
     },
