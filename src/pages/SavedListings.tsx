@@ -1028,46 +1028,48 @@ const SavedListings = () => {
 
       {/* Sub-filter pills */}
       {primaryTab !== "all" && (
-      <div
-        style={{
-          paddingLeft: 24,
-          paddingRight: 24,
-          marginBottom: 24,
-          overflowX: "auto",
-          scrollbarWidth: "none",
-        }}
-        className="[&::-webkit-scrollbar]:hidden"
-      >
-        <div className="flex" style={{ gap: 8 }}>
-          {subFilters.map((f) => {
-            const active = activeSubFilter === f;
-            return (
-              <button
-                key={f}
-                onClick={() => setActiveSubFilter(f)}
-                className="whitespace-nowrap"
-                style={{
-                  height: 32,
-                  padding: "0 16px",
-                  borderRadius: 999,
-                  background: active ? CREAM : "transparent",
-                  border: active ? "none" : `1px solid ${CREAM_BORDER}`,
-                  color: active ? INK : CREAM,
-                  fontFamily: SANS,
-                  fontSize: 12.5,
-                  fontWeight: 400,
-                  cursor: "pointer",
-                  flexShrink: 0,
-                }}
-              >
-                {f}
-              </button>
-            );
-          })}
+        <div
+          style={{
+            paddingLeft: 24,
+            paddingRight: 24,
+            marginBottom: 24,
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+          className="[&::-webkit-scrollbar]:hidden"
+        >
+          <div className="flex" style={{ gap: 8 }}>
+            {subFilters.map((f) => {
+              const active = activeSubFilter === f;
+              return (
+                <button
+                  key={f}
+                  onClick={() => setActiveSubFilter(f)}
+                  className="whitespace-nowrap"
+                  style={{
+                    height: 32,
+                    padding: "0 16px",
+                    borderRadius: 999,
+                    background: active ? CREAM : "transparent",
+                    border: active ? "none" : `1px solid ${CREAM_BORDER}`,
+                    color: active ? INK : CREAM,
+                    fontFamily: SANS,
+                    fontSize: 12.5,
+                    fontWeight: 400,
+                    cursor: "pointer",
+                    flexShrink: 0,
+                  }}
+                >
+                  {f}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Content */}
+      {primaryTab === "all" && renderAll()}
       {primaryTab === "listings" && renderListings()}
       {primaryTab === "events" && renderEvents()}
       {primaryTab === "specials" && renderSpecials()}
