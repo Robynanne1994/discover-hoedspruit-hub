@@ -155,8 +155,28 @@ const Categories = () => {
     [filteredCategories, listingCounts]
   );
 
-  const featured = visibleCategories[0];
-  const gridCategories = visibleCategories.slice(1);
+  const FEATURED_TITLES = [
+    "Emergency Services",
+    "Restaurants & Cafés",
+    "Restaurants & Cafes",
+    "Accommodation",
+    "Shopping",
+    "Health & Medical",
+  ];
+  const normalizeTitle = (t: string) => t.trim().toLowerCase();
+  const featuredSet = new Set(FEATURED_TITLES.map(normalizeTitle));
+  const featuredCategories = useMemo(() => {
+    const matched = visibleCategories.filter((c) => featuredSet.has(normalizeTitle(c.title)));
+    // Order them per FEATURED_TITLES (with first available as primary)
+    const order = FEATURED_TITLES.map(normalizeTitle);
+    return matched.sort(
+      (a, b) => order.indexOf(normalizeTitle(a.title)) - order.indexOf(normalizeTitle(b.title))
+    );
+  }, [visibleCategories]);
+  const gridCategories = useMemo(
+    () => visibleCategories.filter((c) => !featuredSet.has(normalizeTitle(c.title))),
+    [visibleCategories]
+  );
 
   const formatCount = (n: number) => `${n} ${n === 1 ? "Listing" : "Listings"}`;
 
