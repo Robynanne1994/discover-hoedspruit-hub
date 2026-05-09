@@ -336,6 +336,8 @@ const Events = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [tagMenuOpen, setTagMenuOpen] = useState(false);
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
@@ -358,16 +360,35 @@ const Events = () => {
       });
   }, [events]);
 
+  const availableTags = useMemo(() => {
+    const set = new Set<string>();
+    sortedEvents.forEach((e) => {
+      [e.tag, e.sub_tag_1, e.sub_tag_2].forEach((t: string | null) => {
+        if (t && t.trim()) set.add(t.trim());
+      });
+    });
+    return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }, [sortedEvents]);
+
   const searched = useMemo(() => {
-    if (!search.trim()) return sortedEvents;
+    let list = sortedEvents;
+    if (tagFilter) {
+      const tf = tagFilter.toLowerCase();
+      list = list.filter((e) =>
+        [e.tag, e.sub_tag_1, e.sub_tag_2].some(
+          (t: string | null) => t && t.toLowerCase() === tf
+        )
+      );
+    }
+    if (!search.trim()) return list;
     const q = search.toLowerCase();
-    return sortedEvents.filter(
+    return list.filter(
       (e) =>
         e.title.toLowerCase().includes(q) ||
         (e.location && e.location.toLowerCase().includes(q)) ||
         (e.tag && e.tag.toLowerCase().includes(q))
     );
-  }, [sortedEvents, search]);
+  }, [sortedEvents, search, tagFilter]);
 
   const recurringAll = useMemo(
     () =>
@@ -439,22 +460,92 @@ const Events = () => {
   };
 
   const filterIconBtn = (
-    <button
-      aria-label="Filter"
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: "50%",
-        background: COLOR.cream,
-        border: "none",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-      }}
-    >
-      <SlidersHorizontal size={14} strokeWidth={1.8} color={COLOR.ink} />
-    </button>
+    <div style={{ position: "relative" }}>
+      <button
+        aria-label="Filter by tag"
+        onClick={() => setTagMenuOpen((v) => !v)}
+        style={{
+          width: 36,
+          height: 36,
+          borderRadius: "50%",
+          background: tagFilter ? COLOR.ink : COLOR.cream,
+          color: tagFilter ? COLOR.cream : COLOR.ink,
+          border: "none",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
+      >
+        <SlidersHorizontal size={14} strokeWidth={1.8} color={tagFilter ? COLOR.cream : COLOR.ink} />
+      </button>
+      {tagMenuOpen && (
+        <>
+          <div
+            onClick={() => setTagMenuOpen(false)}
+            style={{ position: "fixed", inset: 0, zIndex: 40 }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              top: 44,
+              right: 0,
+              zIndex: 50,
+              background: COLOR.cream,
+              borderRadius: 16,
+              boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+              minWidth: 200,
+              maxHeight: 320,
+              overflowY: "auto",
+              padding: 6,
+            }}
+          >
+            <button
+              onClick={() => { setTagFilter(null); setTagMenuOpen(false); }}
+              style={{
+                width: "100%",
+                textAlign: "left",
+                background: !tagFilter ? "rgba(42,42,36,0.08)" : "transparent",
+                border: "none",
+                borderRadius: 10,
+                padding: "10px 14px",
+                fontFamily: SANS,
+                fontSize: 13.5,
+                color: COLOR.ink,
+                cursor: "pointer",
+              }}
+            >
+              All tags
+            </button>
+            {availableTags.map((t) => (
+              <button
+                key={t}
+                onClick={() => { setTagFilter(t); setTagMenuOpen(false); }}
+                style={{
+                  width: "100%",
+                  textAlign: "left",
+                  background: tagFilter === t ? "rgba(42,42,36,0.08)" : "transparent",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "10px 14px",
+                  fontFamily: SANS,
+                  fontSize: 13.5,
+                  color: COLOR.ink,
+                  cursor: "pointer",
+                }}
+              >
+                {t}
+              </button>
+            ))}
+            {availableTags.length === 0 && (
+              <p style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 13, color: COLOR.mutedInk, padding: "10px 14px", margin: 0 }}>
+                No tags yet.
+              </p>
+            )}
+          </div>
+        </>
+      )}
+    </div>
   );
 
   return (
