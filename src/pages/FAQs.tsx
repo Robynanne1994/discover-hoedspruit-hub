@@ -193,7 +193,7 @@ const FAQs = () => {
       {/* Hero */}
       <div style={{ padding: "18px 24px 0" }}>
         <div style={{ marginBottom: 14 }}>
-          <Eyebrow size={12}>FREQUENTLY ASKED</Eyebrow>
+          <Eyebrow size={12}>STUCK? START HERE</Eyebrow>
         </div>
         <h1 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 24 }}>
           help.
