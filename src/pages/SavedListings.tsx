@@ -891,6 +891,342 @@ const SavedListings = () => {
     );
   };
 
+  // ------- All (combined) -------
+  const renderAll = () => {
+    const allItems = [
+      ...(favourites || []).map((f: any) => ({
+        ...f,
+        kind: "listing" as const,
+        sortAt: f.created_at,
+      })),
+      ...(savedEvents || []).map((f: any) => ({
+        ...f,
+        kind: "event" as const,
+        sortAt: f.created_at,
+      })),
+      ...(savedSpecials || []).map((f: any) => ({
+        ...f,
+        kind: "special" as const,
+        sortAt: f.created_at,
+      })),
+    ]
+      .filter((it) => {
+        if (!search.trim()) return true;
+        const d = it.details;
+        const hay = d?.title || "";
+        return hay.toLowerCase().includes(search.toLowerCase());
+      })
+      .sort((a, b) => {
+        const ta = new Date(a.sortAt || 0).getTime();
+        const tb = new Date(b.sortAt || 0).getTime();
+        return tb - ta;
+      });
+
+    if (allItems.length === 0) return renderEmpty();
+
+    return (
+      <div
+        style={{
+          background: CREAM,
+          borderRadius: 24,
+          marginLeft: 24,
+          marginRight: 24,
+          padding: "6px 20px",
+          overflow: "hidden",
+        }}
+      >
+        {allItems.map((it: any, idx: number) => {
+          if (it.kind === "listing") {
+            const d = it.details;
+            const rating = d.google_rating ? Number(d.google_rating) : null;
+            return (
+              <Link
+                key={it.id}
+                to={`/listing/${it.item_id}`}
+                className="flex items-center"
+                style={{
+                  gap: 14,
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                  borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                }}
+              >
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    background: "#e6dfcf",
+                    flexShrink: 0,
+                  }}
+                >
+                  {d.image_url && (
+                    <img
+                      src={d.image_url}
+                      alt={d.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 11.5,
+                      color: MUTED,
+                      letterSpacing: "1.6px",
+                      textTransform: "uppercase",
+                      margin: 0,
+                      marginBottom: 3,
+                    }}
+                  >
+                    {(d.categoryNames || []).slice(0, 1).join("") || "Place"}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 15,
+                      color: INK,
+                      lineHeight: 1.25,
+                      margin: 0,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {d.title}
+                  </p>
+                  <div className="flex items-center" style={{ gap: 8, marginTop: 2 }}>
+                    {rating && (
+                      <span style={{ fontFamily: SANS, fontSize: 12.5, color: MUTED }}>
+                        ★ {rating.toFixed(1)}
+                      </span>
+                    )}
+                    {rating && d.location && (
+                      <span
+                        style={{
+                          width: 4,
+                          height: 4,
+                          borderRadius: "50%",
+                          background: MUTED,
+                          opacity: 0.6,
+                          display: "inline-block",
+                        }}
+                      />
+                    )}
+                    {d.location && (
+                      <span
+                        style={{
+                          fontFamily: SANS,
+                          fontSize: 12.5,
+                          color: MUTED,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {d.location}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 14,
+                    color: INK,
+                    opacity: 0.7,
+                    flexShrink: 0,
+                  }}
+                >
+                  ↗
+                </span>
+              </Link>
+            );
+          }
+
+          if (it.kind === "event") {
+            const e = it.details;
+            return (
+              <Link
+                key={it.id}
+                to={`/event/${it.item_id}`}
+                className="flex items-center"
+                style={{
+                  gap: 14,
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                  borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                }}
+              >
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: "50%",
+                    overflow: "hidden",
+                    background: "#e6dfcf",
+                    flexShrink: 0,
+                  }}
+                >
+                  {e.image_url && (
+                    <img
+                      src={e.image_url}
+                      alt={e.title}
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 11.5,
+                      color: MUTED,
+                      letterSpacing: "1.6px",
+                      textTransform: "uppercase",
+                      margin: 0,
+                      marginBottom: 3,
+                    }}
+                  >
+                    {formatEventDate(e)}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 15,
+                      color: INK,
+                      lineHeight: 1.25,
+                      letterSpacing: "-0.1px",
+                      margin: 0,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
+                    {e.title}
+                  </p>
+                  {e.location && (
+                    <p
+                      style={{
+                        fontFamily: SANS,
+                        fontSize: 12.5,
+                        color: MUTED,
+                        margin: 0,
+                        marginTop: 2,
+                      }}
+                    >
+                      {e.location}
+                    </p>
+                  )}
+                </div>
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 14,
+                    color: INK,
+                    opacity: 0.7,
+                    flexShrink: 0,
+                  }}
+                >
+                  ↗
+                </span>
+              </Link>
+            );
+          }
+
+          // special
+          const s = it.details;
+          return (
+            <Link
+              key={it.id}
+              to={`/specials/${it.item_id}`}
+              className="flex items-center"
+              style={{
+                gap: 14,
+                paddingTop: 16,
+                paddingBottom: 16,
+                borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+              }}
+            >
+              <div
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  background: "#e6dfcf",
+                  flexShrink: 0,
+                }}
+              >
+                {s.image_url && (
+                  <img
+                    src={s.image_url}
+                    alt={s.title}
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 11.5,
+                    color: MUTED,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    margin: 0,
+                    marginBottom: 3,
+                  }}
+                >
+                  {s.deal_label || s.special_type || "Special"}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 15,
+                    color: INK,
+                    lineHeight: 1.25,
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {s.title}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SERIF,
+                    fontStyle: "italic",
+                    fontSize: 12.5,
+                    color: MUTED,
+                    margin: 0,
+                    marginTop: 2,
+                  }}
+                >
+                  {formatValidity(s)}
+                </p>
+              </div>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  color: INK,
+                  opacity: 0.7,
+                  flexShrink: 0,
+                }}
+              >
+                ↗
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+    );
+  };
+
   return (
     <PageShell>
       {/* Hero */}
