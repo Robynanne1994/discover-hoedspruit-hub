@@ -17,7 +17,7 @@ const BusinessGate = () => {
   const { user, authLoading, loading, isOwner } = useBusinessOwner();
   if (authLoading || loading) return <Loading />;
   if (!user) return <Navigate to="/business/sign-in" replace />;
-  if (!isOwner) return <Navigate to="/business/sign-up" replace />;
+  if (!isOwner) return <Navigate to="/business/start" replace />;
   return <Outlet />;
 };
 
