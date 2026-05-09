@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
-import BusinessShell from "@/components/business/BusinessShell";
+import BusinessLayout from "@/components/business/BusinessLayout";
 import { Button, Card, Body, Small, StatusPill, EmptyState } from "@/components/business/ui";
 
 const BusinessEvents = () => {
-  const { listing } = useBusinessOwner();
+  const { listing, account } = useBusinessOwner();
   const [pending, setPending] = useState<any[]>([]);
   const [live, setLive] = useState<any[]>([]);
 
@@ -23,7 +23,7 @@ const BusinessEvents = () => {
   }, [listing]);
 
   return (
-    <BusinessShell title="EVENTS" back="/business/dashboard">
+    <BusinessLayout businessName={account?.business_name || listing?.title || null}>
       <div style={{ marginTop: 12, marginBottom: 24 }}>
         <Link to="/business/events/new"><Button full>POST AN EVENT</Button></Link>
       </div>
@@ -60,7 +60,7 @@ const BusinessEvents = () => {
           ))}
         </div>
       )}
-    </BusinessShell>
+    </BusinessLayout>
   );
 };
 
