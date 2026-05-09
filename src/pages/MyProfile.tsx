@@ -490,7 +490,7 @@ const MyProfile = () => {
               {
                 n: savedCount ?? 0,
                 label: "Saved",
-                href: "/my-hoedspruit",
+                href: "/saved",
               },
             ].map((s, i) => {
               const inner = (
@@ -611,7 +611,7 @@ const MyProfile = () => {
               your finds
             </h2>
             <Link
-              to="/my-hoedspruit"
+              to="/saved"
               style={{
                 fontFamily: SANS,
                 fontSize: 11,
