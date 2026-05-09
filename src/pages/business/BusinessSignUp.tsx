@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Eye, EyeOff, Check, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -16,6 +16,9 @@ const SERIF = "'Playfair Display', Georgia, serif";
 
 const BusinessSignUp = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const intent = searchParams.get("intent");
+  const postSignupPath = intent === "claim" ? "/business/claim" : "/business/subscribe";
   const { user, authLoading, isOwner, loading } = useBusinessOwner();
 
   const [businessName, setBusinessName] = useState("");
@@ -111,7 +114,7 @@ const BusinessSignUp = () => {
 
     setBusy(false);
     toast.success("Account created");
-    navigate("/business/subscribe");
+    navigate(postSignupPath);
   };
 
   const labelStyle: React.CSSProperties = {
