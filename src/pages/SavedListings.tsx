@@ -457,17 +457,21 @@ const SavedListings = () => {
   // ------- Empty states -------
   const renderEmpty = () => {
     const headline =
-      primaryTab === "listings"
+      primaryTab === "all"
         ? "Nothing saved yet."
-        : primaryTab === "events"
-          ? "No events saved yet."
-          : "No specials saved yet.";
+        : primaryTab === "listings"
+          ? "Nothing saved yet."
+          : primaryTab === "events"
+            ? "No events saved yet."
+            : "No specials saved yet.";
     const sub =
-      primaryTab === "listings"
-        ? "Tap the heart on any listing to save it here."
-        : primaryTab === "events"
-          ? "Tap the heart on any event to save it here."
-          : "Tap the heart on any special to save it here.";
+      primaryTab === "all"
+        ? "Tap the heart on any listing, event or special to save it here."
+        : primaryTab === "listings"
+          ? "Tap the heart on any listing to save it here."
+          : primaryTab === "events"
+            ? "Tap the heart on any event to save it here."
+            : "Tap the heart on any special to save it here.";
     return (
       <div style={{ textAlign: "center", paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
         <Heart
