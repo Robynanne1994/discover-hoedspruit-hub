@@ -41,11 +41,9 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
   {
     label: "Help",
     rows: [
-      { icon: HelpCircle, label: "FAQs", to: "/faqs" },
-      { icon: MessageSquare, label: "Feedback", to: "/feedback" },
+      { icon: HelpCircle, label: "Help", to: "/faqs" },
       { icon: Phone, label: "Contact Us", to: "/contact" },
       { icon: Info, label: "About", to: "/about" },
-      { icon: Megaphone, label: "Advertise", to: "/advertise" },
     ],
   },
 ];
