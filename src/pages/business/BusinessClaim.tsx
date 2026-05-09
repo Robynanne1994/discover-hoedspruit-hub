@@ -10,13 +10,20 @@ interface ListingHit { id: string; title: string; location: string | null; phone
 
 const BusinessClaim = () => {
   const navigate = useNavigate();
-  const { user, listing, pendingClaim, refresh } = useBusinessOwner();
+  const { user, authLoading, loading, listing, pendingClaim, refresh } = useBusinessOwner();
   const [q, setQ] = useState("");
   const [results, setResults] = useState<ListingHit[]>([]);
   const [picked, setPicked] = useState<ListingHit | null>(null);
   const [proof, setProof] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
+
+  // Require auth — bounce to sign-up with intent=claim so they come back here after creating an account.
+  useEffect(() => {
+    if (!authLoading && !loading && !user) {
+      navigate("/business/sign-up?intent=claim", { replace: true });
+    }
+  }, [authLoading, loading, user, navigate]);
 
   useEffect(() => {
     if (listing) navigate("/business/dashboard", { replace: true });
@@ -39,6 +46,8 @@ const BusinessClaim = () => {
   const submit = async () => {
     if (!user || !picked) return;
     setBusy(true);
+    // Make sure the user has the business_owner role so they can manage the claim afterwards.
+    await supabase.rpc("claim_business_owner_role" as any);
     const { error } = await supabase.from("claim_requests").insert({
       user_id: user.id,
       listing_id: picked.id,
@@ -51,6 +60,7 @@ const BusinessClaim = () => {
     await refresh();
     navigate("/business/dashboard");
   };
+
 
   if (pendingClaim && pendingClaim.status === "pending") {
     return (
