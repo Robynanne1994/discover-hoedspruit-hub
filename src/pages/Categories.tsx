@@ -488,7 +488,7 @@ const Categories = () => {
   );
 };
 
-const SectionHead = ({ title, counter }: { title: string; counter: string }) => (
+const SectionHead = ({ title, counter }: { title: string; counter?: string }) => (
   <div
     style={{
       display: "flex",
@@ -514,18 +514,20 @@ const SectionHead = ({ title, counter }: { title: string; counter: string }) => 
     >
       {title}
     </h2>
-    <span
-      style={{
-        fontFamily: FONT_BODY,
-        fontSize: 11,
-        fontWeight: 400,
-        letterSpacing: "1.8px",
-        textTransform: "uppercase",
-        color: "rgba(238, 232, 218, 0.75)",
-      }}
-    >
-      {counter}
-    </span>
+    {counter && (
+      <span
+        style={{
+          fontFamily: FONT_BODY,
+          fontSize: 11,
+          fontWeight: 400,
+          letterSpacing: "1.8px",
+          textTransform: "uppercase",
+          color: "rgba(238, 232, 218, 0.75)",
+        }}
+      >
+        {counter}
+      </span>
+    )}
   </div>
 );
 
