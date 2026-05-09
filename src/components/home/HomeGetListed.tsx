@@ -84,7 +84,7 @@ const HomeGetListed = () => {
             A business account lets you claim your listing for personal edits, post specials and share what's on. Register in a few minutes.
           </p>
           <Link
-            to="/advertise"
+            to="/for-business"
             onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
             onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
