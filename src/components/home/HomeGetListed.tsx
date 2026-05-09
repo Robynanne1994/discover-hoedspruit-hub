@@ -65,10 +65,10 @@ const HomeGetListed = () => {
               letterSpacing: "-1px",
               color: "#EEE8DA",
               marginBottom: 14,
+              textTransform: "lowercase",
             }}
           >
-            <span style={{ fontWeight: 400 }}>Stand out in </span>
-            <span style={{ fontWeight: 300, fontStyle: "italic" }}>Hoedspruit.</span>
+            ready to do more?
           </h3>
           <p
             style={{
