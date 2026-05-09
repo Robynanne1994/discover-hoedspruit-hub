@@ -872,7 +872,7 @@ const MyProfile = () => {
           </SheetHeader>
           <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
             {[
-              { label: "Edit Cover Photo", onClick: () => { setMenuOpen(false); navigate("/account/info"); } },
+              { label: "Edit Profile", onClick: () => { setMenuOpen(false); navigate("/account-settings/info"); } },
               { label: "View As Someone Else", onClick: () => { setMenuOpen(false); if (id) navigate(`/profile/${id}`); } },
               { label: "Copy Profile Link", onClick: handleCopyLink },
               { label: "Report A Bug", onClick: () => { setMenuOpen(false); navigate("/feedback"); } },
