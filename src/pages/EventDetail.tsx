@@ -371,11 +371,11 @@ const EventDetail = () => {
             marginBottom: 4,
             height: 10,
             backgroundImage:
-              "radial-gradient(circle, #5b4632 1px, transparent 1.4px), linear-gradient(to right, transparent 0, #5b4632 8%, #5b4632 92%, transparent 100%)",
+              "radial-gradient(circle, #C5BCAA 1px, transparent 1.4px), linear-gradient(to right, transparent 0, #C5BCAA 8%, #C5BCAA 92%, transparent 100%)",
             backgroundRepeat: "repeat-x, no-repeat",
             backgroundSize: "6px 2px, 100% 1px",
             backgroundPosition: "center top, center bottom",
-            opacity: 0.7,
+            opacity: 1,
           }}
         />
 
