@@ -97,7 +97,10 @@ const Feedback = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: FF, position: "relative", overflowX: "hidden" }}>
+      {/* Hero blobs - extend to top of screen */}
+      <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 260, height: 320, background: DEEP_OLIVE, borderRadius: BLOB_RADIUS_A, opacity: 0.85, zIndex: 1 }} />
+      <div aria-hidden style={{ position: "absolute", top: 80, right: -30, width: 120, height: 130, background: "rgba(238,232,218,0.08)", borderRadius: BLOB_RADIUS_B, zIndex: 1 }} />
       {/* Top bar */}
       <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24, position: "relative", zIndex: 3 }}>
         <button
@@ -116,17 +119,7 @@ const Feedback = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ position: "relative", padding: "18px 24px 0", overflow: "hidden" }}>
-        <div aria-hidden style={{
-          position: "absolute", top: -40, right: -80,
-          width: 220, height: 240, background: DEEP_OLIVE,
-          borderRadius: BLOB_RADIUS_A, opacity: 0.85, zIndex: 1,
-        }} />
-        <div aria-hidden style={{
-          position: "absolute", top: 60, right: -30,
-          width: 120, height: 130, background: "rgba(238,232,218,0.08)",
-          borderRadius: BLOB_RADIUS_B, zIndex: 1,
-        }} />
+      <div style={{ position: "relative", padding: "18px 24px 0" }}>
         <div style={{ position: "relative", zIndex: 2 }}>
           <p style={{
             fontFamily: FF, fontSize: 12, fontWeight: 400,
