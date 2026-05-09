@@ -39,7 +39,7 @@ const PrivacyPolicyPage = () => (
       />
     </Section>
 
-    <Section heading="cookies and tracking">
+    <Section heading="cookies & tracking">
       <P>
         We use a small number of cookies and similar technologies to keep you signed in, remember your preferences, and understand how the app is used. You can read more in our <A href="/cookie-policy">Cookie Policy</A>.
       </P>
