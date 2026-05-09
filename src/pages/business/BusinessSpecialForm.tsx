@@ -124,12 +124,8 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   }
 
   return (
-    <BusinessShell title={mode === "new" ? "Post a special" : "Edit special"} back="/business/specials" theme="dark">
-      <style>{`
-        .biz-special-dark label, .biz-special-dark p, .biz-special-dark h1, .biz-special-dark h2, .biz-special-dark h3, .biz-special-dark span { color: #FFFFFF !important; }
-        .biz-special-dark input[type="date"] { color-scheme: dark; }
-      `}</style>
-      <div className="biz-special-dark">
+    <BusinessShell title={mode === "new" ? "Post a special" : "Edit special"} back="/business/specials">
+      <div>
       {status && (
         <div style={{ marginTop: 12, marginBottom: 16 }}>
           <Card>
