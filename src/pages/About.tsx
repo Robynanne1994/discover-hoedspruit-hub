@@ -214,23 +214,6 @@ const About = () => {
                 justifyContent: "space-between",
               }}
             >
-              <div
-                aria-hidden
-                style={{
-                  position: "absolute",
-                  top: 14,
-                  right: 14,
-                  width: 30,
-                  height: 30,
-                  borderRadius: "50%",
-                  background: "rgba(106,106,94,0.1)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Arrow size={12} color={DEEP_INK} />
-              </div>
               <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 38, lineHeight: 1, letterSpacing: "-0.6px", color: MUTED_INK }}>
                 {v.num}
               </span>
