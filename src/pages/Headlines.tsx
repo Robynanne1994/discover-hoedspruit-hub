@@ -97,7 +97,7 @@ const Headlines = () => {
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
         <div style={{
           fontFamily: SANS, fontSize: 12, fontWeight: 400,
-          letterSpacing: "2.4px", textTransform: "uppercase",
+          letterSpacing: "2.4px", textTransform: "lowercase",
           color: CREAM, opacity: 0.7, marginBottom: 14,
         }}>
           The Lowveld
