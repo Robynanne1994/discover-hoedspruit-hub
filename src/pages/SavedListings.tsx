@@ -976,9 +976,10 @@ const SavedListings = () => {
         <div className="flex" style={{ gap: 8 }}>
           {(
             [
-              { key: "listings", label: "Listings", count: listingsCount },
-              { key: "events", label: "Events", count: eventsCount },
-              { key: "specials", label: "Specials", count: specialsCount },
+              { key: "all" as const, label: "All", count: totalCount },
+              { key: "listings" as const, label: "Listings", count: listingsCount },
+              { key: "events" as const, label: "Events", count: eventsCount },
+              { key: "specials" as const, label: "Specials", count: specialsCount },
             ] as const
           ).map((t) => {
             const active = primaryTab === t.key;
@@ -1026,6 +1027,7 @@ const SavedListings = () => {
       </div>
 
       {/* Sub-filter pills */}
+      {primaryTab !== "all" && (
       <div
         style={{
           paddingLeft: 24,
