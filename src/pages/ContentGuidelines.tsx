@@ -1,19 +1,60 @@
-import PolicyPageLayout from "@/components/PolicyPageLayout";
+import { LegalPage, Section, P, List, Em, A } from "@/components/legal/LegalPage";
 
-const sections = [
-  { heading: "Our Standards", body: "Hello Hoedspruit is a community space for locals and visitors to discover and share information about Hoedspruit. These guidelines set out what is and is not acceptable when contributing content to the app." },
-  { heading: "What We Expect", body: "All content shared on Hello Hoedspruit should be:\n- Accurate and honest: share information that is truthful and based on genuine experience\n- Respectful: treat other users, business owners and the community with courtesy\n- Relevant: content should relate to Hoedspruit, its businesses, events and community\n- Original: only share content that you have the right to share" },
-  { heading: "What Is Not Allowed", body: "The following types of content are not permitted:\n- Hate speech, discrimination or harassment of any kind\n- Threats, intimidation or bullying\n- False, misleading or deliberately inaccurate information about businesses or individuals\n- Spam, advertising or promotional content not related to a legitimate listing\n- Content that is sexually explicit, obscene or inappropriate\n- Content that infringes on anyone's intellectual property, privacy or other rights\n- Personal information about others shared without their consent\n- Content that promotes illegal activity" },
-  { heading: "Business Listings", body: "Business owners and listing contributors should ensure that all information provided is accurate and current. If details change, please update the listing or contact us. We reserve the right to edit, remove or reject listing content that does not meet these guidelines or that we believe is misleading." },
-  { heading: "Events", body: "Event submissions should include accurate dates, times, venues and descriptions. Events that have been cancelled or postponed should be updated promptly. We reserve the right to remove events that contain misleading information or that do not meet these guidelines." },
-  { heading: "Moderation", body: "Hello Hoedspruit reserves the right to review, edit or remove any content that violates these guidelines without prior notice. We may also suspend or terminate accounts that repeatedly violate these standards." },
-  { heading: "Reporting Content", body: "If you come across content that you believe violates these guidelines, please report it to us at admin@hellohoedspruit.co or use the Give Us Feedback feature in the app. We take all reports seriously and will review them as quickly as possible." },
-  { heading: "Changes to These Guidelines", body: "We may update these Content Guidelines from time to time. Changes will be reflected on this page with an updated date." },
-  { heading: "Contact", body: "If you have questions about these guidelines, contact us at admin@hellohoedspruit.co." },
-];
+const EMAIL = "hellohoedspruit@gmail.com";
 
 const ContentGuidelines = () => (
-  <PolicyPageLayout title="Content Guidelines" lastUpdated="Last updated: April 2026" sections={sections} />
+  <LegalPage
+    title="community guidelines."
+    footer="Be kind. Be useful. Be a good local. That's basically the lot."
+  >
+    <Section heading="be respectful">
+      <P>
+        Hello Hoedspruit is a small town's app, and small towns work because people treat each other well. Disagreements are fine. Personal attacks, harassment, slurs, and discrimination of any kind are not.
+      </P>
+    </Section>
+
+    <Section heading="keep it honest">
+      <P>
+        If you leave a review or share information about a place, make sure it's true and based on your own experience. Don't post fake reviews, don't pretend to be someone you're not, and don't try to game the system to push a business up or knock one down.
+      </P>
+    </Section>
+
+    <Section heading="stay on topic">
+      <P>
+        This is a guide to Hoedspruit and the surrounding area. Keep your posts, reviews, and submissions relevant to local places, events, and community life. Off-topic or unrelated content may be removed.
+      </P>
+    </Section>
+
+    <Section heading="no spam or self-promotion">
+      <P last>To keep the app useful for everyone, please don't:</P>
+      <List
+        items={[
+          "Post the same content repeatedly across listings, events, or reviews.",
+          "Use reviews or comments to promote your own business or services.",
+          "Share affiliate links, referral codes, or unrelated marketing material.",
+          "Create multiple accounts to influence ratings, follows, or visibility.",
+        ]}
+      />
+    </Section>
+
+    <Section heading="no illegal content">
+      <P>
+        Don't post anything that's illegal under South African law, infringes someone else's rights, or encourages others to break the law. This includes hate speech, threats, sexual content involving minors, and content that promotes violence.
+      </P>
+    </Section>
+
+    <Section heading="reporting and enforcement">
+      <P>
+        If you see something that breaks these guidelines, report it through the app or email us. We review reports as quickly as we can and may remove content, warn users, or suspend accounts depending on what we find. Serious or repeated breaches can lead to a permanent ban.
+      </P>
+    </Section>
+
+    <Section heading="contact">
+      <P last>
+        To report content or ask about these guidelines, write to us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+      </P>
+    </Section>
+  </LegalPage>
 );
 
 export default ContentGuidelines;
