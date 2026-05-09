@@ -238,11 +238,6 @@ const Advertise = () => {
           fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px",
           color: CREAM, margin: 0,
         }}>why advertise</h2>
-        <span style={{
-          fontFamily: FF, fontSize: 11, fontWeight: 400,
-          letterSpacing: "1.8px", textTransform: "uppercase",
-          color: "rgba(238,232,218,0.75)",
-        }}>Four Reasons</span>
       </div>
 
       {/* Numbered features card */}
