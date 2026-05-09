@@ -65,6 +65,7 @@ import SpecialDetail from "./pages/SpecialDetail.tsx";
 import BusinessGate from "./components/business/BusinessGate.tsx";
 import BusinessSignIn from "./pages/business/BusinessSignIn.tsx";
 import BusinessSignUp from "./pages/business/BusinessSignUp.tsx";
+import BusinessStart from "./pages/business/BusinessStart.tsx";
 import BusinessSubscribe from "./pages/business/BusinessSubscribe.tsx";
 import BusinessClaim from "./pages/business/BusinessClaim.tsx";
 import BusinessDashboard from "./pages/business/BusinessDashboard.tsx";
@@ -169,6 +170,7 @@ const App = () => (
                 <Route path="moderation" element={<AdminModeration />} />
               </Route>
               <Route path="/business/sign-in" element={<BusinessSignIn />} />
+              <Route path="/business/start" element={<BusinessStart />} />
               <Route path="/business/sign-up" element={<BusinessSignUp />} />
               <Route element={<BusinessGate />}>
                 <Route path="/business/subscribe" element={<BusinessSubscribe />} />
