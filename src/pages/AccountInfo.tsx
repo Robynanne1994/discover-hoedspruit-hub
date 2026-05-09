@@ -277,6 +277,7 @@ const AccountInfo = () => {
             color: CREAM,
             margin: 0,
             marginBottom: 14,
+            textTransform: "lowercase",
           }}
         >
           account info.
