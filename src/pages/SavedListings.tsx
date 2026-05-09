@@ -8,9 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Search, ArrowLeft } from "lucide-react";
 import { format, parseISO, isFuture, isPast, differenceInDays } from "date-fns";
 
-type PrimaryTab = "listings" | "events" | "specials";
-
-// Tokens
+type PrimaryTab = "all" | "listings" | "events" | "specials";
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
 const CREAM_92 = "rgba(238, 232, 218, 0.92)";
