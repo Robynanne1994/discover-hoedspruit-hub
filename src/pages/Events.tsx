@@ -442,10 +442,9 @@ const Events = () => {
 
   const showRecurring = activeFilter !== "past" && activeFilter !== "today";
   const totalCount = events?.length || 0;
-  const subline =
-    totalCount > 0
-      ? `${totalCount} ${totalCount === 1 ? "event" : "events"} this month, refreshed daily.`
-      : "Refreshed daily.";
+  const subline = totalCount > 0
+    ? `All local happenings, refreshed daily.`
+    : "Refreshed daily.";
 
   const iconBtn: React.CSSProperties = {
     width: 44,
