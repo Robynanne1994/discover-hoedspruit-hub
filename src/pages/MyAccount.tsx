@@ -772,7 +772,7 @@ const MyAccount = () => {
         >
           <FollowStat userId={user.id} />
           <button
-            onClick={() => setActiveSection("profile")}
+            onClick={() => navigate("/my-profile")}
             style={{
               marginLeft: "auto",
               background: INK,
@@ -786,7 +786,7 @@ const MyAccount = () => {
               cursor: "pointer",
             }}
           >
-            Edit
+            My Profile
           </button>
         </div>
       </div>
