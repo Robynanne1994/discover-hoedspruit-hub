@@ -319,7 +319,7 @@ const Categories = () => {
           {/* In the spotlight */}
           {featured && (
             <>
-              <SectionHead title="in the spotlight" counter="Featured" />
+              <SectionHead title="the essentials" counter="Featured" />
               <div style={{ padding: "0 24px", marginBottom: 28 }}>
                 <Link
                   to={`/category/${featured.id}`}
