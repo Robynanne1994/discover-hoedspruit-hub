@@ -218,7 +218,7 @@ const BusinessStart = () => {
             color: "rgba(238, 232, 218, 0.85)",
           }}
         >
-          Already on Hello Hoedspruit? Search & claim.
+          Already listed on Hello Hoedspruit? Search & claim your listing.
         </span>
         <span style={{ color: CREAM, opacity: 0.6, fontSize: 18, lineHeight: 1 }}>›</span>
       </button>
