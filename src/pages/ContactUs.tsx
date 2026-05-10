@@ -326,7 +326,7 @@ const ContactUs = () => {
                   marginBottom: 10,
                 }}
               >
-                Email us.
+                Email us
               </h2>
               <p
                 style={{
