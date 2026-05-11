@@ -53,6 +53,7 @@ export const useFollowMutation = (targetUserId: string) => {
       qc.invalidateQueries({ queryKey: ["follow-counts"] });
       qc.invalidateQueries({ queryKey: ["followers"] });
       qc.invalidateQueries({ queryKey: ["following"] });
+      qc.invalidateQueries({ queryKey: ["my-following-ids", user?.id] });
     },
   });
 
@@ -70,6 +71,7 @@ export const useFollowMutation = (targetUserId: string) => {
       qc.invalidateQueries({ queryKey: ["follow-counts"] });
       qc.invalidateQueries({ queryKey: ["followers"] });
       qc.invalidateQueries({ queryKey: ["following"] });
+      qc.invalidateQueries({ queryKey: ["my-following-ids", user?.id] });
     },
   });
 
