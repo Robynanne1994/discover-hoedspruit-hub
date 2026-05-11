@@ -157,10 +157,6 @@ const Categories = () => {
 
   const FEATURED_TITLES = [
     "Emergency Services",
-    "Restaurants & Cafés",
-    "Restaurants & Cafes",
-    "Accommodation",
-    "Shopping",
     "Health & Medical",
   ];
   const normalizeTitle = (t: string) => t.trim().toLowerCase();
