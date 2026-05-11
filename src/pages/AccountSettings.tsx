@@ -165,7 +165,7 @@ const AccountSettings = () => {
               maxWidth: 260,
             }}
           >
-            Manage your account and preferences.
+            Manage your account & preferences.
           </p>
         </div>
       </div>
