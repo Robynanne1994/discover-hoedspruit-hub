@@ -47,6 +47,29 @@ const AdminCategories = () => {
   const [orderedCats, setOrderedCats] = useState<Category[]>([]);
   const [orderedSubs, setOrderedSubs] = useState<Record<string, Subcategory[]>>({});
 
+  const [viewSub, setViewSub] = useState<Subcategory | null>(null);
+
+  const { data: subListings, isLoading: subListingsLoading } = useQuery({
+    queryKey: ["admin-subcategory-listings", viewSub?.id],
+    enabled: !!viewSub,
+    queryFn: async () => {
+      const { data: links, error: linkErr } = await supabase
+        .from("listing_subcategories")
+        .select("listing_id")
+        .eq("subcategory_id", viewSub!.id);
+      if (linkErr) throw linkErr;
+      const ids = (links ?? []).map((l: any) => l.listing_id);
+      if (ids.length === 0) return [];
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, location, image_url")
+        .in("id", ids)
+        .order("title");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const { data: categories, isLoading } = useQuery({
     queryKey: ["admin-categories"],
     queryFn: async () => {
@@ -328,6 +351,42 @@ const AdminCategories = () => {
         </DialogContent>
       </Dialog>
 
+      {/* View subcategory listings dialog */}
+      <Dialog open={!!viewSub} onOpenChange={(v) => { if (!v) setViewSub(null); }}>
+        <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {viewSub?.title} <span className="text-muted-foreground font-normal text-sm">({subListings?.length ?? 0} listings)</span>
+            </DialogTitle>
+          </DialogHeader>
+          {subListingsLoading ? (
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          ) : !subListings || subListings.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No listings in this subcategory yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {subListings.map((l: any) => (
+                <a
+                  key={l.id}
+                  href={`/admin/listings?edit=${l.id}`}
+                  className="flex items-center gap-3 bg-card border border-border rounded-lg px-3 py-2 hover:border-primary transition-colors"
+                >
+                  {l.image_url ? (
+                    <img src={l.image_url} alt={l.title} className="h-10 w-10 rounded object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="h-10 w-10 rounded bg-muted flex-shrink-0" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-foreground truncate">{l.title}</div>
+                    {l.location && <div className="text-xs text-muted-foreground truncate">{l.location}</div>}
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
@@ -377,6 +436,7 @@ const AdminCategories = () => {
                                     key={sub.id}
                                     sub={sub}
                                     count={subCounts?.[sub.id] ?? 0}
+                                    onView={() => setViewSub(sub)}
                                     onEdit={() => openEditSub(sub)}
                                     onDelete={() => deleteSubMut.mutate(sub.id)}
                                   />
@@ -454,11 +514,13 @@ const SortableCategoryRow = ({
 const SortableSubRow = ({
   sub,
   count,
+  onView,
   onEdit,
   onDelete,
 }: {
   sub: Subcategory;
   count: number;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) => {
@@ -474,11 +536,11 @@ const SortableSubRow = ({
         <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
           <GripVertical className="h-4 w-4" />
         </button>
-        <div className="min-w-0">
+        <button type="button" onClick={onView} className="min-w-0 text-left hover:text-primary">
           <span className="font-medium text-foreground text-sm">{sub.title}</span>
           <span className="text-muted-foreground text-xs ml-1">({count})</span>
           {sub.description && <span className="text-muted-foreground text-xs ml-2">— {sub.description}</span>}
-        </div>
+        </button>
       </div>
       <div className="flex gap-1">
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
