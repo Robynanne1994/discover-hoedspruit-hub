@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Trash2, Mail, MessageSquare, Eye, Radio, ExternalLink } from "lucide-react";
+import { Trash2, Mail, MessageSquare, Eye, Radio, ExternalLink, Megaphone } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -35,7 +35,12 @@ type ResourceSuggestion = Contact & {
   };
 };
 
+type AdvertiseEnquiry = Contact & {
+  parsed: { business: string; about: string };
+};
+
 const LC_TAG = "[Local Channels suggestion]";
+const AD_TAG = "[Advertising Enquiry]";
 
 function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
   if (!c.message.includes(LC_TAG)) return null;
@@ -52,9 +57,18 @@ function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
   return { ...c, parsed: { resourceName, resourceLink, about } };
 }
 
+function parseAdvertiseEnquiry(c: Contact): AdvertiseEnquiry | null {
+  if (!c.message.includes(AD_TAG)) return null;
+  const rest = c.message.replace(AD_TAG, "").trim();
+  const businessMatch = rest.match(/^Business:\s*([^.]+)\.\s*/);
+  const business = businessMatch ? businessMatch[1].trim() : "";
+  const about = businessMatch ? rest.slice(businessMatch[0].length).trim() : rest;
+  return { ...c, parsed: { business, about } };
+}
+
 const AdminSubmissions = () => {
   const qc = useQueryClient();
-  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource"; data: any } | null>(null);
+  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource" | "advertise"; data: any } | null>(null);
 
   const contactsQ = useQuery({
     queryKey: ["admin-contact-submissions"],
@@ -97,16 +111,19 @@ const AdminSubmissions = () => {
     },
   });
 
-  const { regularContacts, resourceSuggestions } = useMemo(() => {
+  const { regularContacts, resourceSuggestions, advertiseEnquiries } = useMemo(() => {
     const all = contactsQ.data ?? [];
     const resources: ResourceSuggestion[] = [];
+    const ads: AdvertiseEnquiry[] = [];
     const regular: Contact[] = [];
     for (const c of all) {
-      const parsed = parseResourceSuggestion(c);
-      if (parsed) resources.push(parsed);
-      else regular.push(c);
+      const r = parseResourceSuggestion(c);
+      if (r) { resources.push(r); continue; }
+      const a = parseAdvertiseEnquiry(c);
+      if (a) { ads.push(a); continue; }
+      regular.push(c);
     }
-    return { regularContacts: regular, resourceSuggestions: resources };
+    return { regularContacts: regular, resourceSuggestions: resources, advertiseEnquiries: ads };
   }, [contactsQ.data]);
 
   const markRead = useMutation({
@@ -156,6 +173,10 @@ const AdminSubmissions = () => {
             <Mail className="h-4 w-4" />
             Contact ({regularContacts.length})
           </TabsTrigger>
+          <TabsTrigger value="advertise" className="gap-2">
+            <Megaphone className="h-4 w-4" />
+            Advertise ({advertiseEnquiries.length})
+          </TabsTrigger>
           <TabsTrigger value="resources" className="gap-2">
             <Radio className="h-4 w-4" />
             Local Channels ({resourceSuggestions.length})
@@ -201,6 +222,52 @@ const AdminSubmissions = () => {
                   size="icon"
                   onClick={() => {
                     if (confirm("Delete this submission?")) deleteContact.mutate(c.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </TabsContent>
+
+        <TabsContent value="advertise" className="space-y-2">
+          {contactsQ.isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+          {advertiseEnquiries.length === 0 && (
+            <p className="text-sm text-muted-foreground">No advertising enquiries yet.</p>
+          )}
+          {advertiseEnquiries.map((a) => (
+            <div
+              key={a.id}
+              className="bg-card border border-border rounded-lg p-4 flex items-start gap-3"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="secondary">Advertise</Badge>
+                  <span className="font-medium text-foreground">{a.parsed.business || a.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {a.name} · <a href={`mailto:${a.email}`} className="text-primary hover:underline">{a.email}</a> · {fmt(a.created_at)}
+                </p>
+                {a.parsed.about && (
+                  <p className="text-sm text-foreground mt-2 line-clamp-2 whitespace-pre-wrap">
+                    {a.parsed.about}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setViewing({ kind: "advertise", data: a })}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    if (confirm("Delete this enquiry?")) deleteContact.mutate(a.id);
                   }}
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
@@ -369,6 +436,33 @@ const AdminSubmissions = () => {
               </div>
               <Button asChild>
                 <a href={`mailto:${viewing.data.email}?subject=Re: your resource suggestion`}>Reply by email</a>
+              </Button>
+            </>
+          )}
+          {viewing?.kind === "advertise" && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{viewing.data.parsed.business || "Advertising enquiry"}</DialogTitle>
+                <DialogDescription>
+                  {viewing.data.name}
+                  {" · "}
+                  <a href={`mailto:${viewing.data.email}`} className="text-primary hover:underline">
+                    {viewing.data.email}
+                  </a>
+                  {" · "}
+                  {fmt(viewing.data.created_at)}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-3">
+                {viewing.data.parsed.about && (
+                  <p className="text-sm whitespace-pre-wrap text-foreground">{viewing.data.parsed.about}</p>
+                )}
+                <p className="text-xs text-muted-foreground whitespace-pre-wrap border-t border-border pt-3 mt-2">
+                  {viewing.data.message}
+                </p>
+              </div>
+              <Button asChild>
+                <a href={`mailto:${viewing.data.email}?subject=Re: your advertising enquiry`}>Reply by email</a>
               </Button>
             </>
           )}
