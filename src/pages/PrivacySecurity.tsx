@@ -26,7 +26,7 @@ const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const collectItems = [
   { icon: User, title: "Account Information", desc: "Name, email, profile details, and login information you choose to provide." },
-  { icon: Activity, title: "Activity In The App", desc: "Saved listings, visited places, event interactions, follows, and profile activity." },
+  { icon: Activity, title: "Activity in the App", desc: "Saved listings, visited places, event interactions, follows, and profile activity." },
   { icon: Smartphone, title: "Device & Usage Data", desc: "Basic technical information like device type, app activity, and performance data." },
   { icon: Phone, title: "Contact Actions", desc: "If you tap to call, email, visit a website, open WhatsApp, or use maps from a listing." },
   { icon: ImagePlus, title: "Content You Add", desc: "Profile photo, comments, event submissions, listing enquiries, or other optional content you submit." },
