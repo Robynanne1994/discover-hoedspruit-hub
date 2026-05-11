@@ -35,7 +35,12 @@ type ResourceSuggestion = Contact & {
   };
 };
 
+type AdvertiseEnquiry = Contact & {
+  parsed: { business: string; about: string };
+};
+
 const LC_TAG = "[Local Channels suggestion]";
+const AD_TAG = "[Advertising Enquiry]";
 
 function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
   if (!c.message.includes(LC_TAG)) return null;
@@ -50,6 +55,15 @@ function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
   }
   if (!resourceName && !resourceLink) return null;
   return { ...c, parsed: { resourceName, resourceLink, about } };
+}
+
+function parseAdvertiseEnquiry(c: Contact): AdvertiseEnquiry | null {
+  if (!c.message.includes(AD_TAG)) return null;
+  const rest = c.message.replace(AD_TAG, "").trim();
+  const businessMatch = rest.match(/^Business:\s*([^.]+)\.\s*/);
+  const business = businessMatch ? businessMatch[1].trim() : "";
+  const about = businessMatch ? rest.slice(businessMatch[0].length).trim() : rest;
+  return { ...c, parsed: { business, about } };
 }
 
 const AdminSubmissions = () => {
