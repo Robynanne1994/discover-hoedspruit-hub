@@ -61,6 +61,23 @@ const AccountSettings = () => {
         overflowX: "hidden",
       }}
     >
+      {/* Top-extending blob */}
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: -80,
+          right: -80,
+          width: 220,
+          height: 320,
+          background: COLORS.blob,
+          borderRadius: "50% 45% 55% 50% / 55% 50% 60% 45%",
+          opacity: 0.85,
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      />
+
       {/* Top bar */}
       <div style={{ position: "relative", zIndex: 3, paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
         <button
