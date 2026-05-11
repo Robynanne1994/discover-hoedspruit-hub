@@ -194,13 +194,12 @@ const NotificationCategories = () => {
         <p
           style={{
             ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
+            fontFamily: FONT_STACK,
+            fontSize: 15,
             fontWeight: 400,
-            fontSize: 17,
             color: COLORS.cream,
-            opacity: 0.75,
-            lineHeight: 1.4,
+            opacity: 0.9,
+            lineHeight: 1.65,
             margin: 0,
             marginBottom: 24,
             maxWidth: 300,
