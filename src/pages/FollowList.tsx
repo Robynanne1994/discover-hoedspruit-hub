@@ -376,7 +376,7 @@ const FollowList = () => {
       </div>
 
       {/* Hero */}
-      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 28 }}>
+      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 20 }}>
         <p
           style={{
             margin: 0,
@@ -389,12 +389,12 @@ const FollowList = () => {
             color: "rgba(238,232,218,0.7)",
           }}
         >
-          YOUR CIRCLE · {count}
+          {isFollowers ? "FOLLOWERS" : "FOLLOWING"} · {count}
         </p>
         <h1
           style={{
             margin: 0,
-            marginBottom: 14,
+            marginBottom: 22,
             fontFamily: SERIF,
             fontStyle: "italic",
             fontWeight: 300,
@@ -405,8 +405,44 @@ const FollowList = () => {
             textTransform: "none",
           }}
         >
-          {title}
+          your circle.
         </h1>
+
+        {/* Tabs */}
+        <div
+          style={{
+            display: "flex",
+            gap: 28,
+            borderBottom: "1px solid rgba(238,232,218,0.18)",
+          }}
+        >
+          {[
+            { key: "followers", label: "Followers" },
+            { key: "following", label: "Following" },
+          ].map((tab) => {
+            const active = (tab.key === "followers") === isFollowers;
+            return (
+              <Link
+                key={tab.key}
+                to={`/profile/${id}/${tab.key}`}
+                style={{
+                  padding: "10px 0",
+                  fontFamily: SANS,
+                  fontWeight: 400,
+                  fontSize: 14,
+                  letterSpacing: "1.6px",
+                  textTransform: "uppercase",
+                  color: active ? COLOR.cream : "rgba(238,232,218,0.55)",
+                  textDecoration: "none",
+                  borderBottom: active ? `2px solid ${COLOR.cream}` : "2px solid transparent",
+                  marginBottom: -1,
+                }}
+              >
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
       </div>
 
       {/* List card */}
