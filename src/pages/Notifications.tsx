@@ -169,19 +169,21 @@ const PrefRow = ({ title, description, checked, onToggle, disabled, isFirst, fil
         >
           {title}
         </div>
-        <div
-          style={{
-            ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 13.5,
-            color: COLORS.muted,
-            lineHeight: 1.4,
-          }}
-        >
-          {description}
-        </div>
+        {description && (
+          <div
+            style={{
+              ...baseText,
+              fontFamily: ITALIC_STACK,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: 13.5,
+              color: COLORS.muted,
+              lineHeight: 1.4,
+            }}
+          >
+            {description}
+          </div>
+        )}
         {filterLink && (
           <Link
             to={filterLink.to}
@@ -252,7 +254,7 @@ const SECTIONS: SectionDef[] = [
   {
     label: "Community",
     rows: [
-      { key: "community_followers", title: "New Followers", description: "Let us know when someone follows you." },
+      { key: "community_followers", title: "New Followers", description: "" },
       { key: "community_activity", title: "Activity From People You Follow", description: "Saves, reviews, and recommendations from your circle." },
     ],
   },
