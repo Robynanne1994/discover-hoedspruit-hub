@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isHealthCategory } from "@/lib/categoryFields";
+import { isShoppingCategory, isAccommodationCategory, isNGOCategory } from "@/lib/categoryFields";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
@@ -31,7 +31,7 @@ const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["Shopping Centre", "Curios & Gifts", "General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Stationery Shop", "Other"];
 const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
 
-const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", website_label: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, emergency_24hr: null as boolean | null, practitioners: "" as string };
+const emptyForm = { title: "", description: "", image_url: "", location: "", phone: "", email: "", website: "", website_label: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -221,8 +221,6 @@ const AdminListings = () => {
         ways_to_give: values.ways_to_give?.trim() || null,
         volunteering: values.volunteering?.trim() || null,
         visiting: values.visiting?.trim() || null,
-        emergency_24hr: values.emergency_24hr,
-        practitioners: values.practitioners ? values.practitioners.split(",").map((s: string) => s.trim()).filter(Boolean) : [],
       };
 
       // Treat "-" as empty for any string field on save
@@ -374,8 +372,6 @@ const AdminListings = () => {
       ways_to_give: (l as any).ways_to_give ?? "",
       volunteering: (l as any).volunteering ?? "",
       visiting: (l as any).visiting ?? "",
-      emergency_24hr: (l as any).emergency_24hr ?? null,
-      practitioners: ((l as any).practitioners ?? []).join(", "),
     });
     setOpen(true);
   };
@@ -400,7 +396,6 @@ const AdminListings = () => {
   const isShoppingType = categories?.some((c) => selectedCatIds.includes(c.id) && isShoppingCategory(c.title));
   const isAccommodationType = categories?.some((c) => selectedCatIds.includes(c.id) && isAccommodationCategory(c.title));
   const isNGOType = categories?.some((c) => selectedCatIds.includes(c.id) && isNGOCategory(c.title));
-  const isHealthType = categories?.some((c) => selectedCatIds.includes(c.id) && isHealthCategory(c.title));
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
@@ -787,21 +782,6 @@ const AdminListings = () => {
                     <div><Label>Ways To Give</Label><Textarea value={form.ways_to_give} onChange={(e) => setForm({ ...form, ways_to_give: e.target.value })} placeholder="How can people donate or contribute?" /></div>
                     <div><Label>Volunteering</Label><Textarea value={form.volunteering} onChange={(e) => setForm({ ...form, volunteering: e.target.value })} placeholder="How can people volunteer?" /></div>
                     <div><Label>Visiting</Label><Textarea value={form.visiting} onChange={(e) => setForm({ ...form, visiting: e.target.value })} placeholder="Visiting information" /></div>
-                  </div>
-                )}
-
-                {isHealthType && (
-                  <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-sm font-medium text-foreground">Health & Medical Fields</p>
-                    <TriStateToggle label="24hr Emergency" value={form.emergency_24hr} onChange={(v) => setForm({ ...form, emergency_24hr: v })} />
-                    <div>
-                      <Label>Practitioners</Label>
-                      <Textarea
-                        value={form.practitioners}
-                        onChange={(e) => setForm({ ...form, practitioners: e.target.value })}
-                        placeholder="Comma-separated, e.g. Dr Smith, Dr Jones"
-                      />
-                    </div>
                   </div>
                 )}
 

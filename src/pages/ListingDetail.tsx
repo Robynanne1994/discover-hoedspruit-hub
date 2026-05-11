@@ -11,7 +11,7 @@ import {
   BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isHealthCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -312,7 +312,6 @@ const ListingDetail = () => {
   const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
   const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
   const isListingNGO = listingCategories?.some((cat) => isNGOCategory(cat.title)) ?? false;
-  const isListingHealth = listingCategories?.some((cat) => isHealthCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
@@ -469,22 +468,6 @@ const ListingDetail = () => {
     }
   }
 
-  if (isListingHealth) {
-    const l = listing as any;
-    const healthFields = filterDefined([
-      { label: "24hr Emergency", value: l.emergency_24hr },
-    ]);
-    if (healthFields.length > 0) {
-      accordionSections.push({ key: "health-info", title: "Emergency", fields: healthFields });
-    }
-    if (Array.isArray(l.practitioners) && l.practitioners.length > 0) {
-      accordionSections.push({
-        key: "health-practitioners",
-        title: "Practitioners",
-        fields: l.practitioners.filter((p: string) => p && p.trim()).map((p: string) => ({ label: p, value: true })),
-      });
-    }
-  }
   // Custom detail rows (up to 3) — always last in the Details card
   {
     const l = listing as any;
@@ -975,8 +958,6 @@ const ListingDetail = () => {
                   "shop-amenities": ShoppingBag,
                   "shop-payment": CreditCard,
                   "shop-products": Package,
-                  "health-info": HeartPulse,
-                  "health-practitioners": HeartPulse,
                   "custom-1": Info,
                   "custom-2": Info,
                   "custom-3": Info,
