@@ -469,6 +469,22 @@ const ListingDetail = () => {
     }
   }
 
+  if (isListingHealth) {
+    const l = listing as any;
+    const healthFields = filterDefined([
+      { label: "24hr Emergency", value: l.emergency_24hr },
+    ]);
+    if (healthFields.length > 0) {
+      accordionSections.push({ key: "health-info", title: "Emergency", fields: healthFields });
+    }
+    if (Array.isArray(l.practitioners) && l.practitioners.length > 0) {
+      accordionSections.push({
+        key: "health-practitioners",
+        title: "Practitioners",
+        fields: l.practitioners.filter((p: string) => p && p.trim()).map((p: string) => ({ label: p, value: true })),
+      });
+    }
+  }
   // Custom detail rows (up to 3) — always last in the Details card
   {
     const l = listing as any;
@@ -932,42 +948,6 @@ const ListingDetail = () => {
           );
         })()}
 
-        {isListingHealth && (() => {
-          const emergency = (listing as any).emergency_24hr;
-          const practitioners: string[] = Array.isArray((listing as any).practitioners)
-            ? (listing as any).practitioners.filter((p: string) => p && p.trim())
-            : [];
-          if (emergency !== true && practitioners.length === 0) return null;
-          return (
-            <>
-              {emergency === true && (
-                <div>
-                  <SectionHeading mt={32}>24hr Emergency</SectionHeading>
-                  <p style={{
-                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
-                    color: "#FFFFFF", margin: 0,
-                  }}>Available 24 hours a day, 7 days a week.</p>
-                </div>
-              )}
-              {practitioners.length > 0 && (
-                <div>
-                  <SectionHeading mt={32}>Practitioners</SectionHeading>
-                  <ul style={{ margin: 0, paddingLeft: 18 }}>
-                    {practitioners.map((name, i) => (
-                      <li key={i} style={{
-                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                        fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
-                        color: "#FFFFFF", marginBottom: i < practitioners.length - 1 ? 6 : 0,
-                      }}>{name}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </>
-          );
-        })()}
-
         {accordionSections.length > 0 && (
           <>
             <SectionHeading mt={32}>Details</SectionHeading>
@@ -995,6 +975,8 @@ const ListingDetail = () => {
                   "shop-amenities": ShoppingBag,
                   "shop-payment": CreditCard,
                   "shop-products": Package,
+                  "health-info": HeartPulse,
+                  "health-practitioners": HeartPulse,
                   "custom-1": Info,
                   "custom-2": Info,
                   "custom-3": Info,
