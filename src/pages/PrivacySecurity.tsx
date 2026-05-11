@@ -196,7 +196,7 @@ const PrivacySecurity = () => {
         })}
       </div>
 
-      <Bridge>We only collect information that helps run, improve, and protect the app experience.</Bridge>
+      <Bridge>We only collect information that helps run, improve and protect the app experience.</Bridge>
 
       {/* How We Use Information */}
       <Eyebrow>How We Use Information</Eyebrow>
