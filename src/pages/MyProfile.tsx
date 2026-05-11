@@ -836,20 +836,6 @@ const MyProfile = () => {
           >
             your activity
           </h2>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <span
-              style={{
-                fontFamily: SANS,
-                fontSize: 11,
-                letterSpacing: "1.8px",
-                textTransform: "uppercase",
-                color: CREAM,
-                opacity: 0.75,
-              }}
-            >
-              Last 30 Days
-            </span>
-          </div>
         </div>
 
         {/* Privacy toggle row */}
