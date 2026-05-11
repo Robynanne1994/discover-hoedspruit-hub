@@ -469,6 +469,22 @@ const ListingDetail = () => {
     }
   }
 
+  if (isListingHealth) {
+    const l = listing as any;
+    const healthFields = filterTrue([
+      { label: "24hr Emergency", value: l.emergency_24hr },
+    ]);
+    if (healthFields.length > 0) {
+      accordionSections.push({ key: "health-info", title: "Emergency", fields: healthFields });
+    }
+    if (Array.isArray(l.practitioners) && l.practitioners.length > 0) {
+      accordionSections.push({
+        key: "health-practitioners",
+        title: "Practitioners",
+        fields: l.practitioners.filter((p: string) => p && p.trim()).map((p: string) => ({ label: p, value: true })),
+      });
+    }
+  }
   // Custom detail rows (up to 3) — always last in the Details card
   {
     const l = listing as any;
