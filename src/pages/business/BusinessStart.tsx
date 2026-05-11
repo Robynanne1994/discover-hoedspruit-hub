@@ -98,7 +98,7 @@ const BusinessStart = () => {
             maxWidth: 320,
           }}
         >
-          Get on the app locals already use. Post specials, share what's on, and reach the community.
+          Get on the app locals already use. Post specials, share what's on and reach the community.
         </p>
       </div>
 
