@@ -11,7 +11,7 @@ import {
   BedDouble, PawPrint, ShoppingBag, CreditCard, Package, Banknote, Info,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isHealthCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -312,6 +312,7 @@ const ListingDetail = () => {
   const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
   const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
   const isListingNGO = listingCategories?.some((cat) => isNGOCategory(cat.title)) ?? false;
+  const isListingHealth = listingCategories?.some((cat) => isHealthCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
@@ -927,6 +928,42 @@ const ListingDetail = () => {
                   ))}
                 </div>
               ))}
+            </>
+          );
+        })()}
+
+        {isListingHealth && (() => {
+          const emergency = (listing as any).emergency_24hr;
+          const practitioners: string[] = Array.isArray((listing as any).practitioners)
+            ? (listing as any).practitioners.filter((p: string) => p && p.trim())
+            : [];
+          if (emergency !== true && practitioners.length === 0) return null;
+          return (
+            <>
+              {emergency === true && (
+                <div>
+                  <SectionHeading mt={32}>24hr Emergency</SectionHeading>
+                  <p style={{
+                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                    fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
+                    color: "#FFFFFF", margin: 0,
+                  }}>Available 24 hours a day, 7 days a week.</p>
+                </div>
+              )}
+              {practitioners.length > 0 && (
+                <div>
+                  <SectionHeading mt={32}>Practitioners</SectionHeading>
+                  <ul style={{ margin: 0, paddingLeft: 18 }}>
+                    {practitioners.map((name, i) => (
+                      <li key={i} style={{
+                        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                        fontWeight: 400, fontSize: 14, lineHeight: "20.3px",
+                        color: "#FFFFFF", marginBottom: i < practitioners.length - 1 ? 6 : 0,
+                      }}>{name}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </>
           );
         })()}
