@@ -667,11 +667,11 @@ const People = () => {
           style={{
             margin: 0,
             marginBottom: 24,
-            fontFamily: SERIF,
-            fontStyle: "italic",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 400,
-            fontSize: 17,
-            color: "rgba(238,232,218,0.75)",
+            fontSize: 15,
+            lineHeight: 1.65,
+            color: "rgba(238,232,218,0.9)",
             maxWidth: 300,
           }}
         >
