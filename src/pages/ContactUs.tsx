@@ -402,7 +402,7 @@ const ContactUs = () => {
         <SecondaryCard
           eyebrow="Instagram"
           value="@hellohoedspruit"
-          meta="Daily picks, openings, and what's on"
+          meta="Daily picks, openings and what's on"
           bg={SOFT_CREAM}
           href={INSTAGRAM_URL}
           external
