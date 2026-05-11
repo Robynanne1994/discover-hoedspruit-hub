@@ -248,7 +248,7 @@ const SECTIONS: SectionDef[] = [
     label: "Specials",
     rows: [
       { key: "specials_new", title: "New Specials", description: "Fresh deals from local businesses.", filterCol: "specials_new_categories", filterType: "specials_new" },
-      { key: "specials_ending", title: "Specials Ending Soon", description: "A heads-up before saved specials expire." },
+      { key: "specials_ending", title: "Specials Ending Soon", description: "" },
     ],
   },
   {
