@@ -111,11 +111,11 @@ const Headlines = () => {
           lowdown.
         </h1>
         <p style={{
-          fontFamily: SERIF, fontStyle: "italic", fontWeight: 400,
-          fontSize: 17, color: CREAM, opacity: 0.75,
-          margin: 0, marginBottom: 24, lineHeight: 1.35,
+          fontFamily: SANS, fontWeight: 400,
+          fontSize: 15, color: CREAM, opacity: 0.9,
+          margin: 0, marginBottom: 24, lineHeight: 1.65,
         }}>
-          News, stories & local updates.
+          News, stories and local updates.
         </p>
       </div>
 
