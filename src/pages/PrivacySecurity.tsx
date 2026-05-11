@@ -141,7 +141,7 @@ const PrivacySecurity = () => {
         <h1 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 14, textTransform: "none" }}>
           your data.
         </h1>
-        <p style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 17, lineHeight: 1.4, color: "rgba(238,232,218,0.75)", maxWidth: 300, margin: 0, marginBottom: 28 }}>
+        <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 15, lineHeight: 1.65, color: "rgba(238,232,218,0.9)", maxWidth: 300, margin: 0, marginBottom: 28 }}>
           How we handle your information, and how you stay in control.
         </p>
       </div>
