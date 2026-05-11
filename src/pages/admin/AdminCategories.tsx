@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -6,14 +6,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical } from "lucide-react";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
 import ImageUpload from "@/components/admin/ImageUpload";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type Category = Tables<"categories">;
+type Subcategory = Tables<"subcategories">;
 
 const AdminCategories = () => {
   const qc = useQueryClient();
@@ -22,10 +40,12 @@ const AdminCategories = () => {
   const [form, setForm] = useState({ title: "", description: "", icon: "Folder", image_url: "", sort_order: 0, is_quick_category: false });
   const [expandedCat, setExpandedCat] = useState<string | null>(null);
 
-  // Subcategory state
   const [subOpen, setSubOpen] = useState(false);
   const [editingSub, setEditingSub] = useState<any | null>(null);
   const [subForm, setSubForm] = useState({ title: "", description: "", sort_order: 0, category_id: "" });
+
+  const [orderedCats, setOrderedCats] = useState<Category[]>([]);
+  const [orderedSubs, setOrderedSubs] = useState<Record<string, Subcategory[]>>({});
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["admin-categories"],
@@ -44,6 +64,47 @@ const AdminCategories = () => {
       return data;
     },
   });
+
+  // Listing counts per category and subcategory
+  const { data: catCounts } = useQuery({
+    queryKey: ["admin-listing-categories-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("listing_categories").select("category_id");
+      if (error) throw error;
+      const map: Record<string, number> = {};
+      (data ?? []).forEach((r: any) => {
+        map[r.category_id] = (map[r.category_id] ?? 0) + 1;
+      });
+      return map;
+    },
+  });
+
+  const { data: subCounts } = useQuery({
+    queryKey: ["admin-listing-subcategories-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("listing_subcategories").select("subcategory_id");
+      if (error) throw error;
+      const map: Record<string, number> = {};
+      (data ?? []).forEach((r: any) => {
+        map[r.subcategory_id] = (map[r.subcategory_id] ?? 0) + 1;
+      });
+      return map;
+    },
+  });
+
+  useEffect(() => {
+    if (categories) setOrderedCats(categories);
+  }, [categories]);
+
+  useEffect(() => {
+    if (subcategories) {
+      const grouped: Record<string, Subcategory[]> = {};
+      subcategories.forEach((s) => {
+        (grouped[s.category_id] ??= []).push(s);
+      });
+      setOrderedSubs(grouped);
+    }
+  }, [subcategories]);
 
   const upsert = useMutation({
     mutationFn: async (values: TablesInsert<"categories">) => {
@@ -74,7 +135,6 @@ const AdminCategories = () => {
     },
   });
 
-  // Subcategory mutations
   const upsertSub = useMutation({
     mutationFn: async (values: { title: string; description: string; sort_order: number; category_id: string }) => {
       const payload = {
@@ -109,6 +169,34 @@ const AdminCategories = () => {
       toast.success("Subcategory deleted");
     },
   });
+
+  const persistCategoryOrder = async (items: Category[]) => {
+    const updates = items.map((it, idx) =>
+      supabase.from("categories").update({ sort_order: idx }).eq("id", it.id)
+    );
+    const results = await Promise.all(updates);
+    const failed = results.find((r) => r.error);
+    if (failed?.error) {
+      toast.error("Failed to save order");
+      qc.invalidateQueries({ queryKey: ["admin-categories"] });
+    } else {
+      toast.success("Order saved");
+    }
+  };
+
+  const persistSubcategoryOrder = async (items: Subcategory[]) => {
+    const updates = items.map((it, idx) =>
+      supabase.from("subcategories").update({ sort_order: idx }).eq("id", it.id)
+    );
+    const results = await Promise.all(updates);
+    const failed = results.find((r) => r.error);
+    if (failed?.error) {
+      toast.error("Failed to save order");
+      qc.invalidateQueries({ queryKey: ["admin-subcategories"] });
+    } else {
+      toast.success("Order saved");
+    }
+  };
 
   const resetForm = () => {
     setForm({ title: "", description: "", icon: "Folder", image_url: "", sort_order: 0, is_quick_category: false });
@@ -152,13 +240,39 @@ const AdminCategories = () => {
     setSubOpen(true);
   };
 
-  const getSubcategoriesForCategory = (catId: string) =>
-    subcategories?.filter((s) => s.category_id === catId) ?? [];
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  const handleCategoryDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIdx = orderedCats.findIndex((c) => c.id === active.id);
+    const newIdx = orderedCats.findIndex((c) => c.id === over.id);
+    const next = arrayMove(orderedCats, oldIdx, newIdx);
+    setOrderedCats(next);
+    persistCategoryOrder(next);
+  };
+
+  const handleSubDragEnd = (catId: string) => (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const list = orderedSubs[catId] ?? [];
+    const oldIdx = list.findIndex((s) => s.id === active.id);
+    const newIdx = list.findIndex((s) => s.id === over.id);
+    const next = arrayMove(list, oldIdx, newIdx);
+    setOrderedSubs({ ...orderedSubs, [catId]: next });
+    persistSubcategoryOrder(next);
+  };
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
-        <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Categories</h1>
+        <div>
+          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Categories</h1>
+          <p className="text-sm text-muted-foreground mt-1">Drag <GripVertical className="inline h-3 w-3" /> handles to reorder.</p>
+        </div>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
             <Button className="gap-2"><Plus className="h-4 w-4" /> Add Category</Button>
@@ -217,89 +331,163 @@ const AdminCategories = () => {
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
-          <table className="w-full text-sm min-w-[560px]">
-            <thead className="bg-muted">
-              <tr>
-                <th className="text-left p-3 font-medium text-muted-foreground">Title</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Icon</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Type</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Order</th>
-                <th className="text-left p-3 font-medium text-muted-foreground">Subs</th>
-                <th className="p-3"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {categories?.map((cat) => {
-                const subs = getSubcategoriesForCategory(cat.id);
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
+          <div className="grid grid-cols-[32px_1fr_140px_120px_80px_120px] gap-3 px-3 py-2 bg-muted text-xs font-medium text-muted-foreground">
+            <div></div>
+            <div>Title</div>
+            <div>Icon</div>
+            <div>Type</div>
+            <div>Listings</div>
+            <div className="text-right">Actions</div>
+          </div>
+
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCategoryDragEnd}>
+            <SortableContext items={orderedCats.map((c) => c.id)} strategy={verticalListSortingStrategy}>
+              {orderedCats.map((cat) => {
+                const subs = orderedSubs[cat.id] ?? [];
                 const isExpanded = expandedCat === cat.id;
+                const listingCount = catCounts?.[cat.id] ?? 0;
                 return (
-                  <>
-                    <tr key={cat.id} className="border-t border-border">
-                      <td className="p-3 font-medium text-foreground">
-                        <button
-                          type="button"
-                          className="flex items-center gap-1 hover:text-primary transition-colors"
-                          onClick={() => setExpandedCat(isExpanded ? null : cat.id)}
-                        >
-                          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                          {cat.title}
-                        </button>
-                      </td>
-                      <td className="p-3 text-muted-foreground">{cat.icon}</td>
-                      <td className="p-3 text-muted-foreground">{cat.is_quick_category ? "Quick" : "Featured"}</td>
-                      <td className="p-3 text-muted-foreground">{cat.sort_order}</td>
-                      <td className="p-3 text-muted-foreground">{subs.length}</td>
-                      <td className="p-3 flex gap-1 justify-end">
-                        <Button variant="ghost" size="icon" onClick={() => openEdit(cat)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(cat.id)}>
-                          <Trash2 className="h-4 w-4 text-destructive" />
-                        </Button>
-                      </td>
-                    </tr>
+                  <SortableCategoryRow
+                    key={cat.id}
+                    cat={cat}
+                    listingCount={listingCount}
+                    subsCount={subs.length}
+                    isExpanded={isExpanded}
+                    onToggle={() => setExpandedCat(isExpanded ? null : cat.id)}
+                    onEdit={() => openEdit(cat)}
+                    onDelete={() => deleteMut.mutate(cat.id)}
+                  >
                     {isExpanded && (
-                      <tr key={`${cat.id}-subs`} className="border-t border-border bg-muted/30">
-                        <td colSpan={6} className="p-4">
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm font-medium text-muted-foreground">Subcategories</span>
-                            <Button size="sm" variant="outline" className="gap-1" onClick={() => openAddSub(cat.id)}>
-                              <Plus className="h-3 w-3" /> Add
-                            </Button>
-                          </div>
-                          {subs.length === 0 ? (
-                            <p className="text-sm text-muted-foreground">No subcategories yet.</p>
-                          ) : (
-                            <div className="space-y-2">
-                              {subs.map((sub) => (
-                                <div key={sub.id} className="flex items-center justify-between bg-card border border-border rounded-lg px-3 py-2">
-                                  <div>
-                                    <span className="font-medium text-foreground text-sm">{sub.title}</span>
-                                    {sub.description && <span className="text-muted-foreground text-xs ml-2">— {sub.description}</span>}
-                                  </div>
-                                  <div className="flex gap-1">
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => openEditSub(sub)}>
-                                      <Pencil className="h-3 w-3" />
-                                    </Button>
-                                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => deleteSubMut.mutate(sub.id)}>
-                                      <Trash2 className="h-3 w-3 text-destructive" />
-                                    </Button>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </td>
-                      </tr>
+                      <div className="bg-muted/30 px-4 py-3 border-t border-border">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-sm font-medium text-muted-foreground">Subcategories</span>
+                          <Button size="sm" variant="outline" className="gap-1" onClick={() => openAddSub(cat.id)}>
+                            <Plus className="h-3 w-3" /> Add
+                          </Button>
+                        </div>
+                        {subs.length === 0 ? (
+                          <p className="text-sm text-muted-foreground">No subcategories yet.</p>
+                        ) : (
+                          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
+                            <SortableContext items={subs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                              <div className="space-y-2">
+                                {subs.map((sub) => (
+                                  <SortableSubRow
+                                    key={sub.id}
+                                    sub={sub}
+                                    count={subCounts?.[sub.id] ?? 0}
+                                    onEdit={() => openEditSub(sub)}
+                                    onDelete={() => deleteSubMut.mutate(sub.id)}
+                                  />
+                                ))}
+                              </div>
+                            </SortableContext>
+                          </DndContext>
+                        )}
+                      </div>
                     )}
-                  </>
+                  </SortableCategoryRow>
                 );
               })}
-            </tbody>
-          </table>
+            </SortableContext>
+          </DndContext>
         </div>
       )}
+    </div>
+  );
+};
+
+const SortableCategoryRow = ({
+  cat,
+  listingCount,
+  subsCount,
+  isExpanded,
+  onToggle,
+  onEdit,
+  onDelete,
+  children,
+}: {
+  cat: Category;
+  listingCount: number;
+  subsCount: number;
+  isExpanded: boolean;
+  onToggle: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
+  children?: React.ReactNode;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: cat.id });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="border-t border-border">
+      <div className="grid grid-cols-[32px_1fr_140px_120px_80px_120px] gap-3 items-center px-3 py-2.5">
+        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
+          <GripVertical className="h-4 w-4" />
+        </button>
+        <button type="button" className="flex items-center gap-1 hover:text-primary text-left font-medium text-foreground" onClick={onToggle}>
+          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+          {cat.title}
+          <span className="text-muted-foreground font-normal text-sm ml-1">({subsCount})</span>
+        </button>
+        <div className="text-sm text-muted-foreground truncate">{cat.icon}</div>
+        <div className="text-sm text-muted-foreground">{cat.is_quick_category ? "Quick" : "Featured"}</div>
+        <div className="text-sm text-muted-foreground">{listingCount}</div>
+        <div className="flex gap-1 justify-end">
+          <Button variant="ghost" size="icon" onClick={onEdit}>
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={onDelete}>
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      </div>
+      {children}
+    </div>
+  );
+};
+
+const SortableSubRow = ({
+  sub,
+  count,
+  onEdit,
+  onDelete,
+}: {
+  sub: Subcategory;
+  count: number;
+  onEdit: () => void;
+  onDelete: () => void;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: sub.id });
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center justify-between bg-card border border-border rounded-lg px-3 py-2">
+      <div className="flex items-center gap-2 min-w-0">
+        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
+          <GripVertical className="h-4 w-4" />
+        </button>
+        <div className="min-w-0">
+          <span className="font-medium text-foreground text-sm">{sub.title}</span>
+          <span className="text-muted-foreground text-xs ml-1">({count})</span>
+          {sub.description && <span className="text-muted-foreground text-xs ml-2">— {sub.description}</span>}
+        </div>
+      </div>
+      <div className="flex gap-1">
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
+          <Pencil className="h-3 w-3" />
+        </Button>
+        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onDelete}>
+          <Trash2 className="h-3 w-3 text-destructive" />
+        </Button>
+      </div>
     </div>
   );
 };
