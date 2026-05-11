@@ -157,7 +157,6 @@ const Categories = () => {
 
   const FEATURED_TITLES = [
     "Emergency Services",
-    "Health & Medical",
   ];
   const normalizeTitle = (t: string) => t.trim().toLowerCase();
   const featuredSet = new Set(FEATURED_TITLES.map(normalizeTitle));
