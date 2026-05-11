@@ -834,7 +834,7 @@ const MyProfile = () => {
               textTransform: "lowercase",
             }}
           >
-            your activity
+            activity
           </h2>
           <button
             onClick={async () => {
