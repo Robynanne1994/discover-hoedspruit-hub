@@ -1011,8 +1011,11 @@ const ListingDetail = () => {
                   "shop-amenities": ShoppingBag,
                   "shop-payment": CreditCard,
                   "shop-products": Package,
+                  "health-info": HeartPulse,
+                  "health-practitioners": HeartPulse,
                   "custom-1": Info,
                   "custom-2": Info,
+                  "custom-3": Info,
                   "custom-3": Info,
                 };
                 const SectionIcon = sectionIconMap[section.key] || Sparkles;
