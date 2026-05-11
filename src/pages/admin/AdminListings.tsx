@@ -790,6 +790,21 @@ const AdminListings = () => {
                   </div>
                 )}
 
+                {isHealthType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-sm font-medium text-foreground">Health & Medical Fields</p>
+                    <TriStateToggle label="24hr Emergency" value={form.emergency_24hr} onChange={(v) => setForm({ ...form, emergency_24hr: v })} />
+                    <div>
+                      <Label>Practitioners</Label>
+                      <Textarea
+                        value={form.practitioners}
+                        onChange={(e) => setForm({ ...form, practitioners: e.target.value })}
+                        placeholder="Comma-separated, e.g. Dr Smith, Dr Jones"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 <div className="flex gap-2">
                   {editing && (
                     <Button
