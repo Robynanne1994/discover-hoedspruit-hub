@@ -368,15 +368,13 @@ const Notifications = () => {
         <p
           style={{
             ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 400,
-            fontSize: 17,
-            color: COLORS.cream,
-            opacity: 0.75,
+            fontSize: 15,
+            color: "rgba(238, 232, 218, 0.9)",
             margin: 0,
             marginBottom: 28,
-            lineHeight: 1.4,
+            lineHeight: 1.65,
           }}
         >
           Pick what you want to hear about, skip what you don't.
