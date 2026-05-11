@@ -865,7 +865,7 @@ const MyProfile = () => {
                 toast.error("Could not update privacy");
                 return;
               }
-              qc.invalidateQueries({ queryKey: ["my-profile", id] });
+              queryClient.invalidateQueries({ queryKey: ["my-profile", id] });
               toast.success(next ? "Activity is now private" : "Activity is now visible to followers");
             }}
             style={{
