@@ -153,7 +153,7 @@ const PrivacySecurity = () => {
             <Shield size={18} strokeWidth={1.6} color={CREAM} fill="none" />
           </div>
           <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 24, lineHeight: 1, letterSpacing: "-0.4px", color: INK, margin: 0 }}>
-            your privacy matters.
+            your privacy matters
           </h2>
         </div>
         <p style={{ fontFamily: SANS, fontSize: 14.5, lineHeight: 1.55, color: INK, opacity: 0.8, margin: 0, marginBottom: 10 }}>
