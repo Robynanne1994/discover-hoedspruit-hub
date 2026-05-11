@@ -55,7 +55,7 @@ const actionRows = [
   { title: "Update Profile Information", desc: "Edit your name, photo, bio, and contact details at any time.", to: "/account/info" },
   { title: "Manage Notification Preferences", desc: "Choose what you hear from us and how often.", to: "/notifications" },
   { title: "Control Location Access", desc: "Manage location permissions through your device settings.", to: "/account/settings" },
-  { title: "Download Or Request Your Data", desc: "Get in touch to request a copy of the data we hold.", to: "/contact" },
+  { title: "Download or Request Your Data", desc: "Get in touch to request a copy of the data we hold.", to: "/contact" },
   { title: "Request Account Deletion", desc: "You can request to have your account and data removed.", to: "/account/settings" },
 ];
 
