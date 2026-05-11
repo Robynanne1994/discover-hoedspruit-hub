@@ -494,7 +494,7 @@ const MyAccount = () => {
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
     { label: "About", href: "/about", icon: Info },
-    { label: "Help", href: "/faqs", icon: HelpCircle },
+    { label: "Help Centre", href: "/faqs", icon: HelpCircle },
     { label: "Terms & Policies", href: "/terms", icon: FileText },
   ];
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
