@@ -30,14 +30,14 @@ const COLORS = {
 type Row = { title: string; desc: string; href?: string };
 
 const accountRows: Row[] = [
-  { title: "Account Info", desc: "Manage email, phone and password", href: "/account-settings/info" },
-  { title: "Notification Preferences", desc: "Customise what you hear from us", href: "/notifications" },
-  { title: "Privacy & Security", desc: "Manage visibility, data and protection", href: "/privacy-security" },
+  { title: "Account Info", desc: "", href: "/account-settings/info" },
+  { title: "Notification Preferences", desc: "", href: "/notifications" },
+  { title: "Privacy & Security", desc: "", href: "/privacy-security" },
 ];
 
 const supportRows: Row[] = [
-  { title: "Help & Support", desc: "FAQ and contact", href: "/faqs" },
-  { title: "Terms & Policies", desc: "Our terms and policies", href: "/terms" },
+  { title: "Help & Support", desc: "", href: "/faqs" },
+  { title: "Terms & Policies", desc: "", href: "/terms" },
 ];
 
 const AccountSettings = () => {
