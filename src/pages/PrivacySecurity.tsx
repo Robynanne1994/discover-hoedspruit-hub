@@ -35,7 +35,7 @@ const collectItems = [
 
 const useBullets = [
   "To create and manage your account.",
-  "To save listings, visited places, and event activity.",
+  "To save listings, visited places, specials and event activity.",
   "To personalise discovery and improve relevance.",
   "To respond to support requests and enquiries.",
   "To keep the app secure and prevent misuse.",
