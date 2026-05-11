@@ -49,7 +49,16 @@ const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
               background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
             }} />
             <div style={{ position: "absolute", bottom: 14, left: 14, right: 14 }}>
-              <div style={{ fontSize: 14, fontWeight: 600, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}>
+              <div style={{ 
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                fontSize: 18, 
+                fontWeight: 400, 
+                color: "#2A2A24", 
+                lineHeight: 1.2, 
+                letterSpacing: "-0.25px",
+                textTransform: "capitalize",
+                marginBottom: 4 
+              }}>
                 {listing.title}
               </div>
               {listing.google_rating && listing.google_rating > 0 && (
