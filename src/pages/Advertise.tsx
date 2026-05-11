@@ -405,7 +405,7 @@ const Advertise = () => {
               fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
               fontSize: 48, lineHeight: 0.95, letterSpacing: "-1.4px",
               color: CREAM, margin: "0 0 24px",
-            }}>say hello.</h2>
+            }}>say hello</h2>
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <div>
                 <input
