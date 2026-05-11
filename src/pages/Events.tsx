@@ -443,7 +443,7 @@ const Events = () => {
   const showRecurring = activeFilter !== "past" && activeFilter !== "today";
   const totalCount = events?.length || 0;
   const subline = totalCount > 0
-    ? `All local happenings, refreshed daily.`
+    ? `All local happenings.`
     : "Refreshed daily.";
 
   const iconBtn: React.CSSProperties = {
