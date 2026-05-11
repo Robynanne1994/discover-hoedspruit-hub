@@ -52,7 +52,9 @@ function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
   return { ...c, parsed: { resourceName, resourceLink, about } };
 }
 
-  const contactsQ = useQuery({
+const AdminSubmissions = () => {
+  const qc = useQueryClient();
+  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource"; data: any } | null>(null);
     queryKey: ["admin-contact-submissions"],
     queryFn: async () => {
       const { data, error } = await supabase
