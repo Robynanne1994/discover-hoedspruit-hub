@@ -851,6 +851,7 @@ export type Database = {
           delivery_available: boolean | null
           description: string | null
           email: string | null
+          emergency_24hr: boolean | null
           gallery_images: string[] | null
           good_for_kids: boolean | null
           google_maps_link: string | null
@@ -892,6 +893,7 @@ export type Database = {
           payment_methods: string[] | null
           pets_allowed: boolean | null
           phone: string | null
+          practitioners: string[] | null
           price_level: number | null
           price_range: string | null
           product_categories: string[] | null
@@ -938,6 +940,7 @@ export type Database = {
           delivery_available?: boolean | null
           description?: string | null
           email?: string | null
+          emergency_24hr?: boolean | null
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
@@ -979,6 +982,7 @@ export type Database = {
           payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
+          practitioners?: string[] | null
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
@@ -1025,6 +1029,7 @@ export type Database = {
           delivery_available?: boolean | null
           description?: string | null
           email?: string | null
+          emergency_24hr?: boolean | null
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
@@ -1066,6 +1071,7 @@ export type Database = {
           payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
+          practitioners?: string[] | null
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
