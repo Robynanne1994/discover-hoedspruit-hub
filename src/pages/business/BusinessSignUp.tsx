@@ -220,7 +220,7 @@ const BusinessSignUp = () => {
             marginBottom: 32,
           }}
         >
-          Claim your listing, post specials, and share what's on.
+          Claim your listing, post specials and share what's on.
         </p>
       </div>
 
