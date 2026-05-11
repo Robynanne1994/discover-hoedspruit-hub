@@ -221,6 +221,8 @@ const AdminListings = () => {
         ways_to_give: values.ways_to_give?.trim() || null,
         volunteering: values.volunteering?.trim() || null,
         visiting: values.visiting?.trim() || null,
+        emergency_24hr: values.emergency_24hr,
+        practitioners: values.practitioners ? values.practitioners.split(",").map((s: string) => s.trim()).filter(Boolean) : [],
       };
 
       // Treat "-" as empty for any string field on save
