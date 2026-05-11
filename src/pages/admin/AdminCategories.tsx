@@ -400,6 +400,7 @@ const AdminCategories = () => {
                                     key={sub.id}
                                     sub={sub}
                                     count={subCounts?.[sub.id] ?? 0}
+                                    onView={() => setViewSub(sub)}
                                     onEdit={() => openEditSub(sub)}
                                     onDelete={() => deleteSubMut.mutate(sub.id)}
                                   />
