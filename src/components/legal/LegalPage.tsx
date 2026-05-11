@@ -105,11 +105,11 @@ export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPagePro
           />
           <span
             style={{
-              fontFamily: serif,
-              fontStyle: "italic",
+              fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
               fontWeight: 400,
-              fontSize: 14.5,
-              color: "rgba(238,232,218,0.65)",
+              fontSize: 15,
+              lineHeight: 1.65,
+              color: "rgba(238,232,218,0.9)",
             }}
           >
             Last updated {dateStr}.
