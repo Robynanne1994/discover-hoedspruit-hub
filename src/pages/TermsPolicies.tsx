@@ -84,7 +84,7 @@ const TermsPolicies = () => {
         <h1 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 14 }}>
           terms.
         </h1>
-        <p style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 17, lineHeight: 1.4, color: "rgba(238,232,218,0.75)", margin: 0, marginBottom: 32, maxWidth: 300 }}>
+        <p style={{ fontFamily: SANS, fontWeight: 400, fontSize: 15, lineHeight: 1.65, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 32, maxWidth: 320 }}>
           A quick look at how we run things, and how we look after you.
         </p>
       </div>
