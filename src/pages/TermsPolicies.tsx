@@ -31,7 +31,7 @@ const BackArrow = () => (
 
 const POLICIES = [
   { title: "Terms of Use", subtitle: "How you and we agree to use Hello Hoedspruit.", to: "/terms-of-use" },
-  { title: "Privacy Policy", subtitle: "What we collect, why we collect it, and how it's kept safe.", to: "/privacy-policy" },
+  { title: "Privacy Policy", subtitle: "What we collect, why we collect it and how it's kept safe.", to: "/privacy-policy" },
   { title: "Cookie Policy", subtitle: "The cookies we use to keep the app running smoothly.", to: "/cookie-policy" },
   { title: "Community Guidelines", subtitle: "The tone we keep, and what belongs on the app.", to: "/content-guidelines" },
 ];
