@@ -526,32 +526,6 @@ const FollowList = () => {
         </button>
       </div>
 
-      {/* Cross-link */}
-      <div
-        style={{
-          marginTop: 8,
-          marginLeft: 24,
-          marginRight: 24,
-          paddingTop: 16,
-          textAlign: "center",
-          borderTop: "1px solid rgba(238,232,218,0.15)",
-        }}
-      >
-        <Link
-          to={sisterPath}
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 16,
-            color: "rgba(238,232,218,0.65)",
-            textDecoration: "none",
-            marginRight: 6,
-          }}
-        >
-          {sisterLabel}
-        </Link>
-      </div>
     </div>
   );
 };
