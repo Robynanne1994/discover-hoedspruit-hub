@@ -312,6 +312,7 @@ const ListingDetail = () => {
   const isListingShopping = listingCategories?.some((cat) => isShoppingCategory(cat.title)) ?? false;
   const isListingAccommodation = listingCategories?.some((cat) => isAccommodationCategory(cat.title)) ?? false;
   const isListingNGO = listingCategories?.some((cat) => isNGOCategory(cat.title)) ?? false;
+  const isListingHealth = listingCategories?.some((cat) => isHealthCategory(cat.title)) ?? false;
   const galleryImages = (listing as any).gallery_images as string[] | null;
   const longDescription = (listing as any).long_description as string | null;
   const openingHours = (listing as any).opening_hours as Record<string, string> | null;
