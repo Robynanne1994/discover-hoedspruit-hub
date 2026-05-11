@@ -337,7 +337,7 @@ const Advertise = () => {
               fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
               fontSize: 38, lineHeight: 1, letterSpacing: "-1px",
               color: CREAM, margin: "0 0 14px",
-            }}>Join the directory.</h2>
+            }}>Join the directory</h2>
             <p style={{
               fontFamily: FF, fontSize: 14.5, fontWeight: 400, lineHeight: 1.55,
               color: "rgba(238,232,218,0.9)", maxWidth: 280, margin: "0 0 24px",
