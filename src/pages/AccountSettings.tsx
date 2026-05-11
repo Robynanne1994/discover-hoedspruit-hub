@@ -106,22 +106,7 @@ const AccountSettings = () => {
 
       {/* Hero */}
       <div style={{ position: "relative", padding: "18px 24px 0", overflow: "hidden" }}>
-        {/* Blob 1 */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: -40,
-            right: -80,
-            width: 220,
-            height: 240,
-            background: COLORS.blob,
-            borderRadius: "50% 45% 55% 50% / 55% 50% 60% 45%",
-            opacity: 0.85,
-            zIndex: 1,
-            pointerEvents: "none",
-          }}
-        />
+        {/* Blob 1 moved to root to extend to top of screen */}
         {/* Blob 2 */}
         <div
           aria-hidden
