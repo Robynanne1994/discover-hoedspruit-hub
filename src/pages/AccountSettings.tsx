@@ -257,23 +257,25 @@ function SettingsRow({ row, isFirst }: { row: Row; isFirst: boolean }) {
             lineHeight: 1.2,
             letterSpacing: "-0.1px",
             color: COLORS.ink,
-            marginBottom: 5,
+            marginBottom: row.desc ? 5 : 0,
           }}
         >
           {row.title}
         </div>
-        <div
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 13.5,
-            lineHeight: 1.35,
-            color: COLORS.muted,
-          }}
-        >
-          {row.desc}
-        </div>
+        {row.desc && (
+          <div
+            style={{
+              fontFamily: SERIF,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: 13.5,
+              lineHeight: 1.35,
+              color: COLORS.muted,
+            }}
+          >
+            {row.desc}
+          </div>
+        )}
       </div>
       <div
         aria-hidden
