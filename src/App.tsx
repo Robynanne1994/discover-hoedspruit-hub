@@ -78,6 +78,7 @@ import BusinessFeature from "./pages/business/BusinessFeature.tsx";
 import BusinessBilling from "./pages/business/BusinessBilling.tsx";
 import AdminModeration from "./pages/admin/AdminModeration.tsx";
 import AdminUsers from "./pages/admin/AdminUsers.tsx";
+import AdminSubmissions from "./pages/admin/AdminSubmissions.tsx";
 import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
