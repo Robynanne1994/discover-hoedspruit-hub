@@ -233,21 +233,21 @@ const SECTIONS: SectionDef[] = [
     label: "Events",
     rows: [
       { key: "events_new", title: "New Events", description: "", filterCol: "events_new_categories", filterType: "events_new" },
-      { key: "events_reminders", title: "Event Reminders", description: "A nudge the day before events you've saved." },
-      { key: "events_updates", title: "Event Updates", description: "Changes to time, venue, or line-up." },
+      { key: "events_reminders", title: "Event Reminders", description: "" },
+      { key: "events_updates", title: "Event Updates", description: "" },
     ],
   },
   {
     label: "Listings",
     rows: [
-      { key: "listings_new", title: "New Listings", description: "When new places join the app.", filterCol: "listings_new_categories", filterType: "listings_new" },
-      { key: "listings_updates", title: "Listing Updates", description: "Menu changes, new hours, and specials from places you follow.", filterCol: "listings_updates_categories", filterType: "listings_updates" },
+      { key: "listings_new", title: "New Listings", description: "", filterCol: "listings_new_categories", filterType: "listings_new" },
+      { key: "listings_updates", title: "Listing Updates", description: "", filterCol: "listings_updates_categories", filterType: "listings_updates" },
     ],
   },
   {
     label: "Specials",
     rows: [
-      { key: "specials_new", title: "New Specials", description: "Fresh deals from local businesses.", filterCol: "specials_new_categories", filterType: "specials_new" },
+      { key: "specials_new", title: "New Specials", description: "", filterCol: "specials_new_categories", filterType: "specials_new" },
       { key: "specials_ending", title: "Specials Ending Soon", description: "" },
     ],
   },
@@ -255,13 +255,13 @@ const SECTIONS: SectionDef[] = [
     label: "Community",
     rows: [
       { key: "community_followers", title: "New Followers", description: "" },
-      { key: "community_activity", title: "Activity From People You Follow", description: "Saves, reviews, and recommendations from your circle." },
+      { key: "community_activity", title: "Activity From People You Follow", description: "" },
     ],
   },
   {
     label: "From Hello Hoedspruit",
     rows: [
-      { key: "hh_app_updates", title: "App Updates & News", description: "New features, small improvements, and the occasional story." },
+      { key: "hh_app_updates", title: "App Updates & News", description: "" },
     ],
   },
 ];
