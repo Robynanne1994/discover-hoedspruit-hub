@@ -173,6 +173,10 @@ const AdminSubmissions = () => {
             <Mail className="h-4 w-4" />
             Contact ({regularContacts.length})
           </TabsTrigger>
+          <TabsTrigger value="advertise" className="gap-2">
+            <Megaphone className="h-4 w-4" />
+            Advertise ({advertiseEnquiries.length})
+          </TabsTrigger>
           <TabsTrigger value="resources" className="gap-2">
             <Radio className="h-4 w-4" />
             Local Channels ({resourceSuggestions.length})
