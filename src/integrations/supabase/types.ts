@@ -1168,6 +1168,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          activity_private: boolean
           avatar_url: string | null
           bio: string | null
           created_at: string
@@ -1180,6 +1181,7 @@ export type Database = {
           username: string | null
         }
         Insert: {
+          activity_private?: boolean
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -1192,6 +1194,7 @@ export type Database = {
           username?: string | null
         }
         Update: {
+          activity_private?: boolean
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
