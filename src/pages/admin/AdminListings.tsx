@@ -372,6 +372,8 @@ const AdminListings = () => {
       ways_to_give: (l as any).ways_to_give ?? "",
       volunteering: (l as any).volunteering ?? "",
       visiting: (l as any).visiting ?? "",
+      emergency_24hr: (l as any).emergency_24hr ?? null,
+      practitioners: ((l as any).practitioners ?? []).join(", "),
     });
     setOpen(true);
   };
