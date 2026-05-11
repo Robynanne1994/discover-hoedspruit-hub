@@ -121,7 +121,7 @@ const PrivacySecurity = () => {
   }, []);
 
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 40 }}>
+    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 120 }}>
       {/* Top bar */}
       <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
         <button
