@@ -37,7 +37,7 @@ const accountRows: Row[] = [
 
 const supportRows: Row[] = [
   { title: "Help & Support", desc: "FAQ and contact", href: "/faqs" },
-  { title: "Terms & Policies", desc: "Our terms & policies", href: "/terms" },
+  { title: "Terms & Policies", desc: "Our terms and policies", href: "/terms" },
 ];
 
 const AccountSettings = () => {
