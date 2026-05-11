@@ -623,7 +623,7 @@ const MyProfile = () => {
                 textTransform: "lowercase",
               }}
             >
-              your finds
+              finds
             </h2>
             <Link
               to="/saved"
