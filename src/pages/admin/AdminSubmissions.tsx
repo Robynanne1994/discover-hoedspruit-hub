@@ -27,9 +27,30 @@ type Feedback = {
   created_at: string;
 };
 
-const AdminSubmissions = () => {
-  const qc = useQueryClient();
-  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback"; data: any } | null>(null);
+type ResourceSuggestion = Contact & {
+  parsed: {
+    resourceName: string;
+    resourceLink: string;
+    about: string;
+  };
+};
+
+const LC_TAG = "[Local Channels suggestion]";
+
+function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
+  if (!c.message.includes(LC_TAG)) return null;
+  const lines = c.message.split("\n");
+  let resourceName = "";
+  let resourceLink = "";
+  let about = "";
+  for (const line of lines) {
+    if (line.startsWith("Resource name:")) resourceName = line.replace("Resource name:", "").trim();
+    if (line.startsWith("Resource link:")) resourceLink = line.replace("Resource link:", "").trim();
+    if (line.startsWith("About:")) about = line.replace("About:", "").trim();
+  }
+  if (!resourceName && !resourceLink) return null;
+  return { ...c, parsed: { resourceName, resourceLink, about } };
+}
 
   const contactsQ = useQuery({
     queryKey: ["admin-contact-submissions"],
