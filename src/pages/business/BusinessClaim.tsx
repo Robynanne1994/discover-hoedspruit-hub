@@ -196,8 +196,8 @@ const BusinessClaim = () => {
           find yours.
         </h1>
         <p style={{
-          fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 17,
-          lineHeight: 1.4, color: "rgba(238, 232, 218, 0.75)", margin: 0, maxWidth: 300,
+          fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif', fontWeight: 400, fontSize: 15,
+          lineHeight: 1.65, color: "rgba(238, 232, 218, 0.9)", margin: 0, maxWidth: 300,
         }}>
           Search by name. Pick the matching listing and we'll send a claim.
         </p>
