@@ -836,18 +836,81 @@ const MyProfile = () => {
           >
             your activity
           </h2>
-          <span
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span
+              style={{
+                fontFamily: SANS,
+                fontSize: 11,
+                letterSpacing: "1.8px",
+                textTransform: "uppercase",
+                color: CREAM,
+                opacity: 0.75,
+              }}
+            >
+              Last 30 Days
+            </span>
+          </div>
+        </div>
+
+        {/* Privacy toggle row */}
+        <div style={{ padding: "0 24px", marginBottom: 10, display: "flex", justifyContent: "flex-end" }}>
+          <button
+            onClick={async () => {
+              const next = !profile?.activity_private;
+              const { error } = await supabase
+                .from("profiles")
+                .update({ activity_private: next })
+                .eq("id", id!);
+              if (error) {
+                toast.error("Could not update privacy");
+                return;
+              }
+              qc.invalidateQueries({ queryKey: ["my-profile", id] });
+              toast.success(next ? "Activity is now private" : "Activity is now visible to followers");
+            }}
             style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "transparent",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
               fontFamily: SANS,
               fontSize: 11,
               letterSpacing: "1.8px",
               textTransform: "uppercase",
               color: CREAM,
-              opacity: 0.75,
+              opacity: 0.85,
             }}
+            aria-pressed={!!profile?.activity_private}
           >
-            Last 30 Days
-          </span>
+            <span
+              aria-hidden
+              style={{
+                width: 30,
+                height: 16,
+                borderRadius: 999,
+                background: profile?.activity_private ? RUST : "rgba(238,232,218,0.25)",
+                position: "relative",
+                transition: "background 150ms ease-out",
+              }}
+            >
+              <span
+                style={{
+                  position: "absolute",
+                  top: 2,
+                  left: profile?.activity_private ? 16 : 2,
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  background: CREAM,
+                  transition: "left 150ms ease-out",
+                }}
+              />
+            </span>
+            {profile?.activity_private ? "Private" : "Make Private"}
+          </button>
         </div>
 
         <div style={{ padding: "0 24px" }}>
