@@ -378,7 +378,7 @@ const ContactUs = () => {
         <SecondaryCard
           eyebrow="Write to us"
           value="Contact form"
-          meta="Send a longer message"
+          meta=""
           onClick={() => navigate("/feedback")}
           fullWidth
         />
