@@ -85,7 +85,7 @@ const BusinessStart = () => {
             marginBottom: 14,
           }}
         >
-          run a business<br />in Hoedspruit?
+          list your<br />business.
         </h1>
         <p
           style={{
