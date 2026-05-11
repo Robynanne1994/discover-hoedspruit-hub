@@ -407,18 +407,6 @@ const FollowList = () => {
         >
           {title}
         </h1>
-        <p
-          style={{
-            margin: 0,
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 17,
-            color: "rgba(238,232,218,0.75)",
-          }}
-        >
-          {lede}
-        </p>
       </div>
 
       {/* List card */}
