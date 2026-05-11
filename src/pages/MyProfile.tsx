@@ -836,10 +836,6 @@ const MyProfile = () => {
           >
             your activity
           </h2>
-        </div>
-
-        {/* Privacy toggle row */}
-        <div style={{ padding: "0 24px", marginBottom: 10, display: "flex", justifyContent: "flex-end" }}>
           <button
             onClick={async () => {
               const next = !profile?.activity_private;
