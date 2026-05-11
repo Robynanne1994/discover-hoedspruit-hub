@@ -471,7 +471,7 @@ const ListingDetail = () => {
 
   if (isListingHealth) {
     const l = listing as any;
-    const healthFields = filterTrue([
+    const healthFields = filterDefined([
       { label: "24hr Emergency", value: l.emergency_24hr },
     ]);
     if (healthFields.length > 0) {
