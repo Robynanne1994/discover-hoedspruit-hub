@@ -734,12 +734,12 @@ const MyProfile = () => {
         </section>
       )}
 
-      {/* Your events */}
+      {/* Saved events */}
       {!!savedEvents?.length && (
         <section style={{ marginBottom: 32 }}>
           <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 14 }}>
             <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 28, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0, textTransform: "lowercase" }}>
-              your events
+              events
             </h2>
             <Link to="/saved?tab=events" style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "1.8px", textTransform: "uppercase", color: CREAM, opacity: 0.75, textDecoration: "none" }}>
               See All
