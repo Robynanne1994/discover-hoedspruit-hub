@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { X, Search, GripVertical, Pencil, Check } from "lucide-react";
-import MyHoedspruitCardEditor from "@/components/admin/MyHoedspruitCardEditor";
+
 import HomeWhatsOnEditor from "@/components/admin/HomeWhatsOnEditor";
 
 const SECTIONS = [
