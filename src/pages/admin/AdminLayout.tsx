@@ -33,6 +33,7 @@ const navItems = [
   { label: "Lowveld Lowdown", path: "/admin/articles", icon: Newspaper },
   { label: "Local Channels", path: "/admin/bush-telegraph", icon: Radio },
   { label: "Site Content", path: "/admin/content", icon: FileText },
+  { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 
