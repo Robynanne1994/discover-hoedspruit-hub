@@ -111,16 +111,19 @@ const AdminSubmissions = () => {
     },
   });
 
-  const { regularContacts, resourceSuggestions } = useMemo(() => {
+  const { regularContacts, resourceSuggestions, advertiseEnquiries } = useMemo(() => {
     const all = contactsQ.data ?? [];
     const resources: ResourceSuggestion[] = [];
+    const ads: AdvertiseEnquiry[] = [];
     const regular: Contact[] = [];
     for (const c of all) {
-      const parsed = parseResourceSuggestion(c);
-      if (parsed) resources.push(parsed);
-      else regular.push(c);
+      const r = parseResourceSuggestion(c);
+      if (r) { resources.push(r); continue; }
+      const a = parseAdvertiseEnquiry(c);
+      if (a) { ads.push(a); continue; }
+      regular.push(c);
     }
-    return { regularContacts: regular, resourceSuggestions: resources };
+    return { regularContacts: regular, resourceSuggestions: resources, advertiseEnquiries: ads };
   }, [contactsQ.data]);
 
   const markRead = useMutation({
