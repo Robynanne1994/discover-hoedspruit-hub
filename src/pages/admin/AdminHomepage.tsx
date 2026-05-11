@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { X, Search, GripVertical, Pencil, Check } from "lucide-react";
-import MyHoedspruitCardEditor from "@/components/admin/MyHoedspruitCardEditor";
+
 import HomeWhatsOnEditor from "@/components/admin/HomeWhatsOnEditor";
 
 const SECTIONS = [
@@ -307,12 +307,6 @@ const AdminHomepage = () => {
       {SECTIONS.map((section) => (
         <SectionEditor key={section.key} sectionKey={section.key} label={section.label} categorySearch={section.categorySearch} />
       ))}
-      
-      <div>
-        <h2 className="text-xl font-bold mt-8 mb-4">My Hoedspruit Page</h2>
-        <p className="text-muted-foreground mb-4">Set background images and text colour for each card.</p>
-        <MyHoedspruitCardEditor />
-      </div>
     </div>
   );
 };
