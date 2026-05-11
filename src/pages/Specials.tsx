@@ -439,11 +439,12 @@ const Specials = () => {
                   <h3
                     style={{
                       fontFamily: SANS,
-                      fontSize: 22,
+                      fontSize: 18,
                       fontWeight: 400,
-                      lineHeight: 1.18,
-                      letterSpacing: "-0.3px",
+                      lineHeight: 1.2,
+                      letterSpacing: "-0.25px",
                       color: COLOR.ink,
+                      textTransform: "capitalize",
                       margin: 0,
                       marginBottom: 8,
                     }}
