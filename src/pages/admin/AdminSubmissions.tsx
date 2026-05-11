@@ -231,6 +231,52 @@ const AdminSubmissions = () => {
           ))}
         </TabsContent>
 
+        <TabsContent value="advertise" className="space-y-2">
+          {contactsQ.isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+          {advertiseEnquiries.length === 0 && (
+            <p className="text-sm text-muted-foreground">No advertising enquiries yet.</p>
+          )}
+          {advertiseEnquiries.map((a) => (
+            <div
+              key={a.id}
+              className="bg-card border border-border rounded-lg p-4 flex items-start gap-3"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="secondary">Advertise</Badge>
+                  <span className="font-medium text-foreground">{a.parsed.business || a.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {a.name} · <a href={`mailto:${a.email}`} className="text-primary hover:underline">{a.email}</a> · {fmt(a.created_at)}
+                </p>
+                {a.parsed.about && (
+                  <p className="text-sm text-foreground mt-2 line-clamp-2 whitespace-pre-wrap">
+                    {a.parsed.about}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setViewing({ kind: "advertise", data: a })}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    if (confirm("Delete this enquiry?")) deleteContact.mutate(a.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </TabsContent>
+
         <TabsContent value="resources" className="space-y-2">
           {contactsQ.isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
           {resourceSuggestions.length === 0 && (
