@@ -1016,7 +1016,6 @@ const ListingDetail = () => {
                   "custom-1": Info,
                   "custom-2": Info,
                   "custom-3": Info,
-                  "custom-3": Info,
                 };
                 const SectionIcon = sectionIconMap[section.key] || Sparkles;
                 return (
