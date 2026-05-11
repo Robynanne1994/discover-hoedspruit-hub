@@ -210,19 +210,6 @@ const ContactUs = () => {
         >
           get in touch.
         </h1>
-        <p
-          style={{
-            fontFamily: FF,
-            fontSize: 15,
-            fontWeight: 400,
-            lineHeight: 1.65,
-            color: "rgba(238,232,218,0.9)",
-            margin: 0,
-            maxWidth: 320,
-          }}
-        >
-          Questions, feedback, or a local tip worth sharing. We read everything.
-        </p>
       </div>
 
       {/* Featured Email card */}
