@@ -77,6 +77,7 @@ import BusinessEventForm from "./pages/business/BusinessEventForm.tsx";
 import BusinessFeature from "./pages/business/BusinessFeature.tsx";
 import BusinessBilling from "./pages/business/BusinessBilling.tsx";
 import AdminModeration from "./pages/admin/AdminModeration.tsx";
+import AdminUsers from "./pages/admin/AdminUsers.tsx";
 import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -168,6 +169,7 @@ const App = () => (
                 <Route path="content" element={<AdminContent />} />
                 <Route path="import" element={<AdminImport />} />
                 <Route path="moderation" element={<AdminModeration />} />
+                <Route path="users" element={<AdminUsers />} />
               </Route>
               <Route path="/business/sign-in" element={<BusinessSignIn />} />
               <Route path="/business/start" element={<BusinessStart />} />
