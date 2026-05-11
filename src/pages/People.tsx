@@ -384,7 +384,7 @@ const InviteCta = () => {
         }}
       >
         <ShareIcon size={14} />
-        Invite A Friend
+        <span style={{ textTransform: "none" }}>Invite a Friend</span>
       </button>
     </div>
   );
