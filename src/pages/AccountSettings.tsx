@@ -30,14 +30,14 @@ const COLORS = {
 type Row = { title: string; desc: string; href?: string };
 
 const accountRows: Row[] = [
-  { title: "Account Info", desc: "Manage email, phone and password", href: "/account-settings/info" },
-  { title: "Notification Preferences", desc: "Customise what you hear from us", href: "/notifications" },
-  { title: "Privacy & Security", desc: "Manage visibility, data and protection", href: "/privacy-security" },
+  { title: "Account Info", desc: "", href: "/account-settings/info" },
+  { title: "Notification Preferences", desc: "", href: "/notifications" },
+  { title: "Privacy & Security", desc: "", href: "/privacy-security" },
 ];
 
 const supportRows: Row[] = [
-  { title: "Help & Support", desc: "FAQ and contact", href: "/faqs" },
-  { title: "Terms & Policies", desc: "Our terms and policies", href: "/terms" },
+  { title: "Help & Support", desc: "", href: "/faqs" },
+  { title: "Terms & Policies", desc: "", href: "/terms" },
 ];
 
 const AccountSettings = () => {
@@ -257,23 +257,25 @@ function SettingsRow({ row, isFirst }: { row: Row; isFirst: boolean }) {
             lineHeight: 1.2,
             letterSpacing: "-0.1px",
             color: COLORS.ink,
-            marginBottom: 5,
+            marginBottom: row.desc ? 5 : 0,
           }}
         >
           {row.title}
         </div>
-        <div
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 13.5,
-            lineHeight: 1.35,
-            color: COLORS.muted,
-          }}
-        >
-          {row.desc}
-        </div>
+        {row.desc && (
+          <div
+            style={{
+              fontFamily: SERIF,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: 13.5,
+              lineHeight: 1.35,
+              color: COLORS.muted,
+            }}
+          >
+            {row.desc}
+          </div>
+        )}
       </div>
       <div
         aria-hidden
