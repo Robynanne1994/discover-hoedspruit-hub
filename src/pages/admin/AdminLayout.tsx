@@ -16,6 +16,7 @@ import {
   Menu,
   ShieldCheck,
   Users,
+  Inbox,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -32,6 +33,7 @@ const navItems = [
   { label: "Lowveld Lowdown", path: "/admin/articles", icon: Newspaper },
   { label: "Local Channels", path: "/admin/bush-telegraph", icon: Radio },
   { label: "Site Content", path: "/admin/content", icon: FileText },
+  { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 
