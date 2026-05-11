@@ -377,21 +377,6 @@ const MyProfile = () => {
         </div>
       </div>
 
-      {/* Eyebrow */}
-      <div
-        style={{
-          padding: "18px 24px 0",
-          fontFamily: SANS,
-          fontSize: 11,
-          fontWeight: 400,
-          letterSpacing: 2.4,
-          textTransform: "uppercase",
-          color: CREAM,
-          opacity: 0.85,
-        }}
-      >
-        Your Profile · Public View
-      </div>
 
       {/* Masthead */}
       <div
