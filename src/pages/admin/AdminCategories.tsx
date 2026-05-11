@@ -351,6 +351,42 @@ const AdminCategories = () => {
         </DialogContent>
       </Dialog>
 
+      {/* View subcategory listings dialog */}
+      <Dialog open={!!viewSub} onOpenChange={(v) => { if (!v) setViewSub(null); }}>
+        <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {viewSub?.title} <span className="text-muted-foreground font-normal text-sm">({subListings?.length ?? 0} listings)</span>
+            </DialogTitle>
+          </DialogHeader>
+          {subListingsLoading ? (
+            <p className="text-sm text-muted-foreground">Loading...</p>
+          ) : !subListings || subListings.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No listings in this subcategory yet.</p>
+          ) : (
+            <div className="space-y-2">
+              {subListings.map((l: any) => (
+                <a
+                  key={l.id}
+                  href={`/admin/listings?edit=${l.id}`}
+                  className="flex items-center gap-3 bg-card border border-border rounded-lg px-3 py-2 hover:border-primary transition-colors"
+                >
+                  {l.image_url ? (
+                    <img src={l.image_url} alt={l.title} className="h-10 w-10 rounded object-cover flex-shrink-0" />
+                  ) : (
+                    <div className="h-10 w-10 rounded bg-muted flex-shrink-0" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm font-medium text-foreground truncate">{l.title}</div>
+                    {l.location && <div className="text-xs text-muted-foreground truncate">{l.location}</div>}
+                  </div>
+                </a>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {isLoading ? (
         <p className="text-muted-foreground">Loading...</p>
       ) : (
