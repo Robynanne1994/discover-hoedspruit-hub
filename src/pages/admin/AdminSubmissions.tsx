@@ -68,7 +68,7 @@ function parseAdvertiseEnquiry(c: Contact): AdvertiseEnquiry | null {
 
 const AdminSubmissions = () => {
   const qc = useQueryClient();
-  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource"; data: any } | null>(null);
+  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource" | "advertise"; data: any } | null>(null);
 
   const contactsQ = useQuery({
     queryKey: ["admin-contact-submissions"],
