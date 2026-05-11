@@ -89,12 +89,11 @@ const BusinessStart = () => {
         </h1>
         <p
           style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
+            fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
             fontWeight: 400,
-            fontSize: 17,
-            lineHeight: 1.4,
-            color: "rgba(238, 232, 218, 0.75)",
+            fontSize: 15,
+            lineHeight: 1.65,
+            color: "rgba(238, 232, 218, 0.9)",
             margin: 0,
             maxWidth: 320,
           }}
