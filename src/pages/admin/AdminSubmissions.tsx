@@ -439,6 +439,33 @@ const AdminSubmissions = () => {
               </Button>
             </>
           )}
+          {viewing?.kind === "advertise" && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{viewing.data.parsed.business || "Advertising enquiry"}</DialogTitle>
+                <DialogDescription>
+                  {viewing.data.name}
+                  {" · "}
+                  <a href={`mailto:${viewing.data.email}`} className="text-primary hover:underline">
+                    {viewing.data.email}
+                  </a>
+                  {" · "}
+                  {fmt(viewing.data.created_at)}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-3">
+                {viewing.data.parsed.about && (
+                  <p className="text-sm whitespace-pre-wrap text-foreground">{viewing.data.parsed.about}</p>
+                )}
+                <p className="text-xs text-muted-foreground whitespace-pre-wrap border-t border-border pt-3 mt-2">
+                  {viewing.data.message}
+                </p>
+              </div>
+              <Button asChild>
+                <a href={`mailto:${viewing.data.email}?subject=Re: your advertising enquiry`}>Reply by email</a>
+              </Button>
+            </>
+          )}
           {viewing?.kind === "feedback" && (
             <>
               <DialogHeader>
