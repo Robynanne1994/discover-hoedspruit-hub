@@ -252,7 +252,7 @@ const SECTIONS: SectionDef[] = [
   {
     label: "Community",
     rows: [
-      { key: "community_followers", title: "New Followers", description: "Let us know when someone follows you." },
+      { key: "community_followers", title: "New Followers", description: "" },
       { key: "community_activity", title: "Activity From People You Follow", description: "Saves, reviews, and recommendations from your circle." },
     ],
   },
