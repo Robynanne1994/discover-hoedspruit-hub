@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Trash2, Mail, MessageSquare, Eye } from "lucide-react";
+import { Trash2, Mail, MessageSquare, Eye, Radio, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -27,9 +27,34 @@ type Feedback = {
   created_at: string;
 };
 
+type ResourceSuggestion = Contact & {
+  parsed: {
+    resourceName: string;
+    resourceLink: string;
+    about: string;
+  };
+};
+
+const LC_TAG = "[Local Channels suggestion]";
+
+function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
+  if (!c.message.includes(LC_TAG)) return null;
+  const lines = c.message.split("\n");
+  let resourceName = "";
+  let resourceLink = "";
+  let about = "";
+  for (const line of lines) {
+    if (line.startsWith("Resource name:")) resourceName = line.replace("Resource name:", "").trim();
+    if (line.startsWith("Resource link:")) resourceLink = line.replace("Resource link:", "").trim();
+    if (line.startsWith("About:")) about = line.replace("About:", "").trim();
+  }
+  if (!resourceName && !resourceLink) return null;
+  return { ...c, parsed: { resourceName, resourceLink, about } };
+}
+
 const AdminSubmissions = () => {
   const qc = useQueryClient();
-  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback"; data: any } | null>(null);
+  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource"; data: any } | null>(null);
 
   const contactsQ = useQuery({
     queryKey: ["admin-contact-submissions"],
@@ -72,6 +97,18 @@ const AdminSubmissions = () => {
     },
   });
 
+  const { regularContacts, resourceSuggestions } = useMemo(() => {
+    const all = contactsQ.data ?? [];
+    const resources: ResourceSuggestion[] = [];
+    const regular: Contact[] = [];
+    for (const c of all) {
+      const parsed = parseResourceSuggestion(c);
+      if (parsed) resources.push(parsed);
+      else regular.push(c);
+    }
+    return { regularContacts: regular, resourceSuggestions: resources };
+  }, [contactsQ.data]);
+
   const markRead = useMutation({
     mutationFn: async ({ id, is_read }: { id: string; is_read: boolean }) => {
       const { error } = await supabase.from("feedback").update({ is_read }).eq("id", id);
@@ -91,6 +128,17 @@ const AdminSubmissions = () => {
     },
   });
 
+  const deleteContact = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("contact_submissions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-contact-submissions"] });
+      toast.success("Deleted");
+    },
+  });
+
   const fmt = (d: string) => format(new Date(d), "d MMM yyyy, HH:mm");
 
   return (
@@ -98,7 +146,7 @@ const AdminSubmissions = () => {
       <div>
         <h1 className="text-2xl font-bold text-foreground">Submissions</h1>
         <p className="text-sm text-muted-foreground">
-          Messages from contact forms and user feedback.
+          Messages from contact forms, user feedback, and resource suggestions.
         </p>
       </div>
 
@@ -106,7 +154,11 @@ const AdminSubmissions = () => {
         <TabsList>
           <TabsTrigger value="contact" className="gap-2">
             <Mail className="h-4 w-4" />
-            Contact ({contactsQ.data?.length ?? 0})
+            Contact ({regularContacts.length})
+          </TabsTrigger>
+          <TabsTrigger value="resources" className="gap-2">
+            <Radio className="h-4 w-4" />
+            Local Channels ({resourceSuggestions.length})
           </TabsTrigger>
           <TabsTrigger value="feedback" className="gap-2">
             <MessageSquare className="h-4 w-4" />
@@ -116,10 +168,10 @@ const AdminSubmissions = () => {
 
         <TabsContent value="contact" className="space-y-2">
           {contactsQ.isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
-          {contactsQ.data?.length === 0 && (
+          {regularContacts.length === 0 && (
             <p className="text-sm text-muted-foreground">No contact submissions yet.</p>
           )}
-          {contactsQ.data?.map((c) => (
+          {regularContacts.map((c) => (
             <div
               key={c.id}
               className="bg-card border border-border rounded-lg p-4 flex items-start gap-3"
@@ -136,13 +188,70 @@ const AdminSubmissions = () => {
                   {c.message}
                 </p>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setViewing({ kind: "contact", data: c })}
-              >
-                <Eye className="h-4 w-4" />
-              </Button>
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setViewing({ kind: "contact", data: c })}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    if (confirm("Delete this submission?")) deleteContact.mutate(c.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </TabsContent>
+
+        <TabsContent value="resources" className="space-y-2">
+          {contactsQ.isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+          {resourceSuggestions.length === 0 && (
+            <p className="text-sm text-muted-foreground">No resource suggestions yet.</p>
+          )}
+          {resourceSuggestions.map((r) => (
+            <div
+              key={r.id}
+              className="bg-card border border-border rounded-lg p-4 flex items-start gap-3"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="secondary">Local Channels</Badge>
+                  <span className="font-medium text-foreground">{r.parsed.resourceName || "Unnamed resource"}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {r.name} · <a href={`mailto:${r.email}`} className="text-primary hover:underline">{r.email}</a> · {fmt(r.created_at)}
+                </p>
+                {r.parsed.about && (
+                  <p className="text-sm text-foreground mt-2 line-clamp-2 whitespace-pre-wrap">
+                    {r.parsed.about}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setViewing({ kind: "resource", data: r })}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    if (confirm("Delete this resource suggestion?")) deleteContact.mutate(r.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
             </div>
           ))}
         </TabsContent>
@@ -220,6 +329,46 @@ const AdminSubmissions = () => {
               <p className="text-sm whitespace-pre-wrap text-foreground">{viewing.data.message}</p>
               <Button asChild>
                 <a href={`mailto:${viewing.data.email}?subject=Re: your message`}>Reply by email</a>
+              </Button>
+            </>
+          )}
+          {viewing?.kind === "resource" && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{viewing.data.parsed.resourceName || "Resource suggestion"}</DialogTitle>
+                <DialogDescription>
+                  {viewing.data.name}
+                  {" · "}
+                  <a href={`mailto:${viewing.data.email}`} className="text-primary hover:underline">
+                    {viewing.data.email}
+                  </a>
+                  {" · "}
+                  {fmt(viewing.data.created_at)}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-3">
+                {viewing.data.parsed.resourceLink && (
+                  <div className="flex items-center gap-2">
+                    <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                    <a
+                      href={viewing.data.parsed.resourceLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-primary hover:underline break-all"
+                    >
+                      {viewing.data.parsed.resourceLink}
+                    </a>
+                  </div>
+                )}
+                {viewing.data.parsed.about && (
+                  <p className="text-sm whitespace-pre-wrap text-foreground">{viewing.data.parsed.about}</p>
+                )}
+                <p className="text-xs text-muted-foreground whitespace-pre-wrap border-t border-border pt-3 mt-2">
+                  {viewing.data.message}
+                </p>
+              </div>
+              <Button asChild>
+                <a href={`mailto:${viewing.data.email}?subject=Re: your resource suggestion`}>Reply by email</a>
               </Button>
             </>
           )}
