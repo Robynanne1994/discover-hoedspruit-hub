@@ -161,7 +161,7 @@ const PrivacySecurity = () => {
           <span style={{ fontFamily: SERIF, fontStyle: "italic" }}>We do not sell your personal data.</span>
         </p>
         <p style={{ fontFamily: SANS, fontSize: 14.5, lineHeight: 1.55, color: INK, opacity: 0.8, margin: 0 }}>
-          You stay in control of your account, saved places, and communication preferences.
+          You stay in control of your account, saved places and communication preferences.
         </p>
       </div>
 
