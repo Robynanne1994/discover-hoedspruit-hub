@@ -998,23 +998,7 @@ const SavedListings = () => {
                     {d.title}
                   </p>
                   <div className="flex items-center" style={{ gap: 8, marginTop: 2 }}>
-                    {rating && (
-                      <span style={{ fontFamily: SANS, fontSize: 12.5, color: MUTED }}>
-                        ★ {rating.toFixed(1)}
-                      </span>
-                    )}
-                    {rating && d.location && (
-                      <span
-                        style={{
-                          width: 4,
-                          height: 4,
-                          borderRadius: "50%",
-                          background: MUTED,
-                          opacity: 0.6,
-                          display: "inline-block",
-                        }}
-                      />
-                    )}
+
                     {d.location && (
                       <span
                         style={{
