@@ -232,7 +232,7 @@ const SECTIONS: SectionDef[] = [
   {
     label: "Events",
     rows: [
-      { key: "events_new", title: "New Events", description: "Fresh gigs, markets, and things to do in town.", filterCol: "events_new_categories", filterType: "events_new" },
+      { key: "events_new", title: "New Events", description: "", filterCol: "events_new_categories", filterType: "events_new" },
       { key: "events_reminders", title: "Event Reminders", description: "A nudge the day before events you've saved." },
       { key: "events_updates", title: "Event Updates", description: "Changes to time, venue, or line-up." },
     ],
