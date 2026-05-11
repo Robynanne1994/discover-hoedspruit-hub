@@ -1261,20 +1261,6 @@ const SavedListings = () => {
         >
           saved.
         </h1>
-        <p
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 17,
-            lineHeight: 1.4,
-            color: CREAM_75,
-            margin: 0,
-            maxWidth: 300,
-          }}
-        >
-          {lede}
-        </p>
       </div>
 
       {/* Search */}
