@@ -35,10 +35,15 @@ export const NGO_ONLY_FIELDS = [
   "cause", "impact", "ways_to_give", "volunteering", "visiting"
 ] as const;
 
+export const HEALTH_ONLY_FIELDS = [
+  "emergency_24hr", "practitioners"
+] as const;
+
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
 export const SHOPPING_CATEGORY_PATTERN = /^shopping$/i;
 export const ACCOMMODATION_CATEGORY_PATTERN = /^accommodation$/i;
 export const NGO_CATEGORY_PATTERN = /ngo|volunteer/i;
+export const HEALTH_CATEGORY_PATTERN = /health|medical/i;
 
 export function isRestaurantCategory(categoryTitle: string): boolean {
   return RESTAURANT_CATEGORY_PATTERN.test(categoryTitle);
@@ -56,6 +61,10 @@ export function isNGOCategory(categoryTitle: string): boolean {
   return NGO_CATEGORY_PATTERN.test(categoryTitle);
 }
 
+export function isHealthCategory(categoryTitle: string): boolean {
+  return HEALTH_CATEGORY_PATTERN.test(categoryTitle);
+}
+
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
@@ -69,6 +78,9 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   }
   if (categoryTitle && isNGOCategory(categoryTitle)) {
     headers.push(...NGO_ONLY_FIELDS);
+  }
+  if (categoryTitle && isHealthCategory(categoryTitle)) {
+    headers.push(...HEALTH_ONLY_FIELDS);
   }
   return headers;
 }
