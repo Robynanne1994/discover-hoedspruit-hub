@@ -296,23 +296,8 @@ const NotificationCategories = () => {
                             lineHeight: 1.2,
                           }}
                         >
-                          {item.label}
-                        </div>
-                        {item.count > 0 && (
-                          <div
-                            style={{
-                              ...baseText,
-                              fontFamily: ITALIC_STACK,
-                              fontStyle: "italic",
-                              fontWeight: 400,
-                              fontSize: 12.5,
-                              color: COLORS.muted,
-                              marginTop: 2,
-                            }}
-                          >
-                            {item.count} {item.count === 1 ? meta.itemNoun.one : meta.itemNoun.many}
-                          </div>
-                        )}
+                      {item.label}
+                    </div>
                       </div>
                       <Toggle checked={isOn} />
                     </button>
