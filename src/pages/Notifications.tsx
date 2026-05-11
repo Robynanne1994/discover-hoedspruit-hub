@@ -169,19 +169,21 @@ const PrefRow = ({ title, description, checked, onToggle, disabled, isFirst, fil
         >
           {title}
         </div>
-        <div
-          style={{
-            ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 13.5,
-            color: COLORS.muted,
-            lineHeight: 1.4,
-          }}
-        >
-          {description}
-        </div>
+        {description && (
+          <div
+            style={{
+              ...baseText,
+              fontFamily: ITALIC_STACK,
+              fontStyle: "italic",
+              fontWeight: 400,
+              fontSize: 13.5,
+              color: COLORS.muted,
+              lineHeight: 1.4,
+            }}
+          >
+            {description}
+          </div>
+        )}
         {filterLink && (
           <Link
             to={filterLink.to}
