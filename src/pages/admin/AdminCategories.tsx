@@ -47,6 +47,29 @@ const AdminCategories = () => {
   const [orderedCats, setOrderedCats] = useState<Category[]>([]);
   const [orderedSubs, setOrderedSubs] = useState<Record<string, Subcategory[]>>({});
 
+  const [viewSub, setViewSub] = useState<Subcategory | null>(null);
+
+  const { data: subListings, isLoading: subListingsLoading } = useQuery({
+    queryKey: ["admin-subcategory-listings", viewSub?.id],
+    enabled: !!viewSub,
+    queryFn: async () => {
+      const { data: links, error: linkErr } = await supabase
+        .from("listing_subcategories")
+        .select("listing_id")
+        .eq("subcategory_id", viewSub!.id);
+      if (linkErr) throw linkErr;
+      const ids = (links ?? []).map((l: any) => l.listing_id);
+      if (ids.length === 0) return [];
+      const { data, error } = await supabase
+        .from("listings")
+        .select("id, title, location, image_url")
+        .in("id", ids)
+        .order("title");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+
   const { data: categories, isLoading } = useQuery({
     queryKey: ["admin-categories"],
     queryFn: async () => {
