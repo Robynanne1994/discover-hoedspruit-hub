@@ -478,11 +478,13 @@ const SortableCategoryRow = ({
 const SortableSubRow = ({
   sub,
   count,
+  onView,
   onEdit,
   onDelete,
 }: {
   sub: Subcategory;
   count: number;
+  onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
 }) => {
@@ -498,11 +500,11 @@ const SortableSubRow = ({
         <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
           <GripVertical className="h-4 w-4" />
         </button>
-        <div className="min-w-0">
+        <button type="button" onClick={onView} className="min-w-0 text-left hover:text-primary">
           <span className="font-medium text-foreground text-sm">{sub.title}</span>
           <span className="text-muted-foreground text-xs ml-1">({count})</span>
           {sub.description && <span className="text-muted-foreground text-xs ml-2">— {sub.description}</span>}
-        </div>
+        </button>
       </div>
       <div className="flex gap-1">
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
