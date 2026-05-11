@@ -272,8 +272,8 @@ const SavedListings = () => {
   const lede = (() => {
     if (primaryTab === "all") {
       return activeCount === 1
-        ? "1 thing, kept close."
-        : `${activeCount} things, kept close.`;
+        ? "1 keeper, saved for later."
+        : `${activeCount} keepers, saved for later.`;
     }
     if (primaryTab === "listings") {
       return activeCount === 1
