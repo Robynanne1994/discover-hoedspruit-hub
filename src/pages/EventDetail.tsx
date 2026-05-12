@@ -458,7 +458,7 @@ const EventDetail = () => {
               key: "email",
               label: "Email",
               href: `mailto:${contactEmail}`,
-              icon: <Mail size={22} strokeWidth={1.6} color="#FFFFFF" />,
+              icon: <Mail size={22} strokeWidth={1.6} color={TEXT} />,
             });
           }
           if (actions.length === 0) return null;
