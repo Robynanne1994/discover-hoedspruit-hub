@@ -38,12 +38,9 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
     ],
   },
   {
-    label: "Help Centre",
+    label: "Help & Info",
     rows: [
-      { icon: HelpCircle, label: "Help", to: "/help-centre" },
-      { icon: Phone, label: "Contact Us", to: "/contact" },
-      { icon: Info, label: "About", to: "/about" },
-      { icon: Shield, label: "Privacy & Security", to: "/privacy-security" },
+      { icon: HelpCircle, label: "Help Centre", to: "/help-centre" },
     ],
   },
 ];
