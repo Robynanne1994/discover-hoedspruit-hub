@@ -434,7 +434,7 @@ const CategoryPage = () => {
             marginBottom: 14,
           }}
         >
-          Explore
+          Explore ({totalCount})
         </div>
         <h1
           style={{
@@ -451,20 +451,7 @@ const CategoryPage = () => {
         >
           {titleWithDot}
         </h1>
-        <p
-          style={{
-            fontFamily: sans,
-            fontWeight: 400,
-            fontSize: 15,
-            lineHeight: 1.65,
-            color: "rgba(238,232,218,0.9)",
-            maxWidth: 300,
-            marginTop: 14,
-            marginBottom: 24,
-          }}
-        >
-          {subline}
-        </p>
+        <div style={{ marginBottom: 24 }} />
       </div>
 
       {/* Search */}
