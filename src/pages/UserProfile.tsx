@@ -823,6 +823,83 @@ const UserProfile = () => {
           ));
       })()}
 
+      {/* Activity (only when public) */}
+      {profile?.activity_private === false && activity && activity.length > 0 && (
+        <section style={{ marginBottom: 32 }}>
+          <div style={{ padding: "0 24px", marginBottom: 14 }}>
+            <h2
+              style={{
+                fontFamily: SERIF,
+                fontStyle: "italic",
+                fontWeight: 400,
+                fontSize: 28,
+                lineHeight: 1,
+                letterSpacing: "-0.5px",
+                color: CREAM,
+                margin: 0,
+                textTransform: "lowercase",
+              }}
+            >
+              activity
+            </h2>
+          </div>
+          <div style={{ padding: "0 24px" }}>
+            <div style={{ background: CREAM, borderRadius: 20, padding: "4px 22px" }}>
+              {activity.map((row, i) => {
+                const isSave = row.kind === "save";
+                return (
+                  <Link
+                    key={i}
+                    to={row.href}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 14,
+                      padding: "14px 0",
+                      borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "50%",
+                        background: isSave ? RUST : SOFT_CREAM,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {isSave ? (
+                        <Heart size={14} strokeWidth={1.6} color={CREAM} fill={CREAM} />
+                      ) : (
+                        <MapPin size={14} strokeWidth={1.6} color={MUTED} />
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 13, lineHeight: 1.4, color: INK }}>
+                        {row.verb}{" "}
+                        <span style={{ fontFamily: SANS, fontStyle: "normal", fontWeight: 400, color: INK }}>
+                          {row.name}
+                        </span>
+                      </div>
+                      <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: "1.8px", textTransform: "uppercase", color: MUTED, marginTop: 3 }}>
+                        {timeAgo(row.created_at)}
+                      </div>
+                    </div>
+                    <span style={{ fontSize: 13, color: MUTED, fontFamily: SANS }}>↗</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+
 
       {/* Three-dots action sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
