@@ -190,9 +190,9 @@ const GlobalMenu = ({ open, onOpenChange }: Props) => {
             {/* Sign out */}
             <div
               style={{
-                marginTop: 14,
+                marginTop: 0,
                 borderTop: `1px solid ${LINE}`,
-                padding: "18px 24px 4px",
+                padding: "12px 24px 4px",
                 textAlign: "center",
               }}
             >
