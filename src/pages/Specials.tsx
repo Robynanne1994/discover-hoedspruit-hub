@@ -216,7 +216,7 @@ const Specials = () => {
             marginBottom: 14,
           }}
         >
-          SAVE IN THE 'HOED
+          ACTIVE DEALS ({totalCount})
         </div>
         <h1
           style={{
@@ -228,25 +228,12 @@ const Specials = () => {
             letterSpacing: "-2.5px",
             color: COLOR.cream,
             margin: 0,
-            marginBottom: 14,
+            marginBottom: 24,
             textTransform: "none",
           }}
         >
           specials.
         </h1>
-        <p
-          style={{
-            fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 15,
-            lineHeight: 1.65,
-            color: "rgba(238, 232, 218, 0.9)",
-            margin: 0,
-            marginBottom: 24,
-          }}
-        >
-          {subline}
-        </p>
       </div>
 
       {/* Filter + Sort row */}
