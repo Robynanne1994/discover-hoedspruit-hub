@@ -4,7 +4,7 @@ import HomeSpecials from "@/components/home/HomeSpecials";
 import HomeWhatsOn from "@/components/home/HomeWhatsOn";
 import HomeListings from "@/components/home/HomeListings";
 import HomeLowdown from "@/components/home/HomeLowdown";
-import HomeGetListed from "@/components/home/HomeGetListed";
+
 import { useState } from "react";
 
 const SECTION_GAP = 36;
@@ -97,10 +97,6 @@ const Index = () => {
           <HomeLowdown />
         </div>
       )}
-
-      <div style={{ marginTop: SECTION_GAP }}>
-        <HomeGetListed />
-      </div>
     </div>
   );
 };
