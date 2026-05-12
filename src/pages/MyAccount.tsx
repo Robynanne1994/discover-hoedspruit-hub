@@ -484,13 +484,11 @@ const MyAccount = () => {
     { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
   ];
   const getInTouchItems = [
-    { label: "Contact", href: "/contact", icon: Phone },
     { label: "Advertise", href: "/advertise", icon: Megaphone },
     { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
-    { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
     isBusinessOwner || ownedListing
       ? { label: "My Business", href: "/business/dashboard", icon: Briefcase }
       : { label: "My Business", href: "/for-business", icon: Briefcase },

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -152,7 +152,7 @@ const App = () => (
               <Route path="/privacy-security" element={<PrivacySecurity />} />
               <Route path="/people" element={<People />} />
               <Route path="/feedback" element={<Feedback />} />
-             <Route path="/notifications" element={<Notifications />} />
+             <Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
              <Route path="/my-notifications" element={<MyNotifications />} />
              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />

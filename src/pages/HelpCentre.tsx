@@ -18,6 +18,7 @@ const ROWS = [
   { title: "FAQs", desc: "Quick answers to the questions that come up most.", to: "/faqs" },
   { title: "About", desc: "How Hello Hoedspruit started, and who's behind it.", to: "/about" },
   { title: "Terms & Policies", desc: "Privacy, terms, cookies, and how we look after you.", to: "/terms" },
+  { title: "Contact Us", desc: "Drop us a note. We read every message.", to: "/contact" },
 ];
 
 const HelpCentre = () => {
@@ -156,7 +157,7 @@ const HelpCentre = () => {
               If you can't find what you're after, we'd love to hear from you. We read every message.
             </p>
             <button
-              onClick={() => navigate("/feedback")}
+              onClick={() => navigate("/contact")}
               style={{
                 height: 44, padding: "0 22px", borderRadius: 999, background: CREAM,
                 color: INK, fontFamily: SANS, fontWeight: 400, fontSize: 14,

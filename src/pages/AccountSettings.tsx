@@ -31,13 +31,8 @@ type Row = { title: string; desc: string; href?: string };
 
 const accountRows: Row[] = [
   { title: "Account Info", desc: "", href: "/account-settings/info" },
-  { title: "Notification Preferences", desc: "", href: "/notifications" },
+  { title: "Notification Preferences", desc: "", href: "/my-notifications" },
   { title: "Privacy & Security", desc: "", href: "/privacy-security" },
-];
-
-const supportRows: Row[] = [
-  { title: "Help & Support", desc: "", href: "/faqs" },
-  { title: "Terms & Policies", desc: "", href: "/terms" },
 ];
 
 const AccountSettings = () => {
@@ -172,9 +167,6 @@ const AccountSettings = () => {
 
       {/* Your Account */}
       <SettingsGroup label="Your Account" rows={accountRows} marginTop={0} />
-
-      {/* Support & Legal */}
-      <SettingsGroup label="Support & Legal" rows={supportRows} marginTop={28} />
 
       {/* Delete */}
       <div style={{ marginTop: 24, paddingLeft: 24, paddingRight: 24 }}>
