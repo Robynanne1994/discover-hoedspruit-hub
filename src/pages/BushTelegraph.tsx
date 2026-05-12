@@ -18,7 +18,20 @@ const RUST = "#9B5A3C";
 const DEEP_RUST = "#7E4530";
 
 type Platform = "Facebook" | "WhatsApp" | "Instagram" | "Websites";
-...
+
+interface Resource {
+  id: string;
+  title: string;
+  platform: Platform;
+  meta: string;
+  description: string;
+  url: string;
+  is_featured: boolean;
+  image_url: string | null;
+  tag_1: string | null;
+  tag_2: string | null;
+}
+
 const PLATFORM_ORDER: Platform[] = ["Facebook", "WhatsApp", "Instagram"];
 const CHIPS: ("All" | Platform)[] = ["All", "Facebook", "WhatsApp", "Instagram"];
 
