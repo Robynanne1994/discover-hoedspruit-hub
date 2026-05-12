@@ -213,7 +213,66 @@ const UserProfile = () => {
     enabled: !!id,
   });
 
-  const isOwnProfile = user?.id === id;
+  // Activity timeline (only when not private)
+  const activityEnabled = !!id && profile?.activity_private === false;
+  const { data: activity } = useQuery({
+    queryKey: ["user-activity", id],
+    queryFn: async () => {
+      const since = new Date(Date.now() - 30 * 86400000).toISOString();
+      const [{ data: favs }, { data: visits }] = await Promise.all([
+        supabase
+          .from("favourites")
+          .select("item_id, item_type, created_at")
+          .eq("user_id", id!)
+          .gte("created_at", since)
+          .order("created_at", { ascending: false })
+          .limit(15),
+        supabase
+          .from("been_here")
+          .select("listing_id, created_at")
+          .eq("user_id", id!)
+          .gte("created_at", since)
+          .order("created_at", { ascending: false })
+          .limit(15),
+      ]);
+      const listingIds = new Set<string>();
+      const eventIds = new Set<string>();
+      const specialIds = new Set<string>();
+      (favs || []).forEach((f) => {
+        if (f.item_type === "listing") listingIds.add(f.item_id);
+        if (f.item_type === "event") eventIds.add(f.item_id);
+        if (f.item_type === "special") specialIds.add(f.item_id);
+      });
+      (visits || []).forEach((v) => listingIds.add(v.listing_id));
+      const [lr, er, sr] = await Promise.all([
+        listingIds.size ? supabase.from("listings").select("id, title").in("id", Array.from(listingIds)) : Promise.resolve({ data: [] as any[] }),
+        eventIds.size ? supabase.from("events").select("id, title").in("id", Array.from(eventIds)) : Promise.resolve({ data: [] as any[] }),
+        specialIds.size ? supabase.from("specials").select("id, title").in("id", Array.from(specialIds)) : Promise.resolve({ data: [] as any[] }),
+      ]);
+      const lMap = Object.fromEntries((lr.data || []).map((x: any) => [x.id, x]));
+      const eMap = Object.fromEntries((er.data || []).map((x: any) => [x.id, x]));
+      const sMap = Object.fromEntries((sr.data || []).map((x: any) => [x.id, x]));
+      type Row = { kind: "save" | "visit"; verb: string; name: string; href: string; created_at: string };
+      const rows: Row[] = [];
+      (favs || []).forEach((f) => {
+        if (f.item_type === "listing" && lMap[f.item_id]) {
+          rows.push({ kind: "save", verb: "saved", name: titleCase(lMap[f.item_id].title), href: `/listing/${f.item_id}`, created_at: f.created_at });
+        } else if (f.item_type === "event" && eMap[f.item_id]) {
+          rows.push({ kind: "save", verb: "is going to", name: titleCase(eMap[f.item_id].title), href: `/event/${f.item_id}`, created_at: f.created_at });
+        } else if (f.item_type === "special" && sMap[f.item_id]) {
+          rows.push({ kind: "save", verb: "saved", name: titleCase(sMap[f.item_id].title), href: `/special/${f.item_id}`, created_at: f.created_at });
+        }
+      });
+      (visits || []).forEach((v) => {
+        if (lMap[v.listing_id]) {
+          rows.push({ kind: "visit", verb: "has been to", name: titleCase(lMap[v.listing_id].title), href: `/listing/${v.listing_id}`, created_at: v.created_at });
+        }
+      });
+      rows.sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
+      return rows.slice(0, 12);
+    },
+    enabled: activityEnabled,
+  });
   const following = !!isFollowing;
   const isPending = follow.isPending || unfollow.isPending;
 
