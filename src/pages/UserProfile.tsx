@@ -273,6 +273,7 @@ const UserProfile = () => {
     },
     enabled: activityEnabled,
   });
+  const isOwnProfile = user?.id === id;
   const following = !!isFollowing;
   const isPending = follow.isPending || unfollow.isPending;
 
