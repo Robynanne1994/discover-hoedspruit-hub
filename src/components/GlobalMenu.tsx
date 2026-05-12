@@ -40,7 +40,7 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
   {
     label: "Help Centre",
     rows: [
-      { icon: HelpCircle, label: "Help Centre", to: "/faqs" },
+      { icon: HelpCircle, label: "Help Centre", to: "/help-centre" },
       { icon: Phone, label: "Contact Us", to: "/contact" },
       { icon: Info, label: "About", to: "/about" },
       { icon: Shield, label: "Privacy & Security", to: "/privacy-security" },
