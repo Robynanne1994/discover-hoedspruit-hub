@@ -295,7 +295,7 @@ const PrivacySecurity = () => {
       <ParagraphCard
         paragraphs={[
           { text: "Features like following other users, saving places, marking places as visited, and engaging with events store activity to support those features and personalise your experience." },
-          { text: "If you submit listings, event details, profile content, or messages, this content may be reviewed, stored, and displayed where relevant within the app." },
+          { text: "If you submit listings, event details, profile content, or messages, this content may be reviewed, stored and displayed where relevant within the app." },
           { text: "Please only share information you are comfortable submitting.", emphasis: true },
         ]}
       />
