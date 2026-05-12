@@ -218,22 +218,19 @@ const UserProfile = () => {
   const { data: activity } = useQuery({
     queryKey: ["user-activity", id],
     queryFn: async () => {
-      const since = new Date(Date.now() - 30 * 86400000).toISOString();
       const [{ data: favs }, { data: visits }] = await Promise.all([
         supabase
           .from("favourites")
           .select("item_id, item_type, created_at")
           .eq("user_id", id!)
-          .gte("created_at", since)
           .order("created_at", { ascending: false })
-          .limit(15),
+          .limit(200),
         supabase
           .from("been_here")
           .select("listing_id, created_at")
           .eq("user_id", id!)
-          .gte("created_at", since)
           .order("created_at", { ascending: false })
-          .limit(15),
+          .limit(200),
       ]);
       const listingIds = new Set<string>();
       const eventIds = new Set<string>();
