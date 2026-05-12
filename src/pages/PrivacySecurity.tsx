@@ -315,30 +315,32 @@ const PrivacySecurity = () => {
       {/* Bottom links */}
       <div style={{ ...cardBase, marginBottom: 12 }}>
         {[
-          { icon: FileText, label: "Read Full Privacy Policy", to: "/privacy-policy" },
-          { icon: FileText, label: "View Terms & Policies", to: "/terms" },
-          { icon: Mail, label: "Contact us About Privacy", to: "/contact", external: false },
-        ].map((row, i, arr) => {
+          { icon: FileText, label: "Read Full Privacy Policy", to: "/privacy-policy", external: false },
+          { icon: FileText, label: "View Terms & Policies", to: "/terms", external: false },
+          { icon: Mail, label: "Contact us About Privacy", to: "mailto:admin@hellohoedspruit.co", external: true },
+        ].map((row, i) => {
           const Icon = row.icon;
-          return (
-            <Link
-              key={row.label}
-              to={row.to}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                paddingTop: 18,
-                paddingBottom: 18,
-                borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
-                textDecoration: "none",
-                color: "inherit",
-              }}
-            >
+          const sharedStyle: React.CSSProperties = {
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            paddingTop: 18,
+            paddingBottom: 18,
+            borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
+            textDecoration: "none",
+            color: "inherit",
+          };
+          const inner = (
+            <>
               <Icon size={18} strokeWidth={1.5} color={MUTED} fill="none" style={{ flexShrink: 0 }} />
               <span style={{ flex: 1, fontFamily: SANS, fontSize: 16, color: INK }}>{row.label}</span>
               <ArrowCircle />
-            </Link>
+            </>
+          );
+          return row.external ? (
+            <a key={row.label} href={row.to} style={sharedStyle}>{inner}</a>
+          ) : (
+            <Link key={row.label} to={row.to} style={sharedStyle}>{inner}</Link>
           );
         })}
       </div>
