@@ -443,7 +443,7 @@ const EventDetail = () => {
               key: "directions",
               label: "Directions",
               href: mapsLink,
-              icon: <MapPin size={22} strokeWidth={1.6} color="#FFFFFF" />,
+              icon: <MapPin size={22} strokeWidth={1.6} color={TEXT} />,
             });
           }
           if (waClean) {
