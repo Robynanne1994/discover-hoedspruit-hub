@@ -204,7 +204,7 @@ const UserRow = ({
       <div onClick={(e) => e.stopPropagation()}>
         <ActionButton
           variant={isFollowed ? "outlined" : "solid"}
-          label={isFollowed ? "Following" : "Follow Back"}
+          label={isFollowed ? "Following" : "Follow"}
           onClick={(e) => {
             e.stopPropagation();
             onToggle();
