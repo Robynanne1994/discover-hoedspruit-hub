@@ -194,7 +194,9 @@ const SavedListings = () => {
     (savedSpecials || []).forEach((f: any) => {
       if (f.details?.special_type) set.add(f.details.special_type);
     });
-    return Array.from(set).sort();
+    return Array.from(set)
+      .filter((t) => t.toLowerCase() !== "seasonal")
+      .sort();
   })();
 
   // Filtered lists
