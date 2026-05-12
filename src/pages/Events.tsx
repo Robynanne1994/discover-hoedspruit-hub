@@ -575,7 +575,7 @@ const Events = () => {
                 cursor: "pointer",
               }}
             >
-              All tags
+              All
             </button>
             {availableTags.map((t) => (
               <button
