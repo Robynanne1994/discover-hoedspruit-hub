@@ -170,8 +170,10 @@ const EventDetail = () => {
     );
   }
 
-  const startTimeFmt = event.start_time && String(event.start_time).trim() ? formatTime(event.start_time) : null;
-  const endTimeFmt = event.end_time && String(event.end_time).trim() ? formatTime(event.end_time) : null;
+  const startTimeRaw = event.start_time ? String(event.start_time).trim() : "";
+  const endTimeRaw = event.end_time ? String(event.end_time).trim() : "";
+  const startTimeFmt = startTimeRaw ? formatTime(startTimeRaw) : null;
+  const endTimeFmt = endTimeRaw && endTimeRaw !== startTimeRaw ? formatTime(endTimeRaw) : null;
   const timeDisplay = startTimeFmt
     ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}`
     : (endTimeFmt || null);
