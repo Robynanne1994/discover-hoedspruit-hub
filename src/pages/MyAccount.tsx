@@ -493,9 +493,7 @@ const MyAccount = () => {
   ];
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
-    { label: "About", href: "/about", icon: Info },
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
-    { label: "Terms & Policies", href: "/terms", icon: FileText },
   ];
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
 
