@@ -258,7 +258,7 @@ const PrivacySecurity = () => {
       <Eyebrow>Data Sharing & Third Parties</Eyebrow>
       <ParagraphCard
         paragraphs={[
-          { text: "We may use trusted service providers to support hosting, analytics, security, communication, or app functionality." },
+          { text: "We may use trusted service providers to support hosting, analytics, security, communication or app functionality." },
           { text: "Listings may link to external websites, Google Maps, Google Business Profiles, WhatsApp, social platforms or booking services." },
           { text: "When you leave Hello Hoedspruit, the privacy and security practices of those third parties apply." },
           { text: "We do not sell personal data.", emphasis: true },
