@@ -268,25 +268,6 @@ const NotFound = () => {
         </div>
       </div>
 
-      {/* Whisper sign-off */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 1,
-          textAlign: "center",
-          paddingBottom: 40,
-          paddingTop: 32,
-          fontFamily: PLAYFAIR,
-          fontStyle: "italic",
-          fontWeight: 400,
-          fontSize: 16,
-          letterSpacing: "-0.2px",
-          color: "rgba(238,232,218,0.65)",
-          textTransform: "lowercase",
-        }}
-      >
-        with love from the 'hoed.
-      </div>
     </div>
   );
 };
