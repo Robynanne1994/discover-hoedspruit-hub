@@ -82,12 +82,63 @@ function buildDateLine(e: any): string {
   return date || time || "";
 }
 
+const WEEKDAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
+const ORDINALS: Record<string, number> = { first:1, second:2, third:3, fourth:4, fifth:5, last:-1 };
+
+function nextRecurringDate(e: any): Date | null {
+  const { start } = getEventDates(e);
+  const today = startOfToday();
+  if (start && !isBefore(start, today)) return start;
+
+  const text = `${e.date || ""} ${e.recurrence || ""}`.toLowerCase();
+  const wdIdx = WEEKDAYS.findIndex((w) => text.includes(w));
+  if (wdIdx === -1) return start || null;
+
+  const ordinalKey = Object.keys(ORDINALS).find((k) => new RegExp(`\\b${k}\\b`).test(text));
+
+  // Nth weekday of month
+  if (ordinalKey) {
+    const nth = ORDINALS[ordinalKey];
+    for (let i = 0; i < 3; i++) {
+      const base = new Date(today.getFullYear(), today.getMonth() + i, 1);
+      const d = nthWeekdayOfMonth(base.getFullYear(), base.getMonth(), wdIdx, nth);
+      if (d && !isBefore(d, today)) return d;
+    }
+    return null;
+  }
+
+  // Plain weekly: next occurrence of weekday
+  const d = new Date(today);
+  const diff = (wdIdx - d.getDay() + 7) % 7;
+  d.setDate(d.getDate() + diff);
+  return d;
+}
+
+function nthWeekdayOfMonth(year: number, month: number, weekday: number, nth: number): Date | null {
+  if (nth === -1) {
+    const last = new Date(year, month + 1, 0);
+    const offset = (last.getDay() - weekday + 7) % 7;
+    return new Date(year, month, last.getDate() - offset);
+  }
+  const first = new Date(year, month, 1);
+  const offset = (weekday - first.getDay() + 7) % 7;
+  const day = 1 + offset + (nth - 1) * 7;
+  const d = new Date(year, month, day);
+  if (d.getMonth() !== month) return null;
+  return d;
+}
+
+function formatRecurringDate(e: any): string {
+  const d = nextRecurringDate(e);
+  if (!d) return (e.date || "").replace(/<[^>]*>/g, "").trim();
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
+}
+
 function buildRecurrenceLine(e: any): string {
-  const raw = (e.recurrence || "").replace(/<[^>]*>/g, "").trim();
-  if (!raw) return "";
+  const date = formatRecurringDate(e);
   const time = formatTimeShort(e.start_time);
-  if (time) return `${raw}${MID}${time}`;
-  return raw;
+  if (date && time) return `${date}${MID}${time}`;
+  return date || time || "";
 }
 
 function recurrenceCadence(raw: string): "monthly" | "yearly" | "other" {
