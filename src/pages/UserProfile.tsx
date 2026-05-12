@@ -8,7 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import { ArrowLeft, MoreVertical } from "lucide-react";
+import { ArrowLeft, MoreVertical, Heart, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -28,11 +28,26 @@ import BottomNav from "@/components/BottomNav";
 
 const PAGE_BG = "#5C6446";
 const CREAM = "#EEE8DA";
+const SOFT_CREAM = "#F4EFE3";
 const INK = "#2A2A24";
 const MUTED = "#6B6A5E";
 const LINE = "#D9D2C0";
+const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Playfair Display', Georgia, serif";
+
+const timeAgo = (iso: string) => {
+  const d = new Date(iso);
+  const diff = Date.now() - d.getTime();
+  const days = Math.floor(diff / 86400000);
+  if (days < 1) {
+    const hours = Math.floor(diff / 3600000);
+    if (hours < 1) return "JUST NOW";
+    return `${hours} ${hours === 1 ? "HOUR" : "HOURS"} AGO`;
+  }
+  if (days < 30) return `${days} ${days === 1 ? "DAY" : "DAYS"} AGO`;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase();
+};
 
 const titleCase = (s?: string | null) =>
   (s || "")
