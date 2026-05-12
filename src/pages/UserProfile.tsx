@@ -118,11 +118,8 @@ const UserProfile = () => {
   const { data: savedCount } = useQuery({
     queryKey: ["user-saved-count", id],
     queryFn: async () => {
-      const { count } = await supabase
-        .from("favourites")
-        .select("id", { count: "exact", head: true })
-        .eq("user_id", id!);
-      return count ?? 0;
+      const { data } = await supabase.rpc("get_user_saved_count", { _user_id: id! });
+      return (data as number) ?? 0;
     },
     enabled: !!id,
   });
