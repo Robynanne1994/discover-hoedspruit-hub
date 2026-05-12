@@ -140,11 +140,32 @@ const Specials = () => {
     },
   });
 
+  const categoryOptions = useMemo(() => {
+    if (!specials) return [];
+    const set = new Set<string>();
+    for (const s of specials as any[]) {
+      if (s.category && typeof s.category === "string") set.add(s.category.trim());
+      if (Array.isArray(s.eyebrow_categories)) {
+        for (const c of s.eyebrow_categories) {
+          if (c && typeof c === "string") set.add(c.trim());
+        }
+      }
+    }
+    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
+  }, [specials]);
+
   const filteredSpecials = useMemo(() => {
     if (!specials) return [];
     let result = [...specials];
     if (filterType.length > 0) {
-      result = result.filter((s) => filterType.some((t) => (s.special_type || "").toLowerCase() === t.toLowerCase()));
+      const lcSelected = filterType.map((t) => t.toLowerCase());
+      result = result.filter((s: any) => {
+        const cats: string[] = [];
+        if (s.category) cats.push(String(s.category));
+        if (Array.isArray(s.eyebrow_categories)) cats.push(...s.eyebrow_categories.map((c: any) => String(c)));
+        const lc = cats.map((c) => c.toLowerCase());
+        return lcSelected.some((t) => lc.includes(t));
+      });
     }
     if (sortBy === "ending") {
       const now = Date.now();
