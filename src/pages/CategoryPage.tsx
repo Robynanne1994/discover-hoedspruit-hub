@@ -203,6 +203,7 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
   const [showFilters, setShowFilters] = useState(false);
@@ -230,6 +231,36 @@ const CategoryPage = () => {
   const [filterPetFriendly, setFilterPetFriendly] = useState(false);
   const [filterWheelchair, setFilterWheelchair] = useState(false);
   const [filterWifi, setFilterWifi] = useState(false);
+  const [filterOpenNow, setFilterOpenNow] = useState(false);
+  const [filterSaved, setFilterSaved] = useState(false);
+  const [filterBeenTo, setFilterBeenTo] = useState(false);
+
+  const { data: savedIds } = useQuery({
+    queryKey: ["user-saved-listings", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("favourites" as any)
+        .select("item_id")
+        .eq("user_id", user!.id)
+        .eq("item_type", "listing");
+      if (error) throw error;
+      return new Set((data as any[]).map((r) => r.item_id as string));
+    },
+    enabled: !!user,
+  });
+
+  const { data: beenIds } = useQuery({
+    queryKey: ["user-been-listings", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("been_here")
+        .select("listing_id")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return new Set((data as any[]).map((r) => r.listing_id as string));
+    },
+    enabled: !!user,
+  });
 
   const { data: category } = useQuery({
     queryKey: ["category", id],
