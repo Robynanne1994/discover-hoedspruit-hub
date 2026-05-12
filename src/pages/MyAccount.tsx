@@ -482,9 +482,6 @@ const MyAccount = () => {
   const resourcesItems = [
     { label: "Local Channels", href: "/bush-telegraph", icon: Users },
     { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
-    isBusinessOwner || ownedListing
-      ? { label: "Business Hub", href: "/business/dashboard", icon: Briefcase }
-      : { label: "List Your Business", href: "/for-business", icon: Briefcase },
   ];
   const getInTouchItems = [
     { label: "Contact", href: "/contact", icon: Phone },
@@ -494,6 +491,9 @@ const MyAccount = () => {
   const helpItems = [
     { label: "Settings", href: "/account-settings", icon: Settings },
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
+    isBusinessOwner || ownedListing
+      ? { label: "My Business", href: "/business/dashboard", icon: Briefcase }
+      : { label: "My Business", href: "/for-business", icon: Briefcase },
   ];
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
 
