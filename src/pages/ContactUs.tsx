@@ -364,7 +364,7 @@ const ContactUs = () => {
             href={`tel:${PHONE_DIGITS}`}
           />
           <SecondaryCard
-            eyebrow="Whatsapp"
+            eyebrow="WhatsApp"
             value={CONTACT_PHONE}
             meta="Reply same day"
             href={WHATSAPP_URL}
