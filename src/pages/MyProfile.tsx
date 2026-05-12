@@ -308,7 +308,7 @@ const MyProfile = () => {
       });
 
       rows.sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
-      return rows.slice(0, 12);
+      return rows;
     },
     enabled: !!id,
   });
