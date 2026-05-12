@@ -39,7 +39,7 @@ const useBullets = [
   "To personalise discovery and improve relevance.",
   "To respond to support requests and enquiries.",
   "To keep the app secure and prevent misuse.",
-  "To improve app performance, features, and content quality.",
+  "To improve app performance, features and content quality.",
   "To send essential service messages and optional updates based on your preferences.",
 ];
 
