@@ -435,7 +435,7 @@ const EventDetail = () => {
               key: "call",
               label: "Call",
               href: `tel:${contactPhone.replace(/\s/g, "")}`,
-              icon: <Phone size={22} strokeWidth={1.6} color="#FFFFFF" />,
+              icon: <Phone size={22} strokeWidth={1.6} color={TEXT} />,
             });
           }
           if (mapsLink) {
