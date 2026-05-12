@@ -834,8 +834,8 @@ const Events = () => {
                 }}
               >
                 {tagFilter
-                  ? `Nothing on for this view with the "${tagFilter}" filter. Try another time period or remove filters to see what else is on.`
-                  : "Nothing on for this view. Try another time period."}
+                  ? `We have nothing listed on our side for this option with the "${tagFilter}" filter. Try another time period or remove filters to see what else is on.`
+                  : "We have nothing listed on our side for this option. Try another time period."}
               </p>
               {tagFilter && (
                 <button
