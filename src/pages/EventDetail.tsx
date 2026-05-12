@@ -363,22 +363,6 @@ const EventDetail = () => {
           {event.title}
         </h1>
 
-        {/* Rustic divider */}
-        <div
-          aria-hidden
-          style={{
-            marginTop: 18,
-            marginBottom: 4,
-            height: 10,
-            backgroundImage:
-              "radial-gradient(circle, #C5BCAA 1px, transparent 1.4px), linear-gradient(to right, transparent 0, #C5BCAA 8%, #C5BCAA 92%, transparent 100%)",
-            backgroundRepeat: "repeat-x, no-repeat",
-            backgroundSize: "6px 2px, 100% 1px",
-            backgroundPosition: "center top, center bottom",
-            opacity: 1,
-          }}
-        />
-
         {/* Stat row: Date · Time · Location */}
         {(() => {
           const stats = [
