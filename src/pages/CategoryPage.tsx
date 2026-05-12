@@ -56,7 +56,7 @@ const titleSizeFor = (s: string) => {
   return 42;
 };
 
-type SortKey = "default" | "favourites" | "name" | "rating" | "open_now";
+type SortKey = "default" | "name" | "rating";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
