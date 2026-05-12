@@ -317,7 +317,7 @@ const PrivacySecurity = () => {
         {[
           { icon: FileText, label: "Read Full Privacy Policy", to: "/privacy-policy" },
           { icon: FileText, label: "View Terms & Policies", to: "/terms" },
-          { icon: Mail, label: "Contact Us About Privacy", to: "/contact", external: false },
+          { icon: Mail, label: "Contact us About Privacy", to: "/contact", external: false },
         ].map((row, i, arr) => {
           const Icon = row.icon;
           return (
