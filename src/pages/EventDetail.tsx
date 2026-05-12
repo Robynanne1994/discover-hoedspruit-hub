@@ -472,16 +472,16 @@ const EventDetail = () => {
                   rel={a.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   style={{
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
-                    background: "#2E241C", color: "#FFFFFF", borderRadius: 18,
+                    background: SURFACE, color: TEXT, borderRadius: 18,
+                    border: `1px solid ${DIVIDER}`,
                     height: 78, textDecoration: "none",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.12)",
                     transition: "transform 150ms ease-out",
                     fontFamily: font,
                   }}
                   {...pressScale("0.97")}
                 >
                   {a.icon}
-                  <span style={{ fontSize: 13, fontWeight: 500, color: "#FFFFFF" }}>{a.label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 500, color: TEXT }}>{a.label}</span>
                 </a>
               ))}
             </div>
