@@ -48,7 +48,7 @@ const securityBullets = [
   "Protected servers and platform security measures.",
   "Access controls for account-related information.",
   "Monitoring and updates to help keep the app safe.",
-  "Reasonable steps to protect information from misuse, loss, or unauthorised access.",
+  "Reasonable steps to protect information from misuse, loss or unauthorised access.",
 ];
 
 const actionRows = [
