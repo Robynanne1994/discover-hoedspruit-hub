@@ -96,11 +96,7 @@ const Index = () => {
         <div style={{ marginTop: SECTION_GAP }}>
           <HomeLowdown />
         </div>
-      )}
 
-      <div style={{ marginTop: SECTION_GAP }}>
-        <HomeGetListed />
-      </div>
     </div>
   );
 };
