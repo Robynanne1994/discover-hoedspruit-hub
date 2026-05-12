@@ -393,19 +393,21 @@ const CategoryPage = () => {
       if (filterPetFriendly && !l.pets_allowed) return false;
       if (filterWheelchair && !l.wheelchair_friendly) return false;
       if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
+      if (filterOpenNow && !isOpenNow(l.opening_hours as Record<string, string> | null)) return false;
+      if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
+      if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
       return true;
     });
 
     if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
     if (sortBy === "rating") return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
-    if (sortBy === "open_now") return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
     return result;
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy, search]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[lowerTitle] || "places to discover.";
   const subline = `${totalCount} ${tagline}`;
-  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Top Rated";
+  const sortLabel = sortBy === "default" ? "Default" : sortBy === "name" ? "Alphabetically" : "Highest Rated";
 
   const sectionEyebrow: React.CSSProperties = {
     fontSize: 11,
