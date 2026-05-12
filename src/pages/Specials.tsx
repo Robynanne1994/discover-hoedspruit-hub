@@ -21,7 +21,7 @@ const COLOR = {
   line: "#D9D2C0",
 };
 
-const TYPE_OPTIONS = ["Daily Special", "Weekly Special", "Monthly Special", "Seasonal", "Happy Hour", "Promotion"];
+// Category filter options are derived dynamically from active specials
 
 type SortKey = "default" | "ending" | "newest" | "best";
 
