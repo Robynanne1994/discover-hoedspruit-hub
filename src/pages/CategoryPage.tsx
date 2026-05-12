@@ -56,7 +56,7 @@ const titleSizeFor = (s: string) => {
   return 42;
 };
 
-type SortKey = "default" | "favourites" | "name" | "rating" | "open_now";
+type SortKey = "default" | "name" | "rating";
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -203,6 +203,7 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
   const [showFilters, setShowFilters] = useState(false);
@@ -230,6 +231,36 @@ const CategoryPage = () => {
   const [filterPetFriendly, setFilterPetFriendly] = useState(false);
   const [filterWheelchair, setFilterWheelchair] = useState(false);
   const [filterWifi, setFilterWifi] = useState(false);
+  const [filterOpenNow, setFilterOpenNow] = useState(false);
+  const [filterSaved, setFilterSaved] = useState(false);
+  const [filterBeenTo, setFilterBeenTo] = useState(false);
+
+  const { data: savedIds } = useQuery({
+    queryKey: ["user-saved-listings", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("favourites" as any)
+        .select("item_id")
+        .eq("user_id", user!.id)
+        .eq("item_type", "listing");
+      if (error) throw error;
+      return new Set((data as any[]).map((r) => r.item_id as string));
+    },
+    enabled: !!user,
+  });
+
+  const { data: beenIds } = useQuery({
+    queryKey: ["user-been-listings", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("been_here")
+        .select("listing_id")
+        .eq("user_id", user!.id);
+      if (error) throw error;
+      return new Set((data as any[]).map((r) => r.listing_id as string));
+    },
+    enabled: !!user,
+  });
 
   const { data: category } = useQuery({
     queryKey: ["category", id],
@@ -305,6 +336,9 @@ const CategoryPage = () => {
     filterPetFriendly ? 1 : 0,
     filterWheelchair ? 1 : 0,
     filterWifi ? 1 : 0,
+    filterOpenNow ? 1 : 0,
+    filterSaved ? 1 : 0,
+    filterBeenTo ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
   const clearAllFilters = () => {
@@ -317,6 +351,9 @@ const CategoryPage = () => {
     setFilterPetFriendly(false);
     setFilterWheelchair(false);
     setFilterWifi(false);
+    setFilterOpenNow(false);
+    setFilterSaved(false);
+    setFilterBeenTo(false);
   };
 
   const toggleArrayFilter = (arr: string[], val: string, setter: (v: string[]) => void) => {
@@ -356,19 +393,21 @@ const CategoryPage = () => {
       if (filterPetFriendly && !l.pets_allowed) return false;
       if (filterWheelchair && !l.wheelchair_friendly) return false;
       if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
+      if (filterOpenNow && !isOpenNow(l.opening_hours as Record<string, string> | null)) return false;
+      if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
+      if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
       return true;
     });
 
     if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
     if (sortBy === "rating") return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
-    if (sortBy === "open_now") return result.filter((l) => isOpenNow(l.opening_hours as Record<string, string> | null));
     return result;
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, sortBy, search]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[lowerTitle] || "places to discover.";
   const subline = `${totalCount} ${tagline}`;
-  const sortLabel = sortBy === "default" ? "Default" : sortBy === "favourites" ? "Saved" : sortBy === "name" ? "Name" : sortBy === "open_now" ? "Open Now" : "Top Rated";
+  const sortLabel = sortBy === "default" ? "Default" : sortBy === "name" ? "Alphabetically" : "Highest Rated";
 
   const sectionEyebrow: React.CSSProperties = {
     fontSize: 11,
@@ -574,7 +613,7 @@ const CategoryPage = () => {
                 minWidth: 200,
               }}
             >
-              {(["default", "open_now", "favourites", "name", "rating"] as SortKey[]).map((key) => (
+              {(["default", "name", "rating"] as SortKey[]).map((key) => (
                 <button
                   key={key}
                   onClick={() => {
@@ -596,7 +635,7 @@ const CategoryPage = () => {
                     cursor: "pointer",
                   }}
                 >
-                  {key === "default" ? "Default" : key === "open_now" ? "Open Now" : key === "favourites" ? "Saved" : key === "name" ? "Name" : "Top Rated"}
+                  {key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
                 </button>
               ))}
             </div>
@@ -674,6 +713,15 @@ const CategoryPage = () => {
               </div>
             </>
           )}
+
+          <div>
+            <p style={sectionEyebrow}>My List</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <FilterChip label="Open Now" active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
+              <FilterChip label="Saved" active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
+              <FilterChip label="Been To" active={filterBeenTo} onClick={() => setFilterBeenTo(!filterBeenTo)} />
+            </div>
+          </div>
 
           <div>
             <p style={sectionEyebrow}>Amenities</p>
