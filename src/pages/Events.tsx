@@ -463,17 +463,16 @@ const Events = () => {
     const today = startOfToday();
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     const monthEnd = endOfMonth(today);
-    const nonRecurring = searched.filter(
-      (e) =>
-        !e.recurrence ||
-        e.recurrence.trim() === "" ||
-        e.recurrence.trim().toLowerCase() === "none"
-    );
+    const isRecurring = (e: any) =>
+      e.recurrence &&
+      e.recurrence.trim() !== "" &&
+      e.recurrence.trim().toLowerCase() !== "none";
+    const nonRecurring = searched.filter((e) => !isRecurring(e));
+
     if (activeFilter === "all")
       return nonRecurring.filter((e) => !e._parsed || !isBefore(e._parsed, today));
-    return nonRecurring.filter((event) => {
-      const date = event._parsed;
-      if (!date) return false;
+
+    const inRange = (date: Date) => {
       switch (activeFilter) {
         case "today":
           return isToday(date);
@@ -486,6 +485,23 @@ const Events = () => {
         default:
           return true;
       }
+    };
+
+    const dated = nonRecurring.filter((e) => e._parsed && inRange(e._parsed));
+
+    // Past filter shouldn't include recurring (they're upcoming-only by nature)
+    if (activeFilter === "past") return dated;
+
+    const recurringInRange = searched
+      .filter(isRecurring)
+      .map((e) => ({ event: e, date: nextRecurringDate(e) }))
+      .filter((x): x is { event: any; date: Date } => !!x.date && inRange(x.date))
+      .map((x) => ({ ...x.event, _parsed: x.date, _isRecurring: true }));
+
+    return [...dated, ...recurringInRange].sort((a, b) => {
+      const ta = a._parsed ? a._parsed.getTime() : 0;
+      const tb = b._parsed ? b._parsed.getTime() : 0;
+      return ta - tb;
     });
   }, [searched, activeFilter]);
 
@@ -498,7 +514,7 @@ const Events = () => {
     [recurringAll]
   );
 
-  const showRecurring = activeFilter !== "past" && activeFilter !== "today";
+  const showRecurring = activeFilter === "all";
   const upcomingCount = useMemo(() => {
     const today = startOfToday();
     return sortedEvents.filter((e) => {
@@ -758,7 +774,12 @@ const Events = () => {
                   }}
                 >
                   {datedAll.map((event, idx) => (
-                    <EventRow key={event.id} event={event} showDivider={idx > 0} />
+                    <EventRow
+                      key={event.id}
+                      event={event}
+                      showDivider={idx > 0}
+                      metaOverride={event._isRecurring ? buildRecurrenceLine(event) : undefined}
+                    />
                   ))}
                 </div>
               </div>
