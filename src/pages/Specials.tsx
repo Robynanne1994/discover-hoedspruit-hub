@@ -21,7 +21,7 @@ const COLOR = {
   line: "#D9D2C0",
 };
 
-const TYPE_OPTIONS = ["Daily Special", "Weekly Special", "Monthly Special", "Seasonal", "Happy Hour", "Promotion"];
+// Category filter options are derived dynamically from active specials
 
 type SortKey = "default" | "ending" | "newest" | "best";
 
@@ -140,11 +140,32 @@ const Specials = () => {
     },
   });
 
+  const categoryOptions = useMemo(() => {
+    if (!specials) return [];
+    const set = new Set<string>();
+    for (const s of specials as any[]) {
+      if (s.category && typeof s.category === "string") set.add(s.category.trim());
+      if (Array.isArray(s.eyebrow_categories)) {
+        for (const c of s.eyebrow_categories) {
+          if (c && typeof c === "string") set.add(c.trim());
+        }
+      }
+    }
+    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
+  }, [specials]);
+
   const filteredSpecials = useMemo(() => {
     if (!specials) return [];
     let result = [...specials];
     if (filterType.length > 0) {
-      result = result.filter((s) => filterType.some((t) => (s.special_type || "").toLowerCase() === t.toLowerCase()));
+      const lcSelected = filterType.map((t) => t.toLowerCase());
+      result = result.filter((s: any) => {
+        const cats: string[] = [];
+        if (s.category) cats.push(String(s.category));
+        if (Array.isArray(s.eyebrow_categories)) cats.push(...s.eyebrow_categories.map((c: any) => String(c)));
+        const lc = cats.map((c) => c.toLowerCase());
+        return lcSelected.some((t) => lc.includes(t));
+      });
     }
     if (sortBy === "ending") {
       const now = Date.now();
@@ -347,29 +368,35 @@ const Specials = () => {
       {/* Filters panel */}
       {showFilters && (
         <div style={{ padding: "0 24px 24px 24px" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {TYPE_OPTIONS.map((t) => {
-              const active = filterType.includes(t);
-              return (
-                <button
-                  key={t}
-                  onClick={() => toggleFilter(t)}
-                  style={{
-                    background: active ? COLOR.ink : COLOR.cream,
-                    color: active ? COLOR.cream : COLOR.ink,
-                    border: "none",
-                    borderRadius: 9999,
-                    padding: "9px 16px",
-                    fontSize: 13,
-                    fontFamily: SANS,
-                    cursor: "pointer",
-                  }}
-                >
-                  {t}
-                </button>
-              );
-            })}
-          </div>
+          {categoryOptions.length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {categoryOptions.map((t) => {
+                const active = filterType.includes(t);
+                return (
+                  <button
+                    key={t}
+                    onClick={() => toggleFilter(t)}
+                    style={{
+                      background: active ? COLOR.ink : COLOR.cream,
+                      color: active ? COLOR.cream : COLOR.ink,
+                      border: "none",
+                      borderRadius: 9999,
+                      padding: "9px 16px",
+                      fontSize: 13,
+                      fontFamily: SANS,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ fontSize: 13, color: "rgba(238,232,218,0.7)" }}>
+              No categories available.
+            </div>
+          )}
         </div>
       )}
 
