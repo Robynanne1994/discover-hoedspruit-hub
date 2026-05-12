@@ -572,7 +572,7 @@ const ListingDetail = () => {
   const contactRows = [
     listing.email ? { label: "Email", value: listing.email, icon: Mail, href: `mailto:${listing.email}` } : null,
     listing.phone ? { label: "Phone", value: listing.phone, icon: Phone, href: `tel:${listing.phone.replace(/\s/g, "")}` } : null,
-    contactWhatsapp ? {
+    whatsappNum ? {
       label: "WhatsApp",
       value: formatWhatsappDisplay(whatsappNum!, waCleanNum),
       icon: WhatsAppIcon,
