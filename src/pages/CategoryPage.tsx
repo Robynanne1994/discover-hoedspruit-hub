@@ -336,6 +336,9 @@ const CategoryPage = () => {
     filterPetFriendly ? 1 : 0,
     filterWheelchair ? 1 : 0,
     filterWifi ? 1 : 0,
+    filterOpenNow ? 1 : 0,
+    filterSaved ? 1 : 0,
+    filterBeenTo ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
 
   const clearAllFilters = () => {
@@ -348,6 +351,9 @@ const CategoryPage = () => {
     setFilterPetFriendly(false);
     setFilterWheelchair(false);
     setFilterWifi(false);
+    setFilterOpenNow(false);
+    setFilterSaved(false);
+    setFilterBeenTo(false);
   };
 
   const toggleArrayFilter = (arr: string[], val: string, setter: (v: string[]) => void) => {
