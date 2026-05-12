@@ -821,17 +821,7 @@ const CategoryPage = () => {
                           <span style={{ color: C.ink }}>★</span> {Number(l.google_rating).toFixed(1)}
                         </span>
                       ) : null}
-                      {l.google_rating && open !== null && (
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 4,
-                            height: 4,
-                            borderRadius: "50%",
-                            background: "rgba(107,106,94,0.6)",
-                          }}
-                        />
-                      )}
+                      {/* separator dot removed */}
                       {open === true && (
                         <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.ink }}>
                           <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: C.gold }} />
