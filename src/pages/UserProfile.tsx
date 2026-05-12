@@ -8,7 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import { ArrowLeft, MoreVertical } from "lucide-react";
+import { ArrowLeft, MoreVertical, Heart, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -28,11 +28,26 @@ import BottomNav from "@/components/BottomNav";
 
 const PAGE_BG = "#5C6446";
 const CREAM = "#EEE8DA";
+const SOFT_CREAM = "#F4EFE3";
 const INK = "#2A2A24";
 const MUTED = "#6B6A5E";
 const LINE = "#D9D2C0";
+const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Playfair Display', Georgia, serif";
+
+const timeAgo = (iso: string) => {
+  const d = new Date(iso);
+  const diff = Date.now() - d.getTime();
+  const days = Math.floor(diff / 86400000);
+  if (days < 1) {
+    const hours = Math.floor(diff / 3600000);
+    if (hours < 1) return "JUST NOW";
+    return `${hours} ${hours === 1 ? "HOUR" : "HOURS"} AGO`;
+  }
+  if (days < 30) return `${days} ${days === 1 ? "DAY" : "DAYS"} AGO`;
+  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase();
+};
 
 const titleCase = (s?: string | null) =>
   (s || "")
@@ -198,6 +213,66 @@ const UserProfile = () => {
     enabled: !!id,
   });
 
+  // Activity timeline (only when not private)
+  const activityEnabled = !!id && profile?.activity_private === false;
+  const { data: activity } = useQuery({
+    queryKey: ["user-activity", id],
+    queryFn: async () => {
+      const since = new Date(Date.now() - 30 * 86400000).toISOString();
+      const [{ data: favs }, { data: visits }] = await Promise.all([
+        supabase
+          .from("favourites")
+          .select("item_id, item_type, created_at")
+          .eq("user_id", id!)
+          .gte("created_at", since)
+          .order("created_at", { ascending: false })
+          .limit(15),
+        supabase
+          .from("been_here")
+          .select("listing_id, created_at")
+          .eq("user_id", id!)
+          .gte("created_at", since)
+          .order("created_at", { ascending: false })
+          .limit(15),
+      ]);
+      const listingIds = new Set<string>();
+      const eventIds = new Set<string>();
+      const specialIds = new Set<string>();
+      (favs || []).forEach((f) => {
+        if (f.item_type === "listing") listingIds.add(f.item_id);
+        if (f.item_type === "event") eventIds.add(f.item_id);
+        if (f.item_type === "special") specialIds.add(f.item_id);
+      });
+      (visits || []).forEach((v) => listingIds.add(v.listing_id));
+      const [lr, er, sr] = await Promise.all([
+        listingIds.size ? supabase.from("listings").select("id, title").in("id", Array.from(listingIds)) : Promise.resolve({ data: [] as any[] }),
+        eventIds.size ? supabase.from("events").select("id, title").in("id", Array.from(eventIds)) : Promise.resolve({ data: [] as any[] }),
+        specialIds.size ? supabase.from("specials").select("id, title").in("id", Array.from(specialIds)) : Promise.resolve({ data: [] as any[] }),
+      ]);
+      const lMap = Object.fromEntries((lr.data || []).map((x: any) => [x.id, x]));
+      const eMap = Object.fromEntries((er.data || []).map((x: any) => [x.id, x]));
+      const sMap = Object.fromEntries((sr.data || []).map((x: any) => [x.id, x]));
+      type Row = { kind: "save" | "visit"; verb: string; name: string; href: string; created_at: string };
+      const rows: Row[] = [];
+      (favs || []).forEach((f) => {
+        if (f.item_type === "listing" && lMap[f.item_id]) {
+          rows.push({ kind: "save", verb: "saved", name: titleCase(lMap[f.item_id].title), href: `/listing/${f.item_id}`, created_at: f.created_at });
+        } else if (f.item_type === "event" && eMap[f.item_id]) {
+          rows.push({ kind: "save", verb: "is going to", name: titleCase(eMap[f.item_id].title), href: `/event/${f.item_id}`, created_at: f.created_at });
+        } else if (f.item_type === "special" && sMap[f.item_id]) {
+          rows.push({ kind: "save", verb: "saved", name: titleCase(sMap[f.item_id].title), href: `/special/${f.item_id}`, created_at: f.created_at });
+        }
+      });
+      (visits || []).forEach((v) => {
+        if (lMap[v.listing_id]) {
+          rows.push({ kind: "visit", verb: "has been to", name: titleCase(lMap[v.listing_id].title), href: `/listing/${v.listing_id}`, created_at: v.created_at });
+        }
+      });
+      rows.sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
+      return rows.slice(0, 12);
+    },
+    enabled: activityEnabled,
+  });
   const isOwnProfile = user?.id === id;
   const following = !!isFollowing;
   const isPending = follow.isPending || unfollow.isPending;
@@ -747,6 +822,83 @@ const UserProfile = () => {
             </section>
           ));
       })()}
+
+      {/* Activity (only when public) */}
+      {profile?.activity_private === false && activity && activity.length > 0 && (
+        <section style={{ marginBottom: 32 }}>
+          <div style={{ padding: "0 24px", marginBottom: 14 }}>
+            <h2
+              style={{
+                fontFamily: SERIF,
+                fontStyle: "italic",
+                fontWeight: 400,
+                fontSize: 28,
+                lineHeight: 1,
+                letterSpacing: "-0.5px",
+                color: CREAM,
+                margin: 0,
+                textTransform: "lowercase",
+              }}
+            >
+              activity
+            </h2>
+          </div>
+          <div style={{ padding: "0 24px" }}>
+            <div style={{ background: CREAM, borderRadius: 20, padding: "4px 22px" }}>
+              {activity.map((row, i) => {
+                const isSave = row.kind === "save";
+                return (
+                  <Link
+                    key={i}
+                    to={row.href}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 14,
+                      padding: "14px 0",
+                      borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
+                      textDecoration: "none",
+                      color: "inherit",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "50%",
+                        background: isSave ? RUST : SOFT_CREAM,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {isSave ? (
+                        <Heart size={14} strokeWidth={1.6} color={CREAM} fill={CREAM} />
+                      ) : (
+                        <MapPin size={14} strokeWidth={1.6} color={MUTED} />
+                      )}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 13, lineHeight: 1.4, color: INK }}>
+                        {row.verb}{" "}
+                        <span style={{ fontFamily: SANS, fontStyle: "normal", fontWeight: 400, color: INK }}>
+                          {row.name}
+                        </span>
+                      </div>
+                      <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: "1.8px", textTransform: "uppercase", color: MUTED, marginTop: 3 }}>
+                        {timeAgo(row.created_at)}
+                      </div>
+                    </div>
+                    <span style={{ fontSize: 13, color: MUTED, fontFamily: SANS }}>↗</span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
 
 
       {/* Three-dots action sheet */}

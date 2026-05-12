@@ -1025,14 +1025,9 @@ const MyProfile = () => {
             margin: 0,
           }}
         >
-          This is what your followers see. Make your finds and activity private in{" "}
-          <Link
-            to="/privacy-security"
-            style={{ color: CREAM, opacity: 1, textDecoration: "underline", fontStyle: "italic" }}
-          >
-            Privacy & Security
-          </Link>
-          .
+          {profile?.activity_private
+            ? "Your activity is hidden from other people. Toggle above to share it with followers."
+            : "Your activity is visible on your public profile. Toggle above to make it private."}
         </p>
       </div>
 
