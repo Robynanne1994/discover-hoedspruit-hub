@@ -58,18 +58,25 @@ function formatTimeShort(t: string | null | undefined): string {
   return `${dh}:${String(min).padStart(2, "0")}${ampm}`;
 }
 
+function isMultiDay(e: any): boolean {
+  const { start, end } = getEventDates(e);
+  if (!start || !end) return false;
+  return start.getTime() !== end.getTime();
+}
+
 function formatDatePart(e: any): string {
   const { start, end } = getEventDates(e);
   if (!start) return (e.date || "").replace(/<[^>]*>/g, "").trim();
   const sameDay = !end || start.getTime() === end.getTime();
   if (sameDay) return `${start.getDate()} ${MONTHS[start.getMonth()]}`;
   const sameMonth = start.getMonth() === end!.getMonth() && start.getFullYear() === end!.getFullYear();
-  if (sameMonth) return `${start.getDate()} to ${end!.getDate()} ${MONTHS[start.getMonth()]}`;
-  return `${start.getDate()} ${MONTHS[start.getMonth()]} to ${end!.getDate()} ${MONTHS[end!.getMonth()]}`;
+  if (sameMonth) return `${start.getDate()} – ${end!.getDate()} ${MONTHS[start.getMonth()]}`;
+  return `${start.getDate()} ${MONTHS[start.getMonth()]} – ${end!.getDate()} ${MONTHS[end!.getMonth()]}`;
 }
 
 function buildDateLine(e: any): string {
   const date = formatDatePart(e);
+  if (isMultiDay(e)) return date || "";
   const time = formatTimeShort(e.start_time);
   if (date && time) return `${date}${MID}${time}`;
   return date || time || "";
