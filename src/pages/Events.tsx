@@ -441,10 +441,13 @@ const Events = () => {
   );
 
   const showRecurring = activeFilter !== "past" && activeFilter !== "today";
-  const totalCount = events?.length || 0;
-  const subline = totalCount > 0
-    ? `All local happenings.`
-    : "Refreshed daily.";
+  const upcomingCount = useMemo(() => {
+    const today = startOfToday();
+    return sortedEvents.filter((e) => {
+      if (e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none") return true;
+      return e._parsed && !isBefore(e._parsed, today);
+    }).length;
+  }, [sortedEvents]);
 
   const iconBtn: React.CSSProperties = {
     width: 44,
@@ -582,7 +585,7 @@ const Events = () => {
             marginBottom: 14,
           }}
         >
-          EVERY DAY IN THE 'HOED
+          LOCAL HAPPENINGS ({upcomingCount})
         </div>
         <h1
           style={{
@@ -594,25 +597,12 @@ const Events = () => {
             letterSpacing: "-2.5px",
             color: COLOR.cream,
             margin: 0,
-            marginBottom: 14,
+            marginBottom: 24,
             textTransform: "none",
           }}
         >
           what's on.
         </h1>
-        <p
-          style={{
-            fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 15,
-            lineHeight: 1.65,
-            color: "rgba(238,232,218,0.9)",
-            margin: 0,
-            marginBottom: 22,
-          }}
-        >
-          {subline}
-        </p>
       </div>
 
       {/* Search */}
