@@ -1513,6 +1513,7 @@ export type Database = {
     }
     Functions: {
       claim_business_owner_role: { Args: never; Returns: undefined }
+      get_user_saved_count: { Args: { _user_id: string }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
