@@ -567,29 +567,6 @@ const MyProfile = () => {
               <Pencil size={14} strokeWidth={1.8} color={CREAM} />
               Edit Profile
             </button>
-            <button
-              onClick={handleShare}
-              style={{
-                flex: 1,
-                height: 44,
-                borderRadius: 999,
-                background: "transparent",
-                color: INK,
-                border: `1px solid ${LINE}`,
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 14,
-                letterSpacing: "0.1px",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Share2 size={14} strokeWidth={1.8} color={INK} />
-              Share
-            </button>
           </div>
         </div>
       </div>
