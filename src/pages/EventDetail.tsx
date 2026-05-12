@@ -435,7 +435,7 @@ const EventDetail = () => {
               key: "call",
               label: "Call",
               href: `tel:${contactPhone.replace(/\s/g, "")}`,
-              icon: <Phone size={22} strokeWidth={1.6} color="#FFFFFF" />,
+              icon: <Phone size={22} strokeWidth={1.6} color={TEXT} />,
             });
           }
           if (mapsLink) {
@@ -443,7 +443,7 @@ const EventDetail = () => {
               key: "directions",
               label: "Directions",
               href: mapsLink,
-              icon: <MapPin size={22} strokeWidth={1.6} color="#FFFFFF" />,
+              icon: <MapPin size={22} strokeWidth={1.6} color={TEXT} />,
             });
           }
           if (waClean) {
@@ -451,14 +451,14 @@ const EventDetail = () => {
               key: "whatsapp",
               label: "WhatsApp",
               href: `https://wa.me/${waClean}`,
-              icon: <WhatsAppIcon color="#FFFFFF" />,
+              icon: <WhatsAppIcon color={TEXT} />,
             });
           } else if (contactEmail) {
             actions.push({
               key: "email",
               label: "Email",
               href: `mailto:${contactEmail}`,
-              icon: <Mail size={22} strokeWidth={1.6} color="#FFFFFF" />,
+              icon: <Mail size={22} strokeWidth={1.6} color={TEXT} />,
             });
           }
           if (actions.length === 0) return null;
@@ -472,16 +472,16 @@ const EventDetail = () => {
                   rel={a.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   style={{
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
-                    background: "#2E241C", color: "#FFFFFF", borderRadius: 18,
+                    background: SURFACE, color: TEXT, borderRadius: 18,
+                    border: `1px solid ${DIVIDER}`,
                     height: 78, textDecoration: "none",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.12)",
                     transition: "transform 150ms ease-out",
                     fontFamily: font,
                   }}
                   {...pressScale("0.97")}
                 >
                   {a.icon}
-                  <span style={{ fontSize: 13, fontWeight: 500, color: "#FFFFFF" }}>{a.label}</span>
+                  <span style={{ fontSize: 13, fontWeight: 500, color: TEXT }}>{a.label}</span>
                 </a>
               ))}
             </div>
