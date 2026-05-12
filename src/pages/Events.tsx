@@ -441,10 +441,13 @@ const Events = () => {
   );
 
   const showRecurring = activeFilter !== "past" && activeFilter !== "today";
-  const totalCount = events?.length || 0;
-  const subline = totalCount > 0
-    ? `All local happenings.`
-    : "Refreshed daily.";
+  const upcomingCount = useMemo(() => {
+    const today = startOfToday();
+    return sortedEvents.filter((e) => {
+      if (e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none") return true;
+      return e._parsed && !isBefore(e._parsed, today);
+    }).length;
+  }, [sortedEvents]);
 
   const iconBtn: React.CSSProperties = {
     width: 44,
