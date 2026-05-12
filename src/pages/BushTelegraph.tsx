@@ -17,27 +17,14 @@ const MUTED_INK = "#6B6A5E";
 const RUST = "#9B5A3C";
 const DEEP_RUST = "#7E4530";
 
-type Platform = "Facebook" | "Whatsapp" | "Instagram" | "Websites";
-
-interface Resource {
-  id: string;
-  title: string;
-  platform: Platform;
-  meta: string;
-  description: string;
-  url: string;
-  is_featured: boolean;
-  image_url: string | null;
-  tag_1: string | null;
-  tag_2: string | null;
-}
-
-const PLATFORM_ORDER: Platform[] = ["Facebook", "Whatsapp", "Instagram"];
-const CHIPS: ("All" | Platform)[] = ["All", "Facebook", "Whatsapp", "Instagram"];
+type Platform = "Facebook" | "WhatsApp" | "Instagram" | "Websites";
+...
+const PLATFORM_ORDER: Platform[] = ["Facebook", "WhatsApp", "Instagram"];
+const CHIPS: ("All" | Platform)[] = ["All", "Facebook", "WhatsApp", "Instagram"];
 
 const PLATFORM_NOUN: Record<Platform, { singular: string; plural: string }> = {
   Facebook: { singular: "Group", plural: "Groups" },
-  Whatsapp: { singular: "Group", plural: "Groups" },
+  WhatsApp: { singular: "Group", plural: "Groups" },
   Instagram: { singular: "Account", plural: "Accounts" },
   Websites: { singular: "Site", plural: "Sites" },
 };

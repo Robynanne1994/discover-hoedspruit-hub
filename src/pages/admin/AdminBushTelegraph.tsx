@@ -12,7 +12,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown } from "lucide-react";
 
-const PLATFORMS = ["Facebook", "Whatsapp", "Instagram", "Websites", "Radio"] as const;
+const PLATFORMS = ["Facebook", "WhatsApp", "Instagram", "Websites", "Radio"] as const;
 const TONES = ["warm", "warm-grey", "coral", "dark"] as const;
 const HEADERS = ["title", "platform", "meta", "description", "url", "image_url", "tag_1", "tag_2", "tone", "is_featured", "sort_order"];
 
