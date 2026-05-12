@@ -496,7 +496,7 @@ const Events = () => {
       .filter(isRecurring)
       .map((e) => ({ event: e, date: nextRecurringDate(e) }))
       .filter((x): x is { event: any; date: Date } => !!x.date && inRange(x.date))
-      .map((x) => ({ ...x.event, _parsed: x.date }));
+      .map((x) => ({ ...x.event, _parsed: x.date, _isRecurring: true }));
 
     return [...dated, ...recurringInRange].sort((a, b) => {
       const ta = a._parsed ? a._parsed.getTime() : 0;
