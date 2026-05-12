@@ -715,6 +715,15 @@ const CategoryPage = () => {
           )}
 
           <div>
+            <p style={sectionEyebrow}>My List</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              <FilterChip label="Open Now" active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
+              <FilterChip label="Saved" active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
+              <FilterChip label="Been To" active={filterBeenTo} onClick={() => setFilterBeenTo(!filterBeenTo)} />
+            </div>
+          </div>
+
+          <div>
             <p style={sectionEyebrow}>Amenities</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {(isRestaurant || isAccom) && (
