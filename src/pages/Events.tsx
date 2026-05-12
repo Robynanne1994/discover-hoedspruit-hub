@@ -774,7 +774,12 @@ const Events = () => {
                   }}
                 >
                   {datedAll.map((event, idx) => (
-                    <EventRow key={event.id} event={event} showDivider={idx > 0} />
+                    <EventRow
+                      key={event.id}
+                      event={event}
+                      showDivider={idx > 0}
+                      metaOverride={event._isRecurring ? buildRecurrenceLine(event) : undefined}
+                    />
                   ))}
                 </div>
               </div>
