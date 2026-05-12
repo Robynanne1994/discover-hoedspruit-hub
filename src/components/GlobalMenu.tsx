@@ -32,7 +32,7 @@ const SECTIONS: { label: string; rows: Row[] }[] = [
   {
     label: "Account",
     rows: [
-      { icon: Bell, label: "Notifications", to: "/my-notifications" },
+      
       { icon: UserCircle, label: "Account Info", to: "/account-settings/info" },
       { icon: Settings, label: "Settings", to: "/account-settings" },
     ],
