@@ -808,16 +808,16 @@ const MyAccount = () => {
       <Card items={[{ label: "My Hoedspruit", href: "/saved" }]} heartFirst />
 
       <div style={{ height: 28 }} />
+      <Eyebrow>Help & Settings</Eyebrow>
+      <Card items={helpItems} />
+
+      <div style={{ height: 28 }} />
       <Eyebrow>Resources</Eyebrow>
       <Card items={resourcesItems} />
 
       <div style={{ height: 28 }} />
       <Eyebrow>Get In Touch</Eyebrow>
       <Card items={getInTouchItems} />
-
-      <div style={{ height: 28 }} />
-      <Eyebrow>Help & Settings</Eyebrow>
-      <Card items={helpItems} />
 
       {isAdmin && (
         <>
