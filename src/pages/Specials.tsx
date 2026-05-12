@@ -368,29 +368,35 @@ const Specials = () => {
       {/* Filters panel */}
       {showFilters && (
         <div style={{ padding: "0 24px 24px 24px" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {TYPE_OPTIONS.map((t) => {
-              const active = filterType.includes(t);
-              return (
-                <button
-                  key={t}
-                  onClick={() => toggleFilter(t)}
-                  style={{
-                    background: active ? COLOR.ink : COLOR.cream,
-                    color: active ? COLOR.cream : COLOR.ink,
-                    border: "none",
-                    borderRadius: 9999,
-                    padding: "9px 16px",
-                    fontSize: 13,
-                    fontFamily: SANS,
-                    cursor: "pointer",
-                  }}
-                >
-                  {t}
-                </button>
-              );
-            })}
-          </div>
+          {categoryOptions.length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {categoryOptions.map((t) => {
+                const active = filterType.includes(t);
+                return (
+                  <button
+                    key={t}
+                    onClick={() => toggleFilter(t)}
+                    style={{
+                      background: active ? COLOR.ink : COLOR.cream,
+                      color: active ? COLOR.cream : COLOR.ink,
+                      border: "none",
+                      borderRadius: 9999,
+                      padding: "9px 16px",
+                      fontSize: 13,
+                      fontFamily: SANS,
+                      cursor: "pointer",
+                    }}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <div style={{ fontSize: 13, color: "rgba(238,232,218,0.7)" }}>
+              No categories available.
+            </div>
+          )}
         </div>
       )}
 
