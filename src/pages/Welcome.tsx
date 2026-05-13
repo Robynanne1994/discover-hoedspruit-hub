@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,8 +8,12 @@ import { toast } from "sonner";
 import { MapPin, ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 
+type Role = "user" | "business";
+
 const Welcome = () => {
   const [mode, setMode] = useState<"welcome" | "signin" | "signup">("welcome");
+  const [role, setRole] = useState<Role>("user");
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
