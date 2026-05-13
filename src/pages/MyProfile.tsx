@@ -364,35 +364,26 @@ const MyProfile = () => {
           <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
         </CircleBtn>
         <div style={{ display: "flex", gap: 8 }}>
-          <CircleBtn label="Share profile" onClick={handleShare}>
-            <Share2 size={16} strokeWidth={1.6} color={INK} />
-          </CircleBtn>
-          <CircleBtn label="More" onClick={() => setMenuOpen(true)}>
-            <MoreVertical size={16} strokeWidth={1.6} color={INK} />
-          </CircleBtn>
+          <Link to="/my-account" aria-label="Settings" style={{
+            width: 40, height: 40, borderRadius: "50%", background: CREAM,
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>
+            <Settings size={18} strokeWidth={1.6} color={INK} />
+          </Link>
         </div>
       </div>
 
 
-      {/* Masthead */}
-      <div
-        style={{
-          padding: "20px 24px 0",
-          position: "relative",
-          textAlign: "center",
-        }}
-      >
-        <div style={{ display: "inline-block", width: 132, height: 132, position: "relative" }}>
-          <SunRays />
+      {/* Masthead — avatar left, name right */}
+      <div style={{ padding: "20px 20px 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div
             style={{
-              position: "absolute",
-              top: 18,
-              left: 18,
-              width: 96,
-              height: 96,
+              width: 84,
+              height: 84,
               borderRadius: "50%",
               overflow: "hidden",
+              flexShrink: 0,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -406,72 +397,88 @@ const MyProfile = () => {
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             ) : (
-              <span style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 38, color: CREAM }}>
+              <span style={{ fontFamily: SANS, fontWeight: 600, fontSize: 32, color: CREAM }}>
                 {getInitial(profile?.display_name || profile?.username)}
               </span>
             )}
           </div>
-        </div>
 
-        <div style={{ marginTop: 14 }}>
-          {isLoading ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
-              <Skeleton className="h-10 w-48 bg-white/10" />
-              <Skeleton className="h-4 w-24 bg-white/10" />
-            </div>
-          ) : (
-            <>
-              <h1
-                style={{
-                  fontFamily: SERIF,
-                  fontWeight: 400,
-                  fontSize: 42,
-                  lineHeight: 1.0,
-                  letterSpacing: "-1px",
-                  color: CREAM,
-                  margin: 0,
-                  marginBottom: 6,
-                }}
-              >
-                {titleCase(profile?.display_name) || "You"}
-              </h1>
-
-              {profile?.username && (
-                <div
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {isLoading ? (
+              <Skeleton className="h-7 w-40 bg-white/10" />
+            ) : (
+              <>
+                <h1
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
-                    fontWeight: 400,
-                    fontSize: 14,
+                    fontFamily: SANS,
+                    fontWeight: 700,
+                    fontSize: 24,
+                    lineHeight: 1.15,
+                    letterSpacing: "-0.4px",
                     color: CREAM,
-                    opacity: 0.65,
-                    marginBottom: 14,
+                    margin: 0,
                   }}
                 >
-                  @{profile.username.toLowerCase()}
-                </div>
-              )}
-
-              {profile?.bio && (
-                <p
-                  style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
-                    fontWeight: 400,
-                    fontSize: 16,
-                    lineHeight: 1.5,
-                    color: CREAM,
-                    opacity: 0.85,
-                    maxWidth: 280,
-                    margin: "0 auto 24px",
-                  }}
-                >
-                  {profile.bio}
-                </p>
-              )}
-            </>
-          )}
+                  {titleCase(profile?.display_name) || "You"}
+                </h1>
+                {profile?.username && (
+                  <div
+                    style={{
+                      fontFamily: SANS,
+                      fontWeight: 400,
+                      fontSize: 13,
+                      color: CREAM,
+                      opacity: 0.7,
+                      marginTop: 4,
+                    }}
+                  >
+                    @{profile.username.toLowerCase()}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
+
+        {/* Stats row */}
+        <div style={{ display: "flex", gap: 28, marginTop: 18 }}>
+          <Link
+            to={id ? `/profile/${id}/followers` : "#"}
+            style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
+          >
+            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>
+              {(counts?.followers ?? 0) === 1 ? "Follower" : "Followers"}
+            </span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
+              {fmtCount(counts?.followers ?? 0)}
+            </span>
+          </Link>
+          <Link
+            to={id ? `/profile/${id}/following` : "#"}
+            style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
+          >
+            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Following</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
+              {fmtCount(counts?.following ?? 0)}
+            </span>
+          </Link>
+        </div>
+
+        {profile?.bio && (
+          <p
+            style={{
+              fontFamily: SANS,
+              fontWeight: 400,
+              fontSize: 14,
+              lineHeight: 1.5,
+              color: CREAM,
+              opacity: 0.85,
+              margin: "16px 0 0",
+            }}
+          >
+            {profile.bio}
+          </p>
+        )}
       </div>
 
       {/* Stats + actions card */}
