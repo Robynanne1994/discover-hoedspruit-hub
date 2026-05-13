@@ -179,7 +179,7 @@ const Search = () => {
 interface SubPillsProps<T extends string> {
   value: T;
   onChange: (v: T) => void;
-  options: { id: T; label: string; icon: React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }> }[];
+  options: { id: T; label: string; icon: React.ComponentType<any> }[];
 }
 function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<T>) {
   return (
