@@ -602,9 +602,6 @@ const MyAccount = () => {
     </div>
   );
 
-  const displayName = (profile?.display_name?.trim() || user.email?.split("@")[0] || "You");
-  const initial = displayName.charAt(0).toUpperCase();
-
   return (
     <div
       style={{
@@ -663,94 +660,6 @@ const MyAccount = () => {
         >
           My Profile
         </span>
-      </div>
-
-      {/* Hero: avatar + name */}
-      <div style={{ padding: "8px 24px 0", display: "flex", alignItems: "center", gap: 18 }}>
-        <div style={{ position: "relative", width: 120, height: 120, flexShrink: 0 }}>
-          <svg
-            width="120"
-            height="120"
-            viewBox="0 0 120 120"
-            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-            aria-hidden="true"
-          >
-            {Array.from({ length: 16 }).map((_, i) => {
-              const angle = (i * 360) / 16;
-              const rad = (angle * Math.PI) / 180;
-              const inner = 54;
-              const outer = 60 + ((i % 3) - 1) * 1.2; // tiny variance, primitive feel
-              const cx = 60;
-              const cy = 60;
-              const x1 = cx + Math.sin(rad) * inner;
-              const y1 = cy - Math.cos(rad) * inner;
-              const x2 = cx + Math.sin(rad) * outer;
-              const y2 = cy - Math.cos(rad) * outer;
-              return (
-                <line
-                  key={i}
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
-                  stroke={GOLD}
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                />
-              );
-            })}
-          </svg>
-          <div
-            style={{
-              position: "absolute",
-              top: 20,
-              left: 20,
-              width: 80,
-              height: 80,
-              borderRadius: "50%",
-              overflow: "hidden",
-              background: profile?.avatar_url
-                ? "transparent"
-                : "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <span
-                style={{
-                  fontFamily: SERIF,
-                  fontStyle: "italic",
-                  fontWeight: 400,
-                  fontSize: 34,
-                  color: CREAM,
-                  lineHeight: 1,
-                }}
-              >
-                {initial}
-              </span>
-            )}
-          </div>
-        </div>
-        <h1
-          style={{
-            fontFamily: SERIF,
-            fontWeight: 400,
-            fontSize: 54,
-            lineHeight: 0.95,
-            letterSpacing: "-1.6px",
-            color: CREAM,
-            margin: 0,
-            flex: 1,
-            minWidth: 0,
-            wordBreak: "break-word",
-          }}
-        >
-          {displayName.charAt(0).toUpperCase() + displayName.slice(1)}
-        </h1>
       </div>
 
       <div style={{ height: 32 }} />
