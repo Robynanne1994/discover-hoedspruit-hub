@@ -440,8 +440,8 @@ const MyProfile = () => {
           </div>
         </div>
 
-        {/* Stats row */}
-        <div style={{ display: "flex", gap: 28, marginTop: 18 }}>
+        {/* Stats row + Edit */}
+        <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 18 }}>
           <Link
             to={id ? `/profile/${id}/followers` : "#"}
             style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
@@ -462,6 +462,38 @@ const MyProfile = () => {
               {fmtCount(counts?.following ?? 0)}
             </span>
           </Link>
+          <Link
+            to="/saved"
+            style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
+          >
+            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Saved</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
+              {fmtCount(savedCount ?? 0)}
+            </span>
+          </Link>
+          <button
+            onClick={() => navigate("/account/info")}
+            style={{
+              marginLeft: "auto",
+              height: 36,
+              padding: "0 18px",
+              borderRadius: 999,
+              background: CREAM,
+              color: INK,
+              border: "none",
+              fontFamily: SANS,
+              fontWeight: 500,
+              fontSize: 13,
+              letterSpacing: "0.02em",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <Pencil size={13} strokeWidth={1.8} color={INK} />
+            Edit
+          </button>
         </div>
 
         {profile?.bio && (
@@ -481,102 +513,7 @@ const MyProfile = () => {
         )}
       </div>
 
-      {/* Stats + actions card */}
-      <div style={{ padding: "0 24px", marginBottom: 32 }}>
-        <div style={{ background: CREAM, borderRadius: 20, padding: "20px 22px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 36,
-              paddingBottom: 16,
-              borderBottom: `1px solid ${LINE}`,
-              marginBottom: 16,
-            }}
-          >
-            {[
-              {
-                n: counts?.followers ?? 0,
-                label: (counts?.followers ?? 0) === 1 ? "Follower" : "Followers",
-                href: id ? `/profile/${id}/followers` : null,
-              },
-              {
-                n: counts?.following ?? 0,
-                label: "Following",
-                href: id ? `/profile/${id}/following` : null,
-              },
-              {
-                n: savedCount ?? 0,
-                label: "Saved",
-                href: "/saved",
-              },
-            ].map((s, i) => {
-              const inner = (
-                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                  <span
-                    style={{
-                      fontFamily: SERIF,
-                      fontWeight: 400,
-                      fontSize: 24,
-                      lineHeight: 1,
-                      letterSpacing: "-0.4px",
-                      color: INK,
-                    }}
-                  >
-                    {fmtCount(s.n)}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 10.5,
-                      letterSpacing: "1.8px",
-                      textTransform: "uppercase",
-                      color: MUTED,
-                    }}
-                  >
-                    {s.label}
-                  </span>
-                </div>
-              );
-              return s.href ? (
-                <Link key={i} to={s.href} style={{ textDecoration: "none" }}>
-                  {inner}
-                </Link>
-              ) : (
-                <div key={i}>{inner}</div>
-              );
-            })}
-          </div>
 
-          {/* Actions */}
-          <div style={{ display: "flex", gap: 10 }}>
-            <button
-              onClick={() => navigate("/account/info")}
-              style={{
-                flex: 1,
-                height: 44,
-                borderRadius: 999,
-                background: INK,
-                color: CREAM,
-                border: "none",
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 14,
-                letterSpacing: "0.1px",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-              }}
-            >
-              <Pencil size={14} strokeWidth={1.8} color={CREAM} />
-              Edit Profile
-            </button>
-          </div>
-        </div>
-      </div>
 
       {/* Your finds */}
       {!!saved?.length && (
