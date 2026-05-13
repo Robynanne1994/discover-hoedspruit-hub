@@ -1,61 +1,33 @@
-# Redesign the Welcome / log-in landing screen
+## Goal
 
-Take the Upwork-style layout from your reference and rebuild the Welcome screen with Hello Hoedspruit branding. No stock image — your logo on the brand green background instead. Add a role toggle so users pick **I'm a user** or **I'm a business** before continuing, and wire each choice to the correct signup/sign-in destination.
+Restyle the top of `/my-profile` to match the reference screenshot, while keeping the rest of the page (saved listings, activity, etc.) intact.
 
-## What the new screen looks like
+## Changes (src/pages/MyProfile.tsx only)
 
-```text
-┌────────────────────────────────┐
-│                                │
-│         (brand green)          │
-│                                │
-│        [ HH logo, large ]      │
-│                                │
-│                                │
-│   Your local guide to          │   ← headline (bold, left-aligned)
-│   Hoedspruit                   │
-│                                │
-│   ┌──────────────────────────┐ │
-│   │ ●I'm a user │ I'm a biz  │ │   ← pill toggle (one selected)
-│   └──────────────────────────┘ │
-│                                │
-│   ┌──────────────────────────┐ │
-│   │      Create account       │ │   ← brand-brown filled CTA
-│   └──────────────────────────┘ │
-│                                │
-│     Already have an account?   │
-│     Log in                     │   ← underlined link
-└────────────────────────────────┘
-```
+1. **Top bar**
+   - Keep back arrow on the left.
+   - Replace the right-side Share + More buttons with a single Settings (gear) icon button that links to `/my-account`.
 
-Brand application:
-- Background: `#5C6446` (current welcome green) — no photo
-- Logo: existing `hh-logo.png`, centered upper third
-- Headline: white, Helvetica Neue, uppercase, ~28px
-- Pill toggle: white pill on translucent dark; selected segment gets ivory `#f5f0e8` background + dark text, unselected stays transparent with white text
-- Primary CTA: brand brown `#715a3d`, white text, 16px radius
-- Footer: white "Already have an account?" + underlined "Log in"
+2. **Profile header (replace centered sun-rays masthead)**
+   - Horizontal row, left-aligned, 20px page padding:
+     - Circular avatar ~84px on the left (uses `profile.avatar_url`, fallback initial), no sun-ray decoration.
+     - To the right: full name (display_name, bold, ~26px) on one line, optional `@username` underneath in muted small text.
+   - Below that row: Followers / Following counts in a left-aligned row (numbers bold, labels muted) — links remain to `/profile/:id/followers` and `/profile/:id/following`. Keep existing follow count source (`useFollowCounts`).
+   - Bio (if present) sits below the stats, left-aligned.
 
-## Routing logic (all stages wired)
+3. **Theme adjustments for the header area**
+   - Header sits on the existing page background; use brand tokens (cream/ink) consistent with the rest of the app — no orange accents from the reference screenshot.
+   - Remove the `SunRays` SVG usage (component can stay defined but unused, or be deleted).
 
-State on the welcome screen: `role: "user" | "business"` (default `user`).
-
-| Action | role = user | role = business |
-|---|---|---|
-| Tap **Create account** | go to in-page `signup` form (existing email + first name + username + password flow) | navigate to `/business/sign-up` |
-| Tap **Log in** | go to in-page `signin` form | navigate to `/business/sign-in` |
-
-Signup/signin sub-screens stay as they are today (back arrow returns to welcome). After successful user signup/signin, AuthGate already drops them on `/`. Business routes already handle their own redirect to `/business/dashboard`.
-
-## Files touched
-
-- `src/pages/Welcome.tsx` — rewrite the `mode === "welcome"` block: remove the current two stacked buttons, add the role pill toggle, single Create-account CTA, and Log-in link. Add `useNavigate` and branch on `role` for both CTA and Log-in.
-- No changes to `App.tsx`, `useAuth`, or business pages — they already exist and handle their flows.
+4. **Preserve untouched**
+   - Stats card lower section, saved listings/events/specials, activity timeline, share/copy logic (still callable from settings page or removed from header only). The `menuOpen` sheet and share handlers can remain in place but are no longer triggered from the header — leaving them is fine; no other page references them.
 
 ## Out of scope
 
-- No new database fields (role choice is just a routing hint, not stored).
-- No change to the signup form fields themselves.
-- No change to business signup/signin pages.
+- No changes to MyAccount, routing, data model, or other pages.
+- Profile photo entry point from homepage already navigates to `/my-account` per prior change — switching it to `/my-profile` is **not** requested here (user said "click profile photo icon from homepage takes you to my profile"). I will update `src/components/home/HomeMasthead.tsx` `Link to` from `/my-account` back to `/my-profile`.
 
-Confirm and I'll implement.
+## Files touched
+
+- `src/pages/MyProfile.tsx` — header redesign.
+- `src/components/home/HomeMasthead.tsx` — change avatar link target to `/my-profile`.
