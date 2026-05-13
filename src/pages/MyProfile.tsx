@@ -502,7 +502,7 @@ const MyProfile = () => {
 
       {/* Your finds */}
       {!!saved?.length && (
-        <section style={{ marginBottom: 32 }}>
+        <section style={{ marginTop: 32, marginBottom: 32 }}>
           <div
             style={{
               padding: "0 24px",
