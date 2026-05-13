@@ -95,7 +95,7 @@ const MyAccount = () => {
     return () => { cancelled = true; supabase.removeChannel(channel); };
   }, [user]);
 
-  const { data: profile, isLoading: profileLoading } = useQuery({
+  const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
     queryFn: async () => {
       const { data } = await supabase
