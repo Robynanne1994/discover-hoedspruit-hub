@@ -626,7 +626,7 @@ const MyAccount = () => {
         <button
           type="button"
           aria-label="Go back"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/my-profile")}
           onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.96)"; }}
           onPointerUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
           onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
