@@ -753,39 +753,7 @@ const MyAccount = () => {
         </h1>
       </div>
 
-      {/* Stats card */}
-      <div style={{ padding: "24px 24px 0", marginBottom: 32 }}>
-        <div
-          style={{
-            background: "#EEE8DA",
-            borderRadius: 20,
-            padding: "20px 22px",
-          }}
-        >
-          <button
-            onClick={() => navigate("/my-profile")}
-            onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.98)"; }}
-            onPointerUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
-            onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
-            style={{
-              width: "100%",
-              height: 42,
-              background: "#2A2A24",
-              color: "#EEE8DA",
-              border: "none",
-              borderRadius: 999,
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              fontSize: 14,
-              fontWeight: 400,
-              letterSpacing: "0.1px",
-              cursor: "pointer",
-              transition: "transform 150ms ease-out",
-            }}
-          >
-            View My Profile
-          </button>
-        </div>
-      </div>
+      <div style={{ height: 32 }} />
 
       {/* Saved */}
       <Eyebrow>Saved</Eyebrow>
