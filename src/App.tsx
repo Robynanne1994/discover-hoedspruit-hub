@@ -62,6 +62,7 @@ import MyNotifications from "./pages/MyNotifications.tsx";
 import NotificationCategories from "./pages/NotificationCategories.tsx";
 
 import Specials from "./pages/Specials.tsx";
+import SearchPage from "./pages/Search.tsx";
 import SpecialDetail from "./pages/SpecialDetail.tsx";
 import BusinessGate from "./components/business/BusinessGate.tsx";
 import BusinessSignIn from "./pages/business/BusinessSignIn.tsx";
@@ -118,6 +119,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/categories" element={<Categories />} />
+              <Route path="/search" element={<SearchPage />} />
               <Route path="/quiz" element={<RestaurantQuiz />} />
               <Route path="/category/:id" element={<CategoryPage />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
