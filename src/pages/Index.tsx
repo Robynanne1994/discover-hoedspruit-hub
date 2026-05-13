@@ -95,6 +95,12 @@ const Index = () => {
 
       {showSection("Lowdown") && (
         <div style={{ marginTop: SECTION_GAP }}>
+          <HomeLocalChannels />
+        </div>
+      )}
+
+      {showSection("Lowdown") && (
+        <div style={{ marginTop: SECTION_GAP }}>
           <HomeLowdown />
         </div>
       )}
