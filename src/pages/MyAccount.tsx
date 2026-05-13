@@ -71,7 +71,7 @@ const MyAccount = () => {
   const [newCollectionName, setNewCollectionName] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<ActiveSection>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
+  
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
