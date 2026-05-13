@@ -1,69 +1,61 @@
+# Redesign the Welcome / log-in landing screen
 
-## Cleanup decisions (chosen for you)
+Take the Upwork-style layout from your reference and rebuild the Welcome screen with Hello Hoedspruit branding. No stock image — your logo on the brand green background instead. Add a role toggle so users pick **I'm a user** or **I'm a business** before continuing, and wire each choice to the correct signup/sign-in destination.
 
-1. **Notifications**: keep `/my-notifications`. Make `/notifications` redirect to it.
-2. **Help Centre lives in GlobalMenu only.** Remove it from the MyAccount "Help & Settings" group.
-3. **Add "Contact Us" as a 4th row** inside the Help Centre hub, then remove Contact from elsewhere.
-
-## Edits
-
-### 1. `src/components/GlobalMenu.tsx`
-Replace the entire "Help Centre" section with a single row:
+## What the new screen looks like
 
 ```text
-Help & Info → Help Centre   (→ /help-centre)
-```
-Remove rows: Help, Contact Us, About, Privacy & Security.
-Privacy & Security stays reachable via Settings.
-
-### 2. `src/pages/AccountSettings.tsx`
-- Delete the `supportRows` array and its `<SettingsGroup label="Support & Legal" …>` render call.
-- Update `accountRows`: change Notification Preferences `href` from `/notifications` to `/my-notifications`.
-Settings now shows only: Account Info, Notification Preferences, Privacy & Security, plus Delete account at the foot.
-
-### 3. `src/pages/MyAccount.tsx`
-- In `helpItems`, remove the "Help Centre" entry. Final list: Settings, My Business.
-- In `getInTouchItems`, remove the "Contact" entry. Final list: Advertise, Feedback.
-
-### 4. `src/pages/HelpCentre.tsx`
-Add a 4th row to the `ROWS` array:
-
-```ts
-{ title: "Contact Us", desc: "Drop us a note. We read every message.", to: "/contact" },
-```
-The rust "Drop us a line" CTA stays — but now points to `/contact` (was `/feedback`) so it matches the row, since Feedback already lives under MyAccount → Get In Touch.
-
-### 5. `src/App.tsx`
-Replace the `/notifications` route element with a redirect:
-
-```tsx
-import { Navigate } from "react-router-dom";
-…
-<Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
-```
-Keep the `Notifications.tsx` file in place for now (no deletion) so nothing else that imports it breaks; it's just unreachable via URL.
-
-## Final mental model after the cleanup
-
-```text
-GlobalMenu (hamburger)
-  Saved        → My Hoedspruit
-  Account      → Notifications, Account Info, Settings
-  Help & Info  → Help Centre
-
-Help Centre (/help-centre)
-  FAQs · About · Terms & Policies · Contact Us
-  + rust card "Drop us a line" → /contact
-
-Settings (/account-settings)
-  Account Info · Notification Preferences · Privacy & Security
-  · delete account
-
-My Account
-  Saved
-  Help & Settings → Settings, My Business
-  Resources       → Local Channels, The Lowveld Lowdown
-  Get In Touch    → Advertise, Feedback
+┌────────────────────────────────┐
+│                                │
+│         (brand green)          │
+│                                │
+│        [ HH logo, large ]      │
+│                                │
+│                                │
+│   Your local guide to          │   ← headline (bold, left-aligned)
+│   Hoedspruit                   │
+│                                │
+│   ┌──────────────────────────┐ │
+│   │ ●I'm a user │ I'm a biz  │ │   ← pill toggle (one selected)
+│   └──────────────────────────┘ │
+│                                │
+│   ┌──────────────────────────┐ │
+│   │      Create account       │ │   ← brand-brown filled CTA
+│   └──────────────────────────┘ │
+│                                │
+│     Already have an account?   │
+│     Log in                     │   ← underlined link
+└────────────────────────────────┘
 ```
 
-Every destination has exactly one canonical menu path. No duplicate notification routes. No support links scattered across three pages.
+Brand application:
+- Background: `#5C6446` (current welcome green) — no photo
+- Logo: existing `hh-logo.png`, centered upper third
+- Headline: white, Helvetica Neue, uppercase, ~28px
+- Pill toggle: white pill on translucent dark; selected segment gets ivory `#f5f0e8` background + dark text, unselected stays transparent with white text
+- Primary CTA: brand brown `#715a3d`, white text, 16px radius
+- Footer: white "Already have an account?" + underlined "Log in"
+
+## Routing logic (all stages wired)
+
+State on the welcome screen: `role: "user" | "business"` (default `user`).
+
+| Action | role = user | role = business |
+|---|---|---|
+| Tap **Create account** | go to in-page `signup` form (existing email + first name + username + password flow) | navigate to `/business/sign-up` |
+| Tap **Log in** | go to in-page `signin` form | navigate to `/business/sign-in` |
+
+Signup/signin sub-screens stay as they are today (back arrow returns to welcome). After successful user signup/signin, AuthGate already drops them on `/`. Business routes already handle their own redirect to `/business/dashboard`.
+
+## Files touched
+
+- `src/pages/Welcome.tsx` — rewrite the `mode === "welcome"` block: remove the current two stacked buttons, add the role pill toggle, single Create-account CTA, and Log-in link. Add `useNavigate` and branch on `role` for both CTA and Log-in.
+- No changes to `App.tsx`, `useAuth`, or business pages — they already exist and handle their flows.
+
+## Out of scope
+
+- No new database fields (role choice is just a routing hint, not stored).
+- No change to the signup form fields themselves.
+- No change to business signup/signin pages.
+
+Confirm and I'll implement.
