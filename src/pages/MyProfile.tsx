@@ -496,21 +496,6 @@ const MyProfile = () => {
           </button>
         </div>
 
-        {profile?.bio && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontWeight: 400,
-              fontSize: 14,
-              lineHeight: 1.5,
-              color: CREAM,
-              opacity: 0.85,
-              margin: "16px 0 0",
-            }}
-          >
-            {profile.bio}
-          </p>
-        )}
       </div>
 
 
