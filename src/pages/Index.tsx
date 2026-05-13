@@ -4,6 +4,7 @@ import HomeSpecials from "@/components/home/HomeSpecials";
 import HomeWhatsOn from "@/components/home/HomeWhatsOn";
 import HomeListings from "@/components/home/HomeListings";
 import HomeLowdown from "@/components/home/HomeLowdown";
+import HomeLocalChannels from "@/components/home/HomeLocalChannels";
 
 import { useState } from "react";
 
@@ -89,6 +90,12 @@ const Index = () => {
             primary="Where to"
             serif="shop"
           />
+        </div>
+      )}
+
+      {showSection("Lowdown") && (
+        <div style={{ marginTop: SECTION_GAP }}>
+          <HomeLocalChannels />
         </div>
       )}
 
