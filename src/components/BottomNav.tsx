@@ -1,86 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import profileIcon from "@/assets/profile-icon.svg";
-import eventsIcon from "@/assets/events-icon.svg";
-import homeIcon from "@/assets/home-icon.svg";
-import exploreIcon from "@/assets/explore-icon.svg";
-import specialsIcon from "@/assets/specials-icon.svg";
-
-const SpecialsIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
-  <img
-    src={specialsIcon}
-    alt=""
-    style={{
-      width: size,
-      height: size,
-      objectFit: "contain",
-      display: "block",
-      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
-    }}
-  />
-);
-
-const ExploreIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
-  <img
-    src={exploreIcon}
-    alt=""
-    style={{
-      width: size,
-      height: size,
-      objectFit: "contain",
-      display: "block",
-      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
-    }}
-  />
-);
-
-const HomeIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
-  <img
-    src={homeIcon}
-    alt=""
-    style={{
-      width: size,
-      height: size,
-      objectFit: "contain",
-      display: "block",
-      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
-    }}
-  />
-);
-
-const EventsIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
-  <img
-    src={eventsIcon}
-    alt=""
-    style={{
-      width: size,
-      height: size,
-      objectFit: "contain",
-      display: "block",
-      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
-    }}
-  />
-);
-
-const ProfileIcon = ({ size = 24, color }: { size?: number; color?: string }) => (
-  <img
-    src={profileIcon}
-    alt=""
-    style={{
-      width: size,
-      height: size,
-      objectFit: "contain",
-      display: "block",
-      filter: color && color !== "#f5f0e8" ? "brightness(0)" : "none",
-    }}
-  />
-);
+import { Home, Compass, Tag, Calendar, User } from "lucide-react";
 
 const navItems = [
-  { label: "Home", href: "/", icon: HomeIcon as any },
-  { label: "Explore", href: "/categories", icon: ExploreIcon as any },
-  { label: "Specials", href: "/specials", icon: SpecialsIcon as any },
-  { label: "Events", href: "/events", icon: EventsIcon as any },
-  { label: "Profile", href: "/my-account", icon: ProfileIcon as any },
+  { label: "Home", href: "/", icon: Home },
+  { label: "Explore", href: "/categories", icon: Compass },
+  { label: "Specials", href: "/specials", icon: Tag },
+  { label: "Events", href: "/events", icon: Calendar },
+  { label: "Profile", href: "/my-account", icon: User },
 ];
 
 const PILL_BG = "#f5f0e8";
@@ -133,10 +59,9 @@ const BottomNav = () => {
               }}
             >
               <Icon
-                size={28}
+                size={24}
                 color={isActive ? PILL_FG : INACTIVE}
                 strokeWidth={isActive ? 2.25 : 1.75}
-                fill="none"
               />
               {isActive && (
                 <span
