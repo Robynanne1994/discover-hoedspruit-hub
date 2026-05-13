@@ -466,14 +466,12 @@ const MyAccount = () => {
 
   // === Editorial design tokens ===
   const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const SERIF = "'Playfair Display', Georgia, serif";
   const OLIVE = "#5C6446";
   const CREAM = "#EEE8DA";
   const INK = "#2A2A24";
   const MUTED_INK = "#6B6A5E";
   const LINE = "#D9D2C0";
   const RUST = "#9B5A3C";
-  const GOLD = "#D9C36B";
 
   const resourcesItems = [
     { label: "Local Channels", href: "/bush-telegraph", icon: Users },
