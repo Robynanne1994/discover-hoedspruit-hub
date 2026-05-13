@@ -624,18 +624,55 @@ const MyAccount = () => {
         fontFamily: SANS,
       }}
     >
-      {/* Top bar */}
+      {/* Top bar — back arrow + title when coming from profile */}
       <div
         style={{
           display: "flex",
-          justifyContent: "flex-end",
-          gap: 10,
+          alignItems: "center",
+          gap: 12,
           padding: "calc(env(safe-area-inset-top) + 32px) 24px 0",
         }}
       >
-        <NotificationsBell />
-        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
-        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
+        <button
+          type="button"
+          aria-label="Go back"
+          onClick={() => navigate(-1)}
+          onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.96)"; }}
+          onPointerUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+          onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+          onPointerCancel={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+          style={{
+            width: 44,
+            height: 44,
+            minWidth: 44,
+            minHeight: 44,
+            borderRadius: "50%",
+            background: CREAM,
+            border: "none",
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            transition: "transform 150ms ease-out",
+            transform: "scale(1)",
+            flexShrink: 0,
+          }}
+        >
+          <BackArrowIcon size={18} color={INK} />
+        </button>
+        <span
+          style={{
+            fontFamily: SANS,
+            fontSize: 16,
+            fontWeight: 400,
+            letterSpacing: "0.01em",
+            color: CREAM,
+            lineHeight: 1,
+          }}
+        >
+          My Profile
+        </span>
       </div>
 
       {/* Hero: avatar + name */}
