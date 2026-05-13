@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { User as UserIcon } from "lucide-react";
 import { Search, Sun, Moon, Cloud, CloudSun, CloudRain, CloudDrizzle, CloudSnow, CloudLightning, CloudFog, Bell, MapPin, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
@@ -80,6 +81,24 @@ const HomeMasthead = () => {
     enabled: q.length >= 2,
   });
 
+  const { data: profile } = useQuery({
+    queryKey: ["home-masthead-profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, username, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const titleCase = (s?: string | null) =>
+    (s || "").split(" ").filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+  const greetingName = titleCase(profile?.display_name) || titleCase(profile?.username) || titleCase(user?.user_metadata?.first_name as string | undefined) || "there";
+
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (searchWrapRef.current && !searchWrapRef.current.contains(e.target as Node)) {
@@ -141,10 +160,34 @@ const HomeMasthead = () => {
   return (
     <div style={{ paddingTop: 32 }}>
       {/* Top bar */}
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, padding: "0 24px" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, padding: "0 24px" }}>
         {user && <NotificationsBell />}
         <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
         <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
+        {user && (
+          <Link
+            to="/my-profile"
+            aria-label="My profile"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 999,
+              background: "#EEE8DA",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+              flexShrink: 0,
+              border: "1.5px solid rgba(238, 232, 218, 0.4)",
+            }}
+          >
+            {profile?.avatar_url ? (
+              <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <UserIcon size={20} color="#715a3d" strokeWidth={1.6} />
+            )}
+          </Link>
+        )}
       </div>
 
       {/* Masthead */}
@@ -162,21 +205,21 @@ const HomeMasthead = () => {
             textTransform: "uppercase",
           }}
         >
-          Your Lowveld Local
+          Welcome back
         </p>
         <h1
           style={{
             margin: 0,
             fontFamily: '"Playfair Display", Georgia, serif',
-            fontSize: 64,
-            lineHeight: 0.92,
-            letterSpacing: "-2px",
+            fontSize: 56,
+            lineHeight: 0.96,
+            letterSpacing: "-1.5px",
             color: "#EEE8DA",
           }}
         >
-          <span style={{ fontWeight: 400, fontStyle: "normal" }}>Hello</span>
+          <span style={{ fontWeight: 400, fontStyle: "normal" }}>Hi</span>
           <br />
-          <span style={{ fontWeight: 300, fontStyle: "italic" }}>Hoedspruit</span>
+          <span style={{ fontWeight: 300, fontStyle: "italic" }}>{greetingName}</span>
         </h1>
       </div>
 
