@@ -159,68 +159,59 @@ const HomeMasthead = () => {
 
   return (
     <div style={{ paddingTop: 32 }}>
-      {/* Top bar */}
-      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: 10, padding: "0 24px" }}>
-        {user && <NotificationsBell />}
-        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
-        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
-        {user && (
-          <Link
-            to="/my-profile"
-            aria-label="My profile"
+      {/* Masthead with profile pic top right */}
+      <div style={{ padding: "8px 24px 0", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p
             style={{
-              width: 44,
-              height: 44,
-              borderRadius: 999,
-              background: "#EEE8DA",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-              flexShrink: 0,
-              border: "1.5px solid rgba(238, 232, 218, 0.4)",
+              margin: 0,
+              marginBottom: 6,
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontWeight: 400,
+              fontSize: 22,
+              lineHeight: 1.15,
+              letterSpacing: "-0.2px",
+              color: "#EEE8DA",
             }}
           >
-            {profile?.avatar_url ? (
-              <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <UserIcon size={20} color="#715a3d" strokeWidth={1.6} />
-            )}
-          </Link>
-        )}
-      </div>
-
-      {/* Masthead */}
-      <div style={{ padding: "24px 24px 0" }}>
-        <p
+            Hi {greetingName},
+          </p>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              fontWeight: 700,
+              fontSize: 34,
+              lineHeight: 1.05,
+              letterSpacing: "-0.8px",
+              color: "#EEE8DA",
+            }}
+          >
+            Welcome Back
+          </h1>
+        </div>
+        <Link
+          to="/my-profile"
+          aria-label="My profile"
           style={{
-            margin: 0,
-            marginBottom: 14,
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 400,
-            fontSize: 12,
-            lineHeight: 1,
-            letterSpacing: "2.4px",
-            color: "rgba(238, 232, 218, 0.7)",
-            textTransform: "uppercase",
+            width: 56,
+            height: 56,
+            borderRadius: 999,
+            background: "#EEE8DA",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            overflow: "hidden",
+            flexShrink: 0,
+            border: "1.5px solid rgba(238, 232, 218, 0.4)",
           }}
         >
-          Welcome back
-        </p>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: '"Playfair Display", Georgia, serif',
-            fontSize: 56,
-            lineHeight: 0.96,
-            letterSpacing: "-1.5px",
-            color: "#EEE8DA",
-          }}
-        >
-          <span style={{ fontWeight: 400, fontStyle: "normal" }}>Hi</span>
-          <br />
-          <span style={{ fontWeight: 300, fontStyle: "italic" }}>{greetingName}</span>
-        </h1>
+          {profile?.avatar_url ? (
+            <img src={profile.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <UserIcon size={24} color="#715a3d" strokeWidth={1.6} />
+          )}
+        </Link>
       </div>
 
       {/* Search + weather */}
