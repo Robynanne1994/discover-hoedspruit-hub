@@ -761,38 +761,6 @@ const MyAccount = () => {
         </h1>
       </div>
 
-      {/* Handle + bio */}
-      <div style={{ padding: "16px 24px 0" }}>
-        {handle && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: 400,
-              color: "rgba(238,232,218,0.65)",
-              margin: "0 0 8px 0",
-            }}
-          >
-            {handle}
-          </p>
-        )}
-        {bioText && (
-          <p
-            style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: 18,
-              lineHeight: 1.4,
-              color: "rgba(238,232,218,0.85)",
-              margin: 0,
-            }}
-          >
-            {bioText}
-          </p>
-        )}
-      </div>
-
       {/* Stats card */}
       <div style={{ padding: "24px 24px 0", marginBottom: 32 }}>
         <div
