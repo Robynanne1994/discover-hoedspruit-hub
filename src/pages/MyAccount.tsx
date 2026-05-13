@@ -59,7 +59,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ArrowLeft } from "lucide-react";
+
 
 type ActiveSection = null | "profile" | "favourites" | "collections" | "been-here" | "reviews" | "my-events";
 
