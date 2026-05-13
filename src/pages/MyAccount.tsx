@@ -49,8 +49,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
-import FollowStats from "@/components/social/FollowStats";
-import { useFollowCounts } from "@/hooks/useFollows";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -605,13 +603,7 @@ const MyAccount = () => {
   );
 
   const displayName = (profile?.display_name?.trim() || user.email?.split("@")[0] || "You");
-  const handle = user.email ? `@${user.email.split("@")[0].toLowerCase()}` : "";
   const initial = displayName.charAt(0).toUpperCase();
-  const bioText = profile?.bio?.trim()
-    ? /[.!?]$/.test(profile.bio.trim())
-      ? profile.bio.trim()
-      : `${profile.bio.trim()}.`
-    : null;
 
   return (
     <div
@@ -761,38 +753,6 @@ const MyAccount = () => {
         </h1>
       </div>
 
-      {/* Handle + bio */}
-      <div style={{ padding: "16px 24px 0" }}>
-        {handle && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: 400,
-              color: "rgba(238,232,218,0.65)",
-              margin: "0 0 8px 0",
-            }}
-          >
-            {handle}
-          </p>
-        )}
-        {bioText && (
-          <p
-            style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: 18,
-              lineHeight: 1.4,
-              color: "rgba(238,232,218,0.85)",
-              margin: 0,
-            }}
-          >
-            {bioText}
-          </p>
-        )}
-      </div>
-
       {/* Stats card */}
       <div style={{ padding: "24px 24px 0", marginBottom: 32 }}>
         <div
@@ -802,15 +762,6 @@ const MyAccount = () => {
             padding: "20px 22px",
           }}
         >
-          <div
-            style={{
-              paddingBottom: 16,
-              marginBottom: 16,
-              borderBottom: "1px solid #D9D2C0",
-            }}
-          >
-            <FollowStat userId={user.id} />
-          </div>
           <button
             onClick={() => navigate("/my-profile")}
             onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.98)"; }}
@@ -886,53 +837,6 @@ const MyAccount = () => {
           <span>Log Out</span>
         </button>
       </div>
-    </div>
-  );
-};
-
-// Editorial follow stats — Playfair number, tracked uppercase label
-const FollowStat = ({ userId }: { userId: string }) => {
-  const { data: counts } = useFollowCounts(userId);
-  const INK = "#2A2A24";
-  const MUTED_INK = "#6B6A5E";
-  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const SERIF = "'Playfair Display', Georgia, serif";
-  const fmt = (n: number) => n.toLocaleString("en-US");
-  const Stat = ({ to, count, label }: { to: string; count: number; label: string }) => (
-    <Link to={to} style={{ textDecoration: "none", display: "flex", flexDirection: "column", gap: 2 }}>
-      <span
-        style={{
-          fontFamily: SERIF,
-          fontWeight: 400,
-          fontSize: 26,
-          lineHeight: 1,
-          letterSpacing: "-0.5px",
-          color: INK,
-        }}
-      >
-        {fmt(count)}
-      </span>
-      <span
-        style={{
-          fontFamily: SANS,
-          fontSize: 10.5,
-          fontWeight: 400,
-          letterSpacing: "0.18em",
-          textTransform: "uppercase",
-          color: MUTED_INK,
-          lineHeight: 1,
-        }}
-      >
-        {label}
-      </span>
-    </Link>
-  );
-  const followers = counts?.followers ?? 0;
-  const following = counts?.following ?? 0;
-  return (
-    <div style={{ display: "flex", gap: 48 }}>
-      <Stat to={`/profile/${userId}/followers`} count={followers} label={followers === 1 ? "Follower" : "Followers"} />
-      <Stat to={`/profile/${userId}/following`} count={following} label={following === 1 ? "Following" : "Following"} />
     </div>
   );
 };
