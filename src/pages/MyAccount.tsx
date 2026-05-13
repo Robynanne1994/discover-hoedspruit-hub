@@ -770,15 +770,6 @@ const MyAccount = () => {
             padding: "20px 22px",
           }}
         >
-          <div
-            style={{
-              paddingBottom: 16,
-              marginBottom: 16,
-              borderBottom: "1px solid #D9D2C0",
-            }}
-          >
-            <FollowStat userId={user.id} />
-          </div>
           <button
             onClick={() => navigate("/my-profile")}
             onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.98)"; }}
