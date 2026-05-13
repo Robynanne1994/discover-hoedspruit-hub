@@ -49,8 +49,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import ProfileForm from "@/components/profile/ProfileForm";
-import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
-import NotificationsBell from "@/components/NotificationsDropdown";
 import FollowStats from "@/components/social/FollowStats";
 import { useFollowCounts } from "@/hooks/useFollows";
 import { toast } from "sonner";
