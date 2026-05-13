@@ -603,13 +603,7 @@ const MyAccount = () => {
   );
 
   const displayName = (profile?.display_name?.trim() || user.email?.split("@")[0] || "You");
-  const handle = user.email ? `@${user.email.split("@")[0].toLowerCase()}` : "";
   const initial = displayName.charAt(0).toUpperCase();
-  const bioText = profile?.bio?.trim()
-    ? /[.!?]$/.test(profile.bio.trim())
-      ? profile.bio.trim()
-      : `${profile.bio.trim()}.`
-    : null;
 
   return (
     <div
