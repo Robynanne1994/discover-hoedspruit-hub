@@ -81,6 +81,24 @@ const HomeMasthead = () => {
     enabled: q.length >= 2,
   });
 
+  const { data: profile } = useQuery({
+    queryKey: ["home-masthead-profile", user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, username, avatar_url")
+        .eq("id", user.id)
+        .maybeSingle();
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const titleCase = (s?: string | null) =>
+    (s || "").split(" ").filter(Boolean).map((w) => w[0].toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+  const greetingName = titleCase(profile?.display_name) || titleCase(profile?.username) || titleCase(user?.user_metadata?.first_name as string | undefined) || "there";
+
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (searchWrapRef.current && !searchWrapRef.current.contains(e.target as Node)) {
