@@ -76,30 +76,113 @@ const Welcome = () => {
   };
 
   if (mode === "welcome") {
+    const handlePrimary = () => {
+      if (role === "business") {
+        navigate("/business/sign-up");
+      } else {
+        setMode("signup");
+      }
+    };
+    const handleLogin = () => {
+      if (role === "business") {
+        navigate("/business/sign-in");
+      } else {
+        setMode("signin");
+      }
+    };
+
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: "#5C6446" }}>
-        {/* Top section with branding */}
-        <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8">
-          <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 260, height: "auto" }} />
+      <div className="min-h-screen flex flex-col" style={{ background: "#5C6446", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        {/* Logo block */}
+        <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-6">
+          <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 240, height: "auto" }} />
         </div>
 
         {/* Bottom action area */}
-        <div className="px-6 pb-12 space-y-3">
+        <div className="px-5 pb-10">
+          <h1
+            style={{
+              color: "#ffffff",
+              fontSize: 26,
+              lineHeight: 1.15,
+              fontWeight: 400,
+              textTransform: "uppercase",
+              letterSpacing: "0.01em",
+              marginBottom: 22,
+            }}
+          >
+            Your local guide
+            <br />
+            to Hoedspruit
+          </h1>
+
+          {/* Role pill toggle */}
+          <div
+            style={{
+              display: "flex",
+              padding: 4,
+              borderRadius: 999,
+              border: "1px solid rgba(255,255,255,0.45)",
+              background: "rgba(0,0,0,0.18)",
+              marginBottom: 14,
+            }}
+          >
+            {(["user", "business"] as Role[]).map((r) => {
+              const active = role === r;
+              return (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setRole(r)}
+                  style={{
+                    flex: 1,
+                    height: 44,
+                    borderRadius: 999,
+                    background: active ? "#f5f0e8" : "transparent",
+                    color: active ? "#020202" : "#ffffff",
+                    fontSize: 14,
+                    fontWeight: active ? 500 : 400,
+                    letterSpacing: "0.01em",
+                    transition: "all 150ms ease",
+                  }}
+                >
+                  {r === "user" ? "I'm a user" : "I'm a business"}
+                </button>
+              );
+            })}
+          </div>
+
           <Button
-            onClick={() => setMode("signup")}
-            className="w-full h-12 rounded-xl"
-            style={{ background: "#655444", color: "#ffffff", fontSize: 16, fontWeight: 600 }}
+            onClick={handlePrimary}
+            className="w-full"
+            style={{
+              height: 52,
+              borderRadius: 16,
+              background: "#715a3d",
+              color: "#ffffff",
+              fontSize: 16,
+              fontWeight: 500,
+              letterSpacing: "0.01em",
+            }}
           >
-            Create Account
-            <ArrowRight className="ml-2" style={{ width: 18, height: 18 }} />
+            Create account
           </Button>
-          <button
-            onClick={() => setMode("signin")}
-            className="w-full h-12 rounded-xl border border-border bg-card text-foreground active:scale-[0.98] transition-transform"
-            style={{ fontSize: 16, fontWeight: 600 }}
-          >
-            I already have an account
-          </button>
+
+          <p style={{ textAlign: "center", color: "#ffffff", fontSize: 14, marginTop: 18 }}>
+            Already have an account?{" "}
+            <button
+              type="button"
+              onClick={handleLogin}
+              style={{
+                color: "#ffffff",
+                fontWeight: 500,
+                textDecoration: "underline",
+                textUnderlineOffset: 3,
+              }}
+            >
+              Log in
+            </button>
+          </p>
         </div>
       </div>
     );
