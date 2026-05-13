@@ -1,33 +1,57 @@
-## Goal
+# Search Page Redesign
 
-Restyle the top of `/my-profile` to match the reference screenshot, while keeping the rest of the page (saved listings, activity, etc.) intact.
+Replace the search dialog with a dedicated `/search` route, styled in the Hello Hoedspruit brand system and laid out like the Strava reference.
 
-## Changes (src/pages/MyProfile.tsx only)
+## Layout (top to bottom)
 
-1. **Top bar**
-   - Keep back arrow on the left.
-   - Replace the right-side Share + More buttons with a single Settings (gear) icon button that links to `/my-account`.
+1. **Header row** (20px horizontal padding)
+   - Left: back arrow + "Home" label (matches existing back-button pattern)
+   - Center: "Search" title (uppercase, Helvetica Neue, #020202)
+2. **Top tabs — Users / Businesses**
+   - Two-tab switcher (active tab: bold #020202 with #715a3d underline; inactive: muted)
+   - Controls which sub-pills + result types are shown
+3. **Search input** (full-width, 999 radius, #f5f0e8 ivory background, search icon left, placeholder changes per top tab)
+4. **Sub-pills row** (3 icon+label pills, active pill underlined in #715a3d)
+   - When **Users** tab active: `Suggested`, `Followers`, `Following`
+   - When **Businesses** tab active: `Listings`, `Events`, `Specials`
+5. **Default state (no query)** — Suggested list for the active sub-pill:
+   - Users → suggested users (UserCard style)
+   - Listings → featured/popular listings with a small Save (heart) button on the right
+   - Events → upcoming events with Interested button
+   - Specials → active specials with Save button
+   - Section header above the list (e.g. "SUGGESTED LISTINGS") in uppercase
+6. **Live results state (query present)** — same row style, filtered by sub-pill scope only
 
-2. **Profile header (replace centered sun-rays masthead)**
-   - Horizontal row, left-aligned, 20px page padding:
-     - Circular avatar ~84px on the left (uses `profile.avatar_url`, fallback initial), no sun-ray decoration.
-     - To the right: full name (display_name, bold, ~26px) on one line, optional `@username` underneath in muted small text.
-   - Below that row: Followers / Following counts in a left-aligned row (numbers bold, labels muted) — links remain to `/profile/:id/followers` and `/profile/:id/following`. Keep existing follow count source (`useFollowCounts`).
-   - Bio (if present) sits below the stats, left-aligned.
+## Row styling
 
-3. **Theme adjustments for the header area**
-   - Header sits on the existing page background; use brand tokens (cream/ink) consistent with the rest of the app — no orange accents from the reference screenshot.
-   - Remove the `SunRays` SVG usage (component can stay defined but unused, or be deleted).
+- 1px bottom divider between rows (#ebebeb)
+- Avatar/thumbnail left (round 48px for users, 56×56 rounded-12 for listings/events/specials)
+- Title #020202, secondary line #2b2420 muted
+- Right action button in #715a3d outline pill ("Follow" / heart icon / interested)
 
-4. **Preserve untouched**
-   - Stats card lower section, saved listings/events/specials, activity timeline, share/copy logic (still callable from settings page or removed from header only). The `menuOpen` sheet and share handlers can remain in place but are no longer triggered from the header — leaving them is fine; no other page references them.
+## Routing changes
+
+- Add `/search` route in `src/App.tsx` → new `src/pages/Search.tsx`
+- `HomeMasthead` search icon: change from opening `SearchDialog` to `navigate('/search')`
+- Keep `SearchDialog` file in place for now (can be removed later if unused elsewhere)
+
+## Data sources (frontend only, reuse existing tables)
+
+- Users: `profiles` (display_name, username, avatar_url) + existing `useFollows` hook for Follow button
+- Listings: `listings` table, ordered by featured/popular fallback to recent
+- Events: `events` table, upcoming first
+- Specials: `specials` table, active ones
+- All queries via React Query, `ilike` filtering on `title`/`display_name` when query present
+
+## Files to create / edit
+
+- **Create** `src/pages/Search.tsx`
+- **Edit** `src/App.tsx` — register `/search`
+- **Edit** `src/components/home/HomeMasthead.tsx` — search button → `Link to="/search"` instead of dialog
+- (No DB / RLS / auth changes)
 
 ## Out of scope
 
-- No changes to MyAccount, routing, data model, or other pages.
-- Profile photo entry point from homepage already navigates to `/my-account` per prior change — switching it to `/my-profile` is **not** requested here (user said "click profile photo icon from homepage takes you to my profile"). I will update `src/components/home/HomeMasthead.tsx` `Link to` from `/my-account` back to `/my-profile`.
-
-## Files touched
-
-- `src/pages/MyProfile.tsx` — header redesign.
-- `src/components/home/HomeMasthead.tsx` — change avatar link target to `/my-profile`.
+- Recent searches persistence
+- QR-code style discovery
+- Any backend or schema changes
