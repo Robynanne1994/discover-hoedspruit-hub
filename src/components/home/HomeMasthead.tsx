@@ -191,7 +191,7 @@ const HomeMasthead = () => {
           </h1>
         </div>
         <Link
-          to="/my-profile"
+          to="/my-account"
           aria-label="My profile"
           style={{
             width: 56,
