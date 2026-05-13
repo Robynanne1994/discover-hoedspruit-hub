@@ -80,14 +80,9 @@ const HomeMasthead = () => {
               <UserIcon size={20} color="#715a3d" strokeWidth={1.6} />
             )}
           </Link>
-          <button
-            type="button"
-            aria-label="Search"
-            onClick={() => setSearchOpen(true)}
-            style={iconBtn}
-          >
+          <Link to="/search" aria-label="Search" style={iconBtn}>
             <Search size={20} color="#715a3d" strokeWidth={1.8} />
-          </button>
+          </Link>
         </div>
         <Link to="/my-notifications" aria-label="Notifications" style={iconBtn}>
           <Bell size={20} color="#715a3d" strokeWidth={1.8} />
