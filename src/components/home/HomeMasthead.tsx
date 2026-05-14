@@ -47,7 +47,7 @@ const HomeMasthead = () => {
   };
 
   return (
-    <div style={{ paddingTop: 24 }}>
+    <div style={{ paddingTop: 60 }}>
       {/* Top icon row */}
       <div
         style={{
