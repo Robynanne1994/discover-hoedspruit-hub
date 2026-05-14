@@ -48,7 +48,7 @@ const Search = () => {
           minHeight: 56,
         }}
       >
-        <div style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)" }}>
+        <div style={{ position: "absolute", left: 20, top: 60 }}>
           <BackButton to="/" />
         </div>
         <h1
