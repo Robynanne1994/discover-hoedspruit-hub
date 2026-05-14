@@ -38,11 +38,12 @@ const HelpCentre = () => {
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140 }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 32, paddingLeft: 24 }}>
+      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 44 }}>
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
+            position: "absolute", left: 24,
             width: 44, height: 44, borderRadius: 999, background: CREAM,
             display: "flex", alignItems: "center", justifyContent: "center",
             border: "none", cursor: "pointer",
@@ -50,17 +51,9 @@ const HelpCentre = () => {
         >
           <BackArrowIcon size={18} color={INK} />
         </button>
-      </div>
-
-      {/* Hero */}
-      <div style={{ padding: "36px 24px 0" }}>
-        <h1 style={{
-          marginTop: 14, marginBottom: 0,
-          fontFamily: SERIF, fontStyle: "italic", fontWeight: 300,
-          fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM,
-        }}>
-          help centre.
-        </h1>
+        <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 20, color: CREAM, letterSpacing: "0.01em" }}>
+          Help Centre
+        </div>
       </div>
 
       {/* Section eyebrow */}
