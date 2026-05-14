@@ -407,19 +407,49 @@ const MyProfile = () => {
               <Skeleton className="h-7 w-40 bg-white/10" />
             ) : (
               <>
-                <h1
-                  style={{
-                    fontFamily: SANS,
-                    fontWeight: 700,
-                    fontSize: 24,
-                    lineHeight: 1.15,
-                    letterSpacing: "-0.4px",
-                    color: CREAM,
-                    margin: 0,
-                  }}
-                >
-                  {titleCase(profile?.display_name) || "You"}
-                </h1>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <h1
+                    style={{
+                      fontFamily: SANS,
+                      fontWeight: 700,
+                      fontSize: 24,
+                      lineHeight: 1.15,
+                      letterSpacing: "-0.4px",
+                      color: CREAM,
+                      margin: 0,
+                      minWidth: 0,
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {titleCase(profile?.display_name) || "You"}
+                  </h1>
+                  <button
+                    onClick={() => navigate("/account-settings/info")}
+                    aria-label="Edit profile"
+                    style={{
+                      flexShrink: 0,
+                      height: 28,
+                      padding: "0 12px",
+                      borderRadius: 999,
+                      background: CREAM,
+                      color: INK,
+                      border: "none",
+                      fontFamily: SANS,
+                      fontWeight: 500,
+                      fontSize: 12,
+                      letterSpacing: "0.02em",
+                      cursor: "pointer",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <Pencil size={11} strokeWidth={1.8} color={INK} />
+                    Edit
+                  </button>
+                </div>
                 {profile?.username && (
                   <div
                     style={{
@@ -439,7 +469,7 @@ const MyProfile = () => {
           </div>
         </div>
 
-        {/* Stats row + Edit */}
+        {/* Stats row */}
         <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 18 }}>
           <Link
             to={id ? `/profile/${id}/followers` : "#"}
@@ -470,29 +500,6 @@ const MyProfile = () => {
               {fmtCount(savedCount ?? 0)}
             </span>
           </Link>
-          <button
-            onClick={() => navigate("/account/info")}
-            style={{
-              marginLeft: "auto",
-              height: 36,
-              padding: "0 18px",
-              borderRadius: 999,
-              background: CREAM,
-              color: INK,
-              border: "none",
-              fontFamily: SANS,
-              fontWeight: 500,
-              fontSize: 13,
-              letterSpacing: "0.02em",
-              cursor: "pointer",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <Pencil size={13} strokeWidth={1.8} color={INK} />
-            Edit
-          </button>
         </div>
 
       </div>
