@@ -108,11 +108,42 @@ const AccountInfo = () => {
       setEmail(profile.email || user?.email || "");
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
+      setAvatarUrl((profile as any).avatar_url || "");
       initialized.current = true;
     } else if (!profile && user && !initialized.current) {
       setEmail(user.email || "");
     }
   }, [profile, user]);
+
+  const handleAvatarUpload = async (file: File) => {
+    if (!user) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+      const url = pub.publicUrl;
+      const { error: dbErr } = await supabase.from("profiles").upsert({ id: user.id, avatar_url: url } as any);
+      if (dbErr) throw dbErr;
+      setAvatarUrl(url);
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      toast.success("Profile photo updated");
+    } catch (err: any) {
+      toast.error(err.message || "Could not upload photo");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const handleSaveProfile = async () => {
     if (!user) return;
