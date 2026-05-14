@@ -6,7 +6,7 @@ const navItems = [
   { label: "Explore", href: "/categories", icon: Compass },
   { label: "Specials", href: "/specials", icon: Tag },
   { label: "Events", href: "/events", icon: Calendar },
-  { label: "Profile", href: "/my-account", icon: User },
+  { label: "Profile", href: "/my-profile", icon: User },
 ];
 
 const PILL_BG = "#f5f0e8";
