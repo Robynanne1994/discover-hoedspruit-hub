@@ -96,6 +96,9 @@ const AccountInfo = () => {
   const [editing, setEditing] = useState<FieldKey | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [pwOpen, setPwOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const initialized = useRef(false);
 
   useEffect(() => {
