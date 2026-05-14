@@ -649,18 +649,6 @@ const Events = () => {
 
       {/* Hero */}
       <div style={{ padding: "24px 24px 0 24px" }}>
-        <div
-          style={{
-            fontFamily: SANS,
-            fontSize: 12,
-            letterSpacing: "2.4px",
-            textTransform: "uppercase",
-            color: "rgba(238,232,218,0.7)",
-            marginBottom: 14,
-          }}
-        >
-          LOCAL HAPPENINGS ({upcomingCount})
-        </div>
         <h1
           style={{
             fontFamily: SERIF,
