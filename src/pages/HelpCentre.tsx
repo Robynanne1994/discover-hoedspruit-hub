@@ -61,13 +61,6 @@ const HelpCentre = () => {
         }}>
           help centre.
         </h1>
-        <p style={{
-          marginTop: 18, marginBottom: 0,
-          fontFamily: SANS, fontWeight: 400, fontSize: 15, lineHeight: 1.65,
-          color: CREAM, opacity: 0.9, maxWidth: 320,
-        }}>
-          Quick answers, the small print, and a bit about us.
-        </p>
       </div>
 
       {/* Section eyebrow */}
