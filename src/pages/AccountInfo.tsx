@@ -318,6 +318,110 @@ const AccountInfo = () => {
         </h1>
       </div>
 
+      {/* Profile Photo */}
+      <div
+        style={{
+          paddingLeft: 24,
+          paddingRight: 24,
+          marginBottom: 10,
+          fontFamily: FF,
+          fontSize: 11,
+          fontWeight: 400,
+          letterSpacing: "2.4px",
+          textTransform: "uppercase",
+          color: CREAM,
+          opacity: 0.7,
+        }}
+      >
+        Profile Photo
+      </div>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <div
+          style={{
+            background: CREAM,
+            borderRadius: 20,
+            padding: "18px 22px",
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: SOFT_CREAM,
+              border: `1px solid ${LINE}`,
+              overflow: "hidden",
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+            }}
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <Camera size={22} strokeWidth={1.5} color={MUTED} />
+            )}
+            {uploadingAvatar && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Loader2 size={20} className="animate-spin" color={CREAM} />
+              </div>
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: FF, fontSize: 14, fontWeight: 400, color: INK, marginBottom: 2 }}>
+              {avatarUrl ? "Change photo" : "Add a photo"}
+            </div>
+            <div style={{ fontFamily: FF, fontSize: 12, color: MUTED, lineHeight: 1.35 }}>
+              JPG or PNG, up to 5MB.
+            </div>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleAvatarUpload(f);
+              e.target.value = "";
+            }}
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingAvatar}
+            style={{
+              background: INK,
+              color: CREAM,
+              border: "none",
+              borderRadius: 999,
+              padding: "10px 16px",
+              fontFamily: FF,
+              fontSize: 13,
+              fontWeight: 400,
+              cursor: uploadingAvatar ? "not-allowed" : "pointer",
+              opacity: uploadingAvatar ? 0.7 : 1,
+              flexShrink: 0,
+            }}
+          >
+            {avatarUrl ? "Change" : "Upload"}
+          </button>
+        </div>
+      </div>
+
       {/* Section eyebrow */}
       <div
         style={{
