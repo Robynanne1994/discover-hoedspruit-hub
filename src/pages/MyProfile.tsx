@@ -542,7 +542,7 @@ const MyProfile = () => {
           });
           return (
             <>
-              <SubTabs
+              <SubTabs<"active" | "expired">
                 value={dealsSub}
                 onChange={setDealsSub}
                 options={[
@@ -578,7 +578,7 @@ const MyProfile = () => {
           });
           return (
             <>
-              <SubTabs
+              <SubTabs<"upcoming" | "past">
                 value={eventsSub}
                 onChange={setEventsSub}
                 options={[
