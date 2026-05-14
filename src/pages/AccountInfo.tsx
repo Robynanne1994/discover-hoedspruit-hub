@@ -286,20 +286,6 @@ const AccountInfo = () => {
 
       {/* Hero */}
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
-        <div
-          style={{
-            fontFamily: FF,
-            fontSize: 12,
-            fontWeight: 400,
-            letterSpacing: "2.4px",
-            textTransform: "uppercase",
-            color: CREAM,
-            opacity: 0.7,
-            marginBottom: 14,
-          }}
-        >
-          Your Account
-        </div>
         <h1
           style={{
             fontFamily: PF,
