@@ -481,6 +481,14 @@ const UsersResults = ({
     queryKey: ["search-users", sub, term, currentUserId],
     queryFn: async () => {
       if (sub === "suggested") {
+        let followingIds: string[] = [];
+        if (currentUserId) {
+          const { data: f } = await supabase
+            .from("follows")
+            .select("following_id")
+            .eq("follower_id", currentUserId);
+          followingIds = (f || []).map((r: any) => r.following_id);
+        }
         let q = supabase
           .from("profiles")
           .select("id, display_name, avatar_url, location, username")
@@ -488,7 +496,9 @@ const UsersResults = ({
           .limit(50);
         if (term) q = q.or(`display_name.ilike.%${term}%,username.ilike.%${term}%`);
         const { data } = await q;
-        return (data || []).filter((p) => p.id !== currentUserId);
+        const excluded = new Set<string>(followingIds);
+        if (currentUserId) excluded.add(currentUserId);
+        return (data || []).filter((p) => !excluded.has(p.id));
       }
       if (!currentUserId) return [];
       const col = sub === "followers" ? "follower_id" : "following_id";
@@ -510,7 +520,14 @@ const UsersResults = ({
   const headerLabel = sub === "suggested" ? "People to follow" : sub === "followers" ? "Followers" : "Following";
 
   if (isLoading) return <EmptyRow text="Loading…" />;
-  if (!rows || rows.length === 0) return <EmptyRow text={term ? "No people found" : "No results"} />;
+  if (!rows || rows.length === 0) {
+    const emptyText = term
+      ? "No people found"
+      : sub === "suggested"
+      ? "No new users — you're following everyone!"
+      : "No results";
+    return <EmptyRow text={emptyText} />;
+  }
 
   return (
     <>
