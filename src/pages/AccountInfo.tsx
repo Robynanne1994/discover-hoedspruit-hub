@@ -431,6 +431,44 @@ const AccountInfo = () => {
         >
           Save Changes
         </button>
+
+        <button
+          type="button"
+          onClick={async () => {
+            if (!confirm("Delete your account? This permanently deletes your account and all associated data. This action cannot be undone.")) return;
+            try {
+              const { data: sessionData } = await supabase.auth.getSession();
+              const token = sessionData.session?.access_token;
+              if (!token) throw new Error("Not signed in");
+              const { data, error } = await supabase.functions.invoke("delete-account", {
+                headers: { Authorization: `Bearer ${token}` },
+              });
+              if (error) throw error;
+              if ((data as any)?.error) throw new Error((data as any).error);
+              await supabase.auth.signOut();
+              toast.success("Your account has been deleted");
+              navigate("/auth", { replace: true });
+            } catch (err: any) {
+              toast.error(err?.message || "Could not delete account");
+            }
+          }}
+          style={{
+            display: "block",
+            margin: "20px auto 0",
+            background: "transparent",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            fontFamily: FF,
+            fontSize: 13,
+            fontWeight: 400,
+            color: MUTED,
+            textDecoration: "underline",
+            letterSpacing: "0.02em",
+          }}
+        >
+          Delete Account
+        </button>
       </div>
 
       {pwOpen && <ChangePasswordSheet onClose={() => setPwOpen(false)} />}
