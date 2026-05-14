@@ -52,7 +52,34 @@ const Search = () => {
         }}
       >
         <div style={{ justifySelf: "start" }}>
-          <BackButton to="/" />
+          {fromProfile && profileId ? (
+            <button
+              type="button"
+              onClick={() => navigate(`/profile/${profileId}`)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                background: "none",
+                border: "none",
+                padding: "10px 4px",
+                cursor: "pointer",
+                fontFamily: FONT,
+                fontWeight: 400,
+                fontSize: 15,
+                letterSpacing: "0.01em",
+                color: PRIMARY,
+              }}
+            >
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={PRIMARY} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <line x1="19" y1="12" x2="5" y2="12" />
+                <polyline points="12 19 5 12 12 5" />
+              </svg>
+              Profile
+            </button>
+          ) : (
+            <BackButton to="/" />
+          )}
         </div>
         <h1
           style={{
