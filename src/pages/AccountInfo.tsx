@@ -145,7 +145,7 @@ const AccountInfo = () => {
   if (loading || !user) {
     return (
       <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: FF }}>
-        <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24 }}>
           <Skeleton className="h-11 w-11 rounded-full" />
           <div style={{ marginTop: 28 }}>
             <Skeleton className="h-12 w-48" />
@@ -208,7 +208,7 @@ const AccountInfo = () => {
       {/* Top bar */}
       <div
         style={{
-          paddingTop: 32,
+          paddingTop: 60,
           paddingLeft: 24,
           paddingRight: 24,
           display: "flex",
