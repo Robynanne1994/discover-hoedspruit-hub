@@ -55,7 +55,7 @@ import CookiePolicy from "./pages/CookiePolicy.tsx";
 import ContentGuidelines from "./pages/ContentGuidelines.tsx";
 import FAQs from "./pages/FAQs.tsx";
 import HelpCentre from "./pages/HelpCentre.tsx";
-import PrivacySecurity from "./pages/PrivacySecurity.tsx";
+
 import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
 import MyNotifications from "./pages/MyNotifications.tsx";
@@ -151,7 +151,7 @@ const App = () => (
               <Route path="/content-guidelines" element={<ContentGuidelines />} />
               <Route path="/faqs" element={<FAQs />} />
               <Route path="/help-centre" element={<HelpCentre />} />
-              <Route path="/privacy-security" element={<PrivacySecurity />} />
+              
               
               <Route path="/feedback" element={<Feedback />} />
              <Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
