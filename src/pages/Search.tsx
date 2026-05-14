@@ -40,7 +40,7 @@ const Search = () => {
       <div
         style={{
           position: "relative",
-          padding: "16px 20px 12px",
+          padding: "60px 20px 12px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
