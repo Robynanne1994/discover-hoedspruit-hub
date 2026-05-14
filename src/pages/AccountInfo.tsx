@@ -597,7 +597,7 @@ const AccountInfo = () => {
             fontFamily: FF,
             fontSize: 13,
             fontWeight: 400,
-            color: MUTED,
+            color: "#B00020",
             textDecoration: "underline",
             letterSpacing: "0.02em",
           }}
