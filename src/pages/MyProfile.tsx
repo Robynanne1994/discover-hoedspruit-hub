@@ -24,6 +24,45 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
 
 type Tab = "listings" | "deals" | "events";
 
+function SubTabs<T extends string>({
+  value,
+  onChange,
+  options,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  options: { id: T; label: string }[];
+}) {
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+      {options.map((opt) => {
+        const active = value === opt.id;
+        return (
+          <button
+            key={opt.id}
+            type="button"
+            onClick={() => onChange(opt.id)}
+            style={{
+              background: active ? CREAM : "transparent",
+              color: active ? INK : CREAM,
+              border: `1px solid ${active ? CREAM : "rgba(238,232,218,0.4)"}`,
+              borderRadius: 999,
+              padding: "6px 14px",
+              cursor: "pointer",
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: active ? 600 : 400,
+              letterSpacing: "0.02em",
+            }}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 const MyProfile = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
