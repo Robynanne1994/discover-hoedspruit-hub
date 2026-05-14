@@ -1008,4 +1008,92 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   );
 };
 
+function DialCodePicker({ value, onChange }: { value: string; onChange: (code: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement | null>(null);
+  const current = AREA_CODES.find((a) => a.code === value) || AREA_CODES[0];
+
+  useEffect(() => {
+    if (!open) return;
+    const onDocDown = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onDocDown);
+    return () => document.removeEventListener("mousedown", onDocDown);
+  }, [open]);
+
+  return (
+    <div ref={ref} style={{ position: "relative" }}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          height: 38,
+          padding: "0 10px",
+          background: SOFT_CREAM,
+          border: `1px solid ${LINE}`,
+          borderRadius: 10,
+          cursor: "pointer",
+          fontFamily: FF,
+          fontSize: 15,
+          color: INK,
+        }}
+      >
+        <span style={{ fontSize: 16 }}>{current.flag}</span>
+        <span>{current.code}</span>
+        <span style={{ fontSize: 10, color: MUTED, marginLeft: 2 }}>▾</span>
+      </button>
+      {open && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 6px)",
+            left: 0,
+            zIndex: 50,
+            background: "#fff",
+            border: `1px solid ${LINE}`,
+            borderRadius: 12,
+            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            maxHeight: 240,
+            overflowY: "auto",
+            minWidth: 200,
+          }}
+        >
+          {AREA_CODES.map((ac) => (
+            <button
+              key={ac.code + ac.country}
+              type="button"
+              onClick={() => {
+                onChange(ac.code);
+                setOpen(false);
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                width: "100%",
+                padding: "10px 12px",
+                background: ac.code === value ? SOFT_CREAM : "transparent",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: FF,
+                fontSize: 14,
+                color: INK,
+                textAlign: "left",
+              }}
+            >
+              <span style={{ fontSize: 16 }}>{ac.flag}</span>
+              <span style={{ width: 50 }}>{ac.code}</span>
+              <span style={{ color: MUTED }}>{ac.country}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default AccountInfo;
