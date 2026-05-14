@@ -348,7 +348,7 @@ const FollowList = () => {
         /* no-op */
       }
     } else {
-      navigate("/people");
+      navigate("/search", { state: { fromProfile: true, profileId: id } });
     }
   };
 
