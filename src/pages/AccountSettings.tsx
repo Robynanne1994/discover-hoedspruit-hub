@@ -148,20 +148,6 @@ const AccountSettings = () => {
           >
             settings.
           </h1>
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 15,
-              fontWeight: 400,
-              lineHeight: 1.65,
-              color: "rgba(238, 232, 218, 0.9)",
-              margin: 0,
-              marginBottom: 36,
-              maxWidth: 260,
-            }}
-          >
-            Manage your account & preferences.
-          </p>
         </div>
       </div>
 
