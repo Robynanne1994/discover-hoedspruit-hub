@@ -151,7 +151,7 @@ const App = () => (
               <Route path="/content-guidelines" element={<ContentGuidelines />} />
               <Route path="/faqs" element={<FAQs />} />
               <Route path="/help-centre" element={<HelpCentre />} />
-              <Route path="/privacy-security" element={<PrivacySecurity />} />
+              
               
               <Route path="/feedback" element={<Feedback />} />
              <Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
