@@ -201,19 +201,6 @@ const Categories = () => {
 
       {/* Hero block */}
       <div style={{ paddingTop: 24, paddingLeft: 24, paddingRight: 24 }}>
-        <div
-          style={{
-            fontFamily: FONT_BODY,
-            fontSize: 12,
-            fontWeight: 400,
-            letterSpacing: "2.4px",
-            textTransform: "uppercase",
-            color: "rgba(238, 232, 218, 0.7)",
-            marginBottom: 14,
-          }}
-        >
-          BROWSE THE 'HOED
-        </div>
         <h1
           style={{
             fontFamily: FONT_DISPLAY,
