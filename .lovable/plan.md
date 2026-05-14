@@ -1,57 +1,44 @@
-# Search Page Redesign
+## My Profile page restructure
 
-Replace the search dialog with a dedicated `/search` route, styled in the Hello Hoedspruit brand system and laid out like the Strava reference.
+Edit `src/pages/MyProfile.tsx` only. Keep the existing olive `PAGE_BG` (`#5C6446`) theme and all existing data queries.
 
-## Layout (top to bottom)
+### 1. Top header bar
+Replace the current top bar (currently 60px top padding with empty left and a settings button right) with a 3-column grid:
 
-1. **Header row** (20px horizontal padding)
-   - Left: back arrow + "Home" label (matches existing back-button pattern)
-   - Center: "Search" title (uppercase, Helvetica Neue, #020202)
-2. **Top tabs — Users / Businesses**
-   - Two-tab switcher (active tab: bold #020202 with #715a3d underline; inactive: muted)
-   - Controls which sub-pills + result types are shown
-3. **Search input** (full-width, 999 radius, #f5f0e8 ivory background, search icon left, placeholder changes per top tab)
-4. **Sub-pills row** (3 icon+label pills, active pill underlined in #715a3d)
-   - When **Users** tab active: `Suggested`, `Followers`, `Following`
-   - When **Businesses** tab active: `Listings`, `Events`, `Specials`
-5. **Default state (no query)** — Suggested list for the active sub-pill:
-   - Users → suggested users (UserCard style)
-   - Listings → featured/popular listings with a small Save (heart) button on the right
-   - Events → upcoming events with Interested button
-   - Specials → active specials with Save button
-   - Section header above the list (e.g. "SUGGESTED LISTINGS") in uppercase
-6. **Live results state (query present)** — same row style, filtered by sub-pill scope only
+- 60px top padding before any content
+- Left column: empty spacer
+- Center column: text "Profile" — Helvetica Neue, weight 400, 20px, color CREAM, letter-spacing 0.01em
+- Right column: existing circular Settings button (links to `/my-account`), aligned right
 
-## Row styling
+### 2. Profile section (matches the attached screenshot)
+Keep the existing block as-is:
 
-- 1px bottom divider between rows (#ebebeb)
-- Avatar/thumbnail left (round 48px for users, 56×56 rounded-12 for listings/events/specials)
-- Title #020202, secondary line #2b2420 muted
-- Right action button in #715a3d outline pill ("Follow" / heart icon / interested)
+- Avatar (84px circle) on the left
+- Name + small "Edit" pill (links to `/account-settings/info`) inline
+- `@username` underneath in muted cream
+- Stats row below: Followers · Following · Saved (each linking as it does today)
 
-## Routing changes
+No styling changes here beyond what's already there.
 
-- Add `/search` route in `src/App.tsx` → new `src/pages/Search.tsx`
-- `HomeMasthead` search icon: change from opening `SearchDialog` to `navigate('/search')`
-- Keep `SearchDialog` file in place for now (can be removed later if unused elsewhere)
+### 3. Replace lower content with 3 top tabs
+Delete the current `finds`, `events`, `deals`, `activity`, and "privacy hint" sections (lines ~512–943) entirely. The activity timeline query and its helpers can be removed too since nothing else uses them.
 
-## Data sources (frontend only, reuse existing tables)
+Add a Search-style top tab bar with three tabs (top-level only — no sub-pills, no search input):
 
-- Users: `profiles` (display_name, username, avatar_url) + existing `useFollows` hook for Follow button
-- Listings: `listings` table, ordered by featured/popular fallback to recent
-- Events: `events` table, upcoming first
-- Specials: `specials` table, active ones
-- All queries via React Query, `ilike` filtering on `title`/`display_name` when query present
+- Tabs: **Listings**, **Deals**, **Events**
+- Same visual pattern as `Search.tsx` (lines 100–139): full-width row, 1px bottom divider, active label bold INK with a 2px PRIMARY underline; inactive muted. Adapted to the cream/olive theme (active = CREAM bold + CREAM underline; inactive = CREAM @ 50% opacity).
+- State: `const [tab, setTab] = useState<"listings" | "deals" | "events">("listings")`
 
-## Files to create / edit
+Below the tab bar, render the matching saved content:
 
-- **Create** `src/pages/Search.tsx`
-- **Edit** `src/App.tsx` — register `/search`
-- **Edit** `src/components/home/HomeMasthead.tsx` — search button → `Link to="/search"` instead of dialog
-- (No DB / RLS / auth changes)
+- **Listings** → existing `saved` carousel/grid markup (currently the "finds" section)
+- **Deals** → existing `savedSpecials` markup
+- **Events** → existing `savedEvents` markup
 
-## Out of scope
+Reuse the existing card styling and `handleUnsave` logic; just drop them inside the active tab panel instead of three separate stacked sections. Show the existing empty-state copy when a tab has no items.
 
-- Recent searches persistence
-- QR-code style discovery
-- Any backend or schema changes
+### Technical notes
+- File touched: `src/pages/MyProfile.tsx`
+- No backend, route, or data-model changes
+- Remove now-unused imports (`MapPin`, `SERIF` constant if no other usage, `activity` query) after the cleanup
+- Bottom padding of 100px on the page container stays
