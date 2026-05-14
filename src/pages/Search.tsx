@@ -39,16 +39,14 @@ const Search = () => {
       {/* Header */}
       <div
         style={{
-          position: "relative",
           padding: "60px 20px 12px",
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
           alignItems: "center",
-          justifyContent: "center",
           background: PAGE_BG,
-          minHeight: 56,
         }}
       >
-        <div style={{ position: "absolute", left: 20, top: 60 }}>
+        <div style={{ justifySelf: "start" }}>
           <BackButton to="/" />
         </div>
         <h1
@@ -59,10 +57,12 @@ const Search = () => {
             fontSize: 20,
             letterSpacing: "0.01em",
             color: INK,
+            justifySelf: "center",
           }}
         >
           Search
         </h1>
+        <div />
       </div>
 
       {/* Top tabs: Users / Businesses */}
