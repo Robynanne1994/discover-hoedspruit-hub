@@ -122,8 +122,6 @@ const AccountSettings = () => {
           }}
         />
       </div>
-        </div>
-      </div>
 
       {/* Your Account */}
       <SettingsGroup label="Your Account" rows={accountRows} marginTop={0} />
