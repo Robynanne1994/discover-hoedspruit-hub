@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Pencil, Eye, EyeOff, X, Check } from "lucide-react";
+import { ArrowLeft, Pencil, Eye, EyeOff, X, Check, Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -96,6 +96,9 @@ const AccountInfo = () => {
   const [editing, setEditing] = useState<FieldKey | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [pwOpen, setPwOpen] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string>("");
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -105,11 +108,42 @@ const AccountInfo = () => {
       setEmail(profile.email || user?.email || "");
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
+      setAvatarUrl((profile as any).avatar_url || "");
       initialized.current = true;
     } else if (!profile && user && !initialized.current) {
       setEmail(user.email || "");
     }
   }, [profile, user]);
+
+  const handleAvatarUpload = async (file: File) => {
+    if (!user) return;
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be under 5MB");
+      return;
+    }
+    setUploadingAvatar(true);
+    try {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${user.id}/avatar-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+      if (upErr) throw upErr;
+      const { data: pub } = supabase.storage.from("avatars").getPublicUrl(path);
+      const url = pub.publicUrl;
+      const { error: dbErr } = await supabase.from("profiles").upsert({ id: user.id, avatar_url: url } as any);
+      if (dbErr) throw dbErr;
+      setAvatarUrl(url);
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      toast.success("Profile photo updated");
+    } catch (err: any) {
+      toast.error(err.message || "Could not upload photo");
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
 
   const handleSaveProfile = async () => {
     if (!user) return;
@@ -282,6 +316,110 @@ const AccountInfo = () => {
         >
           account info.
         </h1>
+      </div>
+
+      {/* Profile Photo */}
+      <div
+        style={{
+          paddingLeft: 24,
+          paddingRight: 24,
+          marginBottom: 10,
+          fontFamily: FF,
+          fontSize: 11,
+          fontWeight: 400,
+          letterSpacing: "2.4px",
+          textTransform: "uppercase",
+          color: CREAM,
+          opacity: 0.7,
+        }}
+      >
+        Profile Photo
+      </div>
+      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+        <div
+          style={{
+            background: CREAM,
+            borderRadius: 20,
+            padding: "18px 22px",
+            display: "flex",
+            alignItems: "center",
+            gap: 16,
+          }}
+        >
+          <div
+            style={{
+              width: 64,
+              height: 64,
+              borderRadius: "50%",
+              background: SOFT_CREAM,
+              border: `1px solid ${LINE}`,
+              overflow: "hidden",
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+            }}
+          >
+            {avatarUrl ? (
+              <img src={avatarUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            ) : (
+              <Camera size={22} strokeWidth={1.5} color={MUTED} />
+            )}
+            {uploadingAvatar && (
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.4)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Loader2 size={20} className="animate-spin" color={CREAM} />
+              </div>
+            )}
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: FF, fontSize: 14, fontWeight: 400, color: INK, marginBottom: 2 }}>
+              {avatarUrl ? "Change photo" : "Add a photo"}
+            </div>
+            <div style={{ fontFamily: FF, fontSize: 12, color: MUTED, lineHeight: 1.35 }}>
+              JPG or PNG, up to 5MB.
+            </div>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleAvatarUpload(f);
+              e.target.value = "";
+            }}
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingAvatar}
+            style={{
+              background: INK,
+              color: CREAM,
+              border: "none",
+              borderRadius: 999,
+              padding: "10px 16px",
+              fontFamily: FF,
+              fontSize: 13,
+              fontWeight: 400,
+              cursor: uploadingAvatar ? "not-allowed" : "pointer",
+              opacity: uploadingAvatar ? 0.7 : 1,
+              flexShrink: 0,
+            }}
+          >
+            {avatarUrl ? "Change" : "Upload"}
+          </button>
+        </div>
       </div>
 
       {/* Section eyebrow */}
