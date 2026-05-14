@@ -163,14 +163,6 @@ const HelpCentre = () => {
           </div>
         </div>
 
-        {/* Whisper */}
-        <div style={{
-          marginTop: 44, textAlign: "center",
-          fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 17,
-          color: CREAM, opacity: 0.65, letterSpacing: "-0.2px",
-        }}>
-          with love from the 'hoed.
-        </div>
       </div>
     </div>
   );
