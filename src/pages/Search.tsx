@@ -55,7 +55,7 @@ const Search = () => {
           {fromProfile && profileId ? (
             <button
               type="button"
-              onClick={() => navigate(`/profile/${profileId}`)}
+              onClick={() => navigate("/my-profile")}
               style={{
                 display: "inline-flex",
                 alignItems: "center",
