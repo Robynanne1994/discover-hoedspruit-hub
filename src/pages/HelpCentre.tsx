@@ -101,15 +101,9 @@ const HelpCentre = () => {
               <div style={{ flex: 1 }}>
                 <div style={{
                   fontFamily: SANS, fontWeight: 400, fontSize: 16, lineHeight: 1.2,
-                  letterSpacing: "-0.1px", color: INK, marginBottom: 6,
+                  letterSpacing: "-0.1px", color: INK,
                 }}>
                   {row.title}
-                </div>
-                <div style={{
-                  fontFamily: SERIF, fontStyle: "italic", fontWeight: 400,
-                  fontSize: 13.5, lineHeight: 1.4, color: INK_SOFT,
-                }}>
-                  {row.desc}
                 </div>
               </div>
               <div style={{
