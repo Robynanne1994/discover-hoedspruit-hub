@@ -104,51 +104,6 @@ const HelpCentre = () => {
           ))}
         </div>
 
-        {/* Rust feature card */}
-        <div style={{
-          marginTop: 20, background: RUST, borderRadius: 28,
-          padding: "32px 28px 28px", position: "relative", overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute", top: -60, right: -50, width: 180, height: 180,
-            borderRadius: "50%", background: RUST_DEEP, opacity: 0.55,
-          }} />
-          <div style={{
-            position: "absolute", bottom: -40, left: -30, width: 120, height: 120,
-            borderRadius: "50%", background: "rgba(238,232,218,0.08)",
-          }} />
-          <div style={{ position: "relative", zIndex: 1 }}>
-            <div style={{
-              fontFamily: SANS, fontWeight: 400, fontSize: 12, letterSpacing: "2.4px",
-              textTransform: "uppercase", color: CREAM, opacity: 0.7, marginBottom: 12,
-            }}>
-              STILL STUCK?
-            </div>
-            <h3 style={{
-              margin: 0, fontFamily: SERIF, fontStyle: "italic", fontWeight: 300,
-              fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM,
-            }}>
-              Drop us a line.
-            </h3>
-            <p style={{
-              marginTop: 14, marginBottom: 22,
-              fontFamily: SANS, fontWeight: 400, fontSize: 14.5, lineHeight: 1.55,
-              color: CREAM, opacity: 0.9, maxWidth: 280,
-            }}>
-              If you can't find what you're after, we'd love to hear from you. We read every message.
-            </p>
-            <button
-              onClick={() => navigate("/contact")}
-              style={{
-                height: 44, padding: "0 22px", borderRadius: 999, background: CREAM,
-                color: INK, fontFamily: SANS, fontWeight: 400, fontSize: 14,
-                border: "none", cursor: "pointer",
-              }}
-            >
-              Get In Touch
-            </button>
-          </div>
-        </div>
 
       </div>
     </div>
