@@ -28,6 +28,8 @@ const MyProfile = () => {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("listings");
+  const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
+  const [dealsSub, setDealsSub] = useState<"active" | "expired">("active");
 
   useEffect(() => {
     if (!authLoading && !user) navigate("/welcome");
@@ -493,50 +495,86 @@ const MyProfile = () => {
           )
         )}
 
-        {tab === "deals" && (
-          savedSpecials?.length ? (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              {savedSpecials.map((it: any) =>
-                renderCard(
-                  it,
-                  "special",
-                  `/specials/${it.id}`,
-                  it.business_name ? titleCase(it.business_name) : null,
-                ),
+        {tab === "deals" && (() => {
+          const now = Date.now();
+          const filtered = (savedSpecials ?? []).filter((it: any) => {
+            const expired = it.valid_until && new Date(it.valid_until).getTime() < now;
+            return dealsSub === "active" ? !expired : expired;
+          });
+          return (
+            <>
+              <SubTabs
+                value={dealsSub}
+                onChange={setDealsSub}
+                options={[
+                  { id: "active", label: "Active" },
+                  { id: "expired", label: "Expired" },
+                ]}
+              />
+              {filtered.length ? (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {filtered.map((it: any) =>
+                    renderCard(
+                      it,
+                      "special",
+                      `/specials/${it.id}`,
+                      it.business_name ? titleCase(it.business_name) : null,
+                    ),
+                  )}
+                </div>
+              ) : (
+                <EmptyTab text={dealsSub === "active" ? "No active deals saved." : "No expired deals."} />
               )}
-            </div>
-          ) : (
-            <EmptyTab text="No saved deals yet." />
-          )
-        )}
+            </>
+          );
+        })()}
 
-        {tab === "events" && (
-          savedEvents?.length ? (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              {savedEvents.map((it: any) =>
-                renderCard(
-                  it,
-                  "event",
-                  `/events/${it.id}`,
-                  <>
-                    {it.start_date && (
-                      <span>
-                        {new Date(it.start_date).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                        })}
-                      </span>
-                    )}
-                    {it.start_date && it.location && <span> · </span>}
-                    {it.location && <span>{it.location}</span>}
-                  </>,
-                ),
+        {tab === "events" && (() => {
+          const now = Date.now();
+          const filtered = (savedEvents ?? []).filter((it: any) => {
+            const ref = it.end_date || it.start_date;
+            if (!ref) return eventsSub === "upcoming";
+            const past = new Date(ref).getTime() < now;
+            return eventsSub === "upcoming" ? !past : past;
+          });
+          return (
+            <>
+              <SubTabs
+                value={eventsSub}
+                onChange={setEventsSub}
+                options={[
+                  { id: "upcoming", label: "Upcoming" },
+                  { id: "past", label: "Past" },
+                ]}
+              />
+              {filtered.length ? (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {filtered.map((it: any) =>
+                    renderCard(
+                      it,
+                      "event",
+                      `/events/${it.id}`,
+                      <>
+                        {it.start_date && (
+                          <span>
+                            {new Date(it.start_date).toLocaleDateString("en-GB", {
+                              day: "numeric",
+                              month: "short",
+                            })}
+                          </span>
+                        )}
+                        {it.start_date && it.location && <span> · </span>}
+                        {it.location && <span>{it.location}</span>}
+                      </>,
+                    ),
+                  )}
+                </div>
+              ) : (
+                <EmptyTab text={eventsSub === "upcoming" ? "No upcoming saved events." : "No past saved events."} />
               )}
-            </div>
-          ) : (
-            <EmptyTab text="No saved events yet." />
-          )
-        )}
+            </>
+          );
+        })()}
       </div>
     </div>
   );
