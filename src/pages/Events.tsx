@@ -637,7 +637,7 @@ const Events = () => {
       {/* Top bar */}
       <div
         style={{
-          padding: "32px 24px 0 24px",
+          padding: "60px 24px 0 24px",
           display: "flex",
           justifyContent: "flex-end",
           gap: 10,
