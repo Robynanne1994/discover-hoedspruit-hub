@@ -54,12 +54,6 @@ const HelpCentre = () => {
 
       {/* Hero */}
       <div style={{ padding: "36px 24px 0" }}>
-        <div style={{
-          fontFamily: SANS, fontWeight: 400, fontSize: 12, letterSpacing: "2.4px",
-          textTransform: "uppercase", color: CREAM, opacity: 0.7,
-        }}>
-          WE'RE HERE TO HELP
-        </div>
         <h1 style={{
           marginTop: 14, marginBottom: 0,
           fontFamily: SERIF, fontStyle: "italic", fontWeight: 300,
