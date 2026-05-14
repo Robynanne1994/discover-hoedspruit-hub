@@ -55,7 +55,7 @@ import CookiePolicy from "./pages/CookiePolicy.tsx";
 import ContentGuidelines from "./pages/ContentGuidelines.tsx";
 import FAQs from "./pages/FAQs.tsx";
 import HelpCentre from "./pages/HelpCentre.tsx";
-import PrivacySecurity from "./pages/PrivacySecurity.tsx";
+
 import Feedback from "./pages/Feedback.tsx";
 import Notifications from "./pages/Notifications.tsx";
 import MyNotifications from "./pages/MyNotifications.tsx";

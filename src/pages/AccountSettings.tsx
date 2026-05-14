@@ -32,7 +32,7 @@ type Row = { title: string; desc: string; href?: string };
 const accountRows: Row[] = [
   { title: "Account Info", desc: "", href: "/account-settings/info" },
   { title: "Notification Preferences", desc: "", href: "/my-notifications" },
-  { title: "Privacy & Security", desc: "", href: "/privacy-security" },
+  
 ];
 
 const AccountSettings = () => {
