@@ -74,7 +74,7 @@ const AccountSettings = () => {
       />
 
       {/* Top bar */}
-      <div style={{ position: "relative", zIndex: 3, paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ position: "relative", zIndex: 3, paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 44 }}>
         <button
           onClick={() => navigate(-1)}
           onPointerDown={() => setBackPressed(true)}
@@ -82,6 +82,9 @@ const AccountSettings = () => {
           onPointerLeave={() => setBackPressed(false)}
           aria-label="Back"
           style={{
+            position: "absolute",
+            left: 24,
+            top: 60,
             width: 44,
             height: 44,
             borderRadius: 999,
@@ -97,12 +100,13 @@ const AccountSettings = () => {
         >
           <ArrowLeft size={18} strokeWidth={1.6} color={COLORS.ink} />
         </button>
+        <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 20, color: COLORS.cream, letterSpacing: "0.01em" }}>
+          Settings
+        </div>
       </div>
 
-      {/* Hero */}
+      {/* Hero blob */}
       <div style={{ position: "relative", padding: "18px 24px 0", overflow: "hidden" }}>
-        {/* Blob 1 moved to root to extend to top of screen */}
-        {/* Blob 2 */}
         <div
           aria-hidden
           style={{
@@ -117,38 +121,6 @@ const AccountSettings = () => {
             pointerEvents: "none",
           }}
         />
-
-        <div style={{ position: "relative", zIndex: 2 }}>
-          <div
-            style={{
-              fontFamily: SANS,
-              fontSize: 12,
-              fontWeight: 400,
-              letterSpacing: "2.4px",
-              textTransform: "uppercase",
-              color: "rgba(238, 232, 218, 0.7)",
-              marginBottom: 14,
-            }}
-          >
-            ACCOUNT
-          </div>
-          <h1
-            style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              fontWeight: 300,
-              fontSize: 72,
-              lineHeight: 0.92,
-              letterSpacing: "-2.5px",
-              color: COLORS.cream,
-              margin: 0,
-              marginBottom: 18,
-              textTransform: "lowercase",
-            }}
-          >
-            settings.
-          </h1>
-        </div>
       </div>
 
       {/* Your Account */}
