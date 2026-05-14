@@ -27,6 +27,26 @@ const AREA_CODES = [
   { code: "+33", country: "FR", flag: "🇫🇷" },
   { code: "+31", country: "NL", flag: "🇳🇱" },
   { code: "+351", country: "PT", flag: "🇵🇹" },
+  { code: "+263", country: "ZW", flag: "🇿🇼" },
+  { code: "+267", country: "BW", flag: "🇧🇼" },
+  { code: "+264", country: "NA", flag: "🇳🇦" },
+  { code: "+258", country: "MZ", flag: "🇲🇿" },
+  { code: "+260", country: "ZM", flag: "🇿🇲" },
+  { code: "+254", country: "KE", flag: "🇰🇪" },
+  { code: "+255", country: "TZ", flag: "🇹🇿" },
+  { code: "+353", country: "IE", flag: "🇮🇪" },
+  { code: "+34", country: "ES", flag: "🇪🇸" },
+  { code: "+39", country: "IT", flag: "🇮🇹" },
+  { code: "+41", country: "CH", flag: "🇨🇭" },
+  { code: "+43", country: "AT", flag: "🇦🇹" },
+  { code: "+32", country: "BE", flag: "🇧🇪" },
+  { code: "+45", country: "DK", flag: "🇩🇰" },
+  { code: "+46", country: "SE", flag: "🇸🇪" },
+  { code: "+47", country: "NO", flag: "🇳🇴" },
+  { code: "+64", country: "NZ", flag: "🇳🇿" },
+  { code: "+971", country: "AE", flag: "🇦🇪" },
+  { code: "+972", country: "IL", flag: "🇮🇱" },
+  { code: "+91", country: "IN", flag: "🇮🇳" },
 ];
 
 function parsePhone(phone: string) {
@@ -490,15 +510,23 @@ const AccountInfo = () => {
 
               <Row fieldKey="phone" label="Phone">
                 {editing === "phone" ? (
-                  <input
-                    autoFocus
-                    type="tel"
-                    value={parsed.number}
-                    onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
-                    onBlur={() => setEditing(null)}
-                    style={rowInputStyle}
-                    placeholder="063 241 0296"
-                  />
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, position: "relative" }}>
+                    <DialCodePicker
+                      value={parsed.areaCode}
+                      onChange={(newCode) => {
+                        const ac = AREA_CODES.find((a) => a.code === newCode);
+                        setPhone(`${newCode}${parsed.number ? " " + parsed.number : ""}`);
+                      }}
+                    />
+                    <input
+                      autoFocus
+                      type="tel"
+                      value={parsed.number}
+                      onChange={(e) => setPhone(parsed.areaCode + " " + e.target.value.replace(/^\s+/, ""))}
+                      style={{ ...rowInputStyle, flex: 1 }}
+                      placeholder="063 241 0296"
+                    />
+                  </div>
                 ) : (
                   <div style={{ ...rowValueStyle, display: "flex", alignItems: "center", gap: 8 }}>
                     <span>{parsed.flag}</span>
