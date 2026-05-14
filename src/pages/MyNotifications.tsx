@@ -174,77 +174,19 @@ export default function MyNotifications() {
 
       {/* List */}
       <div style={{ background: BG, paddingBottom: 120 }}>
-        {notifs.map((n) => {
-          const Icon = iconFor(n.kind);
-          return (
-            <div
-              key={n.id}
-              onClick={() => n.link && navigate(n.link)}
-              style={{
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 14,
-                padding: "16px 20px",
-                background: BG,
-                borderBottom: `1px solid #dcdcdc`,
-                cursor: n.link ? "pointer" : "default",
-              }}
-            >
-              <div
-                style={{
-                  width: 44,
-                  height: 44,
-                  borderRadius: 10,
-                  background: BROWN,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}
-              >
-                <Icon size={22} strokeWidth={1.8} color="#ffffff" />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p
-                  style={{
-                    margin: "0 0 4px",
-                    fontFamily: SANS,
-                    fontWeight: 700,
-                    fontSize: 15,
-                    lineHeight: 1.3,
-                    color: INK,
-                    letterSpacing: "-0.1px",
-                  }}
-                >
-                  {n.title}
-                </p>
-                {n.body && (
-                  <p
-                    style={{
-                      margin: "0 0 6px",
-                      fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 14,
-                      lineHeight: 1.4,
-                      color: INK,
-                    }}
-                  >
-                    {n.body}
-                  </p>
-                )}
-                <span
-                  style={{
-                    fontFamily: SANS,
-                    fontSize: 13,
-                    color: MUTED,
-                  }}
-                >
-                  {formatTimestamp(n.created_at)}
-                </span>
-              </div>
-            </div>
-          );
-        })}
+        {newItems.length > 0 && (
+          <SectionHeader label={`New · ${newItems.length}`} accent />
+        )}
+        {newItems.map((n) => (
+          <NotifRow key={n.id} n={n} isNew onClick={() => n.link && navigate(n.link)} />
+        ))}
+
+        {earlierItems.length > 0 && (
+          <SectionHeader label="Earlier" />
+        )}
+        {earlierItems.map((n) => (
+          <NotifRow key={n.id} n={n} isNew={false} onClick={() => n.link && navigate(n.link)} />
+        ))}
 
         {isEmpty && (
           <div
@@ -282,6 +224,119 @@ export default function MyNotifications() {
             </p>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function SectionHeader({ label, accent }: { label: string; accent?: boolean }) {
+  return (
+    <div
+      style={{
+        padding: "18px 20px 8px",
+        fontFamily: SANS,
+        fontWeight: 700,
+        fontSize: 11,
+        letterSpacing: "1.6px",
+        textTransform: "uppercase",
+        color: accent ? BROWN : MUTED,
+        background: BG,
+      }}
+    >
+      {label}
+    </div>
+  );
+}
+
+function NotifRow({
+  n,
+  isNew,
+  onClick,
+}: {
+  n: Notif;
+  isNew: boolean;
+  onClick: () => void;
+}) {
+  const Icon = iconFor(n.kind);
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 14,
+        padding: "16px 20px 16px 20px",
+        background: isNew ? CARD : BG,
+        borderBottom: `1px solid #dcdcdc`,
+        cursor: n.link ? "pointer" : "default",
+        boxShadow: isNew ? `inset 3px 0 0 ${BROWN}` : "none",
+      }}
+    >
+      <div
+        style={{
+          width: 44,
+          height: 44,
+          borderRadius: 10,
+          background: isNew ? BROWN : "#b9b9b9",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+        }}
+      >
+        <Icon size={22} strokeWidth={1.8} color="#ffffff" />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: SANS,
+              fontWeight: isNew ? 700 : 500,
+              fontSize: 15,
+              lineHeight: 1.3,
+              color: isNew ? INK : "#3a3a3a",
+              letterSpacing: "-0.1px",
+            }}
+          >
+            {n.title}
+          </p>
+          {isNew && (
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 999,
+                background: BROWN,
+                flexShrink: 0,
+              }}
+            />
+          )}
+        </div>
+        {n.body && (
+          <p
+            style={{
+              margin: "0 0 6px",
+              fontFamily: SANS,
+              fontWeight: 400,
+              fontSize: 14,
+              lineHeight: 1.4,
+              color: isNew ? INK : "#5a5a5a",
+            }}
+          >
+            {n.body}
+          </p>
+        )}
+        <span
+          style={{
+            fontFamily: SANS,
+            fontSize: 13,
+            color: MUTED,
+          }}
+        >
+          {formatTimestamp(n.created_at)}
+        </span>
       </div>
     </div>
   );
