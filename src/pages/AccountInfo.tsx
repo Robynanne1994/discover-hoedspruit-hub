@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Pencil, Eye, EyeOff, X, Check } from "lucide-react";
+import { ArrowLeft, Pencil, Eye, EyeOff, X, Check, Camera, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
