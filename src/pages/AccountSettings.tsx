@@ -134,19 +134,6 @@ function SettingsGroup({ label, rows, marginTop }: { label: string; rows: Row[];
     <div style={{ marginTop, paddingLeft: 24, paddingRight: 24 }}>
       <div
         style={{
-          fontFamily: SANS,
-          fontSize: 11,
-          fontWeight: 400,
-          letterSpacing: "2.4px",
-          textTransform: "uppercase",
-          color: "rgba(238, 232, 218, 0.7)",
-          marginBottom: 10,
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
           background: COLORS.cream,
           borderRadius: 20,
           overflow: "hidden",
