@@ -220,17 +220,20 @@ const MyProfile = () => {
   const { data: activity } = useQuery({
     queryKey: ["my-activity", id],
     queryFn: async () => {
+      const sinceIso = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
       const [{ data: favs }, { data: visits }] = await Promise.all([
         supabase
           .from("favourites")
           .select("item_id, item_type, created_at")
           .eq("user_id", id!)
+          .gte("created_at", sinceIso)
           .order("created_at", { ascending: false })
           .limit(200),
         supabase
           .from("been_here")
           .select("listing_id, created_at")
           .eq("user_id", id!)
+          .gte("created_at", sinceIso)
           .order("created_at", { ascending: false })
           .limit(200),
       ]);
