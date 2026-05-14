@@ -112,7 +112,7 @@ const MyProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: events } = await supabase
         .from("events")
-        .select("id, title, image_url, location, start_date")
+        .select("id, title, image_url, location, start_date, end_date")
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
@@ -134,7 +134,7 @@ const MyProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
-        .select("id, title, image_url, business_name")
+        .select("id, title, image_url, business_name, valid_until")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
       return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
