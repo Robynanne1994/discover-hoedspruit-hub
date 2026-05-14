@@ -662,11 +662,6 @@ const MyAccount = () => {
 
       <div style={{ height: 32 }} />
 
-      {/* Saved */}
-      <Eyebrow>Saved</Eyebrow>
-      <Card items={[{ label: "My Hoedspruit", href: "/saved" }]} heartFirst />
-
-      <div style={{ height: 28 }} />
       <Eyebrow>Help & Settings</Eyebrow>
       <Card items={helpItems} />
 
