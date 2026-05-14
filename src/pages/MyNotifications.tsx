@@ -45,6 +45,9 @@ export default function MyNotifications() {
   const { user } = useAuth();
   const [notifs, setNotifs] = useState<Notif[]>([]);
   const [loaded, setLoaded] = useState(false);
+  // IDs that were unread when this page first opened — keep highlighted for the whole visit
+  const initialUnreadRef = useRef<Set<string> | null>(null);
+  const [, force] = useState(0);
 
   const load = useCallback(async () => {
     if (!user) {
@@ -58,7 +61,19 @@ export default function MyNotifications() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(100);
-    if (!error) setNotifs((data ?? []) as Notif[]);
+    if (!error) {
+      const rows = (data ?? []) as Notif[];
+      if (initialUnreadRef.current === null) {
+        initialUnreadRef.current = new Set(rows.filter((n) => !n.is_read).map((n) => n.id));
+      } else {
+        // Add any newly-arrived unread items to the highlighted set
+        rows.forEach((n) => {
+          if (!n.is_read) initialUnreadRef.current!.add(n.id);
+        });
+      }
+      setNotifs(rows);
+      force((x) => x + 1);
+    }
     setLoaded(true);
   }, [user]);
 
@@ -83,7 +98,7 @@ export default function MyNotifications() {
     };
   }, [user, load]);
 
-  // Mark all as read shortly after viewing
+  // Mark all as read shortly after viewing (visual highlight stays via initialUnreadRef)
   useEffect(() => {
     if (!loaded || notifs.length === 0 || !user) return;
     const t = setTimeout(async () => {
@@ -94,6 +109,14 @@ export default function MyNotifications() {
     }, 1500);
     return () => clearTimeout(t);
   }, [loaded, notifs, user]);
+
+  const { newItems, earlierItems } = useMemo(() => {
+    const set = initialUnreadRef.current ?? new Set<string>();
+    const n: Notif[] = [];
+    const e: Notif[] = [];
+    notifs.forEach((x) => (set.has(x.id) ? n.push(x) : e.push(x)));
+    return { newItems: n, earlierItems: e };
+  }, [notifs]);
 
   const isEmpty = loaded && notifs.length === 0;
 
