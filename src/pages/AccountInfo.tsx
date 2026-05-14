@@ -385,9 +385,6 @@ const AccountInfo = () => {
             <div style={{ fontFamily: FF, fontSize: 14, fontWeight: 400, color: INK, marginBottom: 2 }}>
               {avatarUrl ? "Change photo" : "Add a photo"}
             </div>
-            <div style={{ fontFamily: FF, fontSize: 12, color: MUTED, lineHeight: 1.35 }}>
-              JPG or PNG, up to 5MB.
-            </div>
           </div>
           <input
             ref={fileInputRef}
