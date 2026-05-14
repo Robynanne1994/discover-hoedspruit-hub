@@ -181,7 +181,7 @@ const Categories = () => {
         minHeight: "100dvh",
         backgroundColor: COLORS.bg,
         fontFamily: FONT_BODY,
-        paddingTop: "calc(env(safe-area-inset-top) + 32px)",
+        paddingTop: "calc(env(safe-area-inset-top) + 60px)",
         paddingBottom: 140,
       }}
     >
