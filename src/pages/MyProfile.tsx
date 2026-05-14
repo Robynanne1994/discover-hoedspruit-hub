@@ -360,9 +360,8 @@ const MyProfile = () => {
           alignItems: "center",
         }}
       >
-        <CircleBtn label="Back" onClick={() => navigate(-1)}>
-          <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
-        </CircleBtn>
+        <div />
+
         <div style={{ display: "flex", gap: 8 }}>
           <Link to="/my-account" aria-label="Settings" style={{
             width: 40, height: 40, borderRadius: "50%", background: CREAM,
