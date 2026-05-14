@@ -39,22 +39,25 @@ const Search = () => {
       {/* Header */}
       <div
         style={{
+          position: "relative",
           padding: "16px 20px 12px",
           display: "flex",
           alignItems: "center",
-          gap: 12,
+          justifyContent: "center",
           background: PAGE_BG,
+          minHeight: 56,
         }}
       >
-        <BackButton to="/" />
+        <div style={{ position: "absolute", left: 20, top: "50%", transform: "translateY(-50%)" }}>
+          <BackButton to="/" />
+        </div>
         <h1
           style={{
             margin: 0,
             fontFamily: FONT,
             fontWeight: 400,
-            fontSize: 18,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
+            fontSize: 20,
+            letterSpacing: "0.01em",
             color: INK,
           }}
         >
