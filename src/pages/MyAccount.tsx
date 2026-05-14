@@ -475,7 +475,7 @@ const MyAccount = () => {
 
   const resourcesItems = [
     { label: "Local Channels", href: "/bush-telegraph", icon: Users },
-    { label: "The Lowveld Lowdown", href: "/headlines", icon: Newspaper },
+    
   ];
   const getInTouchItems = [
     { label: "Advertise", href: "/advertise", icon: Megaphone },
