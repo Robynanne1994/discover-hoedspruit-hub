@@ -163,7 +163,7 @@ export default function MyNotifications() {
             margin: 0,
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 17,
+            fontSize: 20,
             color: INK,
             letterSpacing: "-0.1px",
           }}
