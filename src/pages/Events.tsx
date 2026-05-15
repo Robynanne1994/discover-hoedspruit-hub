@@ -371,10 +371,9 @@ const SectionHead = ({
       )}
       <h2
         style={{
-          fontFamily: SERIF,
-          fontStyle: "italic",
-          fontWeight: 400,
-          fontSize: 32,
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          fontWeight: 700,
+          fontSize: 24,
           lineHeight: 1,
           letterSpacing: "-0.5px",
           color: COLOR.cream,
