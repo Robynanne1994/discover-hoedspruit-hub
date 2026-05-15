@@ -126,6 +126,30 @@ const AccountInfo = () => {
   const [editing, setEditing] = useState<FieldKey | null>(null);
   const [savingProfile, setSavingProfile] = useState(false);
   const [pwOpen, setPwOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeleteAccount = async () => {
+    setDeleting(true);
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Not signed in");
+      const { data, error } = await supabase.functions.invoke("delete-account", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      await supabase.auth.signOut();
+      toast.success("Your account has been deleted");
+      navigate("/auth", { replace: true });
+    } catch (err: any) {
+      toast.error(err?.message || "Could not delete account");
+    } finally {
+      setDeleting(false);
+      setDeleteOpen(false);
+    }
+  };
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
