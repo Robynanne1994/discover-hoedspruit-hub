@@ -84,8 +84,8 @@ export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPagePro
       >
         <p
           style={{
-            fontFamily: serif,
-            fontStyle: "italic",
+            fontFamily: "Inter, sans-serif",
+            fontStyle: "normal",
             fontWeight: 400,
             fontSize: 14,
             lineHeight: 1.55,
