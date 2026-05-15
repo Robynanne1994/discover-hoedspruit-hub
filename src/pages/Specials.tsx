@@ -292,7 +292,7 @@ const Specials = () => {
             color: "rgba(238,232,218,0.85)",
           }}
         >
-          {filteredSpecials.length} specials
+          {filteredSpecials.length} Active Specials
         </span>
         <button
           aria-label="Refine specials"
