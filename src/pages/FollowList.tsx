@@ -188,8 +188,8 @@ const UserRow = ({
         <p
           style={{
             margin: 0,
-            fontFamily: SERIF,
-            fontStyle: "italic",
+            fontFamily: "Inter, sans-serif",
+            fontStyle: "normal",
             fontWeight: 400,
             fontSize: 13,
             color: COLOR.muted,
