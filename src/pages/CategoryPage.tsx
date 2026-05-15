@@ -32,21 +32,21 @@ const C = {
 };
 
 const TAGLINES: Record<string, string> = {
-  "restaurants & cafés": "places to eat in town.",
-  "restaurants & cafes": "places to eat in town.",
+  "Restaurants & Cafés": "places to eat in town.",
+  "Restaurants & Cafes": "places to eat in town.",
   Accommodation: "places to spend the night.",
-  "activities & adventures": "places to get out and about.",
-  "health & medical": "places when you need them.",
-  shopping: "places to find what you need.",
-  "wellness & beauty": "places to slow down.",
-  property: "places on the market.",
-  "auto & mechanical": "places to keep things running.",
-  "home & garden": "places to make it home.",
-  education: "places to learn.",
-  "trades & services": "places to call when you need a hand.",
-  community: "places that bring us together.",
-  "ngos & volunteering": "places where you can pitch in.",
-  "art & culture": "place to see something made by hand.",
+  "Activities & Adventures": "places to get out and about.",
+  "Health & Medical": "places when you need them.",
+  Shopping: "places to find what you need.",
+  "Wellness & Beauty": "places to slow down.",
+  Property: "places on the market.",
+  "Auto & Mechanical": "places to keep things running.",
+  "Home & Garden": "places to make it home.",
+  Education: "places to learn.",
+  "Trades & Services": "places to call when you need a hand.",
+  Community: "places that bring us together.",
+  "NGOs & Volunteering": "places where you can pitch in.",
+  "Art & Culture": "place to see something made by hand.",
 };
 
 const titleSizeFor = (s: string) => {
@@ -356,8 +356,8 @@ const CategoryPage = () => {
   const isRestaurant = category ? isRestaurantCategory(category.title) : false;
   const isAccom = category ? isAccommodationCategory(category.title) : false;
 
-  const lowerTitle = categoryTitle.toLowerCase();
-  const titleWithDot = `${lowerTitle}.`;
+  const displayTitle = categoryTitle;
+  const titleWithDot = `${displayTitle.toLowerCase()}.`;
   const titleFontSize = titleSizeFor(titleWithDot);
 
   const filteredListings = useMemo(() => {
@@ -397,7 +397,7 @@ const CategoryPage = () => {
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search]);
 
   const totalCount = listings?.length ?? 0;
-  const tagline = TAGLINES[lowerTitle] || "places to discover.";
+  const tagline = TAGLINES[categoryTitle] || "places to discover.";
   const subline = `${totalCount} ${tagline}`;
   const sortLabel = sortBy === "default" ? "Default" : sortBy === "name" ? "Alphabetically" : "Highest Rated";
 
@@ -459,7 +459,7 @@ const CategoryPage = () => {
             fontSize: 20,
             fontWeight: 600,
             color: C.cream,
-            textTransform: "lowercase",
+            textTransform: "none",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -469,7 +469,7 @@ const CategoryPage = () => {
             marginRight: 22,
           }}
         >
-          {lowerTitle}
+          {displayTitle}
         </div>
       </div>
 
@@ -489,7 +489,7 @@ const CategoryPage = () => {
           <Search size={18} strokeWidth={1.6} color={C.ink} style={{ flexShrink: 0 }} />
           <input
             type="text"
-            placeholder={`Search ${lowerTitle}`}
+            placeholder={`Search ${displayTitle}`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="placeholder:text-[#2b2420]/80"
