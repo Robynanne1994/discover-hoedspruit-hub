@@ -38,26 +38,27 @@ const HelpCentre = () => {
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140 }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 44 }}>
+      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            position: "absolute", left: 24,
-            width: 44, height: 44, borderRadius: 999, background: CREAM,
-            display: "flex", alignItems: "center", justifyContent: "center",
-            border: "none", cursor: "pointer",
+            background: "transparent", border: "none", padding: 0, margin: 0,
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", lineHeight: 0, flexShrink: 0,
           }}
         >
-          <BackArrowIcon size={18} color={INK} />
+          <BackArrowIcon size={22} color={CREAM} />
         </button>
-        <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 20, color: CREAM, letterSpacing: "0.01em" }}>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
           Help Centre
         </div>
       </div>
 
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+
       {/* Section eyebrow */}
-      <div style={{ padding: "32px 24px 0" }}>
+      <div style={{ padding: "24px 24px 0" }}>
         <div style={{
           fontFamily: SANS, fontWeight: 400, fontSize: 11, letterSpacing: "2.4px",
           textTransform: "uppercase", color: CREAM, opacity: 0.7, marginBottom: 12,
