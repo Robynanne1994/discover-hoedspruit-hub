@@ -335,21 +335,6 @@ const Notifications = () => {
 
       {/* Hero */}
       <div style={{ padding: "18px 24px 0" }}>
-        <div
-          style={{
-            ...baseText,
-            fontFamily: FONT_STACK,
-            fontSize: 12,
-            fontWeight: 400,
-            color: COLORS.cream,
-            opacity: 0.7,
-            textTransform: "uppercase",
-            letterSpacing: "0.2em",
-            marginBottom: 14,
-          }}
-        >
-          STAY IN THE LOOP
-        </div>
         <h1
           style={{
             ...baseText,
