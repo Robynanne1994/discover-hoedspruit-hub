@@ -121,11 +121,6 @@ const Feedback = () => {
       {/* Hero */}
       <div style={{ position: "relative", padding: "18px 24px 0" }}>
         <div style={{ position: "relative", zIndex: 2 }}>
-          <p style={{
-            fontFamily: FF, fontSize: 12, fontWeight: 400,
-            letterSpacing: "2.4px", textTransform: "uppercase",
-            color: "rgba(238,232,218,0.7)", margin: "0 0 14px",
-          }}>We're Listening</p>
           <h1 style={{
             fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
             fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px",
