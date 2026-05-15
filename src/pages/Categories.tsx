@@ -547,10 +547,10 @@ const SectionHead = ({ title, counter }: { title: string; counter?: string }) =>
   >
     <h2
       style={{
-        fontFamily: FONT_DISPLAY,
-        fontStyle: "italic",
-        fontWeight: 400,
-        fontSize: 30,
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontStyle: "normal",
+        fontWeight: 700,
+        fontSize: 24,
         lineHeight: 1,
         letterSpacing: "-0.5px",
         color: COLORS.cream,
