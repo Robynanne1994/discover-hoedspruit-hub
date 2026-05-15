@@ -91,6 +91,7 @@ const Pill = ({
 
 const NotificationCategories = () => {
   const { type } = useParams<{ type: string }>();
+  const navigate = useNavigate();
   const { user } = useAuth();
 
   const meta = type && (type in FILTER_TYPE_META) ? FILTER_TYPE_META[type as NotificationFilterType] : null;
