@@ -198,21 +198,33 @@ const BusinessClaim = () => {
       </div>
 
       {/* Search bar */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <div style={{
-          display: "flex", alignItems: "center", gap: 12, height: 52,
-          borderRadius: 999, background: "rgba(238, 232, 218, 0.92)",
-          padding: "0 22px",
-        }}>
-          <Search style={{ width: 18, height: 18, strokeWidth: 1.6, color: MUTED, flexShrink: 0 }} />
+      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
+        <div
+          style={{
+            height: 44,
+            background: "rgba(238, 232, 218, 0.92)",
+            borderRadius: 999,
+            padding: "0 20px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <Search size={18} strokeWidth={1.6} color={INK} style={{ flexShrink: 0 }} />
           <input
+            type="text"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Search by business name"
+            placeholder="Search any local deals"
+            className="placeholder:text-[#2b2420]/80"
             style={{
-              flex: 1, minWidth: 0, border: "none", outline: "none", background: "transparent",
-              fontFamily: SANS, fontSize: 15, fontWeight: 400,
-              color: hasQuery ? INK : MUTED,
+              flex: 1,
+              background: "transparent",
+              outline: "none",
+              border: "none",
+              fontFamily: SANS,
+              fontSize: 14,
+              color: INK,
             }}
           />
           {hasQuery && (
