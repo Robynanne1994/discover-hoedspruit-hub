@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SlidersHorizontal, Calendar, Heart, Search } from "lucide-react";
+import { RefineDrawer, RefineSection, RefineOption, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
@@ -114,6 +115,7 @@ const Specials = () => {
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
   const [search, setSearch] = useState("");
+  const [openSection, setOpenSection] = useState<"sort" | "category" | null>("sort");
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -293,13 +295,13 @@ const Specials = () => {
           {filteredSpecials.length} specials
         </span>
         <button
-          aria-label="Filter specials"
-          onClick={() => setShowFilters((v) => !v)}
+          aria-label="Refine specials"
+          onClick={() => setShowFilters(true)}
           style={{
             width: 36,
             height: 36,
             borderRadius: "50%",
-            background: filterType.length > 0 || showFilters ? COLOR.ink : COLOR.cream,
+            background: filterType.length > 0 || sortBy !== "default" ? COLOR.ink : COLOR.cream,
             border: "none",
             display: "inline-flex",
             alignItems: "center",
@@ -310,118 +312,64 @@ const Specials = () => {
           <SlidersHorizontal
             size={14}
             strokeWidth={1.8}
-            color={filterType.length > 0 || showFilters ? COLOR.cream : COLOR.ink}
+            color={filterType.length > 0 || sortBy !== "default" ? COLOR.cream : COLOR.ink}
           />
         </button>
       </div>
 
       <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
 
-      {/* Sort row */}
-      <div
-        style={{
-          padding: "0 24px",
-          marginBottom: 20,
-          display: "flex",
-          justifyContent: "flex-end",
+      <RefineDrawer
+        open={showFilters}
+        onClose={() => setShowFilters(false)}
+        onClear={() => {
+          setFilterType([]);
+          setSortBy("default");
         }}
+        resultsCount={filteredSpecials.length}
+        resultsLabel="specials"
       >
-        <div ref={sortRef} style={{ position: "relative" }}>
-          <button
-            onClick={() => setShowSortMenu((v) => !v)}
-            style={{
-              display: "inline-flex",
-              alignItems: "baseline",
-              background: "transparent",
-              border: "none",
-              padding: "6px 0",
-              cursor: "pointer",
-            }}
-          >
-            <span style={{ fontFamily: SANS, fontSize: 13, color: "rgba(238,232,218,0.7)" }}>Sort by</span>
-            <span style={{ fontFamily: SANS, fontSize: 13, color: COLOR.cream, marginLeft: 6 }}>
-              {SORT_LABELS[sortBy]}
-            </span>
-            <span style={{ fontSize: 11, color: "rgba(238,232,218,0.85)", marginLeft: 4 }}>▾</span>
-          </button>
+        <RefineSection
+          isFirst
+          label="Sort by"
+          summary={SORT_LABELS[sortBy]}
+          open={openSection === "sort"}
+          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+        >
+          {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
+            <RefineOption
+              key={key}
+              label={SORT_LABELS[key]}
+              active={sortBy === key}
+              onClick={() => setSortBy(key)}
+            />
+          ))}
+        </RefineSection>
 
-          {showSortMenu && (
-            <div
-              style={{
-                position: "absolute",
-                top: "calc(100% + 4px)",
-                right: 0,
-                background: COLOR.cream,
-                borderRadius: 16,
-                padding: 6,
-                zIndex: 20,
-                boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-                minWidth: 180,
-              }}
-            >
-              {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
-                <button
-                  key={key}
-                  onClick={() => {
-                    setSortBy(key);
-                    setShowSortMenu(false);
-                  }}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "10px 12px",
-                    background: sortBy === key ? COLOR.softCream : "transparent",
-                    border: "none",
-                    borderRadius: 10,
-                    fontSize: 14,
-                    color: COLOR.ink,
-                    fontFamily: SANS,
-                    cursor: "pointer",
-                  }}
-                >
-                  {SORT_LABELS[key]}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Filters panel */}
-      {showFilters && (
-        <div style={{ padding: "0 24px 24px 24px" }}>
+        <RefineSection
+          label="Category"
+          summary={filterType.length > 0 ? `${filterType.length} selected` : undefined}
+          open={openSection === "category"}
+          onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
+        >
           {categoryOptions.length > 0 ? (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {categoryOptions.map((t) => {
-                const active = filterType.includes(t);
-                return (
-                  <button
-                    key={t}
-                    onClick={() => toggleFilter(t)}
-                    style={{
-                      background: active ? COLOR.ink : COLOR.cream,
-                      color: active ? COLOR.cream : COLOR.ink,
-                      border: "none",
-                      borderRadius: 9999,
-                      padding: "9px 16px",
-                      fontSize: 13,
-                      fontFamily: SANS,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {t}
-                  </button>
-                );
-              })}
+              {categoryOptions.map((t) => (
+                <RefineChip
+                  key={t}
+                  label={t}
+                  active={filterType.includes(t)}
+                  onClick={() => toggleFilter(t)}
+                />
+              ))}
             </div>
           ) : (
-            <div style={{ fontSize: 13, color: "rgba(238,232,218,0.7)" }}>
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>
               No categories available.
-            </div>
+            </p>
           )}
-        </div>
-      )}
+        </RefineSection>
+      </RefineDrawer>
 
       {/* Card stack */}
       {isLoading ? (

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   isToday,
@@ -393,7 +394,8 @@ const Events = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
-  const [tagMenuOpen, setTagMenuOpen] = useState(false);
+  const [refineOpen, setRefineOpen] = useState(false);
+  const [openSection, setOpenSection] = useState<"when" | "tag" | null>("when");
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
@@ -534,92 +536,27 @@ const Events = () => {
   };
 
   const filterIconBtn = (
-    <div style={{ position: "relative" }}>
-      <button
-        aria-label="Filter by tag"
-        onClick={() => setTagMenuOpen((v) => !v)}
-        style={{
-          width: 36,
-          height: 36,
-          borderRadius: "50%",
-          background: tagFilter ? COLOR.ink : COLOR.cream,
-          color: tagFilter ? COLOR.cream : COLOR.ink,
-          border: "none",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          cursor: "pointer",
-        }}
-      >
-        <SlidersHorizontal size={14} strokeWidth={1.8} color={tagFilter ? COLOR.cream : COLOR.ink} />
-      </button>
-      {tagMenuOpen && (
-        <>
-          <div
-            onClick={() => setTagMenuOpen(false)}
-            style={{ position: "fixed", inset: 0, zIndex: 40 }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              top: 44,
-              right: 0,
-              zIndex: 50,
-              background: COLOR.cream,
-              borderRadius: 16,
-              boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-              minWidth: 200,
-              maxHeight: 320,
-              overflowY: "auto",
-              padding: 6,
-            }}
-          >
-            <button
-              onClick={() => { setTagFilter(null); setTagMenuOpen(false); }}
-              style={{
-                width: "100%",
-                textAlign: "left",
-                background: !tagFilter ? "rgba(42,42,36,0.08)" : "transparent",
-                border: "none",
-                borderRadius: 10,
-                padding: "10px 14px",
-                fontFamily: SANS,
-                fontSize: 13.5,
-                color: COLOR.ink,
-                cursor: "pointer",
-              }}
-            >
-              All
-            </button>
-            {availableTags.map((t) => (
-              <button
-                key={t}
-                onClick={() => { setTagFilter(t); setTagMenuOpen(false); }}
-                style={{
-                  width: "100%",
-                  textAlign: "left",
-                  background: tagFilter === t ? "rgba(42,42,36,0.08)" : "transparent",
-                  border: "none",
-                  borderRadius: 10,
-                  padding: "10px 14px",
-                  fontFamily: SANS,
-                  fontSize: 13.5,
-                  color: COLOR.ink,
-                  cursor: "pointer",
-                }}
-              >
-                {t}
-              </button>
-            ))}
-            {availableTags.length === 0 && (
-              <p style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 13, color: COLOR.mutedInk, padding: "10px 14px", margin: 0 }}>
-                No tags yet.
-              </p>
-            )}
-          </div>
-        </>
-      )}
-    </div>
+    <button
+      aria-label="Refine events"
+      onClick={() => setRefineOpen(true)}
+      style={{
+        width: 36,
+        height: 36,
+        borderRadius: "50%",
+        background: tagFilter || activeFilter !== "all" ? COLOR.ink : COLOR.cream,
+        border: "none",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+      }}
+    >
+      <SlidersHorizontal
+        size={14}
+        strokeWidth={1.8}
+        color={tagFilter || activeFilter !== "all" ? COLOR.cream : COLOR.ink}
+      />
+    </button>
   );
 
   return (
@@ -711,34 +648,59 @@ const Events = () => {
 
       <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
 
-      <div className="overflow-x-auto scrollbar-hide" style={{ marginBottom: 32 }}>
-        <div style={{ display: "inline-flex", gap: 8, padding: "0 24px" }}>
-          {FILTERS.map((f) => {
-            const active = activeFilter === f.value;
-            return (
-              <button
-                key={f.value}
-                onClick={() => setActiveFilter(f.value)}
-                style={{
-                  background: active ? COLOR.ink : COLOR.cream,
-                  color: active ? COLOR.cream : COLOR.ink,
-                  border: "none",
-                  borderRadius: 999,
-                  height: 38,
-                  padding: "0 20px",
-                  fontFamily: SANS,
-                  fontSize: 13.5,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                }}
-              >
-                {f.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <RefineDrawer
+        open={refineOpen}
+        onClose={() => setRefineOpen(false)}
+        onClear={() => {
+          setActiveFilter("all");
+          setTagFilter(null);
+        }}
+        resultsCount={datedAll.length}
+        resultsLabel="events"
+      >
+        <RefineSection
+          isFirst
+          label="When"
+          summary={FILTERS.find((f) => f.value === activeFilter)?.label}
+          open={openSection === "when"}
+          onToggle={() => setOpenSection(openSection === "when" ? null : "when")}
+        >
+          {FILTERS.map((f) => (
+            <RefineOption
+              key={f.value}
+              label={f.label}
+              active={activeFilter === f.value}
+              onClick={() => setActiveFilter(f.value)}
+            />
+          ))}
+        </RefineSection>
+
+        <RefineSection
+          label="Tag"
+          summary={tagFilter || undefined}
+          open={openSection === "tag"}
+          onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
+        >
+          <RefineOption
+            label="All tags"
+            active={!tagFilter}
+            onClick={() => setTagFilter(null)}
+          />
+          {availableTags.map((t) => (
+            <RefineOption
+              key={t}
+              label={t}
+              active={tagFilter === t}
+              onClick={() => setTagFilter(t)}
+            />
+          ))}
+          {availableTags.length === 0 && (
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: "4px 0 0 0" }}>
+              No tags yet.
+            </p>
+          )}
+        </RefineSection>
+      </RefineDrawer>
 
       {isLoading ? (
         <div style={{ padding: "0 24px" }}>
