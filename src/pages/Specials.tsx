@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SlidersHorizontal, Calendar, Heart, Search } from "lucide-react";
+import { RefineDrawer, RefineSection, RefineOption, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
@@ -114,6 +115,7 @@ const Specials = () => {
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
   const [search, setSearch] = useState("");
+  const [openSection, setOpenSection] = useState<"sort" | "category" | null>("sort");
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
