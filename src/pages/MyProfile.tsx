@@ -305,7 +305,7 @@ const MyProfile = () => {
           style={{
             margin: 0,
             fontFamily: SANS,
-            fontWeight: 400,
+            fontWeight: 600,
             fontSize: 20,
             letterSpacing: "0.01em",
             color: CREAM,
@@ -331,6 +331,8 @@ const MyProfile = () => {
           <Settings size={18} strokeWidth={1.6} color={INK} />
         </Link>
       </div>
+
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
 
       {/* Profile section — avatar + name + stats */}
       <div style={{ padding: "20px 20px 0" }}>
