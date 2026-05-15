@@ -110,11 +110,8 @@ const TermsPolicies = () => {
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 16, fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.1px", color: DEEP_INK, marginBottom: 5 }}>
+                <div style={{ fontSize: 16, fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.1px", color: DEEP_INK }}>
                   {p.title}
-                </div>
-                <div style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 13.5, lineHeight: 1.4, color: MUTED_INK }}>
-                  {p.subtitle}
                 </div>
               </div>
               <div
