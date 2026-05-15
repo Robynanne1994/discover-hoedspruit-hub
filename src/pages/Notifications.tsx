@@ -468,7 +468,7 @@ function NotifSettingsHeader() {
           <ChevronLeft size={22} strokeWidth={1.6} color={COLORS.cream} />
         </button>
         <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: COLORS.cream, lineHeight: 1 }}>
-          Notification Settings
+          Notification Preferences
         </div>
       </div>
       <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
