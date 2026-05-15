@@ -23,7 +23,7 @@ const release = (e: React.PointerEvent<HTMLElement>) => {
 };
 
 const BackArrow = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DEEP_INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={CREAM} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
     <line x1="19" y1="12" x2="5" y2="12" />
     <polyline points="12 19 5 12 12 5" />
   </svg>
@@ -52,7 +52,7 @@ const TermsPolicies = () => {
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140 }}>
       {/* Top bar */}
-      <div style={{ padding: "32px 24px 0" }}>
+      <div style={{ padding: "60px 24px 0", display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
         <button
           onClick={() => navigate(-1)}
           onPointerDown={press}
@@ -60,29 +60,29 @@ const TermsPolicies = () => {
           onPointerLeave={release}
           aria-label="Back"
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: CREAM,
+            background: "transparent",
             border: "none",
+            padding: 0,
+            margin: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
+            lineHeight: 0,
+            flexShrink: 0,
             transition: "transform 150ms ease-out",
           }}
         >
           <BackArrow />
         </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+          Terms
+        </div>
       </div>
 
-      {/* Hero */}
-      <div style={{ padding: "18px 24px 0" }}>
-        <h1 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 14 }}>
-          terms.
-        </h1>
-        <div style={{ marginBottom: 32 }} />
-      </div>
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+
+      <div style={{ height: 24 }} />
 
       {/* Policy directory card */}
       <div style={{ padding: "0 24px", marginBottom: 24 }}>
