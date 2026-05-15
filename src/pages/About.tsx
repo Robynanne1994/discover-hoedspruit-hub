@@ -60,10 +60,7 @@ const About = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140, position: "relative", overflowX: "hidden" }}>
-      {/* Hero blobs - extend to top of screen */}
-      <div aria-hidden style={{ position: "absolute", top: -120, right: -80, width: 260, height: 320, background: DEEP_OLIVE, borderRadius: BLOB_1, opacity: 0.85, zIndex: 1 }} />
-      <div aria-hidden style={{ position: "absolute", top: 80, right: -30, width: 120, height: 130, background: "rgba(238,232,218,0.08)", borderRadius: BLOB_2, zIndex: 1 }} />
-
+      {/* Solid hero background — decorative blobs removed */}
       {/* Top bar */}
       <div style={{ position: "relative", zIndex: 3, padding: "32px 24px 0" }}>
         <button
