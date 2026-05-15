@@ -112,7 +112,7 @@ export const FILTER_TYPE_META: Record<
     itemNoun: { one: "event", many: "events" },
   },
   listings_new: {
-    eyebrow: "NEW LISTINGS · CATEGORIES",
+    eyebrow: "NEW LISTINGS",
     title: "tell us what to send.",
     subline: "Choose which categories trigger a notification when a new place joins the app.",
     groups: LISTING_CATEGORY_GROUPS,
@@ -120,7 +120,7 @@ export const FILTER_TYPE_META: Record<
     itemNoun: { one: "listing", many: "listings" },
   },
   listings_updates: {
-    eyebrow: "LISTING UPDATES · CATEGORIES",
+    eyebrow: "LISTING UPDATES",
     title: "narrow it down.",
     subline: "Choose which categories you want updates from when followed places change.",
     groups: LISTING_CATEGORY_GROUPS,
