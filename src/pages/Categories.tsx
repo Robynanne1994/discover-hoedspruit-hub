@@ -362,7 +362,7 @@ const Categories = () => {
           {/* In the spotlight */}
           {featuredCategories.length > 0 && (
             <>
-              <SectionHead title="the essentials" />
+              <SectionHead title="The Essentials" />
               <div style={{ padding: "0 24px", marginBottom: 28, display: "flex", flexDirection: "column", gap: 16 }}>
                 {featuredCategories.map((featured) => (
                 <Link
