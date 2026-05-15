@@ -335,7 +335,7 @@ const MyProfile = () => {
       <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
 
       {/* Profile section — avatar + name + stats */}
-      <div style={{ padding: "20px 20px 0" }}>
+      <div style={{ padding: "20px 24px 0" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div
             style={{
