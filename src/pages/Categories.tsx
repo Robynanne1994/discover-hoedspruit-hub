@@ -123,20 +123,67 @@ const Categories = () => {
 
   const debouncedSearch = search.trim();
 
+  const matchingCategoryIds = useMemo(() => {
+    if (!categories || !debouncedSearch) return [];
+    const q = debouncedSearch.toLowerCase();
+    return categories.filter((c) => c.title.toLowerCase().includes(q)).map((c) => c.id);
+  }, [categories, debouncedSearch]);
+
   const { data: searchedListings } = useQuery({
-    queryKey: ["explore-listing-search", debouncedSearch],
+    queryKey: ["explore-listing-search", debouncedSearch, matchingCategoryIds],
     queryFn: async () => {
       if (!debouncedSearch) return [];
-      const { data, error } = await supabase
+      const escaped = debouncedSearch.replace(/[%,]/g, " ");
+      // Title match
+      const titleQ = supabase
         .from("listings")
-        .select("id, title, image_url, location")
-        .ilike("title", `%${debouncedSearch}%`)
-        .limit(10);
-      if (error) throw error;
-      return data || [];
+        .select("id, title, image_url, location, category_id")
+        .ilike("title", `%${escaped}%`)
+        .limit(20);
+
+      // Category match (direct category_id)
+      const catDirectQ = matchingCategoryIds.length
+        ? supabase
+            .from("listings")
+            .select("id, title, image_url, location, category_id")
+            .in("category_id", matchingCategoryIds)
+            .limit(50)
+        : null;
+
+      // Category match via junction table
+      const junctionQ = matchingCategoryIds.length
+        ? supabase
+            .from("listing_categories")
+            .select("listing_id")
+            .in("category_id", matchingCategoryIds)
+            .limit(200)
+        : null;
+
+      const [titleRes, catRes, juncRes] = await Promise.all([
+        titleQ,
+        catDirectQ,
+        junctionQ,
+      ]);
+      if (titleRes.error) throw titleRes.error;
+
+      const map = new Map<string, any>();
+      (titleRes.data || []).forEach((l) => map.set(l.id, l));
+      (catRes?.data || []).forEach((l) => map.set(l.id, l));
+
+      const junctionIds = (juncRes?.data || []).map((r: any) => r.listing_id).filter(Boolean);
+      const missingIds = junctionIds.filter((id) => !map.has(id));
+      if (missingIds.length) {
+        const { data: extra } = await supabase
+          .from("listings")
+          .select("id, title, image_url, location, category_id")
+          .in("id", missingIds);
+        (extra || []).forEach((l) => map.set(l.id, l));
+      }
+      return Array.from(map.values()).slice(0, 30);
     },
     enabled: debouncedSearch.length >= 2,
   });
+
 
   const filteredCategories = useMemo(() => {
     if (!categories) return [];
