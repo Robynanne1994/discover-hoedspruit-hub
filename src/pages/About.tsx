@@ -96,12 +96,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* Meet the founder heading */}
-      <div style={{ padding: "0 24px", display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "0 0 16px" }}>
-        <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0 }}>
-          meet the founder
-        </h2>
-      </div>
 
       {/* Story */}
       <div style={{ padding: "0 24px", marginBottom: 36 }}>
