@@ -368,7 +368,8 @@ const MyProfile = () => {
               <Skeleton className="h-7 w-40 bg-white/10" />
             ) : (
               <>
-                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <h2
                     style={{
                       fontFamily: SANS,
@@ -386,45 +387,46 @@ const MyProfile = () => {
                   >
                     {titleCase(profile?.display_name) || "You"}
                   </h2>
-                  <button
-                    onClick={() => navigate("/account-settings/info")}
-                    aria-label="Edit profile"
-                    style={{
-                      flexShrink: 0,
-                      height: 28,
-                      padding: "0 12px",
-                      borderRadius: 999,
-                      background: CREAM,
-                      color: INK,
-                      border: "none",
-                      fontFamily: SANS,
-                      fontWeight: 500,
-                      fontSize: 12,
-                      letterSpacing: "0.02em",
-                      cursor: "pointer",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 5,
-                    }}
-                  >
-                    <Pencil size={11} strokeWidth={1.8} color={INK} />
-                    Edit
-                  </button>
+                  {profile?.username && (
+                    <div
+                      style={{
+                        fontFamily: SANS,
+                        fontWeight: 400,
+                        fontSize: 13,
+                        color: CREAM,
+                        opacity: 0.7,
+                        marginTop: 4,
+                      }}
+                    >
+                      @{profile.username.toLowerCase()}
+                    </div>
+                  )}
                 </div>
-                {profile?.username && (
-                  <div
-                    style={{
-                      fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 13,
-                      color: CREAM,
-                      opacity: 0.7,
-                      marginTop: 4,
-                    }}
-                  >
-                    @{profile.username.toLowerCase()}
-                  </div>
-                )}
+                <button
+                  onClick={() => navigate("/account-settings/info")}
+                  aria-label="Edit profile"
+                  style={{
+                    flexShrink: 0,
+                    height: 28,
+                    padding: "0 12px",
+                    borderRadius: 999,
+                    background: CREAM,
+                    color: INK,
+                    border: "none",
+                    fontFamily: SANS,
+                    fontWeight: 500,
+                    fontSize: 12,
+                    letterSpacing: "0.02em",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                >
+                  <Pencil size={11} strokeWidth={1.8} color={INK} />
+                  Edit
+                </button>
+              </div>
               </>
             )}
           </div>
