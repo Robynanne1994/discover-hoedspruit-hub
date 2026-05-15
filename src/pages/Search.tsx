@@ -44,57 +44,62 @@ const Search = () => {
       {/* Header */}
       <div
         style={{
-          padding: "60px 20px 12px",
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          alignItems: "center",
+          paddingTop: 60,
           background: PAGE_BG,
         }}
       >
-        <div style={{ justifySelf: "start" }}>
-          {fromProfile && profileId ? (
+        <div
+          style={{
+            padding: "0 20px 12px",
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+            minHeight: 32,
+          }}
+        >
+          <div style={{ justifySelf: "start", display: "flex", alignItems: "center" }}>
             <button
               type="button"
-              onClick={() => navigate("/my-profile")}
+              onClick={() => {
+                if (fromProfile && profileId) navigate("/my-profile");
+                else navigate(-1);
+              }}
+              aria-label="Go back"
               style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 6,
                 background: "none",
                 border: "none",
-                padding: "10px 4px",
+                padding: 4,
+                margin: -4,
                 cursor: "pointer",
-                fontFamily: FONT,
-                fontWeight: 400,
-                fontSize: 15,
-                letterSpacing: "0.01em",
-                color: PRIMARY,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#0a0a0a",
               }}
             >
-              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={PRIMARY} strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="19" y1="12" x2="5" y2="12" />
                 <polyline points="12 19 5 12 12 5" />
               </svg>
-              Profile
             </button>
-          ) : (
-            <BackButton to="/" />
-          )}
+          </div>
+          <h1
+            style={{
+              margin: 0,
+              fontFamily: FONT,
+              fontWeight: 600,
+              fontSize: 20,
+              lineHeight: 1,
+              letterSpacing: "0.01em",
+              color: "#0a0a0a",
+              justifySelf: "center",
+            }}
+          >
+            Search
+          </h1>
+          <div />
         </div>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: FONT,
-            fontWeight: 400,
-            fontSize: 20,
-            letterSpacing: "0.01em",
-            color: INK,
-            justifySelf: "center",
-          }}
-        >
-          Search
-        </h1>
-        <div />
+        <div style={{ height: 1, width: "100%", background: "rgba(10,10,10,0.1)" }} />
       </div>
 
       {/* Top tabs: Users / Businesses */}
