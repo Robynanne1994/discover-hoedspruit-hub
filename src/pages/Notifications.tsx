@@ -1,6 +1,6 @@
-import BackButton from "@/components/BackButton";
+import { ChevronLeft } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -329,30 +329,7 @@ const Notifications = () => {
 
   return (
     <div style={{ background: COLORS.olive, minHeight: "100vh", paddingBottom: 120 }}>
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
-        <BackButton iconColor={COLORS.ink} />
-      </div>
-
-      {/* Hero */}
-      <div style={{ padding: "18px 24px 0" }}>
-        <h1
-          style={{
-            ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 64,
-            lineHeight: 0.92,
-            letterSpacing: "-2.2px",
-            color: COLORS.cream,
-            margin: 0,
-            marginBottom: 14,
-            textTransform: "lowercase",
-          }}
-        >
-          notification settings.
-        </h1>
-      </div>
+      <NotifSettingsHeader />
 
       {/* Master card */}
       <div style={{ padding: "0 24px", marginBottom: 28 }}>
