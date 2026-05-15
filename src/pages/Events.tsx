@@ -608,7 +608,7 @@ const Events = () => {
           <Search size={18} strokeWidth={1.6} color={COLOR.ink} style={{ flexShrink: 0 }} />
           <input
             type="text"
-            placeholder="Search any local happenings"
+            placeholder="Search local happenings"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="placeholder:text-[#2b2420]/80"
