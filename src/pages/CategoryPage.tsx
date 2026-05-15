@@ -442,8 +442,8 @@ const CategoryPage = () => {
           style={{
             position: "absolute",
             left: 24,
-            top: "50%",
-            transform: "translateY(-50%)",
+            top: 60,
+            height: 44,
             background: "transparent",
             border: "none",
             padding: 0,
