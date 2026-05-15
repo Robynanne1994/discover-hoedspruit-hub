@@ -87,19 +87,6 @@ const BusinessStart = () => {
         >
           list your<br />business.
         </h1>
-        <p
-          style={{
-            fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-            fontWeight: 400,
-            fontSize: 15,
-            lineHeight: 1.65,
-            color: "rgba(238, 232, 218, 0.9)",
-            margin: 0,
-            maxWidth: 320,
-          }}
-        >
-          Get on the app locals already use. Post specials, share what's on and reach the community.
-        </p>
       </div>
 
       {/* Primary CTA card */}
