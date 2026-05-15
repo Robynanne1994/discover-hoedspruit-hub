@@ -434,8 +434,8 @@ const Notifications = () => {
         <span
           style={{
             ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
+            fontFamily: "Inter, sans-serif",
+            fontStyle: "normal",
             fontWeight: 400,
             fontSize: 14,
             color: COLORS.cream,
