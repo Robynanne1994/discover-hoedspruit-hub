@@ -170,7 +170,7 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
           <Utensils className="w-4 h-4" />
           Restaurants & Cafés
         </div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Where to eat or drink</h1>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Where to Eat or Drink</h1>
         <p className="text-muted-foreground">Answer a few quick questions and we'll match you with the perfect spot</p>
       </div>
 

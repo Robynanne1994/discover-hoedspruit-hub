@@ -45,10 +45,10 @@ const Index = () => {
           <HomeListings
             sectionKey="eat"
             categorySearch="%restaurant%"
-            defaultTitle="Where to eat"
+            defaultTitle="Where to Eat"
             seeAllHref="/category/c867119f-8ca9-45a7-870e-6671f028748c"
             primary="Where to"
-            serif="eat"
+            serif="Eat"
           />
         </div>
       )}
@@ -58,10 +58,10 @@ const Index = () => {
           <HomeListings
             sectionKey="stay"
             categorySearch="%accommodation%"
-            defaultTitle="Where to stay"
+            defaultTitle="Where to Stay"
             seeAllHref="/category/cef1c5ad-b199-41c9-bc8a-5834703a953a"
             primary="Where to"
-            serif="stay"
+            serif="Stay"
           />
         </div>
       )}
@@ -71,10 +71,10 @@ const Index = () => {
           <HomeListings
             sectionKey="do"
             categorySearch={["%activit%", "%things to do%", "%adventure%"]}
-            defaultTitle="What to do"
+            defaultTitle="What to Do"
             seeAllHref="/category/4dc26115-569e-4af7-868a-9f783f8a38eb"
             primary="What to"
-            serif="do"
+            serif="Do"
           />
         </div>
       )}
@@ -84,10 +84,10 @@ const Index = () => {
           <HomeListings
             sectionKey="shop"
             categorySearch="%shop%"
-            defaultTitle="Where to shop"
+            defaultTitle="Where to Shop"
             seeAllHref="/category/7b335bd5-3ce9-4ecd-92bd-3735804402b8"
             primary="Where to"
-            serif="shop"
+            serif="Shop"
           />
         </div>
       )}
