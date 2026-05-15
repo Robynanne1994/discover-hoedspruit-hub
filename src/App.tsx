@@ -160,7 +160,7 @@ const App = () => (
               <Route path="/feedback" element={<Feedback />} />
              <Route path="/notifications" element={<Navigate to="/my-notifications" replace />} />
              <Route path="/my-notifications" element={<MyNotifications />} />
-            <Route path="/notification-settings" element={<Notifications />} />
+            <Route path="/notification-preferences" element={<Notifications />} />
              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />
               <Route path="/profile/:id/:type" element={<FollowList />} />

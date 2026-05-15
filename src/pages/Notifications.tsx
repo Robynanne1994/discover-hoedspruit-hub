@@ -471,7 +471,7 @@ function NotifSettingsHeader() {
           Notification Preferences
         </div>
       </div>
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 28 }} />
     </div>
   );
 }
