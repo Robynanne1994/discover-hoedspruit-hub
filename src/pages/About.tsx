@@ -149,47 +149,6 @@ const About = () => {
         </div>
       </div>
 
-      {/* CTA card */}
-      <div style={{ padding: "0 24px", marginBottom: 12 }}>
-        <div style={{ position: "relative", background: RUST, borderRadius: 28, padding: "30px 28px 28px", overflow: "hidden" }}>
-          <div aria-hidden style={{ position: "absolute", right: -80, bottom: -100, width: 240, height: 260, background: DEEP_RUST, borderRadius: BLOB_1, opacity: 0.6 }} />
-          <div aria-hidden style={{ position: "absolute", right: -30, top: -60, width: 160, height: 170, background: "rgba(238,232,218,0.08)", borderRadius: BLOB_2 }} />
-
-          <div style={{ position: "relative", zIndex: 2 }}>
-            <div style={{ fontSize: 11.5, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: "rgba(238,232,218,0.8)", marginBottom: 14 }}>
-              FOR LOCAL BUSINESSES
-            </div>
-            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14, textTransform: "lowercase" }}>
-              ready to do more?
-            </h2>
-            <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
-              A business account lets you claim your listing for personal edits, post specials and share what's on. Register in a few minutes.
-            </p>
-            <button
-              onClick={() => navigate("/for-business")}
-              onPointerDown={press}
-              onPointerUp={release}
-              onPointerLeave={release}
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                background: CREAM,
-                borderRadius: 999,
-                padding: "14px 22px",
-                border: "none",
-                cursor: "pointer",
-                transition: "transform 150ms ease-out",
-                fontFamily: SANS,
-              }}
-            >
-              <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 400, letterSpacing: "0.1px", color: "#2A2A24", textTransform: "none" }}>Get Started</span>
-              <Arrow size={14} color={DEEP_INK} />
-            </button>
-          </div>
-        </div>
-      </div>
-
       <BottomNav />
     </div>
   );
