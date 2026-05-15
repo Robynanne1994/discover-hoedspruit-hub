@@ -284,14 +284,22 @@ const BushTelegraph = () => {
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: HN }}>
       {/* Top bar */}
-      <div style={{
-        display: "flex", justifyContent: "space-between", alignItems: "center",
-        padding: "32px 24px 0",
-      }}>
-        <IconButton onClick={() => navigate(-1)} ariaLabel="Back">
-          <ArrowLeft size={18} color={DEEP_INK} strokeWidth={1.6} />
-        </IconButton>
-        <div style={{ display: "flex", gap: 10 }}>
+      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            background: "transparent", border: "none", padding: 0, margin: 0,
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", lineHeight: 0, flexShrink: 0,
+          }}
+        >
+          <ArrowLeft size={22} color={CREAM} strokeWidth={1.6} />
+        </button>
+        <div style={{ flex: 1, textAlign: "center", fontFamily: HN, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+          Local Channels
+        </div>
+        <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
           {isAdmin && (
             <IconButton onClick={() => navigate("/admin/bush-telegraph")} ariaLabel="Edit local channels">
               <Pencil size={18} color={DEEP_INK} strokeWidth={1.6} />
@@ -303,15 +311,10 @@ const BushTelegraph = () => {
         </div>
       </div>
 
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 20 }} />
+
       {/* Hero */}
-      <div style={{ padding: "18px 24px 0" }}>
-        <h1 style={{
-          fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300, fontSize: 56,
-          lineHeight: 0.95, letterSpacing: "-1.8px", color: CREAM, margin: "0 0 16px",
-          textTransform: "none",
-        }}>
-          local channels.
-        </h1>
+      <div style={{ padding: "0 24px" }}>
         <p style={{
           fontFamily: HN, fontWeight: 400, fontSize: 15, lineHeight: 1.65,
           color: "rgba(238, 232, 218, 0.9)", margin: "0 0 24px", maxWidth: 330,
