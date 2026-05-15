@@ -632,24 +632,7 @@ const AccountInfo = () => {
 
         <button
           type="button"
-          onClick={async () => {
-            if (!confirm("Delete your account? This permanently deletes your account and all associated data. This action cannot be undone.")) return;
-            try {
-              const { data: sessionData } = await supabase.auth.getSession();
-              const token = sessionData.session?.access_token;
-              if (!token) throw new Error("Not signed in");
-              const { data, error } = await supabase.functions.invoke("delete-account", {
-                headers: { Authorization: `Bearer ${token}` },
-              });
-              if (error) throw error;
-              if ((data as any)?.error) throw new Error((data as any).error);
-              await supabase.auth.signOut();
-              toast.success("Your account has been deleted");
-              navigate("/auth", { replace: true });
-            } catch (err: any) {
-              toast.error(err?.message || "Could not delete account");
-            }
-          }}
+          onClick={() => setDeleteOpen(true)}
           style={{
             display: "block",
             margin: "20px auto 0",
@@ -668,6 +651,34 @@ const AccountInfo = () => {
           Delete Account
         </button>
       </div>
+
+      <AlertDialog open={deleteOpen} onOpenChange={(o) => !deleting && setDeleteOpen(o)}>
+        <AlertDialogContent style={{ fontFamily: FF }}>
+          <AlertDialogHeader>
+            <AlertDialogTitle style={{ fontFamily: FF, color: INK }}>
+              Delete your account?
+            </AlertDialogTitle>
+            <AlertDialogDescription style={{ fontFamily: FF, color: MUTED, fontSize: 14, lineHeight: 1.5 }}>
+              Are you sure? This will permanently delete your account and all of your associated data, including saved listings, collections and reviews. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleting} style={{ fontFamily: FF }}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={deleting}
+              onClick={(e) => {
+                e.preventDefault();
+                handleDeleteAccount();
+              }}
+              style={{ fontFamily: FF, background: "#B00020", color: "#fff" }}
+            >
+              {deleting ? "Deleting…" : "Yes, delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {pwOpen && <ChangePasswordSheet onClose={() => setPwOpen(false)} />}
     </div>
