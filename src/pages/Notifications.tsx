@@ -1,6 +1,6 @@
-import BackButton from "@/components/BackButton";
+import { ChevronLeft } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -329,30 +329,7 @@ const Notifications = () => {
 
   return (
     <div style={{ background: COLORS.olive, minHeight: "100vh", paddingBottom: 120 }}>
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
-        <BackButton iconColor={COLORS.ink} />
-      </div>
-
-      {/* Hero */}
-      <div style={{ padding: "18px 24px 0" }}>
-        <h1
-          style={{
-            ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 64,
-            lineHeight: 0.92,
-            letterSpacing: "-2.2px",
-            color: COLORS.cream,
-            margin: 0,
-            marginBottom: 14,
-            textTransform: "lowercase",
-          }}
-        >
-          notification settings.
-        </h1>
-      </div>
+      <NotifSettingsHeader />
 
       {/* Master card */}
       <div style={{ padding: "0 24px", marginBottom: 28 }}>
@@ -472,5 +449,60 @@ const Notifications = () => {
     </div>
   );
 };
+
+function NotifSettingsHeader() {
+  const navigate = useNavigate();
+  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+  const INK = COLORS.ink;
+  return (
+    <div
+      style={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "60px 20px 18px",
+        background: COLORS.olive,
+      }}
+    >
+      <button
+        onClick={() => navigate(-1)}
+        aria-label="Back"
+        style={{
+          position: "absolute",
+          left: 12,
+          top: 60,
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          background: "none",
+          border: "none",
+          padding: "6px 8px",
+          cursor: "pointer",
+          color: COLORS.cream,
+          fontFamily: SANS,
+          fontSize: 17,
+          fontWeight: 400,
+          height: "calc(100% - 60px - 18px)",
+        }}
+      >
+        <ChevronLeft size={22} strokeWidth={2} />
+        <span>Back</span>
+      </button>
+      <h1
+        style={{
+          margin: 0,
+          fontFamily: SANS,
+          fontWeight: 600,
+          fontSize: 20,
+          color: COLORS.cream,
+          letterSpacing: "-0.1px",
+        }}
+      >
+        Notification Settings
+      </h1>
+    </div>
+  );
+}
 
 export default Notifications;
