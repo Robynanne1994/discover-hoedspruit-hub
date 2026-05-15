@@ -343,6 +343,7 @@ const CategoryPage = () => {
 
   const clearAllFilters = () => {
     setSearchParams({});
+    setSearch("");
     setFilterCuisine([]);
     setFilterVibe([]);
     setFilterMeal([]);
@@ -915,6 +916,25 @@ const CategoryPage = () => {
           >
             {isSearchEmpty ? "Try clearing your filters or search." : "Check back soon as new places join the app."}
           </p>
+          {isSearchEmpty && (
+            <button
+              onClick={clearAllFilters}
+              style={{
+                marginTop: 20,
+                background: "#EEE8DA",
+                color: "#2A2A24",
+                border: "none",
+                borderRadius: 999,
+                padding: "12px 22px",
+                fontFamily: sans,
+                fontSize: 14,
+                fontWeight: 400,
+                cursor: "pointer",
+              }}
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       )}
     </div>
