@@ -555,7 +555,7 @@ const SectionHead = ({ title, counter }: { title: string; counter?: string }) =>
         letterSpacing: "-0.5px",
         color: COLORS.cream,
         margin: 0,
-        textTransform: "lowercase",
+        textTransform: "capitalize",
       }}
     >
       {title}
