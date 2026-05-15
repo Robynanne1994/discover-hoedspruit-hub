@@ -155,29 +155,34 @@ const Advertise = () => {
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: FF }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{
+        paddingTop: 60, paddingLeft: 24, paddingRight: 24,
+        display: "flex", alignItems: "center", gap: 12, minHeight: 44,
+      }}>
         <button
           onClick={() => navigate(-1)}
           {...tap}
           style={{
-            width: 44, height: 44, borderRadius: "50%",
-            background: CREAM, border: "none", cursor: "pointer",
+            background: "transparent", border: "none", padding: 0, margin: 0,
             display: "inline-flex", alignItems: "center", justifyContent: "center",
-            transition: "transform 0.15s ease",
+            cursor: "pointer", lineHeight: 0, flexShrink: 0,
           }}
           aria-label="Back"
         >
-          <BackArrowIcon size={18} color={INK} />
+          <BackArrowIcon size={22} color={CREAM} />
         </button>
+        <div style={{
+          flex: 1, textAlign: "center", marginRight: 22,
+          fontFamily: FF, fontSize: 20, fontWeight: 600, color: CREAM, lineHeight: 1,
+        }}>
+          Advertise
+        </div>
       </div>
 
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+
       {/* Hero */}
-      <div style={{ padding: "18px 24px 0" }}>
-        <h1 style={{
-          fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300,
-          fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px",
-          color: CREAM, margin: "0 0 18px", textTransform: "lowercase",
-        }}>advertise.</h1>
+      <div style={{ padding: "24px 24px 0" }}>
         <p style={{
           fontFamily: FF, fontSize: 15, fontWeight: 400, lineHeight: 1.65,
           color: "rgba(238, 232, 218, 0.9)", maxWidth: 330, margin: "0 0 32px",
@@ -185,6 +190,7 @@ const Advertise = () => {
           Get in front of locals, visitors and newcomers using Hello Hoedspruit to find what's open, what's on and what's worth their time.
         </p>
       </div>
+
 
       {/* Stats card */}
       <div style={{ padding: "0 24px", marginBottom: 18 }}>
