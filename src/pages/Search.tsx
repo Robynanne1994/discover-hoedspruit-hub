@@ -665,10 +665,12 @@ const SpecialsResults = ({ query }: { query: string }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["search-specials", term],
     queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("specials")
-        .select("id, title, business_name, image_url, deal_label")
+        .select("id, title, business_name, image_url, deal_label, valid_until")
         .eq("is_active", true)
+        .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("sort_order", { ascending: true })
         .limit(50);
       if (term) q = q.ilike("title", `%${term}%`);
