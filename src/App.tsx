@@ -141,7 +141,7 @@ const App = () => (
               
               <Route path="/saved" element={<SavedListings />} />
               <Route path="/visited" element={<VisitedPlaces />} />
-              <Route path="/account-settings" element={<AccountSettings />} />
+              <Route path="/account-settings" element={<Navigate to="/my-account" replace />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
               <Route path="/terms" element={<TermsPolicies />} />
               
