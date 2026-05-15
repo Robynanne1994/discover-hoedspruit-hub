@@ -257,10 +257,8 @@ const FAQs = () => {
 
       {/* CTA */}
       <div style={{ padding: "0 24px", marginTop: 28, marginBottom: 12 }}>
-        <div style={{ position: "relative", background: RUST, borderRadius: 28, padding: "30px 28px 28px", overflow: "hidden" }}>
-          <div aria-hidden style={{ position: "absolute", right: -80, bottom: -100, width: 240, height: 260, background: DEEP_RUST, borderRadius: BLOB_1, opacity: 0.6 }} />
-          <div aria-hidden style={{ position: "absolute", right: -30, top: -60, width: 160, height: 170, background: "rgba(238,232,218,0.08)", borderRadius: BLOB_2 }} />
-          <div style={{ position: "relative", zIndex: 2 }}>
+        <div style={{ background: RUST, borderRadius: 28, padding: "30px 28px 28px" }}>
+          <div>
             <div style={{ marginBottom: 14 }}>
               <Eyebrow opacity={0.8} size={11.5}>STILL STUCK</Eyebrow>
             </div>
