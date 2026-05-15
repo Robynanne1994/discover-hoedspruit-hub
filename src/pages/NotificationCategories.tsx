@@ -1,4 +1,5 @@
-import BackButton from "@/components/BackButton";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -155,7 +156,25 @@ const NotificationCategories = () => {
   return (
     <div style={{ background: COLORS.olive, minHeight: "100vh", paddingBottom: 120 }}>
       <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
-        <BackButton iconColor={COLORS.ink} />
+        <button
+          type="button"
+          aria-label="Go back"
+          onClick={() => navigate(-1)}
+          style={{
+            background: "transparent",
+            border: "none",
+            padding: 0,
+            margin: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            lineHeight: 0,
+            flexShrink: 0,
+          }}
+        >
+          <BackArrowIcon size={22} color={COLORS.cream} />
+        </button>
       </div>
 
       {/* Hero */}
