@@ -389,23 +389,6 @@ const ContactUs = () => {
         />
       </div>
 
-      {/* Sign-off */}
-      <div style={{ paddingTop: 24, paddingLeft: 24, paddingRight: 24 }}>
-        <p
-          style={{
-            fontFamily: FF_SERIF,
-            fontStyle: "italic",
-            fontWeight: 400,
-            fontSize: 17,
-            color: "rgba(238,232,218,0.75)",
-            margin: 0,
-            textAlign: "center",
-            lineHeight: 1.4,
-          }}
-        >
-          — with love from the 'Hoed.
-        </p>
-      </div>
 
       <BottomNav />
     </div>
