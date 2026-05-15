@@ -648,34 +648,59 @@ const Events = () => {
 
       <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
 
-      <div className="overflow-x-auto scrollbar-hide" style={{ marginBottom: 32 }}>
-        <div style={{ display: "inline-flex", gap: 8, padding: "0 24px" }}>
-          {FILTERS.map((f) => {
-            const active = activeFilter === f.value;
-            return (
-              <button
-                key={f.value}
-                onClick={() => setActiveFilter(f.value)}
-                style={{
-                  background: active ? COLOR.ink : COLOR.cream,
-                  color: active ? COLOR.cream : COLOR.ink,
-                  border: "none",
-                  borderRadius: 999,
-                  height: 38,
-                  padding: "0 20px",
-                  fontFamily: SANS,
-                  fontSize: 13.5,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                }}
-              >
-                {f.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <RefineDrawer
+        open={refineOpen}
+        onClose={() => setRefineOpen(false)}
+        onClear={() => {
+          setActiveFilter("all");
+          setTagFilter(null);
+        }}
+        resultsCount={datedAll.length}
+        resultsLabel="events"
+      >
+        <RefineSection
+          isFirst
+          label="When"
+          summary={FILTERS.find((f) => f.value === activeFilter)?.label}
+          open={openSection === "when"}
+          onToggle={() => setOpenSection(openSection === "when" ? null : "when")}
+        >
+          {FILTERS.map((f) => (
+            <RefineOption
+              key={f.value}
+              label={f.label}
+              active={activeFilter === f.value}
+              onClick={() => setActiveFilter(f.value)}
+            />
+          ))}
+        </RefineSection>
+
+        <RefineSection
+          label="Tag"
+          summary={tagFilter || undefined}
+          open={openSection === "tag"}
+          onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
+        >
+          <RefineOption
+            label="All tags"
+            active={!tagFilter}
+            onClick={() => setTagFilter(null)}
+          />
+          {availableTags.map((t) => (
+            <RefineOption
+              key={t}
+              label={t}
+              active={tagFilter === t}
+              onClick={() => setTagFilter(t)}
+            />
+          ))}
+          {availableTags.length === 0 && (
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: "4px 0 0 0" }}>
+              No tags yet.
+            </p>
+          )}
+        </RefineSection>
+      </RefineDrawer>
 
       {isLoading ? (
         <div style={{ padding: "0 24px" }}>
