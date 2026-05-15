@@ -6,6 +6,7 @@ import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import loadingIcon from "@/assets/loading-icon.svg";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Welcome from "./pages/Welcome.tsx";
@@ -94,7 +95,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#5C6446" }}>
-        <div className="animate-pulse text-primary font-heading font-bold text-xl">Hello Hoedspruit</div>
+        <img src={loadingIcon} alt="Loading" className="animate-pulse" style={{ width: 120, height: "auto" }} />
       </div>
     );
   }
