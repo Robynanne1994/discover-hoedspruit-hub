@@ -362,18 +362,6 @@ const BushTelegraph = () => {
             }}
             {...press}
           >
-            {/* Blob 1 - dark accent bottom-right */}
-            <div aria-hidden style={{
-              position: "absolute", right: -80, bottom: -100,
-              width: 240, height: 260, background: DEEP_RUST, opacity: 0.6,
-              borderRadius: "50% 45% 55% 50% / 55% 50% 60% 45%", zIndex: 1,
-            }} />
-            {/* Blob 2 - cream highlight top-right */}
-            <div aria-hidden style={{
-              position: "absolute", right: -30, top: -60,
-              width: 160, height: 170, background: CREAM, opacity: 0.08,
-              borderRadius: "55% 45% 50% 55% / 50% 60% 45% 55%", zIndex: 1,
-            }} />
             <div style={{
               position: "absolute", top: 22, right: 22, zIndex: 3,
               width: 38, height: 38, borderRadius: 999,
