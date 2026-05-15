@@ -290,6 +290,8 @@ const Categories = () => {
             }}
           />
         </div>
+      </div>
+
 
       {/* Listing search results */}
       {listingResults.length > 0 && (
