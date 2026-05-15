@@ -48,7 +48,7 @@ const SECTIONS: Section[] = [
     items: [
       { q: "How do I find a specific business?", a: "Use the search bar on the home screen, or browse by category. You can also filter by area, amenities, and other details on each category page." },
       { q: "Can I save listings to view later?", a: "Yes. Tap the heart icon on any listing to save it to your favourites, and organise them into custom collections from your account." },
-      { q: "What does \"Visited\" mean?", a: "Marking a place as visited keeps a private log of where you've been. It doesn't get shared, and helps you remember your favourites." },
+      
       { q: "How do I find events in Hoedspruit?", a: "Open the Events tab to see what's on, browse by date in the calendar view, or save events you're interested in to your saved page." },
     ],
   },
