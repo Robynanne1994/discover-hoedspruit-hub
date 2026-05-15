@@ -43,25 +43,31 @@ export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPagePro
       }}
     >
       {/* Top bar */}
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 9999,
-            background: C.cream,
+            background: "transparent",
             border: "none",
+            padding: 0,
+            margin: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
+            lineHeight: 0,
+            flexShrink: 0,
           }}
         >
-          <BackArrowIcon size={18} color={C.ink} />
+          <BackArrowIcon size={22} color={C.cream} />
         </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: sans, fontWeight: 600, fontSize: 20, color: C.cream, lineHeight: 1 }}>
+          {title.replace(/\.$/, "").replace(/\b\w/g, (c) => c.toUpperCase())}
+        </div>
       </div>
+
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
 
       {/* Hero */}
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 36 }}>
