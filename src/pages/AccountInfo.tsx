@@ -267,62 +267,45 @@ const AccountInfo = () => {
           paddingRight: 24,
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 12,
+          minHeight: 44,
         }}
       >
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: 999,
-            background: CREAM,
+            background: "transparent",
             border: "none",
-            display: "flex",
+            padding: 0,
+            margin: 0,
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
+            lineHeight: 0,
+            flexShrink: 0,
           }}
         >
-          <ArrowLeft size={18} strokeWidth={1.6} color={INK} />
+          <ArrowLeft size={22} strokeWidth={1.8} color={CREAM} />
         </button>
-        <button
-          onClick={() => navigate(-1)}
+        <div
           style={{
-            background: "transparent",
-            border: "none",
-            color: CREAM,
-            opacity: 0.75,
+            flex: 1,
+            textAlign: "center",
+            marginRight: 22,
             fontFamily: FF,
-            fontSize: 14,
-            fontWeight: 400,
-            cursor: "pointer",
+            fontSize: 20,
+            fontWeight: 600,
+            color: CREAM,
+            lineHeight: 1,
           }}
         >
-          Cancel
-        </button>
+          Account Info
+        </div>
       </div>
 
-      {/* Hero */}
-      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
-        <h1
-          style={{
-            fontFamily: PF,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 60,
-            lineHeight: 0.92,
-            letterSpacing: "-2px",
-            color: CREAM,
-            margin: 0,
-            marginBottom: 14,
-            textTransform: "lowercase",
-          }}
-        >
-          account info.
-        </h1>
-      </div>
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
 
       {/* Profile Photo */}
       <div
