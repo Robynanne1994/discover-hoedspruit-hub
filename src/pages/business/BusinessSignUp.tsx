@@ -192,7 +192,7 @@ const BusinessSignUp = () => {
             margin: 0,
           }}
         >
-          list yours.
+          Claim Your Listing
         </h1>
         <p
           style={{
