@@ -205,6 +205,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ScrollToTop />
+            <TitleCaseH1 />
             <ConditionalBottomNav />
           </AuthGate>
         </BrowserRouter>
