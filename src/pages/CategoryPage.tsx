@@ -554,7 +554,7 @@ const CategoryPage = () => {
         onClose={() => setRefineOpen(false)}
         onClear={clearAllFilters}
         resultsCount={filteredListings.length}
-        resultsLabel="places"
+        resultsLabel="listings"
       >
         <RefineSection
           isFirst
