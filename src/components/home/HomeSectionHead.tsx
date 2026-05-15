@@ -24,9 +24,9 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
         style={{
           margin: 0,
           fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif',
-          fontWeight: 400,
+          fontWeight: 700,
           fontStyle: "normal",
-          fontSize: 17,
+          fontSize: 24,
           lineHeight: 1.0,
           letterSpacing: "0.01em",
           color: "#EEE8DA",
