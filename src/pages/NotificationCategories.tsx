@@ -175,22 +175,6 @@ const NotificationCategories = () => {
         >
           {meta.eyebrow}
         </div>
-        <h1
-          style={{
-            ...baseText,
-            fontFamily: ITALIC_STACK,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 56,
-            lineHeight: 0.95,
-            letterSpacing: "-1.8px",
-            color: COLORS.cream,
-            margin: 0,
-            marginBottom: 14,
-          }}
-        >
-          {meta.title}
-        </h1>
         <p
           style={{
             ...baseText,
