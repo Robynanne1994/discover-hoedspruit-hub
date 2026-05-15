@@ -128,7 +128,7 @@ export const FILTER_TYPE_META: Record<
     itemNoun: { one: "listing", many: "listings" },
   },
   specials_new: {
-    eyebrow: "NEW SPECIALS · CATEGORIES",
+    eyebrow: "NEW SPECIALS",
     title: "pick your kind of deal.",
     subline: "Choose which kinds of business deals you want to hear about.",
     groups: LISTING_CATEGORY_GROUPS,
