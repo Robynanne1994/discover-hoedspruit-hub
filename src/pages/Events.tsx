@@ -656,24 +656,25 @@ const Events = () => {
       </div>
 
       {/* Search */}
-      <div style={{ padding: "0 24px", marginBottom: 22 }}>
+      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
         <div
           style={{
-            height: 52,
+            height: 44,
             background: "rgba(238, 232, 218, 0.92)",
             borderRadius: 999,
-            padding: "0 22px",
+            padding: "0 20px",
             display: "flex",
             alignItems: "center",
             gap: 12,
           }}
         >
-          <Search size={18} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
+          <Search size={18} strokeWidth={1.6} color={COLOR.ink} style={{ flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search any local happenings"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
               background: "transparent",
