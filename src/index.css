@@ -325,3 +325,11 @@ body {
   text-transform: none !important;
   letter-spacing: inherit;
 }
+
+/* Force Title Case on all H1s globally (small words handled by TitleCaseH1.tsx) */
+h1 {
+  text-transform: capitalize !important;
+}
+.home-page h1 {
+  text-transform: capitalize !important;
+}
