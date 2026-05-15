@@ -167,24 +167,55 @@ const AccountInfo = () => {
 
   const handleSaveProfile = async () => {
     if (!user) return;
-    setEditing(null);
+    const trimmedUsername = username.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+
     setSavingProfile(true);
     try {
+      // Uniqueness checks against other users' profiles
+      const checks: Array<{ field: string; value: string; label: string }> = [];
+      if (trimmedUsername) checks.push({ field: "username", value: trimmedUsername, label: "username" });
+      if (trimmedEmail) checks.push({ field: "email", value: trimmedEmail, label: "email" });
+      if (trimmedPhone) checks.push({ field: "phone", value: trimmedPhone, label: "phone number" });
+
+      for (const c of checks) {
+        const { data: existing, error: checkErr } = await supabase
+          .from("profiles")
+          .select("id")
+          .ilike(c.field, c.value)
+          .neq("id", user.id)
+          .limit(1)
+          .maybeSingle();
+        if (checkErr) throw checkErr;
+        if (existing) {
+          toast.error(`That ${c.label} is already in use by another account.`);
+          setSavingProfile(false);
+          return;
+        }
+      }
+
+      // If changing auth email, attempt update first so a duplicate is caught before saving profile
+      if (trimmedEmail && trimmedEmail !== user.email) {
+        const { error: authErr } = await supabase.auth.updateUser({ email: trimmedEmail });
+        if (authErr) {
+          toast.error(authErr.message || "That email is already in use.");
+          setSavingProfile(false);
+          return;
+        }
+      }
+
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
         display_name: displayName.trim() || null,
-        username: username.trim() || null,
-        email: email.trim() || null,
-        phone: phone.trim() || null,
+        username: trimmedUsername || null,
+        email: trimmedEmail || null,
+        phone: trimmedPhone || null,
         location: location.trim() || null,
       } as any);
       if (error) throw error;
 
-      if (email.trim() && email.trim() !== user.email) {
-        const { error: authErr } = await supabase.auth.updateUser({ email: email.trim() });
-        if (authErr) toast.error(authErr.message);
-      }
-
+      setEditing(null);
       toast.success("Saved.", {
         style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
       });
