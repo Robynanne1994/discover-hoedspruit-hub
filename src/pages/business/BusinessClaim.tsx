@@ -183,12 +183,6 @@ const BusinessClaim = () => {
 
       {/* Hero */}
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
-        <p style={{
-          fontFamily: SANS, fontSize: 12, fontWeight: 400, letterSpacing: "2.4px",
-          textTransform: "uppercase", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 14,
-        }}>
-          Claim Your Listing
-        </p>
         <h1 style={{
           fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72,
           lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 14,
