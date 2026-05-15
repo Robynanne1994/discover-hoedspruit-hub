@@ -429,10 +429,9 @@ const CategoryPage = () => {
           paddingTop: 60,
           paddingLeft: 24,
           paddingRight: 24,
-          position: "relative",
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          gap: 12,
           minHeight: 44,
         }}
       >
@@ -440,20 +439,19 @@ const CategoryPage = () => {
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            position: "absolute",
-            left: 24,
-            top: 60,
-            height: 44,
             background: "transparent",
             border: "none",
             padding: 0,
+            margin: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
+            lineHeight: 0,
+            flexShrink: 0,
           }}
         >
-          <BackArrowIcon size={20} color={C.cream} />
+          <BackArrowIcon size={22} color={C.cream} />
         </button>
         <div
           style={{
@@ -462,10 +460,13 @@ const CategoryPage = () => {
             fontWeight: 600,
             color: C.cream,
             textTransform: "lowercase",
-            maxWidth: "60%",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
+            lineHeight: 1,
+            flex: 1,
+            textAlign: "center",
+            marginRight: 22,
           }}
         >
           {lowerTitle}
