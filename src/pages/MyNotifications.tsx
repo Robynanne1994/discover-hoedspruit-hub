@@ -129,18 +129,18 @@ export default function MyNotifications() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "18px 20px",
+          padding: "60px 20px 18px",
           background: CARD,
           borderBottom: `1px solid ${BG}`,
         }}
       >
         <button
-          onClick={() => navigate("/")}
-          aria-label="Home"
+          onClick={() => navigate(-1)}
+          aria-label="Back"
           style={{
             position: "absolute",
             left: 12,
-            top: "50%",
+            top: "calc(50% + 21px)",
             transform: "translateY(-50%)",
             display: "flex",
             alignItems: "center",
@@ -156,13 +156,14 @@ export default function MyNotifications() {
           }}
         >
           <ChevronLeft size={22} strokeWidth={2} />
-          <span>Home</span>
+          <span>Back</span>
         </button>
         <h1
           style={{
             margin: 0,
+            marginTop: 42,
             fontFamily: SANS,
-            fontWeight: 700,
+            fontWeight: 600,
             fontSize: 20,
             color: INK,
             letterSpacing: "-0.1px",
