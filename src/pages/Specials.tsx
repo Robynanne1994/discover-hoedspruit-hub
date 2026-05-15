@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SlidersHorizontal, Calendar, Heart } from "lucide-react";
-import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
@@ -111,7 +110,6 @@ const SaveHeart = ({ id }: { id: string }) => {
 const Specials = () => {
   const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
@@ -220,8 +218,6 @@ const Specials = () => {
           gap: 10,
         }}
       >
-        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
-        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
 
       {/* Hero */}

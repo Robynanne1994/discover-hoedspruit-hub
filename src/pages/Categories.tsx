@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, MapPin } from "lucide-react";
-import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -62,7 +61,6 @@ const ArrowOut = ({ size = 14 }: { size?: number }) => (
 
 const Categories = () => {
   const [search, setSearch] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const { data: categories, isLoading } = useQuery({
@@ -195,8 +193,6 @@ const Categories = () => {
           padding: "0 24px",
         }}
       >
-        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
-        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
 
       {/* Hero block */}
