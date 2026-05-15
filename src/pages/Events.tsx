@@ -635,32 +635,24 @@ const Events = () => {
       {/* Top bar */}
       <div
         style={{
-          padding: "60px 24px 0 24px",
+          paddingTop: 60,
+          paddingLeft: 24,
+          paddingRight: 24,
           display: "flex",
-          justifyContent: "flex-end",
-          gap: 10,
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-      </div>
-
-      {/* Hero */}
-      <div style={{ padding: "24px 24px 0 24px" }}>
-        <h1
+        <div
           style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 72,
-            lineHeight: 0.92,
-            letterSpacing: "-2.5px",
+            fontFamily: SANS,
+            fontSize: 20,
+            fontWeight: 600,
             color: COLOR.cream,
-            margin: 0,
-            marginBottom: 24,
-            textTransform: "none",
           }}
         >
-          what's on.
-        </h1>
+          Events
+        </div>
       </div>
 
       {/* Search */}
