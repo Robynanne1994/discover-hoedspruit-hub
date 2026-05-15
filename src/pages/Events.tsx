@@ -641,7 +641,7 @@ const Events = () => {
             color: "rgba(238,232,218,0.85)",
           }}
         >
-          {sortedEvents.length} events
+          {sortedEvents.length} Upcoming Events
         </span>
         {filterIconBtn}
       </div>
