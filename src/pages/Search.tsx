@@ -33,11 +33,9 @@ const Search = () => {
   const [query, setQuery] = useState("");
 
   const placeholder = useMemo(() => {
-    if (topTab === "users") return "Search for people";
-    if (bizSub === "listings") return "Search listings";
-    if (bizSub === "events") return "Search events";
-    return "Search specials";
-  }, [topTab, bizSub]);
+    if (topTab === "users") return "Search Hello Hoedspruit users";
+    return "Search listings, events & specials";
+  }, [topTab]);
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100 }}>
@@ -161,7 +159,7 @@ const Search = () => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search any local deals"
+            placeholder={placeholder}
             className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
