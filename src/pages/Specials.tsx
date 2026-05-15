@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SlidersHorizontal, Calendar, Heart } from "lucide-react";
+import { SlidersHorizontal, Calendar, Heart, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
@@ -113,6 +113,7 @@ const Specials = () => {
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -155,6 +156,14 @@ const Specials = () => {
   const filteredSpecials = useMemo(() => {
     if (!specials) return [];
     let result = [...specials];
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter((s: any) =>
+        (s.title && s.title.toLowerCase().includes(q)) ||
+        (s.business_name && s.business_name.toLowerCase().includes(q)) ||
+        (s.description && s.description.toLowerCase().includes(q))
+      );
+    }
     if (filterType.length > 0) {
       const lcSelected = filterType.map((t) => t.toLowerCase());
       result = result.filter((s: any) => {
@@ -176,7 +185,7 @@ const Specials = () => {
       result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
     return result;
-  }, [specials, filterType, sortBy]);
+  }, [specials, filterType, sortBy, search]);
 
   const totalCount = specials?.length || 0;
   const subline = totalCount > 0
@@ -212,80 +221,111 @@ const Specials = () => {
       {/* Top bar */}
       <div
         style={{
-          padding: "60px 24px 0 24px",
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: 10,
-        }}
-      >
-      </div>
-
-      {/* Hero */}
-      <div style={{ padding: "24px 24px 0 24px" }}>
-        <h1
-          style={{
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 72,
-            lineHeight: 0.92,
-            letterSpacing: "-2.5px",
-            color: COLOR.cream,
-            margin: 0,
-            marginBottom: 24,
-            textTransform: "none",
-          }}
-        >
-          specials.
-        </h1>
-      </div>
-
-      {/* Filter + Sort row */}
-      <div
-        style={{
-          padding: "0 24px",
-          marginBottom: 28,
+          paddingTop: 60,
+          paddingLeft: 24,
+          paddingRight: 24,
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: SANS,
+            fontSize: 20,
+            fontWeight: 600,
+            color: COLOR.cream,
+          }}
+        >
+          Specials
+        </div>
+      </div>
+
+      {/* Search */}
+      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
+        <div
+          style={{
+            height: 44,
+            background: "rgba(238, 232, 218, 0.92)",
+            borderRadius: 999,
+            padding: "0 20px",
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+          }}
+        >
+          <Search size={18} strokeWidth={1.6} color={COLOR.ink} style={{ flexShrink: 0 }} />
+          <input
+            type="text"
+            placeholder="Search any local deals"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="placeholder:text-[#2b2420]/80"
+            style={{
+              flex: 1,
+              background: "transparent",
+              outline: "none",
+              border: "none",
+              fontFamily: SANS,
+              fontSize: 14,
+              color: COLOR.ink,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Results count + filter */}
+      <div
+        style={{
+          padding: "12px 24px 6px 24px",
+          display: "flex",
+          alignItems: "flex-end",
           justifyContent: "space-between",
         }}
       >
+        <span
+          style={{
+            fontFamily: SANS,
+            fontSize: 15,
+            color: "rgba(238,232,218,0.85)",
+          }}
+        >
+          {filteredSpecials.length} specials
+        </span>
         <button
+          aria-label="Filter specials"
           onClick={() => setShowFilters((v) => !v)}
           style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: filterType.length > 0 || showFilters ? COLOR.ink : COLOR.cream,
+            border: "none",
             display: "inline-flex",
             alignItems: "center",
-            gap: 8,
-            background: COLOR.cream,
-            border: "none",
-            height: 38,
-            padding: "0 18px",
-            borderRadius: 999,
+            justifyContent: "center",
             cursor: "pointer",
           }}
         >
-          <SlidersHorizontal size={14} strokeWidth={1.8} color={COLOR.ink} />
-          <span style={{ fontFamily: SANS, fontSize: 14, fontWeight: 400, color: COLOR.ink }}>Filter</span>
-          {filterType.length > 0 && (
-            <span
-              style={{
-                background: COLOR.ink,
-                color: COLOR.cream,
-                borderRadius: 999,
-                width: 18,
-                height: 18,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 10,
-                marginLeft: 2,
-              }}
-            >
-              {filterType.length}
-            </span>
-          )}
+          <SlidersHorizontal
+            size={14}
+            strokeWidth={1.8}
+            color={filterType.length > 0 || showFilters ? COLOR.cream : COLOR.ink}
+          />
         </button>
+      </div>
 
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
+
+      {/* Sort row */}
+      <div
+        style={{
+          padding: "0 24px",
+          marginBottom: 20,
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
         <div ref={sortRef} style={{ position: "relative" }}>
           <button
             onClick={() => setShowSortMenu((v) => !v)}
