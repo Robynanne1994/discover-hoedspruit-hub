@@ -34,7 +34,7 @@ const HomeLocalChannels = () => {
         primary="Local"
         serif="channels"
         actionLabel="See all"
-        actionHref="/bush-telegraph"
+        actionHref="/local-channels"
       />
       <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 12 }}>
         {resources.map((r: any) => (
