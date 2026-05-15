@@ -709,7 +709,8 @@ const Events = () => {
         {filterIconBtn}
       </div>
 
-      {/* Time period pills */}
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
+
       <div className="overflow-x-auto scrollbar-hide" style={{ marginBottom: 32 }}>
         <div style={{ display: "inline-flex", gap: 8, padding: "0 24px" }}>
           {FILTERS.map((f) => {
