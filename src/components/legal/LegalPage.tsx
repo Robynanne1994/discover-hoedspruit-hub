@@ -67,33 +67,7 @@ export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPagePro
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
-
-      {/* Hero */}
-      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 36 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              background: C.rust,
-              flexShrink: 0,
-            }}
-          />
-          <span
-            style={{
-              fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-              fontWeight: 400,
-              fontSize: 15,
-              lineHeight: 1.65,
-              color: "rgba(238,232,218,0.9)",
-            }}
-          >
-            Last updated {dateStr}.
-          </span>
-        </div>
-      </div>
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 24 }} />
 
       {/* Sections */}
       <div>{children}</div>
