@@ -361,8 +361,8 @@ const Notifications = () => {
             <div
               style={{
                 ...baseText,
-                fontFamily: ITALIC_STACK,
-                fontStyle: "italic",
+                fontFamily: "Inter, sans-serif",
+                fontStyle: "normal",
                 fontWeight: 400,
                 fontSize: 13.5,
                 color: COLORS.muted,
