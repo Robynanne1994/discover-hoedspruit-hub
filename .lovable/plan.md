@@ -1,16 +1,27 @@
-## Plan
+## Events page header redesign
 
-**1. Add Settings icon to `MyNotifications` header**
-- In `src/pages/MyNotifications.tsx`, add a `Settings` (gear) icon button positioned absolutely on the right side of the top bar, vertically aligned with the centered "Notifications" title (mirror of the left back button).
-- On click, navigate to `/notification-settings`.
+Match the reference layout: keep the small "Events" title at top, redesign search, then add a results count row with the filter icon on the right.
 
-**2. Create the Notification Settings page**
-- Add route `/notification-settings` in `src/App.tsx`.
-- The existing `src/pages/Notifications.tsx` already implements the full preferences UI (push toggle, per-type toggles, category pickers, save to `notification_preferences`). Reuse it: point `/notification-settings` at `<Notifications />` and update its header to read "Notification Settings" with a Back arrow returning to `/my-notifications`.
-- Keep the existing `/notifications` → `/my-notifications` redirect untouched so old links still work.
+### Changes to `src/pages/Events.tsx`
 
-**3. Visual consistency**
-- Match the new gear icon to the back button: same 22px stroke-2 lucide icon, same `INK` color, same hit area.
-- The Notification Settings page keeps the existing styling; only the title text and back target change.
+1. **Search bar** (line ~658)
+   - Change placeholder from `"Search events"` to `"Search any local happenings"`.
+   - Keep existing styling (cream pill with search icon).
 
-No data model or RLS changes needed — `notification_preferences` table already exists and is wired up.
+2. **New results-count row** (insert between search bar and pills)
+   - Layout: flex row, `padding: "0 24px"`, `marginBottom: 16`, `justifyContent: space-between`, `alignItems: center`.
+   - Left: small text "{N} events" using `sortedEvents.length` (upcoming/visible count) — small size (~13px), cream-tinted color, SANS font.
+   - Right: reuse the existing `filterIconBtn` component (the circular sliders icon with its tag-filter dropdown intact).
+   - No grid/square icon (per request).
+
+3. **Remove filter icon from "upcoming" SectionHead** (line 742)
+   - Change `<SectionHead heading={...} trailing={filterIconBtn} />` to drop the `trailing` prop so the icon no longer appears under the pills.
+
+4. **Keep as-is**
+   - "Events" title at top (already implemented).
+   - Pills row.
+   - All sections below (Upcoming, Recurring, etc.).
+   - No back button (already absent).
+
+### Count semantics
+Use `sortedEvents.length` — that's all upcoming/dated events post-sort, before search/tag filtering. If you'd prefer the count to reflect the active filter+search (i.e. `filtered.length`), confirm and I'll switch it.

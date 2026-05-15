@@ -671,7 +671,7 @@ const Events = () => {
           <Search size={18} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
           <input
             type="text"
-            placeholder="Search events"
+            placeholder="Search any local happenings"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
