@@ -390,7 +390,7 @@ const ListingDetail = () => {
 
     const amenFields = filterDefined([
       { label: "Toilets", value: hasToilet },
-      { label: hasWifi && hasFreeWifi ? "Wifi (Free)" : "Wifi", value: hasWifi || hasFreeWifi ? true : (hasWifi === false && hasFreeWifi !== true ? false : null) },
+      { label: hasWifi === true && hasFreeWifi === true ? "Wifi (Free)" : "Wifi", value: hasWifi },
       { label: "Smoking section", value: smokingAllowed },
       { label: "Pet friendly", value: petsAllowed },
     ]);
