@@ -352,20 +352,6 @@ const Notifications = () => {
         >
           notification settings.
         </h1>
-        <p
-          style={{
-            ...baseText,
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 400,
-            fontSize: 15,
-            color: "rgba(238, 232, 218, 0.9)",
-            margin: 0,
-            marginBottom: 28,
-            lineHeight: 1.65,
-          }}
-        >
-          Pick what you want to hear about, skip what you don't.
-        </p>
       </div>
 
       {/* Master card */}
