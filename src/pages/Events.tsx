@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   isToday,
@@ -393,7 +394,8 @@ const Events = () => {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
-  const [tagMenuOpen, setTagMenuOpen] = useState(false);
+  const [refineOpen, setRefineOpen] = useState(false);
+  const [openSection, setOpenSection] = useState<"when" | "tag" | null>("when");
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
