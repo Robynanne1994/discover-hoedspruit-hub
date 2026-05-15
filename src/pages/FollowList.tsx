@@ -391,23 +391,6 @@ const FollowList = () => {
         >
           {isFollowers ? "FOLLOWERS" : "FOLLOWING"} · {count}
         </p>
-        <h1
-          style={{
-            margin: 0,
-            marginBottom: 22,
-            fontFamily: SERIF,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 72,
-            lineHeight: 0.92,
-            letterSpacing: "-2.5px",
-            color: COLOR.cream,
-            textTransform: "none",
-          }}
-        >
-          your circle.
-        </h1>
-
         {/* Tabs */}
         <div
           style={{
