@@ -357,39 +357,72 @@ const FollowList = () => {
   return (
     <div style={{ minHeight: "100vh", background: COLOR.olive, paddingBottom: 100 }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
+      <div
+        style={{
+          paddingTop: 60,
+          paddingLeft: 24,
+          paddingRight: 24,
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: 44,
+        }}
+      >
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: COLOR.cream,
+            position: "absolute",
+            left: 24,
+            top: 60,
+            background: "transparent",
             border: "none",
+            padding: 0,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
+            height: 24,
           }}
         >
-          <ArrowLeft size={18} strokeWidth={1.6} color={COLOR.ink} />
+          <ArrowLeft size={22} strokeWidth={1.6} color={COLOR.cream} />
         </button>
+        <h1
+          style={{
+            margin: 0,
+            fontFamily: SANS,
+            fontWeight: 600,
+            fontSize: 20,
+            color: COLOR.cream,
+            lineHeight: "24px",
+          }}
+        >
+          Connections
+        </h1>
       </div>
 
-      {/* Hero */}
-      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 20 }}>
-        {/* Tabs */}
+      {/* Divider */}
+      <div
+        style={{
+          marginTop: 18,
+          height: 1,
+          background: "rgba(238,232,218,0.25)",
+          width: "100%",
+        }}
+      />
+
+      {/* Tabs */}
+      <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 4, paddingBottom: 20 }}>
         <div
           style={{
             display: "flex",
-            gap: 28,
             borderBottom: "1px solid rgba(238,232,218,0.18)",
           }}
         >
           {[
-            { key: "followers", label: "Followers" },
-            { key: "following", label: "Following" },
+            { key: "followers", label: "Followers", count: counts?.followers ?? 0 },
+            { key: "following", label: "Following", count: counts?.following ?? 0 },
           ].map((tab) => {
             const active = (tab.key === "followers") === isFollowers;
             return (
@@ -397,6 +430,8 @@ const FollowList = () => {
                 key={tab.key}
                 to={`/profile/${id}/${tab.key}`}
                 style={{
+                  flex: 1,
+                  textAlign: "center",
                   padding: "10px 0",
                   fontFamily: SANS,
                   fontWeight: 400,
@@ -409,7 +444,7 @@ const FollowList = () => {
                   marginBottom: -1,
                 }}
               >
-                {tab.label}
+                {tab.label} ({tab.count})
               </Link>
             );
           })}
