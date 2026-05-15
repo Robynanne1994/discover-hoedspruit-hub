@@ -312,6 +312,7 @@ const AccountInfo = () => {
         style={{
           paddingLeft: 24,
           paddingRight: 24,
+          marginTop: 28,
           marginBottom: 10,
           fontFamily: FF,
           fontSize: 11,
