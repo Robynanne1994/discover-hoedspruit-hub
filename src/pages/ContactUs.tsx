@@ -222,35 +222,6 @@ const ContactUs = () => {
               cursor: "pointer",
             }}
           >
-            {/* Blob 1 */}
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                right: -80,
-                bottom: -100,
-                width: 240,
-                height: 260,
-                background: DEEP_RUST,
-                borderRadius: "50% 45% 55% 50% / 55% 50% 60% 45%",
-                opacity: 0.6,
-                pointerEvents: "none",
-              }}
-            />
-            {/* Blob 2 */}
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                right: -30,
-                top: -60,
-                width: 160,
-                height: 170,
-                background: "rgba(238,232,218,0.08)",
-                borderRadius: "55% 45% 50% 55% / 50% 60% 45% 55%",
-                pointerEvents: "none",
-              }}
-            />
             {/* Arrow */}
             <div
               aria-hidden
