@@ -475,7 +475,7 @@ const MyAccount = () => {
 
   const accountItems = [
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
-    { label: "Notification Preferences", href: "/my-notifications", icon: Bell },
+    { label: "Notification Preferences", href: "/notification-settings", icon: Bell },
   ];
   const myHoedspruitItems = [
     isBusinessOwner || ownedListing
