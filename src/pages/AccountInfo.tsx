@@ -372,7 +372,7 @@ const AccountInfo = () => {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: FF, fontSize: 14, fontWeight: 400, color: INK, marginBottom: 2 }}>
-              {avatarUrl ? "Change photo" : "Add a photo"}
+              {avatarUrl ? "Profile Picture" : "Add a photo"}
             </div>
           </div>
           <input
