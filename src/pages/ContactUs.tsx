@@ -179,21 +179,6 @@ const ContactUs = () => {
 
       {/* Hero */}
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 28 }}>
-        <p
-          style={{
-            fontFamily: FF,
-            fontSize: 12,
-            fontWeight: 400,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "rgba(238,232,218,0.7)",
-            margin: 0,
-            marginBottom: 14,
-            lineHeight: 1,
-          }}
-        >
-          Drop us a line
-        </p>
         <h1
           style={{
             fontFamily: FF_SERIF,
