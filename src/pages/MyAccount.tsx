@@ -663,16 +663,16 @@ const MyAccount = () => {
 
       <div style={{ height: 32 }} />
 
-      <Eyebrow>Help & Settings</Eyebrow>
-      <Card items={helpItems} />
+      <Eyebrow>Account</Eyebrow>
+      <Card items={accountItems} />
 
       <div style={{ height: 28 }} />
-      <Eyebrow>Resources</Eyebrow>
-      <Card items={resourcesItems} />
+      <Eyebrow>My Hoedspruit</Eyebrow>
+      <Card items={myHoedspruitItems} />
 
       <div style={{ height: 28 }} />
-      <Eyebrow>Get In Touch</Eyebrow>
-      <Card items={getInTouchItems} />
+      <Eyebrow>Help & Info</Eyebrow>
+      <Card items={helpInfoItems} />
 
       {isAdmin && (
         <>
