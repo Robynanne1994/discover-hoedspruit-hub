@@ -32,7 +32,7 @@ const HomeSpecials = () => {
 
   return (
     <section>
-      <HomeSectionHead primary="Specials" serif="this month" actionLabel="See all" actionHref="/specials" />
+      <HomeSectionHead primary="Specials" serif="This Month" actionLabel="See all" actionHref="/specials" />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
         <div style={{ display: "flex", gap: 14, paddingRight: 40 }}>
           {specials.map((s) => (
