@@ -155,47 +155,54 @@ const ContactUs = () => {
       }}
     >
       {/* Top bar */}
-      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 32px)", paddingLeft: 24, paddingRight: 24 }}>
+      <div
+        style={{
+          paddingTop: 60,
+          paddingLeft: 24,
+          paddingRight: 24,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          minHeight: 44,
+        }}
+      >
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           {...press}
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: CREAM,
+            background: "transparent",
             border: "none",
-            cursor: "pointer",
-            display: "flex",
+            padding: 0,
+            margin: 0,
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
+            cursor: "pointer",
+            lineHeight: 0,
+            flexShrink: 0,
             transition: "transform 150ms ease-out",
           }}
         >
-          <BackArrowIcon size={18} color={INK} />
+          <BackArrowIcon size={22} color={CREAM} />
         </button>
-      </div>
-
-      {/* Hero */}
-      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 28 }}>
-        <h1
+        <div
           style={{
-            fontFamily: FF_SERIF,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 72,
-            lineHeight: 0.92,
-            letterSpacing: "-0.035em",
+            flex: 1,
+            textAlign: "center",
+            marginRight: 22,
+            fontFamily: FF,
+            fontSize: 20,
+            fontWeight: 600,
             color: CREAM,
-            margin: 0,
-            marginBottom: 18,
-            textTransform: "lowercase",
+            lineHeight: 1,
           }}
         >
-          get in touch.
-        </h1>
+          Contact
+        </div>
       </div>
+
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 24 }} />
 
       {/* Featured Email card */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
