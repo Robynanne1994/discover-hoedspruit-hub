@@ -207,22 +207,12 @@ const CategoryPage = () => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
-  const [showFilters, setShowFilters] = useState(false);
+  const [refineOpen, setRefineOpen] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("default");
-  const [showSortMenu, setShowSortMenu] = useState(false);
   const [search, setSearch] = useState("");
-  const sortRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!showSortMenu) return;
-    const handler = (e: MouseEvent) => {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
-        setShowSortMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [showSortMenu]);
+  const [openSection, setOpenSection] = useState<
+    "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | null
+  >("sort");
 
   const [filterCuisine, setFilterCuisine] = useState<string[]>([]);
   const [filterVibe, setFilterVibe] = useState<string[]>([]);
