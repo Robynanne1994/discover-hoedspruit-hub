@@ -60,40 +60,42 @@ const About = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140, position: "relative", overflowX: "hidden" }}>
-      {/* Solid hero background — decorative blobs removed */}
-      {/* Top bar */}
-      <div style={{ position: "relative", zIndex: 3, padding: "32px 24px 0" }}>
-        <button
-          onClick={() => navigate(-1)}
-          onPointerDown={press}
-          onPointerUp={release}
-          onPointerLeave={release}
-          aria-label="Back"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: CREAM,
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            transition: "transform 150ms ease-out",
-          }}
-        >
-          <BackArrow />
-        </button>
-      </div>
-
-      {/* Hero */}
-      <div style={{ position: "relative", padding: "18px 24px 0" }}>
-
-        <div style={{ position: "relative", zIndex: 2 }}>
-          <h1 style={{ fontFamily: SERIF, fontWeight: 300, fontStyle: "italic", fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 28 }}>
-            about.
+      {/* Top header — 60px top spacing, centered title, hairline border */}
+      <div style={{ position: "relative", zIndex: 3, paddingTop: 60 }}>
+        <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px", minHeight: 32, marginBottom: 16 }}>
+          <button
+            onClick={() => navigate(-1)}
+            onPointerDown={press}
+            onPointerUp={release}
+            onPointerLeave={release}
+            aria-label="Back"
+            style={{
+              position: "absolute",
+              left: 24,
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: "transparent",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={CREAM} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+          </button>
+          <h1 style={{ fontFamily: SANS, fontSize: 20, fontWeight: 600, color: CREAM, margin: 0, letterSpacing: "0.01em" }}>
+            About
           </h1>
         </div>
+        <div style={{ height: 1, width: "100%", background: "rgba(238,232,218,0.2)", marginBottom: 24 }} />
       </div>
 
 
