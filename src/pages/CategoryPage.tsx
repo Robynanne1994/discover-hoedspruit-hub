@@ -343,6 +343,7 @@ const CategoryPage = () => {
 
   const clearAllFilters = () => {
     setSearchParams({});
+    setSearch("");
     setFilterCuisine([]);
     setFilterVibe([]);
     setFilterMeal([]);
