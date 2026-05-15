@@ -1,4 +1,4 @@
-import { ArrowLeft } from "lucide-react";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -465,7 +465,7 @@ function NotifSettingsHeader() {
             cursor: "pointer", lineHeight: 0, flexShrink: 0,
           }}
         >
-          <ArrowLeft size={22} strokeWidth={1.6} color={COLORS.cream} />
+          <BackArrowIcon size={22} color={COLORS.cream} />
         </button>
         <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: COLORS.cream, lineHeight: 1 }}>
           Notification Preferences

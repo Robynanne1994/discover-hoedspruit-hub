@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, ArrowLeft, Settings } from "lucide-react";
+import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, Settings } from "lucide-react";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -155,7 +156,7 @@ export default function MyNotifications() {
             height: "calc(100% - 60px - 18px)",
           }}
         >
-          <ArrowLeft size={22} strokeWidth={2} />
+          <BackArrowIcon size={22} color={INK} />
           <span>Back</span>
         </button>
         <h1
