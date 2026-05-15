@@ -522,7 +522,7 @@ const CategoryPage = () => {
             color: "rgba(238,232,218,0.85)",
           }}
         >
-          {filteredListings.length} {filteredListings.length === 1 ? "place" : "places"}
+          {filteredListings.length} {filteredListings.length === 1 ? "listing" : "listings"}
         </span>
         <button
           aria-label="Refine"
@@ -554,7 +554,7 @@ const CategoryPage = () => {
         onClose={() => setRefineOpen(false)}
         onClear={clearAllFilters}
         resultsCount={filteredListings.length}
-        resultsLabel="places"
+        resultsLabel="listings"
       >
         <RefineSection
           isFirst
