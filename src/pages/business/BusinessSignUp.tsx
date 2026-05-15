@@ -180,20 +180,6 @@ const BusinessSignUp = () => {
 
       {/* Hero */}
       <div style={{ padding: "18px 24px 0" }}>
-        <div
-          style={{
-            fontFamily: SANS,
-            fontSize: 12,
-            fontWeight: 400,
-            letterSpacing: "2.4px",
-            textTransform: "uppercase",
-            color: CREAM,
-            opacity: 0.7,
-            marginBottom: 14,
-          }}
-        >
-          For Local Businesses
-        </div>
         <h1
           style={{
             fontFamily: SERIF,
