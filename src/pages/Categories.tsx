@@ -261,22 +261,23 @@ const Categories = () => {
         {/* Search pill */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            height: 52,
+            height: 44,
             background: "rgba(238, 232, 218, 0.92)",
             borderRadius: 999,
-            padding: "0 22px",
+            padding: "0 20px",
+            display: "flex",
+            alignItems: "center",
             gap: 12,
             marginBottom: 32,
           }}
         >
-          <Search size={18} strokeWidth={1.6} style={{ color: COLORS.muted, flexShrink: 0 }} />
+          <Search size={18} strokeWidth={1.6} color={COLORS.ink} style={{ flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search categories and listings"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
               background: "transparent",
@@ -287,10 +288,8 @@ const Categories = () => {
               fontWeight: 400,
               color: COLORS.ink,
             }}
-            className="placeholder:text-[#6B6A5E]"
           />
         </div>
-      </div>
 
       {/* Listing search results */}
       {listingResults.length > 0 && (
