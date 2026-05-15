@@ -671,6 +671,10 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   const handleSubmit = async () => {
     if (!enabled) return;
     setErrorField(null);
+    if (next === current) {
+      setErrorField({ field: "new", msg: "New password must be different from your current password." });
+      return;
+    }
     setSubmitting(true);
     try {
       const { data: sess } = await supabase.auth.getSession();
