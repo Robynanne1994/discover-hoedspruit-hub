@@ -26,14 +26,14 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
           fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif',
           fontWeight: 400,
           fontStyle: "normal",
-          fontSize: 32,
+          fontSize: 17,
           lineHeight: 1.0,
           letterSpacing: "0.01em",
           color: "#EEE8DA",
-          textTransform: "lowercase",
         }}
+        className="!capitalize"
       >
-        {heading.toLowerCase()}
+        {heading}
       </h2>
       {actionLabel && actionHref && (
         <Link
