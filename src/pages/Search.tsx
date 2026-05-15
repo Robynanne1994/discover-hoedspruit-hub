@@ -159,7 +159,7 @@ const Search = () => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search any local deals"
+            placeholder={placeholder}
             className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
