@@ -453,54 +453,25 @@ const Notifications = () => {
 function NotifSettingsHeader() {
   const navigate = useNavigate();
   const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const INK = COLORS.ink;
   return (
-    <div
-      style={{
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "60px 20px 18px",
-        background: COLORS.olive,
-      }}
-    >
-      <button
-        onClick={() => navigate(-1)}
-        aria-label="Back"
-        style={{
-          position: "absolute",
-          left: 12,
-          top: 60,
-          display: "flex",
-          alignItems: "center",
-          gap: 2,
-          background: "none",
-          border: "none",
-          padding: "6px 8px",
-          cursor: "pointer",
-          color: COLORS.cream,
-          fontFamily: SANS,
-          fontSize: 17,
-          fontWeight: 400,
-          height: "calc(100% - 60px - 18px)",
-        }}
-      >
-        <ChevronLeft size={22} strokeWidth={2} />
-        
-      </button>
-      <h1
-        style={{
-          margin: 0,
-          fontFamily: SANS,
-          fontWeight: 600,
-          fontSize: 20,
-          color: COLORS.cream,
-          letterSpacing: "-0.1px",
-        }}
-      >
-        Notification Settings
-      </h1>
+    <div style={{ background: COLORS.olive }}>
+      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            background: "transparent", border: "none", padding: 0, margin: 0,
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", lineHeight: 0, flexShrink: 0,
+          }}
+        >
+          <ChevronLeft size={22} strokeWidth={1.6} color={COLORS.cream} />
+        </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: COLORS.cream, lineHeight: 1 }}>
+          Notification Settings
+        </div>
+      </div>
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
     </div>
   );
 }
