@@ -41,7 +41,7 @@ import NotFound from "./pages/NotFound.tsx";
 import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
 import EventsCalendar from "./pages/EventsCalendar.tsx";
-import Advertise from "./pages/Advertise.tsx";
+
 
 import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
@@ -132,7 +132,7 @@ const App = () => (
               <Route path="/events/calendar" element={<EventsCalendar />} />
               <Route path="/events/:id" element={<EventDetail />} />
               <Route path="/about" element={<About />} />
-              <Route path="/advertise" element={<Advertise />} />
+              
               <Route path="/headlines" element={<Headlines />} />
               <Route path="/headlines/:slug" element={<ArticleDetail />} />
               <Route path="/specials" element={<Specials />} />

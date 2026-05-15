@@ -482,7 +482,7 @@ const MyAccount = () => {
       ? { label: "My Business", href: "/business/dashboard", icon: Briefcase }
       : { label: "My Business", href: "/for-business", icon: Briefcase },
     { label: "Local Channels", href: "/local-channels", icon: Users },
-    { label: "Advertise", href: "/advertise", icon: Megaphone },
+    
   ];
   const helpInfoItems = [
     { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
