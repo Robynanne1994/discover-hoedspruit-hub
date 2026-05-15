@@ -151,7 +151,7 @@ const TermsPolicies = () => {
             marginTop: 8,
           }}
         />
-        <p style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 14, lineHeight: 1.55, color: "rgba(238,232,218,0.7)", margin: 0 }}>
+        <p style={{ fontFamily: "Inter, sans-serif", fontStyle: "normal", fontWeight: 400, fontSize: 14, lineHeight: 1.55, color: "rgba(238,232,218,0.7)", margin: 0 }}>
           Last updated {LAST_UPDATED}. We'll let you know here if anything meaningful changes.
         </p>
       </div>
