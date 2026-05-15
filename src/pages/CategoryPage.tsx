@@ -443,18 +443,17 @@ const CategoryPage = () => {
             position: "absolute",
             left: 24,
             top: 60,
-            width: 44,
             height: 44,
-            borderRadius: 9999,
-            background: C.cream,
+            background: "transparent",
             border: "none",
+            padding: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
           }}
         >
-          <BackArrowIcon size={18} color={C.ink} />
+          <BackArrowIcon size={20} color={C.cream} />
         </button>
         <div
           style={{
