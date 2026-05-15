@@ -359,7 +359,6 @@ const CategoryPage = () => {
   const displayTitle = categoryTitle;
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
   const titleFontSize = titleSizeFor(titleWithDot);
-...
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
   const subline = `${totalCount} ${tagline}`;
