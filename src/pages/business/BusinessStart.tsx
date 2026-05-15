@@ -26,19 +26,31 @@ const BusinessStart = () => {
     document.head.appendChild(link);
   }, []);
 
+  const handleBack = () => {
+    // Avoid bouncing back into a protected /business route that redirects here.
+    const ref = document.referrer;
+    const cameFromBusiness =
+      ref && ref.includes(window.location.host) && ref.includes("/business");
+    if (window.history.length > 1 && !cameFromBusiness) {
+      navigate(-1);
+    } else {
+      navigate("/", { replace: true });
+    }
+  };
+
   return (
     <div
       style={{
         minHeight: "100dvh",
         background: OLIVE,
         fontFamily: SANS,
-        paddingBottom: 48,
+        paddingBottom: 122,
       }}
     >
       {/* Top bar */}
       <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24 }}>
         <button
-          onClick={() => navigate(-1)}
+          onClick={handleBack}
           aria-label="Back"
           style={{
             width: 44,
