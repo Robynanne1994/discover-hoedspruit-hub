@@ -487,7 +487,7 @@ function NotifSettingsHeader() {
         }}
       >
         <ChevronLeft size={22} strokeWidth={2} />
-        <span>Back</span>
+        
       </button>
       <h1
         style={{
