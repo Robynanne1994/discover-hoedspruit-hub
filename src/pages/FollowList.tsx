@@ -323,6 +323,7 @@ const FollowList = () => {
     !isFollowers ? id : undefined,
   );
   const { data: myFollowingIds } = useMyFollowingIds();
+  const { data: counts } = useFollowCounts(id);
 
   const users = (isFollowers ? followers : following) as RowUser[] | undefined;
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
