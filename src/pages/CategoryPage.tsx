@@ -34,7 +34,7 @@ const C = {
 const TAGLINES: Record<string, string> = {
   "restaurants & cafés": "places to eat in town.",
   "restaurants & cafes": "places to eat in town.",
-  accommodation: "places to spend the night.",
+  Accommodation: "places to spend the night.",
   "activities & adventures": "places to get out and about.",
   "health & medical": "places when you need them.",
   shopping: "places to find what you need.",

@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTop from "@/components/ScrollToTop";
 import TitleCaseH1 from "@/components/TitleCaseH1";
+import TitleCaseH2 from "@/components/TitleCaseH2";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
@@ -206,6 +207,7 @@ const App = () => (
             </Routes>
             <ScrollToTop />
             <TitleCaseH1 />
+            <TitleCaseH2 />
             <ConditionalBottomNav />
           </AuthGate>
         </BrowserRouter>
