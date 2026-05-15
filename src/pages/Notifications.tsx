@@ -365,7 +365,7 @@ const Notifications = () => {
             textTransform: "lowercase",
           }}
         >
-          notifications.
+          notification settings.
         </h1>
         <p
           style={{
