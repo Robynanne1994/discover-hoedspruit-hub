@@ -377,20 +377,6 @@ const FollowList = () => {
 
       {/* Hero */}
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 20 }}>
-        <p
-          style={{
-            margin: 0,
-            marginBottom: 14,
-            fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 12,
-            letterSpacing: "2.4px",
-            textTransform: "uppercase",
-            color: "rgba(238,232,218,0.7)",
-          }}
-        >
-          {isFollowers ? "FOLLOWERS" : "FOLLOWING"} · {count}
-        </p>
         {/* Tabs */}
         <div
           style={{
