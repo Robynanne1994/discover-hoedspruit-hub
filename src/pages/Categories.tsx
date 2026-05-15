@@ -442,7 +442,7 @@ const Categories = () => {
           {gridCategories.length > 0 && (
             <>
               <SectionHead
-                title="everything else"
+                title="Everything Else"
                 counter={`${gridCategories.length} Categories`}
               />
               <div style={{ padding: "0 24px" }}>
