@@ -213,7 +213,7 @@ const Advertise = () => {
               fontFamily: FF, fontSize: 14.5, fontWeight: 400, lineHeight: 1.55,
               color: "rgba(238,232,218,0.9)", maxWidth: 280, margin: 0,
             }}>
-              Locals, visitors, and newcomers using Hello Hoedspruit monthly to find what's open and what's on.
+              Locals, visitors and newcomers using Hello Hoedspruit monthly to find what's open and what's on.
             </p>
           </div>
         </div>
