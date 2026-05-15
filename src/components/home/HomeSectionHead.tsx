@@ -23,7 +23,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => 
       <h2
         style={{
           margin: 0,
-          fontFamily: '"Helvetica World", Helvetica, Arial, sans-serif',
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontWeight: 700,
           fontStyle: "normal",
           fontSize: 24,
