@@ -672,8 +672,8 @@ const CategoryPage = () => {
         <RefineSection
           label="My List"
           summary={
-            [filterOpenNow, filterSaved, filterBeenTo].filter(Boolean).length > 0
-              ? `${[filterOpenNow, filterSaved, filterBeenTo].filter(Boolean).length} selected`
+            [filterOpenNow, filterSaved].filter(Boolean).length > 0
+              ? `${[filterOpenNow, filterSaved].filter(Boolean).length} selected`
               : undefined
           }
           open={openSection === "list"}
@@ -682,7 +682,6 @@ const CategoryPage = () => {
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             <RefineChip label="Open Now" active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
             <RefineChip label="Saved" active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
-            <RefineChip label="Been To" active={filterBeenTo} onClick={() => setFilterBeenTo(!filterBeenTo)} />
           </div>
         </RefineSection>
 
