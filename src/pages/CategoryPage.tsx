@@ -359,6 +359,43 @@ const CategoryPage = () => {
   const displayTitle = categoryTitle;
   const titleWithDot = `${displayTitle.toLowerCase()}.`;
   const titleFontSize = titleSizeFor(titleWithDot);
+
+  const filteredListings = useMemo(() => {
+    if (!listings) return [];
+    const q = search.trim().toLowerCase();
+    const result = listings.filter((l) => {
+      if (q && !(l.title || "").toLowerCase().includes(q)) return false;
+      if (filterCuisine.length > 0) {
+        const lc = (l.cuisine || []).map((c) => c.toLowerCase());
+        if (!filterCuisine.some((c) => lc.includes(c.toLowerCase()))) return false;
+      }
+      if (filterVibe.length > 0) {
+        const lv = (l.vibe || []).map((v) => v.toLowerCase());
+        if (!filterVibe.some((v) => lv.includes(v.toLowerCase()))) return false;
+      }
+      if (filterMeal.length > 0) {
+        const lm = (l.meal || []).map((m) => m.toLowerCase());
+        if (!filterMeal.some((m) => lm.includes(m.toLowerCase()))) return false;
+      }
+      if (filterSeating.length > 0) {
+        const ls = (l.seating || []).map((s) => s.toLowerCase());
+        if (!filterSeating.some((s) => ls.includes(s.toLowerCase()))) return false;
+      }
+      if (filterChildFriendly && !l.good_for_kids && !l.child_friendly) return false;
+      if (filterPetFriendly && !l.pets_allowed) return false;
+      if (filterWheelchair && !l.wheelchair_friendly) return false;
+      if (filterWifi && !l.has_wifi && !l.has_free_wifi && !l.has_wifi_accom) return false;
+      if (filterOpenNow && !isOpenNow(l.opening_hours as Record<string, string> | null)) return false;
+      if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
+      if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
+      return true;
+    });
+
+    if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortBy === "rating") return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
+    return result;
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search]);
+
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
   const subline = `${totalCount} ${tagline}`;
@@ -422,7 +459,7 @@ const CategoryPage = () => {
             fontSize: 20,
             fontWeight: 600,
             color: C.cream,
-            textTransform: "lowercase",
+            textTransform: "none",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -432,7 +469,7 @@ const CategoryPage = () => {
             marginRight: 22,
           }}
         >
-          {lowerTitle}
+          {displayTitle}
         </div>
       </div>
 
@@ -452,7 +489,7 @@ const CategoryPage = () => {
           <Search size={18} strokeWidth={1.6} color={C.ink} style={{ flexShrink: 0 }} />
           <input
             type="text"
-            placeholder={`Search ${lowerTitle}`}
+            placeholder={`Search ${displayTitle}`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="placeholder:text-[#2b2420]/80"
