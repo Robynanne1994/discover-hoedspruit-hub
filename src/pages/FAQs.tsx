@@ -266,7 +266,7 @@ const FAQs = () => {
               ask us anything.
             </h2>
             <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
-              We're a small team but we answer every message. Drop us a line and we'll get back to you.
+              Reach out and we'll be in touch ASAP.
             </p>
             <div style={{ display: "flex", gap: 10 }}>
               <a
