@@ -476,7 +476,7 @@ const CategoryPage = () => {
             textTransform: "lowercase",
           }}
         >
-          {titleWithDot}
+          {lowerTitle} ({totalCount}).
         </h1>
         <div style={{ marginBottom: 24 }} />
       </div>
