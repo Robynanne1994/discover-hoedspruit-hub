@@ -294,7 +294,7 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
         color: "rgba(18,18,20,0.55)",
       }}
     >
-      {count !== undefined ? `${count} ${label}` : label}
+      {count !== undefined ? `${label} (${count})` : label}
     </span>
   </div>
 );
