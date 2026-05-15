@@ -305,11 +305,6 @@ const BushTelegraph = () => {
 
       {/* Hero */}
       <div style={{ padding: "18px 24px 0" }}>
-        <div style={{
-          fontFamily: HN, fontWeight: 400, fontSize: 12, letterSpacing: "2.4px",
-          textTransform: "uppercase", color: "rgba(238, 232, 218, 0.7)",
-          marginBottom: 14,
-        }}>Off The App</div>
         <h1 style={{
           fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300, fontSize: 56,
           lineHeight: 0.95, letterSpacing: "-1.8px", color: CREAM, margin: "0 0 16px",
