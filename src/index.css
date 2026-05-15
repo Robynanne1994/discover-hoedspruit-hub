@@ -265,12 +265,12 @@ body {
     text-transform: capitalize !important;
   }
   h2 {
-    font-family: 'Playfair Display', Georgia, serif;
+    font-family: var(--font-heading);
     font-weight: 400;
-    font-style: italic;
+    font-style: normal;
     font-size: 32px;
     line-height: 1;
-    letter-spacing: -0.5px;
+    letter-spacing: 0.01em;
     color: #EEE8DA;
     text-transform: lowercase !important;
   }
