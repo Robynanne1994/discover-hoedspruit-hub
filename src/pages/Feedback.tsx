@@ -247,7 +247,7 @@ const Feedback = () => {
             background: RUST, marginTop: 8,
           }} />
           <p style={{
-            fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400,
+            fontFamily: "Inter, sans-serif", fontStyle: "normal", fontWeight: 400,
             fontSize: 14.5, lineHeight: 1.55,
             color: "rgba(42,42,36,0.78)", margin: 0,
           }}>
