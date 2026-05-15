@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SlidersHorizontal, Calendar, Heart } from "lucide-react";
+import { SlidersHorizontal, Calendar, Heart, Search } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
@@ -113,6 +113,7 @@ const Specials = () => {
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>("default");
   const [filterType, setFilterType] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
   const sortRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
