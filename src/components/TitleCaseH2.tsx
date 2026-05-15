@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
  * SMALL_WORDS: words that should remain lowercase unless they are the first word.
  * The user specified 'to', 'and', 'by', 'on'.
  */
-const SMALL_WORDS = new Set(["to", "and", "by", "on"]);
+const SMALL_WORDS = new Set(["to", "and", "by", "on", "of", "it", "or"]);
 
 const toTitleCase = (input: string): string => {
   // Split by whitespace but keep the whitespace segments
