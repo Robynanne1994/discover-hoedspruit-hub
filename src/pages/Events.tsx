@@ -761,7 +761,7 @@ const Events = () => {
                 if (activeFilter === "this-month") return format(today, "MMMM yyyy").toLowerCase();
                 if (activeFilter === "past") return "past events";
                 return "upcoming";
-              })()} trailing={filterIconBtn} />
+              })()} />
               <div style={{ padding: "0 24px" }}>
                 <div
                   style={{
