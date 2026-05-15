@@ -1381,11 +1381,10 @@ const ListingDetail = () => {
               fontFamily: '"Playfair Display", Georgia, serif',
               fontStyle: "italic", fontWeight: 400, fontSize: 15,
               color: "rgba(238, 232, 218, 0.6)",
-              textTransform: "lowercase",
               background: "transparent", border: "none", cursor: "pointer", padding: 0,
             }}
           >
-            suggest an edit to this listing.
+            Suggest an edit to this listing.
           </button>
         </div>
 
