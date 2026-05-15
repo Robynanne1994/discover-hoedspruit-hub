@@ -144,33 +144,33 @@ const Search = () => {
       </div>
 
       {/* Search input */}
-      <div style={{ padding: "16px 20px 0" }}>
+      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
         <div
           style={{
+            height: 44,
+            background: "rgba(238, 232, 218, 0.92)",
+            borderRadius: 999,
+            padding: "0 20px",
             display: "flex",
             alignItems: "center",
-            gap: 10,
-            background: IVORY,
-            borderRadius: 999,
-            padding: "12px 16px",
+            gap: 12,
           }}
         >
-          <SearchIcon size={18} color={PRIMARY} strokeWidth={1.8} />
+          <SearchIcon size={18} strokeWidth={1.6} color={INK} style={{ flexShrink: 0 }} />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
+            placeholder="Search any local deals"
+            className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
-              border: "none",
               background: "transparent",
               outline: "none",
+              border: "none",
               fontFamily: FONT,
-              fontSize: 15,
-              fontWeight: 400,
+              fontSize: 14,
               color: INK,
-              letterSpacing: "0.01em",
             }}
           />
         </div>
