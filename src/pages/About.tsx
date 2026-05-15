@@ -90,9 +90,6 @@ const About = () => {
       <div style={{ position: "relative", padding: "18px 24px 0" }}>
 
         <div style={{ position: "relative", zIndex: 2 }}>
-          <div style={{ fontSize: 12, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: "rgba(238,232,218,0.7)", marginBottom: 14 }}>
-            BEHIND THE APP
-          </div>
           <h1 style={{ fontFamily: SERIF, fontWeight: 300, fontStyle: "italic", fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 28 }}>
             about.
           </h1>
