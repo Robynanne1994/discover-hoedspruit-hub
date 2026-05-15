@@ -94,7 +94,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ background: "#5C6446" }}>
-        <div className="animate-pulse text-primary font-heading font-bold text-xl">Hello Hoedspruit</div>
+        <img src={loadingIcon} alt="Loading" className="animate-pulse" style={{ width: 120, height: "auto" }} />
       </div>
     );
   }
