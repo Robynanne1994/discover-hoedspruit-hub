@@ -71,21 +71,6 @@ export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPagePro
 
       {/* Hero */}
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 36 }}>
-        <h1
-          style={{
-            fontFamily: serif,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: titleSizeFor(title),
-            lineHeight: 0.92,
-            letterSpacing: "-2px",
-            color: C.cream,
-            margin: 0,
-            marginBottom: 14,
-          }}
-        >
-          {title}
-        </h1>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <span
             style={{
