@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, ChevronLeft } from "lucide-react";
+import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, ChevronLeft, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -170,6 +170,26 @@ export default function MyNotifications() {
         >
           Notifications
         </h1>
+        <button
+          onClick={() => navigate("/notification-settings")}
+          aria-label="Notification settings"
+          style={{
+            position: "absolute",
+            right: 12,
+            top: 60,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "none",
+            border: "none",
+            padding: "6px 8px",
+            cursor: "pointer",
+            color: INK,
+            height: "calc(100% - 60px - 18px)",
+          }}
+        >
+          <Settings size={22} strokeWidth={2} />
+        </button>
       </div>
 
       {/* List */}
