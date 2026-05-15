@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, SlidersHorizontal } from "lucide-react";
-import GlobalMenu, { GlobalMenuTrigger } from "@/components/GlobalMenu";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -393,7 +392,6 @@ const Events = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [search, setSearch] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [tagMenuOpen, setTagMenuOpen] = useState(false);
 
@@ -643,8 +641,6 @@ const Events = () => {
           gap: 10,
         }}
       >
-        <GlobalMenuTrigger open={menuOpen} onClick={() => setMenuOpen((v) => !v)} />
-        <GlobalMenu open={menuOpen} onOpenChange={setMenuOpen} />
       </div>
 
       {/* Hero */}
