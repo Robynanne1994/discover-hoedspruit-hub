@@ -156,6 +156,14 @@ const Specials = () => {
   const filteredSpecials = useMemo(() => {
     if (!specials) return [];
     let result = [...specials];
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter((s: any) =>
+        (s.title && s.title.toLowerCase().includes(q)) ||
+        (s.business_name && s.business_name.toLowerCase().includes(q)) ||
+        (s.description && s.description.toLowerCase().includes(q))
+      );
+    }
     if (filterType.length > 0) {
       const lcSelected = filterType.map((t) => t.toLowerCase());
       result = result.filter((s: any) => {
@@ -177,7 +185,7 @@ const Specials = () => {
       result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     }
     return result;
-  }, [specials, filterType, sortBy]);
+  }, [specials, filterType, sortBy, search]);
 
   const totalCount = specials?.length || 0;
   const subline = totalCount > 0
