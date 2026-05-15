@@ -186,33 +186,30 @@ const Categories = () => {
       {/* Top bar */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          gap: 10,
           padding: "0 24px",
+          minHeight: 28,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
+        <div
+          style={{
+            fontFamily: FONT_BODY,
+            fontSize: 20,
+            fontWeight: 600,
+            color: COLORS.cream,
+            lineHeight: 1,
+          }}
+        >
+          Explore
+        </div>
       </div>
+
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
 
       {/* Hero block */}
       <div style={{ paddingTop: 24, paddingLeft: 24, paddingRight: 24 }}>
-        <h1
-          style={{
-            fontFamily: FONT_DISPLAY,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: 72,
-            lineHeight: 0.92,
-            letterSpacing: "-2.5px",
-            color: COLORS.cream,
-            margin: 0,
-            marginBottom: 22,
-            textTransform: "lowercase",
-          }}
-        >
-          explore.
-        </h1>
 
         {/* Search pill */}
         <div
