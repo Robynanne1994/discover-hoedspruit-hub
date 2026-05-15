@@ -166,63 +166,62 @@ const FAQs = () => {
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140 }}>
       {/* Top bar */}
-      <div style={{ padding: "32px 24px 0" }}>
+      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
         <button
           onClick={() => navigate(-1)}
-          onPointerDown={press}
-          onPointerUp={release}
-          onPointerLeave={release}
           aria-label="Back"
           style={{
-            width: 44,
-            height: 44,
-            borderRadius: "50%",
-            background: CREAM,
+            background: "transparent",
             border: "none",
+            padding: 0,
+            margin: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            transition: "transform 150ms ease-out",
+            lineHeight: 0,
+            flexShrink: 0,
           }}
         >
-          <BackArrow />
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={CREAM} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <line x1="19" y1="12" x2="5" y2="12" />
+            <polyline points="12 19 5 12 12 5" />
+          </svg>
         </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+          Help
+        </div>
       </div>
 
-      {/* Hero */}
-      <div style={{ padding: "18px 24px 0" }}>
-        <h1 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 72, lineHeight: 0.92, letterSpacing: "-2.5px", color: CREAM, margin: 0, marginBottom: 24 }}>
-          help.
-        </h1>
-      </div>
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 20 }} />
 
       {/* Search */}
       <div style={{ padding: "0 24px", marginBottom: 32 }}>
         <div
           style={{
-            height: 52,
+            height: 44,
+            background: "rgba(238, 232, 218, 0.92)",
             borderRadius: 999,
-            background: "rgba(238,232,218,0.92)",
+            padding: "0 20px",
             display: "flex",
             alignItems: "center",
-            padding: "0 22px",
             gap: 12,
           }}
         >
-          <Search size={18} color={MUTED_INK} strokeWidth={1.6} />
+          <Search size={18} strokeWidth={1.6} color={DEEP_INK} style={{ flexShrink: 0 }} />
           <input
+            type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search FAQs"
+            placeholder="Search faqs"
+            className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
+              background: "transparent",
               border: "none",
               outline: "none",
-              background: "transparent",
               fontFamily: SANS,
               fontSize: 14,
-              fontWeight: 400,
               color: DEEP_INK,
             }}
           />
