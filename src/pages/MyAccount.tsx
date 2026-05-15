@@ -610,58 +610,54 @@ const MyAccount = () => {
         fontFamily: SANS,
       }}
     >
-      {/* Top bar — back arrow + title when coming from profile */}
+      {/* Top bar */}
       <div
         style={{
           display: "flex",
           alignItems: "center",
           gap: 12,
-          padding: "calc(env(safe-area-inset-top) + 32px) 24px 0",
+          padding: "calc(env(safe-area-inset-top) + 60px) 24px 0",
+          minHeight: 44,
         }}
       >
         <button
           type="button"
           aria-label="Go back"
           onClick={() => navigate("/my-profile")}
-          onPointerDown={(e) => { e.currentTarget.style.transform = "scale(0.96)"; }}
-          onPointerUp={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
-          onPointerLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
-          onPointerCancel={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
           style={{
-            width: 44,
-            height: 44,
-            minWidth: 44,
-            minHeight: 44,
-            borderRadius: "50%",
-            background: CREAM,
+            background: "transparent",
             border: "none",
             padding: 0,
-            display: "flex",
+            margin: 0,
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            transition: "transform 150ms ease-out",
-            transform: "scale(1)",
+            lineHeight: 0,
             flexShrink: 0,
           }}
         >
-          <BackArrowIcon size={18} color={INK} />
+          <BackArrowIcon size={22} color={CREAM} />
         </button>
-        <span
+        <div
           style={{
+            flex: 1,
+            textAlign: "center",
+            marginRight: 22,
             fontFamily: SANS,
-            fontSize: 16,
-            fontWeight: 400,
-            letterSpacing: "0.01em",
+            fontSize: 20,
+            fontWeight: 600,
             color: CREAM,
             lineHeight: 1,
           }}
         >
-          My Profile
-        </span>
+          Account
+        </div>
       </div>
 
-      <div style={{ height: 32 }} />
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+
+      <div style={{ height: 24 }} />
 
       <Eyebrow>Account</Eyebrow>
       <Card items={accountItems} />
