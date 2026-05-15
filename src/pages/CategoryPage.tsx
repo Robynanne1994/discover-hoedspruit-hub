@@ -426,17 +426,23 @@ const CategoryPage = () => {
       {/* Top bar */}
       <div
         style={{
-          paddingTop: 32,
+          paddingTop: 60,
           paddingLeft: 24,
           paddingRight: 24,
+          position: "relative",
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
+          minHeight: 44,
         }}
       >
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
+            position: "absolute",
+            left: 24,
+            top: 60,
             width: 44,
             height: 44,
             borderRadius: 9999,
@@ -450,271 +456,256 @@ const CategoryPage = () => {
         >
           <BackArrowIcon size={18} color={C.ink} />
         </button>
-      </div>
-
-      {/* Hero */}
-      <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
-        <h1
+        <div
           style={{
-            fontFamily: serif,
-            fontStyle: "italic",
-            fontWeight: 300,
-            fontSize: titleFontSize,
-            lineHeight: 0.95,
-            letterSpacing: "-1.8px",
+            fontFamily: sans,
+            fontSize: 20,
+            fontWeight: 600,
             color: C.cream,
-            margin: 0,
             textTransform: "lowercase",
+            maxWidth: "60%",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
           }}
         >
-          {lowerTitle} ({totalCount}).
-        </h1>
-        <div style={{ marginBottom: 24 }} />
+          {lowerTitle}
+        </div>
       </div>
 
       {/* Search */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
         <div
           style={{
+            height: 44,
+            background: "rgba(238, 232, 218, 0.92)",
+            borderRadius: 999,
+            padding: "0 20px",
             display: "flex",
             alignItems: "center",
-            height: 52,
-            background: "rgba(238, 232, 218, 0.92)",
-            borderRadius: 9999,
-            padding: "0 22px",
             gap: 12,
           }}
         >
-          <Search size={18} strokeWidth={1.6} color={C.mutedInk} style={{ flexShrink: 0 }} />
+          <Search size={18} strokeWidth={1.6} color={C.ink} style={{ flexShrink: 0 }} />
           <input
             type="text"
             placeholder={`Search ${lowerTitle}`}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
               background: "transparent",
               border: "none",
               outline: "none",
               fontFamily: sans,
-              fontSize: 15,
-              fontWeight: 400,
+              fontSize: 14,
               color: C.ink,
             }}
-            className="placeholder:text-[#6B6A5E]"
           />
         </div>
       </div>
 
-      {/* Filter / Sort row */}
+      {/* Results count + filter */}
       <div
         style={{
-          paddingTop: 22,
-          paddingBottom: 24,
-          paddingLeft: 24,
-          paddingRight: 24,
+          padding: "12px 24px 6px 24px",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
           justifyContent: "space-between",
-          position: "relative",
         }}
       >
-        <button
-          onClick={() => setShowFilters((v) => !v)}
+        <span
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            height: 38,
-            padding: "0 18px",
-            background: C.cream,
-            border: "none",
-            borderRadius: 9999,
-            cursor: "pointer",
             fontFamily: sans,
-            fontWeight: 400,
-            fontSize: 14,
-            color: C.ink,
-            lineHeight: 1,
+            fontSize: 15,
+            color: "rgba(238,232,218,0.85)",
           }}
         >
-          <SlidersHorizontal size={14} strokeWidth={1.8} color={C.ink} />
-          <span>Filter</span>
-          {activeFilterCount > 0 && (
-            <span
-              style={{
-                background: C.ink,
-                color: C.cream,
-                borderRadius: 9999,
-                minWidth: 18,
-                height: 18,
-                padding: "0 5px",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: 10,
-                fontWeight: 700,
-              }}
-            >
-              {activeFilterCount}
-            </span>
-          )}
+          {filteredListings.length} {filteredListings.length === 1 ? "place" : "places"}
+        </span>
+        <button
+          aria-label="Refine"
+          onClick={() => setRefineOpen(true)}
+          style={{
+            width: 36,
+            height: 36,
+            borderRadius: "50%",
+            background: activeFilterCount > 0 ? C.ink : C.cream,
+            border: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <SlidersHorizontal
+            size={14}
+            strokeWidth={1.8}
+            color={activeFilterCount > 0 ? C.cream : C.ink}
+          />
         </button>
-
-        <div ref={sortRef} style={{ position: "relative" }}>
-          <button
-            onClick={() => setShowSortMenu((v) => !v)}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              background: "transparent",
-              border: "none",
-              padding: "8px 0",
-              cursor: "pointer",
-            }}
-          >
-            <span style={{ fontFamily: sans, fontSize: 13, color: "rgba(238,232,218,0.7)" }}>Sort by</span>
-            <span style={{ fontFamily: sans, fontSize: 13, color: C.cream, marginLeft: 6 }}>{sortLabel}</span>
-            <ChevronDown size={11} strokeWidth={1.8} color="rgba(238,232,218,0.85)" style={{ marginLeft: 4 }} />
-          </button>
-
-          {showSortMenu && (
-            <div
-              style={{
-                position: "absolute",
-                top: "calc(100% + 4px)",
-                right: 0,
-                background: C.cream,
-                borderRadius: 16,
-                padding: 6,
-                zIndex: 20,
-                boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
-                minWidth: 200,
-              }}
-            >
-              {(["default", "name", "rating"] as SortKey[]).map((key) => (
-                <button
-                  key={key}
-                  onClick={() => {
-                    setSortBy(key);
-                    setShowSortMenu(false);
-                  }}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    textAlign: "left",
-                    padding: "10px 12px",
-                    background: sortBy === key ? C.softCream : "transparent",
-                    border: "none",
-                    borderRadius: 10,
-                    fontSize: 14,
-                    fontWeight: 400,
-                    color: C.ink,
-                    fontFamily: sans,
-                    cursor: "pointer",
-                  }}
-                >
-                  {key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Filters panel */}
-      {showFilters && (
-        <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24, display: "flex", flexDirection: "column", gap: 20 }}>
-          {activeFilterCount > 0 && (
-            <button
-              onClick={clearAllFilters}
-              style={{
-                fontSize: 13,
-                fontWeight: 400,
-                color: "rgba(238,232,218,0.75)",
-                textDecoration: "underline",
-                alignSelf: "flex-start",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: sans,
-              }}
-            >
-              Clear all filters
-            </button>
-          )}
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
 
-          {subcategories && subcategories.length > 0 && (
-            <div>
-              <p style={sectionEyebrow}>Category</p>
+      <RefineDrawer
+        open={refineOpen}
+        onClose={() => setRefineOpen(false)}
+        onClear={clearAllFilters}
+        resultsCount={filteredListings.length}
+        resultsLabel="places"
+      >
+        <RefineSection
+          isFirst
+          label="Sort by"
+          summary={sortLabel}
+          open={openSection === "sort"}
+          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+        >
+          {(["default", "name", "rating"] as SortKey[]).map((key) => (
+            <RefineOption
+              key={key}
+              label={key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
+              active={sortBy === key}
+              onClick={() => setSortBy(key)}
+            />
+          ))}
+        </RefineSection>
+
+        {subcategories && subcategories.length > 0 && (
+          <RefineSection
+            label="Category"
+            summary={
+              activeSubId
+                ? subcategories.find((s) => s.id === activeSubId)?.title
+                : undefined
+            }
+            open={openSection === "subcategory"}
+            onToggle={() => setOpenSection(openSection === "subcategory" ? null : "subcategory")}
+          >
+            <RefineOption label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
+            {subcategories.map((sub) => (
+              <RefineOption
+                key={sub.id}
+                label={sub.title}
+                active={activeSubId === sub.id}
+                onClick={() => handleSubFilter(sub.id)}
+              />
+            ))}
+          </RefineSection>
+        )}
+
+        {isRestaurant && (
+          <>
+            <RefineSection
+              label="Cuisine"
+              summary={filterCuisine.length > 0 ? `${filterCuisine.length} selected` : undefined}
+              open={openSection === "cuisine"}
+              onToggle={() => setOpenSection(openSection === "cuisine" ? null : "cuisine")}
+            >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                <FilterChip label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
-                {subcategories.map((sub) => (
-                  <FilterChip key={sub.id} label={sub.title} active={activeSubId === sub.id} onClick={() => handleSubFilter(sub.id)} />
+                {CUISINE_OPTIONS.map((c) => (
+                  <RefineChip
+                    key={c}
+                    label={c}
+                    active={filterCuisine.includes(c)}
+                    onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)}
+                  />
                 ))}
               </div>
-            </div>
-          )}
+            </RefineSection>
+            <RefineSection
+              label="Vibe"
+              summary={filterVibe.length > 0 ? `${filterVibe.length} selected` : undefined}
+              open={openSection === "vibe"}
+              onToggle={() => setOpenSection(openSection === "vibe" ? null : "vibe")}
+            >
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {VIBE_OPTIONS.map((v) => (
+                  <RefineChip
+                    key={v}
+                    label={v}
+                    active={filterVibe.includes(v)}
+                    onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)}
+                  />
+                ))}
+              </div>
+            </RefineSection>
+            <RefineSection
+              label="Meal"
+              summary={filterMeal.length > 0 ? `${filterMeal.length} selected` : undefined}
+              open={openSection === "meal"}
+              onToggle={() => setOpenSection(openSection === "meal" ? null : "meal")}
+            >
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {MEAL_OPTIONS.map((m) => (
+                  <RefineChip
+                    key={m}
+                    label={m}
+                    active={filterMeal.includes(m)}
+                    onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)}
+                  />
+                ))}
+              </div>
+            </RefineSection>
+            <RefineSection
+              label="Seating"
+              summary={filterSeating.length > 0 ? `${filterSeating.length} selected` : undefined}
+              open={openSection === "seating"}
+              onToggle={() => setOpenSection(openSection === "seating" ? null : "seating")}
+            >
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {SEATING_OPTIONS.map((s) => (
+                  <RefineChip
+                    key={s}
+                    label={s}
+                    active={filterSeating.includes(s)}
+                    onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)}
+                  />
+                ))}
+              </div>
+            </RefineSection>
+          </>
+        )}
 
-          {isRestaurant && (
-            <>
-              <div>
-                <p style={sectionEyebrow}>Cuisine</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {CUISINE_OPTIONS.map((c) => (
-                    <FilterChip key={c} label={c} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p style={sectionEyebrow}>Vibe</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {VIBE_OPTIONS.map((v) => (
-                    <FilterChip key={v} label={v} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p style={sectionEyebrow}>Meal</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {MEAL_OPTIONS.map((m) => (
-                    <FilterChip key={m} label={m} active={filterMeal.includes(m)} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} />
-                  ))}
-                </div>
-              </div>
-              <div>
-                <p style={sectionEyebrow}>Seating</p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                  {SEATING_OPTIONS.map((s) => (
-                    <FilterChip key={s} label={s} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          <div>
-            <p style={sectionEyebrow}>My List</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              <FilterChip label="Open Now" active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
-              <FilterChip label="Saved" active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
-              <FilterChip label="Been To" active={filterBeenTo} onClick={() => setFilterBeenTo(!filterBeenTo)} />
-            </div>
+        <RefineSection
+          label="My List"
+          summary={
+            [filterOpenNow, filterSaved, filterBeenTo].filter(Boolean).length > 0
+              ? `${[filterOpenNow, filterSaved, filterBeenTo].filter(Boolean).length} selected`
+              : undefined
+          }
+          open={openSection === "list"}
+          onToggle={() => setOpenSection(openSection === "list" ? null : "list")}
+        >
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            <RefineChip label="Open Now" active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
+            <RefineChip label="Saved" active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
+            <RefineChip label="Been To" active={filterBeenTo} onClick={() => setFilterBeenTo(!filterBeenTo)} />
           </div>
+        </RefineSection>
 
-          <div>
-            <p style={sectionEyebrow}>Amenities</p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {(isRestaurant || isAccom) && (
-                <FilterChip label="Child Friendly" active={filterChildFriendly} onClick={() => setFilterChildFriendly(!filterChildFriendly)} />
-              )}
-              <FilterChip label="Pet Friendly" active={filterPetFriendly} onClick={() => setFilterPetFriendly(!filterPetFriendly)} />
-              <FilterChip label="Wheelchair Accessible" active={filterWheelchair} onClick={() => setFilterWheelchair(!filterWheelchair)} />
-              <FilterChip label="WiFi" active={filterWifi} onClick={() => setFilterWifi(!filterWifi)} />
-            </div>
+        <RefineSection
+          label="Amenities"
+          summary={
+            [filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length > 0
+              ? `${[filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length} selected`
+              : undefined
+          }
+          open={openSection === "amenities"}
+          onToggle={() => setOpenSection(openSection === "amenities" ? null : "amenities")}
+        >
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {(isRestaurant || isAccom) && (
+              <RefineChip label="Child Friendly" active={filterChildFriendly} onClick={() => setFilterChildFriendly(!filterChildFriendly)} />
+            )}
+            <RefineChip label="Pet Friendly" active={filterPetFriendly} onClick={() => setFilterPetFriendly(!filterPetFriendly)} />
+            <RefineChip label="Wheelchair Accessible" active={filterWheelchair} onClick={() => setFilterWheelchair(!filterWheelchair)} />
+            <RefineChip label="WiFi" active={filterWifi} onClick={() => setFilterWifi(!filterWifi)} />
           </div>
-        </div>
-      )}
+        </RefineSection>
+      </RefineDrawer>
 
       {/* Listings */}
       {isLoading ? (
