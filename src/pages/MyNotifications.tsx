@@ -171,7 +171,7 @@ export default function MyNotifications() {
           Notifications
         </h1>
         <button
-          onClick={() => navigate("/notification-settings")}
+          onClick={() => navigate("/notification-preferences")}
           aria-label="Notification settings"
           style={{
             position: "absolute",
