@@ -687,6 +687,28 @@ const Events = () => {
         </div>
       </div>
 
+      {/* Results count + filter */}
+      <div
+        style={{
+          padding: "0 24px",
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: SANS,
+            fontSize: 13,
+            color: "rgba(238,232,218,0.75)",
+          }}
+        >
+          {sortedEvents.length} events
+        </span>
+        {filterIconBtn}
+      </div>
+
       {/* Time period pills */}
       <div className="overflow-x-auto scrollbar-hide" style={{ marginBottom: 32 }}>
         <div style={{ display: "inline-flex", gap: 8, padding: "0 24px" }}>
