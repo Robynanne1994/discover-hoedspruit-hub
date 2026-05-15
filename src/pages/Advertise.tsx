@@ -198,16 +198,6 @@ const Advertise = () => {
           background: RUST, borderRadius: 28, padding: 28,
           position: "relative", overflow: "hidden", boxSizing: "border-box",
         }}>
-          <div style={{
-            position: "absolute", right: -90, bottom: -110,
-            width: 240, height: 260, background: DEEP_RUST,
-            borderRadius: BLOB_RADIUS_A, opacity: 0.55, zIndex: 1,
-          }} />
-          <div style={{
-            position: "absolute", left: -50, top: -60,
-            width: 140, height: 150, background: "rgba(238,232,218,0.08)",
-            borderRadius: BLOB_RADIUS_B, zIndex: 1,
-          }} />
           <div style={{ position: "relative", zIndex: 2 }}>
             <p style={{
               fontFamily: FF, fontSize: 11.5, fontWeight: 400,
@@ -318,16 +308,6 @@ const Advertise = () => {
           padding: "30px 28px 28px",
           position: "relative", overflow: "hidden", boxSizing: "border-box",
         }}>
-          <div style={{
-            position: "absolute", right: -80, top: -100,
-            width: 240, height: 260, background: DEEP_RUST,
-            borderRadius: BLOB_RADIUS_A, opacity: 0.55, zIndex: 1,
-          }} />
-          <div style={{
-            position: "absolute", left: -50, bottom: -70,
-            width: 160, height: 170, background: "rgba(238,232,218,0.08)",
-            borderRadius: BLOB_RADIUS_B, zIndex: 1,
-          }} />
           <div style={{ position: "relative", zIndex: 2 }}>
             <p style={{
               fontFamily: FF, fontSize: 11.5, fontWeight: 400,
