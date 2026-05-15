@@ -691,18 +691,17 @@ const Events = () => {
       {/* Results count + filter */}
       <div
         style={{
-          padding: "0 24px",
-          marginBottom: 16,
+          padding: "12px 24px 6px 24px",
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-end",
           justifyContent: "space-between",
         }}
       >
         <span
           style={{
             fontFamily: SANS,
-            fontSize: 13,
-            color: "rgba(238,232,218,0.75)",
+            fontSize: 15,
+            color: "rgba(238,232,218,0.85)",
           }}
         >
           {sortedEvents.length} events
