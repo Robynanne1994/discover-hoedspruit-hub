@@ -137,7 +137,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/my-account" element={<MyAccount />} />
               <Route path="/my-profile" element={<MyProfile />} />
-              <Route path="/bush-telegraph" element={<BushTelegraph />} />
+              <Route path="/local-channels" element={<BushTelegraph />} />
               
               <Route path="/saved" element={<SavedListings />} />
               <Route path="/visited" element={<VisitedPlaces />} />
