@@ -91,7 +91,7 @@ const About = () => {
               <polyline points="12 19 5 12 12 5" />
             </svg>
           </button>
-          <h1 style={{ fontFamily: SANS, fontSize: 20, fontWeight: 600, color: CREAM, margin: 0, letterSpacing: "0.01em" }}>
+          <h1 style={{ fontFamily: SANS, fontSize: 20, fontWeight: 600, color: CREAM, margin: 0, letterSpacing: "0.01em", textTransform: "none", lineHeight: 1 }}>
             About
           </h1>
         </div>
