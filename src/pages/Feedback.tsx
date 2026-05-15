@@ -99,21 +99,25 @@ const Feedback = () => {
   return (
     <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: FF, position: "relative", overflowX: "hidden" }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24, position: "relative", zIndex: 3 }}>
+      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44, position: "relative", zIndex: 3 }}>
         <button
           onClick={() => navigate(-1)}
           {...tap}
           style={{
-            width: 44, height: 44, borderRadius: "50%",
-            background: CREAM, border: "none", cursor: "pointer",
+            background: "transparent", border: "none", padding: 0, margin: 0,
             display: "inline-flex", alignItems: "center", justifyContent: "center",
-            transition: "transform 0.15s ease",
+            cursor: "pointer", lineHeight: 0, flexShrink: 0,
           }}
           aria-label="Back"
         >
-          <BackArrowIcon size={18} color={INK} />
+          <BackArrowIcon size={22} color={CREAM} />
         </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: FF, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+          Feedback
+        </div>
       </div>
+
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, position: "relative", zIndex: 3 }} />
 
       {/* Hero */}
       <div style={{ position: "relative", padding: "18px 24px 0" }}>
