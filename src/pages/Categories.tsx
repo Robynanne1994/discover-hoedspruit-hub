@@ -123,20 +123,67 @@ const Categories = () => {
 
   const debouncedSearch = search.trim();
 
+  const matchingCategoryIds = useMemo(() => {
+    if (!categories || !debouncedSearch) return [];
+    const q = debouncedSearch.toLowerCase();
+    return categories.filter((c) => c.title.toLowerCase().includes(q)).map((c) => c.id);
+  }, [categories, debouncedSearch]);
+
   const { data: searchedListings } = useQuery({
-    queryKey: ["explore-listing-search", debouncedSearch],
+    queryKey: ["explore-listing-search", debouncedSearch, matchingCategoryIds],
     queryFn: async () => {
       if (!debouncedSearch) return [];
-      const { data, error } = await supabase
+      const escaped = debouncedSearch.replace(/[%,]/g, " ");
+      // Title match
+      const titleQ = supabase
         .from("listings")
-        .select("id, title, image_url, location")
-        .ilike("title", `%${debouncedSearch}%`)
-        .limit(10);
-      if (error) throw error;
-      return data || [];
+        .select("id, title, image_url, location, category_id")
+        .ilike("title", `%${escaped}%`)
+        .limit(20);
+
+      // Category match (direct category_id)
+      const catDirectQ = matchingCategoryIds.length
+        ? supabase
+            .from("listings")
+            .select("id, title, image_url, location, category_id")
+            .in("category_id", matchingCategoryIds)
+            .limit(50)
+        : null;
+
+      // Category match via junction table
+      const junctionQ = matchingCategoryIds.length
+        ? supabase
+            .from("listing_categories")
+            .select("listing_id")
+            .in("category_id", matchingCategoryIds)
+            .limit(200)
+        : null;
+
+      const [titleRes, catRes, juncRes] = await Promise.all([
+        titleQ,
+        catDirectQ,
+        junctionQ,
+      ]);
+      if (titleRes.error) throw titleRes.error;
+
+      const map = new Map<string, any>();
+      (titleRes.data || []).forEach((l) => map.set(l.id, l));
+      (catRes?.data || []).forEach((l) => map.set(l.id, l));
+
+      const junctionIds = (juncRes?.data || []).map((r: any) => r.listing_id).filter(Boolean);
+      const missingIds = junctionIds.filter((id) => !map.has(id));
+      if (missingIds.length) {
+        const { data: extra } = await supabase
+          .from("listings")
+          .select("id, title, image_url, location, category_id")
+          .in("id", missingIds);
+        (extra || []).forEach((l) => map.set(l.id, l));
+      }
+      return Array.from(map.values()).slice(0, 30);
     },
     enabled: debouncedSearch.length >= 2,
   });
+
 
   const filteredCategories = useMemo(() => {
     if (!categories) return [];
@@ -214,22 +261,23 @@ const Categories = () => {
         {/* Search pill */}
         <div
           style={{
-            display: "flex",
-            alignItems: "center",
-            height: 52,
+            height: 44,
             background: "rgba(238, 232, 218, 0.92)",
             borderRadius: 999,
-            padding: "0 22px",
+            padding: "0 20px",
+            display: "flex",
+            alignItems: "center",
             gap: 12,
             marginBottom: 32,
           }}
         >
-          <Search size={18} strokeWidth={1.6} style={{ color: COLORS.muted, flexShrink: 0 }} />
+          <Search size={18} strokeWidth={1.6} color={COLORS.ink} style={{ flexShrink: 0 }} />
           <input
             type="text"
             placeholder="Search categories and listings"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
               background: "transparent",
@@ -240,10 +288,10 @@ const Categories = () => {
               fontWeight: 400,
               color: COLORS.ink,
             }}
-            className="placeholder:text-[#6B6A5E]"
           />
         </div>
       </div>
+
 
       {/* Listing search results */}
       {listingResults.length > 0 && (
