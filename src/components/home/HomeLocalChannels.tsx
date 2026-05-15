@@ -32,7 +32,7 @@ const HomeLocalChannels = () => {
     <section>
       <HomeSectionHead
         primary="Local"
-        serif="channels"
+        serif="Channels"
         actionLabel="See all"
         actionHref="/local-channels"
       />
