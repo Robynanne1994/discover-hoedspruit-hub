@@ -65,19 +65,6 @@ export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPagePro
 
       {/* Hero */}
       <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24, paddingBottom: 36 }}>
-        <div
-          style={{
-            fontFamily: sans,
-            fontSize: 12,
-            fontWeight: 400,
-            letterSpacing: "2.4px",
-            textTransform: "uppercase",
-            color: "rgba(238,232,218,0.7)",
-            marginBottom: 14,
-          }}
-        >
-          The small print
-        </div>
         <h1
           style={{
             fontFamily: serif,
