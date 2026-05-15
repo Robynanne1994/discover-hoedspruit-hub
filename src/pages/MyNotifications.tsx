@@ -140,8 +140,7 @@ export default function MyNotifications() {
           style={{
             position: "absolute",
             left: 12,
-            top: "calc(50% + 21px)",
-            transform: "translateY(-50%)",
+            top: 60,
             display: "flex",
             alignItems: "center",
             gap: 2,
@@ -153,6 +152,7 @@ export default function MyNotifications() {
             fontFamily: SANS,
             fontSize: 17,
             fontWeight: 400,
+            height: "calc(100% - 60px - 18px)",
           }}
         >
           <ChevronLeft size={22} strokeWidth={2} />
@@ -161,7 +161,6 @@ export default function MyNotifications() {
         <h1
           style={{
             margin: 0,
-            marginTop: 42,
             fontFamily: SANS,
             fontWeight: 600,
             fontSize: 20,
