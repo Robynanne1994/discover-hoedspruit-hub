@@ -357,8 +357,13 @@ const ListingDetail = () => {
 
   if (isListingRestaurant) {
     const serviceArr = serviceType || [];
-    const knownServices = ["Dine-in", "Takeaway", "Delivery", "Reservations"];
-    const normalizedService = serviceArr.map(s => s === "Take Away" ? "Takeaway" : s === "Sit Down" || s === "Sit down" ? "Dine-in" : s);
+    const knownServices = ["Dine-in", "Takeaway", "Delivery"];
+    const normalizedService = serviceArr.map(s => {
+      const t = s.trim().toLowerCase();
+      if (t === "take away" || t === "take-away" || t === "takeaway") return "Takeaway";
+      if (t === "sit down" || t === "sit-down" || t === "dine-in" || t === "dine in") return "Dine-in";
+      return s;
+    }).filter(s => s.toLowerCase() !== "reservations" && s.toLowerCase() !== "reservation");
     const serviceFields: AccField[] = knownServices.map(opt => ({
       label: opt,
       value: normalizedService.some(s => s.toLowerCase() === opt.toLowerCase()),
