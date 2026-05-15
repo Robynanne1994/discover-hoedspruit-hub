@@ -473,19 +473,20 @@ const MyAccount = () => {
   const LINE = "#D9D2C0";
   const RUST = "#9B5A3C";
 
-  const resourcesItems = [
-    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
-    
+  const accountItems = [
+    { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
+    { label: "Notification Preferences", href: "/my-notifications", icon: Bell },
   ];
-  const getInTouchItems = [
-    { label: "Advertise", href: "/advertise", icon: Megaphone },
-    { label: "Feedback", href: "/feedback", icon: MessageSquare },
-  ];
-  const helpItems = [
-    { label: "Settings", href: "/account-settings", icon: Settings },
+  const myHoedspruitItems = [
     isBusinessOwner || ownedListing
       ? { label: "My Business", href: "/business/dashboard", icon: Briefcase }
       : { label: "My Business", href: "/for-business", icon: Briefcase },
+    { label: "Local Channels", href: "/bush-telegraph", icon: Users },
+    { label: "Advertise", href: "/advertise", icon: Megaphone },
+  ];
+  const helpInfoItems = [
+    { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
+    { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
 
