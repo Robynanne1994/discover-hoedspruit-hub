@@ -671,7 +671,7 @@ const Events = () => {
           <Search size={18} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
           <input
             type="text"
-            placeholder="Search events"
+            placeholder="Search any local happenings"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
@@ -685,6 +685,28 @@ const Events = () => {
             }}
           />
         </div>
+      </div>
+
+      {/* Results count + filter */}
+      <div
+        style={{
+          padding: "0 24px",
+          marginBottom: 16,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: SANS,
+            fontSize: 13,
+            color: "rgba(238,232,218,0.75)",
+          }}
+        >
+          {sortedEvents.length} events
+        </span>
+        {filterIconBtn}
       </div>
 
       {/* Time period pills */}
@@ -739,7 +761,7 @@ const Events = () => {
                 if (activeFilter === "this-month") return format(today, "MMMM yyyy").toLowerCase();
                 if (activeFilter === "past") return "past events";
                 return "upcoming";
-              })()} trailing={filterIconBtn} />
+              })()} />
               <div style={{ padding: "0 24px" }}>
                 <div
                   style={{
