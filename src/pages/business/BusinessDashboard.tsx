@@ -186,59 +186,6 @@ const BusinessDashboard = () => {
             </div>
           )}
 
-          {/* Next action */}
-          {nextAction && (
-            <Link
-              to={nextAction.href ?? "#"}
-              onClick={(e) => !nextAction.href && e.preventDefault()}
-              style={{
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                gap: 14,
-                background: "#fff",
-                border: `1px solid ${DIVIDER}`,
-                borderRadius: 16,
-                padding: "16px 18px",
-                marginBottom: 16,
-              }}
-            >
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p
-                  style={{
-                    fontFamily: SANS,
-                    fontSize: 11,
-                    letterSpacing: "0.18em",
-                    textTransform: "uppercase",
-                    color: MUTED,
-                    margin: 0,
-                    marginBottom: 4,
-                  }}
-                >
-                  {nextAction.eyebrow}
-                </p>
-                <p style={{ fontFamily: SANS, fontSize: 15, color: INK, margin: 0, fontWeight: 400 }}>
-                  {nextAction.title}
-                </p>
-              </div>
-              {nextAction.cta && (
-                <span
-                  style={{
-                    flexShrink: 0,
-                    width: 36,
-                    height: 36,
-                    borderRadius: 999,
-                    background: RUST,
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <ArrowUpRight size={16} strokeWidth={1.8} color="#EEE8DA" />
-                </span>
-              )}
-            </Link>
-          )}
 
           {/* Stats */}
           {listing && (
