@@ -248,7 +248,7 @@ const BusinessDashboard = () => {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, marginBottom: 16 }}>
               <Stat label="Specials" value={stats.specials} />
               <Stat label="Events" value={stats.events} />
-              <Stat label="Featured" value={stats.featured} icon={<Star size={11} strokeWidth={1.5} />} />
+              <Stat label="Featured" value={stats.featured} />
             </div>
           )}
 
