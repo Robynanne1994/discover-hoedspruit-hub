@@ -5,6 +5,7 @@ import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 import BusinessShell from "@/components/business/BusinessShell";
 import { Button, Input, Label, Textarea, Card, Body, Small, StatusPill } from "@/components/business/ui";
 import { toast } from "sonner";
+import { toTitleCase } from "@/lib/titleCase";
 
 interface Props { mode: "new" | "edit" }
 
