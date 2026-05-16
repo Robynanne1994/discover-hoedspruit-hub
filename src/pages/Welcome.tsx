@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { MapPin, ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
-import hhLogo from "@/assets/hh-logo.png";
+import hhLogo from "@/assets/loading-icon.svg";
 
 type Role = "user" | "business";
 
@@ -111,9 +111,7 @@ const Welcome = () => {
               marginBottom: 22,
             }}
           >
-            Your local guide
-            <br />
-            to Hoedspruit
+            Your lowveld local
           </h1>
 
           {/* Role pill toggle */}
