@@ -10,6 +10,7 @@ import { Plus, Pencil, Trash2, FileSpreadsheet, Upload, X, Image as ImageIcon } 
 import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
