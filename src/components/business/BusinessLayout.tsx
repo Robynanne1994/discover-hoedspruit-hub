@@ -1,6 +1,6 @@
 import { ReactNode, useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Settings, LogOut, CreditCard, ArrowLeftRight } from "lucide-react";
+import { Settings, LogOut, CreditCard, ArrowLeftRight, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -73,14 +73,35 @@ const BusinessLayout = ({ businessName, children }: Props) => {
           style={{
             maxWidth: 720,
             margin: "0 auto",
-            padding: "60px 20px 0",
+            padding: "60px 20px 16px",
             position: "relative",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            minHeight: 60,
+            borderBottom: `1px solid ${DIVIDER}`,
           }}
         >
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            style={{
+              position: "absolute",
+              left: 20,
+              top: 52,
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              border: `1px solid ${DIVIDER}`,
+              background: "#fff",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <ArrowLeft size={16} strokeWidth={1.5} color={INK} />
+          </button>
+
           <h1
             style={{
               fontFamily: SANS,
@@ -95,7 +116,7 @@ const BusinessLayout = ({ businessName, children }: Props) => {
             My Business
           </h1>
 
-          <div ref={menuRef} style={{ position: "absolute", right: 20, top: 60, flexShrink: 0 }}>
+          <div ref={menuRef} style={{ position: "absolute", right: 20, top: 52, flexShrink: 0 }}>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Menu"
