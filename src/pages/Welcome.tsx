@@ -106,7 +106,7 @@ const Welcome = () => {
               color: "#ffffff",
               fontSize: 26,
               lineHeight: 1.15,
-              fontWeight: 400,
+              fontWeight: 550,
               textTransform: "uppercase",
               letterSpacing: "0.01em",
               marginBottom: 22,
