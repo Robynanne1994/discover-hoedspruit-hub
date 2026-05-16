@@ -95,7 +95,7 @@ const BusinessLayout = ({ businessName, children }: Props) => {
             My Business
           </h1>
 
-          <div ref={menuRef} style={{ position: "relative", flexShrink: 0 }}>
+          <div ref={menuRef} style={{ position: "absolute", right: 20, top: 60, flexShrink: 0 }}>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Menu"
