@@ -90,16 +90,16 @@ const BusinessLayout = ({ businessName, children }: Props) => {
               top: 52,
               width: 40,
               height: 40,
-              borderRadius: 999,
-              border: `1px solid ${DIVIDER}`,
-              background: "#fff",
+              border: "none",
+              background: "transparent",
               display: "inline-flex",
               alignItems: "center",
-              justifyContent: "center",
+              justifyContent: "flex-start",
               cursor: "pointer",
+              padding: 0,
             }}
           >
-            <ArrowLeft size={16} strokeWidth={1.5} color={INK} />
+            <ArrowLeft size={18} strokeWidth={1.6} color={INK} />
           </button>
 
           <h1
