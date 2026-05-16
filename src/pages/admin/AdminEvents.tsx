@@ -161,6 +161,15 @@ const AdminEvents = () => {
         notes: values.notes || null,
         business_id: values.business_id || null,
         is_featured: !!values.is_featured,
+        hosted_by_name: values.hosted_by_name || null,
+        hosted_by_subtitle: values.hosted_by_subtitle || null,
+        hosted_by_image_url: values.hosted_by_image_url || null,
+        hosted_by_name_2: values.hosted_by_name_2 || null,
+        hosted_by_subtitle_2: values.hosted_by_subtitle_2 || null,
+        hosted_by_image_url_2: values.hosted_by_image_url_2 || null,
+        hosted_by_name_3: values.hosted_by_name_3 || null,
+        hosted_by_subtitle_3: values.hosted_by_subtitle_3 || null,
+        hosted_by_image_url_3: values.hosted_by_image_url_3 || null,
       };
       if (editing) {
         const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
