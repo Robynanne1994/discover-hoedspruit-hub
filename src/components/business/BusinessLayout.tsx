@@ -73,48 +73,29 @@ const BusinessLayout = ({ businessName, children }: Props) => {
           style={{
             maxWidth: 720,
             margin: "0 auto",
-            padding: "18px 20px 0",
+            padding: "60px 20px 0",
+            position: "relative",
             display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            gap: 12,
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 60,
           }}
         >
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <p
-              style={{
-                fontFamily: SANS,
-                fontSize: 11,
-                fontWeight: 400,
-                letterSpacing: "1.8px",
-                textTransform: "uppercase",
-                color: MUTED,
-                margin: 0,
-                marginBottom: 2,
-              }}
-            >
-              Business
-            </p>
-            <h1
-              style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 24,
-                lineHeight: 1.1,
-                letterSpacing: "-0.4px",
-                color: INK,
-                margin: 0,
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {businessName || "your business"}
-            </h1>
-          </div>
+          <h1
+            style={{
+              fontFamily: SANS,
+              fontWeight: 600,
+              fontSize: 20,
+              lineHeight: 1.2,
+              color: INK,
+              margin: 0,
+              textAlign: "center",
+            }}
+          >
+            My Business
+          </h1>
 
-          <div ref={menuRef} style={{ position: "relative", flexShrink: 0 }}>
+          <div ref={menuRef} style={{ position: "absolute", right: 20, top: 60, flexShrink: 0 }}>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Menu"
