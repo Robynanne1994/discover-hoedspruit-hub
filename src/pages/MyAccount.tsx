@@ -485,7 +485,7 @@ const MyAccount = () => {
     
   ];
   const helpInfoItems = [
-    { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
+    { label: "FAQs", href: "/help-centre", icon: HelpCircle },
     { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];

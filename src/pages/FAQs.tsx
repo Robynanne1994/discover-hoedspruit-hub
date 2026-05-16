@@ -189,7 +189,7 @@ const FAQs = () => {
           </svg>
         </button>
         <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
-          Help
+          FAQs
         </div>
       </div>
 
@@ -213,7 +213,7 @@ const FAQs = () => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search faqs"
+            placeholder="Search FAQs"
             className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
