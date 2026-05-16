@@ -29,7 +29,7 @@ const BusinessEvents = () => {
       </div>
 
       {pending.length === 0 && live.length === 0 ? (
-        <EmptyState message="No events yet." />
+        <EmptyState message="No events submitted yet." />
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {pending.map((e) => (
