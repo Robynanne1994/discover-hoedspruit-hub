@@ -202,12 +202,12 @@ const Welcome = () => {
 
       <div className="flex-1 px-6 pb-12 flex flex-col justify-center">
         <h1
-          className="font-heading font-bold text-foreground mb-1"
-          style={{ fontSize: 28, letterSpacing: "0.01em" }}
+          className="mb-1"
+          style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "0.01em", color: "#ffffff" }}
         >
           {mode === "signup" ? "Create Account" : "Welcome Back"}
         </h1>
-        <p className="text-muted-foreground text-sm mb-8">
+        <p className="text-sm mb-8" style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}>
           {mode === "signup"
             ? "Join the Hello Hoedspruit community"
             : "Sign in to your account"}
