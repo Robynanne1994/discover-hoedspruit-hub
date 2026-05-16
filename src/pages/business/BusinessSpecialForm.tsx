@@ -79,15 +79,16 @@ const BusinessSpecialForm = ({ mode }: Props) => {
     if (!user || !listing) return;
     setBusy(true);
     const tags = [tag1, tag2, tag3].map((t) => t.trim()).filter(Boolean);
+    const titleCased = toTitleCase(title.trim());
     const payload = {
-      title,
+      title: titleCased,
       description,
       image_url: imageUrl,
       valid_from: validFrom || null,
       valid_until: validUntil || null,
       business_name: listing.title,
       business_id: listing.id,
-      deal_label: tagline || title,
+      deal_label: tagline || titleCased,
       booking_link: bookingLink || null,
       terms: terms || null,
       price: price || null,
