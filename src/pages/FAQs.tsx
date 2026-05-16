@@ -213,7 +213,7 @@ const FAQs = () => {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search faqs"
+            placeholder="Search FAQs"
             className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
