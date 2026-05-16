@@ -300,11 +300,12 @@ const Welcome = () => {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
+        <p className="text-center text-sm mt-6" style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-            className="text-primary font-medium"
+            className="font-medium"
+            style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}
           >
             {mode === "signup" ? "Sign In" : "Sign Up"}
           </button>
