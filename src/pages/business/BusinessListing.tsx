@@ -347,7 +347,7 @@ const BusinessListing = () => {
         </div>
 
         <Button full onClick={submit} disabled={busy}>{busy ? "SENDING..." : "SEND FOR REVIEW"}</Button>
-        <Small soft style={{ textAlign: "center" }}>This will go live once we approve it.</Small>
+        <Small soft style={{ textAlign: "center" }}>Your listing updates will reflect on live once we approve them.</Small>
       </div>
       </div>
     </BusinessLayout>
