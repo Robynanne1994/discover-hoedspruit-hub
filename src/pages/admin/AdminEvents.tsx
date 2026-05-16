@@ -219,6 +219,15 @@ const AdminEvents = () => {
       notes: (ev as any).notes ?? "",
       business_id: (ev as any).business_id ?? "",
       is_featured: !!(ev as any).is_featured,
+      hosted_by_name: (ev as any).hosted_by_name ?? "",
+      hosted_by_subtitle: (ev as any).hosted_by_subtitle ?? "",
+      hosted_by_image_url: (ev as any).hosted_by_image_url ?? "",
+      hosted_by_name_2: (ev as any).hosted_by_name_2 ?? "",
+      hosted_by_subtitle_2: (ev as any).hosted_by_subtitle_2 ?? "",
+      hosted_by_image_url_2: (ev as any).hosted_by_image_url_2 ?? "",
+      hosted_by_name_3: (ev as any).hosted_by_name_3 ?? "",
+      hosted_by_subtitle_3: (ev as any).hosted_by_subtitle_3 ?? "",
+      hosted_by_image_url_3: (ev as any).hosted_by_image_url_3 ?? "",
     });
     setOpen(true);
   };
