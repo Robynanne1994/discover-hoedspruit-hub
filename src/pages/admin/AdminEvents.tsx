@@ -10,6 +10,7 @@ import { Plus, Pencil, Trash2, FileSpreadsheet, Upload, X, Image as ImageIcon } 
 import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import ImageUpload from "@/components/admin/ImageUpload";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
@@ -272,7 +273,7 @@ const AdminEvents = () => {
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
                 </select>
               </div>
-              <EventCoverUpload value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} />
+              <div className="space-y-2"><Label>Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={4/3} /></div>
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
               <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
