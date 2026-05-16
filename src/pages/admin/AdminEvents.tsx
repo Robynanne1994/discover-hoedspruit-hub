@@ -14,7 +14,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
+const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
