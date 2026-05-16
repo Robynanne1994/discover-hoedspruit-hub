@@ -196,7 +196,7 @@ const Welcome = () => {
           aria-label="Back"
           className="text-foreground active:scale-95 transition-transform p-2 -ml-2"
         >
-          <ArrowLeft style={{ width: 24, height: 24, color: "#0A0A0A" }} />
+          <ArrowLeft className="lucide lucide-arrow-left text-slate-50" style={{ width: 24, height: 24 }} />
         </button>
       </div>
 
