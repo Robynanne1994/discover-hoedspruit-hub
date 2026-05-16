@@ -227,9 +227,9 @@ const SectionHeader = ({ title, count, noun }: { title: string; count: number; n
       textTransform: "none",
     }}>{title}</h2>
     <span style={{
-      fontFamily: HN, fontWeight: 400, fontSize: 11, letterSpacing: "1.8px",
-      textTransform: "uppercase", color: "rgba(238, 232, 218, 0.75)",
-    }}>{count} {count === 1 ? noun.singular : noun.plural}</span>
+      fontFamily: HN, fontWeight: 400, fontSize: 18, letterSpacing: "0.01em",
+      color: CREAM,
+    }}>({count})</span>
   </div>
 );
 
