@@ -202,12 +202,12 @@ const Welcome = () => {
 
       <div className="flex-1 px-6 pb-12 flex flex-col justify-center">
         <h1
-          className="font-heading font-bold text-foreground mb-1"
-          style={{ fontSize: 28, letterSpacing: "0.01em" }}
+          className="mb-1"
+          style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "0.01em", color: "#ffffff" }}
         >
           {mode === "signup" ? "Create Account" : "Welcome Back"}
         </h1>
-        <p className="text-muted-foreground text-sm mb-8">
+        <p className="text-sm mb-8" style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}>
           {mode === "signup"
             ? "Join the Hello Hoedspruit community"
             : "Sign in to your account"}
@@ -217,7 +217,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
                   First Name
                 </Label>
                 <Input
@@ -231,7 +231,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
                   Username
                 </Label>
                 <Input
@@ -247,7 +247,7 @@ const Welcome = () => {
             </>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
               Email
             </Label>
             <Input
@@ -261,7 +261,7 @@ const Welcome = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
               Password
             </Label>
             <div className="relative">
@@ -300,11 +300,12 @@ const Welcome = () => {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-muted-foreground mt-6">
+        <p className="text-center text-sm mt-6" style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
-            className="text-primary font-medium"
+            className="font-medium"
+            style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}
           >
             {mode === "signup" ? "Sign In" : "Sign Up"}
           </button>
