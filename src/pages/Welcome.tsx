@@ -111,9 +111,7 @@ const Welcome = () => {
               marginBottom: 22,
             }}
           >
-            Your local guide
-            <br />
-            to Hoedspruit
+            Your lowveld local
           </h1>
 
           {/* Role pill toggle */}
