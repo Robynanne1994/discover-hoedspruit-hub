@@ -189,7 +189,7 @@ const FAQs = () => {
           </svg>
         </button>
         <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
-          Help
+          FAQs
         </div>
       </div>
 
