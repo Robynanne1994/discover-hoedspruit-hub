@@ -217,7 +217,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
                   First Name
                 </Label>
                 <Input
@@ -231,7 +231,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
                   Username
                 </Label>
                 <Input
@@ -247,7 +247,7 @@ const Welcome = () => {
             </>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
               Email
             </Label>
             <Input
@@ -261,7 +261,7 @@ const Welcome = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#0A0A0A" }}>
+            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
               Password
             </Label>
             <div className="relative">
