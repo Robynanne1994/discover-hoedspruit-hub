@@ -1,6 +1,6 @@
 import { ReactNode, useState, useRef, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Settings, LogOut, CreditCard, ArrowLeftRight } from "lucide-react";
+import { Settings, LogOut, CreditCard, ArrowLeftRight, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
