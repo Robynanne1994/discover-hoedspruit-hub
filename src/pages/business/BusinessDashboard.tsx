@@ -250,8 +250,7 @@ const Stat = ({ label, value, icon }: { label: string; value: number; icon?: Rea
   <div style={{ background: "#fff", borderRadius: 14, padding: "16px 12px", textAlign: "center" }}>
     <p
       style={{
-        fontFamily: SERIF,
-        fontStyle: "italic",
+        fontFamily: SANS,
         fontSize: 28,
         color: INK,
         margin: 0,
