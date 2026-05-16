@@ -108,6 +108,7 @@ body {
   font-synthesis: none;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  overscroll-behavior-x: none;
 }
 
 /* Global stretch + synthesis lock — nothing should ever render condensed/expanded or faux-italic */
