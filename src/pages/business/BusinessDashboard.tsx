@@ -108,9 +108,6 @@ const BusinessDashboard = () => {
               <div style={{ flex: 1, padding: "18px 20px", minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <Pill tone="live">Live</Pill>
-                  <span style={{ fontFamily: SANS, fontSize: 11, color: MUTED, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                    {account?.subscription_status === "active" ? "Subscribed" : "Free plan"}
-                  </span>
                 </div>
                 <h2
                   style={{
