@@ -296,7 +296,7 @@ const Welcome = () => {
               ? "Loading..."
               : mode === "signup"
               ? "Create Account"
-              : "Sign In"}
+              : "Sign in"}
           </Button>
         </form>
 
@@ -307,7 +307,7 @@ const Welcome = () => {
             className="font-medium"
             style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}
           >
-            {mode === "signup" ? "Sign In" : "Sign Up"}
+            {mode === "signup" ? "Sign in" : "Sign Up"}
           </button>
         </p>
       </div>
