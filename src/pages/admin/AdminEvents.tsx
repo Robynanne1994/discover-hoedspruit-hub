@@ -14,7 +14,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false };
+const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -161,6 +161,15 @@ const AdminEvents = () => {
         notes: values.notes || null,
         business_id: values.business_id || null,
         is_featured: !!values.is_featured,
+        hosted_by_name: values.hosted_by_name || null,
+        hosted_by_subtitle: values.hosted_by_subtitle || null,
+        hosted_by_image_url: values.hosted_by_image_url || null,
+        hosted_by_name_2: values.hosted_by_name_2 || null,
+        hosted_by_subtitle_2: values.hosted_by_subtitle_2 || null,
+        hosted_by_image_url_2: values.hosted_by_image_url_2 || null,
+        hosted_by_name_3: values.hosted_by_name_3 || null,
+        hosted_by_subtitle_3: values.hosted_by_subtitle_3 || null,
+        hosted_by_image_url_3: values.hosted_by_image_url_3 || null,
       };
       if (editing) {
         const { error } = await supabase.from("events").update(payload).eq("id", editing.id);
@@ -219,6 +228,15 @@ const AdminEvents = () => {
       notes: (ev as any).notes ?? "",
       business_id: (ev as any).business_id ?? "",
       is_featured: !!(ev as any).is_featured,
+      hosted_by_name: (ev as any).hosted_by_name ?? "",
+      hosted_by_subtitle: (ev as any).hosted_by_subtitle ?? "",
+      hosted_by_image_url: (ev as any).hosted_by_image_url ?? "",
+      hosted_by_name_2: (ev as any).hosted_by_name_2 ?? "",
+      hosted_by_subtitle_2: (ev as any).hosted_by_subtitle_2 ?? "",
+      hosted_by_image_url_2: (ev as any).hosted_by_image_url_2 ?? "",
+      hosted_by_name_3: (ev as any).hosted_by_name_3 ?? "",
+      hosted_by_subtitle_3: (ev as any).hosted_by_subtitle_3 ?? "",
+      hosted_by_image_url_3: (ev as any).hosted_by_image_url_3 ?? "",
     });
     setOpen(true);
   };
@@ -291,6 +309,20 @@ const AdminEvents = () => {
                 <span className="text-sm font-medium">Featured event</span>
                 <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
               </label>
+              <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By (optional, up to 3)</Label></div>
+              {[1, 2, 3].map((n) => {
+                const nameKey = (n === 1 ? "hosted_by_name" : `hosted_by_name_${n}`) as keyof typeof form;
+                const subKey = (n === 1 ? "hosted_by_subtitle" : `hosted_by_subtitle_${n}`) as keyof typeof form;
+                const imgKey = (n === 1 ? "hosted_by_image_url" : `hosted_by_image_url_${n}`) as keyof typeof form;
+                return (
+                  <div key={n} className="space-y-3 p-3 border rounded">
+                    <Label className="text-sm font-semibold">Host {n}</Label>
+                    <div><Label>Name</Label><Input value={(form[nameKey] as string) || ""} onChange={(e) => setForm({ ...form, [nameKey]: e.target.value })} placeholder="e.g. Kristi & Joëlle" /></div>
+                    <div><Label>Subtitle</Label><Input value={(form[subKey] as string) || ""} onChange={(e) => setForm({ ...form, [subKey]: e.target.value })} placeholder="e.g. Yoga Teachers" /></div>
+                    <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={(form[imgKey] as string) || ""} onChange={(url) => setForm({ ...form, [imgKey]: url })} /></div>
+                  </div>
+                );
+              })}
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>
