@@ -111,7 +111,7 @@ const BusinessEventForm = ({ mode }: Props) => {
     if (!user || !listing) return;
     setBusy(true);
     const payload = {
-      title,
+      title: toTitleCase(title.trim()),
       description,
       image_url: imageUrl,
       gallery_images: galleryImages,
