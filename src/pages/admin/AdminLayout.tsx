@@ -70,7 +70,7 @@ const AdminLayout = () => {
 
   if (loading)
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#5C6446" }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#ebebeb" }}>
         Loading...
       </div>
     );
@@ -81,7 +81,7 @@ const AdminLayout = () => {
     navItems.find((i) => i.path === location.pathname)?.label ?? "Admin";
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#5C6446" }}>
+    <div className="min-h-screen flex" style={{ background: "#ebebeb" }}>
       {/* Desktop sidebar */}
       <aside className="hidden lg:flex w-64 bg-card border-r border-border p-4 flex-col">
         <Link
