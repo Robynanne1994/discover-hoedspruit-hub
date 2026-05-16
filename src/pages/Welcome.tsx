@@ -102,6 +102,7 @@ const Welcome = () => {
         <div className="px-5 pb-10">
           <h1
             style={{
+              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
               color: "#ffffff",
               fontSize: 26,
               lineHeight: 1.15,
