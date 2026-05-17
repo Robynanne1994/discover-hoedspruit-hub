@@ -878,17 +878,17 @@ const ListingDetail = () => {
         background: C.surface, borderBottom: `1px solid ${C.border}`,
         display: "flex",
         padding: "0 8px",
-      }}>
-        <TabBtn k="about" label="About" />
-        <TabBtn k="details" label="Details" />
-        <TabBtn k="gallery" label="Gallery" />
-        <TabBtn k="location" label="Location" />
+        overflowX: "auto",
+      }} className="scrollbar-hide">
+        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} />)}
       </nav>
 
       {/* Tab content */}
       <main>
         {tab === "about" && renderAbout()}
         {tab === "details" && renderDetails()}
+        {tab === "specials" && renderSpecials()}
+        {tab === "events" && renderEvents()}
         {tab === "gallery" && renderGallery()}
         {tab === "location" && renderLocation()}
       </main>
