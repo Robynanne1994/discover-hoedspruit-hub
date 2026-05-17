@@ -298,16 +298,12 @@ const SpecialDetail = () => {
                 }}>
                   <c.icon size={18} strokeWidth={1.5} color={C.primary} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    {c.headline && (
-                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>
-                        {c.headline}
-                      </div>
-                    )}
-                    {c.sublabel && (
-                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-                        {c.sublabel}
-                      </div>
-                    )}
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>
+                      {c.label}
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                      {[c.headline, c.sublabel].filter(Boolean).join(" · ")}
+                    </div>
                   </div>
                 </div>
               ))}
