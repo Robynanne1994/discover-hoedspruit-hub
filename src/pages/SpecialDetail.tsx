@@ -256,9 +256,9 @@ const SpecialDetail = () => {
     const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
     const offerCols = [
-      { icon: Banknote, headline: sp.price, sublabel: sp.price_label },
-      { icon: Tag, headline: sp.offer_headline, sublabel: sp.offer_sublabel },
-      { icon: Clock, headline: sp.duration_headline, sublabel: sp.duration_sublabel },
+      { icon: Banknote, label: "Price", headline: sp.price, sublabel: sp.price_label },
+      { icon: Tag, label: "Offer", headline: sp.offer_headline, sublabel: sp.offer_sublabel },
+      { icon: Clock, label: "Duration", headline: sp.duration_headline, sublabel: sp.duration_sublabel },
     ].filter((c) => c.headline || c.sublabel);
 
     return (
@@ -298,16 +298,12 @@ const SpecialDetail = () => {
                 }}>
                   <c.icon size={18} strokeWidth={1.5} color={C.primary} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    {c.headline && (
-                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>
-                        {c.headline}
-                      </div>
-                    )}
-                    {c.sublabel && (
-                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-                        {c.sublabel}
-                      </div>
-                    )}
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>
+                      {c.label}
+                    </div>
+                    <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                      {[c.headline, c.sublabel].filter(Boolean).join(" · ")}
+                    </div>
                   </div>
                 </div>
               ))}
