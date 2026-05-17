@@ -608,13 +608,5 @@ const EventDetail = () => {
   );
 };
 
-// Small wrapper so the booking pill icon import stays tidy
-function ExternalLinkIcon(props: any) {
-  // Reuse lucide's external link via the imported set
-  // (Avoids adding a second import name collision)
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { ExternalLink } = require("lucide-react");
-  return <ExternalLink {...props} />;
-}
 
 export default EventDetail;
