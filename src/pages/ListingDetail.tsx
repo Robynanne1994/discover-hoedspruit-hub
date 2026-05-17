@@ -727,9 +727,15 @@ const ListingDetail = () => {
         )}
 
         {actions.length > 0 && (
-          <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
-            {actions.map((a) => <PillBtn key={a.key} a={a} />)}
-          </div>
+          actions.length === 4 ? (
+            <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {actions.map((a) => <PillBtn key={a.key} a={a} full />)}
+            </div>
+          ) : (
+            <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
+              {actions.map((a) => <PillBtn key={a.key} a={a} />)}
+            </div>
+          )
         )}
       </div>
 
