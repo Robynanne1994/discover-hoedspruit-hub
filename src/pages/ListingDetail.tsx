@@ -245,6 +245,30 @@ const ListingDetail = () => {
   };
   const openStatus = computeOpenStatus();
 
+  // ----- Rich text renderer: parses [label](url) markdown links + bare URLs -----
+  const renderRichText = (text: string): React.ReactNode => {
+    if (!text) return null;
+    const nodes: React.ReactNode[] = [];
+    const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s)]+)/g;
+    let lastIndex = 0;
+    let m: RegExpExecArray | null;
+    let i = 0;
+    while ((m = regex.exec(text)) !== null) {
+      if (m.index > lastIndex) nodes.push(text.slice(lastIndex, m.index));
+      const label = m[1] || m[3];
+      const href = m[2] || m[3];
+      nodes.push(
+        <a key={`l-${i++}`} href={href} target="_blank" rel="noopener noreferrer"
+          style={{ color: C.primary, textDecoration: "underline", textUnderlineOffset: 2, wordBreak: "break-word" }}>
+          {label}
+        </a>
+      );
+      lastIndex = m.index + m[0].length;
+    }
+    if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
+    return nodes;
+  };
+
   // ----- Detail sections (flattened from old accordion logic) -----
   type DField = { label: string; on: boolean | string };
   type DSection = { key: string; title: string; fields: DField[]; iconSrc?: string; iconComp?: any };
