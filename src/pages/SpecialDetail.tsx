@@ -2,78 +2,67 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-import { Heart, Phone, Share2, Store, Tag, Banknote, Ticket, Clock, Calendar, ExternalLink, MessageCircle, Copy, Pencil, ArrowUpRight } from "lucide-react";
+import {
+  Heart, Phone, Share2, Store, Clock, Calendar, ExternalLink, Copy, Pencil,
+  ArrowUpRight, Banknote, Tag, Send,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import BottomNav from "@/components/BottomNav";
 
-const FONT = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
+const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const PAGE_BG = "#5C6446";
-const SURFACE = "#EEE8DA";
-const TEXT = "#2A2A24";
-const MUTED = "#6B6A5E";
-const DIVIDER = "rgba(107,106,94,0.15)";
-const CREAM = "#EEE8DA";
+// Design tokens (match ListingDetail)
+const C = {
+  bg: "#ebebeb",
+  surface: "#ffffff",
+  ivory: "#f5f0e8",
+  border: "#E8E4DF",
+  divider: "#EDE9E3",
+  heading: "#020202",
+  text: "#2b2420",
+  muted: "#8A8480",
+  primary: "#715a3d",
+  accent: "#B8916A",
+};
 
-const press = {
-  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(0.98)"),
+const pressScale = (s = "0.98") => ({
+  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${s})`),
   onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
-};
+});
 
-const eyebrow: React.CSSProperties = {
-  fontFamily: FONT,
-  fontWeight: 400,
-  fontSize: 12,
-  lineHeight: "14.4px",
-  letterSpacing: "0.24px",
-  textTransform: "capitalize",
-  color: MUTED,
-  margin: 0,
+const headStyle: React.CSSProperties = {
+  margin: "0 0 12px",
+  fontFamily: FONT, fontWeight: 400, fontSize: 12,
+  letterSpacing: "0.08em", textTransform: "uppercase",
+  color: C.heading,
 };
-
-const sectionTitle: React.CSSProperties = {
-  fontFamily: FONT,
-  fontWeight: 700,
-  fontSize: 28,
-  lineHeight: "32px",
-  letterSpacing: "-0.56px",
-  color: TEXT,
-  margin: 0,
+const paraStyle: React.CSSProperties = {
+  fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
+  color: C.text, margin: "0 0 10px",
 };
-
-const overlayBtn: React.CSSProperties = {
-  width: 44,
-  height: 44,
-  borderRadius: 999,
-  background: SURFACE,
-  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  border: "none",
-  cursor: "pointer",
-  transition: "transform 150ms ease-out",
-  position: "absolute",
-  top: 12,
-  zIndex: 10,
+const iconBtn: React.CSSProperties = {
+  width: 40, height: 40, borderRadius: 999,
+  background: "none", border: "none", cursor: "pointer",
+  display: "flex", alignItems: "center", justifyContent: "center",
 };
 
 const formatPrice = (raw?: string | null) => {
   if (!raw) return null;
   const trimmed = raw.trim();
   if (!trimmed) return null;
-  // Pure numeric values get a Rand prefix; anything else (e.g. "20% Off",
-  // "R450pp", "Buy 1 Get 1 Free") is treated as free-form text.
   if (/^\d+(\.\d+)?$/.test(trimmed)) {
     const num = parseFloat(trimmed);
     return `R${Number.isInteger(num) ? num : num.toFixed(2)}`;
   }
   return trimmed;
 };
+
+type TabKey = "about" | "details" | "contact" | "terms";
 
 const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -82,14 +71,7 @@ const SpecialDetail = () => {
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
-  const [aboutOverflows, setAboutOverflows] = useState(false);
-  const aboutRef = useRef<HTMLParagraphElement>(null);
-  useLayoutEffect(() => {
-    const el = aboutRef.current;
-    if (!el) return;
-    if (aboutExpanded) return;
-    setAboutOverflows(el.scrollHeight > el.clientHeight + 1);
-  }, [aboutExpanded]);
+  const [tab, setTab] = useState<TabKey>("about");
 
   const { data: special, isLoading } = useQuery({
     queryKey: ["special-detail", id],
@@ -132,698 +114,465 @@ const SpecialDetail = () => {
     },
   });
 
+  const requireAuth = () => {
+    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
+    return false;
+  };
+
   const handleShare = async () => {
     const shareUrl = window.location.href;
     if (navigator.share) {
-      try {
-        await navigator.share({ title: special?.title, url: shareUrl });
-      } catch (err) {
+      try { await navigator.share({ title: special?.title, url: shareUrl }); } catch (err) {
         if ((err as Error).name !== "AbortError") {
-          await navigator.clipboard.writeText(shareUrl);
-          toast.success("Link copied!");
+          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
         }
       }
     } else {
-      await navigator.clipboard.writeText(shareUrl);
-      toast.success("Link copied!");
+      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
     }
   };
 
   if (isLoading || !special) {
     return (
-      <div style={{ minHeight: "100vh", background: "transparent", fontFamily: FONT }}>
-        <button
-          onClick={() => navigate(-1)}
-          style={{ ...overlayBtn, position: "fixed", left: 24, top: 16 }}
-          aria-label="Back"
-        >
-          <BackArrowIcon size={20} color={TEXT} />
-        </button>
-        {!isLoading && (
-          <div style={{ padding: "120px 24px", textAlign: "center" }}>
-            <p style={{ fontSize: 14, color: MUTED, marginBottom: 16 }}>Special not found.</p>
-            <Link to="/specials" style={{ fontSize: 14, color: TEXT }}>Back to Specials</Link>
-          </div>
-        )}
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text }}>
+        <div style={{ padding: 20 }}>
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: C.primary, fontFamily: FONT, fontSize: 15 }}>
+            <BackArrowIcon size={20} color={C.primary} />
+            <span>Back</span>
+          </button>
+        </div>
+        <div style={{ padding: "80px 20px", textAlign: "center", color: C.muted, fontSize: 14 }}>
+          {isLoading ? "Loading..." : "Special not found."}
+        </div>
       </div>
     );
   }
 
+  const sp: any = special;
   const fromDate = special.valid_from ? new Date(special.valid_from) : null;
   const untilDate = special.valid_until ? new Date(special.valid_until) : null;
-  const validFromTxt = fromDate ? format(fromDate, "d MMM yyyy") : null;
-  const validUntilTxt = untilDate ? format(untilDate, "d MMM yyyy") : null;
-  let validityText: string;
-  if (fromDate && untilDate) {
-    const sameYear = fromDate.getFullYear() === untilDate.getFullYear();
-    const fromShort = sameYear ? format(fromDate, "d MMM") : format(fromDate, "d MMM yyyy");
-    validityText = `${fromShort} – ${format(untilDate, "d MMM yyyy")}`;
-  } else if (validUntilTxt) {
-    validityText = `Valid until ${validUntilTxt}`;
-  } else if (validFromTxt) {
-    validityText = `From ${validFromTxt}`;
-  } else {
-    validityText = "Ongoing";
-  }
-
   const phoneClean = special.contact_phone?.replace(/\s/g, "");
   const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
-
-  const detailRows: { icon: React.ReactNode; label: string; value: string; capitalize?: boolean; href?: string }[] = [
-    { icon: <Store size={20} strokeWidth={1.5} color={MUTED} />, label: "Business", value: special.business_name, href: special.business_id ? `/listing/${special.business_id}` : undefined },
-  ];
   const priceFmt = formatPrice(special.price);
-  if (priceFmt) {
-    const original = formatPrice(special.original_price);
-    detailRows.push({
-      icon: <Banknote size={20} strokeWidth={1.5} color={MUTED} />,
-      label: "Price",
-      value: original ? `${priceFmt} · was ${original}` : priceFmt,
-    });
+  const originalFmt = formatPrice(special.original_price);
+  const cats = (sp.eyebrow_categories as string[] | null)?.filter((c) => c && c.trim()) ?? [];
+  const eyebrowText = cats.length ? cats[0] : special.deal_label;
+
+  // Validity status
+  const now = new Date();
+  const DAY = 24 * 60 * 60 * 1000;
+  const fmt = (d: Date) => format(d, "d MMM yyyy");
+  let dotColor = "#5C8A4A";
+  let statusLabel = "Live now";
+  let datesText = "Ongoing";
+  if (untilDate && now > untilDate) {
+    dotColor = C.muted; statusLabel = "Expired"; datesText = `ended ${fmt(untilDate)}`;
+  } else if (fromDate && now < fromDate) {
+    statusLabel = `Starts ${fmt(fromDate)}`;
+    datesText = untilDate ? `runs to ${fmt(untilDate)}` : "ongoing";
+  } else if (untilDate) {
+    const daysLeft = Math.ceil((untilDate.getTime() - now.getTime()) / DAY);
+    if (daysLeft <= 7) {
+      dotColor = "#B05B3F";
+      statusLabel = daysLeft <= 0 ? "Ends today" : daysLeft === 1 ? "Ends tomorrow" : `Ends in ${daysLeft} days`;
+      datesText = `until ${fmt(untilDate)}`;
+    } else {
+      datesText = `valid until ${fmt(untilDate)}`;
+    }
+  } else if (fromDate) {
+    datesText = `from ${fmt(fromDate)}`;
   }
-  if (special.day_of_week?.length)
-    detailRows.push({
-      icon: <Clock size={20} strokeWidth={1.5} color={MUTED} />,
-      label: "Days",
-      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
-    });
 
-  const secondaryActions: { label: string; icon: React.ReactNode; onClick?: () => void; href?: string; external?: boolean }[] = [];
+  // Action pills
+  const actions = [
+    phoneClean && { key: "call", label: "Call", href: `tel:${phoneClean}`, Icon: Phone, ext: false },
+    waClean && {
+      key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${waClean}`, ext: true,
+      Icon: ({ size = 18 }: { size?: number }) => (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill={C.primary} aria-hidden="true">
+          <path d="M19.05 4.91A10 10 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02Z" />
+        </svg>
+      ),
+    },
+    special.booking_link && {
+      key: "booking", label: (sp.booking_link_label?.trim() || "Booking"),
+      href: special.booking_link, Icon: Send, ext: true,
+    },
+    special.business_id && {
+      key: "business", label: "Business",
+      href: `/listing/${special.business_id}`, Icon: Store, ext: false, internal: true,
+    },
+  ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean; internal?: boolean }>;
 
-  return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FONT, paddingBottom: 120 }}>
-      {/* Hero */}
-      <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, background: "linear-gradient(135deg, #C49B7A 0%, #8B5E3C 100%)" }}>
-        {special.image_url && (
-          <img
-            src={special.image_url}
-            alt={special.title}
-            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-          />
-        )}
-        {/* top gradient */}
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 120,
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.18), rgba(0,0,0,0))",
-            pointerEvents: "none",
-          }}
-        />
-        <button
-          onClick={() => navigate(-1)}
-          style={{ ...overlayBtn, left: 12 }}
-          aria-label="Back"
-          {...press}
-        >
-          <BackArrowIcon size={20} color={TEXT} />
-        </button>
-        {(() => {
-          const rightIcons: { key: string; onClick: () => void; ariaLabel: string; node: React.ReactNode }[] = [];
-          if (isAdmin) {
-            rightIcons.push({
-              key: "edit",
-              onClick: () => setEditOpen(true),
-              ariaLabel: "Edit",
-              node: <Pencil size={20} strokeWidth={1.5} color={TEXT} />,
-            });
-          }
-          rightIcons.push({
-            key: "share",
-            onClick: handleShare,
-            ariaLabel: "Share",
-            node: <Share2 size={20} strokeWidth={1.5} color={TEXT} />,
-          });
-          rightIcons.push({
-            key: "fav",
-            onClick: () => {
-              if (!user) {
-                toast.info("Sign in to save");
-                navigate("/auth");
-                return;
-              }
-              toggleFavourite.mutate();
-            },
-            ariaLabel: isFavourited ? "Unsave" : "Save",
-            node: (
-              <Heart
-                size={20}
-                strokeWidth={1.5}
-                color={isFavourited ? "#5b4632" : TEXT}
-                fill={isFavourited ? "#5b4632" : "none"}
-              />
-            ),
-          });
-          return rightIcons.map((b, idx) => {
-            const rightOffset = 12 + (rightIcons.length - 1 - idx) * (44 + 8);
-            return (
-              <button
-                key={b.key}
-                onClick={b.onClick}
-                style={{ ...overlayBtn, right: rightOffset }}
-                aria-label={b.ariaLabel}
-                {...press}
-              >
-                {b.node}
-              </button>
-            );
-          });
-        })()}
-      </div>
+  const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
+    const baseStyle: React.CSSProperties = {
+      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+      padding: "10px 14px", borderRadius: 999,
+      background: C.surface, border: `1px solid ${C.border}`,
+      color: C.primary, textDecoration: "none",
+      fontFamily: FONT, fontWeight: 400, fontSize: 13,
+      letterSpacing: "0.01em",
+      flexShrink: 0,
+      width: full ? "100%" : undefined,
+      transition: "transform 150ms ease-out",
+    };
+    const content = (<>
+      <a.Icon size={14} strokeWidth={1.75} color={C.primary} />
+      <span>{a.label}</span>
+    </>);
+    if (a.internal) {
+      return <Link to={a.href} style={baseStyle} {...pressScale()}>{content}</Link>;
+    }
+    return (
+      <a href={a.href} {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={baseStyle} {...pressScale()}>
+        {content}
+      </a>
+    );
+  };
 
-      {/* Content */}
-      <div style={{ padding: "16px 24px 0 24px" }}>
-        {(() => {
-          const cats = ((special as any).eyebrow_categories as string[] | null)?.filter((c) => c && c.trim()) ?? [];
-          const eyebrowText = cats.length ? cats.join("  ·  ") : special.deal_label;
-          if (!eyebrowText) return null;
-          return (
-            <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 12, lineHeight: "14.4px", letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16, textTransform: "uppercase", textAlign: "center" }}>{eyebrowText}</p>
-          );
-        })()}
+  const TabBtn = ({ k, label }: { k: TabKey; label: string }) => {
+    const active = tab === k;
+    return (
+      <button
+        onClick={() => setTab(k)}
+        style={{
+          flex: 1, background: "none", border: "none", cursor: "pointer",
+          padding: "14px 4px",
+          fontFamily: FONT, fontWeight: 400, fontSize: 12,
+          letterSpacing: "0.08em", textTransform: "uppercase",
+          color: active ? C.heading : C.muted,
+          borderBottom: `2px solid ${active ? C.primary : "transparent"}`,
+          marginBottom: -1,
+        }}
+      >
+        {label}
+      </button>
+    );
+  };
 
-        <h1
-          className="title-cap"
-          style={{
-            fontFamily: '"Playfair Display", Georgia, serif',
-            fontSize: 48,
-            fontWeight: 400,
-            lineHeight: "45.6px",
-            letterSpacing: "-1.5px",
-            color: CREAM,
-            textTransform: "none",
-            marginTop: 0,
-            marginBottom: 10,
-            textAlign: "center",
-          }}
-        >
-          {special.title}
-        </h1>
+  // ----- Tab content -----
+  const renderAbout = () => {
+    const desc = (special.description || "").trim();
+    const isLong = desc.length > 180;
+    const paragraphs = desc.split("\n").filter(Boolean);
+    const offerCols = [
+      { headline: sp.price, sublabel: sp.price_label },
+      { headline: sp.offer_headline, sublabel: sp.offer_sublabel },
+      { headline: sp.duration_headline, sublabel: sp.duration_sublabel },
+    ].filter((c) => c.headline || c.sublabel);
 
-        <div style={{ marginBottom: 14, textAlign: "center" }}>
-          {special.business_name && (
-            special.business_id ? (
-              <Link
-                to={`/listing/${special.business_id}`}
-                style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "rgba(238,232,218,0.85)", margin: 0, marginBottom: 12, textTransform: "none", textDecoration: "none", display: "block" }}
-              >
-                <span style={{ fontStyle: "italic" }}>by </span>{special.business_name}
-              </Link>
-            ) : (
-              <p style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 15, lineHeight: "22px", letterSpacing: 0, color: "rgba(238,232,218,0.85)", margin: 0, marginBottom: 12, textTransform: "none" }}>
-                <span style={{ fontStyle: "italic" }}>by </span>{special.business_name}
-              </p>
-            )
-          )}
-          {(() => {
-            const sp: any = special;
-            const cols = [
-              { headline: sp.price, sublabel: sp.price_label },
-              { headline: sp.offer_headline, sublabel: sp.offer_sublabel },
-              { headline: sp.duration_headline, sublabel: sp.duration_sublabel },
-            ].filter((c) => c.headline || c.sublabel);
-            if (cols.length === 0) return null;
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "stretch",
-                  marginTop: 18,
-                  marginBottom: 14,
-                  background: "#F5EFE3",
-                  border: "1px solid #E5DAC5",
-                  borderRadius: 18,
-                  padding: "18px 8px",
-                }}
-              >
-                {cols.map((c, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      flex: 1,
-                      minWidth: 0,
-                      padding: "0 10px",
-                      textAlign: "center",
-                      borderLeft: i === 0 ? "none" : "1px solid #E5DAC5",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: 8,
-                    }}
-                  >
-                    {c.headline && (
-                      <p style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8a7a5e" }}>
-                        {c.headline}
-                      </p>
-                    )}
-                    {c.sublabel && (
-                      <p style={{ margin: 0, fontFamily: "'Helvetica World', 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500, fontSize: 13, lineHeight: 1.25, color: "#0A0A0A", wordBreak: "break-word" }}>
-                        {c.sublabel}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            );
-          })()}
-          {(() => {
-            const now = new Date();
-            const SERIF = "'Playfair Display', Georgia, serif";
-            const INK = "#2A2A24";
-            const MUTED = "#6B6A5E";
-            const GOLD = "#D9C36B";
-            const RUST = "#9B5A3C";
-            const fmt = (d: Date) => format(d, "d MMM yyyy");
-            const fmtShort = (d: Date) => format(d, "d MMM");
-            const DAY = 24 * 60 * 60 * 1000;
-
-            let dotColor = GOLD;
-            let labelColor = INK;
-            let labelText = "Live now";
-            let datesText = "ongoing";
-
-            if (untilDate && now > untilDate) {
-              dotColor = MUTED;
-              labelColor = MUTED;
-              labelText = "Expired";
-              datesText = `ended ${fmt(untilDate)}`;
-            } else if (fromDate && now < fromDate) {
-              dotColor = GOLD;
-              labelColor = INK;
-              labelText = `Starts ${fmt(fromDate)}`;
-              datesText = untilDate ? `runs to ${fmt(untilDate)}` : "ongoing";
-            } else if (untilDate) {
-              const msLeft = untilDate.getTime() - now.getTime();
-              const daysLeft = Math.ceil(msLeft / DAY);
-              if (daysLeft <= 7) {
-                dotColor = RUST;
-                labelColor = RUST;
-                labelText = daysLeft <= 0
-                  ? "Ends today"
-                  : daysLeft === 1
-                    ? "Ends tomorrow"
-                    : `Ends in ${daysLeft} days`;
-                datesText = `until ${fmt(untilDate)}`;
-              } else {
-                const recent = fromDate && (now.getTime() - fromDate.getTime()) < 14 * DAY;
-                datesText = recent && fromDate
-                  ? `started ${fmtShort(fromDate)}, runs to ${fmt(untilDate)}`
-                  : `valid until ${fmt(untilDate)}`;
-              }
-            } else if (fromDate) {
-              datesText = `from ${fmt(fromDate)}`;
-            }
-
-            return (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexWrap: "wrap",
-                  gap: 10,
-                  padding: "14px 22px",
-                  background: "#EEE8DA",
-                  borderRadius: 999,
-                  marginBottom: 26,
-                }}
-              >
-                <span
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 999,
-                    background: dotColor,
-                    flexShrink: 0,
-                  }}
-                />
-                <span
-                  style={{
-                    fontFamily: FONT,
-                    fontWeight: 400,
-                    fontSize: 14.5,
-                    letterSpacing: "-0.1px",
-                    color: labelColor,
-                  }}
-                >
-                  {labelText}
-                </span>
-                <span
-                  style={{
-                    width: 3,
-                    height: 3,
-                    borderRadius: 999,
-                    background: MUTED,
-                    opacity: 0.5,
-                    margin: "0 2px",
-                    flexShrink: 0,
-                  }}
-                />
-                <span
-                  style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
-                    fontWeight: 400,
-                    fontSize: 14,
-                    color: MUTED,
-                  }}
-                >
-                  {datesText}
-                </span>
-              </div>
-            );
-          })()}
-        </div>
-
-        {/* Primary call/whatsapp removed — moved to Contact section below */}
-
-        {/* Secondary actions */}
-        {secondaryActions.length > 0 && (
-          <div style={{ display: "flex", gap: 8, marginBottom: 36 }}>
-            {secondaryActions.map((a, i) => {
-              const baseStyle: React.CSSProperties = {
-                flex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                height: 44,
-                background: SURFACE,
-                color: TEXT,
-                border: `1px solid ${DIVIDER}`,
-                borderRadius: 999,
-                padding: "0 16px",
-                fontFamily: FONT,
-                fontWeight: 400,
-                fontSize: 14,
-                lineHeight: "18px",
-                cursor: "pointer",
-                textDecoration: "none",
-                transition: "transform 150ms ease-out",
-              };
-              if (a.href) {
-                return (
-                  <a key={i} href={a.href} target={a.external ? "_blank" : undefined} rel={a.external ? "noopener noreferrer" : undefined} style={baseStyle} {...press}>
-                    {a.icon}
-                    <span>{a.label}</span>
-                  </a>
-                );
-              }
-              return (
-                <button key={i} onClick={a.onClick} style={baseStyle} {...press}>
-                  {a.icon}
-                  <span>{a.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* About This Deal */}
-        {special.description && (
-          <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>About</h2>
-            <p
-              ref={aboutRef}
-              style={{
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                fontSize: 15,
-                lineHeight: 1.65,
-                letterSpacing: 0,
-                color: "rgba(238,232,218,0.9)",
-                margin: 0,
-                whiteSpace: "pre-line",
-                ...(aboutExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
-              }}
-            >
-              {special.description}
-            </p>
-            {(aboutOverflows || aboutExpanded) && (
+    return (
+      <div style={{ padding: 20 }}>
+        {desc && (
+          <>
+            <h2 style={headStyle}>About</h2>
+            <div style={!aboutExpanded && isLong ? {
+              display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+            } : undefined}>
+              {paragraphs.map((p, i) => <p key={i} style={paraStyle}>{p}</p>)}
+            </div>
+            {isLong && (
               <button
                 onClick={() => setAboutExpanded(!aboutExpanded)}
                 style={{
-                  marginTop: 14,
-                  display: "inline-block",
-                  background: "none",
-                  border: "none",
-                  borderBottom: "1px solid rgba(238,232,218,0.4)",
-                  padding: 0,
-                  paddingBottom: 2,
-                  cursor: "pointer",
-                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                  fontSize: 13,
-                  fontWeight: 400,
-                  letterSpacing: "1.6px",
-                  color: CREAM,
-                  textDecoration: "none",
-                  textTransform: "uppercase",
+                  marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer",
+                  fontFamily: FONT, fontSize: 13, color: C.primary,
+                  letterSpacing: "0.08em", textTransform: "uppercase",
                 }}
               >
-                {aboutExpanded ? "Show Less" : "Read More"}
+                {aboutExpanded ? "Show less" : "Read more"}
               </button>
             )}
-          </section>
+          </>
         )}
 
-        {/* Promo code */}
-        {special.promo_code && (
-          <section style={{ marginBottom: 32 }}>
-            
-            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Promo Code</h2>
-            <button
-              onClick={async () => {
-                try {
-                  await navigator.clipboard.writeText(special.promo_code!);
-                  toast.success("Promo code copied!");
-                } catch {
-                  toast.error("Could not copy code");
-                }
-              }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                width: "100%",
-                background: SURFACE,
-                border: `1px dashed ${TEXT}`,
-                borderRadius: 16,
-                padding: "18px 20px",
-                cursor: "pointer",
-                fontFamily: FONT,
-                transition: "transform 150ms ease-out",
-              }}
-              {...press}
-            >
-              <span
-                style={{
-                  fontFamily: FONT,
-                  fontWeight: 700,
-                  fontSize: 22,
-                  letterSpacing: "0.04em",
-                  color: TEXT,
-                  textTransform: "uppercase",
-                }}
-              >
-                {special.promo_code}
-              </span>
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 6,
-                  fontFamily: FONT,
-                  fontSize: 13,
-                  letterSpacing: "0.24px",
-                  textTransform: "uppercase",
-                  color: MUTED,
-                }}
-              >
-                <Copy size={14} strokeWidth={1.5} color={MUTED} />
-                Copy
-              </span>
-            </button>
-          </section>
-        )}
-
-        {/* Details */}
-        <section style={{ marginBottom: 32 }}>
-          
-          <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Details</h2>
-          <div
-            style={{
-              background: SURFACE,
-              borderRadius: 24,
-              padding: 20,
-              border: "none",
-              boxShadow: "none",
-            }}
-          >
-            {detailRows.map((row, i) => (
-              <div
-                key={i}
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: row.href ? "32px 1fr 20px" : "32px 1fr",
-                  gap: 12,
-                  alignItems: "center",
-                  padding: "12px 0",
-                  borderBottom: i < detailRows.length - 1 ? `1px solid ${DIVIDER}` : "none",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
-                <div style={{ minWidth: 0 }}>
-                  <p style={{ ...eyebrow, textTransform: "capitalize", marginBottom: 2 }}>{row.label}</p>
-                  {row.href ? (
-                    <Link
-                      to={row.href}
-                      style={{
-                        fontFamily: FONT,
-                        fontWeight: 400,
-                        fontSize: 14,
-                        lineHeight: 1.35,
-                        letterSpacing: 0,
-                        color: TEXT,
-                        margin: 0,
-                        textTransform: row.capitalize ? "capitalize" : "none",
-                        textDecoration: "none",
-                      }}
-                    >
-                      {row.value}
-                    </Link>
-                  ) : (
-                    <p
-                      style={{
-                        fontFamily: FONT,
-                        fontWeight: 400,
-                        fontSize: 14,
-                        lineHeight: 1.35,
-                        letterSpacing: 0,
-                        color: TEXT,
-                        margin: 0,
-                        textTransform: row.capitalize ? "capitalize" : "none",
-                      }}
-                    >
-                      {row.value}
+        {offerCols.length > 0 && (
+          <div style={{ marginTop: desc ? 28 : 0 }}>
+            <h2 style={headStyle}>The Offer</h2>
+            <div style={{
+              display: "flex", alignItems: "stretch",
+              background: C.surface, border: `1px solid ${C.border}`,
+              borderRadius: 16, padding: "18px 8px",
+            }}>
+              {offerCols.map((c, i) => (
+                <div key={i} style={{
+                  flex: 1, minWidth: 0, padding: "0 10px", textAlign: "center",
+                  borderLeft: i === 0 ? "none" : `1px solid ${C.divider}`,
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                }}>
+                  {c.headline && (
+                    <p style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted }}>
+                      {c.headline}
+                    </p>
+                  )}
+                  {c.sublabel && (
+                    <p style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 13.5, lineHeight: 1.3, color: C.heading, wordBreak: "break-word" }}>
+                      {c.sublabel}
                     </p>
                   )}
                 </div>
-                {row.href && (
-                  <ArrowUpRight size={20} color="#5b4632" strokeWidth={1.5} />
-                )}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Contact */}
-        {(phoneClean || waClean || special.booking_link) && (
-          <section style={{ marginBottom: 32 }}>
-            <h2 style={{ fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic", fontSize: 28, lineHeight: "28px", letterSpacing: "-0.5px", color: "#EEE8DA", textTransform: "lowercase", margin: 0, marginTop: 36, marginBottom: 16 }}>Contact</h2>
-            <div
-              style={{
-                background: SURFACE,
-                borderRadius: 24,
-                padding: "4px 20px",
-              }}
-            >
-              {(() => {
-                const contactRows: { icon: React.ReactNode; label: string; value: string; href: string; external?: boolean }[] = [];
-                if (phoneClean) {
-                  contactRows.push({
-                    icon: <Phone size={20} strokeWidth={1.5} color={MUTED} />,
-                    label: "Phone",
-                    value: special.contact_phone!,
-                    href: `tel:${phoneClean}`,
-                  });
-                }
-                if (waClean) {
-                  contactRows.push({
-                    icon: (
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill={MUTED} xmlns="http://www.w3.org/2000/svg">
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.057 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.999-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.889-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.887 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.47 3.488"/>
-                      </svg>
-                    ),
-                    label: "WhatsApp",
-                    value: (() => {
-                      const raw = waClean;
-                      // ZA numbers: 27XXXXXXXXX -> 0XX XXX XXXX
-                      if (raw.startsWith("27") && raw.length === 11) {
-                        const local = "0" + raw.slice(2);
-                        return `${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`;
-                      }
-                      return special.contact_whatsapp!;
-                    })(),
-                    href: `https://wa.me/${waClean}`,
-                    external: true,
-                  });
-                }
-                if (special.booking_link) {
-                  const label = (special as any).booking_link_label?.trim();
-                  contactRows.push({
-                    icon: <ExternalLink size={20} strokeWidth={1.5} color={MUTED} />,
-                    label: "Booking",
-                    value: label || "Booking Link",
-                    href: special.booking_link,
-                    external: true,
-                  });
-                }
-                return contactRows.map((row, i) => (
-                  <a
-                    key={i}
-                    href={row.href}
-                    target={row.external ? "_blank" : undefined}
-                    rel={row.external ? "noopener noreferrer" : undefined}
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "32px 1fr 20px",
-                      gap: 16,
-                      alignItems: "center",
-                      padding: "16px 0",
-                      borderBottom: i < contactRows.length - 1 ? `1px solid ${DIVIDER}` : "none",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>{row.icon}</div>
-                    <div style={{ minWidth: 0 }}>
-                      <p style={{ fontFamily: FONT, fontWeight: 400, fontSize: 14, lineHeight: 1.35, letterSpacing: 0, color: TEXT, margin: 0 }}>
-                        {row.value}
-                      </p>
-                    </div>
-                    <ArrowUpRight size={18} color="#5b4632" strokeWidth={1.8} />
-                  </a>
-                ));
-              })()}
+              ))}
             </div>
-          </section>
+          </div>
         )}
 
-        {/* Terms & Conditions */}
-        {special.terms && (
-          <section style={{ marginBottom: 16 }}>
-            <p style={{ ...eyebrow, marginBottom: 8, color: "rgba(238,232,218,0.7)", letterSpacing: "2.4px" }}>Terms & Conditions</p>
-            <p
-              style={{
-                fontFamily: FONT,
-                fontWeight: 400,
-                fontSize: 12,
-                lineHeight: "16px",
-                letterSpacing: 0,
-                color: "rgba(238,232,218,0.75)",
-                margin: 0,
-                whiteSpace: "pre-line",
+        {special.promo_code && (
+          <div style={{ marginTop: 28 }}>
+            <h2 style={headStyle}>Promo Code</h2>
+            <button
+              onClick={async () => {
+                try { await navigator.clipboard.writeText(special.promo_code!); toast.success("Promo code copied!"); }
+                catch { toast.error("Could not copy code"); }
               }}
+              style={{
+                display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%",
+                background: C.surface, border: `1px dashed ${C.primary}`,
+                borderRadius: 16, padding: "18px 20px", cursor: "pointer",
+                fontFamily: FONT, transition: "transform 150ms ease-out",
+              }}
+              {...pressScale()}
             >
-              {special.terms}
-            </p>
-          </section>
+              <span style={{ fontFamily: FONT, fontWeight: 400, fontSize: 20, letterSpacing: "0.08em", color: C.heading, textTransform: "uppercase" }}>
+                {special.promo_code}
+              </span>
+              <span style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: FONT, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted }}>
+                <Copy size={14} strokeWidth={1.5} color={C.muted} />
+                Copy
+              </span>
+            </button>
+          </div>
         )}
       </div>
+    );
+  };
+
+  const detailRows: { icon: any; label: string; value: React.ReactNode; href?: string; internal?: boolean }[] = [];
+  if (special.business_name) {
+    detailRows.push({
+      icon: Store, label: "Business", value: special.business_name,
+      href: special.business_id ? `/listing/${special.business_id}` : undefined,
+      internal: true,
+    });
+  }
+  if (priceFmt) {
+    detailRows.push({
+      icon: Banknote, label: "Price",
+      value: originalFmt ? (
+        <span>{priceFmt} <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span></span>
+      ) : priceFmt,
+    });
+  }
+  if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });
+  if (special.day_of_week?.length) {
+    detailRows.push({
+      icon: Clock, label: "Days",
+      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
+    });
+  }
+  if (fromDate || untilDate) {
+    detailRows.push({
+      icon: Calendar, label: "Validity",
+      value: fromDate && untilDate ? `${fmt(fromDate)} – ${fmt(untilDate)}`
+        : untilDate ? `Until ${fmt(untilDate)}`
+        : `From ${fmt(fromDate!)}`,
+    });
+  }
+
+  const renderDetails = () => (
+    <div style={{ padding: 20 }}>
+      {detailRows.length === 0 ? (
+        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
+      ) : (
+        <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+          {detailRows.map((r, i) => {
+            const inner = (
+              <>
+                <r.icon size={18} strokeWidth={1.5} color={C.primary} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                  <div style={{ fontSize: 14, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                </div>
+                {r.href && <ArrowUpRight size={16} color={C.muted} />}
+              </>
+            );
+            const rowStyle: React.CSSProperties = {
+              display: "flex", alignItems: "center", gap: 14,
+              padding: "14px 0", textDecoration: "none",
+              borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+            };
+            if (r.href && r.internal) {
+              return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
+            }
+            if (r.href) {
+              return <a key={i} href={r.href} target="_blank" rel="noopener noreferrer" style={rowStyle}>{inner}</a>;
+            }
+            return <div key={i} style={rowStyle}>{inner}</div>;
+          })}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderContact = () => {
+    const rows: { Icon: any; label: string; value: string; href: string; external?: boolean }[] = [];
+    if (phoneClean) rows.push({ Icon: Phone, label: "Phone", value: special.contact_phone!, href: `tel:${phoneClean}` });
+    if (waClean) rows.push({ Icon: Phone, label: "WhatsApp", value: special.contact_whatsapp!, href: `https://wa.me/${waClean}`, external: true });
+    if (special.booking_link) rows.push({
+      Icon: ExternalLink, label: "Booking",
+      value: sp.booking_link_label?.trim() || special.booking_link,
+      href: special.booking_link, external: true,
+    });
+
+    return (
+      <div style={{ padding: 20 }}>
+        {rows.length === 0 ? (
+          <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact info provided.</p>
+        ) : (
+          <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+            {rows.map((r, i) => (
+              <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                style={{
+                  display: "flex", alignItems: "center", gap: 14,
+                  padding: "14px 0", textDecoration: "none",
+                  borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+                }}>
+                <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                  <div style={{ fontSize: 14, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                </div>
+                <ArrowUpRight size={16} color={C.muted} />
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderTerms = () => (
+    <div style={{ padding: 20 }}>
+      {special.terms ? (
+        <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
+          <h2 style={headStyle}>Terms & Conditions</h2>
+          <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5, color: C.text }}>
+            {special.terms}
+          </p>
+        </div>
+      ) : (
+        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No terms provided.</p>
+      )}
+    </div>
+  );
+
+  return (
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+      {/* Sticky header */}
+      <header style={{
+        position: "sticky", top: 0, zIndex: 40,
+        background: C.surface, borderBottom: `1px solid ${C.border}`,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "12px 16px",
+      }}>
+        <button onClick={() => navigate(-1)} aria-label="Back"
+          style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: C.heading, padding: 4, minHeight: 40 }}>
+          <BackArrowIcon size={20} color={C.heading} />
+          <span style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>Special Details</span>
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={iconBtn}>
+            <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
+          </button>
+          <button onClick={handleShare} aria-label="Share" style={iconBtn}>
+            <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+          </button>
+          {isAdmin && (
+            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={iconBtn}>
+              <Pencil size={18} strokeWidth={1.6} color={C.heading} />
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Hero (4:3) */}
+      <div style={{ width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
+        {special.image_url && (
+          <img src={special.image_url} alt={special.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        )}
+      </div>
+
+      {/* Title block */}
+      <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
+        {eyebrowText && (
+          <div style={{
+            marginBottom: 8, fontSize: 11, color: C.muted,
+            letterSpacing: "0.12em", textTransform: "uppercase",
+          }}>
+            {eyebrowText}
+          </div>
+        )}
+        <h1 style={{
+          margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 24, lineHeight: 1.2,
+          color: C.heading, letterSpacing: "0.01em",
+        }}>
+          {special.title}
+        </h1>
+        {special.business_name && (
+          <div style={{
+            marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+            display: "flex", alignItems: "center", gap: 4,
+          }}>
+            <Store size={12} color={C.muted} strokeWidth={1.6} />
+            {special.business_id ? (
+              <Link to={`/listing/${special.business_id}`} style={{ color: C.muted, textDecoration: "none" }}>
+                {special.business_name}
+              </Link>
+            ) : <span>{special.business_name}</span>}
+          </div>
+        )}
+        <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <span style={{ width: 8, height: 8, borderRadius: 999, background: dotColor, flexShrink: 0 }} />
+          <span style={{ fontSize: 13.5, color: C.heading }}>{statusLabel}</span>
+          <span style={{ fontSize: 13.5, color: C.muted }}>· {datesText}</span>
+        </div>
+
+        {actions.length > 0 && (
+          actions.length === 4 ? (
+            <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {actions.map((a) => <PillBtn key={a.key} a={a} full />)}
+            </div>
+          ) : (
+            <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
+              {actions.map((a) => <PillBtn key={a.key} a={a} />)}
+            </div>
+          )
+        )}
+      </div>
+
+      {/* Sticky tab bar */}
+      <nav style={{
+        position: "sticky", top: 57, zIndex: 30,
+        background: C.surface, borderBottom: `1px solid ${C.border}`,
+        display: "flex", padding: "0 8px",
+      }}>
+        <TabBtn k="about" label="About" />
+        <TabBtn k="details" label="Details" />
+        <TabBtn k="contact" label="Contact" />
+        <TabBtn k="terms" label="Terms" />
+      </nav>
+
+      <main>
+        {tab === "about" && renderAbout()}
+        {tab === "details" && renderDetails()}
+        {tab === "contact" && renderContact()}
+        {tab === "terms" && renderTerms()}
+      </main>
+
       {isAdmin && (
         <SpecialEditDialog open={editOpen} onOpenChange={setEditOpen} special={special} />
       )}
+
+      <BottomNav />
     </div>
   );
 };
