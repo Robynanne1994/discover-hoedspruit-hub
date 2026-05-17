@@ -635,17 +635,18 @@ const AccountInfo = () => {
           onClick={() => setDeleteOpen(true)}
           style={{
             display: "block",
-            margin: "20px auto 0",
-            background: "transparent",
-            border: "none",
-            padding: 0,
+            margin: "24px auto 0",
+            background: "#FFFFFF",
+            border: "1px solid #B00020",
+            borderRadius: 999,
+            padding: "12px 22px",
             cursor: "pointer",
             fontFamily: FF,
-            fontSize: 13,
-            fontWeight: 400,
+            fontSize: 14,
+            fontWeight: 500,
             color: "#B00020",
-            textDecoration: "underline",
             letterSpacing: "0.02em",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
           }}
         >
           Delete Account
