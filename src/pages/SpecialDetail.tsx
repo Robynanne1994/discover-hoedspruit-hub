@@ -560,7 +560,7 @@ const SpecialDetail = () => {
         {tab === "about" && renderAbout()}
         {tab === "details" && renderDetails()}
         {tab === "contact" && renderContact()}
-        {tab === "terms" && renderTerms()}
+        {tab === "terms" && special.terms?.trim() && renderTerms()}
       </main>
 
       {isAdmin && (
