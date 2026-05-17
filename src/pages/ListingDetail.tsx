@@ -69,6 +69,7 @@ const ListingDetail = () => {
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const [tab, setTab] = useState<TabKey>("about");
+  const [aboutExpanded, setAboutExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [suggestEditOpen, setSuggestEditOpen] = useState(false);
@@ -426,14 +427,33 @@ const ListingDetail = () => {
   };
 
   // ----- Tab content -----
-  const renderAbout = () => (
+  const renderAbout = () => {
+    const paragraphs = descriptionText.split("\n").filter(Boolean);
+    const isLong = descriptionText.length > 180;
+    return (
     <div style={{ padding: "20px" }}>
       {descriptionText && (
         <>
           <h2 style={headStyle}>About</h2>
-          {descriptionText.split("\n").filter(Boolean).map((p, i) => (
-            <p key={i} style={paraStyle}>{p}</p>
-          ))}
+          <div style={!aboutExpanded && isLong ? {
+            display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+          } : undefined}>
+            {paragraphs.map((p, i) => (
+              <p key={i} style={paraStyle}>{p}</p>
+            ))}
+          </div>
+          {isLong && (
+            <button
+              onClick={() => setAboutExpanded(!aboutExpanded)}
+              style={{
+                marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer",
+                fontFamily: FONT, fontSize: 13, color: C.primary,
+                letterSpacing: "0.08em", textTransform: "uppercase",
+              }}
+            >
+              {aboutExpanded ? "Show less" : "Read more"}
+            </button>
+          )}
         </>
       )}
 
@@ -515,7 +535,8 @@ const ListingDetail = () => {
 
       <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
     </div>
-  );
+    );
+  };
 
   const renderDetails = () => (
     <div style={{ padding: "20px" }}>
@@ -671,17 +692,23 @@ const ListingDetail = () => {
 
       {/* Title block */}
       <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
+        {(firstCategory || listing.location) && (
+          <div style={{
+            marginBottom: 8,
+            fontSize: 11, color: C.muted,
+            letterSpacing: "0.12em", textTransform: "uppercase",
+          }}>
+            {firstCategory?.title}
+            {firstCategory && listing.location && <span> · </span>}
+            {listing.location}
+          </div>
+        )}
         <h1 style={{
           margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 24, lineHeight: 1.2,
           color: C.heading, letterSpacing: "0.01em",
         }}>
           {listing.title}
         </h1>
-        <div style={{ marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em" }}>
-          {firstCategory?.title}
-          {firstCategory && listing.location && <span> · </span>}
-          {listing.location}
-        </div>
         {l.google_rating != null && (
           <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
             <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
