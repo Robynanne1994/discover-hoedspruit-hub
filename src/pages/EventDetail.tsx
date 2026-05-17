@@ -266,7 +266,7 @@ const EventDetail = () => {
   const actions = [
     bookingLink && {
       key: "booking", label: bookingLinkLabel || "Book / Tickets",
-      href: bookingLink, Icon: ExternalLinkIcon, ext: true,
+      href: bookingLink, Icon: ExternalLink, ext: true,
     },
     socialLink && {
       key: "social", label: socialLabel || "Website",
