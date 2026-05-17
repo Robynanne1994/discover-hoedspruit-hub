@@ -580,14 +580,14 @@ const EventDetail = () => {
       }}>
         <TabBtn k="about" label="About" />
         <TabBtn k="details" label="Details" />
-        <TabBtn k="gallery" label="Gallery" />
+        {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
         <TabBtn k="location" label="Location" />
       </nav>
 
       <main>
         {tab === "about" && renderAbout()}
         {tab === "details" && renderDetails()}
-        {tab === "gallery" && renderGallery()}
+        {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
         {tab === "location" && renderLocation()}
       </main>
 
