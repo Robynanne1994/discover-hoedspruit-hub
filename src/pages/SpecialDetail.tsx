@@ -553,14 +553,14 @@ const SpecialDetail = () => {
         <TabBtn k="about" label="About" />
         <TabBtn k="details" label="Details" />
         <TabBtn k="contact" label="Contact" />
-        <TabBtn k="terms" label="Terms" />
+        {special.terms?.trim() && <TabBtn k="terms" label="Terms" />}
       </nav>
 
       <main>
         {tab === "about" && renderAbout()}
         {tab === "details" && renderDetails()}
         {tab === "contact" && renderContact()}
-        {tab === "terms" && renderTerms()}
+        {tab === "terms" && special.terms?.trim() && renderTerms()}
       </main>
 
       {isAdmin && (
