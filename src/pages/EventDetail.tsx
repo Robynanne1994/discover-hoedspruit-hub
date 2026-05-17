@@ -1,69 +1,133 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
 import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
-  Calendar,
-  Clock,
-  MapPin,
-  Tag,
-  RotateCcw,
-  Share2,
-  ArrowLeft,
-  ArrowUpRight,
-  Heart,
-  ExternalLink,
-  Mail,
-  Phone,
-  Globe,
-  Banknote,
-  Pencil,
-  StickyNote,
-  ChevronDown,
-  MessageCircle,
+  Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
+  Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange } from "@/lib/eventDates";
 
-const font = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const FONT_HEAD = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const PAGE_BG = "#5C6446";
-const SURFACE = "#EEE8DA";
-const TEXT = "#2A2A24";
-const MUTED = "#6B6A5E";
-const DIVIDER = "rgba(107,106,94,0.15)";
-const CREAM = "#EEE8DA";
+// Design tokens (match ListingDetail)
+const C = {
+  bg: "#ebebeb",
+  surface: "#ffffff",
+  ivory: "#f5f0e8",
+  border: "#E8E4DF",
+  divider: "#EDE9E3",
+  heading: "#020202",
+  text: "#2b2420",
+  muted: "#8A8480",
+  primary: "#715a3d",
+  accent: "#B8916A",
+};
 
-const pressScale = (scale = "0.98") => ({
-  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${scale})`),
+const pressScale = (s = "0.98") => ({
+  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${s})`),
   onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
   onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
 });
 
-const overlayBtn: React.CSSProperties = {
-  width: 44, height: 44, borderRadius: 999,
-  background: SURFACE,
-  boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+const headStyle: React.CSSProperties = {
+  margin: "0 0 12px",
+  fontFamily: FONT, fontWeight: 400, fontSize: 12,
+  letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading,
+};
+const paraStyle: React.CSSProperties = {
+  fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
+  color: C.text, margin: "0 0 10px",
+};
+const iconBtn: React.CSSProperties = {
+  width: 40, height: 40, borderRadius: 999,
+  background: "none", border: "none", cursor: "pointer",
   display: "flex", alignItems: "center", justifyContent: "center",
-  border: "none", cursor: "pointer",
-  transition: "transform 150ms ease-out",
+};
+
+type TabKey = "about" | "details" | "gallery" | "location";
+
+const pad = (n: number) => String(n).padStart(2, "0");
+const toIcsDate = (d: Date) =>
+  `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+const escIcs = (s: string) =>
+  s.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
+
+const buildIcs = (e: any): string | null => {
+  const startDateStr = e.start_date || e.date;
+  if (!startDateStr) return null;
+  const startTime = (e.start_time || "00:00").slice(0, 5);
+  const startISO = `${startDateStr}T${startTime}:00`;
+  const start = new Date(startISO);
+  if (isNaN(start.getTime())) return null;
+  const endDateStr = e.end_date || startDateStr;
+  const endTime = (e.end_time || "").slice(0, 5);
+  let end: Date;
+  if (endTime) {
+    end = new Date(`${endDateStr}T${endTime}:00`);
+    if (isNaN(end.getTime())) end = new Date(start.getTime() + 60 * 60 * 1000);
+  } else {
+    end = new Date(start.getTime() + 60 * 60 * 1000);
+  }
+  const now = new Date();
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Hello Hoedspruit//Events//EN",
+    "BEGIN:VEVENT",
+    `UID:${e.id}@hellohoedspruit`,
+    `DTSTAMP:${toIcsDate(now)}`,
+    `DTSTART:${toIcsDate(start)}`,
+    `DTEND:${toIcsDate(end)}`,
+    `SUMMARY:${escIcs(e.title || "")}`,
+    e.description ? `DESCRIPTION:${escIcs(e.description)}` : "",
+    e.location ? `LOCATION:${escIcs(e.location)}` : "",
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].filter(Boolean).join("\r\n");
+};
+
+const downloadIcs = (e: any) => {
+  const ics = buildIcs(e);
+  if (!ics) { toast.error("This event has no start date."); return; }
+  const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${(e.title || "event").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 };
 
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const queryClient = useQueryClient();
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
-  const [notesOpen, setNotesOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
-  const queryClient = useQueryClient();
+  const [tab, setTab] = useState<TabKey>("about");
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number } | null>(null);
+
+  const { data: event, isLoading } = useQuery({
+    queryKey: ["event-detail", id],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("events").select("*").eq("id", id!).single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!id,
+  });
 
   const { data: isFavourited } = useQuery({
     queryKey: ["favourite", "event", id, user?.id],
@@ -71,20 +135,11 @@ const EventDetail = () => {
       if (!user) return false;
       const { data } = await supabase
         .from("favourites" as any)
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_id", id!)
-        .eq("item_type", "event")
-        .maybeSingle();
+        .select("id").eq("user_id", user.id).eq("item_id", id!).eq("item_type", "event").maybeSingle();
       return !!data;
     },
     enabled: !!user && !!id,
   });
-
-  const requireAuth = () => {
-    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
-    return false;
-  };
 
   const toggleFavourite = useMutation({
     mutationFn: async () => {
@@ -102,15 +157,74 @@ const EventDetail = () => {
     },
   });
 
-  const { data: event, isLoading } = useQuery({
-    queryKey: ["event-detail", id],
-    queryFn: async () => {
-      const { data, error } = await supabase.from("events").select("*").eq("id", id!).single();
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!id,
-  });
+  const requireAuth = () => {
+    if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
+    return false;
+  };
+
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    if (navigator.share) {
+      try { await navigator.share({ title: event?.title, url: shareUrl }); }
+      catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
+        }
+      }
+    } else {
+      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
+    }
+  };
+
+  // Geocode for Location tab
+  useEffect(() => {
+    if (!event) return;
+    setMapCoords(null);
+    const link: string | null = (event as any).google_maps_link || null;
+    const loc: string | null = event.location || null;
+    const tryParse = (url: string) => {
+      const at = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (at) return { lat: parseFloat(at[1]), lon: parseFloat(at[2]) };
+      const d = url.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/);
+      if (d) return { lat: parseFloat(d[1]), lon: parseFloat(d[2]) };
+      const q = url.match(/[?&](?:query|q)=(-?\d+\.\d+),(-?\d+\.\d+)/);
+      if (q) return { lat: parseFloat(q[1]), lon: parseFloat(q[2]) };
+      return null;
+    };
+    if (link) {
+      const parsed = tryParse(link);
+      if (parsed) { setMapCoords(parsed); return; }
+    }
+    const query = loc ? `${loc}, Hoedspruit, South Africa` : `${event.title}, Hoedspruit, South Africa`;
+    let cancelled = false;
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`)
+      .then((r) => r.json())
+      .then((arr) => {
+        if (cancelled) return;
+        if (Array.isArray(arr) && arr[0]) setMapCoords({ lat: parseFloat(arr[0].lat), lon: parseFloat(arr[0].lon) });
+        else setMapCoords({ lat: -24.3567, lon: 31.0 });
+      })
+      .catch(() => { if (!cancelled) setMapCoords({ lat: -24.3567, lon: 31.0 }); });
+    return () => { cancelled = true; };
+  }, [event]);
+
+  if (isLoading || !event) {
+    return (
+      <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text }}>
+        <div style={{ padding: 20 }}>
+          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: C.primary, fontFamily: FONT, fontSize: 15 }}>
+            <BackArrowIcon size={20} color={C.primary} />
+            <span>Back</span>
+          </button>
+        </div>
+        <div style={{ padding: "80px 20px", textAlign: "center", color: C.muted, fontSize: 14 }}>
+          {isLoading ? "Loading..." : "Event not found."}
+        </div>
+      </div>
+    );
+  }
+
+  const e: any = event;
 
   const formatTime = (time: string | null) => {
     if (!time) return null;
@@ -122,623 +236,360 @@ const EventDetail = () => {
     return `${displayHour}:${String(m).padStart(2, "0")} ${ampm}`;
   };
 
-  const formatDate = (_dateStr: string) => {
-    // Prefer the new structured start/end date fields; fallback to legacy free-text.
-    return formatEventDateRange(event as any, { long: true });
-  };
-
-  const handleShare = async () => {
-    const shareUrl = window.location.href;
-    if (navigator.share) {
-      try { await navigator.share({ title: event?.title, url: shareUrl }); }
-      catch (err) { if ((err as Error).name !== "AbortError") { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } }
-    } else { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); }
-  };
-
-  const pageStyle: React.CSSProperties = { minHeight: "100vh", background: PAGE_BG, paddingBottom: 84, fontFamily: font };
-
-  if (isLoading) {
-    return (
-      <div style={pageStyle}>
-        <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
-            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
-          </button>
-        </div>
-        <div style={{ padding: "48px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "rgba(18,18,20,0.04)", animation: "pulse 2s infinite" }} />
-          <p style={{ fontSize: 13, color: "rgba(18,18,20,0.35)", fontFamily: font }}>Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!event) {
-    return (
-      <div style={pageStyle}>
-        <div style={{ padding: "52px 24px 0" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 8, background: "none", border: "none", cursor: "pointer" }}>
-            <ArrowLeft size={20} strokeWidth={1.8} style={{ color: "#2B2420" }} />
-            <span style={{ fontSize: 15, fontWeight: 500, color: "#2B2420", fontFamily: font }}>Back</span>
-          </button>
-        </div>
-        <div style={{ padding: "80px 20px", textAlign: "center" }}>
-          <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", fontFamily: font }}>Event not found.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const startTimeRaw = event.start_time ? String(event.start_time).trim() : "";
-  const endTimeRaw = event.end_time ? String(event.end_time).trim() : "";
+  const startTimeRaw = e.start_time ? String(e.start_time).trim() : "";
+  const endTimeRaw = e.end_time ? String(e.end_time).trim() : "";
   const startTimeFmt = startTimeRaw ? formatTime(startTimeRaw) : null;
   const endTimeFmt = endTimeRaw && endTimeRaw !== startTimeRaw ? formatTime(endTimeRaw) : null;
-  const timeDisplay = startTimeFmt
-    ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}`
-    : (endTimeFmt || null);
+  const timeDisplay = startTimeFmt ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}` : (endTimeFmt || null);
+  const dateDisplay = formatEventDateRange(e, { long: true });
 
-  const mapsLink = (event as any).google_maps_link || null;
-  const socialLink = (event as any).social_media_link || null;
-  const socialLabel = (event as any).social_media_label || null;
-  const contactEmail = (event as any).contact_email || null;
-  const contactPhone = (event as any).contact_phone || null;
-  const contactWhatsapp = (event as any).contact_whatsapp || null;
+  const mapsLink = e.google_maps_link || null;
+  const socialLink = e.social_media_link || null;
+  const socialLabel = e.social_media_label || null;
+  const contactEmail = e.contact_email || null;
+  const contactPhone = e.contact_phone || null;
+  const contactWhatsapp = e.contact_whatsapp || null;
   const waClean = contactWhatsapp ? contactWhatsapp.replace(/[^0-9]/g, "") : null;
-  const formatWhatsapp = (digits: string) => {
-    let local = digits;
-    if (local.startsWith("27")) local = "0" + local.slice(2);
-    if (local.length === 10) return `${local.slice(0, 3)} ${local.slice(3, 6)} ${local.slice(6)}`;
-    return local;
+  const galleryImages: string[] = e.gallery_images ?? [];
+  const bookingLink = e.booking_link || null;
+  const bookingLinkLabel = e.booking_link_label?.trim() || null;
+  const price = e.price || null;
+  const notes = e.notes || null;
+  const subTag1 = e.sub_tag_1 || null;
+  const subTag2 = e.sub_tag_2 || null;
+  const eyebrowText = [e.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "")[0] || null;
+
+  const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
+  const canAddToCal = !!(e.start_date || e.date);
+
+  // Action pills
+  const actions = [
+    bookingLink && {
+      key: "booking", label: bookingLinkLabel || "Book / Tickets",
+      href: bookingLink, Icon: ExternalLink, ext: true,
+    },
+    socialLink && {
+      key: "social", label: socialLabel || "Website",
+      href: socialLink, Icon: Globe, ext: true,
+    },
+    directionsHref && {
+      key: "directions", label: "Directions",
+      href: directionsHref, Icon: Send, ext: true,
+    },
+    canAddToCal && {
+      key: "calendar", label: "Add to Calendar",
+      onClick: () => downloadIcs(e), Icon: CalendarPlus,
+    },
+  ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean }>;
+
+  const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
+    const baseStyle: React.CSSProperties = {
+      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+      padding: "10px 14px", borderRadius: 999,
+      background: C.surface, border: `1px solid ${C.border}`,
+      color: C.primary, textDecoration: "none", cursor: "pointer",
+      fontFamily: FONT, fontWeight: 400, fontSize: 13,
+      letterSpacing: "0.01em", flexShrink: 0,
+      width: full ? "100%" : undefined,
+      transition: "transform 150ms ease-out",
+    };
+    const inner = (<>
+      <a.Icon size={14} strokeWidth={1.75} color={C.primary} />
+      <span>{a.label}</span>
+    </>);
+    if (a.onClick) {
+      return <button type="button" onClick={a.onClick} style={baseStyle} {...pressScale()}>{inner}</button>;
+    }
+    return (
+      <a href={a.href} {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={baseStyle} {...pressScale()}>
+        {inner}
+      </a>
+    );
   };
-  const waDisplay = waClean ? formatWhatsapp(waClean) : null;
-  const galleryImages: string[] = (event as any).gallery_images ?? [];
-  const bookingLink = (event as any).booking_link || null;
-  const bookingLinkLabel = (event as any).booking_link_label?.trim() || null;
-  const price = (event as any).price || null;
-  const notes = (event as any).notes || null;
-  const subTag1 = (event as any).sub_tag_1 || null;
-  const subTag2 = (event as any).sub_tag_2 || null;
-  const tagParts = [event.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "");
 
-  const detailRows = [
-    { label: "Date", value: formatDate(event.date), icon: Calendar, href: null as string | null },
-    { label: "Time", value: timeDisplay, icon: Clock, href: null as string | null },
-    { label: "Venue", value: event.location, icon: MapPin, href: mapsLink },
-    { label: "Recurrence", value: event.recurrence && event.recurrence.trim().toLowerCase() !== "none" ? event.recurrence : null, icon: RotateCcw, href: null as string | null },
-    { label: "Price", value: price, icon: Banknote, href: null as string | null },
-  ].filter((row) => row.value);
+  const TabBtn = ({ k, label }: { k: TabKey; label: string }) => {
+    const active = tab === k;
+    return (
+      <button
+        onClick={() => setTab(k)}
+        style={{
+          flex: 1, background: "none", border: "none", cursor: "pointer",
+          padding: "14px 4px",
+          fontFamily: FONT, fontWeight: 400, fontSize: 12,
+          letterSpacing: "0.08em", textTransform: "uppercase",
+          color: active ? C.heading : C.muted,
+          borderBottom: `2px solid ${active ? C.primary : "transparent"}`,
+          marginBottom: -1,
+        }}
+      >
+        {label}
+      </button>
+    );
+  };
 
-  const WhatsAppIcon = ({ color }: { color: string }) => (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.057 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.999-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.889-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.887 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.47 3.488"/>
-    </svg>
-  );
+  // ----- Tabs -----
+  const renderAbout = () => {
+    const desc = (e.description || "").trim();
+    const isLong = desc.length > 180;
+    const paragraphs = desc.split("\n").filter(Boolean);
+    return (
+      <div style={{ padding: 20 }}>
+        {desc ? (
+          <>
+            <h2 style={headStyle}>About</h2>
+            <div style={!aboutExpanded && isLong ? {
+              display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+            } : undefined}>
+              {paragraphs.map((p, i) => <p key={i} style={paraStyle}>{p}</p>)}
+            </div>
+            {isLong && (
+              <button
+                onClick={() => setAboutExpanded(!aboutExpanded)}
+                style={{
+                  marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer",
+                  fontFamily: FONT, fontSize: 13, color: C.primary,
+                  letterSpacing: "0.08em", textTransform: "uppercase",
+                }}
+              >
+                {aboutExpanded ? "Show less" : "Read more"}
+              </button>
+            )}
+          </>
+        ) : (
+          <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No description yet.</p>
+        )}
 
-  const contactRows = [
-    contactEmail ? { label: "Email", value: contactEmail, icon: Mail, href: `mailto:${contactEmail}`, isCustomIcon: false } : null,
-    contactPhone ? { label: "Phone", value: contactPhone, icon: Phone, href: `tel:${contactPhone.replace(/\s/g, "")}`, isCustomIcon: false } : null,
-    waClean ? { label: "WhatsApp", value: waDisplay as string, icon: WhatsAppIcon, href: `https://wa.me/${waClean}`, isCustomIcon: true } : null,
-    socialLink ? { label: "Social Media", value: socialLabel || "Social Media Profile", icon: Globe, href: socialLink, isCustomIcon: false } : null,
-  ].filter(Boolean) as { label: string; value: string; icon: any; href: string; isCustomIcon: boolean }[];
-
-  const SectionLabel = ({ title }: { eyebrow?: string; title: string }) => (
-    <h2 style={{
-      fontFamily: '"Playfair Display", Georgia, serif', fontWeight: 400, fontStyle: "italic",
-      fontSize: 28, lineHeight: "28px",
-      letterSpacing: "-0.5px", color: CREAM, margin: 0, marginTop: 36, marginBottom: 16,
-      textTransform: "lowercase",
-    }}>
-      {title}
-    </h2>
-  );
-
-  const renderDetailCard = (rows: typeof detailRows) => (
-    <div style={{ background: SURFACE, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
-      {rows.map((row, idx) => {
-        const Wrapper: any = row.href ? "a" : "div";
-        const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
-        return (
-          <div key={row.label} style={{ borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-            <Wrapper
-              {...wrapperProps}
-              style={{ display: "flex", alignItems: "center", height: 56, textDecoration: "none" }}
-            >
-              <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
-                <row.icon size={18} strokeWidth={1.5} color="#898480" />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{
-                  fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
-                  lineHeight: 1.35, margin: 0, wordBreak: "break-word",
-                }}>
-                  {row.value}
-                </p>
-              </div>
-              {row.href && (
-                <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
-              )}
-            </Wrapper>
+        {notes && (
+          <div style={{ marginTop: 28 }}>
+            <h2 style={headStyle}>Notes</h2>
+            <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
+              <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5 }}>{notes}</p>
+            </div>
           </div>
-        );
-      })}
+        )}
+      </div>
+    );
+  };
+
+  const detailRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay });
+  if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay });
+  if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none") {
+    detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
+  }
+  if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
+  if (contactPhone) detailRows.push({ Icon: Phone, label: "Phone", value: contactPhone, href: `tel:${contactPhone.replace(/\s/g, "")}` });
+  if (waClean) detailRows.push({ Icon: Phone, label: "WhatsApp", value: contactWhatsapp, href: `https://wa.me/${waClean}`, external: true });
+  if (contactEmail) detailRows.push({ Icon: Mail, label: "Email", value: contactEmail, href: `mailto:${contactEmail}`, external: true });
+
+  const renderDetails = () => (
+    <div style={{ padding: 20 }}>
+      {detailRows.length === 0 ? (
+        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
+      ) : (
+        <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+          {detailRows.map((r, i) => {
+            const inner = (
+              <>
+                <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                  <div style={{ fontSize: 14, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                </div>
+                {r.href && <ArrowUpRight size={16} color={C.muted} />}
+              </>
+            );
+            const style: React.CSSProperties = {
+              display: "flex", alignItems: "center", gap: 14,
+              padding: "14px 0", textDecoration: "none",
+              borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+            };
+            if (r.href) {
+              return (
+                <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+                  {inner}
+                </a>
+              );
+            }
+            return <div key={i} style={style}>{inner}</div>;
+          })}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderGallery = () => (
+    <div style={{ padding: 20 }}>
+      {galleryImages.length === 0 ? (
+        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No photos yet.</p>
+      ) : (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4 }}>
+          {galleryImages.map((url, i) => (
+            <button key={i} type="button"
+              onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
+              style={{ aspectRatio: "1 / 1", borderRadius: 12, overflow: "hidden", background: C.ivory, border: "none", padding: 0, cursor: "pointer" }}
+              aria-label={`Open image ${i + 1}`}
+            >
+              <img src={url} alt={`${event.title} ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderLocation = () => (
+    <div style={{ padding: 20 }}>
+      <h2 style={headStyle}>Location</h2>
+      <div style={{ background: C.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}` }}>
+        <div style={{ position: "relative", height: 200, background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)" }}>
+          {mapCoords && (() => {
+            const d = 0.006;
+            const bbox = `${mapCoords.lon - d}%2C${mapCoords.lat - d}%2C${mapCoords.lon + d}%2C${mapCoords.lat + d}`;
+            return (
+              <iframe
+                title="Map"
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lon}`}
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            );
+          })()}
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)", pointerEvents: "none" }}>
+            <div style={{ width: 16, height: 16, background: C.primary, borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)", boxShadow: "0 4px 8px rgba(0,0,0,0.25)" }} />
+          </div>
+        </div>
+        {event.location && (
+          <div style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
+            <MapPin size={18} color={C.primary} style={{ flexShrink: 0, marginTop: 2 }} />
+            <div style={{ flex: 1, minWidth: 0, fontSize: 14, color: C.heading }}>{event.location}</div>
+          </div>
+        )}
+      </div>
+      {directionsHref && (
+        <a
+          href={directionsHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            background: C.primary, color: "#fff",
+            padding: "14px 20px", borderRadius: 999,
+            textDecoration: "none", fontFamily: FONT, fontSize: 14, fontWeight: 400,
+            letterSpacing: "0.02em",
+          }}
+          {...pressScale()}
+        >
+          <Navigation size={16} />
+          <span>Get Directions</span>
+        </a>
+      )}
     </div>
   );
 
   return (
-    <div style={pageStyle}>
-      {/* Hero image */}
-      {event.image_url ? (
-        <div style={{ position: "relative", width: "100%", height: 360, overflow: "hidden", borderBottomLeftRadius: 24, borderBottomRightRadius: 24, background: DIVIDER }}>
-          <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }} />
-          <button
-            onClick={() => navigate(-1)}
-            style={{ ...overlayBtn, position: "absolute", top: 12, left: 12, zIndex: 10 }}
-            aria-label="Back"
-            {...pressScale("0.94")}
-          >
-            <ArrowLeft size={20} strokeWidth={1.5} color={TEXT} />
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+      {/* Sticky header */}
+      <header style={{
+        position: "sticky", top: 0, zIndex: 40,
+        background: C.surface, borderBottom: `1px solid ${C.border}`,
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "12px 16px",
+      }}>
+        <button onClick={() => navigate(-1)} aria-label="Back"
+          style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: C.heading, padding: 4, minHeight: 40 }}>
+          <BackArrowIcon size={20} color={C.heading} />
+          <span style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>Event Details</span>
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={iconBtn}>
+            <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
           </button>
-          {(() => {
-            const rightIcons: { key: string; onClick: () => void; ariaLabel: string; node: React.ReactNode }[] = [];
-            if (isAdmin) {
-              rightIcons.push({
-                key: "edit",
-                onClick: () => setEditOpen(true),
-                ariaLabel: "Edit event",
-                node: <Pencil size={20} strokeWidth={1.5} color={TEXT} />,
-              });
-            }
-            rightIcons.push({
-              key: "share",
-              onClick: handleShare,
-              ariaLabel: "Share",
-              node: <Share2 size={20} strokeWidth={1.5} color={TEXT} />,
-            });
-            rightIcons.push({
-              key: "fav",
-              onClick: () => { if (!requireAuth()) toggleFavourite.mutate(); },
-              ariaLabel: isFavourited ? "Unsave" : "Save",
-              node: <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : TEXT} fill={isFavourited ? "#5b4632" : "none"} />,
-            });
-            return rightIcons.map((b, idx) => {
-              const rightOffset = 12 + (rightIcons.length - 1 - idx) * (44 + 8);
-              return (
-                <button
-                  key={b.key}
-                  onClick={b.onClick}
-                  aria-label={b.ariaLabel}
-                  style={{ ...overlayBtn, position: "absolute", top: 12, right: rightOffset, zIndex: 10 }}
-                  {...pressScale("0.94")}
-                >
-                  {b.node}
-                </button>
-              );
-            });
-          })()}
-        </div>
-      ) : (
-        <div style={{ padding: "48px 24px 0", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button onClick={() => navigate(-1)} style={overlayBtn} {...pressScale("0.94")}>
-            <ArrowLeft size={20} strokeWidth={1.5} color={TEXT} />
+          <button onClick={handleShare} aria-label="Share" style={iconBtn}>
+            <Share2 size={20} strokeWidth={1.6} color={C.heading} />
           </button>
-          <div style={{ display: "flex", gap: 8 }}>
-            {isAdmin && (
-              <button onClick={() => setEditOpen(true)} aria-label="Edit event" style={overlayBtn} {...pressScale("0.94")}>
-                <Pencil size={20} strokeWidth={1.5} color={TEXT} />
-              </button>
-            )}
-            <button onClick={handleShare} aria-label="Share" style={overlayBtn} {...pressScale("0.94")}>
-              <Share2 size={20} strokeWidth={1.5} color={TEXT} />
+          {isAdmin && (
+            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={iconBtn}>
+              <Pencil size={18} strokeWidth={1.6} color={C.heading} />
             </button>
-            <button
-              onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
-              aria-label={isFavourited ? "Unsave" : "Save"}
-              style={overlayBtn}
-              {...pressScale("0.94")}
-            >
-              <Heart size={20} strokeWidth={1.5} color={isFavourited ? "#5b4632" : TEXT} fill={isFavourited ? "#5b4632" : "none"} />
-            </button>
-          </div>
+          )}
         </div>
-      )}
+      </header>
 
-      {/* Content area */}
-      <div style={{ paddingTop: 16, paddingLeft: 24, paddingRight: 24 }}>
-        {/* Eyebrow */}
-        {tagParts.length > 0 && (
-          <p style={{
-            fontFamily: font, fontWeight: 400, fontSize: 12, lineHeight: "14.4px",
-            letterSpacing: "2.4px", color: "rgba(238, 232, 218, 0.7)", margin: 0, marginBottom: 16,
-            textTransform: "uppercase", textAlign: "center",
-          }}>
-            {tagParts.join("  ·  ")}
-          </p>
+      {/* Hero (4:3) */}
+      <div style={{ width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
+        {event.image_url && (
+          <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         )}
+      </div>
 
-        {/* Title */}
-        <h1 className="title-cap" style={{
-          fontFamily: '"Playfair Display", Georgia, serif', fontSize: 48, fontWeight: 500, lineHeight: "45.6px",
-          letterSpacing: "-1.5px", color: CREAM, textTransform: "none",
-          marginTop: 0, marginBottom: 8, textAlign: "center",
+      {/* Title block */}
+      <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
+        {eyebrowText && (
+          <div style={{
+            marginBottom: 8, fontSize: 11, color: C.muted,
+            letterSpacing: "0.12em", textTransform: "uppercase",
+          }}>
+            {eyebrowText}
+          </div>
+        )}
+        <h1 style={{
+          margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 24, lineHeight: 1.2,
+          color: C.heading, letterSpacing: "0.01em",
         }}>
           {event.title}
         </h1>
-
-        {/* Stat row: Date · Time · Location */}
-        {(() => {
-          const stats = [
-            { label: "Date", value: event.date ? formatDate(event.date) : null },
-            { label: "Time", value: timeDisplay },
-            { label: "Location", value: event.location },
-          ].filter((s) => s.value);
-          if (stats.length === 0) return null;
-          const icons: Record<string, any> = { Date: Calendar, Time: Clock, Location: MapPin };
-          return (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "stretch",
-                marginTop: 28,
-                marginBottom: 20,
-                background: SURFACE,
-                borderRadius: 24,
-                padding: "18px 8px",
-              }}
-            >
-              {stats.map((s, i) => {
-                const Icon = icons[s.label];
-                return (
-                  <div
-                    key={s.label}
-                    style={{
-                      flex: 1,
-                      padding: "0 10px",
-                      textAlign: "center",
-                      borderLeft: i > 0 ? `1px solid ${DIVIDER}` : "none",
-                      display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
-                    }}
-                  >
-                    {Icon && (
-                      <div style={{
-                        width: 36, height: 36, borderRadius: 999,
-                        background: "rgba(107,106,94,0.10)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <Icon size={18} strokeWidth={1.6} color={MUTED} />
-                      </div>
-                    )}
-                    <p style={{
-                      margin: 0, fontFamily: font, fontWeight: 400, fontSize: 11,
-                      letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED,
-                    }}>
-                      {s.label}
-                    </p>
-                    <p style={{
-                      margin: 0, fontFamily: font, fontWeight: 400, fontSize: 14,
-                      lineHeight: 1.35, color: TEXT, wordBreak: "break-word",
-                    }}>
-                      {s.value}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })()}
-
-        {/* Quick action buttons */}
-        {(() => {
-          const actions: { key: string; label: string; href: string; icon: React.ReactNode }[] = [];
-          if (contactPhone) {
-            actions.push({
-              key: "call",
-              label: "Call",
-              href: `tel:${contactPhone.replace(/\s/g, "")}`,
-              icon: <Phone size={22} strokeWidth={1.6} color={TEXT} />,
-            });
-          }
-          if (mapsLink) {
-            actions.push({
-              key: "directions",
-              label: "Directions",
-              href: mapsLink,
-              icon: <MapPin size={22} strokeWidth={1.6} color={TEXT} />,
-            });
-          }
-          if (waClean) {
-            actions.push({
-              key: "whatsapp",
-              label: "WhatsApp",
-              href: `https://wa.me/${waClean}`,
-              icon: <WhatsAppIcon color={TEXT} />,
-            });
-          } else if (contactEmail) {
-            actions.push({
-              key: "email",
-              label: "Email",
-              href: `mailto:${contactEmail}`,
-              icon: <Mail size={22} strokeWidth={1.6} color={TEXT} />,
-            });
-          }
-          if (actions.length === 0) return null;
-          return (
-            <div style={{ display: "grid", gridTemplateColumns: `repeat(${actions.length}, 1fr)`, gap: 10, marginBottom: 10 }}>
-              {actions.map((a) => (
-                <a
-                  key={a.key}
-                  href={a.href}
-                  target={a.href.startsWith("http") ? "_blank" : undefined}
-                  rel={a.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  style={{
-                    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
-                    background: SURFACE, color: TEXT, borderRadius: 18,
-                    border: `1px solid ${DIVIDER}`,
-                    height: 78, textDecoration: "none",
-                    transition: "transform 150ms ease-out",
-                    fontFamily: font,
-                  }}
-                  {...pressScale("0.97")}
-                >
-                  {a.icon}
-                  <span style={{ fontSize: 13, fontWeight: 500, color: TEXT }}>{a.label}</span>
-                </a>
-              ))}
-            </div>
-          );
-        })()}
-
-        {/* Book Now CTA */}
-        {bookingLink && (
-          <div style={{ marginBottom: 20 }}>
-            <a
-              href={bookingLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                width: "100%", display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-                background: "#2E241C", color: "#FFFFFF", border: "none", borderRadius: 18,
-                padding: "0 24px", height: 48, fontSize: 15, fontWeight: 400, lineHeight: "18px",
-                letterSpacing: 0, textDecoration: "none", cursor: "pointer",
-                transition: "transform 150ms ease-out", fontFamily: font, textTransform: "capitalize",
-                boxSizing: "border-box",
-              }}
-              {...pressScale()}
-            >
-              {bookingLinkLabel || "Book Now"}
-            </a>
+        {(dateDisplay || timeDisplay) && (
+          <div style={{
+            marginTop: 8, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+            display: "flex", alignItems: "center", gap: 4,
+          }}>
+            <Calendar size={12} color={C.muted} strokeWidth={1.6} />
+            <span>{[dateDisplay, timeDisplay].filter(Boolean).join(" · ")}</span>
+          </div>
+        )}
+        {event.location && (
+          <div style={{
+            marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+            display: "flex", alignItems: "center", gap: 4,
+          }}>
+            <MapPin size={12} color={C.muted} strokeWidth={1.6} />
+            <span>{event.location}</span>
           </div>
         )}
 
-
-        {/* About */}
-        {event.description && (
-          <section style={{ marginBottom: 24 }}>
-            <SectionLabel eyebrow="Overview" title="About" />
-            <p
-              style={{
-                margin: 0,
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                fontWeight: 400,
-                fontSize: 15,
-                lineHeight: 1.65,
-                letterSpacing: 0,
-                color: "rgba(238, 232, 218, 0.9)",
-                whiteSpace: "pre-line",
-                ...(aboutExpanded ? {} : { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden" }),
-              }}
-            >
-              {event.description}
-            </p>
-            {event.description.length > 120 && (
-              <button
-                onClick={() => setAboutExpanded(!aboutExpanded)}
-                style={{
-                  marginTop: 12,
-                  background: "none",
-                  border: "none",
-                  borderBottom: "1px solid rgba(238,232,218,0.4)",
-                  paddingBottom: 2,
-                  paddingLeft: 0,
-                  paddingRight: 0,
-                  cursor: "pointer",
-                  fontFamily: font,
-                  fontSize: 12,
-                  fontWeight: 400,
-                  color: CREAM,
-                  letterSpacing: "1.6px",
-                  textTransform: "uppercase",
-                }}
-              >
-                {aboutExpanded ? "Show Less" : "Read More"}
-              </button>
-            )}
-          </section>
-        )}
-
-        {/* Details */}
-        {(detailRows.length > 0 || notes) && (
-          <section style={{ marginBottom: 24 }}>
-            <SectionLabel eyebrow="Event info" title="Details" />
-            <div style={{ background: SURFACE, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
-              {detailRows.map((row, idx) => {
-                const Wrapper: any = row.href ? "a" : "div";
-                const wrapperProps = row.href ? { href: row.href, target: "_blank" as const, rel: "noopener noreferrer" } : {};
-                return (
-                  <div key={row.label} style={{ borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-                    <Wrapper
-                      {...wrapperProps}
-                      style={{ display: "flex", alignItems: "center", height: 56, textDecoration: "none" }}
-                    >
-                      <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
-                        <row.icon size={18} strokeWidth={1.5} color="#898480" />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{
-                          fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
-                          lineHeight: 1.35, margin: 0, wordBreak: "break-word",
-                        }}>
-                          {row.value}
-                        </p>
-                      </div>
-                      {row.href && (
-                        <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
-                      )}
-                    </Wrapper>
-                  </div>
-                );
-              })}
-              {notes && (
-                <div style={{ borderTop: detailRows.length > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-                  <button
-                    onClick={() => setNotesOpen((v) => !v)}
-                    aria-expanded={notesOpen}
-                    style={{
-                      width: "100%", display: "flex", alignItems: "center", height: 56,
-                      background: "transparent", border: "none", cursor: "pointer", textAlign: "left", padding: 0,
-                    }}
-                  >
-                    <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
-                      <StickyNote size={18} strokeWidth={1.5} color="#898480" />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{
-                        fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
-                        lineHeight: 1.35, margin: 0,
-                      }}>
-                        Notes
-                      </p>
-                    </div>
-                    <ChevronDown size={18} strokeWidth={1.5} color="#5b4632"
-                      style={{ flexShrink: 0, marginLeft: 12, transform: notesOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 200ms ease-out" }} />
-                  </button>
-                  {notesOpen && (
-                    <div style={{ padding: "0 0 16px 32px" }}>
-                      <p style={{ fontFamily: font, fontWeight: 400, fontSize: 14, lineHeight: "20.3px", color: TEXT, margin: 0, whiteSpace: "pre-wrap" }}>
-                        {notes}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
+        {actions.length > 0 && (
+          actions.length === 4 ? (
+            <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {actions.map((a) => <PillBtn key={a.key} a={a} full />)}
             </div>
-          </section>
-        )}
-
-
-        {contactRows.length > 0 && (
-          <section style={{ marginBottom: 24 }}>
-            <SectionLabel eyebrow="Reach out" title="Contact" />
-            <div style={{ background: SURFACE, borderRadius: 24, paddingLeft: 20, paddingRight: 20 }}>
-              {contactRows.map((row, idx) => {
-                const Wrapper: any = row.href ? "a" : "div";
-                const wrapperProps = row.href ? { href: row.href, target: "_blank", rel: "noopener noreferrer" } : {};
-                return (
-                  <div key={row.label} style={{ borderTop: idx > 0 ? `1px solid ${DIVIDER}` : "none" }}>
-                    <Wrapper
-                      {...wrapperProps}
-                      style={{ display: "flex", alignItems: "center", height: 56, textDecoration: "none" }}
-                    >
-                      <div style={{ marginRight: 14, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", width: 18 }}>
-                        {row.isCustomIcon
-                          ? <row.icon color="#898480" />
-                          : <row.icon size={18} strokeWidth={1.5} color="#898480" />}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{
-                          fontFamily: font, fontSize: 14, fontWeight: 400, color: TEXT,
-                          lineHeight: 1.35, margin: 0, wordBreak: "break-word",
-                        }}>
-                          {row.value}
-                        </p>
-                      </div>
-                      {row.href && (
-                        <ArrowUpRight size={18} strokeWidth={1.5} color="#5b4632" style={{ flexShrink: 0, marginLeft: 12 }} />
-                      )}
-                    </Wrapper>
-                  </div>
-                );
-              })}
+          ) : (
+            <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
+              {actions.map((a) => <PillBtn key={a.key} a={a} />)}
             </div>
-          </section>
+          )
         )}
-
-        {/* Hosted By */}
-        {(() => {
-          const e = event as any;
-          const hosts = [
-            { name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url },
-            { name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2 },
-            { name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3 },
-          ].filter((h) => h.name && String(h.name).trim() !== "");
-          if (hosts.length === 0) return null;
-          return (
-            <section style={{ marginBottom: 24 }}>
-              <SectionLabel eyebrow="Host" title="Hosted By" />
-              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                {hosts.map((h, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      background: SURFACE, borderRadius: 24, padding: "16px 20px",
-                      display: "flex", alignItems: "center", gap: 14,
-                    }}
-                  >
-                    {h.image && (
-                      <img
-                        src={h.image}
-                        alt={h.name}
-                        style={{ width: 56, height: 56, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }}
-                      />
-                    )}
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      {h.subtitle && (
-                        <p style={{
-                          margin: 0, fontFamily: font, fontSize: 11, fontWeight: 500,
-                          letterSpacing: "0.08em", textTransform: "uppercase", color: "#715a3d",
-                          marginBottom: 4,
-                        }}>
-                          {h.subtitle}
-                        </p>
-                      )}
-                      <p style={{
-                        margin: 0, fontFamily: FONT_HEAD, fontSize: 18, fontWeight: 500,
-                        color: TEXT, lineHeight: 1.2,
-                      }}>
-                        {h.name}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          );
-        })()}
       </div>
 
-      {/* Gallery (full-bleed scroll) */}
-      {galleryImages.length > 0 && (
-        <section style={{ marginBottom: 24 }}>
-          <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-            <SectionLabel eyebrow="Moments" title="Gallery" />
-          </div>
-          <div className="overflow-x-auto scrollbar-hide">
-            <div className="inline-flex" style={{ gap: 12, paddingLeft: 24, paddingRight: 24, paddingBottom: 4 }}>
-              {galleryImages.map((url, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => { setLightboxIndex(i); setLightboxOpen(true); }}
-                  style={{ width: 220, aspectRatio: "4/3", borderRadius: 16, overflow: "hidden", background: "#f0f0f0", flexShrink: 0, border: "none", padding: 0, cursor: "pointer" }}
-                  aria-label={`Open image ${i + 1}`}
-                >
-                  <img src={url} alt={`${event.title} ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
-                </button>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Sticky tab bar */}
+      <nav style={{
+        position: "sticky", top: 57, zIndex: 30,
+        background: C.surface, borderBottom: `1px solid ${C.border}`,
+        display: "flex", padding: "0 8px",
+      }}>
+        <TabBtn k="about" label="About" />
+        <TabBtn k="details" label="Details" />
+        <TabBtn k="gallery" label="Gallery" />
+        <TabBtn k="location" label="Location" />
+      </nav>
+
+      <main>
+        {tab === "about" && renderAbout()}
+        {tab === "details" && renderDetails()}
+        {tab === "gallery" && renderGallery()}
+        {tab === "location" && renderLocation()}
+      </main>
 
       <ImageLightbox
         images={galleryImages}
@@ -748,12 +599,14 @@ const EventDetail = () => {
         alt={event.title}
       />
 
-      <BottomNav />
-      {isAdmin && event && (
+      {isAdmin && (
         <EventEditDialog open={editOpen} onOpenChange={setEditOpen} event={event} />
       )}
+
+      <BottomNav />
     </div>
   );
 };
+
 
 export default EventDetail;
