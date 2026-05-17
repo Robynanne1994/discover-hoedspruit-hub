@@ -62,7 +62,7 @@ const pressScale = (s = "0.98") => ({
 const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
-type TabKey = "about" | "details" | "gallery" | "location";
+type TabKey = "about" | "details" | "specials" | "events" | "gallery" | "location";
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
