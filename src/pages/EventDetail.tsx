@@ -359,14 +359,6 @@ const EventDetail = () => {
           <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No description yet.</p>
         )}
 
-        {notes && (
-          <div style={{ marginTop: 28 }}>
-            <h2 style={headStyle}>Notes</h2>
-            <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
-              <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5 }}>{notes}</p>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
