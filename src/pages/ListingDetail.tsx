@@ -555,7 +555,7 @@ const ListingDetail = () => {
                 }}>{s.title}</h3>
               </div>
               {s.fields.length === 1 && s.fields[0].on === "__text__" ? (
-                <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-wrap" }}>{s.fields[0].label}</p>
+                <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-wrap" }}>{renderRichText(s.fields[0].label)}</p>
               ) : (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 14, rowGap: 10 }}>
                   {s.fields.map((f, i) => {
