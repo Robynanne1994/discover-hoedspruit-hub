@@ -534,7 +534,8 @@ const ListingDetail = () => {
 
       <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
     </div>
-  );
+    );
+  };
 
   const renderDetails = () => (
     <div style={{ padding: "20px" }}>
