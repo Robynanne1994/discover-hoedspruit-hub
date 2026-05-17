@@ -553,7 +553,7 @@ const SpecialDetail = () => {
         <TabBtn k="about" label="About" />
         <TabBtn k="details" label="Details" />
         <TabBtn k="contact" label="Contact" />
-        <TabBtn k="terms" label="Terms" />
+        {special.terms?.trim() && <TabBtn k="terms" label="Terms" />}
       </nav>
 
       <main>
