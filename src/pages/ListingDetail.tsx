@@ -25,6 +25,7 @@ import pricingIconSrc from "@/assets/pricing-icon.svg";
 import cuisineIconSrc from "@/assets/cuisine-icon.svg";
 import mealsIconSrc from "@/assets/meals-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -61,7 +62,7 @@ const pressScale = (s = "0.98") => ({
 const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
-type TabKey = "about" | "details" | "gallery" | "location";
+type TabKey = "about" | "details" | "specials" | "events" | "gallery" | "location";
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
@@ -125,6 +126,37 @@ const ListingDetail = () => {
       const catIds = junctions.map((j: any) => j.category_id);
       const { data: cats } = await supabase.from("categories").select("id, title").in("id", catIds);
       return cats ?? [];
+    },
+    enabled: !!id,
+  });
+
+  const { data: relatedSpecials } = useQuery({
+    queryKey: ["listing-detail-specials", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("specials")
+        .select("id,title,deal_label,image_url,valid_until")
+        .eq("business_id", id!)
+        .eq("is_active", true);
+      const today = new Date().toISOString().slice(0, 10);
+      return (data ?? []).filter((s: any) => !s.valid_until || s.valid_until >= today);
+    },
+    enabled: !!id,
+  });
+
+  const { data: relatedEvents } = useQuery({
+    queryKey: ["listing-detail-events", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("events")
+        .select("id,title,date,start_date,end_date,start_time,image_url,location")
+        .eq("business_id", id!);
+      const today = new Date().toISOString().slice(0, 10);
+      return (data ?? []).filter((e: any) => {
+        if (e.end_date) return e.end_date >= today;
+        if (e.start_date) return e.start_date >= today;
+        return true; // free-text date — keep
+      });
     },
     enabled: !!id,
   });
@@ -204,6 +236,21 @@ const ListingDetail = () => {
   const descriptionText = (longDescription || listing.description || "").trim();
   const whatsappNum = l.whatsapp as string | null;
   const waClean = whatsappNum ? whatsappNum.replace(/[^0-9]/g, "") : null;
+  const hasGallery = galleryImages.length > 0;
+  const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
+  const hasEvents = (relatedEvents?.length ?? 0) > 0;
+  const visibleTabs: { key: TabKey; label: string }[] = [
+    { key: "about", label: "About" },
+    { key: "details", label: "Details" },
+    ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
+    ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
+    ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
+    { key: "location", label: "Location" },
+  ];
+  useEffect(() => {
+    if (!visibleTabs.some(t => t.key === tab)) setTab("about");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasSpecials, hasEvents, hasGallery]);
 
   // ----- Open status -----
   const todayIndex = new Date().getDay();
@@ -605,6 +652,67 @@ const ListingDetail = () => {
     </div>
   );
 
+  const renderRelatedCard = (item: { id: string; title: string; image_url?: string | null; subtitle?: string | null; badge?: string | null }, to: string) => (
+    <Link
+      key={item.id}
+      to={to}
+      style={{
+        display: "flex", gap: 12, alignItems: "center",
+        padding: 12, background: C.surface, border: `1px solid ${C.border}`,
+        borderRadius: 16, textDecoration: "none", color: C.heading,
+      }}
+    >
+      <div style={{ width: 64, height: 64, flexShrink: 0, borderRadius: 12, overflow: "hidden", background: C.ivory }}>
+        {item.image_url && <img src={item.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: FONT, fontSize: 14, color: C.heading, lineHeight: 1.3, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
+          {item.title}
+        </div>
+        {item.subtitle && (
+          <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted }}>{item.subtitle}</div>
+        )}
+        {item.badge && (
+          <div style={{ marginTop: 6, display: "inline-block", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
+            {item.badge}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+
+  const renderSpecials = () => (
+    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <h2 style={headStyle}>Current Specials</h2>
+      {(relatedSpecials ?? []).map((s: any) =>
+        renderRelatedCard(
+          { id: s.id, title: s.title, image_url: s.image_url, badge: s.deal_label },
+          `/specials/${s.id}`
+        )
+      )}
+    </div>
+  );
+
+  const renderEvents = () => (
+    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <h2 style={headStyle}>Upcoming Events</h2>
+      {(relatedEvents ?? [])
+        .slice()
+        .sort((a: any, b: any) => {
+          const da = getEventSortDate(a)?.getTime() ?? Infinity;
+          const db = getEventSortDate(b)?.getTime() ?? Infinity;
+          return da - db;
+        })
+        .map((e: any) => {
+          const dateText = formatEventDateRange(e) || e.date || "";
+          return renderRelatedCard(
+            { id: e.id, title: e.title, image_url: e.image_url, subtitle: dateText },
+            `/events/${e.id}`
+          );
+        })}
+    </div>
+  );
+
   const renderGallery = () => (
     <div style={{ padding: "20px" }}>
       {galleryImages.length === 0 ? (
@@ -770,17 +878,17 @@ const ListingDetail = () => {
         background: C.surface, borderBottom: `1px solid ${C.border}`,
         display: "flex",
         padding: "0 8px",
-      }}>
-        <TabBtn k="about" label="About" />
-        <TabBtn k="details" label="Details" />
-        <TabBtn k="gallery" label="Gallery" />
-        <TabBtn k="location" label="Location" />
+        overflowX: "auto",
+      }} className="scrollbar-hide">
+        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} />)}
       </nav>
 
       {/* Tab content */}
       <main>
         {tab === "about" && renderAbout()}
         {tab === "details" && renderDetails()}
+        {tab === "specials" && renderSpecials()}
+        {tab === "events" && renderEvents()}
         {tab === "gallery" && renderGallery()}
         {tab === "location" && renderLocation()}
       </main>
