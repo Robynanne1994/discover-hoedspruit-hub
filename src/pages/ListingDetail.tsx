@@ -25,6 +25,7 @@ import pricingIconSrc from "@/assets/pricing-icon.svg";
 import cuisineIconSrc from "@/assets/cuisine-icon.svg";
 import mealsIconSrc from "@/assets/meals-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import { n as formatEventDate } from "@/lib/eventDates";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
