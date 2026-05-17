@@ -236,6 +236,21 @@ const ListingDetail = () => {
   const descriptionText = (longDescription || listing.description || "").trim();
   const whatsappNum = l.whatsapp as string | null;
   const waClean = whatsappNum ? whatsappNum.replace(/[^0-9]/g, "") : null;
+  const hasGallery = galleryImages.length > 0;
+  const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
+  const hasEvents = (relatedEvents?.length ?? 0) > 0;
+  const visibleTabs: { key: TabKey; label: string }[] = [
+    { key: "about", label: "About" },
+    { key: "details", label: "Details" },
+    ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
+    ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
+    ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
+    { key: "location", label: "Location" },
+  ];
+  useEffect(() => {
+    if (!visibleTabs.some(t => t.key === tab)) setTab("about");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasSpecials, hasEvents, hasGallery]);
 
   // ----- Open status -----
   const todayIndex = new Date().getDay();
