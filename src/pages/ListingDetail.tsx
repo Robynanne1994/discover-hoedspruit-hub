@@ -130,6 +130,37 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
+  const { data: relatedSpecials } = useQuery({
+    queryKey: ["listing-detail-specials", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("specials")
+        .select("id,title,deal_label,image_url,valid_until")
+        .eq("business_id", id!)
+        .eq("is_active", true);
+      const today = new Date().toISOString().slice(0, 10);
+      return (data ?? []).filter((s: any) => !s.valid_until || s.valid_until >= today);
+    },
+    enabled: !!id,
+  });
+
+  const { data: relatedEvents } = useQuery({
+    queryKey: ["listing-detail-events", id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("events")
+        .select("id,title,date,start_date,end_date,start_time,image_url,location")
+        .eq("business_id", id!);
+      const today = new Date().toISOString().slice(0, 10);
+      return (data ?? []).filter((e: any) => {
+        if (e.end_date) return e.end_date >= today;
+        if (e.start_date) return e.start_date >= today;
+        return true; // free-text date — keep
+      });
+    },
+    enabled: !!id,
+  });
+
   const { data: isFavourited } = useQuery({
     queryKey: ["favourite", "listing", id, user?.id],
     queryFn: async () => {
