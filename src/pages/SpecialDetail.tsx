@@ -256,9 +256,9 @@ const SpecialDetail = () => {
     const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
     const offerCols = [
-      { headline: sp.price, sublabel: sp.price_label },
-      { headline: sp.offer_headline, sublabel: sp.offer_sublabel },
-      { headline: sp.duration_headline, sublabel: sp.duration_sublabel },
+      { icon: Banknote, headline: sp.price, sublabel: sp.price_label },
+      { icon: Tag, headline: sp.offer_headline, sublabel: sp.offer_sublabel },
+      { icon: Clock, headline: sp.duration_headline, sublabel: sp.duration_sublabel },
     ].filter((c) => c.headline || c.sublabel);
 
     return (
