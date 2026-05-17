@@ -256,9 +256,9 @@ const SpecialDetail = () => {
     const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
     const offerCols = [
-      { headline: sp.price, sublabel: sp.price_label },
-      { headline: sp.offer_headline, sublabel: sp.offer_sublabel },
-      { headline: sp.duration_headline, sublabel: sp.duration_sublabel },
+      { icon: Banknote, headline: sp.price, sublabel: sp.price_label },
+      { icon: Tag, headline: sp.offer_headline, sublabel: sp.offer_sublabel },
+      { icon: Clock, headline: sp.duration_headline, sublabel: sp.duration_sublabel },
     ].filter((c) => c.headline || c.sublabel);
 
     return (
@@ -289,27 +289,26 @@ const SpecialDetail = () => {
         {offerCols.length > 0 && (
           <div style={{ marginTop: desc ? 28 : 0 }}>
             <h2 style={headStyle}>The Offer</h2>
-            <div style={{
-              display: "flex", alignItems: "stretch",
-              background: C.surface, border: `1px solid ${C.border}`,
-              borderRadius: 16, padding: "18px 8px",
-            }}>
+            <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
               {offerCols.map((c, i) => (
                 <div key={i} style={{
-                  flex: 1, minWidth: 0, padding: "0 10px", textAlign: "center",
-                  borderLeft: i === 0 ? "none" : `1px solid ${C.divider}`,
-                  display: "flex", flexDirection: "column", alignItems: "center", gap: 8,
+                  display: "flex", alignItems: "center", gap: 14,
+                  padding: "14px 0",
+                  borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
                 }}>
-                  {c.headline && (
-                    <p style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted }}>
-                      {c.headline}
-                    </p>
-                  )}
-                  {c.sublabel && (
-                    <p style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 13.5, lineHeight: 1.3, color: C.heading, wordBreak: "break-word" }}>
-                      {c.sublabel}
-                    </p>
-                  )}
+                  <c.icon size={18} strokeWidth={1.5} color={C.primary} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    {c.headline && (
+                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>
+                        {c.headline}
+                      </div>
+                    )}
+                    {c.sublabel && (
+                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                        {c.sublabel}
+                      </div>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
