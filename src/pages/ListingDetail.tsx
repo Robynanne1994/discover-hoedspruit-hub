@@ -385,18 +385,19 @@ const ListingDetail = () => {
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
 
   // ----- Sub-components -----
-  const PillBtn = ({ a }: { a: typeof actions[number] }) => (
+  const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => (
     <a
       href={a.href}
       {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       style={{
-        display: "inline-flex", alignItems: "center", gap: 6,
-        padding: "8px 14px", borderRadius: 999,
+        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
+        padding: "10px 14px", borderRadius: 999,
         background: C.surface, border: `1px solid ${C.border}`,
         color: C.primary, textDecoration: "none",
         fontFamily: FONT, fontWeight: 400, fontSize: 13,
         letterSpacing: "0.01em",
         flexShrink: 0,
+        width: full ? "100%" : undefined,
         transition: "transform 150ms ease-out",
       }}
       {...pressScale()}
@@ -727,9 +728,15 @@ const ListingDetail = () => {
         )}
 
         {actions.length > 0 && (
-          <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
-            {actions.map((a) => <PillBtn key={a.key} a={a} />)}
-          </div>
+          actions.length === 4 ? (
+            <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {actions.map((a) => <PillBtn key={a.key} a={a} full />)}
+            </div>
+          ) : (
+            <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
+              {actions.map((a) => <PillBtn key={a.key} a={a} />)}
+            </div>
+          )
         )}
       </div>
 
