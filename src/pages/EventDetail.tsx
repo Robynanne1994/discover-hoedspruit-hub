@@ -6,7 +6,7 @@ import ImageLightbox from "@/components/ImageLightbox";
 import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
-  Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink,
+  Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, StickyNote,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -359,14 +359,6 @@ const EventDetail = () => {
           <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No description yet.</p>
         )}
 
-        {notes && (
-          <div style={{ marginTop: 28 }}>
-            <h2 style={headStyle}>Notes</h2>
-            <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
-              <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5 }}>{notes}</p>
-            </div>
-          </div>
-        )}
       </div>
     );
   };
@@ -378,6 +370,7 @@ const EventDetail = () => {
     detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
   }
   if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
+  if (notes) detailRows.push({ Icon: StickyNote, label: "Notes", value: <span style={{ whiteSpace: "pre-line" }}>{notes}</span> });
   if (contactPhone) detailRows.push({ Icon: Phone, label: "Phone", value: contactPhone, href: `tel:${contactPhone.replace(/\s/g, "")}` });
   if (waClean) detailRows.push({ Icon: Phone, label: "WhatsApp", value: contactWhatsapp, href: `https://wa.me/${waClean}`, external: true });
   if (contactEmail) detailRows.push({ Icon: Mail, label: "Email", value: contactEmail, href: `mailto:${contactEmail}`, external: true });
