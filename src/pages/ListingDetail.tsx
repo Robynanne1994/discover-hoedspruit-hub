@@ -692,15 +692,13 @@ const ListingDetail = () => {
 
       {/* Title block */}
       <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {(firstCategory || listing.location) && (
+        {firstCategory && (
           <div style={{
             marginBottom: 8,
             fontSize: 11, color: C.muted,
             letterSpacing: "0.12em", textTransform: "uppercase",
           }}>
-            {firstCategory?.title}
-            {firstCategory && listing.location && <span> · </span>}
-            {listing.location}
+            {firstCategory.title}
           </div>
         )}
         <h1 style={{
@@ -709,6 +707,15 @@ const ListingDetail = () => {
         }}>
           {listing.title}
         </h1>
+        {listing.location && (
+          <div style={{
+            marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+            display: "flex", alignItems: "center", gap: 4,
+          }}>
+            <MapPin size={12} color={C.muted} strokeWidth={1.6} />
+            <span>{listing.location}</span>
+          </div>
+        )}
         {l.google_rating != null && (
           <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
             <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
