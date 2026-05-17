@@ -652,6 +652,67 @@ const ListingDetail = () => {
     </div>
   );
 
+  const renderRelatedCard = (item: { id: string; title: string; image_url?: string | null; subtitle?: string | null; badge?: string | null }, to: string) => (
+    <Link
+      key={item.id}
+      to={to}
+      style={{
+        display: "flex", gap: 12, alignItems: "center",
+        padding: 12, background: C.surface, border: `1px solid ${C.border}`,
+        borderRadius: 16, textDecoration: "none", color: C.heading,
+      }}
+    >
+      <div style={{ width: 64, height: 64, flexShrink: 0, borderRadius: 12, overflow: "hidden", background: C.ivory }}>
+        {item.image_url && <img src={item.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} loading="lazy" />}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontFamily: FONT, fontSize: 14, color: C.heading, lineHeight: 1.3, marginBottom: 4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" as const }}>
+          {item.title}
+        </div>
+        {item.subtitle && (
+          <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted }}>{item.subtitle}</div>
+        )}
+        {item.badge && (
+          <div style={{ marginTop: 6, display: "inline-block", fontFamily: FONT, fontSize: 10, letterSpacing: "0.08em", textTransform: "uppercase", color: "#fff", background: C.primary, padding: "3px 8px", borderRadius: 999 }}>
+            {item.badge}
+          </div>
+        )}
+      </div>
+    </Link>
+  );
+
+  const renderSpecials = () => (
+    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <h2 style={headStyle}>Current Specials</h2>
+      {(relatedSpecials ?? []).map((s: any) =>
+        renderRelatedCard(
+          { id: s.id, title: s.title, image_url: s.image_url, badge: s.deal_label },
+          `/specials/${s.id}`
+        )
+      )}
+    </div>
+  );
+
+  const renderEvents = () => (
+    <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <h2 style={headStyle}>Upcoming Events</h2>
+      {(relatedEvents ?? [])
+        .slice()
+        .sort((a: any, b: any) => {
+          const da = getEventSortDate(a)?.getTime() ?? Infinity;
+          const db = getEventSortDate(b)?.getTime() ?? Infinity;
+          return da - db;
+        })
+        .map((e: any) => {
+          const dateText = formatEventDateRange(e) || e.date || "";
+          return renderRelatedCard(
+            { id: e.id, title: e.title, image_url: e.image_url, subtitle: dateText },
+            `/events/${e.id}`
+          );
+        })}
+    </div>
+  );
+
   const renderGallery = () => (
     <div style={{ padding: "20px" }}>
       {galleryImages.length === 0 ? (
