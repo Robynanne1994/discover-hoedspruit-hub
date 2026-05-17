@@ -690,7 +690,7 @@ const ListingDetail = () => {
         <button onClick={() => navigate(-1)} aria-label="Back"
           style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: C.heading, padding: 4, minHeight: 40 }}>
           <BackArrowIcon size={20} color={C.heading} />
-          <span style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>Listing Detail</span>
+          <span style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>Listing Details</span>
         </button>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
           <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"}
