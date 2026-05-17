@@ -426,14 +426,33 @@ const ListingDetail = () => {
   };
 
   // ----- Tab content -----
-  const renderAbout = () => (
+  const renderAbout = () => {
+    const paragraphs = descriptionText.split("\n").filter(Boolean);
+    const isLong = descriptionText.length > 180;
+    return (
     <div style={{ padding: "20px" }}>
       {descriptionText && (
         <>
           <h2 style={headStyle}>About</h2>
-          {descriptionText.split("\n").filter(Boolean).map((p, i) => (
-            <p key={i} style={paraStyle}>{p}</p>
-          ))}
+          <div style={!aboutExpanded && isLong ? {
+            display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical" as const, overflow: "hidden",
+          } : undefined}>
+            {paragraphs.map((p, i) => (
+              <p key={i} style={paraStyle}>{p}</p>
+            ))}
+          </div>
+          {isLong && (
+            <button
+              onClick={() => setAboutExpanded(!aboutExpanded)}
+              style={{
+                marginTop: 6, background: "none", border: "none", padding: 0, cursor: "pointer",
+                fontFamily: FONT, fontSize: 13, color: C.primary,
+                letterSpacing: "0.08em", textTransform: "uppercase",
+              }}
+            >
+              {aboutExpanded ? "Show less" : "Read more"}
+            </button>
+          )}
         </>
       )}
 
