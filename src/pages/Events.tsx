@@ -426,18 +426,53 @@ const Events = () => {
 
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     const monthEnd = endOfMonth(today);
+    const weekend = getWeekendRange(today);
+    const yearEnd = new Date(today.getFullYear(), 11, 31);
 
     return list.filter((e) => {
       if (!e._parsed) return activeFilter === "all";
-      if (activeFilter === "all") return !isBefore(e._parsed, today);
-      if (activeFilter === "today") return isToday(e._parsed);
-      if (activeFilter === "this-week")
-        return isWithinInterval(e._parsed, { start: today, end: weekEnd });
-      if (activeFilter === "this-month")
-        return isWithinInterval(e._parsed, { start: today, end: monthEnd });
+      const d = e._parsed;
+      if (activeFilter === "all") return !isBefore(d, today);
+      if (activeFilter === "today") return isToday(d);
+      if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
+      if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
+      if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
+      if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+      if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
       return true;
     });
   }, [sortedEvents, search, tagFilter, activeFilter, selectedDate]);
+
+  const sectionTitle = useMemo(() => {
+    if (selectedDate) return format(selectedDate, "d MMM yyyy");
+    const today = startOfToday();
+    switch (activeFilter) {
+      case "today":
+        return format(today, "d MMM yyyy");
+      case "this-week": {
+        const end = endOfWeek(today, { weekStartsOn: 1 });
+        const sameMonth = today.getMonth() === end.getMonth();
+        return sameMonth
+          ? `${format(today, "d")} – ${format(end, "d MMM")}`
+          : `${format(today, "d MMM")} – ${format(end, "d MMM")}`;
+      }
+      case "this-weekend": {
+        const { start, end } = getWeekendRange(today);
+        const sameMonth = start.getMonth() === end.getMonth();
+        return sameMonth
+          ? `${format(start, "d")} – ${format(end, "d MMM")}`
+          : `${format(start, "d MMM")} – ${format(end, "d MMM")}`;
+      }
+      case "this-month":
+        return format(today, "MMMM yyyy");
+      case "this-year":
+        return format(today, "yyyy");
+      case "past":
+        return "Past Events";
+      default:
+        return "Upcoming Events";
+    }
+  }, [activeFilter, selectedDate]);
 
   const handleSelectDate = (d: Date) => {
     setSelectedDate(selectedDate && isSameDay(selectedDate, d) ? null : d);
