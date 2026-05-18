@@ -90,11 +90,13 @@ const WeekStrip = ({
   selectedDate,
   onSelect,
   onShift,
+  onClear,
 }: {
   anchor: Date;
   selectedDate: Date | null;
   onSelect: (d: Date) => void;
   onShift: (days: number) => void;
+  onClear: () => void;
 }) => {
   const weekStart = startOfWeek(anchor, { weekStartsOn: 1 });
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
