@@ -247,10 +247,6 @@ const ListingDetail = () => {
     ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
     { key: "location", label: "Location" },
   ];
-  useEffect(() => {
-    if (!visibleTabs.some(t => t.key === tab)) setTab("about");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasSpecials, hasEvents, hasGallery]);
 
   // ----- Open status -----
   const todayIndex = new Date().getDay();
