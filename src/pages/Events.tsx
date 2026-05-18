@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
