@@ -553,6 +553,11 @@ const Events = () => {
           selectedDate={selectedDate}
           onSelect={handleSelectDate}
           onShift={(days) => setWeekAnchor((a) => addDays(a, days))}
+          onClear={() => {
+            setSelectedDate(null);
+            setActiveFilter("all");
+            setWeekAnchor(startOfToday());
+          }}
         />
       </div>
 
