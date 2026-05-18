@@ -71,6 +71,15 @@ function formatPrice(p: string | number | null | undefined): string {
   if (p === null || p === undefined) return "Free";
   const s = String(p).trim();
   if (!s || /^(free|0|r0)$/i.test(s)) return "Free";
+  // Detect a price range like "100 - 250", "R100-R250", "100 to 250" → "From R<lowest>"
+  const nums = s.match(/\d+(?:[.,]\d+)?/g);
+  const hasRange = /[-–—]|\bto\b/i.test(s);
+  if (hasRange && nums && nums.length >= 2) {
+    const values = nums.map((n) => parseFloat(n.replace(",", ".")));
+    const lowest = Math.min(...values);
+    const display = Number.isInteger(lowest) ? String(lowest) : String(lowest);
+    return `From R${display}`;
+  }
   if (/^\d/.test(s)) return `R${s}`;
   return s;
 }
