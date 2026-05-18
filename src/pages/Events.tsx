@@ -302,17 +302,17 @@ const EventCard = ({ event }: { event: any }) => {
               color: C.muted,
               margin: 0,
               display: "flex",
-              alignItems: "center",
+              alignItems: "flex-start",
               gap: 4,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
+              wordBreak: "break-word",
+              overflowWrap: "anywhere",
             }}
           >
-            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0 }} />
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{location}</span>
+            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 3 }} />
+            <span>{location}</span>
           </p>
         )}
+
       </div>
       <div
         style={{
