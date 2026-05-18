@@ -7,14 +7,11 @@ import { useFollowCounts } from "@/hooks/useFollows";
 import { Pencil, Heart, Settings } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Design tokens (match SpecialDetail / EventDetail / ListingDetail)
-const PAGE_BG = "#ebebeb";
-const CREAM = "#f5f0e8"; // ivory card surface
-const INK = "#020202";   // heading
-const TEXT = "#2b2420";  // body
-const MUTED = "#8A8480";
-const RUST = "#715a3d";  // primary brown (interactive)
-const BORDER = "#E8E4DF";
+const PAGE_BG = "#5C6446";
+const CREAM = "#EEE8DA";
+const INK = "#2A2A24";
+const MUTED = "#6B6A5E";
+const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) =>
@@ -46,17 +43,16 @@ function SubTabs<T extends string>({
             type="button"
             onClick={() => onChange(opt.id)}
             style={{
-              background: active ? RUST : "transparent",
-              color: active ? "#ffffff" : MUTED,
-              border: `1px solid ${active ? RUST : BORDER}`,
+              background: active ? CREAM : "transparent",
+              color: active ? INK : CREAM,
+              border: `1px solid ${active ? CREAM : "rgba(238,232,218,0.4)"}`,
               borderRadius: 999,
               padding: "6px 14px",
               cursor: "pointer",
               fontFamily: SANS,
-              fontSize: 11,
-              fontWeight: 400,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
+              fontSize: 13,
+              fontWeight: active ? 600 : 400,
+              letterSpacing: "0.02em",
             }}
           >
             {opt.label}
@@ -262,7 +258,7 @@ const MyProfile = () => {
         >
           {titleCase(it.title)}
         </div>
-        <div style={{ fontFamily: SANS, fontSize: 12, color: MUTED, letterSpacing: "0.01em", fontWeight: 400 }}>
+        <div style={{ fontFamily: SANS, fontSize: 12, color: MUTED, letterSpacing: "0.01em" }}>
           {subtitle}
         </div>
       </div>
@@ -276,8 +272,8 @@ const MyProfile = () => {
         textAlign: "center",
         fontFamily: SANS,
         fontSize: 14,
-        fontWeight: 400,
-        color: MUTED,
+        color: CREAM,
+        opacity: 0.7,
         letterSpacing: "0.01em",
       }}
     >
@@ -292,7 +288,7 @@ const MyProfile = () => {
         background: PAGE_BG,
         paddingBottom: 100,
         fontFamily: SANS,
-        color: TEXT,
+        color: CREAM,
       }}
     >
       {/* Top header bar */}
@@ -309,11 +305,10 @@ const MyProfile = () => {
           style={{
             margin: 0,
             fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 12,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: INK,
+            fontWeight: 600,
+            fontSize: 20,
+            letterSpacing: "0.01em",
+            color: CREAM,
             justifySelf: "center",
           }}
         >
@@ -337,7 +332,7 @@ const MyProfile = () => {
         </Link>
       </div>
 
-      <div style={{ height: 1, background: BORDER, marginTop: 20 }} />
+      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
 
       {/* Profile section — avatar + name + stats */}
       <div style={{ padding: "20px 24px 0" }}>
@@ -370,7 +365,7 @@ const MyProfile = () => {
 
           <div style={{ flex: 1, minWidth: 0 }}>
             {isLoading ? (
-              <Skeleton className="h-7 w-40" />
+              <Skeleton className="h-7 w-40 bg-white/10" />
             ) : (
               <>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -378,11 +373,11 @@ const MyProfile = () => {
                   <h2
                     style={{
                       fontFamily: SANS,
-                      fontWeight: 400,
-                      fontSize: 22,
-                      lineHeight: 1.2,
-                      letterSpacing: "0.01em",
-                      color: INK,
+                      fontWeight: 700,
+                      fontSize: 24,
+                      lineHeight: 1.15,
+                      letterSpacing: "-0.4px",
+                      color: CREAM,
                       margin: 0,
                       minWidth: 0,
                       overflow: "hidden",
@@ -398,7 +393,8 @@ const MyProfile = () => {
                         fontFamily: SANS,
                         fontWeight: 400,
                         fontSize: 13,
-                        color: MUTED,
+                        color: CREAM,
+                        opacity: 0.7,
                         marginTop: 4,
                       }}
                     >
@@ -414,14 +410,13 @@ const MyProfile = () => {
                     height: 28,
                     padding: "0 12px",
                     borderRadius: 999,
-                    background: "transparent",
+                    background: CREAM,
                     color: INK,
-                    border: `1px solid ${BORDER}`,
+                    border: "none",
                     fontFamily: SANS,
-                    fontWeight: 400,
-                    fontSize: 11,
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
+                    fontWeight: 500,
+                    fontSize: 12,
+                    letterSpacing: "0.02em",
                     cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
@@ -443,10 +438,10 @@ const MyProfile = () => {
             to={id ? `/profile/${id}/followers` : "#"}
             style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
           >
-            <span style={{ fontSize: 10, color: MUTED, fontFamily: SANS, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase" }}>
+            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>
               {(counts?.followers ?? 0) === 1 ? "Follower" : "Followers"}
             </span>
-            <span style={{ fontSize: 20, fontWeight: 400, color: INK, fontFamily: SANS, marginTop: 4 }}>
+            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
               {fmtCount(counts?.followers ?? 0)}
             </span>
           </Link>
@@ -454,8 +449,8 @@ const MyProfile = () => {
             to={id ? `/profile/${id}/following` : "#"}
             style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
           >
-            <span style={{ fontSize: 10, color: MUTED, fontFamily: SANS, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase" }}>Following</span>
-            <span style={{ fontSize: 20, fontWeight: 400, color: INK, fontFamily: SANS, marginTop: 4 }}>
+            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Following</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
               {fmtCount(counts?.following ?? 0)}
             </span>
           </Link>
@@ -463,8 +458,8 @@ const MyProfile = () => {
             to="/saved"
             style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
           >
-            <span style={{ fontSize: 10, color: MUTED, fontFamily: SANS, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase" }}>Saved</span>
-            <span style={{ fontSize: 20, fontWeight: 400, color: INK, fontFamily: SANS, marginTop: 4 }}>
+            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Saved</span>
+            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
               {fmtCount(savedCount ?? 0)}
             </span>
           </Link>
@@ -478,12 +473,11 @@ const MyProfile = () => {
           display: "flex",
           padding: "0 20px",
           gap: 0,
-          borderBottom: `1px solid ${BORDER}`,
+          borderBottom: "1px solid rgba(238,232,218,0.18)",
         }}
       >
         {(["listings", "deals", "events"] as Tab[]).map((t) => {
           const active = tab === t;
-          const label = t.charAt(0).toUpperCase() + t.slice(1);
           return (
             <button
               key={t}
@@ -493,19 +487,29 @@ const MyProfile = () => {
                 flex: 1,
                 background: "none",
                 border: "none",
-                padding: "14px 4px",
+                padding: "14px 0 12px",
                 cursor: "pointer",
                 fontFamily: SANS,
-                fontSize: 12,
-                fontWeight: 400,
-                color: active ? INK : MUTED,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                borderBottom: `2px solid ${active ? RUST : "transparent"}`,
-                marginBottom: -1,
+                fontSize: 16,
+                fontWeight: active ? 700 : 400,
+                color: active ? CREAM : "rgba(238,232,218,0.5)",
+                letterSpacing: "0.02em",
+                position: "relative",
+                textTransform: "capitalize",
               }}
             >
-              {label}
+              {t}
+              <span
+                style={{
+                  position: "absolute",
+                  left: "20%",
+                  right: "20%",
+                  bottom: -1,
+                  height: 2,
+                  background: active ? CREAM : "transparent",
+                  borderRadius: 2,
+                }}
+              />
             </button>
           );
         })}
