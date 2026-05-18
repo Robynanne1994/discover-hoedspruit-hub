@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { format } from "date-fns";
+import { MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
+
+const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface Special {
   id: string;
@@ -32,9 +34,9 @@ const HomeSpecials = () => {
 
   return (
     <section>
-      <HomeSectionHead primary="Specials" serif="This Month" actionLabel="See all" actionHref="/specials" />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
-        <div style={{ display: "flex", gap: 14, paddingRight: 40 }}>
+      <HomeSectionHead primary="Active Specials" actionHref="/specials" />
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
+        <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
           {specials.map((s) => (
             <Link
               key={s.id}
@@ -43,87 +45,58 @@ const HomeSpecials = () => {
               onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: 268,
+                width: 290,
                 flexShrink: 0,
-                background: "#EEE8DA",
-                borderRadius: 24,
-                overflow: "hidden",
+                background: "#ffffff",
+                borderRadius: 16,
+                padding: 10,
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
-                display: "block",
               }}
             >
-              <div style={{ position: "relative", width: "100%", height: 180, background: "#F4EFE3" }}>
+              <div style={{ position: "relative", width: 80, height: 80, borderRadius: 12, overflow: "hidden", background: "#F4EFE3", flexShrink: 0 }}>
                 {s.image_url && (
-                  <img
-                    src={s.image_url}
-                    alt={s.title}
-                    loading="lazy"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                  />
+                  <img src={s.image_url} alt={s.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 )}
                 <div
                   style={{
                     position: "absolute",
-                    top: 12,
-                    left: 12,
-                    background: "#EEE8DA",
-                    borderRadius: 999,
-                    padding: "7px 14px",
-                    maxWidth: "calc(100% - 24px)",
+                    bottom: 6,
+                    left: 6,
+                    background: "#020202",
+                    color: "#ffffff",
+                    fontFamily: HN,
+                    fontSize: 9,
+                    letterSpacing: "0.04em",
+                    padding: "3px 6px",
+                    borderRadius: 6,
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
                   }}
                 >
-                  <span
-                    style={{
-                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontSize: 12,
-                      lineHeight: 1.2,
-                      color: "#2A2A24",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      display: "block",
-                    }}
-                  >
-                    {s.deal_label}
-                  </span>
+                  {s.deal_label}
                 </div>
               </div>
-              <div style={{ padding: "18px 20px 20px" }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
                 <div
                   style={{
-                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 17,
+                    fontFamily: HN,
+                    fontSize: 15,
+                    color: "#020202",
                     lineHeight: 1.25,
-                    letterSpacing: "-0.2px",
-                    color: "#2A2A24",
                     marginBottom: 6,
+                    wordBreak: "break-word",
                   }}
                 >
                   {s.title}
                 </div>
-                <div
-                  style={{
-                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 13,
-                    color: "#6B6A5E",
-                    marginBottom: 4,
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {s.business_name}
+                <div style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
+                  <MapPin size={12} strokeWidth={1.6} />
+                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.business_name}</span>
                 </div>
-                {s.valid_until && (
-                  <div
-                    style={{
-                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                      fontSize: 12,
-                      color: "rgba(107, 106, 94, 0.85)",
-                    }}
-                  >
-                    Valid until {format(new Date(s.valid_until), "d MMM yyyy")}
-                  </div>
-                )}
               </div>
             </Link>
           ))}

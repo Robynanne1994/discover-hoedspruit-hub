@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
-import { Heart } from "lucide-react";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import HomeSectionHead from "./HomeSectionHead";
 import FavouriteButton from "@/components/FavouriteButton";
+
+const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface Props {
   sectionKey: string;
@@ -15,31 +16,18 @@ interface Props {
 
 const cleanName = (s: string) => s.replace(/\s*&\s*/g, " and ");
 
-const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, primary: primaryProp, serif: serifProp }: Props) => {
+const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: Props) => {
   const { data: listings } = useHomepageSection(sectionKey, categorySearch);
   const { data: title } = useHomepageSectionTitle(sectionKey, defaultTitle);
 
   if (!listings || listings.length === 0) return null;
 
-  let primary = primaryProp;
-  let serifWord = serifProp;
-  if (!primary) {
-    const parts = (title || defaultTitle).split(" ");
-    serifWord = parts.length > 2 ? parts[parts.length - 1] : undefined;
-    primary = serifWord ? parts.slice(0, -1).join(" ") : title || defaultTitle;
-  }
-
   return (
     <section>
-      <HomeSectionHead
-        primary={primary}
-        serif={serifWord}
-        actionLabel="See all"
-        actionHref={seeAllHref}
-      />
-      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 24 }}>
-        <div style={{ display: "flex", gap: 14, paddingRight: 40 }}>
-          {listings.slice(0, 6).map((l: any) => (
+      <HomeSectionHead primary={title || defaultTitle} actionHref={seeAllHref} />
+      <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
+        <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
+          {listings.slice(0, 8).map((l: any) => (
             <Link
               key={l.id}
               to={`/listing/${l.id}`}
@@ -47,17 +35,24 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
               onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
               onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
               style={{
-                width: 268,
+                width: 138,
                 flexShrink: 0,
-                background: "#EEE8DA",
-                borderRadius: 24,
-                overflow: "hidden",
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
                 display: "block",
               }}
             >
-              <div style={{ position: "relative", width: "100%", height: 230, background: "#F4EFE3" }}>
+              <div
+                style={{
+                  position: "relative",
+                  width: "100%",
+                  aspectRatio: "1 / 1",
+                  borderRadius: 16,
+                  overflow: "hidden",
+                  background: "#F4EFE3",
+                  marginBottom: 8,
+                }}
+              >
                 {l.image_url && (
                   <img
                     src={l.image_url}
@@ -68,57 +63,29 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref, pr
                 )}
                 <FavouriteButton itemId={l.id} itemType="listing" />
               </div>
-              <div style={{ padding: "18px 20px 22px" }}>
-                <div
-                  style={{
-                    fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 18,
-                    color: "#2A2A24",
-                    lineHeight: 1.2,
-                    letterSpacing: "-0.2px",
-                    marginBottom: 8,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {cleanName(l.title)}
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 13 }}>
-                  {l.google_rating != null && (
-                    <>
-                      <span style={{ color: "#2A2A24" }}>★ {Number(l.google_rating).toFixed(1)}</span>
-                      {l.location && (
-                        <span
-                          style={{
-                            width: 4,
-                            height: 4,
-                            borderRadius: 999,
-                            background: "rgba(107, 106, 94, 0.6)",
-                            display: "inline-block",
-                            flexShrink: 0,
-                          }}
-                        />
-                      )}
-                    </>
-                  )}
-                  {l.location && (
-                    <span
-                      style={{
-                        color: "#6B6A5E",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        flex: 1,
-                        minWidth: 0,
-                      }}
-                    >
-                      {l.location}
-                    </span>
-                  )}
-                </div>
+              <div
+                style={{
+                  fontFamily: HN,
+                  fontSize: 13,
+                  color: "#020202",
+                  lineHeight: 1.2,
+                  marginBottom: 2,
+                  wordBreak: "break-word",
+                }}
+              >
+                {cleanName(l.title)}
               </div>
+              {(l.subtitle || l.category_label) && (
+                <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E", marginBottom: 3 }}>
+                  {l.subtitle || l.category_label}
+                </div>
+              )}
+              {l.google_rating != null && (
+                <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E" }}>
+                  ★ {Number(l.google_rating).toFixed(1)}
+                  {l.google_rating_count ? ` · ${l.google_rating_count}` : ""}
+                </div>
+              )}
             </Link>
           ))}
         </div>
