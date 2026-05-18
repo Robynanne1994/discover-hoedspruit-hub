@@ -71,6 +71,15 @@ function formatPrice(p: string | number | null | undefined): string {
   if (p === null || p === undefined) return "Free";
   const s = String(p).trim();
   if (!s || /^(free|0|r0)$/i.test(s)) return "Free";
+  // Detect a price range like "100 - 250", "R100-R250", "100 to 250" → "From R<lowest>"
+  const nums = s.match(/\d+(?:[.,]\d+)?/g);
+  const hasRange = /[-–—]|\bto\b/i.test(s);
+  if (hasRange && nums && nums.length >= 2) {
+    const values = nums.map((n) => parseFloat(n.replace(",", ".")));
+    const lowest = Math.min(...values);
+    const display = Number.isInteger(lowest) ? String(lowest) : String(lowest);
+    return `From R${display}`;
+  }
   if (/^\d/.test(s)) return `R${s}`;
   return s;
 }
@@ -81,11 +90,13 @@ const WeekStrip = ({
   selectedDate,
   onSelect,
   onShift,
+  onClear,
 }: {
   anchor: Date;
   selectedDate: Date | null;
   onSelect: (d: Date) => void;
   onShift: (days: number) => void;
+  onClear: () => void;
 }) => {
   const weekStart = startOfWeek(anchor, { weekStartsOn: 1 });
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
@@ -169,6 +180,25 @@ const WeekStrip = ({
             </button>
           );
         })}
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+        <button
+          onClick={onClear}
+          style={{
+            background: "transparent",
+            border: "none",
+            padding: "4px 0",
+            cursor: "pointer",
+            fontFamily: SANS,
+            fontSize: 12,
+            fontWeight: 700,
+            color: C.muted,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}
+        >
+          Clear
+        </button>
       </div>
     </div>
   );
@@ -523,6 +553,11 @@ const Events = () => {
           selectedDate={selectedDate}
           onSelect={handleSelectDate}
           onShift={(days) => setWeekAnchor((a) => addDays(a, days))}
+          onClear={() => {
+            setSelectedDate(null);
+            setActiveFilter("all");
+            setWeekAnchor(startOfToday());
+          }}
         />
       </div>
 
