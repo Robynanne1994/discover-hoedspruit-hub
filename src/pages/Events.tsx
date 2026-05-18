@@ -272,15 +272,13 @@ const EventCard = ({ event }: { event: any }) => {
           style={{
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 15,
-            lineHeight: 1.2,
+            fontSize: 13.5,
+            lineHeight: 1.25,
             color: C.ink,
             margin: 0,
             marginBottom: 6,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
+            wordBreak: "break-word",
+            overflowWrap: "anywhere",
           }}
         >
           {event.title}
