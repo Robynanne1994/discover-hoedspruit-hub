@@ -93,9 +93,9 @@ const HomeSpecials = () => {
                 >
                   {s.title}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
-                  <MapPin size={12} strokeWidth={1.6} />
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.business_name}</span>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
+                  <MapPin size={12} strokeWidth={1.6} style={{ marginTop: 2, flexShrink: 0 }} />
+                  <span style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}>{s.business_name}</span>
                 </div>
               </div>
             </Link>
