@@ -1,49 +1,48 @@
-## Category Listing Page Redesign
+## Redesign: My Notifications page
 
-Redesign `src/pages/CategoryPage.tsx` to match the attached screenshot. All current logic (data fetching, subcategory filter, search, refine drawer, favourites, open-now calc) stays unchanged — only the presentation layer is rewritten.
+Update `src/pages/MyNotifications.tsx` only. Keep all existing logic (data fetch, realtime, mark-as-read after 1.5s, initial-unread highlighting, navigation links). Only the visual layer changes.
 
-### Page chrome
+### Colors & type
+- Page background: `#E6E0CC` (matches Events / Category pages)
+- Card background: `#FFFFFF`, border-radius 16px, no shadow, 1px hairline border `rgba(0,0,0,0.06)`
+- Ink `#020202`, muted `#6B6A5E`
+- Helvetica Neue weight 400 throughout (per project core rules); titles weight 700
+- 20px horizontal page padding, 100px bottom padding
 
-- Background: `#E6E0CC` (replace `C.olive` page background).
-- Top bar:
-  - Centered title block: bold title `Restaurants & Cafes` on top, small uppercase eyebrow `24 PLACES` underneath (uses existing `totalCount`).
-  - Left: circular back button (white/ivory bg, dark arrow).
-  - Right: circular search button (white/ivory bg, dark icon) that opens the existing search input (toggle an inline search field or reuse the SearchDialog).
-- Remove the standalone search bar that currently sits below the header (replaced by the search-icon toggle). Keep the text-search state and filtering logic.
+### Top bar
+- Background `#E6E0CC`, no bottom border
+- Center: title "Notifications" (bold, ~20px) with eyebrow line below showing `{n} UNREAD` in 11px tracked uppercase muted (hidden when 0)
+- Left: circular 40px white button containing `BackArrowIcon` → `navigate(-1)`
+- Right: circular 40px white button containing a "double-check" mark icon (`CheckCheck` from lucide-react) → marks all unread as read immediately (calls supabase update on currently-unread ids, then `load()`). Tooltip/aria "Mark all as read". Disabled/dim when no unread.
+- The existing Settings gear moves out of the top bar (kept accessible via Notification Preferences elsewhere; not shown on this page per the mockup).
 
-### Filter pills row
+### Sections
+Replace current "New / Earlier" grouping with date buckets derived from `created_at`:
+- **Today** — same calendar day
+- **Yesterday** — previous calendar day
+- **This Week** — within last 7 days, excluding above
+- **Earlier** — everything older
+Section header: 15px bold ink, 20px left padding, 18px top / 10px bottom, plain on page bg (no uppercase, matches mockup).
 
-A horizontally scrollable row directly under the header:
-- `⇄ FILTERS` pill — dark `#2A2A24` bg, ivory text, opens existing Refine drawer. Shows count badge when `activeFilterCount > 0`.
-- `OPEN NOW` pill — white bg, dark text; toggles existing `filterOpenNow`.
-- `TOP RATED` pill — white bg; toggles sort to `rating` (and back to `default`).
-- Additional quick pills if useful: `SAVED` (toggles `filterSaved`).
-- Active state for non-FILTERS pills: dark fill matching FILTERS.
+### Notification card
+- White rounded card, padding 16px, 12px vertical gap between cards
+- Left: 44px rounded-square tinted icon tile
+  - Tint by `kind`: deal/special → soft pink `#F8D7DE` with `#C0392B` icon; event → soft grey `#E8E6DF` with ink icon; security/alert → soft green `#D6EBDB` with `#2E7D4F` icon; welcome/profile → soft tan `#E8DCC8` with `#8B6F4B` icon; default → soft grey
+  - Use existing `iconFor()` mapping for the glyph
+- Middle: title (15px bold ink, 1-line wrap ok), body (13.5px, line-height 1.45, muted-ink `#3A332B`, 2-line clamp), then small uppercase timestamp `2H AGO / 5H AGO / 1D AGO / 3D AGO` in 11px tracked muted
+- Right: small unread dot (8px, `#2A2A24`) top-right when card is in the initial-unread set; nothing when read
+- Whole card clickable when `n.link` is set
 
-The current "X listings" count line and divider are removed (count now lives in the eyebrow).
+### Timestamp helper
+Add a `relativeShort(iso)` formatter: `<60m → "{n}M AGO"`, `<24h → "{n}H AGO"`, `<7d → "{n}D AGO"`, else `"{n}W AGO"` or date.
 
-### Listing cards
+### Empty state
+Keep current empty state copy, restyled on `#E6E0CC` with ink heading and muted body, icon in muted ink.
 
-White cards (`#FFFFFF`), 20–24px radius, ~16px vertical gap, no shadow (or a very soft one):
+### Preserved logic
+- `useAuth`, supabase fetch + realtime subscription
+- `initialUnreadRef` keeps the dot visible for the session
+- Auto mark-as-read after 1.5s remains
+- Click navigates to `n.link` when present
 
-- Image area: full-width, ~200px tall, image fills with `object-cover`.
-  - Top-left chip: rounded pill with ivory translucent bg, `☆ 4.8 (312)` — star icon + rating + reviews count in parentheses. Hide when no rating.
-  - Top-right: heart button (existing `CardHeart`), restyled to match (white translucent circle, dark outline heart, rust fill when saved).
-- Body padding ~20px:
-  - Row 1: Bold title (left, large sans-serif, `#020202`) and right-aligned status badge:
-    - `OPEN` — pill with green border + green text, transparent bg.
-    - `CLOSED` — pill with red border + red text.
-    - Hidden when no opening hours.
-  - Row 2: Subtitle `Category • Subcategory` (e.g. `Restaurant • African`) — small muted text. Built from category title + first listing subcategory if available; falls back to existing `category_label`/`subtitle`.
-  - Row 3: Location row with map-pin icon: `Location • X km` (distance only shown if we already have it — otherwise just location). Muted text.
-  - Description paragraph removed to match screenshot.
-
-### Empty / loading states
-
-Keep existing logic; restyle text colour to dark ink (`#2A2A24` / muted) for the new light background, and the "Clear filters" button to dark pill.
-
-### Technical notes
-
-- File touched: `src/pages/CategoryPage.tsx` only (plus possibly a small subcategory lookup query if we want `Restaurant • African`-style subtitle; otherwise fall back to existing fields).
-- Refine drawer styling, share/favourite hooks, routing, and data queries are untouched.
-- Colors used as inline constants matching current pattern: `page #E6E0CC`, `card #FFFFFF`, `ink #020202`, `muted #6B6A5E`, `pillDark #2A2A24`, `open #2E7D4F`, `closed #C0392B`.
+No other files touched.
