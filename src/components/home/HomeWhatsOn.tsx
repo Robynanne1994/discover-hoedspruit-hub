@@ -123,27 +123,11 @@ const HomeWhatsOn = () => {
                       fontSize: 17,
                       color: "#ffffff",
                       lineHeight: 1.2,
-                      marginBottom: 10,
                       wordBreak: "break-word",
                     }}
                   >
                     {e.title}
                   </div>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      padding: "7px 14px",
-                      borderRadius: 999,
-                      background: "rgba(0,0,0,0.55)",
-                      color: "#ffffff",
-                      fontFamily: HN,
-                      fontSize: 11,
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                    }}
-                  >
-                    Details
-                  </span>
                 </div>
               </Link>
             );
