@@ -458,7 +458,6 @@ const Categories = () => {
                           background: "#ffffff",
                           borderRadius: 16,
                           overflow: "hidden",
-                          padding: 10,
                           textDecoration: "none",
                           transition: "transform 150ms ease-out",
                         }}
@@ -466,7 +465,7 @@ const Categories = () => {
                         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                       >
-                        <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#e6e0d2", overflow: "hidden", borderRadius: 12 }}>
+                        <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#e6e0d2", overflow: "hidden" }}>
                           {cat.image_url && (
                             <img
                               src={cat.image_url}
