@@ -46,16 +46,17 @@ function SubTabs<T extends string>({
             type="button"
             onClick={() => onChange(opt.id)}
             style={{
-              background: active ? CREAM : "transparent",
-              color: active ? INK : CREAM,
-              border: `1px solid ${active ? CREAM : "rgba(238,232,218,0.4)"}`,
+              background: active ? RUST : "transparent",
+              color: active ? "#ffffff" : MUTED,
+              border: `1px solid ${active ? RUST : BORDER}`,
               borderRadius: 999,
               padding: "6px 14px",
               cursor: "pointer",
               fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: active ? 600 : 400,
-              letterSpacing: "0.02em",
+              fontSize: 11,
+              fontWeight: 400,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
             }}
           >
             {opt.label}
@@ -261,7 +262,7 @@ const MyProfile = () => {
         >
           {titleCase(it.title)}
         </div>
-        <div style={{ fontFamily: SANS, fontSize: 12, color: MUTED, letterSpacing: "0.01em" }}>
+        <div style={{ fontFamily: SANS, fontSize: 12, color: MUTED, letterSpacing: "0.01em", fontWeight: 400 }}>
           {subtitle}
         </div>
       </div>
@@ -275,8 +276,8 @@ const MyProfile = () => {
         textAlign: "center",
         fontFamily: SANS,
         fontSize: 14,
-        color: CREAM,
-        opacity: 0.7,
+        fontWeight: 400,
+        color: MUTED,
         letterSpacing: "0.01em",
       }}
     >
@@ -291,7 +292,7 @@ const MyProfile = () => {
         background: PAGE_BG,
         paddingBottom: 100,
         fontFamily: SANS,
-        color: CREAM,
+        color: TEXT,
       }}
     >
       {/* Top header bar */}
@@ -308,10 +309,11 @@ const MyProfile = () => {
           style={{
             margin: 0,
             fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 20,
-            letterSpacing: "0.01em",
-            color: CREAM,
+            fontWeight: 400,
+            fontSize: 12,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: INK,
             justifySelf: "center",
           }}
         >
@@ -335,7 +337,7 @@ const MyProfile = () => {
         </Link>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+      <div style={{ height: 1, background: BORDER, marginTop: 20 }} />
 
       {/* Profile section — avatar + name + stats */}
       <div style={{ padding: "20px 24px 0" }}>
@@ -368,7 +370,7 @@ const MyProfile = () => {
 
           <div style={{ flex: 1, minWidth: 0 }}>
             {isLoading ? (
-              <Skeleton className="h-7 w-40 bg-white/10" />
+              <Skeleton className="h-7 w-40" />
             ) : (
               <>
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -376,11 +378,11 @@ const MyProfile = () => {
                   <h2
                     style={{
                       fontFamily: SANS,
-                      fontWeight: 700,
-                      fontSize: 24,
-                      lineHeight: 1.15,
-                      letterSpacing: "-0.4px",
-                      color: CREAM,
+                      fontWeight: 400,
+                      fontSize: 22,
+                      lineHeight: 1.2,
+                      letterSpacing: "0.01em",
+                      color: INK,
                       margin: 0,
                       minWidth: 0,
                       overflow: "hidden",
@@ -396,8 +398,7 @@ const MyProfile = () => {
                         fontFamily: SANS,
                         fontWeight: 400,
                         fontSize: 13,
-                        color: CREAM,
-                        opacity: 0.7,
+                        color: MUTED,
                         marginTop: 4,
                       }}
                     >
@@ -413,13 +414,14 @@ const MyProfile = () => {
                     height: 28,
                     padding: "0 12px",
                     borderRadius: 999,
-                    background: CREAM,
+                    background: "transparent",
                     color: INK,
-                    border: "none",
+                    border: `1px solid ${BORDER}`,
                     fontFamily: SANS,
-                    fontWeight: 500,
-                    fontSize: 12,
-                    letterSpacing: "0.02em",
+                    fontWeight: 400,
+                    fontSize: 11,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
                     cursor: "pointer",
                     display: "inline-flex",
                     alignItems: "center",
