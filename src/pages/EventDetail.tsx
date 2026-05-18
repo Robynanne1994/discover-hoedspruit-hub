@@ -94,6 +94,36 @@ const buildIcs = (e: any): string | null => {
   ].filter(Boolean).join("\r\n");
 };
 
+// Build Google Calendar event-create URL. Works on web + mobile (opens
+// Google Calendar app on Android, Google Calendar in browser elsewhere),
+// which adds the event to the user's own calendar instead of downloading a file.
+const buildGoogleCalUrl = (e: any): string | null => {
+  const startDateStr = e.start_date || e.date;
+  if (!startDateStr) return null;
+  const startTime = (e.start_time || "00:00").slice(0, 5);
+  const start = new Date(`${startDateStr}T${startTime}:00`);
+  if (isNaN(start.getTime())) return null;
+  const endDateStr = e.end_date || startDateStr;
+  const endTime = (e.end_time || "").slice(0, 5);
+  let end: Date;
+  if (endTime) {
+    end = new Date(`${endDateStr}T${endTime}:00`);
+    if (isNaN(end.getTime())) end = new Date(start.getTime() + 60 * 60 * 1000);
+  } else {
+    end = new Date(start.getTime() + 60 * 60 * 1000);
+  }
+  const fmt = (d: Date) =>
+    `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: e.title || "",
+    dates: `${fmt(start)}/${fmt(end)}`,
+  });
+  if (e.description) params.set("details", String(e.description).replace(/<[^>]*>/g, ""));
+  if (e.location) params.set("location", String(e.location).replace(/<[^>]*>/g, ""));
+  return `https://www.google.com/calendar/render?${params.toString()}`;
+};
+
 const downloadIcs = (e: any) => {
   const ics = buildIcs(e);
   if (!ics) { toast.error("This event has no start date."); return; }
@@ -106,6 +136,19 @@ const downloadIcs = (e: any) => {
   a.click();
   document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+const addToCalendar = (e: any) => {
+  const ua = navigator.userAgent || "";
+  const isAppleMobile = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document);
+  // Apple devices open .ics natively into the Calendar app; everyone else gets Google Calendar.
+  if (isAppleMobile) {
+    downloadIcs(e);
+    return;
+  }
+  const url = buildGoogleCalUrl(e);
+  if (!url) { toast.error("This event has no start date."); return; }
+  window.open(url, "_blank", "noopener,noreferrer");
 };
 
 const EventDetail = () => {
