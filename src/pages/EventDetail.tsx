@@ -322,7 +322,7 @@ const EventDetail = () => {
     },
     canAddToCal && {
       key: "calendar", label: "Add to Calendar",
-      onClick: () => downloadIcs(e), Icon: CalendarPlus,
+      onClick: () => addToCalendar(e), Icon: CalendarPlus,
     },
   ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean }>;
 
