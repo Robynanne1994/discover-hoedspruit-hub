@@ -261,7 +261,7 @@ const Specials = () => {
       {/* Category tabs */}
       <div
         style={{
-          marginTop: 18,
+          marginTop: 0,
           paddingLeft: 20,
           paddingRight: 20,
           overflowX: "auto",
