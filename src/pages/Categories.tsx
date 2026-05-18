@@ -445,23 +445,20 @@ const Categories = () => {
                 title="Everything Else"
                 counter={`${gridCategories.length} Categories`}
               />
-              <div style={{ padding: "0 24px" }}>
-                <div style={{ columnCount: 2, columnGap: 14 }}>
-                  {gridCategories.map((cat, idx) => {
+              <div style={{ padding: "0 20px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                  {gridCategories.map((cat) => {
                     const count = listingCounts?.[cat.id] || 0;
-                    const aspect = CARD_ASPECTS[cat.title] || FALLBACK_ASPECTS[idx % FALLBACK_ASPECTS.length];
                     return (
                       <Link
                         key={cat.id}
                         to={`/category/${cat.id}`}
                         style={{
-                          display: "inline-block",
-                          width: "100%",
-                          background: COLORS.cream,
-                          borderRadius: 20,
+                          display: "block",
+                          background: "#ffffff",
+                          borderRadius: 16,
                           overflow: "hidden",
-                          marginBottom: 14,
-                          breakInside: "avoid",
+                          padding: 10,
                           textDecoration: "none",
                           transition: "transform 150ms ease-out",
                         }}
@@ -469,7 +466,7 @@ const Categories = () => {
                         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                       >
-                        <div style={{ position: "relative", width: "100%", aspectRatio: aspect, background: "#e6e0d2", overflow: "hidden" }}>
+                        <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#e6e0d2", overflow: "hidden", borderRadius: 12 }}>
                           {cat.image_url && (
                             <img
                               src={cat.image_url}
@@ -480,31 +477,31 @@ const Categories = () => {
                           <div
                             style={{
                               position: "absolute",
-                              top: 10,
-                              right: 10,
-                              width: 32,
-                              height: 32,
+                              top: 8,
+                              right: 8,
+                              width: 30,
+                              height: 30,
                               borderRadius: 999,
-                              background: COLORS.cream,
+                              background: "#ffffff",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
+                              boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
                             }}
                           >
                             <ArrowOut size={14} />
                           </div>
                         </div>
-                        <div style={{ paddingTop: 16, paddingLeft: 18, paddingRight: 18, paddingBottom: 18 }}>
+                        <div style={{ paddingTop: 12, paddingBottom: 8, textAlign: "center" }}>
                           <p
                             style={{
                               fontFamily: FONT_BODY,
-                              fontSize: 18,
-                              fontWeight: 400,
-                              lineHeight: 1.15,
-                              letterSpacing: "-0.2px",
+                              fontSize: 15,
+                              fontWeight: 700,
+                              lineHeight: 1.2,
                               color: COLORS.ink,
                               margin: 0,
-                              marginBottom: 6,
+                              marginBottom: 4,
                             }}
                           >
                             {cat.title}
@@ -512,13 +509,13 @@ const Categories = () => {
                           <p
                             style={{
                               fontFamily: FONT_BODY,
-                              fontSize: 12.5,
+                              fontSize: 13,
                               fontWeight: 400,
-                              color: COLORS.muted,
+                              color: "#9a9a92",
                               margin: 0,
                             }}
                           >
-                            {formatCount(count)}
+                            ({formatCount(count)})
                           </p>
                         </div>
                       </Link>
