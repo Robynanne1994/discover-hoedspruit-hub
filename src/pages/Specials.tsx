@@ -121,8 +121,22 @@ const Specials = () => {
         return cats.map((c) => c.toLowerCase()).includes(t);
       });
     }
+    if (filterType.length > 0) {
+      const lc = filterType.map((t) => t.toLowerCase());
+      result = result.filter((s: any) => {
+        const cats: string[] = [];
+        if (s.category) cats.push(String(s.category));
+        if (Array.isArray(s.eyebrow_categories)) cats.push(...s.eyebrow_categories.map((c: any) => String(c)));
+        const lcCats = cats.map((c) => c.toLowerCase());
+        return lc.some((t) => lcCats.includes(t));
+      });
+    }
     return result;
-  }, [specials, activeTab, search]);
+  }, [specials, activeTab, filterType, search]);
+
+  const toggleFilter = (val: string) => {
+    setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
+  };
 
   return (
     <div
