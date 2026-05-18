@@ -84,12 +84,21 @@ const HomeWhatsOn = () => {
           .slice(0, 4);
       }
 
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayIso = today.toISOString().slice(0, 10);
       const { data } = await supabase
         .from("events")
         .select("id, title, location, date, start_date, end_date, image_url")
-        .order("date", { ascending: true })
+        .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
+        .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
       return (data || [])
+        .filter((e) => {
+          const { start, end } = getEventDates(e);
+          const effectiveEnd = end ?? start;
+          return effectiveEnd ? effectiveEnd >= today : true;
+        })
         .map((e) => ({ ...e, parsed: parseEventDate(e) }))
         .slice(0, 4);
     },
