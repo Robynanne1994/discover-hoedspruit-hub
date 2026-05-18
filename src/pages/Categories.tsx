@@ -491,7 +491,7 @@ const Categories = () => {
                             <ArrowOut size={14} />
                           </div>
                         </div>
-                        <div style={{ paddingTop: 12, paddingBottom: 8, paddingLeft: 12, paddingRight: 12, textAlign: "left" }}>
+                        <div style={{ paddingTop: 12, paddingBottom: 8, textAlign: "center" }}>
                           <p
                             style={{
                               fontFamily: FONT_BODY,
