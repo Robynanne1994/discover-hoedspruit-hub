@@ -292,8 +292,8 @@ const AdminBushTelegraph = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold">Local Channels</h1>
-          <p className="text-muted-foreground text-sm">Manage off-app resources (Facebook, WhatsApp, Instagram, Websites, Radio).</p>
+          <h1 className="text-2xl font-bold text-white">Local Channels</h1>
+          <p className="text-white/70 text-sm">Manage off-app resources (Facebook, WhatsApp, Instagram, Websites, Radio).</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={downloadExport} className="gap-2">
@@ -309,7 +309,7 @@ const AdminBushTelegraph = () => {
       </div>
 
       {/* CSV Import */}
-      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-4">
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-6 space-y-4 text-black [&_*]:!text-black [&_.text-destructive]:!text-destructive [&_.text-green-600]:!text-green-600 [&_.text-blue-600]:!text-blue-600">
         <h2 className="font-semibold">CSV Import / Export</h2>
         <div
           className="border-2 border-dashed border-border rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors"
@@ -366,7 +366,7 @@ const AdminBushTelegraph = () => {
       </div>
 
       {/* Resources list */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden">
+      <div className="bg-card border border-border rounded-xl overflow-hidden text-black [&_*]:!text-black">
         {isLoading ? (
           <div className="p-8 text-center text-muted-foreground">Loading...</div>
         ) : resources.length === 0 ? (
