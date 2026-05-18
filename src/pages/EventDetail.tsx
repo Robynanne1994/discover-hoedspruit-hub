@@ -371,8 +371,8 @@ const EventDetail = () => {
   }
   if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
   if (notes) detailRows.push({ Icon: StickyNote, label: "Notes", value: <span style={{ whiteSpace: "pre-line" }}>{notes}</span> });
-  if (contactPhone) detailRows.push({ Icon: Phone, label: "Phone", value: contactPhone, href: `tel:${contactPhone.replace(/\s/g, "")}` });
-  if (waClean) detailRows.push({ Icon: Phone, label: "WhatsApp", value: contactWhatsapp, href: `https://wa.me/${waClean}`, external: true });
+  if (contactPhone) detailRows.push({ Icon: Phone, label: "Phone", value: formatSAPhone(contactPhone), href: `tel:${contactPhone.replace(/\s/g, "")}` });
+  if (waClean) detailRows.push({ Icon: Phone, label: "WhatsApp", value: formatSAPhone(contactWhatsapp), href: `https://wa.me/${waClean}`, external: true });
   if (contactEmail) detailRows.push({ Icon: Mail, label: "Email", value: contactEmail, href: `mailto:${contactEmail}`, external: true });
 
   const renderDetails = () => (

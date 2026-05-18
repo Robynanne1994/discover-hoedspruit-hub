@@ -588,8 +588,8 @@ const ListingDetail = () => {
           <h2 style={headStyle}>Contact</h2>
           <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
             {[
-              listing.phone && { label: "Phone", value: listing.phone, href: `tel:${listing.phone}`, Icon: Phone },
-              waClean && { label: "WhatsApp", value: whatsappNum!, href: `https://wa.me/${waClean}`, Icon: Phone },
+              listing.phone && { label: "Phone", value: formatSAPhone(listing.phone), href: `tel:${listing.phone}`, Icon: Phone },
+              waClean && { label: "WhatsApp", value: formatSAPhone(whatsappNum!), href: `https://wa.me/${waClean}`, Icon: Phone },
               listing.email && { label: "Email", value: listing.email, href: `mailto:${listing.email}`, Icon: Mail },
               listing.website && { label: "Website", value: listing.website, href: listing.website, Icon: Globe },
             ].filter(Boolean).map((r: any, i, arr) => (

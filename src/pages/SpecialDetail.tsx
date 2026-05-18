@@ -410,8 +410,8 @@ const SpecialDetail = () => {
 
   const renderContact = () => {
     const rows: { Icon: any; label: string; value: string; href: string; external?: boolean }[] = [];
-    if (phoneClean) rows.push({ Icon: Phone, label: "Phone", value: special.contact_phone!, href: `tel:${phoneClean}` });
-    if (waClean) rows.push({ Icon: Phone, label: "WhatsApp", value: special.contact_whatsapp!, href: `https://wa.me/${waClean}`, external: true });
+    if (phoneClean) rows.push({ Icon: Phone, label: "Phone", value: formatSAPhone(special.contact_phone!), href: `tel:${phoneClean}` });
+    if (waClean) rows.push({ Icon: Phone, label: "WhatsApp", value: formatSAPhone(special.contact_whatsapp!), href: `https://wa.me/${waClean}`, external: true });
     if (special.booking_link) rows.push({
       Icon: ExternalLink, label: "Booking",
       value: sp.booking_link_label?.trim() || special.booking_link,
