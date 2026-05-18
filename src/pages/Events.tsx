@@ -32,14 +32,29 @@ const C = {
   tag: "#e8e1d4",
 };
 
-type FilterType = "all" | "today" | "this-week" | "this-month";
+type FilterType = "all" | "today" | "this-week" | "this-weekend" | "this-month" | "this-year" | "past";
 
 const FILTERS: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
+  { label: "This Weekend", value: "this-weekend" },
   { label: "This Month", value: "this-month" },
+  { label: "This Year", value: "this-year" },
+  { label: "Past", value: "past" },
 ];
+
+// Weekend = Saturday + Sunday of the current ISO week (Mon-start).
+// If today is Sat/Sun, weekend starts today; otherwise the upcoming Sat.
+function getWeekendRange(today: Date): { start: Date; end: Date } {
+  const day = today.getDay(); // 0 Sun .. 6 Sat
+  let start: Date;
+  if (day === 6) start = today; // Saturday
+  else if (day === 0) start = addDays(today, -1); // Sunday → Sat
+  else start = addDays(today, 6 - day); // upcoming Saturday
+  const end = addDays(start, 1); // Sunday
+  return { start, end };
+}
 
 const WEEKDAY_LABELS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
