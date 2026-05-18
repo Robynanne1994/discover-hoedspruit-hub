@@ -2,46 +2,31 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SlidersHorizontal, Calendar, Heart, Search } from "lucide-react";
-import { RefineDrawer, RefineSection, RefineOption, RefineChip } from "@/components/RefineDrawer";
+import { Search, X } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
-const SERIF = "'Playfair Display', Georgia, serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const COLOR = {
-  olive: "#5C6446",
-  cream: "#EEE8DA",
-  softCream: "#F4EFE3",
-  ink: "#2A2A24",
-  mutedInk: "#6B6A5E",
-  line: "#D9D2C0",
+  pageBg: "#ebebeb",
+  ink: "#020202",
+  mutedInk: "rgba(2,2,2,0.55)",
+  cardBg: "#5C6446",
+  cardFg: "#EEE8DA",
+  cardMuted: "rgba(238,232,218,0.75)",
+  divider: "rgba(2,2,2,0.12)",
 };
 
-// Category filter options are derived dynamically from active specials
-
-type SortKey = "default" | "ending" | "newest" | "best";
-
-const SORT_LABELS: Record<SortKey, string> = {
-  default: "Default",
-  ending: "Ending Soon",
-  newest: "Newest",
-  best: "Best Value",
+const formatValidTill = (s: any): string => {
+  if (s.valid_until) return `VALID TILL ${format(new Date(s.valid_until), "d MMM").toUpperCase()}`;
+  if (s.day_of_week && s.day_of_week.length > 0) return s.day_of_week.join(", ").toUpperCase();
+  return "ONGOING";
 };
 
-const formatValidity = (s: any): string => {
-  if (s.valid_from && s.valid_until) {
-    return `Valid ${format(new Date(s.valid_from), "d MMM")} to ${format(new Date(s.valid_until), "d MMM yyyy")}`;
-  }
-  if (s.valid_until) return `Valid until ${format(new Date(s.valid_until), "d MMM yyyy")}`;
-  if (s.day_of_week && s.day_of_week.length > 0) return `${s.day_of_week.join(", ")}`;
-  return "Ongoing";
-};
-
-const SaveHeart = ({ id }: { id: string }) => {
+const useSaved = (id: string) => {
   const { user } = useAuth();
   const qc = useQueryClient();
   const { data: saved } = useQuery({
@@ -73,59 +58,19 @@ const SaveHeart = ({ id }: { id: string }) => {
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["favourite", "special", id] }),
   });
-  return (
-    <button
-      onClick={(e) => {
-        e.stopPropagation();
-        e.preventDefault();
-        toggle.mutate();
-      }}
-      aria-label={saved ? "Unsave" : "Save"}
-      style={{
-        position: "absolute",
-        top: 12,
-        right: 12,
-        width: 36,
-        height: 36,
-        borderRadius: "50%",
-        background: "rgba(238, 232, 218, 0.4)",
-        backdropFilter: "blur(10px)",
-        WebkitBackdropFilter: "blur(10px)",
-        border: "none",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-      }}
-    >
-      <Heart
-        size={16}
-        strokeWidth={2}
-        color={COLOR.cream}
-        fill={saved ? COLOR.cream : "none"}
-      />
-    </button>
-  );
+  return { saved, toggle };
 };
 
 const Specials = () => {
   const navigate = useNavigate();
-  const [showFilters, setShowFilters] = useState(false);
-  const [showSortMenu, setShowSortMenu] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>("default");
-  const [filterType, setFilterType] = useState<string[]>([]);
   const [search, setSearch] = useState("");
-  const [openSection, setOpenSection] = useState<"sort" | "category" | null>("sort");
-  const sortRef = useRef<HTMLDivElement>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("All");
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (!showSortMenu) return;
-    const handler = (e: MouseEvent) => {
-      if (sortRef.current && !sortRef.current.contains(e.target as Node)) setShowSortMenu(false);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [showSortMenu]);
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
 
   const { data: specials, isLoading } = useQuery({
     queryKey: ["all-specials"],
@@ -141,18 +86,16 @@ const Specials = () => {
     },
   });
 
-  const categoryOptions = useMemo(() => {
-    if (!specials) return [];
+  const categoryTabs = useMemo(() => {
+    if (!specials) return ["All"];
     const set = new Set<string>();
     for (const s of specials as any[]) {
       if (s.category && typeof s.category === "string") set.add(s.category.trim());
       if (Array.isArray(s.eyebrow_categories)) {
-        for (const c of s.eyebrow_categories) {
-          if (c && typeof c === "string") set.add(c.trim());
-        }
+        for (const c of s.eyebrow_categories) if (c && typeof c === "string") set.add(c.trim());
       }
     }
-    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
+    return ["All", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
   }, [specials]);
 
   const filteredSpecials = useMemo(() => {
@@ -166,349 +109,287 @@ const Specials = () => {
         (s.description && s.description.toLowerCase().includes(q))
       );
     }
-    if (filterType.length > 0) {
-      const lcSelected = filterType.map((t) => t.toLowerCase());
+    if (activeTab !== "All") {
+      const t = activeTab.toLowerCase();
       result = result.filter((s: any) => {
         const cats: string[] = [];
         if (s.category) cats.push(String(s.category));
         if (Array.isArray(s.eyebrow_categories)) cats.push(...s.eyebrow_categories.map((c: any) => String(c)));
-        const lc = cats.map((c) => c.toLowerCase());
-        return lcSelected.some((t) => lc.includes(t));
+        return cats.map((c) => c.toLowerCase()).includes(t);
       });
     }
-    if (sortBy === "ending") {
-      const now = Date.now();
-      const withDate = result.filter((s) => s.valid_until && new Date(s.valid_until).getTime() >= now);
-      const without = result.filter((s) => !s.valid_until || new Date(s.valid_until).getTime() < now);
-      withDate.sort((a, b) => new Date(a.valid_until!).getTime() - new Date(b.valid_until!).getTime());
-      return [...withDate, ...without];
-    }
-    if (sortBy === "newest") {
-      result.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-    }
     return result;
-  }, [specials, filterType, sortBy, search]);
-
-  const totalCount = specials?.length || 0;
-  const subline = totalCount > 0
-    ? `${totalCount} active deals, refreshed daily.`
-    : "Refreshed daily.";
-
-  const toggleFilter = (val: string) => {
-    setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
-  };
-
-  const iconBtn: React.CSSProperties = {
-    width: 44,
-    height: 44,
-    borderRadius: "50%",
-    background: COLOR.cream,
-    border: "none",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
-  };
+  }, [specials, activeTab, search]);
 
   return (
     <div
       style={{
         minHeight: "100vh",
         paddingBottom: 120,
-        background: COLOR.olive,
+        background: COLOR.pageBg,
         fontFamily: SANS,
-        color: COLOR.cream,
+        color: COLOR.ink,
       }}
     >
-      {/* Top bar */}
+      {/* Header */}
       <div
         style={{
-          paddingTop: 60,
-          paddingLeft: 24,
-          paddingRight: 24,
+          paddingTop: 56,
+          paddingLeft: 20,
+          paddingRight: 20,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            fontFamily: SANS,
-            fontSize: 20,
-            fontWeight: 600,
-            color: COLOR.cream,
-          }}
-        >
-          Specials
-        </div>
-      </div>
-
-      {/* Search */}
-      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
-        <div
-          style={{
-            height: 44,
-            background: "rgba(238, 232, 218, 0.92)",
-            borderRadius: 999,
-            padding: "0 20px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <Search size={18} strokeWidth={1.6} color={COLOR.ink} style={{ flexShrink: 0 }} />
-          <input
-            type="text"
-            placeholder="Search any local deals"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="placeholder:text-[#2b2420]/80"
-            style={{
-              flex: 1,
-              background: "transparent",
-              outline: "none",
-              border: "none",
-              fontFamily: SANS,
-              fontSize: 14,
-              color: COLOR.ink,
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Results count + filter */}
-      <div
-        style={{
-          padding: "12px 24px 6px 24px",
-          display: "flex",
-          alignItems: "flex-end",
           justifyContent: "space-between",
         }}
       >
-        <span
+        <h1
           style={{
             fontFamily: SANS,
-            fontSize: 15,
-            color: "rgba(238,232,218,0.85)",
+            fontSize: 30,
+            fontWeight: 700,
+            color: COLOR.ink,
+            margin: 0,
+            letterSpacing: "-0.5px",
           }}
         >
-          {filteredSpecials.length} Active Specials
-        </span>
+          Specials
+        </h1>
         <button
-          aria-label="Refine specials"
-          onClick={() => setShowFilters(true)}
+          aria-label={searchOpen ? "Close search" : "Search"}
+          onClick={() => {
+            if (searchOpen) {
+              setSearch("");
+              setSearchOpen(false);
+            } else {
+              setSearchOpen(true);
+            }
+          }}
           style={{
             width: 36,
             height: 36,
             borderRadius: "50%",
-            background: filterType.length > 0 || sortBy !== "default" ? COLOR.ink : COLOR.cream,
+            background: "transparent",
             border: "none",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
+            color: COLOR.ink,
           }}
         >
-          <SlidersHorizontal
-            size={14}
-            strokeWidth={1.8}
-            color={filterType.length > 0 || sortBy !== "default" ? COLOR.cream : COLOR.ink}
-          />
+          {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
         </button>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
-
-      <RefineDrawer
-        open={showFilters}
-        onClose={() => setShowFilters(false)}
-        onClear={() => {
-          setFilterType([]);
-          setSortBy("default");
-        }}
-        resultsCount={filteredSpecials.length}
-        resultsLabel="specials"
-      >
-        <RefineSection
-          isFirst
-          label="Sort by"
-          summary={SORT_LABELS[sortBy]}
-          open={openSection === "sort"}
-          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
-        >
-          {(Object.keys(SORT_LABELS) as SortKey[]).map((key) => (
-            <RefineOption
-              key={key}
-              label={SORT_LABELS[key]}
-              active={sortBy === key}
-              onClick={() => setSortBy(key)}
-            />
-          ))}
-        </RefineSection>
-
-        <RefineSection
-          label="Category"
-          summary={filterType.length > 0 ? `${filterType.length} selected` : undefined}
-          open={openSection === "category"}
-          onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
-        >
-          {categoryOptions.length > 0 ? (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {categoryOptions.map((t) => (
-                <RefineChip
-                  key={t}
-                  label={t}
-                  active={filterType.includes(t)}
-                  onClick={() => toggleFilter(t)}
-                />
-              ))}
-            </div>
-          ) : (
-            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>
-              No categories available.
-            </p>
-          )}
-        </RefineSection>
-      </RefineDrawer>
-
-      {/* Card stack */}
-      {isLoading ? (
-        <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 16 }}>
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="w-full" style={{ height: 420, borderRadius: 24, background: "rgba(238,232,218,0.15)" }} />
-          ))}
+      {/* Inline search input */}
+      {searchOpen && (
+        <div style={{ padding: "12px 20px 0 20px" }}>
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Search any local deals"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              width: "100%",
+              height: 40,
+              borderRadius: 999,
+              border: `1px solid ${COLOR.divider}`,
+              padding: "0 16px",
+              fontFamily: SANS,
+              fontSize: 14,
+              color: COLOR.ink,
+              background: "transparent",
+              outline: "none",
+            }}
+          />
         </div>
-      ) : filteredSpecials.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, padding: "0 24px" }}>
-          {filteredSpecials.map((s) => {
-            const validText = formatValidity(s);
+      )}
+
+      {/* Category tabs */}
+      <div
+        style={{
+          marginTop: 18,
+          paddingLeft: 20,
+          paddingRight: 20,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+        }}
+        className="scrollbar-hide"
+      >
+        <div style={{ display: "flex", gap: 22, alignItems: "center", borderBottom: `1px solid ${COLOR.divider}` }}>
+          {categoryTabs.map((tab) => {
+            const isActive = tab === activeTab;
             return (
-              <article
-                key={s.id}
-                onClick={() => navigate(`/specials/${s.id}`)}
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
                 style={{
-                  background: COLOR.cream,
-                  borderRadius: 24,
-                  overflow: "hidden",
+                  background: "transparent",
+                  border: "none",
+                  padding: "10px 0 12px 0",
                   cursor: "pointer",
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  fontWeight: isActive ? 600 : 400,
+                  color: isActive ? COLOR.ink : COLOR.mutedInk,
+                  borderBottom: isActive ? `2px solid ${COLOR.ink}` : "2px solid transparent",
+                  marginBottom: -1,
+                  whiteSpace: "nowrap",
                 }}
               >
-                <div style={{ position: "relative", width: "100%", height: 220, background: COLOR.softCream }}>
-                  {s.image_url && (
-                    <img
-                      src={s.image_url}
-                      alt={s.title}
-                      loading="lazy"
-                      style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                    />
-                  )}
-                  <div style={{ position: "absolute", left: 12, top: 12 }}>
-                    <span
-                      style={{
-                        fontFamily: SANS,
-                        fontSize: 12,
-                        letterSpacing: "0.1px",
-                        color: COLOR.ink,
-                        background: COLOR.cream,
-                        borderRadius: 999,
-                        padding: "8px 16px",
-                        display: "inline-block",
-                      }}
-                    >
-                      {s.deal_label}
-                    </span>
-                  </div>
-                  <SaveHeart id={s.id} />
-                </div>
-                <div style={{ padding: "22px 24px 24px 24px" }}>
-                  <h3
-                    style={{
-                      fontFamily: SANS,
-                      fontSize: 18,
-                      fontWeight: 400,
-                      lineHeight: 1.2,
-                      letterSpacing: "-0.25px",
-                      color: COLOR.ink,
-                      textTransform: "capitalize",
-                      margin: 0,
-                      marginBottom: 8,
-                    }}
-                  >
-                    {s.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontFamily: SANS,
-                      fontSize: 13.5,
-                      color: COLOR.mutedInk,
-                      margin: 0,
-                      marginBottom: 4,
-                    }}
-                  >
-                    {s.business_name}
-                  </p>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      marginBottom: 14,
-                      opacity: 0.85,
-                    }}
-                  >
-                    <Calendar size={11} strokeWidth={1.8} color={COLOR.mutedInk} />
-                    <span style={{ fontFamily: SANS, fontSize: 12.5, color: COLOR.mutedInk }}>{validText}</span>
-                  </div>
-                  {s.description && (
-                    <p
-                      style={{
-                        fontFamily: SANS,
-                        fontSize: 14,
-                        lineHeight: 1.55,
-                        color: COLOR.ink,
-                        opacity: 0.92,
-                        margin: 0,
-                      }}
-                    >
-                      {s.description}
-                    </p>
-                  )}
-                </div>
-              </article>
+                {tab}
+              </button>
             );
           })}
         </div>
-      ) : (
-        <div style={{ textAlign: "center", padding: "80px 24px" }}>
-          <p
+      </div>
+
+      {/* Card stack */}
+      <div style={{ padding: "18px 20px 0 20px" }}>
+        {isLoading ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="w-full" style={{ height: 130, borderRadius: 18, background: "rgba(0,0,0,0.06)" }} />
+            ))}
+          </div>
+        ) : filteredSpecials.length > 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            {filteredSpecials.map((s) => (
+              <SpecialCard key={s.id} special={s} onClick={() => navigate(`/specials/${s.id}`)} />
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", padding: "60px 20px" }}>
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 12,
+                letterSpacing: "2.4px",
+                textTransform: "uppercase",
+                color: COLOR.mutedInk,
+                margin: 0,
+                marginBottom: 8,
+              }}
+            >
+              No deals match
+            </p>
+            <p style={{ fontFamily: SANS, fontSize: 14, color: COLOR.ink, opacity: 0.7, margin: 0, maxWidth: 280, marginInline: "auto" }}>
+              Try a different category. New deals are added all the time.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
+  const validText = formatValidTill(special);
+  return (
+    <article
+      onClick={onClick}
+      style={{
+        position: "relative",
+        background: COLOR.cardBg,
+        borderRadius: 18,
+        overflow: "hidden",
+        cursor: "pointer",
+        height: 140,
+        display: "flex",
+      }}
+    >
+      {/* Text side */}
+      <div
+        style={{
+          position: "relative",
+          zIndex: 2,
+          flex: "1 1 60%",
+          padding: "18px 18px 16px 20px",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          color: COLOR.cardFg,
+        }}
+      >
+        <div>
+          <div
             style={{
               fontFamily: SANS,
-              fontSize: 12,
-              letterSpacing: "2.4px",
-              textTransform: "uppercase",
-              color: "rgba(238,232,218,0.7)",
-              margin: 0,
-              marginBottom: 8,
+              fontSize: 20,
+              fontWeight: 700,
+              lineHeight: 1.1,
+              letterSpacing: "-0.2px",
+              color: COLOR.cardFg,
+              marginBottom: 6,
             }}
           >
-            No deals match
-          </p>
-          <p
+            {special.deal_label}
+          </div>
+          <div
             style={{
-              fontFamily: SERIF,
-              fontStyle: "italic",
-              fontSize: 16,
-              color: "rgba(238,232,218,0.85)",
-              margin: 0,
-              maxWidth: 280,
-              marginInline: "auto",
+              fontFamily: SANS,
+              fontSize: 15,
+              fontWeight: 400,
+              lineHeight: 1.25,
+              color: COLOR.cardFg,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
             }}
           >
-            Try clearing a filter. New deals are added all the time.
-          </p>
+            {special.title}
+            {special.business_name ? (
+              <>
+                <br />
+                <span style={{ color: COLOR.cardMuted }}>{special.business_name}</span>
+              </>
+            ) : null}
+          </div>
         </div>
-      )}
-    </div>
+        <div
+          style={{
+            fontFamily: SANS,
+            fontSize: 11,
+            letterSpacing: "1.2px",
+            fontWeight: 500,
+            color: COLOR.cardMuted,
+            textTransform: "uppercase",
+          }}
+        >
+          {validText}
+        </div>
+      </div>
+
+      {/* Image side with gradient fade */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          bottom: 0,
+          width: "55%",
+          zIndex: 1,
+        }}
+      >
+        {special.image_url && (
+          <img
+            src={special.image_url}
+            alt={special.title}
+            loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: `linear-gradient(to right, ${COLOR.cardBg} 0%, ${COLOR.cardBg} 18%, rgba(92,100,70,0.85) 38%, rgba(92,100,70,0.35) 70%, rgba(92,100,70,0.15) 100%)`,
+          }}
+        />
+      </div>
+    </article>
   );
 };
 
