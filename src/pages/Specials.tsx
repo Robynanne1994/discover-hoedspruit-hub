@@ -151,56 +151,91 @@ const Specials = () => {
       {/* Header */}
       <div
         style={{
-          paddingTop: 56,
+          paddingTop: 60,
           paddingLeft: 20,
           paddingRight: 20,
+          position: "relative",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
+          minHeight: 36,
         }}
       >
         <h1
           style={{
             fontFamily: SANS,
-            fontSize: 30,
+            fontSize: 22,
             fontWeight: 700,
             color: COLOR.ink,
             margin: 0,
-            letterSpacing: "-0.5px",
+            letterSpacing: "-0.3px",
+            textAlign: "center",
           }}
         >
           Specials
         </h1>
-        <button
-          aria-label={searchOpen ? "Close search" : "Search"}
-          onClick={() => {
-            if (searchOpen) {
-              setSearch("");
-              setSearchOpen(false);
-            } else {
-              setSearchOpen(true);
-            }
-          }}
+        <div
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: "50%",
-            background: "transparent",
-            border: "none",
-            display: "inline-flex",
+            position: "absolute",
+            right: 20,
+            top: 60,
+            display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: COLOR.ink,
+            gap: 6,
           }}
         >
-          {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
-        </button>
+          <button
+            aria-label={searchOpen ? "Close search" : "Search"}
+            onClick={() => {
+              if (searchOpen) {
+                setSearch("");
+                setSearchOpen(false);
+              } else {
+                setSearchOpen(true);
+              }
+            }}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "transparent",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: COLOR.ink,
+            }}
+          >
+            {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
+          </button>
+          <button
+            aria-label="Filters"
+            onClick={() => setShowFilters(true)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: filterType.length > 0 ? COLOR.ink : "transparent",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: filterType.length > 0 ? COLOR.pageBg : COLOR.ink,
+            }}
+          >
+            <SlidersHorizontal size={20} strokeWidth={2} />
+          </button>
+        </div>
       </div>
+
+      {/* Gap before content */}
+      <div style={{ height: 60 }} />
 
       {/* Inline search input */}
       {searchOpen && (
-        <div style={{ padding: "12px 20px 0 20px" }}>
+        <div style={{ padding: "0 20px 12px 20px" }}>
           <input
             ref={searchInputRef}
             type="text"
