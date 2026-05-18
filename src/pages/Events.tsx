@@ -545,21 +545,6 @@ const Events = () => {
         </div>
       )}
 
-      {/* Week strip */}
-      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 4 }}>
-        <WeekStrip
-          anchor={weekAnchor}
-          selectedDate={selectedDate}
-          onSelect={handleSelectDate}
-          onShift={(days) => setWeekAnchor((a) => addDays(a, days))}
-          onClear={() => {
-            setSelectedDate(null);
-            setActiveFilter("all");
-            setWeekAnchor(startOfToday());
-          }}
-        />
-      </div>
-
       {/* Filter pills */}
       <div
         style={{
