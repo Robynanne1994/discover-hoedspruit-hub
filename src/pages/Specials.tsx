@@ -142,6 +142,7 @@ const Specials = () => {
     <div
       style={{
         minHeight: "100vh",
+        paddingTop: 60,
         paddingBottom: 120,
         background: COLOR.pageBg,
         fontFamily: SANS,
@@ -151,7 +152,6 @@ const Specials = () => {
       {/* Header — title centered, icons inline on the right, 60px gap above */}
       <div
         style={{
-          marginTop: 60,
           paddingLeft: 20,
           paddingRight: 20,
           display: "grid",
