@@ -181,6 +181,25 @@ const WeekStrip = ({
           );
         })}
       </div>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+        <button
+          onClick={onClear}
+          style={{
+            background: "transparent",
+            border: "none",
+            padding: "4px 0",
+            cursor: "pointer",
+            fontFamily: SANS,
+            fontSize: 12,
+            fontWeight: 700,
+            color: C.muted,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}
+        >
+          Clear
+        </button>
+      </div>
     </div>
   );
 };
