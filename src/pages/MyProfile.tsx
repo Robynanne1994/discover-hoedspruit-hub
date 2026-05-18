@@ -443,10 +443,10 @@ const MyProfile = () => {
             to={id ? `/profile/${id}/followers` : "#"}
             style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
           >
-            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>
+            <span style={{ fontSize: 10, color: MUTED, fontFamily: SANS, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase" }}>
               {(counts?.followers ?? 0) === 1 ? "Follower" : "Followers"}
             </span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
+            <span style={{ fontSize: 20, fontWeight: 400, color: INK, fontFamily: SANS, marginTop: 4 }}>
               {fmtCount(counts?.followers ?? 0)}
             </span>
           </Link>
@@ -454,8 +454,8 @@ const MyProfile = () => {
             to={id ? `/profile/${id}/following` : "#"}
             style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
           >
-            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Following</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
+            <span style={{ fontSize: 10, color: MUTED, fontFamily: SANS, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase" }}>Following</span>
+            <span style={{ fontSize: 20, fontWeight: 400, color: INK, fontFamily: SANS, marginTop: 4 }}>
               {fmtCount(counts?.following ?? 0)}
             </span>
           </Link>
@@ -463,8 +463,8 @@ const MyProfile = () => {
             to="/saved"
             style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
           >
-            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Saved</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
+            <span style={{ fontSize: 10, color: MUTED, fontFamily: SANS, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase" }}>Saved</span>
+            <span style={{ fontSize: 20, fontWeight: 400, color: INK, fontFamily: SANS, marginTop: 4 }}>
               {fmtCount(savedCount ?? 0)}
             </span>
           </Link>
@@ -478,11 +478,12 @@ const MyProfile = () => {
           display: "flex",
           padding: "0 20px",
           gap: 0,
-          borderBottom: "1px solid rgba(238,232,218,0.18)",
+          borderBottom: `1px solid ${BORDER}`,
         }}
       >
         {(["listings", "deals", "events"] as Tab[]).map((t) => {
           const active = tab === t;
+          const label = t.charAt(0).toUpperCase() + t.slice(1);
           return (
             <button
               key={t}
@@ -492,29 +493,19 @@ const MyProfile = () => {
                 flex: 1,
                 background: "none",
                 border: "none",
-                padding: "14px 0 12px",
+                padding: "14px 4px",
                 cursor: "pointer",
                 fontFamily: SANS,
-                fontSize: 16,
-                fontWeight: active ? 700 : 400,
-                color: active ? CREAM : "rgba(238,232,218,0.5)",
-                letterSpacing: "0.02em",
-                position: "relative",
-                textTransform: "capitalize",
+                fontSize: 12,
+                fontWeight: 400,
+                color: active ? INK : MUTED,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                borderBottom: `2px solid ${active ? RUST : "transparent"}`,
+                marginBottom: -1,
               }}
             >
-              {t}
-              <span
-                style={{
-                  position: "absolute",
-                  left: "20%",
-                  right: "20%",
-                  bottom: -1,
-                  height: 2,
-                  background: active ? CREAM : "transparent",
-                  borderRadius: 2,
-                }}
-              />
+              {label}
             </button>
           );
         })}
