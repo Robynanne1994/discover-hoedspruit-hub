@@ -18,6 +18,7 @@ import { sanitizeDashes } from "@/lib/sanitizeListing";
 import kidsFamilyIconSrc from "@/assets/kids-family-icon.svg";
 import vibeIconSrc from "@/assets/vibe-icon.svg";
 import seatingIconSrc from "@/assets/seating-icon.svg";
+import { formatSAPhone } from "@/lib/formatPhone";
 import serviceIconSrc from "@/assets/service-icon.svg";
 import amenitiesIconSrc from "@/assets/amenities-icon.svg";
 import accessibilityIconSrc from "@/assets/accessibility-icon.svg";

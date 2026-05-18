@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange } from "@/lib/eventDates";
+import { formatSAPhone } from "@/lib/formatPhone";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
