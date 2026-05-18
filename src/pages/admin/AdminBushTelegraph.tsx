@@ -366,7 +366,7 @@ const AdminBushTelegraph = () => {
       </div>
 
       {/* Resources list */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden text-black [&_*]:!text-black">
+      <div className="bg-card border border-border rounded-xl overflow-hidden">
         {isLoading ? (
           <div className="p-8 text-center text-muted-foreground">Loading...</div>
         ) : resources.length === 0 ? (
