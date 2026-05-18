@@ -71,14 +71,13 @@ function formatPrice(p: string | number | null | undefined): string {
   if (p === null || p === undefined) return "Free";
   const s = String(p).trim();
   if (!s || /^(free|0|r0)$/i.test(s)) return "Free";
-  // Detect a price range like "100 - 250", "R100-R250", "100 to 250" → "From R<lowest>"
-  const nums = s.match(/\d+(?:[.,]\d+)?/g);
+  // Match numbers including thousands separators (comma/space/dot) e.g. "1,000", "1 000", "1.000"
+  const matches = s.match(/\d[\d.,\s]*\d|\d/g);
   const hasRange = /[-–—]|\bto\b/i.test(s);
-  if (hasRange && nums && nums.length >= 2) {
-    const values = nums.map((n) => parseFloat(n.replace(",", ".")));
-    const lowest = Math.min(...values);
-    const display = Number.isInteger(lowest) ? String(lowest) : String(lowest);
-    return `From R${display}`;
+  if (hasRange && matches && matches.length >= 2) {
+    // Use first number verbatim (preserves "1,000" / "1 000" formatting)
+    const firstRaw = matches[0].trim();
+    return `From R${firstRaw}`;
   }
   if (/^\d/.test(s)) return `R${s}`;
   return s;
