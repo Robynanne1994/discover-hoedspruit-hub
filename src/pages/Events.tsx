@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,273 +13,204 @@ import {
   endOfWeek,
   endOfMonth,
   isWithinInterval,
+  isSameDay,
+  addDays,
   format,
-  isSameMonth,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 
-const SERIF = "'Playfair Display', Georgia, serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const COLOR = {
-  olive: "#5C6446",
-  cream: "#EEE8DA",
-  softCream: "#F4EFE3",
-  ink: "#2A2A24",
-  mutedInk: "#6B6A5E",
-  line: "#D9D2C0",
+const C = {
+  page: "#ebebeb",
+  ivory: "#f5f0e8",
+  white: "#ffffff",
+  ink: "#020202",
+  body: "#2b2420",
+  muted: "#6b6a5e",
+  dark: "#48484a",
+  tag: "#e8e1d4",
 };
 
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-type FilterType = "all" | "today" | "this-week" | "this-month" | "past";
+type FilterType = "all" | "today" | "this-week" | "this-month";
 
 const FILTERS: { label: string; value: FilterType }[] = [
   { label: "All", value: "all" },
   { label: "Today", value: "today" },
   { label: "This Week", value: "this-week" },
   { label: "This Month", value: "this-month" },
-  { label: "Past", value: "past" },
 ];
 
-const THIN = "\u2009";
-const MID = `${THIN}·${THIN}`;
+const WEEKDAY_LABELS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
-function formatTimeShort(t: string | null | undefined): string {
+function fmtTime(t: string | null | undefined): string {
   if (!t) return "";
   const m = String(t).match(/^(\d{1,2}):?(\d{0,2})/);
   if (!m) return "";
   const h = parseInt(m[1]);
   const min = m[2] ? parseInt(m[2]) : 0;
   if (isNaN(h)) return "";
-  const ampm = h >= 12 ? "pm" : "am";
+  const ampm = h >= 12 ? "PM" : "AM";
   const dh = h === 0 ? 12 : h > 12 ? h - 12 : h;
-  if (min === 0) return `${dh}${ampm}`;
-  return `${dh}:${String(min).padStart(2, "0")}${ampm}`;
+  if (min === 0) return `${dh}:00 ${ampm}`;
+  return `${dh}:${String(min).padStart(2, "0")} ${ampm}`;
 }
 
-function isMultiDay(e: any): boolean {
-  const { start, end } = getEventDates(e);
-  if (!start || !end) return false;
-  return start.getTime() !== end.getTime();
-}
-
-function formatDatePart(e: any): string {
+function eventDateLine(e: any): string {
   const { start, end } = getEventDates(e);
   if (!start) return (e.date || "").replace(/<[^>]*>/g, "").trim();
   const sameDay = !end || start.getTime() === end.getTime();
-  if (sameDay) return `${start.getDate()} ${MONTHS[start.getMonth()]}`;
-  const sameMonth = start.getMonth() === end!.getMonth() && start.getFullYear() === end!.getFullYear();
-  if (sameMonth) return `${start.getDate()} – ${end!.getDate()} ${MONTHS[start.getMonth()]}`;
-  return `${start.getDate()} ${MONTHS[start.getMonth()]} – ${end!.getDate()} ${MONTHS[end!.getMonth()]}`;
+  const dPart = sameDay
+    ? format(start, "EEE, d MMM")
+    : `${format(start, "d")} – ${format(end!, "d MMM")}`;
+  const time = fmtTime(e.start_time);
+  return time ? `${dPart} • ${time}` : dPart;
 }
 
-function buildDateLine(e: any): string {
-  const date = formatDatePart(e);
-  if (isMultiDay(e)) return date || "";
-  const time = formatTimeShort(e.start_time);
-  if (date && time) return `${date}${MID}${time}`;
-  return date || time || "";
+function formatPrice(p: string | number | null | undefined): string {
+  if (p === null || p === undefined) return "Free";
+  const s = String(p).trim();
+  if (!s || /^(free|0|r0)$/i.test(s)) return "Free";
+  if (/^\d/.test(s)) return `R${s}`;
+  return s;
 }
 
-const WEEKDAYS = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
-const ORDINALS: Record<string, number> = { first:1, second:2, third:3, fourth:4, fifth:5, last:-1 };
-
-function nextRecurringDate(e: any): Date | null {
-  const { start } = getEventDates(e);
-  const today = startOfToday();
-  if (start && !isBefore(start, today)) return start;
-
-  const text = `${e.date || ""} ${e.recurrence || ""}`.toLowerCase();
-  const wdIdx = WEEKDAYS.findIndex((w) => text.includes(w));
-  if (wdIdx === -1) return start || null;
-
-  const ordinalKey = Object.keys(ORDINALS).find((k) => new RegExp(`\\b${k}\\b`).test(text));
-
-  // Nth weekday of month
-  if (ordinalKey) {
-    const nth = ORDINALS[ordinalKey];
-    for (let i = 0; i < 3; i++) {
-      const base = new Date(today.getFullYear(), today.getMonth() + i, 1);
-      const d = nthWeekdayOfMonth(base.getFullYear(), base.getMonth(), wdIdx, nth);
-      if (d && !isBefore(d, today)) return d;
-    }
-    return null;
-  }
-
-  // Plain weekly: next occurrence of weekday
-  const d = new Date(today);
-  const diff = (wdIdx - d.getDay() + 7) % 7;
-  d.setDate(d.getDate() + diff);
-  return d;
-}
-
-function nthWeekdayOfMonth(year: number, month: number, weekday: number, nth: number): Date | null {
-  if (nth === -1) {
-    const last = new Date(year, month + 1, 0);
-    const offset = (last.getDay() - weekday + 7) % 7;
-    return new Date(year, month, last.getDate() - offset);
-  }
-  const first = new Date(year, month, 1);
-  const offset = (weekday - first.getDay() + 7) % 7;
-  const day = 1 + offset + (nth - 1) * 7;
-  const d = new Date(year, month, day);
-  if (d.getMonth() !== month) return null;
-  return d;
-}
-
-function formatRecurringDate(e: any): string {
-  const d = nextRecurringDate(e);
-  if (!d) return (e.date || "").replace(/<[^>]*>/g, "").trim();
-  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
-}
-
-function buildRecurrenceLine(e: any): string {
-  const date = formatRecurringDate(e);
-  const time = formatTimeShort(e.start_time);
-  if (date && time) return `${date}${MID}${time}`;
-  return date || time || "";
-}
-
-function recurrenceCadence(raw: string): "monthly" | "yearly" | "other" {
-  const r = (raw || "").toLowerCase();
-  if (r.includes("year") || r.includes("annual")) return "yearly";
-  if (r.includes("month") || r.includes("first") || r.includes("last")) return "monthly";
-  return "other";
-}
-
-const EventRow = ({
-  event,
-  showDivider,
-  metaOverride,
+// Week strip --------------------------------------------------------
+const WeekStrip = ({
+  anchor,
+  selectedDate,
+  onSelect,
+  onShift,
 }: {
-  event: any;
-  showDivider: boolean;
-  metaOverride?: string;
+  anchor: Date;
+  selectedDate: Date | null;
+  onSelect: (d: Date) => void;
+  onShift: (days: number) => void;
 }) => {
-  const meta = metaOverride ?? buildDateLine(event);
-  const location = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
+  const weekStart = startOfWeek(anchor, { weekStartsOn: 1 });
+  const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   return (
-    <Link
-      to={`/events/${event.id}`}
+    <div
       style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        padding: "16px 0",
-        textDecoration: "none",
-        borderTop: showDivider ? `1px solid ${COLOR.line}` : "none",
+        background: C.white,
+        borderRadius: 16,
+        padding: "16px 18px 18px",
       }}
     >
-      <div
-        style={{
-          width: 54,
-          height: 54,
-          borderRadius: "50%",
-          overflow: "hidden",
-          background: COLOR.softCream,
-          flexShrink: 0,
-        }}
-      >
-        {event.image_url && (
-          <img
-            src={event.image_url}
-            alt={event.title}
-            loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        )}
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        {meta && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 11.5,
-              letterSpacing: "1.6px",
-              textTransform: "uppercase",
-              color: COLOR.mutedInk,
-              margin: 0,
-              marginBottom: 3,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {meta}
-          </p>
-        )}
-        <h4
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+        <h2
           style={{
             fontFamily: SANS,
-            fontSize: 15,
-            fontWeight: 400,
-            lineHeight: 1.25,
-            letterSpacing: "-0.1px",
-            color: COLOR.ink,
+            fontWeight: 700,
+            fontSize: 18,
+            color: C.ink,
             margin: 0,
-            marginBottom: 2,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
+            letterSpacing: "0.01em",
           }}
         >
-          {event.title}
-        </h4>
-        {location && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 12.5,
-              color: COLOR.mutedInk,
-              margin: 0,
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
+          {format(anchor, "MMMM yyyy")}
+        </h2>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button
+            aria-label="Previous week"
+            onClick={() => onShift(-7)}
+            style={navBtn}
           >
-            {location}
-          </p>
-        )}
+            <ChevronLeft size={16} color={C.ink} strokeWidth={1.8} />
+          </button>
+          <button
+            aria-label="Next week"
+            onClick={() => onShift(7)}
+            style={navBtn}
+          >
+            <ChevronRight size={16} color={C.ink} strokeWidth={1.8} />
+          </button>
+        </div>
       </div>
-      <span
-        style={{
-          fontSize: 14,
-          color: COLOR.ink,
-          opacity: 0.7,
-          flexShrink: 0,
-          lineHeight: 1,
-        }}
-      >
-        ↗
-      </span>
-    </Link>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: 4 }}>
+        {days.map((d, i) => {
+          const selected = selectedDate && isSameDay(d, selectedDate);
+          return (
+            <button
+              key={i}
+              onClick={() => onSelect(d)}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 6,
+                padding: "8px 4px",
+                borderRadius: 999,
+                border: "none",
+                background: selected ? C.dark : "transparent",
+                cursor: "pointer",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 11,
+                  letterSpacing: "0.08em",
+                  color: selected ? "#ebebeb" : C.muted,
+                }}
+              >
+                {WEEKDAY_LABELS[i]}
+              </span>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontWeight: 700,
+                  fontSize: 18,
+                  color: selected ? "#fff" : C.ink,
+                }}
+              >
+                {d.getDate()}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 
-const SingleEventCard = ({ event }: { event: any }) => {
-  const meta = buildRecurrenceLine(event) || buildDateLine(event);
+const navBtn: React.CSSProperties = {
+  width: 32,
+  height: 32,
+  borderRadius: "50%",
+  background: C.white,
+  border: `1px solid ${C.tag}`,
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+};
+
+// Event card --------------------------------------------------------
+const EventCard = ({ event }: { event: any }) => {
   const location = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
+  const price = formatPrice(event.price);
+  const tag = event.tag?.trim();
   return (
     <Link
       to={`/events/${event.id}`}
       style={{
         display: "flex",
-        alignItems: "center",
-        gap: 16,
-        background: COLOR.cream,
-        borderRadius: 24,
-        padding: "20px 22px",
+        alignItems: "stretch",
+        gap: 14,
+        background: C.white,
+        borderRadius: 16,
+        padding: 12,
         textDecoration: "none",
       }}
     >
       <div
         style={{
-          width: 64,
-          height: 64,
-          borderRadius: "50%",
+          width: 88,
+          height: 88,
+          borderRadius: 12,
           overflow: "hidden",
-          background: COLOR.softCream,
+          background: C.ivory,
           flexShrink: 0,
         }}
       >
@@ -292,109 +223,106 @@ const SingleEventCard = ({ event }: { event: any }) => {
           />
         )}
       </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        {meta && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 11.5,
-              letterSpacing: "1.6px",
-              textTransform: "uppercase",
-              color: COLOR.mutedInk,
-              margin: 0,
-              marginBottom: 4,
-              lineHeight: 1.35,
-            }}
-          >
-            {meta}
-          </p>
-        )}
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <h3
           style={{
             fontFamily: SANS,
-            fontSize: 17,
-            fontWeight: 400,
+            fontWeight: 700,
+            fontSize: 15,
             lineHeight: 1.2,
-            letterSpacing: "-0.2px",
-            color: COLOR.ink,
+            color: C.ink,
             margin: 0,
-            marginBottom: 3,
+            marginBottom: 6,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {event.title}
         </h3>
-        {location && (
-          <p style={{ fontFamily: SANS, fontSize: 12.5, color: COLOR.mutedInk, margin: 0 }}>
-            {location}
-          </p>
-        )}
-      </div>
-      <span style={{ fontSize: 14, color: COLOR.ink, opacity: 0.7, flexShrink: 0, lineHeight: 1 }}>↗</span>
-    </Link>
-  );
-};
-
-const SectionHead = ({
-  eyebrow,
-  heading,
-  trailing,
-}: {
-  eyebrow?: string;
-  heading: string;
-  trailing?: React.ReactNode;
-}) => (
-  <div
-    style={{
-      padding: "0 24px",
-      display: "flex",
-      alignItems: "flex-end",
-      justifyContent: "space-between",
-      gap: 12,
-      marginBottom: 14,
-    }}
-  >
-    <div style={{ minWidth: 0 }}>
-      {eyebrow && (
         <p
           style={{
             fontFamily: SANS,
-            fontSize: 11,
-            letterSpacing: "2.2px",
-            textTransform: "uppercase",
-            color: "rgba(238,232,218,0.65)",
+            fontSize: 12.5,
+            color: C.body,
             margin: 0,
             marginBottom: 4,
           }}
         >
-          {eyebrow}
+          {eventDateLine(event)}
         </p>
-      )}
-      <h2
+        {location && (
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 12,
+              color: C.muted,
+              margin: 0,
+              display: "flex",
+              alignItems: "center",
+              gap: 4,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0 }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{location}</span>
+          </p>
+        )}
+      </div>
+      <div
         style={{
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontWeight: 700,
-          fontSize: 24,
-          lineHeight: 1,
-          letterSpacing: "-0.5px",
-          color: COLOR.cream,
-          margin: 0,
-          textTransform: "none",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-end",
+          justifyContent: "space-between",
+          flexShrink: 0,
+          gap: 8,
+          paddingLeft: 4,
         }}
       >
-        {heading}
-      </h2>
-    </div>
-    {trailing && <div style={{ flexShrink: 0 }}>{trailing}</div>}
-  </div>
-);
+        <span
+          style={{
+            fontFamily: SANS,
+            fontWeight: 700,
+            fontSize: 14,
+            color: C.ink,
+          }}
+        >
+          {price}
+        </span>
+        {tag && (
+          <span
+            style={{
+              fontFamily: SANS,
+              fontSize: 11,
+              color: C.body,
+              background: C.tag,
+              borderRadius: 999,
+              padding: "4px 10px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {tag}
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+};
 
+// Page --------------------------------------------------------------
 const Events = () => {
-  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [weekAnchor, setWeekAnchor] = useState<Date>(startOfToday());
   const [search, setSearch] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"when" | "tag" | null>("when");
+  const [openSection, setOpenSection] = useState<"tag" | null>("tag");
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
@@ -427,254 +355,313 @@ const Events = () => {
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [sortedEvents]);
 
-  const searched = useMemo(() => {
+  const filtered = useMemo(() => {
     let list = sortedEvents;
     if (tagFilter) {
       const tf = tagFilter.toLowerCase();
       list = list.filter((e) =>
-        [e.tag, e.sub_tag_1, e.sub_tag_2].some(
-          (t: string | null) => t && t.toLowerCase() === tf
-        )
+        [e.tag, e.sub_tag_1, e.sub_tag_2].some((t: string | null) => t && t.toLowerCase() === tf)
       );
     }
-    if (!search.trim()) return list;
-    const q = search.toLowerCase();
-    return list.filter(
-      (e) =>
-        e.title.toLowerCase().includes(q) ||
-        (e.location && e.location.toLowerCase().includes(q)) ||
-        (e.tag && e.tag.toLowerCase().includes(q))
-    );
-  }, [sortedEvents, search, tagFilter]);
-
-  const recurringAll = useMemo(
-    () =>
-      searched.filter(
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(
         (e) =>
-          e.recurrence &&
-          e.recurrence.trim() !== "" &&
-          e.recurrence.trim().toLowerCase() !== "none"
-      ),
-    [searched]
-  );
+          e.title.toLowerCase().includes(q) ||
+          (e.location && e.location.toLowerCase().includes(q)) ||
+          (e.tag && e.tag.toLowerCase().includes(q))
+      );
+    }
 
-  const datedAll = useMemo(() => {
     const today = startOfToday();
+
+    // Specific date selected → show only events on that date
+    if (selectedDate) {
+      return list.filter((e) => e._parsed && isSameDay(e._parsed, selectedDate));
+    }
+
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
     const monthEnd = endOfMonth(today);
-    const isRecurring = (e: any) =>
-      e.recurrence &&
-      e.recurrence.trim() !== "" &&
-      e.recurrence.trim().toLowerCase() !== "none";
-    const nonRecurring = searched.filter((e) => !isRecurring(e));
 
-    if (activeFilter === "all")
-      return nonRecurring.filter((e) => !e._parsed || !isBefore(e._parsed, today));
-
-    const inRange = (date: Date) => {
-      switch (activeFilter) {
-        case "today":
-          return isToday(date);
-        case "this-week":
-          return isWithinInterval(date, { start: today, end: weekEnd });
-        case "this-month":
-          return isWithinInterval(date, { start: today, end: monthEnd });
-        case "past":
-          return isBefore(date, today) && !isToday(date);
-        default:
-          return true;
-      }
-    };
-
-    const dated = nonRecurring.filter((e) => e._parsed && inRange(e._parsed));
-
-    // Past filter shouldn't include recurring (they're upcoming-only by nature)
-    if (activeFilter === "past") return dated;
-
-    const recurringInRange = searched
-      .filter(isRecurring)
-      .map((e) => ({ event: e, date: nextRecurringDate(e) }))
-      .filter((x): x is { event: any; date: Date } => !!x.date && inRange(x.date))
-      .map((x) => ({ ...x.event, _parsed: x.date, _isRecurring: true }));
-
-    return [...dated, ...recurringInRange].sort((a, b) => {
-      const ta = a._parsed ? a._parsed.getTime() : 0;
-      const tb = b._parsed ? b._parsed.getTime() : 0;
-      return ta - tb;
+    return list.filter((e) => {
+      if (!e._parsed) return activeFilter === "all";
+      if (activeFilter === "all") return !isBefore(e._parsed, today);
+      if (activeFilter === "today") return isToday(e._parsed);
+      if (activeFilter === "this-week")
+        return isWithinInterval(e._parsed, { start: today, end: weekEnd });
+      if (activeFilter === "this-month")
+        return isWithinInterval(e._parsed, { start: today, end: monthEnd });
+      return true;
     });
-  }, [searched, activeFilter]);
+  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate]);
 
-  const monthlyRecurring = useMemo(
-    () => recurringAll.filter((e) => recurrenceCadence(e.recurrence) === "monthly"),
-    [recurringAll]
-  );
-  const yearlyRecurring = useMemo(
-    () => recurringAll.filter((e) => recurrenceCadence(e.recurrence) === "yearly"),
-    [recurringAll]
-  );
-
-  const showRecurring = activeFilter === "all";
-  const upcomingCount = useMemo(() => {
-    const today = startOfToday();
-    return sortedEvents.filter((e) => {
-      if (e.recurrence && e.recurrence.trim() !== "" && e.recurrence.trim().toLowerCase() !== "none") return true;
-      return e._parsed && !isBefore(e._parsed, today);
-    }).length;
-  }, [sortedEvents]);
-
-  const iconBtn: React.CSSProperties = {
-    width: 44,
-    height: 44,
-    borderRadius: "50%",
-    background: COLOR.cream,
-    border: "none",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    cursor: "pointer",
+  const handleSelectDate = (d: Date) => {
+    setSelectedDate(selectedDate && isSameDay(selectedDate, d) ? null : d);
+    setWeekAnchor(d);
   };
 
-  const filterIconBtn = (
-    <button
-      aria-label="Refine events"
-      onClick={() => setRefineOpen(true)}
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: "50%",
-        background: tagFilter || activeFilter !== "all" ? COLOR.ink : COLOR.cream,
-        border: "none",
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        cursor: "pointer",
-      }}
-    >
-      <SlidersHorizontal
-        size={14}
-        strokeWidth={1.8}
-        color={tagFilter || activeFilter !== "all" ? COLOR.cream : COLOR.ink}
-      />
-    </button>
-  );
+  const handleFilterPill = (v: FilterType) => {
+    setActiveFilter(v);
+    setSelectedDate(null);
+  };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        paddingBottom: 140,
-        background: COLOR.olive,
+        background: C.page,
         fontFamily: SANS,
-        color: COLOR.cream,
+        paddingBottom: 100,
       }}
     >
-      {/* Top bar */}
-      <div
-        style={{
-          paddingTop: 60,
-          paddingLeft: 24,
-          paddingRight: 24,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
+      <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 4 }}>
+        {/* Header card */}
         <div
           style={{
-            fontFamily: SANS,
-            fontSize: 20,
-            fontWeight: 600,
-            color: COLOR.cream,
-          }}
-        >
-          Events
-        </div>
-      </div>
-
-      {/* Search */}
-      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
-        <div
-          style={{
-            height: 44,
-            background: "rgba(238, 232, 218, 0.92)",
-            borderRadius: 999,
-            padding: "0 20px",
+            background: C.ivory,
+            borderRadius: 16,
+            padding: "18px 18px",
             display: "flex",
             alignItems: "center",
             gap: 12,
           }}
         >
-          <Search size={18} strokeWidth={1.6} color={COLOR.ink} style={{ flexShrink: 0 }} />
-          <input
-            type="text"
-            placeholder="Search local happenings"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="placeholder:text-[#2b2420]/80"
+          <div
             style={{
-              flex: 1,
-              background: "transparent",
-              outline: "none",
-              border: "none",
+              width: 44,
+              height: 44,
+              borderRadius: "50%",
+              background: C.ink,
+              color: C.ivory,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
               fontFamily: SANS,
-              fontSize: 14,
-              color: COLOR.ink,
+              fontWeight: 700,
+              fontSize: 16,
+              flexShrink: 0,
             }}
-          />
+          >
+            HH
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <h1
+              style={{
+                fontFamily: SANS,
+                fontWeight: 700,
+                fontSize: 18,
+                color: C.ink,
+                margin: 0,
+                lineHeight: 1.1,
+                letterSpacing: "0.01em",
+              }}
+            >
+              Hello Hoedspruit
+            </h1>
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 11,
+                color: C.muted,
+                margin: 0,
+                marginTop: 2,
+                letterSpacing: "0.12em",
+              }}
+            >
+              YOUR LOWVELD LOCAL
+            </p>
+          </div>
+          <button
+            aria-label="Search"
+            onClick={() => setSearchOpen((v) => !v)}
+            style={circleBtn}
+          >
+            <Search size={16} color={C.ink} strokeWidth={1.8} />
+          </button>
+          <button
+            aria-label="Filters"
+            onClick={() => setRefineOpen(true)}
+            style={{
+              ...circleBtn,
+              background: tagFilter ? C.dark : C.white,
+            }}
+          >
+            <SlidersHorizontal
+              size={16}
+              color={tagFilter ? C.ivory : C.ink}
+              strokeWidth={1.8}
+            />
+          </button>
         </div>
+
+        {/* Search input (collapsible) */}
+        {searchOpen && (
+          <div
+            style={{
+              background: C.white,
+              borderRadius: 16,
+              padding: "10px 14px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <Search size={16} color={C.muted} strokeWidth={1.8} />
+            <input
+              autoFocus
+              type="text"
+              placeholder="Search events..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                flex: 1,
+                border: "none",
+                outline: "none",
+                background: "transparent",
+                fontFamily: SANS,
+                fontSize: 14,
+                color: C.ink,
+              }}
+            />
+          </div>
+        )}
+
+        {/* Week strip */}
+        <WeekStrip
+          anchor={weekAnchor}
+          selectedDate={selectedDate}
+          onSelect={handleSelectDate}
+          onShift={(days) => setWeekAnchor((a) => addDays(a, days))}
+        />
       </div>
 
-      {/* Results count + filter */}
+      {/* Filter pills */}
       <div
         style={{
-          padding: "12px 24px 6px 24px",
+          padding: "16px 20px 12px",
           display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
+          gap: 8,
+          overflowX: "auto",
+          scrollbarWidth: "none",
         }}
       >
-        <span
-          style={{
-            fontFamily: SANS,
-            fontSize: 15,
-            color: "rgba(238,232,218,0.85)",
-          }}
-        >
-          {sortedEvents.length} Upcoming Events
-        </span>
-        {filterIconBtn}
+        {FILTERS.map((f) => {
+          const active = !selectedDate && activeFilter === f.value;
+          return (
+            <button
+              key={f.value}
+              onClick={() => handleFilterPill(f.value)}
+              style={{
+                fontFamily: SANS,
+                fontWeight: 700,
+                fontSize: 13,
+                padding: "8px 18px",
+                borderRadius: 999,
+                border: active ? "none" : `1px solid ${C.tag}`,
+                background: active ? C.dark : C.white,
+                color: active ? C.ivory : C.ink,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                letterSpacing: "0.01em",
+              }}
+            >
+              {f.label}
+            </button>
+          );
+        })}
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
+      {/* List */}
+      <div style={{ padding: "0 20px" }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "baseline",
+            justifyContent: "space-between",
+            marginBottom: 10,
+            marginTop: 4,
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 20,
+              color: C.ink,
+              margin: 0,
+              letterSpacing: "0.01em",
+            }}
+          >
+            Upcoming Events
+          </h2>
+          {filtered.length > 5 && (
+            <span style={{ fontFamily: SANS, fontSize: 12, color: C.muted }}>
+              {filtered.length} total
+            </span>
+          )}
+        </div>
+
+        {isLoading ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {[0, 1, 2].map((i) => (
+              <Skeleton key={i} style={{ height: 112, borderRadius: 16 }} />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div
+            style={{
+              background: C.white,
+              borderRadius: 16,
+              padding: "32px 20px",
+              textAlign: "center",
+            }}
+          >
+            <p style={{ fontFamily: SANS, fontSize: 14, color: C.body, margin: 0 }}>
+              No events match your filters.
+            </p>
+            {(tagFilter || selectedDate || activeFilter !== "all" || search) && (
+              <button
+                onClick={() => {
+                  setTagFilter(null);
+                  setSelectedDate(null);
+                  setActiveFilter("all");
+                  setSearch("");
+                }}
+                style={{
+                  marginTop: 12,
+                  background: "transparent",
+                  border: "none",
+                  fontFamily: SANS,
+                  fontSize: 12,
+                  color: C.ink,
+                  textDecoration: "underline",
+                  cursor: "pointer",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                }}
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            {filtered.map((e) => (
+              <EventCard key={e.id} event={e} />
+            ))}
+          </div>
+        )}
+      </div>
 
       <RefineDrawer
         open={refineOpen}
         onClose={() => setRefineOpen(false)}
-        onClear={() => {
-          setActiveFilter("all");
-          setTagFilter(null);
-        }}
-        resultsCount={datedAll.length}
+        onClear={() => setTagFilter(null)}
+        resultsCount={filtered.length}
         resultsLabel="events"
       >
         <RefineSection
           isFirst
-          label="When"
-          summary={FILTERS.find((f) => f.value === activeFilter)?.label}
-          open={openSection === "when"}
-          onToggle={() => setOpenSection(openSection === "when" ? null : "when")}
-        >
-          {FILTERS.map((f) => (
-            <RefineOption
-              key={f.value}
-              label={f.label}
-              active={activeFilter === f.value}
-              onClick={() => setActiveFilter(f.value)}
-            />
-          ))}
-        </RefineSection>
-
-        <RefineSection
           label="Tag"
           summary={tagFilter || undefined}
           open={openSection === "tag"}
@@ -700,151 +687,21 @@ const Events = () => {
           )}
         </RefineSection>
       </RefineDrawer>
-
-      {isLoading ? (
-        <div style={{ padding: "0 24px" }}>
-          <Skeleton style={{ height: 320, borderRadius: 24, background: "rgba(238,232,218,0.15)" }} />
-        </div>
-      ) : (
-        <>
-          {/* Upcoming */}
-          {datedAll.length > 0 && (
-            <section style={{ marginBottom: 28 }}>
-              <SectionHead heading={(() => {
-                const today = startOfToday();
-                if (activeFilter === "today") return format(today, "d MMM").toLowerCase();
-                if (activeFilter === "this-week") {
-                  const ws = startOfWeek(today, { weekStartsOn: 1 });
-                  const we = endOfWeek(today, { weekStartsOn: 1 });
-                  return isSameMonth(ws, we)
-                    ? `${format(ws, "d")}–${format(we, "d MMM")}`.toLowerCase()
-                    : `${format(ws, "d MMM")} – ${format(we, "d MMM")}`.toLowerCase();
-                }
-                if (activeFilter === "this-month") return format(today, "MMMM yyyy").toLowerCase();
-                if (activeFilter === "past") return "past events";
-                return "upcoming";
-              })()} />
-              <div style={{ padding: "0 24px" }}>
-                <div
-                  style={{
-                    background: COLOR.cream,
-                    borderRadius: 24,
-                    padding: "6px 20px",
-                    overflow: "hidden",
-                  }}
-                >
-                  {datedAll.map((event, idx) => (
-                    <EventRow
-                      key={event.id}
-                      event={event}
-                      showDivider={idx > 0}
-                      metaOverride={event._isRecurring ? buildRecurrenceLine(event) : undefined}
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-
-          {/* Monthly recurring */}
-          {showRecurring && monthlyRecurring.length > 0 && (
-            <section style={{ marginBottom: 28 }}>
-              <SectionHead eyebrow="RECURRING" heading="monthly" />
-              <div style={{ padding: "0 24px" }}>
-                {monthlyRecurring.length === 1 ? (
-                  <SingleEventCard event={monthlyRecurring[0]} />
-                ) : (
-                  <div
-                    style={{
-                      background: COLOR.cream,
-                      borderRadius: 24,
-                      padding: "6px 20px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    {monthlyRecurring.map((event, idx) => (
-                      <EventRow
-                        key={event.id}
-                        event={event}
-                        showDivider={idx > 0}
-                        metaOverride={buildRecurrenceLine(event)}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </section>
-          )}
-
-          {/* Yearly recurring */}
-          {showRecurring && yearlyRecurring.length > 0 && (
-            <section style={{ marginBottom: 28 }}>
-              <SectionHead eyebrow="RECURRING" heading="yearly" />
-              <div style={{ padding: "0 24px" }}>
-                <div
-                  style={{
-                    background: COLOR.cream,
-                    borderRadius: 24,
-                    padding: "6px 20px",
-                    overflow: "hidden",
-                  }}
-                >
-                  {yearlyRecurring.map((event, idx) => (
-                    <EventRow
-                      key={event.id}
-                      event={event}
-                      showDivider={idx > 0}
-                      metaOverride={buildRecurrenceLine(event)}
-                    />
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-
-          {datedAll.length === 0 && (!showRecurring || (monthlyRecurring.length === 0 && yearlyRecurring.length === 0)) && (
-            <div style={{ textAlign: "center", padding: "60px 24px" }}>
-              <p
-                style={{
-                  fontFamily: SERIF,
-                  fontStyle: "italic",
-                  fontSize: 18,
-                  color: "rgba(238,232,218,0.85)",
-                  margin: 0,
-                  marginBottom: tagFilter ? 14 : 0,
-                }}
-              >
-                {tagFilter
-                  ? `We have nothing listed on our side for this option with the "${tagFilter}" filter. Try another time period or remove filters to see what else is on.`
-                  : "We have nothing listed on our side for this option. Try another time period."}
-              </p>
-              {tagFilter && (
-                <button
-                  onClick={() => setTagFilter(null)}
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    padding: 0,
-                    fontFamily: SANS,
-                    fontSize: 13,
-                    fontWeight: 400,
-                    letterSpacing: "1.6px",
-                    textTransform: "uppercase",
-                    color: COLOR.cream,
-                    textDecoration: "underline",
-                    textUnderlineOffset: 4,
-                    cursor: "pointer",
-                  }}
-                >
-                  Remove filters
-                </button>
-              )}
-            </div>
-          )}
-        </>
-      )}
     </div>
   );
+};
+
+const circleBtn: React.CSSProperties = {
+  width: 40,
+  height: 40,
+  borderRadius: "50%",
+  background: C.white,
+  border: "none",
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  flexShrink: 0,
 };
 
 export default Events;
