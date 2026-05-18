@@ -31,12 +31,11 @@ const HomeLocalChannels = () => {
   return (
     <section>
       <HomeSectionHead
-        primary="Local"
-        serif="Channels"
+        primary="Local Channels"
         actionLabel="See all"
         actionHref="/local-channels"
       />
-      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 4 }}>
         {resources.map((r: any) => (
           <a
             key={r.id}
@@ -47,12 +46,12 @@ const HomeLocalChannels = () => {
             onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             style={{
-              background: "#EEE8DA",
-              borderRadius: 20,
-              padding: 14,
+              background: "#ffffff",
+              borderRadius: 16,
+              padding: 12,
               display: "flex",
               alignItems: "center",
-              gap: 14,
+              gap: 12,
               textDecoration: "none",
               transition: "transform 150ms ease-out",
             }}
