@@ -1,54 +1,49 @@
-## Redesign `src/pages/Events.tsx` to match screenshot
+## Category Listing Page Redesign
 
-Rebuild the page's visual layout while keeping all existing data, filtering, and routing logic working.
+Redesign `src/pages/CategoryPage.tsx` to match the attached screenshot. All current logic (data fetching, subcategory filter, search, refine drawer, favourites, open-now calc) stays unchanged — only the presentation layer is rewritten.
 
-### New layout (top → bottom)
+### Page chrome
 
-1. **Header card** (ivory `#f5f0e8`, rounded)
-   - Circular black "HH" logo
-   - "Hello Hoedspruit" title + "YOUR LOWVELD LOCAL" subtitle
-   - Two circular icon buttons on the right: search (opens search input/drawer) and filters (opens existing `RefineDrawer`)
+- Background: `#E6E0CC` (replace `C.olive` page background).
+- Top bar:
+  - Centered title block: bold title `Restaurants & Cafes` on top, small uppercase eyebrow `24 PLACES` underneath (uses existing `totalCount`).
+  - Left: circular back button (white/ivory bg, dark arrow).
+  - Right: circular search button (white/ivory bg, dark icon) that opens the existing search input (toggle an inline search field or reuse the SearchDialog).
+- Remove the standalone search bar that currently sits below the header (replaced by the search-icon toggle). Keep the text-search state and filtering logic.
 
-2. **Month/date strip card** (white, rounded)
-   - Current month + year heading ("October 2023" style — derived from selected date)
-   - Left/right circular arrow buttons to page weeks
-   - 7-day row (Mon–Sun) showing weekday label + day number; selected day pill in dark olive (`#48484a`-style) with cream text
-   - Selecting a day filters events to that date
+### Filter pills row
 
-3. **Filter pills row**
-   - "All", "Today", "This Week", "This Month" pills (drop "Past")
-   - Active pill: dark olive bg, cream text. Inactive: white bg, dark text.
-   - Tapping a pill clears the single-day selection above
+A horizontally scrollable row directly under the header:
+- `⇄ FILTERS` pill — dark `#2A2A24` bg, ivory text, opens existing Refine drawer. Shows count badge when `activeFilterCount > 0`.
+- `OPEN NOW` pill — white bg, dark text; toggles existing `filterOpenNow`.
+- `TOP RATED` pill — white bg; toggles sort to `rating` (and back to `default`).
+- Additional quick pills if useful: `SAVED` (toggles `filterSaved`).
+- Active state for non-FILTERS pills: dark fill matching FILTERS.
 
-4. **Upcoming Events section**
-   - "Upcoming Events" heading (left) + "See all" link (right) — only show "See all" when list is truncated; otherwise omit
-   - Vertical stack of event cards (white, rounded `16px`, 4px gap):
-     - Left: square 3:4-ish thumbnail with rounded corners
-     - Middle: bold title (2 lines max), date • time line, pin icon + location + distance (distance hidden if not available)
-     - Right column: price (or "Free") on top, category tag pill below
+The current "X listings" count line and divider are removed (count now lives in the eyebrow).
 
-### Logic changes
+### Listing cards
 
-- Add `selectedDate: Date | null` state; when set, filters `datedAll` to events whose `_parsed` matches that date
-- Month label + week strip derive from `selectedDate ?? today`
-- Week arrows shift the visible 7-day window by ±7 days; selection auto-updates
-- Tag pill on card uses `event.tag`
-- Price comes from `event.price` (already exists); show "Free" if empty/0
-- Distance: skipped unless a future enhancement adds geolocation — show only location text for now (don't fabricate "15 km")
-- Keep existing search drawer, refine drawer, recurring-event resolution, and route to `/events/:id`
+White cards (`#FFFFFF`), 20–24px radius, ~16px vertical gap, no shadow (or a very soft one):
 
-### Styling
+- Image area: full-width, ~200px tall, image fills with `object-cover`.
+  - Top-left chip: rounded pill with ivory translucent bg, `☆ 4.8 (312)` — star icon + rating + reviews count in parentheses. Hide when no rating.
+  - Top-right: heart button (existing `CardHeart`), restyled to match (white translucent circle, dark outline heart, rust fill when saved).
+- Body padding ~20px:
+  - Row 1: Bold title (left, large sans-serif, `#020202`) and right-aligned status badge:
+    - `OPEN` — pill with green border + green text, transparent bg.
+    - `CLOSED` — pill with red border + red text.
+    - Hidden when no opening hours.
+  - Row 2: Subtitle `Category • Subcategory` (e.g. `Restaurant • African`) — small muted text. Built from category title + first listing subcategory if available; falls back to existing `category_label`/`subtitle`.
+  - Row 3: Location row with map-pin icon: `Location • X km` (distance only shown if we already have it — otherwise just location). Muted text.
+  - Description paragraph removed to match screenshot.
 
-- Page bg: `#ebebeb`
-- Card surfaces: ivory `#f5f0e8` for header, white for date strip + event cards
-- Typography: Helvetica Neue 400, uppercase weekday labels with `0.01em` tracking, headings in `#020202`, body in `#2b2420`
-- 20px horizontal page padding, 4px gaps between cards, 100px bottom padding (per project memory)
-- Replace inline `SERIF`/serif font usage on this page with Helvetica Neue
+### Empty / loading states
 
-### Files touched
+Keep existing logic; restyle text colour to dark ink (`#2A2A24` / muted) for the new light background, and the "Clear filters" button to dark pill.
 
-- `src/pages/Events.tsx` — rewrite the JSX + add date-strip component and new card component inline; keep imports for queries/refine drawer; no schema or other-file changes
+### Technical notes
 
-### Out of scope
-
-- No DB changes, no new fields (distance), no changes to `EventDetail` or admin
+- File touched: `src/pages/CategoryPage.tsx` only (plus possibly a small subcategory lookup query if we want `Restaurant • African`-style subtitle; otherwise fall back to existing fields).
+- Refine drawer styling, share/favourite hooks, routing, and data queries are untouched.
+- Colors used as inline constants matching current pattern: `page #E6E0CC`, `card #FFFFFF`, `ink #020202`, `muted #6B6A5E`, `pillDark #2A2A24`, `open #2E7D4F`, `closed #C0392B`.
