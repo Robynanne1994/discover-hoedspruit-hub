@@ -325,16 +325,35 @@ const EventCard = ({ event }: { event: any }) => {
           paddingLeft: 4,
         }}
       >
-        <span
-          style={{
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 14,
-            color: C.ink,
-          }}
-        >
-          {price}
-        </span>
+        {price.startsWith("From ") ? (
+          <span
+            style={{
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 14,
+              color: C.ink,
+              textAlign: "right",
+              lineHeight: 1.15,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "flex-end",
+            }}
+          >
+            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.04em" }}>From</span>
+            <span>{price.slice(5)}</span>
+          </span>
+        ) : (
+          <span
+            style={{
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 14,
+              color: C.ink,
+            }}
+          >
+            {price}
+          </span>
+        )}
         {tag && (
           <span
             style={{
