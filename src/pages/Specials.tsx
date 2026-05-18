@@ -332,6 +332,26 @@ const Specials = () => {
           </div>
         )}
       </div>
+
+      <RefineDrawer
+        open={showFilters}
+        onClose={() => setShowFilters(false)}
+        onClear={() => setFilterType([])}
+        resultsCount={filteredSpecials.length}
+        resultsLabel="specials"
+      >
+        <RefineSection isFirst label="Category" summary={filterType.length > 0 ? `${filterType.length} selected` : undefined} open onToggle={() => {}}>
+          {categoryTabs.filter((c) => c !== "All").length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {categoryTabs.filter((c) => c !== "All").map((t) => (
+                <RefineChip key={t} label={t} active={filterType.includes(t)} onClick={() => toggleFilter(t)} />
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories available.</p>
+          )}
+        </RefineSection>
+      </RefineDrawer>
     </div>
   );
 };
