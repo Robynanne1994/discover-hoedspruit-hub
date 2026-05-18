@@ -51,10 +51,12 @@ const HomeWhatsOnEditor = () => {
   const { data: searchResults = [] } = useQuery({
     queryKey: ["event-search", search],
     queryFn: async () => {
+      const todayIso = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("events")
-        .select("id, title, image_url, date, location")
-        .order("date", { ascending: true })
+        .select("id, title, image_url, date, start_date, end_date, location")
+        .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
+        .order("start_date", { ascending: true, nullsFirst: false })
         .limit(30);
       if (search.trim()) q = q.ilike("title", `%${search.trim()}%`);
       const { data } = await q;
