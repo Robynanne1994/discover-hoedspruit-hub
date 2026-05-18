@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -409,124 +409,115 @@ const Events = () => {
     <div
       style={{
         minHeight: "100vh",
+        paddingTop: 60,
+        paddingBottom: 100,
         background: C.page,
         fontFamily: SANS,
-        paddingBottom: 100,
+        color: C.ink,
       }}
     >
-      <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 4 }}>
-        {/* Header card */}
-        <div
+      {/* Header — Specials-style: centered title, icons inline on right */}
+      <div
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20,
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <div />
+        <h1
           style={{
-            background: C.ivory,
-            borderRadius: 16,
-            padding: "18px 18px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
+            fontFamily: SANS,
+            fontSize: 22,
+            fontWeight: 700,
+            color: C.ink,
+            margin: 0,
+            letterSpacing: "-0.3px",
+            textAlign: "center",
           }}
         >
-          <div
+          Events
+        </h1>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
+          <button
+            aria-label={searchOpen ? "Close search" : "Search"}
+            onClick={() => {
+              if (searchOpen) {
+                setSearch("");
+                setSearchOpen(false);
+              } else {
+                setSearchOpen(true);
+              }
+            }}
             style={{
-              width: 44,
-              height: 44,
+              width: 36,
+              height: 36,
               borderRadius: "50%",
-              background: C.ink,
-              color: C.ivory,
-              display: "flex",
+              background: "transparent",
+              border: "none",
+              display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 16,
-              flexShrink: 0,
+              cursor: "pointer",
+              color: C.ink,
             }}
           >
-            HH
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <h1
-              style={{
-                fontFamily: SANS,
-                fontWeight: 700,
-                fontSize: 18,
-                color: C.ink,
-                margin: 0,
-                lineHeight: 1.1,
-                letterSpacing: "0.01em",
-              }}
-            >
-              Hello Hoedspruit
-            </h1>
-            <p
-              style={{
-                fontFamily: SANS,
-                fontSize: 11,
-                color: C.muted,
-                margin: 0,
-                marginTop: 2,
-                letterSpacing: "0.12em",
-              }}
-            >
-              YOUR LOWVELD LOCAL
-            </p>
-          </div>
-          <button
-            aria-label="Search"
-            onClick={() => setSearchOpen((v) => !v)}
-            style={circleBtn}
-          >
-            <Search size={16} color={C.ink} strokeWidth={1.8} />
+            {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
           </button>
           <button
             aria-label="Filters"
             onClick={() => setRefineOpen(true)}
             style={{
-              ...circleBtn,
-              background: tagFilter ? C.dark : C.white,
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: tagFilter ? C.ink : "transparent",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: tagFilter ? C.page : C.ink,
             }}
           >
-            <SlidersHorizontal
-              size={16}
-              color={tagFilter ? C.ivory : C.ink}
-              strokeWidth={1.8}
-            />
+            <SlidersHorizontal size={20} strokeWidth={2} />
           </button>
         </div>
+      </div>
 
-        {/* Search input (collapsible) */}
-        {searchOpen && (
-          <div
+      {/* Gap before content */}
+      <div style={{ height: 24 }} />
+
+      {/* Inline search input */}
+      {searchOpen && (
+        <div style={{ padding: "0 20px 12px 20px" }}>
+          <input
+            autoFocus
+            type="text"
+            placeholder="Search local happenings"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             style={{
-              background: C.white,
-              borderRadius: 16,
-              padding: "10px 14px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
+              width: "100%",
+              height: 40,
+              borderRadius: 999,
+              border: "1px solid rgba(2,2,2,0.12)",
+              padding: "0 16px",
+              fontFamily: SANS,
+              fontSize: 14,
+              color: C.ink,
+              background: "transparent",
+              outline: "none",
             }}
-          >
-            <Search size={16} color={C.muted} strokeWidth={1.8} />
-            <input
-              autoFocus
-              type="text"
-              placeholder="Search events..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                flex: 1,
-                border: "none",
-                outline: "none",
-                background: "transparent",
-                fontFamily: SANS,
-                fontSize: 14,
-                color: C.ink,
-              }}
-            />
-          </div>
-        )}
+          />
+        </div>
+      )}
 
-        {/* Week strip */}
+      {/* Week strip */}
+      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 4 }}>
         <WeekStrip
           anchor={weekAnchor}
           selectedDate={selectedDate}
