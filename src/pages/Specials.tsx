@@ -66,6 +66,8 @@ const Specials = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterType, setFilterType] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<string>("All");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
