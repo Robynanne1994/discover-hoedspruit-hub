@@ -148,19 +148,19 @@ const Specials = () => {
         color: COLOR.ink,
       }}
     >
-      {/* Header */}
+      {/* Header — title centered, icons inline on the right, 60px gap above */}
       <div
         style={{
-          paddingTop: 60,
+          marginTop: 60,
           paddingLeft: 20,
           paddingRight: 20,
-          position: "relative",
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
           alignItems: "center",
-          justifyContent: "center",
-          minHeight: 36,
+          gap: 8,
         }}
       >
+        <div />
         <h1
           style={{
             fontFamily: SANS,
@@ -176,11 +176,9 @@ const Specials = () => {
         </h1>
         <div
           style={{
-            position: "absolute",
-            right: 20,
-            top: 60,
             display: "flex",
             alignItems: "center",
+            justifyContent: "flex-end",
             gap: 6,
           }}
         >
@@ -231,7 +229,7 @@ const Specials = () => {
       </div>
 
       {/* Gap before content */}
-      <div style={{ height: 60 }} />
+      <div style={{ height: 24 }} />
 
       {/* Inline search input */}
       {searchOpen && (
