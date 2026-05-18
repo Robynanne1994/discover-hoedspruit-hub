@@ -206,6 +206,15 @@ const ListingDetail = () => {
     }
   };
 
+  useEffect(() => {
+    const hasS = (relatedSpecials?.length ?? 0) > 0;
+    const hasE = (relatedEvents?.length ?? 0) > 0;
+    const hasG = ((listing as any)?.gallery_images?.length ?? 0) > 0;
+    const keys: TabKey[] = ["about", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
+    if (!keys.includes(tab)) setTab("about");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [relatedSpecials, relatedEvents, listing, tab]);
+
   if (isLoading || !listing) {
     return (
       <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text }}>
