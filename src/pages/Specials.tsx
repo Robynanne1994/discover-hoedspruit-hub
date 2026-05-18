@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, X } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
+import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
@@ -65,6 +66,8 @@ const Specials = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterType, setFilterType] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<string>("All");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -118,8 +121,22 @@ const Specials = () => {
         return cats.map((c) => c.toLowerCase()).includes(t);
       });
     }
+    if (filterType.length > 0) {
+      const lc = filterType.map((t) => t.toLowerCase());
+      result = result.filter((s: any) => {
+        const cats: string[] = [];
+        if (s.category) cats.push(String(s.category));
+        if (Array.isArray(s.eyebrow_categories)) cats.push(...s.eyebrow_categories.map((c: any) => String(c)));
+        const lcCats = cats.map((c) => c.toLowerCase());
+        return lc.some((t) => lcCats.includes(t));
+      });
+    }
     return result;
-  }, [specials, activeTab, search]);
+  }, [specials, activeTab, filterType, search]);
+
+  const toggleFilter = (val: string) => {
+    setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));
+  };
 
   return (
     <div
@@ -134,56 +151,91 @@ const Specials = () => {
       {/* Header */}
       <div
         style={{
-          paddingTop: 56,
+          paddingTop: 60,
           paddingLeft: 20,
           paddingRight: 20,
+          position: "relative",
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
+          justifyContent: "center",
+          minHeight: 36,
         }}
       >
         <h1
           style={{
             fontFamily: SANS,
-            fontSize: 30,
+            fontSize: 22,
             fontWeight: 700,
             color: COLOR.ink,
             margin: 0,
-            letterSpacing: "-0.5px",
+            letterSpacing: "-0.3px",
+            textAlign: "center",
           }}
         >
           Specials
         </h1>
-        <button
-          aria-label={searchOpen ? "Close search" : "Search"}
-          onClick={() => {
-            if (searchOpen) {
-              setSearch("");
-              setSearchOpen(false);
-            } else {
-              setSearchOpen(true);
-            }
-          }}
+        <div
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: "50%",
-            background: "transparent",
-            border: "none",
-            display: "inline-flex",
+            position: "absolute",
+            right: 20,
+            top: 60,
+            display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: COLOR.ink,
+            gap: 6,
           }}
         >
-          {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
-        </button>
+          <button
+            aria-label={searchOpen ? "Close search" : "Search"}
+            onClick={() => {
+              if (searchOpen) {
+                setSearch("");
+                setSearchOpen(false);
+              } else {
+                setSearchOpen(true);
+              }
+            }}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: "transparent",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: COLOR.ink,
+            }}
+          >
+            {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
+          </button>
+          <button
+            aria-label="Filters"
+            onClick={() => setShowFilters(true)}
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: "50%",
+              background: filterType.length > 0 ? COLOR.ink : "transparent",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: filterType.length > 0 ? COLOR.pageBg : COLOR.ink,
+            }}
+          >
+            <SlidersHorizontal size={20} strokeWidth={2} />
+          </button>
+        </div>
       </div>
+
+      {/* Gap before content */}
+      <div style={{ height: 60 }} />
 
       {/* Inline search input */}
       {searchOpen && (
-        <div style={{ padding: "12px 20px 0 20px" }}>
+        <div style={{ padding: "0 20px 12px 20px" }}>
           <input
             ref={searchInputRef}
             type="text"
@@ -209,7 +261,7 @@ const Specials = () => {
       {/* Category tabs */}
       <div
         style={{
-          marginTop: 18,
+          marginTop: 0,
           paddingLeft: 20,
           paddingRight: 20,
           overflowX: "auto",
@@ -280,6 +332,26 @@ const Specials = () => {
           </div>
         )}
       </div>
+
+      <RefineDrawer
+        open={showFilters}
+        onClose={() => setShowFilters(false)}
+        onClear={() => setFilterType([])}
+        resultsCount={filteredSpecials.length}
+        resultsLabel="specials"
+      >
+        <RefineSection isFirst label="Category" summary={filterType.length > 0 ? `${filterType.length} selected` : undefined} open onToggle={() => {}}>
+          {categoryTabs.filter((c) => c !== "All").length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {categoryTabs.filter((c) => c !== "All").map((t) => (
+                <RefineChip key={t} label={t} active={filterType.includes(t)} onClick={() => toggleFilter(t)} />
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories available.</p>
+          )}
+        </RefineSection>
+      </RefineDrawer>
     </div>
   );
 };
