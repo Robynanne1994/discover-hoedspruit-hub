@@ -415,7 +415,7 @@ const BushTelegraph = () => {
           return (
             <div key={section.platform} style={{ marginTop: idx === 0 ? 0 : 32 }}>
               <SectionHeader
-                title={section.platform.toLowerCase()}
+                title={section.platform === "WhatsApp" ? "whatsApp" : section.platform.toLowerCase()}
                 count={section.items.length}
                 noun={PLATFORM_NOUN[section.platform]}
               />
