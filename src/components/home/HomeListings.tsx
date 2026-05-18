@@ -83,7 +83,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
               {l.google_rating != null && (
                 <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E" }}>
                   ★ {Number(l.google_rating).toFixed(1)}
-                  {l.google_rating_count ? ` (${l.google_rating_count})` : ""}
+                  {l.google_rating_count ? ` · ${l.google_rating_count} reviews` : ""}
                 </div>
               )}
             </Link>
