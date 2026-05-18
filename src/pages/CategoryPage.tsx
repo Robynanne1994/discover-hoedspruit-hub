@@ -413,141 +413,207 @@ const CategoryPage = () => {
 
   const isSearchEmpty = (search.trim().length > 0 || activeFilterCount > 0) && filteredListings.length === 0 && totalCount > 0;
 
+  const PAGE_BG = "#E6E0CC";
+  const CARD_BG = "#FFFFFF";
+  const INK = "#020202";
+  const MUTED = "#6B6A5E";
+  const PILL_DARK = "#2A2A24";
+  const OPEN_COLOR = "#2E7D4F";
+  const CLOSED_COLOR = "#C0392B";
+
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  const Pill = ({
+    active,
+    onClick,
+    icon,
+    children,
+  }: {
+    active: boolean;
+    onClick: () => void;
+    icon?: React.ReactNode;
+    children: React.ReactNode;
+  }) => (
+    <button
+      onClick={onClick}
+      style={{
+        flexShrink: 0,
+        height: 38,
+        padding: "0 16px",
+        borderRadius: 9999,
+        background: active ? PILL_DARK : "#FFFFFF",
+        color: active ? "#FFFFFF" : INK,
+        border: "none",
+        fontFamily: sans,
+        fontSize: 12,
+        fontWeight: 500,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 8,
+        cursor: "pointer",
+      }}
+    >
+      {icon}
+      {children}
+    </button>
+  );
+
   return (
     <div
       style={{
         minHeight: "100vh",
         paddingBottom: 100,
-        background: C.olive,
+        background: PAGE_BG,
         fontFamily: sans,
-        color: C.cream,
+        color: INK,
       }}
     >
       {/* Top bar */}
       <div
         style={{
           paddingTop: 60,
-          paddingLeft: 24,
-          paddingRight: 24,
+          paddingLeft: 20,
+          paddingRight: 20,
           display: "flex",
           alignItems: "center",
           gap: 12,
-          minHeight: 44,
         }}
       >
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            background: "transparent",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#FFFFFF",
             border: "none",
-            padding: 0,
-            margin: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            lineHeight: 0,
             flexShrink: 0,
           }}
         >
-          <BackArrowIcon size={22} color={C.cream} />
+          <BackArrowIcon size={18} color={INK} />
         </button>
-        <div
-          style={{
-            fontFamily: sans,
-            fontSize: 20,
-            fontWeight: 600,
-            color: C.cream,
-            textTransform: "none",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            lineHeight: 1,
-            flex: 1,
-            textAlign: "center",
-            marginRight: 22,
-          }}
-        >
-          {displayTitle}
-        </div>
-      </div>
-
-      {/* Search */}
-      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
-        <div
-          style={{
-            height: 44,
-            background: "rgba(238, 232, 218, 0.92)",
-            borderRadius: 999,
-            padding: "0 20px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <Search size={18} strokeWidth={1.6} color={C.ink} style={{ flexShrink: 0 }} />
-          <input
-            type="text"
-            placeholder={`Search ${displayTitle}`}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="placeholder:text-[#2b2420]/80"
+        <div style={{ flex: 1, textAlign: "center" }}>
+          <div
             style={{
-              flex: 1,
-              background: "transparent",
-              border: "none",
-              outline: "none",
               fontFamily: sans,
-              fontSize: 14,
-              color: C.ink,
+              fontSize: 18,
+              fontWeight: 700,
+              color: INK,
+              lineHeight: 1.15,
             }}
-          />
+          >
+            {displayTitle}
+          </div>
+          <div
+            style={{
+              fontFamily: sans,
+              fontSize: 11,
+              fontWeight: 500,
+              color: MUTED,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              marginTop: 4,
+            }}
+          >
+            {totalCount} {totalCount === 1 ? "Place" : "Places"}
+          </div>
         </div>
-      </div>
-
-      {/* Results count + filter */}
-      <div
-        style={{
-          padding: "12px 24px 6px 24px",
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: sans,
-            fontSize: 15,
-            color: "rgba(238,232,218,0.85)",
-          }}
-        >
-          {filteredListings.length} {filteredListings.length === 1 ? "listing" : "listings"}
-        </span>
         <button
-          aria-label="Refine"
-          onClick={() => setRefineOpen(true)}
+          onClick={() => setSearchOpen((v) => !v)}
+          aria-label="Search"
           style={{
-            width: 36,
-            height: 36,
+            width: 40,
+            height: 40,
             borderRadius: "50%",
-            background: activeFilterCount > 0 ? C.ink : C.cream,
+            background: "#FFFFFF",
             border: "none",
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
+            flexShrink: 0,
           }}
         >
-          <SlidersHorizontal
-            size={14}
-            strokeWidth={1.8}
-            color={activeFilterCount > 0 ? C.cream : C.ink}
-          />
+          <Search size={18} strokeWidth={1.8} color={INK} />
         </button>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginBottom: 20 }} />
+      {searchOpen && (
+        <div style={{ padding: "16px 20px 0 20px" }}>
+          <div
+            style={{
+              height: 44,
+              background: "#FFFFFF",
+              borderRadius: 9999,
+              padding: "0 18px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <Search size={16} strokeWidth={1.8} color={INK} style={{ flexShrink: 0 }} />
+            <input
+              autoFocus
+              type="text"
+              placeholder={`Search ${displayTitle}`}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                flex: 1,
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                fontFamily: sans,
+                fontSize: 14,
+                color: INK,
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Filter pills */}
+      <div
+        className="scrollbar-hide"
+        style={{
+          marginTop: 18,
+          marginBottom: 16,
+          paddingLeft: 20,
+          paddingRight: 20,
+          overflowX: "auto",
+        }}
+      >
+        <div style={{ display: "flex", gap: 8 }}>
+          <Pill
+            active
+            onClick={() => setRefineOpen(true)}
+            icon={<SlidersHorizontal size={14} strokeWidth={2} color="#FFFFFF" />}
+          >
+            Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+          </Pill>
+          <Pill active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)}>
+            Open Now
+          </Pill>
+          <Pill
+            active={sortBy === "rating"}
+            onClick={() => setSortBy(sortBy === "rating" ? "default" : "rating")}
+          >
+            Top Rated
+          </Pill>
+          {user && (
+            <Pill active={filterSaved} onClick={() => setFilterSaved(!filterSaved)}>
+              Saved
+            </Pill>
+          )}
+        </div>
+      </div>
 
       <RefineDrawer
         open={refineOpen}
@@ -606,12 +672,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {CUISINE_OPTIONS.map((c) => (
-                  <RefineChip
-                    key={c}
-                    label={c}
-                    active={filterCuisine.includes(c)}
-                    onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)}
-                  />
+                  <RefineChip key={c} label={c} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
                 ))}
               </div>
             </RefineSection>
@@ -623,12 +684,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {VIBE_OPTIONS.map((v) => (
-                  <RefineChip
-                    key={v}
-                    label={v}
-                    active={filterVibe.includes(v)}
-                    onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)}
-                  />
+                  <RefineChip key={v} label={v} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
                 ))}
               </div>
             </RefineSection>
@@ -640,12 +696,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {MEAL_OPTIONS.map((m) => (
-                  <RefineChip
-                    key={m}
-                    label={m}
-                    active={filterMeal.includes(m)}
-                    onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)}
-                  />
+                  <RefineChip key={m} label={m} active={filterMeal.includes(m)} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} />
                 ))}
               </div>
             </RefineSection>
@@ -657,12 +708,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {SEATING_OPTIONS.map((s) => (
-                  <RefineChip
-                    key={s}
-                    label={s}
-                    active={filterSeating.includes(s)}
-                    onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)}
-                  />
+                  <RefineChip key={s} label={s} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
                 ))}
               </div>
             </RefineSection>
@@ -671,11 +717,7 @@ const CategoryPage = () => {
 
         <RefineSection
           label="My List"
-          summary={
-            [filterOpenNow, filterSaved].filter(Boolean).length > 0
-              ? `${[filterOpenNow, filterSaved].filter(Boolean).length} selected`
-              : undefined
-          }
+          summary={[filterOpenNow, filterSaved].filter(Boolean).length > 0 ? `${[filterOpenNow, filterSaved].filter(Boolean).length} selected` : undefined}
           open={openSection === "list"}
           onToggle={() => setOpenSection(openSection === "list" ? null : "list")}
         >
@@ -687,11 +729,7 @@ const CategoryPage = () => {
 
         <RefineSection
           label="Amenities"
-          summary={
-            [filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length > 0
-              ? `${[filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length} selected`
-              : undefined
-          }
+          summary={[filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length > 0 ? `${[filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length} selected` : undefined}
           open={openSection === "amenities"}
           onToggle={() => setOpenSection(openSection === "amenities" ? null : "amenities")}
         >
@@ -708,13 +746,13 @@ const CategoryPage = () => {
 
       {/* Listings */}
       {isLoading ? (
-        <div style={{ paddingLeft: 24, paddingRight: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+        <div style={{ paddingLeft: 20, paddingRight: 20, display: "flex", flexDirection: "column", gap: 16 }}>
           {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="w-full" style={{ height: 380, borderRadius: 24, background: "rgba(238,232,218,0.12)" }} />
+            <Skeleton key={i} className="w-full" style={{ height: 340, borderRadius: 20, background: "rgba(0,0,0,0.06)" }} />
           ))}
         </div>
       ) : filteredListings.length > 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 24, paddingRight: 24 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, paddingLeft: 20, paddingRight: 20 }}>
           {filteredListings.map((l) => {
             const hasDetail = !!(
               l.long_description ||
@@ -724,20 +762,22 @@ const CategoryPage = () => {
             );
             const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
             const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
-            const opensTime = hasHours && open === false ? opensAt(l.opening_hours as Record<string, string>) : null;
+
+            const sub = l.subtitle || l.category_label || "";
+            const subtitleLine = sub ? `${categoryTitle.replace(/s\s*&.*$/i, "").replace(/s$/, "")} • ${sub}` : categoryTitle;
 
             return (
               <article
                 key={l.id}
                 onClick={hasDetail ? () => navigate(`/listing/${l.id}`) : undefined}
                 style={{
-                  background: C.cream,
-                  borderRadius: 24,
+                  background: CARD_BG,
+                  borderRadius: 20,
                   overflow: "hidden",
                   cursor: hasDetail ? "pointer" : "default",
                 }}
               >
-                <div style={{ position: "relative", width: "100%", height: 220, background: C.softCream }}>
+                <div style={{ position: "relative", width: "100%", height: 200, background: "#F4EFE3" }}>
                   {l.image_url ? (
                     <img
                       src={l.image_url}
@@ -745,100 +785,84 @@ const CategoryPage = () => {
                       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                       loading="lazy"
                     />
-                  ) : (
+                  ) : null}
+
+                  {l.google_rating ? (
                     <div
                       style={{
-                        width: "100%",
-                        height: "100%",
-                        background: `linear-gradient(135deg, ${C.softCream}, ${C.cream})`,
+                        position: "absolute",
+                        top: 12,
+                        left: 12,
+                        background: "rgba(255,255,255,0.92)",
+                        borderRadius: 9999,
+                        padding: "5px 10px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: 5,
+                        fontFamily: sans,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        color: INK,
                       }}
-                    />
-                  )}
+                    >
+                      <span style={{ color: INK }}>★</span>
+                      {Number(l.google_rating).toFixed(1)}
+                      {l.google_reviews_count ? (
+                        <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
+                      ) : null}
+                    </div>
+                  ) : null}
+
                   <CardHeart listingId={l.id} />
                 </div>
 
-                <div style={{ padding: "18px 22px 22px" }}>
-                  <h3
-                    style={{
-                      fontFamily: sans,
-                      fontSize: 20,
-                      fontWeight: 400,
-                      color: C.ink,
-                      lineHeight: 1.2,
-                      letterSpacing: "-0.3px",
-                      margin: 0,
-                      marginBottom: 10,
-                    }}
-                  >
-                    {l.title}
-                  </h3>
-
-                  {(l.google_rating || open !== null) && (
-                    <div
+                <div style={{ padding: "16px 18px 18px" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
+                    <h3
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 8,
-                        flexWrap: "wrap",
                         fontFamily: sans,
-                        fontSize: 13,
-                        marginBottom: 6,
+                        fontSize: 20,
+                        fontWeight: 700,
+                        color: INK,
+                        lineHeight: 1.2,
+                        margin: 0,
+                        flex: 1,
+                        minWidth: 0,
+                        wordBreak: "break-word",
                       }}
                     >
-                      {l.google_rating ? (
-                        <span style={{ color: C.ink }}>
-                          <span style={{ color: C.ink }}>★</span> {Number(l.google_rating).toFixed(1)}
-                        </span>
-                      ) : null}
-                      {/* separator dot removed */}
-                      {open === true && (
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 6, color: C.ink }}>
-                          <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: "50%", background: C.gold }} />
-                          Open now
-                        </span>
-                      )}
-                      {open === false && (
-                        <span style={{ color: C.mutedInk }}>
-                          {opensTime ? `Closed · Opens ${opensTime}` : "Closed"}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                      {l.title}
+                    </h3>
+                    {open !== null && (
+                      <span
+                        style={{
+                          flexShrink: 0,
+                          border: `1.5px solid ${open ? OPEN_COLOR : CLOSED_COLOR}`,
+                          color: open ? OPEN_COLOR : CLOSED_COLOR,
+                          fontFamily: sans,
+                          fontSize: 11,
+                          fontWeight: 700,
+                          letterSpacing: "0.08em",
+                          textTransform: "uppercase",
+                          padding: "4px 10px",
+                          borderRadius: 6,
+                          background: "transparent",
+                        }}
+                      >
+                        {open ? "Open" : "Closed"}
+                      </span>
+                    )}
+                  </div>
+
+                  <div style={{ fontFamily: sans, fontSize: 13, color: MUTED, marginBottom: l.location ? 10 : 0 }}>
+                    {subtitleLine}
+                  </div>
 
                   {l.location && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 6,
-                        fontFamily: sans,
-                        fontSize: 13,
-                        color: C.mutedInk,
-                        marginBottom: 12,
-                      }}
-                    >
-                      <MapPin size={13} strokeWidth={1.6} color={C.mutedInk} style={{ flexShrink: 0 }} />
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED }}>
+                      <MapPin size={13} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
                       <span>{l.location}</span>
                     </div>
-                  )}
-
-                  {l.description && (
-                    <p
-                      style={{
-                        fontFamily: sans,
-                        fontSize: 14,
-                        fontWeight: 400,
-                        lineHeight: 1.55,
-                        color: "rgba(42,42,36,0.85)",
-                        margin: 0,
-                        display: "-webkit-box",
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: "vertical",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {l.description}
-                    </p>
                   )}
                 </div>
               </article>
@@ -850,38 +874,18 @@ const CategoryPage = () => {
           style={{
             textAlign: "center",
             paddingTop: 60,
-            paddingLeft: 24,
-            paddingRight: 24,
+            paddingLeft: 20,
+            paddingRight: 20,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <MapPin size={48} strokeWidth={1.5} color="rgba(238,232,218,0.5)" style={{ marginBottom: 16 }} />
-          <p
-            style={{
-              fontFamily: serif,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: 22,
-              color: "rgba(238,232,218,0.8)",
-              margin: 0,
-              marginBottom: 8,
-            }}
-          >
+          <MapPin size={48} strokeWidth={1.5} color={MUTED} style={{ marginBottom: 16, opacity: 0.5 }} />
+          <p style={{ fontFamily: sans, fontSize: 18, fontWeight: 600, color: INK, margin: 0, marginBottom: 8 }}>
             {isSearchEmpty ? "No matches found." : "Nothing here yet."}
           </p>
-          <p
-            style={{
-              fontFamily: sans,
-              fontSize: 14,
-              fontWeight: 400,
-              lineHeight: 1.55,
-              color: "rgba(238,232,218,0.7)",
-              maxWidth: 260,
-              margin: 0,
-            }}
-          >
+          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 400, lineHeight: 1.55, color: MUTED, maxWidth: 260, margin: 0 }}>
             {isSearchEmpty ? "Try clearing your filters or search." : "Check back soon as new places join the app."}
           </p>
           {isSearchEmpty && (
@@ -889,14 +893,14 @@ const CategoryPage = () => {
               onClick={clearAllFilters}
               style={{
                 marginTop: 20,
-                background: "#EEE8DA",
-                color: "#2A2A24",
+                background: PILL_DARK,
+                color: "#FFFFFF",
                 border: "none",
                 borderRadius: 999,
                 padding: "12px 22px",
                 fontFamily: sans,
                 fontSize: 14,
-                fontWeight: 400,
+                fontWeight: 500,
                 cursor: "pointer",
               }}
             >
