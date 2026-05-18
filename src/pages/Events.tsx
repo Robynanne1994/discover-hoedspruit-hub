@@ -650,7 +650,7 @@ const Events = () => {
               letterSpacing: "0.01em",
             }}
           >
-            Upcoming Events
+            {sectionTitle}
           </h2>
           {filtered.length > 5 && (
             <span style={{ fontFamily: SANS, fontSize: 12, color: C.muted }}>
