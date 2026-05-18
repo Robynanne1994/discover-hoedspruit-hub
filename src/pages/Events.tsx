@@ -22,7 +22,7 @@ import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const C = {
-  page: "#ebebeb",
+  page: "#E6E0CC",
   ivory: "#f5f0e8",
   white: "#ffffff",
   ink: "#020202",
