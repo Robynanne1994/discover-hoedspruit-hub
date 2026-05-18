@@ -215,7 +215,7 @@ const AdminModeration = () => {
   };
 
   return (
-    <div className="text-gray-950">
+    <div className="text-zinc-950">
       <h1 className="text-2xl font-bold mb-1">Moderation queue</h1>
       <p className="text-sm text-muted-foreground mb-6 text-slate-100">Review pending submissions from business owners.</p>
 
