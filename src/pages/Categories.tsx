@@ -370,8 +370,8 @@ const Categories = () => {
                   to={`/category/${featured.id}`}
                   style={{
                     display: "block",
-                    background: COLORS.cream,
-                    borderRadius: 24,
+                    background: "#ffffff",
+                    borderRadius: 16,
                     overflow: "hidden",
                     textDecoration: "none",
                     transition: "transform 150ms ease-out",
@@ -396,26 +396,26 @@ const Categories = () => {
                         width: 38,
                         height: 38,
                         borderRadius: 999,
-                        background: COLORS.cream,
+                        background: "#ffffff",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
                       }}
                     >
                       <ArrowOut size={16} />
                     </div>
                   </div>
-                  <div style={{ paddingTop: 24, paddingLeft: 24, paddingRight: 24, paddingBottom: 22 }}>
+                  <div style={{ paddingTop: 16, paddingBottom: 14, paddingLeft: 16, paddingRight: 16, textAlign: "center" }}>
                     <h2
                       style={{
                         fontFamily: FONT_BODY,
-                        fontWeight: 400,
-                        fontSize: 34,
-                        lineHeight: 1.05,
-                        letterSpacing: "-0.6px",
+                        fontWeight: 700,
+                        fontSize: 18,
+                        lineHeight: 1.2,
                         color: COLORS.ink,
                         margin: 0,
-                        marginBottom: 8,
+                        marginBottom: 4,
                       }}
                     >
                       {featured.title}
@@ -425,11 +425,11 @@ const Categories = () => {
                         fontFamily: FONT_BODY,
                         fontSize: 13,
                         fontWeight: 400,
-                        color: COLORS.muted,
+                        color: "#9a9a92",
                         margin: 0,
                       }}
                     >
-                      {formatCount(listingCounts?.[featured.id] || 0)}
+                      ({formatCount(listingCounts?.[featured.id] || 0)})
                     </p>
                   </div>
                 </Link>
