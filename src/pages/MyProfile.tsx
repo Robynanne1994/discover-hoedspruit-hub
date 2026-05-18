@@ -7,11 +7,14 @@ import { useFollowCounts } from "@/hooks/useFollows";
 import { Pencil, Heart, Settings } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const PAGE_BG = "#5C6446";
-const CREAM = "#EEE8DA";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const RUST = "#9B5A3C";
+// Design tokens (match SpecialDetail / EventDetail / ListingDetail)
+const PAGE_BG = "#ebebeb";
+const CREAM = "#f5f0e8"; // ivory card surface
+const INK = "#020202";   // heading
+const TEXT = "#2b2420";  // body
+const MUTED = "#8A8480";
+const RUST = "#715a3d";  // primary brown (interactive)
+const BORDER = "#E8E4DF";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) =>
