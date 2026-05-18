@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
+
+const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface Props {
   primary: string;
@@ -7,55 +10,45 @@ interface Props {
   actionHref?: string;
 }
 
-const HomeSectionHead = ({ primary, serif, actionLabel, actionHref }: Props) => {
-  const heading = serif ? `${primary} ${serif}` : primary;
+const HomeSectionHead = ({ primary, serif, actionLabel = "View all", actionHref }: Props) => {
+  const title = serif ? `${primary} ${serif}` : primary;
   return (
     <div
       style={{
+        padding: "0 20px",
         display: "flex",
         alignItems: "baseline",
         justifyContent: "space-between",
-        padding: "0 24px",
-        marginBottom: 16,
-        gap: 12,
+        marginBottom: 14,
       }}
     >
       <h2
         style={{
           margin: 0,
-          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-          fontWeight: 700,
-          fontStyle: "normal",
-          fontSize: 24,
-          lineHeight: 1.0,
+          fontFamily: HN,
+          fontWeight: 400,
+          fontSize: 22,
           letterSpacing: "0.01em",
-          color: "#EEE8DA",
+          color: "#020202",
         }}
-        className="!capitalize"
       >
-        {heading}
+        {title}
       </h2>
-      {actionLabel && actionHref && (
+      {actionHref && (
         <Link
           to={actionHref}
           style={{
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-            fontWeight: 400,
-            fontSize: 11,
-            lineHeight: 1,
-            textTransform: "uppercase",
-            letterSpacing: "1.8px",
-            color: "rgba(238, 232, 218, 0.85)",
-            borderBottom: "1px solid rgba(238,232,218,0.4)",
-            paddingBottom: 2,
+            fontFamily: HN,
+            fontSize: 13,
+            color: "#2b2420",
             textDecoration: "none",
-            whiteSpace: "nowrap",
-            flexShrink: 0,
-            display: "inline-block",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 2,
           }}
         >
           {actionLabel}
-          <span style={{ marginLeft: 4 }}>↗</span>
+          <ChevronRight size={14} strokeWidth={1.6} />
         </Link>
       )}
     </div>
