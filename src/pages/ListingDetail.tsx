@@ -592,7 +592,7 @@ const ListingDetail = () => {
               listing.phone && { label: "Phone", value: formatSAPhone(listing.phone), href: `tel:${listing.phone}`, Icon: Phone },
               waClean && { label: "WhatsApp", value: formatSAPhone(whatsappNum!), href: `https://wa.me/${waClean}`, Icon: Phone },
               listing.email && { label: "Email", value: listing.email, href: `mailto:${listing.email}`, Icon: Mail },
-              listing.website && { label: "Website", value: listing.website, href: listing.website, Icon: Globe },
+              listing.website && { label: "Website", value: (listing as any).website_label || listing.website, href: listing.website, Icon: Globe },
             ].filter(Boolean).map((r: any, i, arr) => (
               <a key={r.label} href={r.href} target="_blank" rel="noopener noreferrer" style={{
                 display: "flex", alignItems: "center", gap: 14,
