@@ -596,7 +596,7 @@ const Events = () => {
       {/* Filter pills */}
       <div
         style={{
-          padding: "16px 20px 12px",
+          padding: "16px 20px 32px",
           display: "flex",
           gap: 8,
           overflowX: "auto",
