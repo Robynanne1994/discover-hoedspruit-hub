@@ -689,8 +689,8 @@ const MyAccount = () => {
             alignItems: "center",
             gap: 10,
             background: "transparent",
-            color: CREAM,
-            border: "1px solid rgba(238,232,218,0.35)",
+            color: INK,
+            border: `1px solid ${LINE}`,
             borderRadius: 999,
             padding: "14px 26px",
             fontFamily: SANS,
@@ -699,10 +699,11 @@ const MyAccount = () => {
             cursor: "pointer",
           }}
         >
-          <LogOut size={14} strokeWidth={1.6} color={CREAM} />
+          <LogOut size={14} strokeWidth={1.6} color={INK} />
           <span>Log Out</span>
         </button>
       </div>
+
     </div>
   );
 };
