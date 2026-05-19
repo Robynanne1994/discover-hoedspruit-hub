@@ -191,7 +191,7 @@ const AdminListings = () => {
         pets_allowed: values.pets_allowed,
         wheelchair_friendly: values.wheelchair_friendly,
         price_level: values.price_level,
-        show_attributes: values.show_attributes,
+        show_attributes: true,
         meal: values.meal,
         vibe: values.vibe,
         cuisine: values.cuisine,
