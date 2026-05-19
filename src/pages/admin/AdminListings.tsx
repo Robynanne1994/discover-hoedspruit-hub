@@ -611,7 +611,7 @@ const AdminListings = () => {
                 />
 
                 <div className="border-t border-border pt-4 mt-2 space-y-3">
-                  <p className="text-sm font-medium text-foreground">Custom Detail Rows (optional)</p>
+                  <p className="font-medium text-foreground text-lg text-red-800">Custom Detail Rows (optional)</p>
                   <p className="text-xs text-muted-foreground -mt-2">Add up to 3 custom rows. Each appears as the last item(s) in the Details card.</p>
                   {[1, 2, 3].slice(0, customRowsVisible).map((n) => {
                     const titleKey = `custom_title_${n}` as keyof typeof form;
