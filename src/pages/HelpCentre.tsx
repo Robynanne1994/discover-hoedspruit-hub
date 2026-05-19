@@ -114,13 +114,6 @@ const HelpCentre = () => {
           position: "relative",
           overflow: "hidden",
         }}>
-          {/* Decorative life buoy */}
-          <LifeBuoy
-            size={120}
-            color="rgba(255,255,255,0.08)"
-            strokeWidth={1.5}
-            style={{ position: "absolute", right: -14, top: 18, pointerEvents: "none" }}
-          />
 
           {/* Chat icon */}
           <div style={{
