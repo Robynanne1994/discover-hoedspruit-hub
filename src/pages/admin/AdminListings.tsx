@@ -746,7 +746,6 @@ const AdminListings = () => {
                       return (
                         <div key={key}>
                           <Label>{label}</Label>
-                          <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
                           <div className="flex flex-wrap gap-2">
                             {merged.map((opt) => {
                               const selected = form[key].includes(opt);
