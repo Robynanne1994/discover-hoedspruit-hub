@@ -122,7 +122,7 @@ const HomeHero = () => {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setFocused(true)}
-              placeholder="Search places, events, activities..."
+              placeholder="Search listings, events, activities..."
               style={{
                 flex: 1,
                 border: "none",

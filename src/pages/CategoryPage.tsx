@@ -522,7 +522,7 @@ const CategoryPage = () => {
               marginTop: 4,
             }}
           >
-            {totalCount} {totalCount === 1 ? "Place" : "Places"}
+            {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
           </div>
         </div>
         <button

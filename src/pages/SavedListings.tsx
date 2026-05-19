@@ -279,8 +279,8 @@ const SavedListings = () => {
     }
     if (primaryTab === "listings") {
       return activeCount === 1
-        ? "1 place, kept for when you need it."
-        : `${activeCount} places, kept for when you need them.`;
+        ? "1 listing, kept for when you need it."
+        : `${activeCount} listings, kept for when you need them.`;
     }
     if (primaryTab === "events") {
       return activeCount === 1
@@ -296,7 +296,7 @@ const SavedListings = () => {
     primaryTab === "all"
       ? "Search everything saved"
       : primaryTab === "listings"
-        ? "Search saved places"
+        ? "Search saved listings"
         : primaryTab === "events"
           ? "Search saved events"
           : "Search saved specials";
