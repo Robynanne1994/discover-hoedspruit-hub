@@ -702,7 +702,7 @@ const AdminListings = () => {
 
                     {/* Accessibility Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
+                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Accessibility</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
                         <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
