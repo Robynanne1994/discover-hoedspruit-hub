@@ -793,7 +793,7 @@ const AdminListings = () => {
 
                 {isShoppingType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="font-medium text-foreground text-lg text-red-800">Shopping Fields</p>
+                    <p className="font-medium text-foreground mb-3 text-base text-red-600">Shopping Fields</p>
 
                     <div className="space-y-3">
                       {[
