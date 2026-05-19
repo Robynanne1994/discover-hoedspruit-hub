@@ -296,10 +296,10 @@ const AdminBushTelegraph = () => {
           <p className="text-white/70 text-sm">Manage off-app resources (Facebook, WhatsApp, Instagram, Websites, Radio).</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadExport} className="gap-2">
+          <Button variant="outline" size="sm" onClick={downloadExport} className="gap-2 bg-stone-700 text-slate-100 border-gray-950">
             <FileSpreadsheet className="h-4 w-4" /> Export
           </Button>
-          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2">
+          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2 bg-stone-700 text-slate-100 border-gray-950">
             <FileSpreadsheet className="h-4 w-4" /> Template
           </Button>
           <Button size="sm" onClick={startAdd} className="gap-2">
