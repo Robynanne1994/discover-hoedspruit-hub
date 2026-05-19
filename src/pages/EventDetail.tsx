@@ -39,17 +39,18 @@ const pressScale = (s = "0.98") => ({
 
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: FONT, fontWeight: 400, fontSize: 12,
-  letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading,
+  fontFamily: FONT, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  letterSpacing: 0, textTransform: "none", color: C.heading,
 };
 const paraStyle: React.CSSProperties = {
   fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
   color: C.text, margin: "0 0 10px",
 };
-const iconBtn: React.CSSProperties = {
+const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
-  background: "none", border: "none", cursor: "pointer",
+  background: "#FFFFFF", border: "none", cursor: "pointer",
   display: "flex", alignItems: "center", justifyContent: "center",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
 };
 
 type TabKey = "about" | "details" | "gallery" | "location";
@@ -328,17 +329,17 @@ const EventDetail = () => {
 
   const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
     const baseStyle: React.CSSProperties = {
-      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
-      padding: "10px 14px", borderRadius: 999,
+      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+      padding: "14px 18px", borderRadius: 999,
       background: C.surface, border: `1px solid ${C.border}`,
-      color: C.primary, textDecoration: "none", cursor: "pointer",
-      fontFamily: FONT, fontWeight: 400, fontSize: 13,
+      color: C.heading, textDecoration: "none", cursor: "pointer",
+      fontFamily: FONT, fontWeight: 400, fontSize: 14,
       letterSpacing: "0.01em", flexShrink: 0,
       width: full ? "100%" : undefined,
       transition: "transform 150ms ease-out",
     };
     const inner = (<>
-      <a.Icon size={14} strokeWidth={1.75} color={C.primary} />
+      <a.Icon size={16} strokeWidth={1.75} color={C.heading} />
       <span>{a.label}</span>
     </>);
     if (a.onClick) {
@@ -359,10 +360,10 @@ const EventDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: 400, fontSize: 12,
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
           letterSpacing: "0.08em", textTransform: "uppercase",
           color: active ? C.heading : C.muted,
-          borderBottom: `2px solid ${active ? C.primary : "transparent"}`,
+          borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
       >
@@ -527,38 +528,45 @@ const EventDetail = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
-      {/* Sticky header */}
-      <header style={{
-        position: "sticky", top: 0, zIndex: 40,
-        background: C.surface, borderBottom: `1px solid ${C.border}`,
-        display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "12px 16px",
-      }}>
-        <button onClick={() => navigate(-1)} aria-label="Back"
-          style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: C.heading, padding: 4, minHeight: 40 }}>
+      {/* Hero (4:3) with floating action buttons */}
+      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
+        {event.image_url && (
+          <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        )}
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            ...floatBtn,
+            position: "absolute",
+            top: "calc(env(safe-area-inset-top) + 16px)",
+            left: 16,
+            zIndex: 2,
+          }}
+        >
           <BackArrowIcon size={20} color={C.heading} />
-          <span style={{ fontFamily: FONT, fontSize: 15, color: C.heading }}>Event Details</span>
         </button>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={iconBtn}>
+        <div style={{
+          position: "absolute",
+          top: "calc(env(safe-area-inset-top) + 16px)",
+          right: 16,
+          zIndex: 2,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+        }}>
+          <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
             <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
           </button>
-          <button onClick={handleShare} aria-label="Share" style={iconBtn}>
+          <button onClick={handleShare} aria-label="Share" style={floatBtn}>
             <Share2 size={20} strokeWidth={1.6} color={C.heading} />
           </button>
           {isAdmin && (
-            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={iconBtn}>
+            <button onClick={() => setEditOpen(true)} aria-label="Edit" style={floatBtn}>
               <Pencil size={18} strokeWidth={1.6} color={C.heading} />
             </button>
           )}
         </div>
-      </header>
-
-      {/* Hero (4:3) */}
-      <div style={{ width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
-        {event.image_url && (
-          <img src={event.image_url} alt={event.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-        )}
       </div>
 
       {/* Title block */}
@@ -572,7 +580,7 @@ const EventDetail = () => {
           </div>
         )}
         <h1 style={{
-          margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 24, lineHeight: 1.2,
+          margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
           color: C.heading, letterSpacing: "0.01em",
         }}>
           {event.title}
@@ -611,7 +619,7 @@ const EventDetail = () => {
 
       {/* Sticky tab bar */}
       <nav style={{
-        position: "sticky", top: 57, zIndex: 30,
+        position: "sticky", top: 0, zIndex: 30,
         background: C.surface, borderBottom: `1px solid ${C.border}`,
         display: "flex", padding: "0 8px",
       }}>
