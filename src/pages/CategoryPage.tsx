@@ -760,7 +760,7 @@ const CategoryPage = () => {
               l.long_description ||
               (l.gallery_images && l.gallery_images.length > 0) ||
               (l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v)) ||
-              (isRestaurant && l.show_attributes)
+              isRestaurant
             );
             const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
             const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
