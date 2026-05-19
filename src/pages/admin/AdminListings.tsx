@@ -456,7 +456,16 @@ const AdminListings = () => {
                     </div>
                   </div>
                 )}
-                <div><Label>Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} /></div>
+                <div>
+                  <Label>Card Cover Image</Label>
+                  <p className="text-xs text-muted-foreground mb-1">Shown on the category listing page. Crops to 16:9 by default.</p>
+                  <ImageUpload bucket="listing-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} aspect={16/9} />
+                </div>
+                <div>
+                  <Label>Detail Cover Image</Label>
+                  <p className="text-xs text-muted-foreground mb-1">Shown on the individual listing page. Crops to 4:3 by default. Falls back to the card cover if empty.</p>
+                  <ImageUpload bucket="listing-images" value={form.detail_image_url} onChange={(url) => setForm({ ...form, detail_image_url: url })} aspect={4/3} />
+                </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
