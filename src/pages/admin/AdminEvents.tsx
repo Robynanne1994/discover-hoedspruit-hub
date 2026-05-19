@@ -62,7 +62,7 @@ const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: 
       <Textarea value={value} onChange={(e) => onChange(e.target.value)} rows={2} placeholder="Paste image URLs (one per line) or upload below" className="text-xs" />
       <div className="flex gap-2">
         <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleUpload} />
-        <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5 text-zinc-50 opacity-100 bg-zinc-400">
+        <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5 bg-gray-500 opacity-100 text-slate-50 border-slate-950">
           {uploading ? <><ImageIcon className="h-3.5 w-3.5 animate-pulse" /> Uploading...</> : <><Upload className="h-3.5 w-3.5" /> Upload Images</>}
         </Button>
       </div>
@@ -102,7 +102,7 @@ const EventCoverUpload = ({ value, onChange }: { value: string; onChange: (v: st
       )}
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Paste image URL or upload below" />
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
-      <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5 text-zinc-50 opacity-100 bg-zinc-400">
+      <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5 bg-gray-500 opacity-100 text-slate-50 border-slate-950">
         {uploading ? <><ImageIcon className="h-3.5 w-3.5 animate-pulse" /> Uploading...</> : <><Upload className="h-3.5 w-3.5" /> Upload Image</>}
       </Button>
     </div>

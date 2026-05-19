@@ -180,7 +180,7 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
           size="sm"
           disabled={uploading}
           onClick={() => fileRef.current?.click()}
-          className="gap-1.5 border-gray-950 bg-neutral-600 text-slate-50"
+          className="gap-1.5 bg-gray-500 opacity-100 text-slate-50 border-slate-950"
         >
           {uploading ? (
             <><ImageIcon className="h-3.5 w-3.5 animate-pulse" /> Uploading...</>
