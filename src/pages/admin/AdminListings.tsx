@@ -592,7 +592,7 @@ const AdminListings = () => {
                 </div>
 
                 <div className="border-t border-border pt-4 mt-2">
-                  <p className="text-sm font-medium text-foreground mb-3">Detail Page Fields (optional)</p>
+                  <p className="font-medium text-foreground text-lg text-red-800 mb-3">Detail Page Fields (optional)</p>
                 </div>
 
                 <div>
@@ -611,7 +611,7 @@ const AdminListings = () => {
                 />
 
                 <div className="border-t border-border pt-4 mt-2 space-y-3">
-                  <p className="text-sm font-medium text-foreground">Custom Detail Rows (optional)</p>
+                  <p className="font-medium text-foreground text-lg text-red-800">Custom Detail Rows (optional)</p>
                   <p className="text-xs text-muted-foreground -mt-2">Add up to 3 custom rows. Each appears as the last item(s) in the Details card.</p>
                   {[1, 2, 3].slice(0, customRowsVisible).map((n) => {
                     const titleKey = `custom_title_${n}` as keyof typeof form;
@@ -681,7 +681,7 @@ const AdminListings = () => {
 
                 {isRestaurantType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-sm font-medium text-foreground">Restaurant Attributes</p>
+                    <p className="font-medium text-foreground text-lg text-red-800">Restaurant Attributes</p>
                     <div className="space-y-3">
                       <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
                       <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
@@ -691,7 +691,7 @@ const AdminListings = () => {
 
                     {/* Kids Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-sm font-medium text-foreground mb-3">Kids</p>
+                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Kids</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
                         <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
@@ -702,7 +702,7 @@ const AdminListings = () => {
 
                     {/* Accessibility Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
+                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Accessibility</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
                         <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
@@ -713,7 +713,7 @@ const AdminListings = () => {
 
                     {/* Amenities Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
+                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Amenities</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
                         <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
@@ -793,7 +793,7 @@ const AdminListings = () => {
 
                 {isShoppingType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-sm font-medium text-foreground">Shopping Fields</p>
+                    <p className="font-medium text-foreground text-lg text-red-800">Shopping Fields</p>
 
                     <div className="space-y-3">
                       {[
@@ -863,7 +863,7 @@ const AdminListings = () => {
 
                 {isAccommodationType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-sm font-medium text-foreground">Accommodation Fields</p>
+                    <p className="font-medium text-foreground text-lg text-red-800">Accommodation Fields</p>
 
                     <div className="space-y-3">
                       {[
@@ -934,7 +934,7 @@ const AdminListings = () => {
 
                 {isNGOType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-sm font-medium text-foreground">NGO & Volunteering Fields</p>
+                    <p className="font-medium text-foreground text-lg text-red-800">NGO & Volunteering Fields</p>
                     <div><Label>Cause</Label><Textarea value={form.cause} onChange={(e) => setForm({ ...form, cause: e.target.value })} placeholder="What cause does this NGO support?" /></div>
                     <div><Label>Impact</Label><Textarea value={form.impact} onChange={(e) => setForm({ ...form, impact: e.target.value })} placeholder="What impact have they made?" /></div>
                     <div><Label>Ways To Give</Label><Textarea value={form.ways_to_give} onChange={(e) => setForm({ ...form, ways_to_give: e.target.value })} placeholder="How can people donate or contribute?" /></div>
