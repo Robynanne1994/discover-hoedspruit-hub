@@ -413,14 +413,28 @@ const Categories = () => {
                                 style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
                               />
                             )}
+                            <span
+                              style={{
+                                position: "absolute",
+                                top: 8,
+                                right: 8,
+                                background: "#FFFFFF",
+                                color: COLORS.ink,
+                                fontFamily: FONT_BODY,
+                                fontSize: 12,
+                                fontWeight: 700,
+                                lineHeight: 1,
+                                padding: "6px 10px",
+                                borderRadius: 999,
+                              }}
+                            >
+                              ({count})
+                            </span>
                           </div>
                         </div>
                         <div
                           style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 6,
-                            padding: "4px 14px 16px",
+                            padding: "2px 14px 10px",
                           }}
                         >
                           <p
@@ -435,17 +449,6 @@ const Categories = () => {
                           >
                             {cat.title}
                           </p>
-                          <span
-                            style={{
-                              fontFamily: FONT_BODY,
-                              fontSize: 13,
-                              fontWeight: 400,
-                              color: COLORS.muted,
-                              alignSelf: "flex-end",
-                            }}
-                          >
-                            ({count})
-                          </span>
                         </div>
                       </Link>
                     );
