@@ -280,7 +280,7 @@ const BushTelegraph = () => {
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 24, paddingLeft: 20, paddingRight: 20, display: "flex", alignItems: "center", gap: 12, minHeight: 40 }}>
+      <div style={{ paddingTop: 60, paddingLeft: 20, paddingRight: 20, display: "flex", alignItems: "center", gap: 12, minHeight: 40 }}>
         <CircleBtn onClick={() => navigate(-1)} ariaLabel="Back">
           <ArrowLeft size={18} color={INK} strokeWidth={2} />
         </CircleBtn>
