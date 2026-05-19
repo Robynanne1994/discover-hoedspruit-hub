@@ -616,16 +616,16 @@ const AccountInfo = () => {
           onClick={handleSaveProfile}
           disabled={savingProfile || profileLoading}
           style={{
-            marginTop: 16,
+            marginTop: 20,
             width: "100%",
-            height: 54,
-            background: INK,
-            color: CREAM,
+            height: 56,
+            background: DARK,
+            color: "#FFFFFF",
             border: "none",
             borderRadius: 999,
             fontFamily: FF,
-            fontSize: 15,
-            fontWeight: 400,
+            fontSize: 16,
+            fontWeight: 700,
             letterSpacing: "0.1px",
             cursor: savingProfile ? "not-allowed" : "pointer",
             opacity: savingProfile ? 0.7 : 1,
@@ -638,19 +638,18 @@ const AccountInfo = () => {
           type="button"
           onClick={() => setDeleteOpen(true)}
           style={{
-            display: "block",
-            margin: "24px auto 0",
+            marginTop: 10,
+            width: "100%",
+            height: 56,
             background: "#FFFFFF",
-            border: "1px solid #B00020",
+            border: "none",
             borderRadius: 999,
-            padding: "12px 22px",
             cursor: "pointer",
             fontFamily: FF,
-            fontSize: 14,
-            fontWeight: 500,
-            color: "#B00020",
+            fontSize: 16,
+            fontWeight: 700,
+            color: RUST,
             letterSpacing: "0.02em",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
           }}
         >
           Delete Account
