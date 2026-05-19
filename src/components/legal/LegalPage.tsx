@@ -40,7 +40,7 @@ const LINE = "rgba(26,26,26,0.08)";
 const ICON_BG = "rgba(26,26,26,0.06)";
 const RUST = "#9B5A3C";
 
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
+const ICON_MAP: Record<string, any> = {
   // Terms
   "agreement to terms": FileText,
   "who we are": Users,
