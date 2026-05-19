@@ -1,48 +1,61 @@
-## Redesign: My Notifications page
+## Goal
 
-Update `src/pages/MyNotifications.tsx` only. Keep all existing logic (data fetch, realtime, mark-as-read after 1.5s, initial-unread highlighting, navigation links). Only the visual layer changes.
+Restyle `src/pages/ListingDetail.tsx` so the individual listing page matches the attached reference. No data‑model or routing changes — purely presentational.
 
-### Colors & type
-- Page background: `#E6E0CC` (matches Events / Category pages)
-- Card background: `#FFFFFF`, border-radius 16px, no shadow, 1px hairline border `rgba(0,0,0,0.06)`
-- Ink `#020202`, muted `#6B6A5E`
-- Helvetica Neue weight 400 throughout (per project core rules); titles weight 700
-- 20px horizontal page padding, 100px bottom padding
+## Changes
 
-### Top bar
-- Background `#E6E0CC`, no bottom border
-- Center: title "Notifications" (bold, ~20px) with eyebrow line below showing `{n} UNREAD` in 11px tracked uppercase muted (hidden when 0)
-- Left: circular 40px white button containing `BackArrowIcon` → `navigate(-1)`
-- Right: circular 40px white button containing a "double-check" mark icon (`CheckCheck` from lucide-react) → marks all unread as read immediately (calls supabase update on currently-unread ids, then `load()`). Tooltip/aria "Mark all as read". Disabled/dim when no unread.
-- The existing Settings gear moves out of the top bar (kept accessible via Notification Preferences elsewhere; not shown on this page per the mockup).
+### 1. Hero + header
+- Remove the sticky white "Listing Details" header bar entirely.
+- Hero image bleeds to the very top of the page (keeps 4:3 ratio and `detail_image_url || image_url` source).
+- Float four circular white icon buttons over the hero:
+  - **Top‑left**: back arrow.
+  - **Top‑right**: heart (save), share, and (admin only) edit pencil — grouped with small gaps.
+- Each circular button: 40×40, `background: #FFFFFF`, subtle shadow, icon in `C.heading`. Heart fills with `C.primary` when favourited.
+- Buttons sit on a safe‑area‑aware inset (`top: calc(env(safe-area-inset-top) + 16px)`, `left/right: 16px`).
 
-### Sections
-Replace current "New / Earlier" grouping with date buckets derived from `created_at`:
-- **Today** — same calendar day
-- **Yesterday** — previous calendar day
-- **This Week** — within last 7 days, excluding above
-- **Earlier** — everything older
-Section header: 15px bold ink, 20px left padding, 18px top / 10px bottom, plain on page bg (no uppercase, matches mockup).
+### 2. Title block (white panel under hero)
+- Keep the eyebrow category line as is (uppercase, tracked, muted).
+- Make the **title bold and bigger**: `fontWeight: 700`, `fontSize: 28`, `lineHeight: 1.15`, `color: C.heading`.
+- Keep location row (pin icon + text) and star rating row exactly as now.
+- Action pills: keep outlined white style, bump to `padding: 14px 18px`, `fontSize: 14`, icon size 16. Continue rendering a 2×2 grid when 4 actions, horizontal scroll otherwise.
 
-### Notification card
-- White rounded card, padding 16px, 12px vertical gap between cards
-- Left: 44px rounded-square tinted icon tile
-  - Tint by `kind`: deal/special → soft pink `#F8D7DE` with `#C0392B` icon; event → soft grey `#E8E6DF` with ink icon; security/alert → soft green `#D6EBDB` with `#2E7D4F` icon; welcome/profile → soft tan `#E8DCC8` with `#8B6F4B` icon; default → soft grey
-  - Use existing `iconFor()` mapping for the glyph
-- Middle: title (15px bold ink, 1-line wrap ok), body (13.5px, line-height 1.45, muted-ink `#3A332B`, 2-line clamp), then small uppercase timestamp `2H AGO / 5H AGO / 1D AGO / 3D AGO` in 11px tracked muted
-- Right: small unread dot (8px, `#2A2A24`) top-right when card is in the initial-unread set; nothing when read
-- Whole card clickable when `n.link` is set
+### 3. Tab bar
+- Remove the `top: 57` offset (no sticky header anymore) so tabs sit naturally below the title block (still `position: sticky; top: 0`).
+- Active tab: `color: C.heading`, **bold (700)**, underline color `C.heading` (was `C.primary`).
+- Inactive tabs: `color: C.muted`, weight 400.
+- Keep uppercase + tracking.
 
-### Timestamp helper
-Add a `relativeShort(iso)` formatter: `<60m → "{n}M AGO"`, `<24h → "{n}H AGO"`, `<7d → "{n}D AGO"`, else `"{n}W AGO"` or date.
+### 4. Tab content background
+- Wrap the `<main>` so tab content sits on the page's `C.bg` (`#E6E0CC`) cream — matches the reference's ivory feel under the white title block.
 
-### Empty state
-Keep current empty state copy, restyled on `#E6E0CC` with ink heading and muted body, icon in muted ink.
+### 5. Section headings ("About", "Hours", "Contact", etc.)
+- Replace the existing small tracked uppercase `headStyle` with a **bold Title Case heading**:
+  - `fontSize: 22`, `fontWeight: 700`, `letterSpacing: 0`, `textTransform: none`, `color: C.heading`, `margin: 0 0 12px`.
+- Applies to About/Hours/Contact and the other tab section heads (Details, Specials, Events, Gallery, Location) for consistency.
 
-### Preserved logic
-- `useAuth`, supabase fetch + realtime subscription
-- `initialUnreadRef` keeps the dot visible for the session
-- Auto mark-as-read after 1.5s remains
-- Click navigates to `n.link` when present
+### 6. Hours card
+- Keep the white rounded card with hairline dividers.
+- **Today's row bold**: when `isToday`, render both the day label and the time in `fontWeight: 700`, `color: C.heading` (currently regular weight). Other rows unchanged.
+- Keep the green/red dot + "Open now · Closes 16:00" status line above the card.
 
-No other files touched.
+### 7. Contact rows
+- Inside the white card, simplify each row to: left icon (brown, 20px) + value text (no uppercase "PHONE/EMAIL/WHATSAPP/WEBSITE" mini‑label above) + `ArrowUpRight` on the right (muted).
+- Value text: `fontSize: 15`, `color: C.heading`, `fontWeight: 400`.
+- Keep hairline dividers between rows and the existing `href` behaviour (tel:, mailto:, wa.me, website).
+
+### 8. "Suggest an edit to this listing." footer
+- Unchanged.
+
+## Out of scope
+
+- No changes to Details / Specials / Events / Gallery / Location tab internals beyond the new section heading style.
+- No DB schema changes.
+- No changes to `CategoryPage`, admin, or other pages.
+
+## Technical notes
+
+- All edits live in `src/pages/ListingDetail.tsx`.
+- `headStyle` constant is reused across tab renderers — updating it once cascades the new heading look everywhere.
+- Floating buttons need `position: absolute` inside a `position: relative` hero wrapper, with `zIndex: 2` so they sit above the image.
+- Removing the sticky header means the tab bar's existing `top: 57` must drop to `top: 0`.
+- No new dependencies.
