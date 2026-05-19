@@ -539,7 +539,7 @@ const AdminListings = () => {
                       <div className="flex flex-wrap gap-2 mt-2 items-center">
                         {selectedCatIds.length > 1 && (
                           <Select value={newSubParent} onValueChange={setNewSubParent}>
-                            <SelectTrigger className="h-8 text-sm w-[160px]"><SelectValue placeholder="Parent category" /></SelectTrigger>
+                            <SelectTrigger className="h-8 text-sm w-[160px] border-gray-950 bg-slate-50"><SelectValue placeholder="Parent category" /></SelectTrigger>
                             <SelectContent>
                               {categories?.filter((c) => selectedCatIds.includes(c.id)).map((c) => (
                                 <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
