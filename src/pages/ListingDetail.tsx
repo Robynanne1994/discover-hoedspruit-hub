@@ -249,13 +249,17 @@ const ListingDetail = () => {
   const hasGallery = galleryImages.length > 0;
   const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
   const hasEvents = (relatedEvents?.length ?? 0) > 0;
+  const hasContact = !!(listing.email || listing.phone || waClean || listing.website);
+  const hasAbout = !!descriptionText || !!hasHours || hasContact;
+  const hasDetails = sections.length > 0;
+  const hasLocation = !!(listing.location || mapCoords);
   const visibleTabs: { key: TabKey; label: string }[] = [
-    { key: "about", label: "About" },
-    { key: "details", label: "Details" },
+    ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
+    ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
     ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
     ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
     ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
-    { key: "location", label: "Location" },
+    ...(hasLocation ? [{ key: "location" as TabKey, label: "Location" }] : []),
   ];
 
   // ----- Open status -----
