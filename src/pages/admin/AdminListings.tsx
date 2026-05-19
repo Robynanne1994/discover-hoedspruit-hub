@@ -611,7 +611,7 @@ const AdminListings = () => {
                 />
 
                 <div className="border-t border-border pt-4 mt-2 space-y-3">
-                  <p className="font-medium text-foreground text-lg text-red-800">Custom Detail Rows (optional)</p>
+                  <p className="font-medium text-foreground mb-3 text-base text-red-600">Custom Detail Rows (optional)</p>
                   <p className="text-xs text-muted-foreground -mt-2">Add up to 3 custom rows. Each appears as the last item(s) in the Details card.</p>
                   {[1, 2, 3].slice(0, customRowsVisible).map((n) => {
                     const titleKey = `custom_title_${n}` as keyof typeof form;
@@ -681,7 +681,7 @@ const AdminListings = () => {
 
                 {isRestaurantType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="font-medium text-foreground text-lg text-red-800">Restaurant Attributes</p>
+                    <p className="font-medium text-foreground mb-3 text-base text-red-600">Restaurant Attributes</p>
                     <div className="space-y-3">
                       <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
                       <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
@@ -793,7 +793,7 @@ const AdminListings = () => {
 
                 {isShoppingType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="font-medium text-foreground text-lg text-red-800">Shopping Fields</p>
+                    <p className="font-medium text-foreground mb-3 text-base text-red-600">Shopping Fields</p>
 
                     <div className="space-y-3">
                       {[
@@ -863,7 +863,7 @@ const AdminListings = () => {
 
                 {isAccommodationType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="font-medium text-foreground text-lg text-red-800">Accommodation Fields</p>
+                    <p className="font-medium text-foreground mb-3 text-base text-red-600">Accommodation Fields</p>
 
                     <div className="space-y-3">
                       {[
@@ -934,7 +934,7 @@ const AdminListings = () => {
 
                 {isNGOType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="font-medium text-foreground text-lg text-red-800">NGO & Volunteering Fields</p>
+                    <p className="font-medium text-foreground mb-3 text-base text-red-600">NGO & Volunteering Fields</p>
                     <div><Label>Cause</Label><Textarea value={form.cause} onChange={(e) => setForm({ ...form, cause: e.target.value })} placeholder="What cause does this NGO support?" /></div>
                     <div><Label>Impact</Label><Textarea value={form.impact} onChange={(e) => setForm({ ...form, impact: e.target.value })} placeholder="What impact have they made?" /></div>
                     <div><Label>Ways To Give</Label><Textarea value={form.ways_to_give} onChange={(e) => setForm({ ...form, ways_to_give: e.target.value })} placeholder="How can people donate or contribute?" /></div>
