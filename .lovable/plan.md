@@ -1,60 +1,47 @@
-# Listings Editor Refinements
+## Goal
 
-All changes are scoped to the admin listings editor and a couple of small UI components.
+Make `EventDetail.tsx` and `SpecialDetail.tsx` look like `ListingDetail.tsx`. Scope is **visual styling only** — no new sections, no removed data, no behavioural changes. Each page keeps its own tabs (Event: About / Details / Gallery / Location; Special: About / Details / Contact / Terms).
 
-## 1. Strip helper text from labels
-In `src/pages/admin/AdminListings.tsx`:
-- `Google Rating (0-5)` → `Google Rating`
-- `Google Reviews Count` (already clean — no change)
-- `Website Display Text (optional — shown instead of the URL)` → `Website Display Text`
+## Differences to fix
 
-## 2. Inline "Add new" for Categories & Subcategories
-In the Categories checkbox group, append an **+ Add category** button that opens a small inline input + Save. On save:
-- Insert a row into `categories` (title + next `sort_order`, default icon `Folder`).
-- Invalidate the `admin-categories-select` query so the new row appears.
-- Auto-tick it via `toggleCat(newId)`.
+Comparing the three files, five concrete styling deltas need to flow from Listing → Event + Special:
 
-Same pattern under Subcategories (only visible once at least one parent category is selected): asks which selected parent category to attach to (single-select if only one parent is chosen, skip the picker), inserts into `subcategories`, refreshes, auto-ticks.
+1. **Hero chrome**
+   - Listing: no sticky top bar. The Back / Heart / Share / Edit buttons float as white 40px circles directly over the hero image (top-left for Back, top-right for the rest), with a `boxShadow: 0 2px 8px rgba(0,0,0,0.18)` and respect for `env(safe-area-inset-top)`.
+   - Event/Special today: opaque white sticky `<header>` strip above the hero with a "Event Details" / "Special Details" text label next to the arrow.
+   - Change: remove the sticky text header on Event + Special. Move Back / Heart / Share / Edit into floating circular buttons over the hero, matching Listing exactly (same `floatBtn` style, same positions, same safe-area handling). Remove the now-unused "Event Details" / "Special Details" string.
 
-Errors are surfaced via `toast.error`. Duplicates (case-insensitive match against existing titles in the same scope) just re-use the existing row and tick it.
+2. **Section headings (`headStyle`)**
+   - Listing: `fontWeight: 700, fontSize: 22, textTransform: "none", letterSpacing: 0` — bold proper-case "About", "Hours", etc.
+   - Event/Special today: `fontWeight: 400, fontSize: 12, uppercase, letterSpacing: 0.08em` — tiny eyebrow style.
+   - Change: update `headStyle` constant in both files to the Listing values so every `<h2>` (About, The Offer, Promo Code, Location, Terms & Conditions) renders as a bold proper-case heading.
 
-## 3. Gallery: hide the URL textarea by default
-In `src/components/admin/GalleryUpload.tsx`:
-- Hide the URL `<Textarea>` by default.
-- Add an **Add image URLs** button next to **Upload Images**.
-- Clicking it reveals the textarea (state `showUrlInput`). Once open it stays open for the session of the dialog. Auto-opens on edit when `value` already contains URLs.
+3. **Page title block**
+   - Listing: `fontWeight: 700, fontSize: 28, lineHeight: 1.15`.
+   - Event/Special today: `fontWeight: 400, fontSize: 24, lineHeight: 1.2`.
+   - Change: bump both title `<h1>` styles to match Listing's weight/size/line-height.
 
-No change to upload/crop logic.
+4. **Action pills (`PillBtn`)**
+   - Listing: `padding: 14px 18px`, `fontSize: 14`, `gap: 8`, icon size 16, label + icon colored `C.heading` (black), letter-spacing `0.01em`.
+   - Event/Special today: `padding: 10px 14px`, `fontSize: 13`, `gap: 6`, icon size 14, label + icon colored `C.primary` (brown).
+   - Change: update `PillBtn` in both files to the Listing dimensions and colors. Keep the existing `pressScale`, `flexShrink`, `width: full` logic. The "Add to Calendar" button on Event keeps its `onClick` branch; only the styling moves.
 
-## 4. Always show attributes (remove the toggle)
-In `AdminListings.tsx`:
-- Remove the `Switch` + label "Show restaurant attributes on detail page" and the `{form.show_attributes && (...)}` guard — render the attributes block unconditionally inside `isRestaurantType`.
-- Force `show_attributes: true` in the upsert payload and in `emptyForm`/`startEdit`.
-- One-time backfill: on save, always send `show_attributes: true`. No migration needed (existing rows will flip the next time they're edited; UI on the public detail page reads attributes regardless, so check ListingDetail to confirm it doesn't gate on `show_attributes`).
+5. **Sticky tab bar**
+   - Listing: active tab uses `fontWeight: 700`, `borderBottom: 2px solid C.heading`.
+   - Event/Special today: active tab uses `fontWeight: 400`, `borderBottom: 2px solid C.primary`.
+   - Change: `TabBtn` in both files matches Listing — bold weight + heading-colored underline when active. The `top: 57` offset for Event/Special's tab bar (which exists because of the now-removed sticky header) drops back to `top: 0`, matching Listing.
 
-Technical note: I'll verify `ListingDetail.tsx` displays attributes without checking `show_attributes`. If it does check, remove that guard too so all listings render attributes consistently.
+## Out of scope (user picked "Visual styling only")
 
-## 5. Editable Meal / Vibe / Cuisine / Seating / Service Type
-These already store as free `text[]` on `listings`, so any value persists per-listing. To make new values appear as selectable chips for **future** listings without a new table:
+- No changes to tab keys, tab content order, or which sections are shown.
+- No new "related events" / "related specials" / "related listings" carousels on either page.
+- Special detail page has no gallery data today and stays without a gallery tab.
+- Event keeps its own `EventEditDialog`; Special keeps its `SpecialEditDialog`. The floating Edit pencil over the hero still opens those dialogs (Listing routes to `/admin/listings` instead — we match the visual treatment, not the destination).
+- No edits to `ListingDetail.tsx` itself.
 
-- Add a query that aggregates distinct values from existing rows per field (one `supabase.rpc`-free `select` per field, dedup client-side) and merges with the hard-coded `MEAL_OPTIONS` / `VIBE_OPTIONS` etc.
-- Below each chip group add a small **+ Add option** inline input. On save, the typed value is added to that listing's array and (because of the distinct aggregation) becomes a chip for every future listing automatically.
-- Only show this for the restaurant chip groups (where these fields live today).
+## Files touched
 
-This avoids new tables and keeps options category-dependent (only restaurant listings see/use them, exactly as today).
+- `src/pages/EventDetail.tsx` — replace header chrome, update `headStyle`, `<h1>` style, `PillBtn`, `TabBtn`.
+- `src/pages/SpecialDetail.tsx` — same five edits.
 
-## 6. Tri-state toggle label styling
-In `src/components/ui/label.tsx` the base `labelVariants` is currently `text-lg font-bold text-red-700` (the red comes from here, not the toggle). This is the root cause of red labels across the editor.
-
-Fix locally in `src/components/admin/TriStateToggle.tsx` by giving the label its own className that overrides the base:
-```
-<Label className="text-sm font-semibold text-foreground">{label}</Label>
-```
-(`text-foreground` resolves to near-black per the design tokens, `text-sm` is slightly smaller than the default `text-lg`, `font-semibold` per request.)
-
-I'll leave the global `Label` definition alone to avoid touching every other form across the app.
-
-## Out of scope
-- No DB schema changes.
-- No changes to public detail page logic beyond removing a `show_attributes` gate if one exists.
-- No changes to bulk import or CSV.
+Roughly ~60 lines changed per file, no new dependencies.
