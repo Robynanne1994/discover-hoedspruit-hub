@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, Store, Clock } from "lucide-react";
 import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
@@ -12,19 +12,24 @@ import { toast } from "sonner";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const COLOR = {
-  pageBg: "#ebebeb",
-  ink: "#020202",
-  mutedInk: "rgba(2,2,2,0.55)",
-  cardBg: "#5C6446",
-  cardFg: "#EEE8DA",
-  cardMuted: "rgba(238,232,218,0.75)",
-  divider: "rgba(2,2,2,0.12)",
+  pageBg: "#ECE3CF",
+  cardBg: "#FFFFFF",
+  ink: "#1A1A1A",
+  mutedInk: "#7A6E5C",
+  divider: "#EAE4D5",
+  pillBorder: "#E2DAC6",
+  pillInactiveBg: "#FFFFFF",
+  pillActiveBg: "#2E2418",
+  pillActiveFg: "#FFFFFF",
+  badge: "#C0392B",
+  badgeFg: "#FFFFFF",
+  priceStrike: "#9C9387",
 };
 
 const formatValidTill = (s: any): string => {
-  if (s.valid_until) return `VALID TILL ${format(new Date(s.valid_until), "d MMM").toUpperCase()}`;
-  if (s.day_of_week && s.day_of_week.length > 0) return s.day_of_week.join(", ").toUpperCase();
-  return "ONGOING";
+  if (s.valid_until) return `Valid until ${format(new Date(s.valid_until), "d MMM")}`;
+  if (s.day_of_week && s.day_of_week.length > 0) return s.day_of_week.join(", ");
+  return "Ongoing";
 };
 
 const useSaved = (id: string) => {
@@ -68,7 +73,7 @@ const Specials = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<string>("All");
+  const [activeTab, setActiveTab] = useState<string>("All Specials");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -90,7 +95,7 @@ const Specials = () => {
   });
 
   const categoryTabs = useMemo(() => {
-    if (!specials) return ["All"];
+    if (!specials) return ["All Specials"];
     const set = new Set<string>();
     for (const s of specials as any[]) {
       if (s.category && typeof s.category === "string") set.add(s.category.trim());
@@ -98,7 +103,7 @@ const Specials = () => {
         for (const c of s.eyebrow_categories) if (c && typeof c === "string") set.add(c.trim());
       }
     }
-    return ["All", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
+    return ["All Specials", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
   }, [specials]);
 
   const filteredSpecials = useMemo(() => {
@@ -112,7 +117,7 @@ const Specials = () => {
         (s.description && s.description.toLowerCase().includes(q))
       );
     }
-    if (activeTab !== "All") {
+    if (activeTab !== "All Specials") {
       const t = activeTab.toLowerCase();
       result = result.filter((s: any) => {
         const cats: string[] = [];
@@ -142,46 +147,39 @@ const Specials = () => {
     <div
       style={{
         minHeight: "100vh",
-        paddingTop: 60,
+        paddingTop: 24,
         paddingBottom: 120,
         background: COLOR.pageBg,
         fontFamily: SANS,
         color: COLOR.ink,
       }}
     >
-      {/* Header — title centered, icons inline on the right, 60px gap above */}
+      {/* Header — title left, filter circle right */}
       <div
         style={{
           paddingLeft: 20,
           paddingRight: 20,
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
+          paddingTop: 16,
+          display: "flex",
           alignItems: "center",
-          gap: 8,
+          justifyContent: "space-between",
+          gap: 12,
         }}
       >
-        <div />
         <h1
           style={{
             fontFamily: SANS,
-            fontSize: 22,
-            fontWeight: 700,
+            fontSize: 34,
+            fontWeight: 800,
             color: COLOR.ink,
             margin: 0,
-            letterSpacing: "-0.3px",
-            textAlign: "center",
+            letterSpacing: "-0.6px",
+            lineHeight: 1,
           }}
         >
           Specials
         </h1>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            gap: 6,
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <button
             aria-label={searchOpen ? "Close search" : "Search"}
             onClick={() => {
@@ -193,11 +191,11 @@ const Specials = () => {
               }
             }}
             style={{
-              width: 36,
-              height: 36,
+              width: 40,
+              height: 40,
               borderRadius: "50%",
-              background: "transparent",
-              border: "none",
+              background: COLOR.cardBg,
+              border: `1px solid ${COLOR.pillBorder}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
@@ -205,35 +203,35 @@ const Specials = () => {
               color: COLOR.ink,
             }}
           >
-            {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
+            {searchOpen ? <X size={18} strokeWidth={2} /> : <Search size={18} strokeWidth={2} />}
           </button>
           <button
             aria-label="Filters"
             onClick={() => setShowFilters(true)}
             style={{
-              width: 36,
-              height: 36,
+              width: 40,
+              height: 40,
               borderRadius: "50%",
-              background: filterType.length > 0 ? COLOR.ink : "transparent",
-              border: "none",
+              background: filterType.length > 0 ? COLOR.ink : COLOR.cardBg,
+              border: `1px solid ${COLOR.pillBorder}`,
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: filterType.length > 0 ? COLOR.pageBg : COLOR.ink,
+              color: filterType.length > 0 ? COLOR.cardBg : COLOR.ink,
             }}
           >
-            <SlidersHorizontal size={20} strokeWidth={2} />
+            <SlidersHorizontal size={18} strokeWidth={2} />
           </button>
         </div>
       </div>
 
-      {/* Gap before content */}
-      <div style={{ height: 24 }} />
+      {/* Divider under header */}
+      <div style={{ height: 1, background: COLOR.divider, margin: "20px 20px 0 20px" }} />
 
       {/* Inline search input */}
       {searchOpen && (
-        <div style={{ padding: "0 20px 12px 20px" }}>
+        <div style={{ padding: "16px 20px 0 20px" }}>
           <input
             ref={searchInputRef}
             type="text"
@@ -242,24 +240,24 @@ const Specials = () => {
             onChange={(e) => setSearch(e.target.value)}
             style={{
               width: "100%",
-              height: 40,
+              height: 44,
               borderRadius: 999,
-              border: `1px solid ${COLOR.divider}`,
-              padding: "0 16px",
+              border: `1px solid ${COLOR.pillBorder}`,
+              padding: "0 18px",
               fontFamily: SANS,
               fontSize: 14,
               color: COLOR.ink,
-              background: "transparent",
+              background: COLOR.cardBg,
               outline: "none",
             }}
           />
         </div>
       )}
 
-      {/* Category tabs */}
+      {/* Category pills */}
       <div
         style={{
-          marginTop: 0,
+          marginTop: 18,
           paddingLeft: 20,
           paddingRight: 20,
           overflowX: "auto",
@@ -267,7 +265,7 @@ const Specials = () => {
         }}
         className="scrollbar-hide"
       >
-        <div style={{ display: "flex", gap: 22, alignItems: "center", borderBottom: `1px solid ${COLOR.divider}` }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           {categoryTabs.map((tab) => {
             const isActive = tab === activeTab;
             return (
@@ -275,17 +273,17 @@ const Specials = () => {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: "10px 0 12px 0",
+                  background: isActive ? COLOR.pillActiveBg : COLOR.pillInactiveBg,
+                  border: `1px solid ${isActive ? COLOR.pillActiveBg : COLOR.pillBorder}`,
+                  borderRadius: 999,
+                  padding: "10px 18px",
                   cursor: "pointer",
                   fontFamily: SANS,
                   fontSize: 14,
-                  fontWeight: isActive ? 600 : 400,
-                  color: isActive ? COLOR.ink : COLOR.mutedInk,
-                  borderBottom: isActive ? `2px solid ${COLOR.ink}` : "2px solid transparent",
-                  marginBottom: -1,
+                  fontWeight: isActive ? 700 : 500,
+                  color: isActive ? COLOR.pillActiveFg : COLOR.ink,
                   whiteSpace: "nowrap",
+                  flexShrink: 0,
                 }}
               >
                 {tab}
@@ -296,15 +294,15 @@ const Specials = () => {
       </div>
 
       {/* Card stack */}
-      <div style={{ padding: "18px 20px 0 20px" }}>
+      <div style={{ padding: "20px 20px 0 20px" }}>
         {isLoading ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {Array.from({ length: 4 }).map((_, i) => (
-              <Skeleton key={i} className="w-full" style={{ height: 130, borderRadius: 18, background: "rgba(0,0,0,0.06)" }} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="w-full" style={{ height: 380, borderRadius: 18, background: "rgba(0,0,0,0.06)" }} />
             ))}
           </div>
         ) : filteredSpecials.length > 0 ? (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {filteredSpecials.map((s) => (
               <SpecialCard key={s.id} special={s} onClick={() => navigate(`/specials/${s.id}`)} />
             ))}
@@ -339,9 +337,9 @@ const Specials = () => {
         resultsLabel="specials"
       >
         <RefineSection isFirst label="Category" summary={filterType.length > 0 ? `${filterType.length} selected` : undefined} open onToggle={() => {}}>
-          {categoryTabs.filter((c) => c !== "All").length > 0 ? (
+          {categoryTabs.filter((c) => c !== "All Specials").length > 0 ? (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {categoryTabs.filter((c) => c !== "All").map((t) => (
+              {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
                 <RefineChip key={t} label={t} active={filterType.includes(t)} onClick={() => toggleFilter(t)} />
               ))}
             </div>
@@ -360,89 +358,16 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
     <article
       onClick={onClick}
       style={{
-        position: "relative",
         background: COLOR.cardBg,
         borderRadius: 18,
         overflow: "hidden",
         cursor: "pointer",
-        height: 140,
         display: "flex",
+        flexDirection: "column",
       }}
     >
-      {/* Text side */}
-      <div
-        style={{
-          position: "relative",
-          zIndex: 2,
-          flex: "1 1 60%",
-          padding: "18px 18px 16px 20px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          color: COLOR.cardFg,
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: SANS,
-              fontSize: 20,
-              fontWeight: 700,
-              lineHeight: 1.1,
-              letterSpacing: "-0.2px",
-              color: COLOR.cardFg,
-              marginBottom: 6,
-            }}
-          >
-            {special.deal_label}
-          </div>
-          <div
-            style={{
-              fontFamily: SANS,
-              fontSize: 15,
-              fontWeight: 400,
-              lineHeight: 1.25,
-              color: COLOR.cardFg,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {special.title}
-            {special.business_name ? (
-              <>
-                <br />
-                <span style={{ color: COLOR.cardMuted }}>{special.business_name}</span>
-              </>
-            ) : null}
-          </div>
-        </div>
-        <div
-          style={{
-            fontFamily: SANS,
-            fontSize: 11,
-            letterSpacing: "1.2px",
-            fontWeight: 500,
-            color: COLOR.cardMuted,
-            textTransform: "uppercase",
-          }}
-        >
-          {validText}
-        </div>
-      </div>
-
-      {/* Image side with gradient fade */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          width: "55%",
-          zIndex: 1,
-        }}
-      >
+      {/* Image */}
+      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#EEE8DA" }}>
         {special.image_url && (
           <img
             src={special.image_url}
@@ -451,13 +376,131 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
-        <div
+        {special.deal_label && (
+          <div
+            style={{
+              position: "absolute",
+              top: 14,
+              left: 14,
+              background: COLOR.badge,
+              color: COLOR.badgeFg,
+              padding: "7px 14px",
+              borderRadius: 999,
+              fontFamily: SANS,
+              fontSize: 11,
+              fontWeight: 700,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            {special.deal_label}
+          </div>
+        )}
+      </div>
+
+      {/* Body */}
+      <div style={{ padding: "16px 18px 18px 18px" }}>
+        {special.business_name && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: SANS,
+              fontSize: 11,
+              fontWeight: 600,
+              letterSpacing: "0.14em",
+              color: COLOR.mutedInk,
+              textTransform: "uppercase",
+              marginBottom: 8,
+            }}
+          >
+            <Store size={13} strokeWidth={2} />
+            {special.business_name}
+          </div>
+        )}
+        <h3
           style={{
-            position: "absolute",
-            inset: 0,
-            background: `linear-gradient(to right, ${COLOR.cardBg} 0%, ${COLOR.cardBg} 18%, rgba(92,100,70,0.85) 38%, rgba(92,100,70,0.35) 70%, rgba(92,100,70,0.15) 100%)`,
+            fontFamily: SANS,
+            fontSize: 19,
+            fontWeight: 700,
+            lineHeight: 1.25,
+            color: COLOR.ink,
+            margin: 0,
+            marginBottom: 8,
+            letterSpacing: "-0.2px",
           }}
-        />
+        >
+          {special.title}
+        </h3>
+        {special.description && (
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 14,
+              lineHeight: 1.45,
+              color: COLOR.mutedInk,
+              margin: 0,
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {special.description}
+          </p>
+        )}
+
+        {/* Divider */}
+        <div style={{ height: 1, background: COLOR.divider, margin: "16px 0 14px 0" }} />
+
+        {/* Footer */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: SANS,
+              fontSize: 13,
+              color: COLOR.mutedInk,
+              fontWeight: 500,
+            }}
+          >
+            <Clock size={14} strokeWidth={2} />
+            {validText}
+          </div>
+          {(special.price || special.original_price) && (
+            <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+              {special.original_price && (
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 14,
+                    color: COLOR.priceStrike,
+                    textDecoration: "line-through",
+                    fontWeight: 500,
+                  }}
+                >
+                  {special.original_price}
+                </span>
+              )}
+              {special.price && (
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 20,
+                    fontWeight: 800,
+                    color: COLOR.ink,
+                    letterSpacing: "-0.3px",
+                  }}
+                >
+                  {special.price}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </article>
   );
