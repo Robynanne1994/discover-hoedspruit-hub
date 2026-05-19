@@ -837,16 +837,16 @@ const CategoryPage = () => {
                       <span
                         style={{
                           flexShrink: 0,
-                          border: `1.5px solid ${open ? OPEN_COLOR : CLOSED_COLOR}`,
+                          border: `1.5px solid ${open ? "#BFE5C8" : "#F4C9C9"}`,
                           color: open ? OPEN_COLOR : CLOSED_COLOR,
+                          background: open ? "#F1FAF3" : "#FBEFEF",
                           fontFamily: sans,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: 700,
                           letterSpacing: "0.08em",
                           textTransform: "uppercase",
-                          padding: "4px 10px",
-                          borderRadius: 6,
-                          background: "transparent",
+                          padding: "5px 14px",
+                          borderRadius: 9999,
                         }}
                       >
                         {open ? "Open" : "Closed"}
