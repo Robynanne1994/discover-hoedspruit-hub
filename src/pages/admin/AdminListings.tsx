@@ -506,23 +506,57 @@ const AdminListings = () => {
                       </div>
                     ))}
                   </div>
+                  {showNewCat ? (
+                    <div className="flex gap-2 mt-2">
+                      <Input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="New category name" className="h-8 text-sm" autoFocus />
+                      <Button type="button" size="sm" onClick={addCategory}>Save</Button>
+                      <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewCat(false); setNewCatName(""); }}>Cancel</Button>
+                    </div>
+                  ) : (
+                    <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1" onClick={() => setShowNewCat(true)}>
+                      <Plus className="h-3.5 w-3.5" /> Add category
+                    </Button>
+                  )}
                 </div>
-                {availableSubs.length > 0 && (
+                {selectedCatIds.length > 0 && (
                   <div>
                     <Label>Subcategories</Label>
                     <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                    <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
-                      {availableSubs.map((sub) => (
-                        <div key={sub.id} className="flex items-center gap-2">
-                          <Checkbox
-                            id={`sub-${sub.id}`}
-                            checked={selectedSubIds.includes(sub.id)}
-                            onCheckedChange={() => toggleSub(sub.id)}
-                          />
-                          <label htmlFor={`sub-${sub.id}`} className="text-sm text-foreground cursor-pointer">{sub.title}</label>
-                        </div>
-                      ))}
-                    </div>
+                    {availableSubs.length > 0 && (
+                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
+                        {availableSubs.map((sub) => (
+                          <div key={sub.id} className="flex items-center gap-2">
+                            <Checkbox
+                              id={`sub-${sub.id}`}
+                              checked={selectedSubIds.includes(sub.id)}
+                              onCheckedChange={() => toggleSub(sub.id)}
+                            />
+                            <label htmlFor={`sub-${sub.id}`} className="text-sm text-foreground cursor-pointer">{sub.title}</label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {showNewSub ? (
+                      <div className="flex flex-wrap gap-2 mt-2 items-center">
+                        {selectedCatIds.length > 1 && (
+                          <Select value={newSubParent} onValueChange={setNewSubParent}>
+                            <SelectTrigger className="h-8 text-sm w-[160px]"><SelectValue placeholder="Parent category" /></SelectTrigger>
+                            <SelectContent>
+                              {categories?.filter((c) => selectedCatIds.includes(c.id)).map((c) => (
+                                <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        <Input value={newSubName} onChange={(e) => setNewSubName(e.target.value)} placeholder="New subcategory name" className="h-8 text-sm flex-1 min-w-[140px]" autoFocus />
+                        <Button type="button" size="sm" onClick={addSubcategory}>Save</Button>
+                        <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSub(false); setNewSubName(""); setNewSubParent(""); }}>Cancel</Button>
+                      </div>
+                    ) : (
+                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1" onClick={() => setShowNewSub(true)}>
+                        <Plus className="h-3.5 w-3.5" /> Add subcategory
+                      </Button>
+                    )}
                   </div>
                 )}
                 <div>
