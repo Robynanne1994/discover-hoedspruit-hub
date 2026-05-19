@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
-const OLIVE = "#5C6446";
+const OLIVE = "#E6E0CC";
 const CREAM = "#EEE8DA";
 const RUST = "#9B5A3C";
 const RUST_DEEP = "#7E4530";
