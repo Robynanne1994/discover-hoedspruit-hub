@@ -765,7 +765,7 @@ const AdminListings = () => {
                               value={customChipOption[key] ?? ""}
                               onChange={(e) => setCustomChipOption({ ...customChipOption, [key]: e.target.value })}
                               placeholder={`Add new ${label.toLowerCase()} option`}
-                              className="h-8 text-sm"
+                              className="h-8 text-sm border-gray-950 bg-slate-50"
                             />
                             <Button
                               type="button"
