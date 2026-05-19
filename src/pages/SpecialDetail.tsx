@@ -208,18 +208,18 @@ const SpecialDetail = () => {
 
   const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
     const baseStyle: React.CSSProperties = {
-      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
-      padding: "10px 14px", borderRadius: 999,
+      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+      padding: "14px 18px", borderRadius: 999,
       background: C.surface, border: `1px solid ${C.border}`,
-      color: C.primary, textDecoration: "none",
-      fontFamily: FONT, fontWeight: 400, fontSize: 13,
+      color: C.heading, textDecoration: "none",
+      fontFamily: FONT, fontWeight: 400, fontSize: 14,
       letterSpacing: "0.01em",
       flexShrink: 0,
       width: full ? "100%" : undefined,
       transition: "transform 150ms ease-out",
     };
     const content = (<>
-      <a.Icon size={14} strokeWidth={1.75} color={C.primary} />
+      <a.Icon size={16} strokeWidth={1.75} color={C.heading} />
       <span>{a.label}</span>
     </>);
     if (a.internal) {
@@ -240,10 +240,10 @@ const SpecialDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: 400, fontSize: 12,
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
           letterSpacing: "0.08em", textTransform: "uppercase",
           color: active ? C.heading : C.muted,
-          borderBottom: `2px solid ${active ? C.primary : "transparent"}`,
+          borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
       >
