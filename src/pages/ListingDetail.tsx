@@ -596,13 +596,12 @@ const ListingDetail = () => {
             ].filter(Boolean).map((r: any, i, arr) => (
               <a key={r.label} href={r.href} target="_blank" rel="noopener noreferrer" style={{
                 display: "flex", alignItems: "center", gap: 14,
-                padding: "14px 0", textDecoration: "none",
+                padding: "16px 0", textDecoration: "none",
                 borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
               }}>
-                <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                <r.Icon size={20} strokeWidth={1.5} color={C.primary} />
+                <div style={{ flex: 1, minWidth: 0, fontSize: 15, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                  {r.value}
                 </div>
                 <ArrowUpRight size={16} color={C.muted} />
               </a>
