@@ -473,7 +473,7 @@ const CategoryPage = () => {
       {/* Top bar */}
       <div
         style={{
-          paddingTop: 60,
+          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
           paddingLeft: 20,
           paddingRight: 20,
           display: "flex",
@@ -544,6 +544,8 @@ const CategoryPage = () => {
           <Search size={18} strokeWidth={1.8} color={INK} />
         </button>
       </div>
+
+      <div style={{ height: 1, background: "rgba(2,2,2,0.08)", marginTop: 16 }} />
 
       {searchOpen && (
         <div style={{ padding: "16px 20px 0 20px" }}>
