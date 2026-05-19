@@ -190,7 +190,7 @@ const ContactUs = () => {
             isFirst
           />
           <Row
-            icon={<MessageCircle size={18} color={INK} strokeWidth={1.6} />}
+            icon={<WhatsAppIcon size={18} color={INK} />}
             eyebrow="WhatsApp"
             value={CONTACT_PHONE}
             href={WHATSAPP_URL}
