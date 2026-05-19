@@ -466,12 +466,12 @@ const MyAccount = () => {
 
   // === Editorial design tokens ===
   const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const OLIVE = "#5C6446";
-  const CREAM = "#EEE8DA";
-  const INK = "#2A2A24";
+  const BG = "#E6E0CC";
+  const CARD = "#FFFFFF";
+  const INK = "#1A1A1A";
   const MUTED_INK = "#6B6A5E";
-  const LINE = "#D9D2C0";
-  const RUST = "#9B5A3C";
+  const LABEL = "#9A8E7A";
+  const LINE = "#E2DAC6";
 
   const accountItems = [
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
@@ -490,10 +490,10 @@ const MyAccount = () => {
       style={{
         fontFamily: SANS,
         fontSize: 11,
-        fontWeight: 400,
+        fontWeight: 500,
         letterSpacing: "0.24em",
         textTransform: "uppercase",
-        color: "rgba(238,232,218,0.7)",
+        color: LABEL,
         margin: "0 0 10px 0",
         padding: "0 24px",
       }}
@@ -501,6 +501,7 @@ const MyAccount = () => {
       {children}
     </p>
   );
+
 
   const Row = ({
     item,
@@ -528,15 +529,16 @@ const MyAccount = () => {
             width: 34,
             height: 34,
             borderRadius: "50%",
-            background: RUST,
+            background: INK,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
           }}
         >
-          <Heart size={16} strokeWidth={2} color={CREAM} fill={CREAM} />
+          <Heart size={16} strokeWidth={2} color="#FFFFFF" fill="#FFFFFF" />
         </div>
+
       ) : item.icon ? (
         <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
@@ -584,7 +586,7 @@ const MyAccount = () => {
   }) => (
     <div
       style={{
-        background: CREAM,
+        background: CARD,
         borderRadius: 20,
         margin: "0 24px",
         padding: "4px 22px",
@@ -600,7 +602,7 @@ const MyAccount = () => {
     <div
       style={{
         minHeight: "100vh",
-        background: OLIVE,
+        background: BG,
         paddingBottom: 120,
         fontFamily: SANS,
       }}
@@ -620,7 +622,10 @@ const MyAccount = () => {
           aria-label="Go back"
           onClick={() => navigate("/my-profile")}
           style={{
-            background: "transparent",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#fff",
             border: "none",
             padding: 0,
             margin: 0,
@@ -630,19 +635,20 @@ const MyAccount = () => {
             cursor: "pointer",
             lineHeight: 0,
             flexShrink: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
           }}
         >
-          <BackArrowIcon size={22} color={CREAM} />
+          <BackArrowIcon size={18} color={INK} />
         </button>
         <div
           style={{
             flex: 1,
             textAlign: "center",
-            marginRight: 22,
+            marginRight: 40,
             fontFamily: SANS,
             fontSize: 20,
-            fontWeight: 600,
-            color: CREAM,
+            fontWeight: 700,
+            color: INK,
             lineHeight: 1,
           }}
         >
@@ -650,7 +656,8 @@ const MyAccount = () => {
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+      <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 20 }} />
+
 
       <div style={{ height: 24 }} />
 
@@ -682,8 +689,8 @@ const MyAccount = () => {
             alignItems: "center",
             gap: 10,
             background: "transparent",
-            color: CREAM,
-            border: "1px solid rgba(238,232,218,0.35)",
+            color: INK,
+            border: `1px solid ${LINE}`,
             borderRadius: 999,
             padding: "14px 26px",
             fontFamily: SANS,
@@ -692,10 +699,11 @@ const MyAccount = () => {
             cursor: "pointer",
           }}
         >
-          <LogOut size={14} strokeWidth={1.6} color={CREAM} />
+          <LogOut size={14} strokeWidth={1.6} color={INK} />
           <span>Log Out</span>
         </button>
       </div>
+
     </div>
   );
 };
