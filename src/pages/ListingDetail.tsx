@@ -437,6 +437,17 @@ const ListingDetail = () => {
     );
   }
 
+  const hasDetails = sections.length > 0;
+  const visibleTabs: { key: TabKey; label: string }[] = [
+    ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
+    ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
+    ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
+    ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
+    ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
+    ...(hasLocation ? [{ key: "location" as TabKey, label: "Location" }] : []),
+  ];
+
+
   // ----- Action pills -----
   const actions = [
     listing.phone && { key: "call", label: "Call", href: `tel:${listing.phone}`, Icon: Phone, ext: false },
