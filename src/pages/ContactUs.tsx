@@ -164,7 +164,7 @@ const ContactUs = () => {
           padding: "24px 24px 0",
         }}
       >
-        Have a question, feedback, or need support? We're here to help you get the most out of Hello Hoedspruit.
+        Have a question, feedback or need support? We're here to help you get the most out of Hello Hoedspruit.
       </p>
 
       {/* Contact methods card */}
