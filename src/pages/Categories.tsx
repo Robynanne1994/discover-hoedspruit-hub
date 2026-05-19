@@ -418,17 +418,21 @@ const Categories = () => {
                                 position: "absolute",
                                 top: 8,
                                 right: 8,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 4,
                                 background: "#FFFFFF",
                                 color: COLORS.ink,
                                 fontFamily: FONT_BODY,
                                 fontSize: 12,
                                 fontWeight: 700,
                                 lineHeight: 1,
-                                padding: "6px 10px",
+                                padding: "6px 8px 6px 10px",
                                 borderRadius: 999,
                               }}
                             >
                               ({count})
+                              <ArrowUpRight size={12} strokeWidth={2.4} color={COLORS.ink} />
                             </span>
                           </div>
                         </div>
