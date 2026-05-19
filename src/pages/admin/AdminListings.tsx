@@ -46,6 +46,12 @@ const AdminListings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customRowsVisible, setCustomRowsVisible] = useState(0);
+  const [newCatName, setNewCatName] = useState("");
+  const [showNewCat, setShowNewCat] = useState(false);
+  const [newSubName, setNewSubName] = useState("");
+  const [newSubParent, setNewSubParent] = useState<string>("");
+  const [showNewSub, setShowNewSub] = useState(false);
+  const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
