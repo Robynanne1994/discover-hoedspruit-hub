@@ -579,7 +579,7 @@ const ListingDetail = () => {
                       {day}{isToday ? " · Today" : ""}
                     </span>
                     <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
-                      {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " to ")}
+                      {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " - ")}
                     </span>
                   </div>
                 );
