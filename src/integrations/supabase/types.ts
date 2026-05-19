@@ -850,6 +850,7 @@ export type Database = {
           custom_title_3: string | null
           delivery_available: boolean | null
           description: string | null
+          detail_image_url: string | null
           email: string | null
           emergency_24hr: boolean | null
           gallery_images: string[] | null
@@ -939,6 +940,7 @@ export type Database = {
           custom_title_3?: string | null
           delivery_available?: boolean | null
           description?: string | null
+          detail_image_url?: string | null
           email?: string | null
           emergency_24hr?: boolean | null
           gallery_images?: string[] | null
@@ -1028,6 +1030,7 @@ export type Database = {
           custom_title_3?: string | null
           delivery_available?: boolean | null
           description?: string | null
+          detail_image_url?: string | null
           email?: string | null
           emergency_24hr?: boolean | null
           gallery_images?: string[] | null
