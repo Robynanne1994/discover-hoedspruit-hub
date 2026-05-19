@@ -1,17 +1,16 @@
 import { useNavigate } from "react-router-dom";
+import { Mail, MessageCircle, Phone, Instagram, ChevronRight, MapPin } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const FF_SERIF = "'Playfair Display', Georgia, serif";
 
-const OLIVE = "#5C6446";
-const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const RUST = "#9B5A3C";
-const DEEP_RUST = "#7E4530";
+const BG = "#ECE3CF";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const MUTED = "#7A6E5C";
+const LINE = "#E2DAC6";
+const ICON_BG = "#EFE7D4";
 
 const CONTACT_EMAIL = "admin@hellohoedspruit.co";
 const CONTACT_PHONE = "061 332 1709";
@@ -19,127 +18,76 @@ const PHONE_DIGITS = "27613321709";
 const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;
 const INSTAGRAM_URL = "https://instagram.com/hellohoedspruit";
 
-const press = {
-  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.985)"; },
-  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
-  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
-};
-
-const SecondaryCard = ({
-  eyebrow,
-  value,
-  meta,
-  bg = CREAM,
-  href,
-  external,
-  onClick,
-  fullWidth,
-}: {
+type RowProps = {
+  icon: React.ReactNode;
   eyebrow: string;
   value: string;
-  meta: string;
-  bg?: string;
-  href?: string;
+  href: string;
   external?: boolean;
-  onClick?: () => void;
-  fullWidth?: boolean;
-}) => {
-  const inner = (
+  isFirst?: boolean;
+};
+
+const Row = ({ icon, eyebrow, value, href, external, isFirst }: RowProps) => (
+  <a
+    href={href}
+    target={external ? "_blank" : undefined}
+    rel={external ? "noopener noreferrer" : undefined}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
+      padding: "16px 0",
+      borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+      textDecoration: "none",
+      color: "inherit",
+    }}
+  >
     <div
-      {...press}
       style={{
-        background: bg,
-        borderRadius: 20,
-        padding: fullWidth ? "20px 22px 22px" : "18px 20px 20px",
-        position: "relative",
-        height: "100%",
-        boxSizing: "border-box",
-        transition: "transform 150ms ease-out",
-        cursor: "pointer",
-        minWidth: 0,
+        width: 40,
+        height: 40,
+        borderRadius: "50%",
+        background: ICON_BG,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
       }}
     >
+      {icon}
+    </div>
+    <div style={{ flex: 1, minWidth: 0 }}>
       <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          top: fullWidth ? 18 : 14,
-          right: fullWidth ? 18 : 14,
-          width: 30,
-          height: 30,
-          borderRadius: "50%",
-          background: "rgba(106,106,94,0.1)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: INK,
-          fontSize: 12,
-          lineHeight: 1,
-        }}
-      >
-        ↗
-      </div>
-      <p
         style={{
           fontFamily: FF,
           fontSize: 11,
-          fontWeight: 400,
-          letterSpacing: "0.2em",
+          fontWeight: 500,
+          letterSpacing: "0.18em",
           textTransform: "uppercase",
           color: MUTED,
-          margin: 0,
-          marginBottom: fullWidth ? 8 : 10,
-          paddingRight: 36,
+          marginBottom: 4,
         }}
       >
         {eyebrow}
-      </p>
-      <p
+      </div>
+      <div
         style={{
           fontFamily: FF,
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: 400,
-          lineHeight: 1.2,
-          letterSpacing: "-0.01em",
           color: INK,
-          margin: 0,
-          marginBottom: fullWidth ? 5 : 6,
-          paddingRight: 36,
+          lineHeight: 1.2,
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
         }}
       >
         {value}
-      </p>
-      <p
-        style={{
-          fontFamily: FF_SERIF,
-          fontStyle: "italic",
-          fontWeight: 400,
-          fontSize: 13,
-          color: MUTED,
-          margin: 0,
-          lineHeight: 1.3,
-        }}
-      >
-        {meta}
-      </p>
+      </div>
     </div>
-  );
-
-  const sharedStyle: React.CSSProperties = { textDecoration: "none", color: "inherit", display: "block", height: "100%", minWidth: 0 };
-
-  if (href) {
-    return (
-      <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined} style={sharedStyle}>
-        {inner}
-      </a>
-    );
-  }
-  return (
-    <button onClick={onClick} style={{ ...sharedStyle, background: "none", border: "none", padding: 0, width: "100%", textAlign: "left", cursor: "pointer" }}>
-      {inner}
-    </button>
-  );
-};
+    <ChevronRight size={18} color={MUTED} style={{ flexShrink: 0 }} />
+  </a>
+);
 
 const ContactUs = () => {
   const navigate = useNavigate();
@@ -148,7 +96,7 @@ const ContactUs = () => {
     <div
       style={{
         minHeight: "100vh",
-        background: OLIVE,
+        background: BG,
         paddingBottom: 120,
         fontFamily: FF,
         overflowX: "hidden",
@@ -157,7 +105,7 @@ const ContactUs = () => {
       {/* Top bar */}
       <div
         style={{
-          paddingTop: 60,
+          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
           paddingLeft: 24,
           paddingRight: 24,
           display: "flex",
@@ -169,197 +117,147 @@ const ContactUs = () => {
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
-          {...press}
           style={{
-            background: "transparent",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#fff",
             border: "none",
-            padding: 0,
-            margin: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
             lineHeight: 0,
             flexShrink: 0,
-            transition: "transform 150ms ease-out",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
           }}
         >
-          <BackArrowIcon size={22} color={CREAM} />
+          <BackArrowIcon size={18} color={INK} />
         </button>
         <div
           style={{
             flex: 1,
             textAlign: "center",
-            marginRight: 22,
+            marginRight: 40,
             fontFamily: FF,
             fontSize: 20,
-            fontWeight: 600,
-            color: CREAM,
+            fontWeight: 700,
+            color: INK,
             lineHeight: 1,
           }}
         >
-          Contact
+          Contact Us
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 24 }} />
+      <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 20 }} />
 
-      {/* Featured Email card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
-        <a
-          href={`mailto:${CONTACT_EMAIL}`}
-          style={{ textDecoration: "none", color: "inherit", display: "block" }}
-        >
-          <div
-            {...press}
-            style={{
-              background: RUST,
-              borderRadius: 28,
-              padding: "32px 28px 28px",
-              position: "relative",
-              overflow: "hidden",
-              transition: "transform 150ms ease-out",
-              cursor: "pointer",
-            }}
-          >
-            {/* Arrow */}
-            <div
-              aria-hidden
-              style={{
-                position: "absolute",
-                top: 24,
-                right: 24,
-                width: 38,
-                height: 38,
-                borderRadius: "50%",
-                background: "rgba(238,232,218,0.25)",
-                backdropFilter: "blur(8px)",
-                WebkitBackdropFilter: "blur(8px)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: CREAM,
-                fontSize: 16,
-                lineHeight: 1,
-                zIndex: 2,
-              }}
-            >
-              ↗
-            </div>
+      {/* Intro */}
+      <p
+        style={{
+          fontFamily: FF,
+          fontSize: 15,
+          fontWeight: 400,
+          color: INK,
+          lineHeight: 1.5,
+          margin: 0,
+          padding: "24px 24px 0",
+        }}
+      >
+        Have a question, feedback, or need support? We're here to help you get the most out of Hello Hoedspruit.
+      </p>
 
-            <div style={{ position: "relative", zIndex: 1 }}>
-              <p
-                style={{
-                  fontFamily: FF,
-                  fontSize: 11.5,
-                  fontWeight: 400,
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "rgba(238,232,218,0.8)",
-                  margin: 0,
-                  marginBottom: 36,
-                  lineHeight: 1,
-                }}
-              >
-                Primary
-              </p>
-              <h2
-                style={{
-                  fontFamily: FF_SERIF,
-                  fontStyle: "italic",
-                  fontWeight: 300,
-                  fontSize: 38,
-                  lineHeight: 1,
-                  letterSpacing: "-0.025em",
-                  color: CREAM,
-                  margin: 0,
-                  marginBottom: 10,
-                }}
-              >
-                Email us
-              </h2>
-              <p
-                style={{
-                  fontFamily: FF,
-                  fontSize: 14.5,
-                  fontWeight: 400,
-                  lineHeight: 1.55,
-                  color: "rgba(238,232,218,0.9)",
-                  margin: 0,
-                  marginBottom: 4,
-                  wordBreak: "break-word",
-                }}
-              >
-                {CONTACT_EMAIL}
-              </p>
-              <p
-                style={{
-                  fontFamily: FF_SERIF,
-                  fontStyle: "italic",
-                  fontWeight: 400,
-                  fontSize: 14,
-                  color: "rgba(238,232,218,0.75)",
-                  margin: 0,
-                  lineHeight: 1.3,
-                }}
-              >
-                Reply within 48 hours.
-              </p>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      {/* Two-column row: Call + WhatsApp */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
+      {/* Contact methods card */}
+      <div style={{ padding: "24px 20px 0" }}>
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)",
-            gap: 14,
-            alignItems: "stretch",
+            background: CARD,
+            borderRadius: 20,
+            padding: "4px 20px",
           }}
         >
-          <SecondaryCard
-            eyebrow="Call"
-            value={CONTACT_PHONE}
-            meta="Mon to Fri, 9 to 5"
-            href={`tel:${PHONE_DIGITS}`}
+          <Row
+            icon={<Mail size={18} color={INK} strokeWidth={1.6} />}
+            eyebrow="Email"
+            value={CONTACT_EMAIL}
+            href={`mailto:${CONTACT_EMAIL}`}
+            isFirst
           />
-          <SecondaryCard
+          <Row
+            icon={<MessageCircle size={18} color={INK} strokeWidth={1.6} />}
             eyebrow="WhatsApp"
             value={CONTACT_PHONE}
-            meta="Reply same day"
             href={WHATSAPP_URL}
+            external
+          />
+          <Row
+            icon={<Phone size={18} color={INK} strokeWidth={1.6} />}
+            eyebrow="Call"
+            value={CONTACT_PHONE}
+            href={`tel:${PHONE_DIGITS}`}
+          />
+          <Row
+            icon={<Instagram size={18} color={INK} strokeWidth={1.6} />}
+            eyebrow="Instagram"
+            value="@hellohoedspruit"
+            href={INSTAGRAM_URL}
             external
           />
         </div>
       </div>
 
-      {/* Contact form card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
-        <SecondaryCard
-          eyebrow="Write to us"
-          value="Contact form"
-          meta=""
-          onClick={() => navigate("/feedback")}
-          fullWidth
-        />
+      {/* Location card */}
+      <div style={{ padding: "20px 20px 0" }}>
+        <div
+          style={{
+            background: CARD,
+            borderRadius: 20,
+            padding: "28px 24px",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              width: 52,
+              height: 52,
+              borderRadius: "50%",
+              background: "#D9CFB8",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 16,
+            }}
+          >
+            <MapPin size={22} color={INK} strokeWidth={1.6} />
+          </div>
+          <div
+            style={{
+              fontFamily: FF,
+              fontSize: 18,
+              fontWeight: 700,
+              color: INK,
+              marginBottom: 10,
+            }}
+          >
+            Based in Hoedspruit
+          </div>
+          <p
+            style={{
+              fontFamily: FF,
+              fontSize: 14,
+              fontWeight: 400,
+              color: MUTED,
+              lineHeight: 1.5,
+              margin: 0,
+              maxWidth: 280,
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            Locally built and managed to bring you the best of our beautiful town.
+          </p>
+        </div>
       </div>
-
-      {/* Instagram card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 14 }}>
-        <SecondaryCard
-          eyebrow="Instagram"
-          value="@hellohoedspruit"
-          meta="Daily picks, openings and what's on"
-          bg={SOFT_CREAM}
-          href={INSTAGRAM_URL}
-          external
-          fullWidth
-        />
-      </div>
-
 
       <BottomNav />
     </div>
