@@ -508,7 +508,7 @@ const AdminListings = () => {
                   </div>
                   {showNewCat ? (
                     <div className="flex gap-2 mt-2">
-                      <Input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="New category name" className="h-8 text-sm" autoFocus />
+                      <Input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="New category name" className="h-8 text-sm border-gray-950 bg-slate-50" autoFocus />
                       <Button type="button" size="sm" onClick={addCategory}>Save</Button>
                       <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewCat(false); setNewCatName(""); }}>Cancel</Button>
                     </div>
