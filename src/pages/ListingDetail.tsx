@@ -467,11 +467,11 @@ const ListingDetail = () => {
       href={a.href}
       {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       style={{
-        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6,
-        padding: "10px 14px", borderRadius: 999,
+        display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+        padding: "14px 18px", borderRadius: 999,
         background: C.surface, border: `1px solid ${C.border}`,
-        color: C.primary, textDecoration: "none",
-        fontFamily: FONT, fontWeight: 400, fontSize: 13,
+        color: C.heading, textDecoration: "none",
+        fontFamily: FONT, fontWeight: 400, fontSize: 14,
         letterSpacing: "0.01em",
         flexShrink: 0,
         width: full ? "100%" : undefined,
@@ -479,7 +479,7 @@ const ListingDetail = () => {
       }}
       {...pressScale()}
     >
-      <a.Icon size={14} strokeWidth={1.75} color={C.primary} />
+      <a.Icon size={16} strokeWidth={1.75} color={C.heading} />
       <span>{a.label}</span>
     </a>
   );
