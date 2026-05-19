@@ -658,8 +658,7 @@ const MyAccount = () => {
       <Card items={accountItems} />
 
       <div style={{ height: 28 }} />
-      <Eyebrow>My Hoedspruit</Eyebrow>
-      <Card items={myHoedspruitItems} />
+
 
       <div style={{ height: 28 }} />
       <Eyebrow>Help & Info</Eyebrow>
