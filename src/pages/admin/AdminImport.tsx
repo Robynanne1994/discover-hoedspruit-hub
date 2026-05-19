@@ -725,10 +725,10 @@ const AdminImport = () => {
         {/* Action buttons */}
         {selectedCategoryId && (
           <div className="flex flex-wrap gap-2">
-            <Button variant="outline" onClick={downloadListings} className="gap-2">
+            <Button variant="outline" size="sm" onClick={downloadListings} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
               <FileSpreadsheet className="h-4 w-4" /> Export {displayLabel} Listings
             </Button>
-            <Button variant="outline" onClick={downloadTemplate} className="gap-2">
+            <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
               <FileSpreadsheet className="h-4 w-4" /> Download Template
             </Button>
           </div>
