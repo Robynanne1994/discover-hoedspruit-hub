@@ -164,9 +164,9 @@ const AdminArticles = () => {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold">The Lowveld Lowdown</h1>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={handleExport}><FileSpreadsheet className="h-4 w-4 mr-1" />Export</Button>
+          <Button variant="outline" size="sm" onClick={handleExport} className="opacity-100 bg-gray-400 text-slate-50 border-slate-950"><FileSpreadsheet className="h-4 w-4 mr-1" />Export</Button>
           <Label htmlFor="csv-import" className="cursor-pointer">
-            <Button variant="outline" size="sm" asChild><span><FileSpreadsheet className="h-4 w-4 mr-1" />Import CSV</span></Button>
+            <Button variant="outline" size="sm" asChild className="opacity-100 bg-gray-400 text-slate-50 border-slate-950"><span><FileSpreadsheet className="h-4 w-4 mr-1" />Import CSV</span></Button>
           </Label>
           <input id="csv-import" type="file" accept=".csv" className="hidden" onChange={handleImport} />
           <Button size="sm" onClick={() => { resetForm(); setShowForm(true); }}><Plus className="h-4 w-4 mr-1" />New Article</Button>

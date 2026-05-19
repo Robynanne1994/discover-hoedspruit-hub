@@ -188,10 +188,10 @@ const AdminSpecialsImport = () => {
           <h1 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold text-foreground truncate">Import/Export Specials</h1>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadSpecials} className="gap-2">
+          <Button variant="outline" size="sm" onClick={downloadSpecials} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
             <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Specials</span><span className="sm:hidden">Specials</span>
           </Button>
-          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2">
+          <Button variant="outline" size="sm" onClick={downloadTemplate} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
             <FileSpreadsheet className="h-4 w-4" /> <span className="hidden sm:inline">Download Template</span><span className="sm:hidden">Template</span>
           </Button>
         </div>
