@@ -508,7 +508,7 @@ const AdminListings = () => {
                   </div>
                   {showNewCat ? (
                     <div className="flex gap-2 mt-2">
-                      <Input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="New category name" className="h-8 text-sm" autoFocus />
+                      <Input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="New category name" className="h-8 text-sm border-gray-950 bg-slate-50" autoFocus />
                       <Button type="button" size="sm" onClick={addCategory}>Save</Button>
                       <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewCat(false); setNewCatName(""); }}>Cancel</Button>
                     </div>
@@ -539,7 +539,7 @@ const AdminListings = () => {
                       <div className="flex flex-wrap gap-2 mt-2 items-center">
                         {selectedCatIds.length > 1 && (
                           <Select value={newSubParent} onValueChange={setNewSubParent}>
-                            <SelectTrigger className="h-8 text-sm w-[160px]"><SelectValue placeholder="Parent category" /></SelectTrigger>
+                            <SelectTrigger className="h-8 text-sm w-[160px] border-gray-950 bg-slate-50"><SelectValue placeholder="Parent category" /></SelectTrigger>
                             <SelectContent>
                               {categories?.filter((c) => selectedCatIds.includes(c.id)).map((c) => (
                                 <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
@@ -547,7 +547,7 @@ const AdminListings = () => {
                             </SelectContent>
                           </Select>
                         )}
-                        <Input value={newSubName} onChange={(e) => setNewSubName(e.target.value)} placeholder="New subcategory name" className="h-8 text-sm flex-1 min-w-[140px]" autoFocus />
+                        <Input value={newSubName} onChange={(e) => setNewSubName(e.target.value)} placeholder="New subcategory name" className="h-8 text-sm flex-1 min-w-[140px] border-gray-950 bg-slate-50" autoFocus />
                         <Button type="button" size="sm" onClick={addSubcategory}>Save</Button>
                         <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSub(false); setNewSubName(""); setNewSubParent(""); }}>Cancel</Button>
                       </div>
@@ -765,7 +765,7 @@ const AdminListings = () => {
                               value={customChipOption[key] ?? ""}
                               onChange={(e) => setCustomChipOption({ ...customChipOption, [key]: e.target.value })}
                               placeholder={`Add new ${label.toLowerCase()} option`}
-                              className="h-8 text-sm"
+                              className="h-8 text-sm border-gray-950 bg-slate-50"
                             />
                             <Button
                               type="button"
