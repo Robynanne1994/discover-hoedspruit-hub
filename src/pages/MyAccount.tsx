@@ -529,15 +529,16 @@ const MyAccount = () => {
             width: 34,
             height: 34,
             borderRadius: "50%",
-            background: RUST,
+            background: INK,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
           }}
         >
-          <Heart size={16} strokeWidth={2} color={CREAM} fill={CREAM} />
+          <Heart size={16} strokeWidth={2} color="#FFFFFF" fill="#FFFFFF" />
         </div>
+
       ) : item.icon ? (
         <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
