@@ -476,7 +476,7 @@ const AdminListings = () => {
                 </div>
                 <div><Label>Website</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." /></div>
                 <div>
-                  <Label>Website Display Text <span className="text-xs text-muted-foreground">(optional — shown instead of the URL)</span></Label>
+                  <Label>Website Display Text</Label>
                   <Input value={form.website_label} onChange={(e) => setForm({ ...form, website_label: e.target.value })} placeholder="e.g. Visit our Facebook page" />
                 </div>
                 <div><Label>WhatsApp Number</Label><Input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} placeholder="e.g. +27791234567" /></div>
