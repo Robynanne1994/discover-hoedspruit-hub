@@ -565,7 +565,7 @@ const AdminListings = () => {
                 </div>
                 <div>
                   <Label>Detail Cover Image</Label>
-                  <p className="text-xs text-muted-foreground mb-1">Shown on the individual listing page. Crops to 4:3 by default. Falls back to the card cover if empty.</p>
+                  
                   <ImageUpload bucket="listing-images" value={form.detail_image_url} onChange={(url) => setForm({ ...form, detail_image_url: url })} aspect={4/3} />
                 </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
