@@ -586,7 +586,7 @@ const MyAccount = () => {
   }) => (
     <div
       style={{
-        background: CREAM,
+        background: CARD,
         borderRadius: 20,
         margin: "0 24px",
         padding: "4px 22px",
@@ -602,7 +602,7 @@ const MyAccount = () => {
     <div
       style={{
         minHeight: "100vh",
-        background: OLIVE,
+        background: BG,
         paddingBottom: 120,
         fontFamily: SANS,
       }}
@@ -622,7 +622,10 @@ const MyAccount = () => {
           aria-label="Go back"
           onClick={() => navigate("/my-profile")}
           style={{
-            background: "transparent",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#fff",
             border: "none",
             padding: 0,
             margin: 0,
@@ -632,19 +635,20 @@ const MyAccount = () => {
             cursor: "pointer",
             lineHeight: 0,
             flexShrink: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
           }}
         >
-          <BackArrowIcon size={22} color={CREAM} />
+          <BackArrowIcon size={18} color={INK} />
         </button>
         <div
           style={{
             flex: 1,
             textAlign: "center",
-            marginRight: 22,
+            marginRight: 40,
             fontFamily: SANS,
             fontSize: 20,
-            fontWeight: 600,
-            color: CREAM,
+            fontWeight: 700,
+            color: INK,
             lineHeight: 1,
           }}
         >
@@ -652,7 +656,8 @@ const MyAccount = () => {
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+      <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 20 }} />
+
 
       <div style={{ height: 24 }} />
 
