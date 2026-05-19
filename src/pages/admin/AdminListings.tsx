@@ -143,6 +143,7 @@ const AdminListings = () => {
         title: values.title,
         description: values.description || null,
         image_url: values.image_url || null,
+        detail_image_url: values.detail_image_url || null,
         location: values.location || null,
         phone: values.phone || null,
         email: values.email || null,
