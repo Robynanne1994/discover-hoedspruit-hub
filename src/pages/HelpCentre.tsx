@@ -1,96 +1,103 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { MessageCircle, LifeBuoy } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
-const OLIVE = "#E6E0CC";
-const CREAM = "#EEE8DA";
-const RUST = "#9B5A3C";
-const RUST_DEEP = "#7E4530";
-const INK = "#2A2A24";
-const INK_SOFT = "#6B6A5E";
-const LINE = "#D9D2C0";
-const INK_10 = "rgba(106,106,94,0.1)";
+const BG = "#E6E0CC";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const LABEL = "#9A8E7A";
+const LINE = "rgba(26,26,26,0.08)";
+const DARK = "#3D2E22";
+const DARK_MUTED = "rgba(255,255,255,0.72)";
+const ICON_BG = "rgba(26,26,26,0.06)";
 
-const SERIF = "'Playfair Display', Georgia, serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const ROWS = [
-  { title: "FAQs", desc: "Quick answers to the questions that come up most.", to: "/faqs" },
-  { title: "About", desc: "How Hello Hoedspruit started, and who's behind it.", to: "/about" },
-  { title: "Terms & Policies", desc: "Privacy, terms, cookies, and how we look after you.", to: "/terms" },
-  { title: "Contact Us", desc: "Drop us a note. We read every message.", to: "/contact" },
+  { title: "FAQs", to: "/faqs" },
+  { title: "About", to: "/about" },
+  { title: "Terms & Policies", to: "/terms" },
+  { title: "Contact Us", to: "/contact" },
 ];
+
+const tap = {
+  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.98)"; },
+  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; },
+  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; },
+};
 
 const HelpCentre = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const id = "playfair-display-font";
-    if (!document.getElementById(id)) {
-      const link = document.createElement("link");
-      link.id = id;
-      link.rel = "stylesheet";
-      link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-      document.head.appendChild(link);
-    }
-  }, []);
-
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140 }}>
+    <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: SANS, overflowX: "hidden" }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
+      <div
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
+          paddingLeft: 24,
+          paddingRight: 24,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          minHeight: 44,
+        }}
+      >
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
+          {...tap}
           style={{
-            background: "transparent", border: "none", padding: 0, margin: 0,
+            width: 40, height: 40, borderRadius: "50%",
+            background: "#fff", border: "none",
             display: "inline-flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer", lineHeight: 0, flexShrink: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+            transition: "transform 0.15s ease",
           }}
         >
-          <BackArrowIcon size={22} color={INK} />
+          <BackArrowIcon size={18} color={INK} />
         </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: INK, lineHeight: 1 }}>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontFamily: SANS, fontSize: 20, fontWeight: 700, color: INK, lineHeight: 1 }}>
           Help Centre
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(42,42,36,0.12)", marginTop: 20 }} />
+      <div style={{ height: 1, background: LINE, marginTop: 20 }} />
 
       {/* Section eyebrow */}
       <div style={{ padding: "24px 24px 0" }}>
         <div style={{
-          fontFamily: SANS, fontWeight: 400, fontSize: 11, letterSpacing: "2.4px",
-          textTransform: "uppercase", color: INK_SOFT, marginBottom: 12,
+          fontFamily: SANS, fontWeight: 500, fontSize: 11, letterSpacing: "0.18em",
+          textTransform: "uppercase", color: LABEL, marginBottom: 12,
         }}>
-          FIND WHAT YOU NEED
+          Find what you need
         </div>
 
         {/* List card */}
-        <div style={{ background: CREAM, borderRadius: 24, padding: "6px 22px" }}>
+        <div style={{ background: CARD, borderRadius: 20, padding: "4px 22px" }}>
           {ROWS.map((row, i) => (
             <button
               key={row.title}
               onClick={() => navigate(row.to)}
               style={{
                 display: "flex", alignItems: "center", gap: 14, width: "100%",
-                padding: "20px 0", background: "transparent", border: "none",
+                padding: "22px 0", background: "transparent", border: "none",
                 borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
                 cursor: "pointer", textAlign: "left",
               }}
             >
-              <div style={{ flex: 1 }}>
-                <div style={{
-                  fontFamily: SANS, fontWeight: 400, fontSize: 16, lineHeight: 1.2,
-                  letterSpacing: "-0.1px", color: INK,
-                }}>
-                  {row.title}
-                </div>
+              <div style={{
+                flex: 1,
+                fontFamily: SANS, fontWeight: 500, fontSize: 16, lineHeight: 1.2,
+                color: INK,
+              }}>
+                {row.title}
               </div>
               <div style={{
-                width: 30, height: 30, borderRadius: 999, background: INK_10,
+                width: 32, height: 32, borderRadius: 999, background: ICON_BG,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: SANS, fontSize: 12, color: INK, flexShrink: 0,
+                fontFamily: SANS, fontSize: 14, color: INK, flexShrink: 0,
               }}>
                 ↗
               </div>
@@ -98,7 +105,60 @@ const HelpCentre = () => {
           ))}
         </div>
 
+        {/* Still need help */}
+        <div style={{
+          marginTop: 36,
+          background: DARK,
+          borderRadius: 24,
+          padding: "26px 24px 26px",
+          position: "relative",
+          overflow: "hidden",
+        }}>
+          {/* Decorative life buoy */}
+          <LifeBuoy
+            size={120}
+            color="rgba(255,255,255,0.08)"
+            strokeWidth={1.5}
+            style={{ position: "absolute", right: -14, top: 18, pointerEvents: "none" }}
+          />
 
+          {/* Chat icon */}
+          <div style={{
+            width: 40, height: 40, borderRadius: 999,
+            background: "rgba(255,255,255,0.1)",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            marginBottom: 16,
+          }}>
+            <MessageCircle size={20} color="#fff" strokeWidth={1.8} />
+          </div>
+
+          <div style={{
+            fontFamily: SANS, fontWeight: 700, fontSize: 20, color: "#fff",
+            marginBottom: 8, lineHeight: 1.2,
+          }}>
+            Still need help?
+          </div>
+          <div style={{
+            fontFamily: SANS, fontWeight: 400, fontSize: 14.5, lineHeight: 1.5,
+            color: DARK_MUTED, marginBottom: 22, maxWidth: 280,
+          }}>
+            Our support team is available to assist you with any questions or issues you might have.
+          </div>
+
+          <button
+            onClick={() => navigate("/contact")}
+            {...tap}
+            style={{
+              background: "#fff", color: INK, border: "none",
+              borderRadius: 999, padding: "14px 24px",
+              fontFamily: SANS, fontSize: 15, fontWeight: 600,
+              cursor: "pointer", display: "inline-flex", alignItems: "center",
+              transition: "transform 0.15s ease",
+            }}
+          >
+            Get in Touch
+          </button>
+        </div>
       </div>
     </div>
   );
