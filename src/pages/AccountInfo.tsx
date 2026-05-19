@@ -497,12 +497,12 @@ const AccountInfo = () => {
       </div>
 
       {/* Personal details card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20 }}>
         <div
           style={{
-            background: CREAM,
-            borderRadius: 20,
-            padding: "4px 22px",
+            background: CARD,
+            borderRadius: 16,
+            padding: "4px 20px",
             overflow: "hidden",
           }}
         >
