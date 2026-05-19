@@ -569,10 +569,10 @@ const ListingDetail = () => {
                     display: "flex", justifyContent: "space-between", alignItems: "center",
                     padding: "12px 0", borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
                   }}>
-                    <span style={{ fontSize: 14, color: isToday ? C.heading : C.text, fontWeight: 400 }}>
+                    <span style={{ fontSize: 14, color: isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
                       {day}{isToday ? " · Today" : ""}
                     </span>
-                    <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text }}>
+                    <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
                       {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " to ")}
                     </span>
                   </div>
