@@ -20,13 +20,16 @@ import { toast } from "sonner";
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PF = "'Playfair Display', Georgia, serif";
 
-const OLIVE = "#5C6446";
-const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
+const PAGE_BG = "#ECE3CF";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const MUTED = "#9C9387";
+const LINE = "#EAE4D5";
+const DARK = "#3D2E22";
+const CREAM = "#FFFFFF";
+const SOFT_CREAM = "#F6F1E4";
+const OLIVE = PAGE_BG;
+const RUST = "#C0392B";
 
 const AREA_CODES = [
   { code: "+27", country: "ZA", flag: "🇿🇦" },
