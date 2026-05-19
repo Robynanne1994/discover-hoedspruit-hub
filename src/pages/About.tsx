@@ -1,152 +1,115 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
 
-const OLIVE = "#5C6446";
-const DEEP_OLIVE = "#454C36";
-const CREAM = "#EEE8DA";
-const DEEP_INK = "#2A2A24";
-const MUTED_INK = "#6B6A5E";
-const RUST = "#9B5A3C";
-const DEEP_RUST = "#7E4530";
-
-const BLOB_1 = "50% 45% 55% 50% / 55% 50% 60% 45%";
-const BLOB_2 = "55% 45% 50% 55% / 50% 60% 45% 55%";
-
-const FOUNDER_NAME = "Robyn Dawes";
-const FOUNDER_INITIALS = "RD";
-const FOUNDER_PHOTO: string | null = null;
+const BG = "#E6E0CC";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const BODY = "#3A342B";
+const MUTED = "#8A8275";
+const LINE = "rgba(26,26,26,0.08)";
+const NUM_BG = "rgba(26,26,26,0.06)";
 
 const values = [
-  { num: "i.", name: "Local Knowledge" },
-  { num: "ii.", name: "Community Driven" },
-  { num: "iii.", name: "Always up to Date" },
-  { num: "iv.", name: "Nature at Heart" },
+  { num: "01", name: "Local Knowledge", sub: "Curated by people who live here." },
+  { num: "02", name: "Community Driven", sub: "Connecting locals and visitors." },
+  { num: "03", name: "Always up to Date", sub: "The latest events and places." },
+  { num: "04", name: "Nature at Heart", sub: "Protecting our beautiful lowveld." },
 ];
 
-const press = (e: React.PointerEvent<HTMLElement>) => {
-  e.currentTarget.style.transform = "scale(0.98)";
+const tap = {
+  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.96)"; },
+  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
+  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
-const release = (e: React.PointerEvent<HTMLElement>) => {
-  e.currentTarget.style.transform = "scale(1)";
-};
-
-const BackArrow = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DEEP_INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <line x1="19" y1="12" x2="5" y2="12" />
-    <polyline points="12 19 5 12 12 5" />
-  </svg>
-);
-
-const Arrow = ({ size = 12, color = DEEP_INK }: { size?: number; color?: string }) => (
-  <span style={{ fontSize: size, color, lineHeight: 1, fontFamily: SANS }}>↗</span>
-);
 
 const About = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const id = "playfair-about-font";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-    document.head.appendChild(link);
-  }, []);
-
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140, position: "relative", overflowX: "hidden" }}>
-      {/* Top header — 60px top spacing, centered title, hairline border */}
-      <div style={{ position: "relative", zIndex: 3, paddingTop: 60 }}>
-        <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px", minHeight: 32, marginBottom: 16 }}>
-          <button
-            onClick={() => navigate(-1)}
-            onPointerDown={press}
-            onPointerUp={release}
-            onPointerLeave={release}
-            aria-label="Back"
-            style={{
-              position: "absolute",
-              left: 24,
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: 32,
-              height: 32,
-              borderRadius: "50%",
-              background: "transparent",
-              border: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={CREAM} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-              <line x1="19" y1="12" x2="5" y2="12" />
-              <polyline points="12 19 5 12 12 5" />
-            </svg>
-          </button>
-          <h1 style={{ fontFamily: SANS, fontSize: 20, fontWeight: 600, color: CREAM, margin: 0, letterSpacing: "0.01em", textTransform: "none", lineHeight: 1 }}>
-            About
-          </h1>
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 140 }}>
+      {/* Top bar */}
+      <div style={{ padding: "56px 20px 0", display: "flex", alignItems: "center", minHeight: 44 }}>
+        <button
+          onClick={() => navigate(-1)}
+          {...tap}
+          aria-label="Back"
+          style={{
+            width: 40, height: 40, borderRadius: "50%", background: CARD, border: "none",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", flexShrink: 0, transition: "transform 150ms ease-out",
+          }}
+        >
+          <ArrowLeft size={18} strokeWidth={2} color={INK} />
+        </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontWeight: 700, fontSize: 17, color: INK, letterSpacing: 0.1 }}>
+          About
         </div>
-        <div style={{ height: 1, width: "100%", background: "rgba(238,232,218,0.2)", marginBottom: 24 }} />
       </div>
 
+      <div style={{ height: 1, background: LINE, marginTop: 22 }} />
 
-      {/* Story */}
-      <div style={{ padding: "0 24px", marginBottom: 36 }}>
-        <p style={{ fontSize: 15, lineHeight: 1.7, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 18 }}>
-          My name is{" "}
-          <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 15 }}>Robyn Dawes</span>
-          , and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the lowveld, and over the years I've watched this little town blossom into something truly special.
-        </p>
-        <p style={{ fontSize: 15, lineHeight: 1.7, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 18 }}>
-          Having spent my whole life here, I know just how much Hoedspruit has to offer, from incredible wildlife and outdoor adventures to its warm community spirit and the hidden gems that only a local would know.
-        </p>
-        <p style={{ fontSize: 15, lineHeight: 1.7, color: "rgba(238,232,218,0.9)", margin: 0 }}>
-          The idea behind Hello Hoedspruit came from a simple frustration. There was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together.
-        </p>
+      {/* Story card */}
+      <div style={{ padding: "20px 20px 0" }}>
+        <section style={{ background: CARD, borderRadius: 18, padding: "22px 22px 24px" }}>
+          <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: BODY, margin: 0, marginBottom: 14 }}>
+            My name is <span style={{ fontStyle: "italic", fontWeight: 500 }}>Robyn Dawes</span>, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the lowveld, and over the years I've watched this little town blossom into something truly special.
+          </p>
+          <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: BODY, margin: 0, marginBottom: 14 }}>
+            Having spent my whole life here, I know just how much Hoedspruit has to offer, from incredible wildlife and outdoor adventures to its warm community spirit and the hidden gems that only a local would know.
+          </p>
+          <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: BODY, margin: 0 }}>
+            The idea behind Hello Hoedspruit came from a simple frustration. There was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together.
+          </p>
+        </section>
       </div>
 
-      {/* What we stand for heading */}
-      <div style={{ padding: "0 24px", margin: "0 0 16px" }}>
-        <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 32, lineHeight: 1, letterSpacing: "-0.5px", color: CREAM, margin: 0 }}>
-          what we stand for
+      {/* Section heading */}
+      <div style={{ padding: "28px 22px 14px" }}>
+        <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", color: MUTED, marginBottom: 6, textTransform: "uppercase" }}>
+          Our Values
+        </div>
+        <h2 style={{ fontFamily: SANS, fontSize: 26, fontWeight: 700, lineHeight: 1.15, letterSpacing: -0.3, color: INK, margin: 0 }}>
+          What We Stand For
         </h2>
       </div>
 
-      {/* Value grid */}
-      <div style={{ padding: "0 24px", marginBottom: 32 }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-          {values.map((v) => (
+      {/* Value list */}
+      <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 12 }}>
+        {values.map((v) => (
+          <div
+            key={v.num}
+            style={{
+              background: CARD,
+              borderRadius: 18,
+              padding: "16px 18px",
+              display: "flex",
+              alignItems: "center",
+              gap: 14,
+            }}
+          >
             <div
-              key={v.num}
+              aria-hidden
               style={{
-                position: "relative",
-                background: CREAM,
-                borderRadius: 20,
-                padding: "20px 22px 22px",
-                aspectRatio: "1 / 1",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
+                width: 44, height: 44, borderRadius: "50%", background: NUM_BG,
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                fontSize: 13, fontWeight: 600, color: INK, letterSpacing: 0.2,
               }}
             >
-              <span style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 400, fontSize: 38, lineHeight: 1, letterSpacing: "-0.6px", color: MUTED_INK }}>
-                {v.num}
-              </span>
-              <span style={{ fontSize: 17.5, fontWeight: 400, lineHeight: 1.2, letterSpacing: "-0.2px", color: DEEP_INK }}>
+              {v.num}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+              <span style={{ fontSize: 15.5, fontWeight: 700, color: INK, letterSpacing: -0.1, lineHeight: 1.2 }}>
                 {v.name}
               </span>
+              <span style={{ fontSize: 13, fontWeight: 400, color: MUTED, lineHeight: 1.35 }}>
+                {v.sub}
+              </span>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
 
       <BottomNav />
