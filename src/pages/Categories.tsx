@@ -418,9 +418,8 @@ const Categories = () => {
                         <div
                           style={{
                             display: "flex",
-                            alignItems: "flex-start",
-                            justifyContent: "space-between",
-                            gap: 8,
+                            flexDirection: "column",
+                            gap: 6,
                             padding: "4px 14px 16px",
                           }}
                         >
@@ -432,7 +431,6 @@ const Categories = () => {
                               lineHeight: 1.2,
                               color: COLORS.ink,
                               margin: 0,
-                              flex: 1,
                             }}
                           >
                             {cat.title}
@@ -443,8 +441,7 @@ const Categories = () => {
                               fontSize: 13,
                               fontWeight: 400,
                               color: COLORS.muted,
-                              whiteSpace: "nowrap",
-                              marginTop: 2,
+                              alignSelf: "flex-end",
                             }}
                           >
                             ({count})
