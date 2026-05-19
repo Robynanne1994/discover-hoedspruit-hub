@@ -154,7 +154,7 @@ const VisitedPlaces = () => {
         {visitedCount === 0 ? (
           <div style={{ textAlign: "center", paddingTop: 60 }}>
             <MapPin size={48} strokeWidth={1.5} color="rgba(18,18,20,0.15)" style={{ margin: "0 auto" }} />
-            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>No places visited yet</h3>
+            <h3 style={{ fontSize: 18, fontWeight: 700, color: "#2b2420", marginTop: 16, marginBottom: 8 }}>No listings visited yet</h3>
             <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", textAlign: "center" }}>
               Tap 'Visited' on any listing to track where you've been
             </p>
