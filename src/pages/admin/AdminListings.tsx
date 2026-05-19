@@ -493,7 +493,7 @@ const AdminListings = () => {
                 <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
                 <div>
                   <Label>Categories</Label>
-                  <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                  
                   <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
                     {categories?.map((cat) => (
                       <div key={cat.id} className="flex items-center gap-2">
@@ -521,7 +521,6 @@ const AdminListings = () => {
                 {selectedCatIds.length > 0 && (
                   <div>
                     <Label>Subcategories</Label>
-                    <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
                     {availableSubs.length > 0 && (
                       <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
                         {availableSubs.map((sub) => (
@@ -810,7 +809,6 @@ const AdminListings = () => {
 
                     <div>
                       <Label>Payment Methods</Label>
-                      <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
                       <div className="flex flex-wrap gap-2">
                         {PAYMENT_METHOD_OPTIONS.map((opt) => {
                           const selected = form.payment_methods.includes(opt);
