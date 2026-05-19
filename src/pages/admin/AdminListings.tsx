@@ -547,7 +547,7 @@ const AdminListings = () => {
                             </SelectContent>
                           </Select>
                         )}
-                        <Input value={newSubName} onChange={(e) => setNewSubName(e.target.value)} placeholder="New subcategory name" className="h-8 text-sm flex-1 min-w-[140px]" autoFocus />
+                        <Input value={newSubName} onChange={(e) => setNewSubName(e.target.value)} placeholder="New subcategory name" className="h-8 text-sm flex-1 min-w-[140px] border-gray-950 bg-slate-50" autoFocus />
                         <Button type="button" size="sm" onClick={addSubcategory}>Save</Button>
                         <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSub(false); setNewSubName(""); setNewSubParent(""); }}>Cancel</Button>
                       </div>
