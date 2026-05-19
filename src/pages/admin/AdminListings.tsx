@@ -376,6 +376,8 @@ const AdminListings = () => {
       volunteering: (l as any).volunteering ?? "",
       visiting: (l as any).visiting ?? "",
     });
+    const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
+    setCustomRowsVisible(populatedCustom);
     setOpen(true);
   };
 
