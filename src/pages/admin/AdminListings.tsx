@@ -522,7 +522,7 @@ const AdminListings = () => {
                   <div>
                     <Label>Subcategories</Label>
                     {availableSubs.length > 0 && (
-                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3 bg-slate-50 border-gray-950">
+                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3 border-gray-950 bg-slate-50">
                         {availableSubs.map((sub) => (
                           <div key={sub.id} className="flex items-center gap-2">
                             <Checkbox
