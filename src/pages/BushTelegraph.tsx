@@ -1,21 +1,23 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, X, Pencil, ArrowLeft } from "lucide-react";
+import { Plus, X, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const OLIVE = "#5C6446";
-const CREAM = "#EEE8DA";
+const PAGE_BG = "#ECE3CF";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const MUTED = "#7A6E5C";
+const LINE = "#E2DAC6";
+const DARK = "#2E2418";
+const RUST = "#C0392B";
+const TAG_BG = "#EFE7D3";
 const SOFT_CREAM = "#F4EFE3";
-const DEEP_INK = "#2A2A24";
-const MUTED_INK = "#6B6A5E";
-const RUST = "#9B5A3C";
-const DEEP_RUST = "#7E4530";
+const CREAM = "#EEE8DA";
 
 type Platform = "Facebook" | "WhatsApp" | "Instagram" | "Websites";
 
@@ -34,13 +36,6 @@ interface Resource {
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "WhatsApp", "Instagram"];
 const CHIPS: ("All" | Platform)[] = ["All", "Facebook", "WhatsApp", "Instagram"];
-
-const PLATFORM_NOUN: Record<Platform, { singular: string; plural: string }> = {
-  Facebook: { singular: "Group", plural: "Groups" },
-  WhatsApp: { singular: "Group", plural: "Groups" },
-  Instagram: { singular: "Account", plural: "Accounts" },
-  Websites: { singular: "Site", plural: "Sites" },
-};
 
 const AVATAR_GRADIENTS = [
   "linear-gradient(135deg, #C9A87C 0%, #8E6F4A 100%)",
@@ -62,13 +57,14 @@ const press = {
   onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
-const IconButton = ({ children, onClick, ariaLabel }: { children: React.ReactNode; onClick: () => void; ariaLabel: string }) => (
+const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode; onClick: () => void; ariaLabel: string }) => (
   <button
     onClick={onClick}
     aria-label={ariaLabel}
     style={{
-      width: 44, height: 44, borderRadius: 999, background: CREAM, border: "none",
-      cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+      width: 40, height: 40, borderRadius: 999, background: CARD,
+      border: `1px solid ${LINE}`, cursor: "pointer",
+      display: "flex", alignItems: "center", justifyContent: "center",
       transition: "transform 120ms ease",
     }}
     {...press}
@@ -85,8 +81,8 @@ const ChannelCard = ({ r }: { r: Resource }) => {
     <button
       onClick={open}
       style={{
-        textAlign: "left", background: CREAM, border: "none",
-        borderRadius: 20, padding: "18px 22px 20px", cursor: "pointer",
+        textAlign: "left", background: CARD, border: "none",
+        borderRadius: 18, padding: "16px 18px 18px", cursor: "pointer",
         position: "relative", display: "block", width: "100%",
         fontFamily: HN, transition: "transform 120ms ease",
       }}
@@ -96,45 +92,47 @@ const ChannelCard = ({ r }: { r: Resource }) => {
         aria-hidden
         style={{
           position: "absolute", top: 14, right: 14, width: 30, height: 30,
-          borderRadius: 999, background: "rgba(106, 106, 94, 0.1)",
+          borderRadius: 999, background: SOFT_CREAM,
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 12, color: DEEP_INK, lineHeight: 1,
+          color: INK,
         }}
       >
-        ↗
+        <ArrowUpRight size={14} strokeWidth={2} />
       </div>
-      <div style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+      <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
         <div
           style={{
-            width: 60, height: 60, borderRadius: "50%", flexShrink: 0,
+            width: 52, height: 52, borderRadius: "50%", flexShrink: 0,
             background: r.image_url ? `center/cover no-repeat url(${r.image_url})` : gradientFor(r.id),
           }}
         />
-        <div style={{ flex: 1, minWidth: 0, paddingRight: 22 }}>
+        <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
           <h4 style={{
-            fontFamily: HN, fontWeight: 400, fontSize: 16.5, lineHeight: 1.25,
-            letterSpacing: "-0.2px", color: DEEP_INK, margin: 0,
+            fontFamily: HN, fontWeight: 700, fontSize: 16, lineHeight: 1.25,
+            letterSpacing: "-0.2px", color: INK, margin: 0,
           }}>{r.title}</h4>
-          <div style={{
-            fontFamily: HN, fontWeight: 400, fontSize: 13, color: RUST,
-            margin: "6px 0 10px",
-          }}>
-            {r.meta}
-          </div>
+          {r.meta && (
+            <div style={{
+              fontFamily: HN, fontWeight: 500, fontSize: 12.5, color: RUST,
+              margin: "4px 0 10px",
+            }}>
+              {r.meta}
+            </div>
+          )}
           {r.description && (
             <p style={{
               fontFamily: HN, fontWeight: 400, fontSize: 13.5, lineHeight: 1.5,
-              color: DEEP_INK, opacity: 0.8, margin: "0 0 12px",
+              color: MUTED, margin: "0 0 12px",
             }}>{r.description}</p>
           )}
           {tags.length > 0 && (
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {tags.map((t, i) => (
                 <span key={i} style={{
-                  fontFamily: HN, fontWeight: 400, fontSize: 10.5, lineHeight: 1,
-                  letterSpacing: "1.6px", textTransform: "uppercase",
-                  background: SOFT_CREAM, color: MUTED_INK,
-                  padding: "5px 12px", borderRadius: 999,
+                  fontFamily: HN, fontWeight: 600, fontSize: 10.5, lineHeight: 1,
+                  letterSpacing: "0.14em", textTransform: "uppercase",
+                  background: TAG_BG, color: MUTED,
+                  padding: "6px 11px", borderRadius: 6,
                 }}>{t}</span>
               ))}
             </div>
@@ -146,7 +144,7 @@ const ChannelCard = ({ r }: { r: Resource }) => {
 };
 
 const inputStyle: React.CSSProperties = {
-  fontFamily: HN, fontWeight: 400, fontSize: 14, color: DEEP_INK,
+  fontFamily: HN, fontWeight: 400, fontSize: 14, color: INK,
   background: SOFT_CREAM, border: "none", borderRadius: 14,
   padding: "14px 16px", outline: "none", width: "100%",
 };
@@ -180,24 +178,24 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
 
   return (
     <div role="dialog" aria-modal="true"
-      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(42,42,36,0.55)", display: "flex", alignItems: "flex-end" }}
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(26,26,26,0.55)", display: "flex", alignItems: "flex-end" }}
       onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} style={{
-        width: "100%", background: CREAM, borderRadius: "24px 24px 0 0",
+        width: "100%", background: CARD, borderRadius: "24px 24px 0 0",
         padding: "20px 24px 32px", fontFamily: HN,
         animation: "bt-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
       }}>
         <style>{`@keyframes bt-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <div style={{ fontFamily: HN, fontSize: 11.5, letterSpacing: "2.4px", color: MUTED_INK, textTransform: "uppercase" }}>Off The App</div>
+          <div style={{ fontFamily: HN, fontWeight: 600, fontSize: 11.5, letterSpacing: "0.18em", color: MUTED, textTransform: "uppercase" }}>Off The App</div>
           <button onClick={onClose} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
-            <X size={20} color={DEEP_INK} strokeWidth={1.75} />
+            <X size={20} color={INK} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: PLAYFAIR, fontWeight: 300, fontStyle: "italic", fontSize: 32, lineHeight: 1.0, letterSpacing: "-0.5px", color: DEEP_INK, margin: "0 0 10px" }}>
-          suggest a channel
+        <h2 style={{ fontFamily: HN, fontWeight: 800, fontSize: 28, lineHeight: 1.1, letterSpacing: "-0.5px", color: INK, margin: "0 0 10px" }}>
+          Suggest a channel
         </h2>
-        <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED_INK, margin: "0 0 20px" }}>
+        <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
           Know a good local channel, group or feed? Drop the details and we'll have a look.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -209,7 +207,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
         </div>
         <button onClick={submit} disabled={submitting} style={{
           fontFamily: HN, marginTop: 16, width: "100%", height: 52, borderRadius: 999,
-          background: DEEP_INK, color: CREAM, border: "none", fontSize: 14,
+          background: DARK, color: CARD, border: "none", fontSize: 14, fontWeight: 700,
           cursor: submitting ? "default" : "pointer", opacity: submitting ? 0.6 : 1,
         }}>
           {submitting ? "Sending..." : "Share Resource"}
@@ -219,16 +217,14 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
   );
 };
 
-const SectionHeader = ({ title, count, noun }: { title: string; count: number; noun: { singular: string; plural: string } }) => (
-  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 24px", marginBottom: 16 }}>
+const SectionHeader = ({ title, count }: { title: string; count: number }) => (
+  <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 20px", marginBottom: 14 }}>
     <h2 style={{
-      fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: 32,
-      lineHeight: 1.0, letterSpacing: "-0.5px", color: CREAM, margin: 0,
-      textTransform: "none",
+      fontFamily: HN, fontWeight: 800, fontSize: 24,
+      lineHeight: 1.0, letterSpacing: "-0.4px", color: INK, margin: 0,
     }}>{title}</h2>
     <span style={{
-      fontFamily: HN, fontWeight: 400, fontSize: 18, letterSpacing: "0.01em",
-      color: CREAM,
+      fontFamily: HN, fontWeight: 500, fontSize: 14, color: MUTED,
     }}>({count})</span>
   </div>
 );
@@ -282,49 +278,41 @@ const BushTelegraph = () => {
   const featuredChips = featured?.meta ? featured.meta.split(" · ").filter(Boolean) : [];
 
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: HN }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            background: "transparent", border: "none", padding: 0, margin: 0,
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", lineHeight: 0, flexShrink: 0,
-          }}
-        >
-          <ArrowLeft size={22} color={CREAM} strokeWidth={1.6} />
-        </button>
-        <div style={{ flex: 1, textAlign: "center", fontFamily: HN, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+      <div style={{ paddingTop: 24, paddingLeft: 20, paddingRight: 20, display: "flex", alignItems: "center", gap: 12, minHeight: 40 }}>
+        <CircleBtn onClick={() => navigate(-1)} ariaLabel="Back">
+          <ArrowLeft size={18} color={INK} strokeWidth={2} />
+        </CircleBtn>
+        <div style={{ flex: 1, textAlign: "center", fontFamily: HN, fontWeight: 700, fontSize: 18, color: INK, lineHeight: 1, letterSpacing: "-0.2px" }}>
           Local Channels
         </div>
-        <div style={{ display: "flex", gap: 10, flexShrink: 0 }}>
+        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           {isAdmin && (
-            <IconButton onClick={() => navigate("/admin/bush-telegraph")} ariaLabel="Edit local channels">
-              <Pencil size={18} color={DEEP_INK} strokeWidth={1.6} />
-            </IconButton>
+            <CircleBtn onClick={() => navigate("/admin/bush-telegraph")} ariaLabel="Edit local channels">
+              <Pencil size={16} color={INK} strokeWidth={2} />
+            </CircleBtn>
           )}
-          <IconButton onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
-            <Plus size={18} color={DEEP_INK} strokeWidth={1.6} />
-          </IconButton>
+          <CircleBtn onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
+            <Plus size={18} color={INK} strokeWidth={2} />
+          </CircleBtn>
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 20 }} />
+      <div style={{ height: 1, background: LINE, margin: "20px 20px 16px 20px" }} />
 
-      {/* Hero */}
-      <div style={{ padding: "0 24px" }}>
+      {/* Subtitle */}
+      <div style={{ padding: "0 20px" }}>
         <p style={{
-          fontFamily: HN, fontWeight: 400, fontSize: 15, lineHeight: 1.65,
-          color: "rgba(238, 232, 218, 0.9)", margin: "0 0 24px", maxWidth: 330,
+          fontFamily: HN, fontWeight: 400, fontSize: 14, lineHeight: 1.55,
+          color: MUTED, margin: "0 0 18px", maxWidth: 340,
         }}>
           The groups and feeds worth being on. Curated, not crowdsourced.
         </p>
       </div>
 
       {/* Filter pills */}
-      <div style={{ marginBottom: 32, padding: "0 24px", overflowX: "auto", scrollbarWidth: "none" }}>
+      <div style={{ marginBottom: 22, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
         <style>{`.bt-scroll::-webkit-scrollbar { display: none; }`}</style>
         <div className="bt-scroll" style={{ display: "flex", gap: 8, width: "max-content" }}>
           {CHIPS.map((c) => {
@@ -334,11 +322,12 @@ const BushTelegraph = () => {
                 key={c}
                 onClick={() => setActive(c)}
                 style={{
-                  fontFamily: HN, fontWeight: 400, fontSize: 13.5,
-                  height: 38, padding: "0 20px", borderRadius: 999, border: "none",
+                  fontFamily: HN, fontWeight: isActive ? 700 : 500, fontSize: 13.5,
+                  height: 36, padding: "0 18px", borderRadius: 999,
+                  border: `1px solid ${isActive ? DARK : LINE}`,
                   cursor: "pointer", whiteSpace: "nowrap",
-                  background: isActive ? DEEP_INK : CREAM,
-                  color: isActive ? CREAM : DEEP_INK,
+                  background: isActive ? DARK : CARD,
+                  color: isActive ? CARD : INK,
                 }}
               >
                 {c}
@@ -350,45 +339,45 @@ const BushTelegraph = () => {
 
       {/* Featured */}
       {featured && active === "All" && (
-        <div style={{ padding: "0 24px", marginBottom: 32 }}>
+        <div style={{ padding: "0 20px", marginBottom: 28 }}>
           <div
             onClick={() => window.open(featured.url, "_blank", "noopener,noreferrer")}
             style={{
-              background: RUST, borderRadius: 28,
-              padding: "32px 28px 28px", position: "relative", overflow: "hidden",
+              background: DARK, borderRadius: 22,
+              padding: "22px 22px 22px", position: "relative", overflow: "hidden",
               cursor: "pointer", transition: "transform 120ms ease",
             }}
             {...press}
           >
             <div style={{
-              position: "absolute", top: 22, right: 22, zIndex: 3,
-              width: 38, height: 38, borderRadius: 999,
-              background: "rgba(238, 232, 218, 0.25)", backdropFilter: "blur(8px)",
-              WebkitBackdropFilter: "blur(8px)",
+              position: "absolute", top: 18, right: 18, zIndex: 3,
+              width: 34, height: 34, borderRadius: 999,
+              background: "rgba(238, 232, 218, 0.18)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 16, color: CREAM, lineHeight: 1,
-            }}>↗</div>
+              color: CREAM,
+            }}>
+              <ArrowUpRight size={16} strokeWidth={2} />
+            </div>
             <div style={{ position: "relative", zIndex: 2 }}>
               <div style={{
-                fontFamily: HN, fontWeight: 400, fontSize: 11.5, letterSpacing: "2.4px",
-                textTransform: "uppercase", color: "rgba(238, 232, 218, 0.8)",
-                marginBottom: 18,
+                fontFamily: HN, fontWeight: 600, fontSize: 11, letterSpacing: "0.18em",
+                textTransform: "uppercase", color: "rgba(238, 232, 218, 0.7)",
+                marginBottom: 14,
               }}>Featured</div>
               <h2 style={{
-                fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300, fontSize: 36,
-                lineHeight: 1.02, letterSpacing: "-0.9px", color: CREAM, margin: "0 0 14px",
-                textTransform: "none",
+                fontFamily: HN, fontWeight: 800, fontSize: 28,
+                lineHeight: 1.1, letterSpacing: "-0.5px", color: CREAM, margin: "0 0 12px",
               }}>{featured.title}</h2>
               {featured.description && (
                 <p style={{
-                  fontFamily: HN, fontWeight: 400, fontSize: 14.5, lineHeight: 1.55,
-                  color: "rgba(238, 232, 218, 0.9)", margin: "0 0 22px", maxWidth: 280,
+                  fontFamily: HN, fontWeight: 400, fontSize: 14, lineHeight: 1.55,
+                  color: "rgba(238, 232, 218, 0.85)", margin: "0 0 20px", maxWidth: 300,
                 }}>{featured.description}</p>
               )}
               <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                 {featuredChips.map((c, i) => (
                   <span key={i} style={{
-                    fontFamily: HN, fontWeight: 400, fontSize: 12.5, color: DEEP_INK,
+                    fontFamily: HN, fontWeight: 600, fontSize: 12, color: INK,
                     background: CREAM, padding: "8px 14px", borderRadius: 999,
                   }}>{c}</span>
                 ))}
@@ -402,10 +391,10 @@ const BushTelegraph = () => {
       {totalShown === 0 ? (
         <div style={{ padding: "64px 24px 0", textAlign: "center" }}>
           <h4 style={{
-            fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 300, fontSize: 28,
-            color: CREAM, margin: 0,
-          }}>nothing here yet</h4>
-          <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: "rgba(238, 232, 218, 0.75)", margin: "8px auto 0", maxWidth: 280 }}>
+            fontFamily: HN, fontWeight: 700, fontSize: 22,
+            color: INK, margin: 0,
+          }}>Nothing here yet</h4>
+          <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "8px auto 0", maxWidth: 280 }}>
             We're still scouting good ones for this category. Check back soon.
           </p>
         </div>
@@ -413,13 +402,12 @@ const BushTelegraph = () => {
         sections.map((section, idx) => {
           if (section.items.length === 0) return null;
           return (
-            <div key={section.platform} style={{ marginTop: idx === 0 ? 0 : 32 }}>
+            <div key={section.platform} style={{ marginTop: idx === 0 ? 0 : 28 }}>
               <SectionHeader
-                title={section.platform === "WhatsApp" ? "whatsApp" : section.platform.toLowerCase()}
+                title={section.platform}
                 count={section.items.length}
-                noun={PLATFORM_NOUN[section.platform]}
               />
-              <div style={{ display: "flex", flexDirection: "column", gap: 14, padding: "0 24px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 20px" }}>
                 {section.items.map((r) => <ChannelCard key={r.id} r={r} />)}
               </div>
             </div>
