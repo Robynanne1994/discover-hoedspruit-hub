@@ -73,18 +73,18 @@ function parsePhone(phone: string) {
 
 const rowLabelStyle: React.CSSProperties = {
   fontFamily: FF,
-  fontSize: 10.5,
-  fontWeight: 400,
-  letterSpacing: "0.18em",
+  fontSize: 11,
+  fontWeight: 600,
+  letterSpacing: "0.16em",
   textTransform: "uppercase",
   color: MUTED,
-  marginBottom: 6,
+  marginBottom: 4,
   display: "block",
 };
 
 const rowValueStyle: React.CSSProperties = {
   fontFamily: FF,
-  fontSize: 16,
+  fontSize: 17,
   fontWeight: 400,
   lineHeight: 1.3,
   letterSpacing: "-0.1px",
