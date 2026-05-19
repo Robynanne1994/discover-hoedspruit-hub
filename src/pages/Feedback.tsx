@@ -178,7 +178,7 @@ const Feedback = () => {
           <input
             className="fb-input"
             type="text"
-            placeholder="Briefly summarize your feedback"
+            placeholder="Briefly summarise your feedback"
             value={subject}
             onChange={(e) => {
               setSubject(e.target.value);
