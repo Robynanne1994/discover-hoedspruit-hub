@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,7 +17,13 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
   const [queue, setQueue] = useState<string[]>([]);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (value && value.trim().length > 0) setShowUrlInput(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const urls = value ? value.split("\n").filter(Boolean) : [];
 
@@ -149,15 +155,17 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
         </div>
       )}
 
-      <Textarea
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        rows={2}
-        placeholder={"Paste image URLs (one per line) or upload below"}
-        className="text-xs"
-      />
+      {showUrlInput && (
+        <Textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={2}
+          placeholder={"Paste image URLs (one per line)"}
+          className="text-xs"
+        />
+      )}
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <input
           ref={fileRef}
           type="file"
@@ -180,6 +188,17 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
             <><Upload className="h-3.5 w-3.5" /> Upload Images</>
           )}
         </Button>
+        {!showUrlInput && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowUrlInput(true)}
+            className="gap-1.5"
+          >
+            Add image URLs
+          </Button>
+        )}
       </div>
 
       <ImageCropDialog

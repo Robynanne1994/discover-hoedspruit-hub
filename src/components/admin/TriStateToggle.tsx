@@ -18,7 +18,7 @@ export const TriStateToggle = ({ label, value, onChange, className }: TriStateTo
   const current = value === true ? true : value === false ? false : null;
   return (
     <div className={cn("flex items-center justify-between gap-3", className)}>
-      <Label className="text-sm">{label}</Label>
+      <Label className="text-sm font-semibold text-foreground">{label}</Label>
       <div className="inline-flex rounded-md border border-border bg-background overflow-hidden">
         {OPTIONS.map((opt) => {
           const active = current === opt.value;

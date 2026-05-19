@@ -46,6 +46,12 @@ const AdminListings = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customRowsVisible, setCustomRowsVisible] = useState(0);
+  const [newCatName, setNewCatName] = useState("");
+  const [showNewCat, setShowNewCat] = useState(false);
+  const [newSubName, setNewSubName] = useState("");
+  const [newSubParent, setNewSubParent] = useState<string>("");
+  const [showNewSub, setShowNewSub] = useState(false);
+  const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
@@ -84,6 +90,27 @@ const AdminListings = () => {
       return data ?? [];
     },
   });
+
+  // Distinct values used across listings for free-form chip fields
+  const { data: distinctChipValues } = useQuery({
+    queryKey: ["admin-distinct-chip-values"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listings").select("meal, vibe, cuisine, seating, service_type");
+      const collect = (key: string) => {
+        const s = new Set<string>();
+        (data ?? []).forEach((row: any) => (row[key] ?? []).forEach((v: string) => v && s.add(v)));
+        return Array.from(s);
+      };
+      return {
+        meal: collect("meal"),
+        vibe: collect("vibe"),
+        cuisine: collect("cuisine"),
+        seating: collect("seating"),
+        service_type: collect("service_type"),
+      } as Record<string, string[]>;
+    },
+  });
+
 
   // Fetch listing_categories for the editing listing
   const { data: editingCatIds } = useQuery({
@@ -164,7 +191,7 @@ const AdminListings = () => {
         pets_allowed: values.pets_allowed,
         wheelchair_friendly: values.wheelchair_friendly,
         price_level: values.price_level,
-        show_attributes: values.show_attributes,
+        show_attributes: true,
         meal: values.meal,
         vibe: values.vibe,
         cuisine: values.cuisine,
@@ -393,6 +420,45 @@ const AdminListings = () => {
     );
   };
 
+  const addCategory = async () => {
+    const name = newCatName.trim();
+    if (!name) return;
+    const existing = categories?.find((c) => c.title.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      if (!selectedCatIds.includes(existing.id)) toggleCat(existing.id);
+      setNewCatName(""); setShowNewCat(false);
+      toast.info("Category already exists — selected it");
+      return;
+    }
+    const nextOrder = (categories?.length ?? 0);
+    const { data, error } = await supabase.from("categories").insert({ title: name, icon: "Folder", sort_order: nextOrder }).select("id, title").single();
+    if (error || !data) { toast.error(error?.message || "Failed to add category"); return; }
+    await qc.invalidateQueries({ queryKey: ["admin-categories-select"] });
+    setSelectedCatIds((prev) => [...prev, data.id]);
+    setNewCatName(""); setShowNewCat(false);
+    toast.success("Category added");
+  };
+
+  const addSubcategory = async () => {
+    const name = newSubName.trim();
+    const parentId = newSubParent || selectedCatIds[0];
+    if (!name || !parentId) { toast.error("Pick a parent category"); return; }
+    const existing = subcategories?.find((s) => s.category_id === parentId && s.title.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      if (!selectedSubIds.includes(existing.id)) toggleSub(existing.id);
+      setNewSubName(""); setNewSubParent(""); setShowNewSub(false);
+      toast.info("Subcategory already exists — selected it");
+      return;
+    }
+    const siblings = subcategories?.filter((s) => s.category_id === parentId) ?? [];
+    const { data, error } = await supabase.from("subcategories").insert({ title: name, category_id: parentId, sort_order: siblings.length }).select("id, title, category_id").single();
+    if (error || !data) { toast.error(error?.message || "Failed to add subcategory"); return; }
+    await qc.invalidateQueries({ queryKey: ["admin-subcategories-select"] });
+    setSelectedSubIds((prev) => [...prev, data.id]);
+    setNewSubName(""); setNewSubParent(""); setShowNewSub(false);
+    toast.success("Subcategory added");
+  };
+
   // Show subcategories for all selected categories
   const availableSubs = subcategories?.filter((s) => selectedCatIds.includes(s.category_id)) ?? [];
 
@@ -440,23 +506,57 @@ const AdminListings = () => {
                       </div>
                     ))}
                   </div>
+                  {showNewCat ? (
+                    <div className="flex gap-2 mt-2">
+                      <Input value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="New category name" className="h-8 text-sm" autoFocus />
+                      <Button type="button" size="sm" onClick={addCategory}>Save</Button>
+                      <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewCat(false); setNewCatName(""); }}>Cancel</Button>
+                    </div>
+                  ) : (
+                    <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1" onClick={() => setShowNewCat(true)}>
+                      <Plus className="h-3.5 w-3.5" /> Add category
+                    </Button>
+                  )}
                 </div>
-                {availableSubs.length > 0 && (
+                {selectedCatIds.length > 0 && (
                   <div>
                     <Label>Subcategories</Label>
                     <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                    <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
-                      {availableSubs.map((sub) => (
-                        <div key={sub.id} className="flex items-center gap-2">
-                          <Checkbox
-                            id={`sub-${sub.id}`}
-                            checked={selectedSubIds.includes(sub.id)}
-                            onCheckedChange={() => toggleSub(sub.id)}
-                          />
-                          <label htmlFor={`sub-${sub.id}`} className="text-sm text-foreground cursor-pointer">{sub.title}</label>
-                        </div>
-                      ))}
-                    </div>
+                    {availableSubs.length > 0 && (
+                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3">
+                        {availableSubs.map((sub) => (
+                          <div key={sub.id} className="flex items-center gap-2">
+                            <Checkbox
+                              id={`sub-${sub.id}`}
+                              checked={selectedSubIds.includes(sub.id)}
+                              onCheckedChange={() => toggleSub(sub.id)}
+                            />
+                            <label htmlFor={`sub-${sub.id}`} className="text-sm text-foreground cursor-pointer">{sub.title}</label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {showNewSub ? (
+                      <div className="flex flex-wrap gap-2 mt-2 items-center">
+                        {selectedCatIds.length > 1 && (
+                          <Select value={newSubParent} onValueChange={setNewSubParent}>
+                            <SelectTrigger className="h-8 text-sm w-[160px]"><SelectValue placeholder="Parent category" /></SelectTrigger>
+                            <SelectContent>
+                              {categories?.filter((c) => selectedCatIds.includes(c.id)).map((c) => (
+                                <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        <Input value={newSubName} onChange={(e) => setNewSubName(e.target.value)} placeholder="New subcategory name" className="h-8 text-sm flex-1 min-w-[140px]" autoFocus />
+                        <Button type="button" size="sm" onClick={addSubcategory}>Save</Button>
+                        <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSub(false); setNewSubName(""); setNewSubParent(""); }}>Cancel</Button>
+                      </div>
+                    ) : (
+                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1" onClick={() => setShowNewSub(true)}>
+                        <Plus className="h-3.5 w-3.5" /> Add subcategory
+                      </Button>
+                    )}
                   </div>
                 )}
                 <div>
@@ -476,13 +576,13 @@ const AdminListings = () => {
                 </div>
                 <div><Label>Website</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." /></div>
                 <div>
-                  <Label>Website Display Text <span className="text-xs text-muted-foreground">(optional — shown instead of the URL)</span></Label>
+                  <Label>Website Display Text</Label>
                   <Input value={form.website_label} onChange={(e) => setForm({ ...form, website_label: e.target.value })} placeholder="e.g. Visit our Facebook page" />
                 </div>
                 <div><Label>WhatsApp Number</Label><Input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} placeholder="e.g. +27791234567" /></div>
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div><Label>Google Rating (0-5)</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
+                  <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
                    <div><Label>Google Reviews Count</Label><Input type="number" min="0" value={form.google_reviews_count ?? ""} onChange={(e) => setForm({ ...form, google_reviews_count: e.target.value ? parseInt(e.target.value, 10) : null })} placeholder="e.g. 128" /></div>
                 </div>
                 <div><Label>Google Reviews URL</Label><Input value={form.google_reviews_url} onChange={(e) => setForm({ ...form, google_reviews_url: e.target.value })} placeholder="https://search.google.com/local/reviews?placeid=..." /></div>
@@ -581,94 +681,113 @@ const AdminListings = () => {
 
                 {isRestaurantType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <div className="flex items-center gap-2">
-                      <Switch checked={form.show_attributes} onCheckedChange={(v) => setForm({ ...form, show_attributes: v })} />
-                      <Label>Show restaurant attributes on detail page</Label>
+                    <p className="text-sm font-medium text-foreground">Restaurant Attributes</p>
+                    <div className="space-y-3">
+                      <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
+                      <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                      <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
+                      <TriStateToggle label="Smoking Allowed" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
                     </div>
 
-                    {form.show_attributes && (
-                      <>
-                        <div className="space-y-3">
-                          <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
-                          <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
-                          <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
-                          <TriStateToggle label="Smoking Allowed" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
-                        </div>
+                    {/* Kids Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-sm font-medium text-foreground mb-3">Kids</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
+                        <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
+                        <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
+                        <TriStateToggle label="Nappy Changing Station" value={form.nappy_changing_station} onChange={(v) => setForm({ ...form, nappy_changing_station: v })} />
+                      </div>
+                    </div>
 
-                        {/* Kids Section */}
-                        <div className="border-t border-border pt-3 mt-2">
-                          <p className="text-sm font-medium text-foreground mb-3">Kids</p>
-                          <div className="space-y-3">
-                            <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
-                            <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
-                            <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
-                            <TriStateToggle label="Nappy Changing Station" value={form.nappy_changing_station} onChange={(v) => setForm({ ...form, nappy_changing_station: v })} />
+                    {/* Accessibility Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
+                        <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
+                        <TriStateToggle label="Wheelchair-accessible Seating" value={form.wheelchair_seating} onChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
+                        <TriStateToggle label="Wheelchair-accessible Toilet" value={form.wheelchair_toilet} onChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
+                      </div>
+                    </div>
+
+                    {/* Amenities Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
+                        <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
+                        <TriStateToggle label="Free Wi-Fi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Price Level</Label>
+                      <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
+                        <SelectTrigger><SelectValue placeholder="Select price level" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">$ — Budget</SelectItem>
+                          <SelectItem value="2">$$ — Moderate</SelectItem>
+                          <SelectItem value="3">$$$ — Upscale</SelectItem>
+                          <SelectItem value="4">$$$$ — Fine Dining</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {[
+                      { label: "Meal", options: MEAL_OPTIONS, key: "meal" as const },
+                      { label: "Vibe", options: VIBE_OPTIONS, key: "vibe" as const },
+                      { label: "Cuisine", options: CUISINE_OPTIONS, key: "cuisine" as const },
+                      { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
+                      { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
+                    ].map(({ label, options, key }) => {
+                      const extras = (distinctChipValues?.[key] ?? []).filter((v) => !options.includes(v));
+                      const merged = [...options, ...extras];
+                      return (
+                        <div key={key}>
+                          <Label>{label}</Label>
+                          <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                          <div className="flex flex-wrap gap-2">
+                            {merged.map((opt) => {
+                              const selected = form[key].includes(opt);
+                              return (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setForm({ ...form, [key]: selected ? form[key].filter((v) => v !== opt) : [...form[key], opt] })}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                                >
+                                  {opt}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div className="flex gap-2 mt-2">
+                            <Input
+                              value={customChipOption[key] ?? ""}
+                              onChange={(e) => setCustomChipOption({ ...customChipOption, [key]: e.target.value })}
+                              placeholder={`Add new ${label.toLowerCase()} option`}
+                              className="h-8 text-sm"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                const val = (customChipOption[key] ?? "").trim();
+                                if (!val) return;
+                                if (!form[key].includes(val)) {
+                                  setForm({ ...form, [key]: [...form[key], val] });
+                                }
+                                setCustomChipOption({ ...customChipOption, [key]: "" });
+                              }}
+                            >
+                              Add
+                            </Button>
                           </div>
                         </div>
-
-                        {/* Accessibility Section */}
-                        <div className="border-t border-border pt-3 mt-2">
-                          <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
-                          <div className="space-y-3">
-                            <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
-                            <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
-                            <TriStateToggle label="Wheelchair-accessible Seating" value={form.wheelchair_seating} onChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
-                            <TriStateToggle label="Wheelchair-accessible Toilet" value={form.wheelchair_toilet} onChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
-                          </div>
-                        </div>
-
-                        {/* Amenities Section */}
-                        <div className="border-t border-border pt-3 mt-2">
-                          <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
-                          <div className="space-y-3">
-                            <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
-                            <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
-                            <TriStateToggle label="Free Wi-Fi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
-                          </div>
-                        </div>
-
-                        <div>
-                          <Label>Price Level</Label>
-                          <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
-                            <SelectTrigger><SelectValue placeholder="Select price level" /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="1">$ — Budget</SelectItem>
-                              <SelectItem value="2">$$ — Moderate</SelectItem>
-                              <SelectItem value="3">$$$ — Upscale</SelectItem>
-                              <SelectItem value="4">$$$$ — Fine Dining</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {[
-                          { label: "Meal", options: MEAL_OPTIONS, key: "meal" as const },
-                          { label: "Vibe", options: VIBE_OPTIONS, key: "vibe" as const },
-                          { label: "Cuisine", options: CUISINE_OPTIONS, key: "cuisine" as const },
-                          { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
-                          { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
-                        ].map(({ label, options, key }) => (
-                          <div key={key}>
-                            <Label>{label}</Label>
-                            <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                            <div className="flex flex-wrap gap-2">
-                              {options.map((opt) => {
-                                const selected = form[key].includes(opt);
-                                return (
-                                  <button
-                                    key={opt}
-                                    type="button"
-                                    onClick={() => setForm({ ...form, [key]: selected ? form[key].filter((v) => v !== opt) : [...form[key], opt] })}
-                                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
-                                  >
-                                    {opt}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
-                      </>
-                    )}
+                      );
+                    })}
                   </div>
                 )}
 
