@@ -681,94 +681,113 @@ const AdminListings = () => {
 
                 {isRestaurantType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <div className="flex items-center gap-2">
-                      <Switch checked={form.show_attributes} onCheckedChange={(v) => setForm({ ...form, show_attributes: v })} />
-                      <Label>Show restaurant attributes on detail page</Label>
+                    <p className="text-sm font-medium text-foreground">Restaurant Attributes</p>
+                    <div className="space-y-3">
+                      <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
+                      <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                      <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
+                      <TriStateToggle label="Smoking Allowed" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
                     </div>
 
-                    {form.show_attributes && (
-                      <>
-                        <div className="space-y-3">
-                          <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
-                          <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
-                          <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
-                          <TriStateToggle label="Smoking Allowed" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
-                        </div>
+                    {/* Kids Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-sm font-medium text-foreground mb-3">Kids</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
+                        <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
+                        <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
+                        <TriStateToggle label="Nappy Changing Station" value={form.nappy_changing_station} onChange={(v) => setForm({ ...form, nappy_changing_station: v })} />
+                      </div>
+                    </div>
 
-                        {/* Kids Section */}
-                        <div className="border-t border-border pt-3 mt-2">
-                          <p className="text-sm font-medium text-foreground mb-3">Kids</p>
-                          <div className="space-y-3">
-                            <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
-                            <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
-                            <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
-                            <TriStateToggle label="Nappy Changing Station" value={form.nappy_changing_station} onChange={(v) => setForm({ ...form, nappy_changing_station: v })} />
+                    {/* Accessibility Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
+                        <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
+                        <TriStateToggle label="Wheelchair-accessible Seating" value={form.wheelchair_seating} onChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
+                        <TriStateToggle label="Wheelchair-accessible Toilet" value={form.wheelchair_toilet} onChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
+                      </div>
+                    </div>
+
+                    {/* Amenities Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
+                        <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
+                        <TriStateToggle label="Free Wi-Fi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Price Level</Label>
+                      <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
+                        <SelectTrigger><SelectValue placeholder="Select price level" /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="1">$ — Budget</SelectItem>
+                          <SelectItem value="2">$$ — Moderate</SelectItem>
+                          <SelectItem value="3">$$$ — Upscale</SelectItem>
+                          <SelectItem value="4">$$$$ — Fine Dining</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {[
+                      { label: "Meal", options: MEAL_OPTIONS, key: "meal" as const },
+                      { label: "Vibe", options: VIBE_OPTIONS, key: "vibe" as const },
+                      { label: "Cuisine", options: CUISINE_OPTIONS, key: "cuisine" as const },
+                      { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
+                      { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
+                    ].map(({ label, options, key }) => {
+                      const extras = (distinctChipValues?.[key] ?? []).filter((v) => !options.includes(v));
+                      const merged = [...options, ...extras];
+                      return (
+                        <div key={key}>
+                          <Label>{label}</Label>
+                          <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
+                          <div className="flex flex-wrap gap-2">
+                            {merged.map((opt) => {
+                              const selected = form[key].includes(opt);
+                              return (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setForm({ ...form, [key]: selected ? form[key].filter((v) => v !== opt) : [...form[key], opt] })}
+                                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                                >
+                                  {opt}
+                                </button>
+                              );
+                            })}
+                          </div>
+                          <div className="flex gap-2 mt-2">
+                            <Input
+                              value={customChipOption[key] ?? ""}
+                              onChange={(e) => setCustomChipOption({ ...customChipOption, [key]: e.target.value })}
+                              placeholder={`Add new ${label.toLowerCase()} option`}
+                              className="h-8 text-sm"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                const val = (customChipOption[key] ?? "").trim();
+                                if (!val) return;
+                                if (!form[key].includes(val)) {
+                                  setForm({ ...form, [key]: [...form[key], val] });
+                                }
+                                setCustomChipOption({ ...customChipOption, [key]: "" });
+                              }}
+                            >
+                              Add
+                            </Button>
                           </div>
                         </div>
-
-                        {/* Accessibility Section */}
-                        <div className="border-t border-border pt-3 mt-2">
-                          <p className="text-sm font-medium text-foreground mb-3">Accessibility</p>
-                          <div className="space-y-3">
-                            <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
-                            <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
-                            <TriStateToggle label="Wheelchair-accessible Seating" value={form.wheelchair_seating} onChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
-                            <TriStateToggle label="Wheelchair-accessible Toilet" value={form.wheelchair_toilet} onChange={(v) => setForm({ ...form, wheelchair_toilet: v })} />
-                          </div>
-                        </div>
-
-                        {/* Amenities Section */}
-                        <div className="border-t border-border pt-3 mt-2">
-                          <p className="text-sm font-medium text-foreground mb-3">Amenities</p>
-                          <div className="space-y-3">
-                            <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
-                            <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
-                            <TriStateToggle label="Free Wi-Fi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
-                          </div>
-                        </div>
-
-                        <div>
-                          <Label>Price Level</Label>
-                          <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
-                            <SelectTrigger><SelectValue placeholder="Select price level" /></SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="1">$ — Budget</SelectItem>
-                              <SelectItem value="2">$$ — Moderate</SelectItem>
-                              <SelectItem value="3">$$$ — Upscale</SelectItem>
-                              <SelectItem value="4">$$$$ — Fine Dining</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {[
-                          { label: "Meal", options: MEAL_OPTIONS, key: "meal" as const },
-                          { label: "Vibe", options: VIBE_OPTIONS, key: "vibe" as const },
-                          { label: "Cuisine", options: CUISINE_OPTIONS, key: "cuisine" as const },
-                          { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
-                          { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
-                        ].map(({ label, options, key }) => (
-                          <div key={key}>
-                            <Label>{label}</Label>
-                            <p className="text-xs text-muted-foreground mb-2">Select all that apply</p>
-                            <div className="flex flex-wrap gap-2">
-                              {options.map((opt) => {
-                                const selected = form[key].includes(opt);
-                                return (
-                                  <button
-                                    key={opt}
-                                    type="button"
-                                    onClick={() => setForm({ ...form, [key]: selected ? form[key].filter((v) => v !== opt) : [...form[key], opt] })}
-                                    className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
-                                  >
-                                    {opt}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                        ))}
-                      </>
-                    )}
+                      );
+                    })}
                   </div>
                 )}
 
