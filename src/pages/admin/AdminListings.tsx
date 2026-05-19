@@ -592,7 +592,7 @@ const AdminListings = () => {
                 </div>
 
                 <div className="border-t border-border pt-4 mt-2">
-                  <p className="font-medium text-foreground text-lg text-red-800 mb-3">Detail Page Fields (optional)</p>
+                  <p className="font-medium text-foreground mb-3 text-base text-red-600">Detail Page Fields (optional)</p>
                 </div>
 
                 <div>
@@ -691,7 +691,7 @@ const AdminListings = () => {
 
                     {/* Kids Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Kids</p>
+                      <p className="font-medium text-foreground mb-3 text-base text-red-600">Kids</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
                         <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
@@ -702,7 +702,7 @@ const AdminListings = () => {
 
                     {/* Accessibility Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Accessibility</p>
+                      <p className="font-medium text-foreground mb-3 text-base text-red-600">Accessibility</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
                         <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
@@ -713,7 +713,7 @@ const AdminListings = () => {
 
                     {/* Amenities Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Amenities</p>
+                      <p className="font-medium text-foreground mb-3 text-base text-red-600">Amenities</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
                         <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
