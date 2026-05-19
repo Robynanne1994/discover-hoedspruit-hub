@@ -863,7 +863,7 @@ const AdminListings = () => {
 
                 {isAccommodationType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="font-medium text-foreground text-lg text-red-800">Accommodation Fields</p>
+                    <p className="font-medium text-foreground mb-3 text-base text-red-600">Accommodation Fields</p>
 
                     <div className="space-y-3">
                       {[
