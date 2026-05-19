@@ -48,20 +48,20 @@ const HelpCentre = () => {
             cursor: "pointer", lineHeight: 0, flexShrink: 0,
           }}
         >
-          <BackArrowIcon size={22} color={CREAM} />
+          <BackArrowIcon size={22} color={INK} />
         </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: INK, lineHeight: 1 }}>
           Help Centre
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+      <div style={{ height: 1, background: "rgba(42,42,36,0.12)", marginTop: 20 }} />
 
       {/* Section eyebrow */}
       <div style={{ padding: "24px 24px 0" }}>
         <div style={{
           fontFamily: SANS, fontWeight: 400, fontSize: 11, letterSpacing: "2.4px",
-          textTransform: "uppercase", color: CREAM, opacity: 0.7, marginBottom: 12,
+          textTransform: "uppercase", color: INK_SOFT, marginBottom: 12,
         }}>
           FIND WHAT YOU NEED
         </div>
