@@ -713,7 +713,7 @@ const AdminListings = () => {
 
                     {/* Amenities Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Amenities</p>
+                      <p className="font-medium text-foreground mb-3 text-base text-red-600">Amenities</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
                         <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
