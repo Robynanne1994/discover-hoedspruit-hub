@@ -619,7 +619,7 @@ const EventDetail = () => {
 
       {/* Sticky tab bar */}
       <nav style={{
-        position: "sticky", top: 57, zIndex: 30,
+        position: "sticky", top: 0, zIndex: 30,
         background: C.surface, borderBottom: `1px solid ${C.border}`,
         display: "flex", padding: "0 8px",
       }}>
