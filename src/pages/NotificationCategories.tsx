@@ -1,7 +1,6 @@
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useParams, Navigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -12,16 +11,17 @@ import {
   totalCategoryCount,
 } from "@/lib/notificationCategories";
 
-const FONT_STACK = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const ITALIC_STACK = "'Playfair Display', Georgia, serif";
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const COLORS = {
-  olive: "#5C6446",
-  cream: "#EEE8DA",
-  ink: "#2A2A24",
-  muted: "#6B6A5E",
-  line: "#D9D2C0",
-  rust: "#9B5A3C",
+  bg: "#ECE3CF",
+  card: "#FFFFFF",
+  ink: "#1A1A1A",
+  muted: "#7A6E5C",
+  line: "#E2DAC6",
+  rust: "#C0392B",
+  toggleOn: "#2E2418",
+  toggleOff: "#D9CFB8",
 };
 
 const baseText: React.CSSProperties = {
@@ -33,10 +33,10 @@ const baseText: React.CSSProperties = {
 const Toggle = ({ checked }: { checked: boolean }) => (
   <div
     style={{
-      width: 44,
-      height: 24,
+      width: 46,
+      height: 26,
       borderRadius: 999,
-      background: checked ? COLORS.ink : COLORS.line,
+      background: checked ? COLORS.toggleOn : COLORS.toggleOff,
       position: "relative",
       transition: "background-color 200ms ease-out",
       flexShrink: 0,
@@ -44,8 +44,8 @@ const Toggle = ({ checked }: { checked: boolean }) => (
   >
     <div
       style={{
-        width: 18,
-        height: 18,
+        width: 20,
+        height: 20,
         borderRadius: "50%",
         background: "#fff",
         position: "absolute",
@@ -74,14 +74,14 @@ const Pill = ({
       padding: "0 18px",
       borderRadius: 999,
       background: active ? COLORS.ink : "transparent",
-      border: `1px solid ${active ? COLORS.ink : "rgba(238, 232, 218, 0.35)"}`,
-      color: COLORS.cream,
-      fontFamily: FONT_STACK,
+      border: `1px solid ${active ? COLORS.ink : "rgba(26,26,26,0.25)"}`,
+      color: active ? "#fff" : COLORS.ink,
+      fontFamily: SANS,
       fontSize: 13,
       fontWeight: 400,
       letterSpacing: "0.1px",
       cursor: "pointer",
-      transition: "background-color 200ms ease-out, border-color 200ms ease-out",
+      transition: "background-color 200ms ease-out, border-color 200ms ease-out, color 200ms ease-out",
       ...baseText,
     }}
   >
@@ -100,7 +100,7 @@ const NotificationCategories = () => {
   const total = meta ? totalCategoryCount(meta.groups) : 0;
 
   const [selected, setSelected] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [, setLoaded] = useState(false);
   const [selectAllActive, setSelectAllActive] = useState(false);
   const [clearAllActive, setClearAllActive] = useState(false);
 
@@ -154,9 +154,23 @@ const NotificationCategories = () => {
     setTimeout(() => setClearAllActive(false), 2000);
   };
 
+  // Title-case the eyebrow text for the page title (e.g. "NEW EVENTS" -> "New Events")
+  const pageTitle = meta.eyebrow
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+
   return (
-    <div style={{ background: COLORS.olive, minHeight: "100vh", paddingBottom: 120 }}>
-      <div style={{ paddingTop: 32, paddingLeft: 24, paddingRight: 24, marginBottom: 18 }}>
+    <div style={{ background: COLORS.bg, minHeight: "100vh", paddingBottom: 120, fontFamily: SANS }}>
+      {/* Top bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "calc(env(safe-area-inset-top) + 60px) 24px 0",
+          minHeight: 44,
+        }}
+      >
         <button
           type="button"
           aria-label="Go back"
@@ -174,39 +188,39 @@ const NotificationCategories = () => {
             flexShrink: 0,
           }}
         >
-          <BackArrowIcon size={22} color={COLORS.cream} />
+          <BackArrowIcon size={22} color={COLORS.ink} />
         </button>
-      </div>
-
-      {/* Hero */}
-      <div style={{ padding: "18px 24px 0" }}>
         <div
           style={{
-            ...baseText,
-            fontFamily: FONT_STACK,
-            fontSize: 12,
-            fontWeight: 400,
-            color: COLORS.cream,
-            opacity: 0.7,
-            textTransform: "uppercase",
-            letterSpacing: "0.2em",
-            marginBottom: 14,
+            flex: 1,
+            textAlign: "center",
+            marginRight: 22,
+            fontFamily: SANS,
+            fontSize: 20,
+            fontWeight: 600,
+            color: COLORS.ink,
+            lineHeight: 1,
           }}
         >
-          {meta.eyebrow}
+          {pageTitle}
         </div>
+      </div>
+
+      <div style={{ height: 1, background: "rgba(26,26,26,0.12)", marginTop: 20 }} />
+
+      {/* Subline */}
+      <div style={{ padding: "24px 24px 0" }}>
         <p
           style={{
             ...baseText,
-            fontFamily: FONT_STACK,
-            fontSize: 15,
+            fontFamily: SANS,
+            fontSize: 16,
             fontWeight: 400,
-            color: COLORS.cream,
-            opacity: 0.9,
-            lineHeight: 1.65,
+            color: COLORS.ink,
+            lineHeight: 1.45,
             margin: 0,
-            marginBottom: 24,
-            maxWidth: 300,
+            marginBottom: 22,
+            maxWidth: 320,
           }}
         >
           {meta.subline}
@@ -229,12 +243,11 @@ const NotificationCategories = () => {
           style={{
             ...baseText,
             marginLeft: "auto",
-            fontFamily: ITALIC_STACK,
+            fontFamily: SANS,
             fontStyle: "italic",
             fontWeight: 400,
             fontSize: 14,
-            color: COLORS.cream,
-            opacity: 0.7,
+            color: COLORS.muted,
           }}
         >
           {selected.length} of {total}
@@ -248,13 +261,12 @@ const NotificationCategories = () => {
             <div
               style={{
                 ...baseText,
-                fontFamily: FONT_STACK,
+                fontFamily: SANS,
                 fontSize: 11,
-                fontWeight: 400,
-                color: COLORS.cream,
-                opacity: 0.7,
+                fontWeight: 500,
+                color: COLORS.muted,
                 textTransform: "uppercase",
-                letterSpacing: "0.218em",
+                letterSpacing: "0.22em",
                 padding: "0 24px",
                 marginBottom: 10,
               }}
@@ -264,8 +276,8 @@ const NotificationCategories = () => {
             <div style={{ padding: "0 24px" }}>
               <div
                 style={{
-                  background: COLORS.cream,
-                  borderRadius: 20,
+                  background: COLORS.card,
+                  borderRadius: 18,
                   padding: "4px 22px",
                   overflow: "hidden",
                 }}
@@ -281,7 +293,7 @@ const NotificationCategories = () => {
                         background: "none",
                         border: "none",
                         borderTop: i === 0 ? "none" : `1px solid ${COLORS.line}`,
-                        padding: "14px 0",
+                        padding: "16px 0",
                         display: "flex",
                         alignItems: "center",
                         gap: 14,
@@ -293,15 +305,15 @@ const NotificationCategories = () => {
                         <div
                           style={{
                             ...baseText,
-                            fontFamily: FONT_STACK,
+                            fontFamily: SANS,
                             fontSize: 15.5,
                             fontWeight: 400,
                             color: COLORS.ink,
                             lineHeight: 1.2,
                           }}
                         >
-                      {item.label}
-                    </div>
+                          {item.label}
+                        </div>
                       </div>
                       <Toggle checked={isOn} />
                     </button>
@@ -316,7 +328,7 @@ const NotificationCategories = () => {
       {/* Footnote */}
       <div
         style={{
-          padding: "16px 26px 0 28px",
+          padding: "20px 26px 0 28px",
           display: "flex",
           gap: 12,
           alignItems: "flex-start",
@@ -336,12 +348,10 @@ const NotificationCategories = () => {
         <span
           style={{
             ...baseText,
-            fontFamily: "Inter, sans-serif",
-            fontStyle: "normal",
+            fontFamily: SANS,
             fontWeight: 400,
             fontSize: 14,
-            color: COLORS.cream,
-            opacity: 0.7,
+            color: COLORS.muted,
             lineHeight: 1.55,
           }}
         >
