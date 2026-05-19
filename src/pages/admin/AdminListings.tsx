@@ -560,7 +560,7 @@ const AdminListings = () => {
                 )}
                 <div>
                   <Label>Card Cover Image</Label>
-                  <p className="text-xs text-muted-foreground mb-1">Shown on the category listing page. Crops to 16:9 by default.</p>
+                  
                   <ImageUpload bucket="listing-images" value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} aspect={16/9} />
                 </div>
                 <div>
