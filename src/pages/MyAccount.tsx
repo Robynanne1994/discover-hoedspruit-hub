@@ -466,12 +466,12 @@ const MyAccount = () => {
 
   // === Editorial design tokens ===
   const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const OLIVE = "#5C6446";
-  const CREAM = "#EEE8DA";
-  const INK = "#2A2A24";
+  const BG = "#E6E0CC";
+  const CARD = "#FFFFFF";
+  const INK = "#1A1A1A";
   const MUTED_INK = "#6B6A5E";
-  const LINE = "#D9D2C0";
-  const RUST = "#9B5A3C";
+  const LABEL = "#9A8E7A";
+  const LINE = "#E2DAC6";
 
   const accountItems = [
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
@@ -490,10 +490,10 @@ const MyAccount = () => {
       style={{
         fontFamily: SANS,
         fontSize: 11,
-        fontWeight: 400,
+        fontWeight: 500,
         letterSpacing: "0.24em",
         textTransform: "uppercase",
-        color: "rgba(238,232,218,0.7)",
+        color: LABEL,
         margin: "0 0 10px 0",
         padding: "0 24px",
       }}
@@ -501,6 +501,7 @@ const MyAccount = () => {
       {children}
     </p>
   );
+
 
   const Row = ({
     item,
