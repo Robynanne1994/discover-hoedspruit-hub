@@ -691,7 +691,7 @@ const AdminListings = () => {
 
                     {/* Kids Section */}
                     <div className="border-t border-border pt-3 mt-2">
-                      <p className="font-medium text-foreground text-lg text-red-800 mb-3">Kids</p>
+                      <p className="font-medium text-foreground mb-3 text-base text-red-600">Kids</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
                         <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
