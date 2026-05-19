@@ -102,7 +102,7 @@ const EventCoverUpload = ({ value, onChange }: { value: string; onChange: (v: st
       )}
       <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Paste image URL or upload below" />
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
-      <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5 border-gray-950 bg-neutral-600 text-slate-50">
+      <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileRef.current?.click()} className="gap-1.5 text-zinc-50 opacity-100 bg-zinc-400">
         {uploading ? <><ImageIcon className="h-3.5 w-3.5 animate-pulse" /> Uploading...</> : <><Upload className="h-3.5 w-3.5" /> Upload Image</>}
       </Button>
     </div>
