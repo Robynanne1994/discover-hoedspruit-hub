@@ -513,7 +513,7 @@ const AdminListings = () => {
                       <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewCat(false); setNewCatName(""); }}>Cancel</Button>
                     </div>
                   ) : (
-                    <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1" onClick={() => setShowNewCat(true)}>
+                    <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1 border-gray-950 opacity-100 bg-orange-300" onClick={() => setShowNewCat(true)}>
                       <Plus className="h-3.5 w-3.5" /> Add category
                     </Button>
                   )}
