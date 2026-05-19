@@ -249,14 +249,9 @@ const ListingDetail = () => {
   const hasGallery = galleryImages.length > 0;
   const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
   const hasEvents = (relatedEvents?.length ?? 0) > 0;
-  const visibleTabs: { key: TabKey; label: string }[] = [
-    { key: "about", label: "About" },
-    { key: "details", label: "Details" },
-    ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
-    ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
-    ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
-    { key: "location", label: "Location" },
-  ];
+  const hasContact = !!(listing.email || listing.phone || waClean || listing.website);
+  const hasAbout = !!descriptionText || !!hasHours || hasContact;
+  const hasLocation = !!(listing.location || mapCoords);
 
   // ----- Open status -----
   const todayIndex = new Date().getDay();
@@ -441,6 +436,17 @@ const ListingDetail = () => {
       sections.push({ key: `ngo-${s.label}`, title: s.label, iconComp: Sparkles, fields: [{ label: s.value, on: "__text__" }] })
     );
   }
+
+  const hasDetails = sections.length > 0;
+  const visibleTabs: { key: TabKey; label: string }[] = [
+    ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
+    ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
+    ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
+    ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
+    ...(hasGallery ? [{ key: "gallery" as TabKey, label: "Gallery" }] : []),
+    ...(hasLocation ? [{ key: "location" as TabKey, label: "Location" }] : []),
+  ];
+
 
   // ----- Action pills -----
   const actions = [
