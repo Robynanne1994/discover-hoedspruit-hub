@@ -824,8 +824,8 @@ const ListingDetail = () => {
 
       {/* Hero (4:3) */}
       <div style={{ width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
-        {listing.image_url && (
-          <img src={listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        {((listing as any).detail_image_url || listing.image_url) && (
+          <img src={(listing as any).detail_image_url || listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         )}
       </div>
 
