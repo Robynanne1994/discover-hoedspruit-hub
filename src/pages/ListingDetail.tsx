@@ -935,8 +935,8 @@ const ListingDetail = () => {
 // ----- Shared inline styles -----
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: FONT, fontWeight: 400, fontSize: 12,
-  letterSpacing: "0.08em", textTransform: "uppercase",
+  fontFamily: FONT, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  letterSpacing: 0, textTransform: "none",
   color: C.heading,
 };
 const paraStyle: React.CSSProperties = {
