@@ -399,6 +399,45 @@ const AdminListings = () => {
     );
   };
 
+  const addCategory = async () => {
+    const name = newCatName.trim();
+    if (!name) return;
+    const existing = categories?.find((c) => c.title.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      if (!selectedCatIds.includes(existing.id)) toggleCat(existing.id);
+      setNewCatName(""); setShowNewCat(false);
+      toast.info("Category already exists — selected it");
+      return;
+    }
+    const nextOrder = (categories?.length ?? 0);
+    const { data, error } = await supabase.from("categories").insert({ title: name, icon: "Folder", sort_order: nextOrder }).select("id, title").single();
+    if (error || !data) { toast.error(error?.message || "Failed to add category"); return; }
+    await qc.invalidateQueries({ queryKey: ["admin-categories-select"] });
+    setSelectedCatIds((prev) => [...prev, data.id]);
+    setNewCatName(""); setShowNewCat(false);
+    toast.success("Category added");
+  };
+
+  const addSubcategory = async () => {
+    const name = newSubName.trim();
+    const parentId = newSubParent || selectedCatIds[0];
+    if (!name || !parentId) { toast.error("Pick a parent category"); return; }
+    const existing = subcategories?.find((s) => s.category_id === parentId && s.title.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      if (!selectedSubIds.includes(existing.id)) toggleSub(existing.id);
+      setNewSubName(""); setNewSubParent(""); setShowNewSub(false);
+      toast.info("Subcategory already exists — selected it");
+      return;
+    }
+    const siblings = subcategories?.filter((s) => s.category_id === parentId) ?? [];
+    const { data, error } = await supabase.from("subcategories").insert({ title: name, category_id: parentId, sort_order: siblings.length }).select("id, title, category_id").single();
+    if (error || !data) { toast.error(error?.message || "Failed to add subcategory"); return; }
+    await qc.invalidateQueries({ queryKey: ["admin-subcategories-select"] });
+    setSelectedSubIds((prev) => [...prev, data.id]);
+    setNewSubName(""); setNewSubParent(""); setShowNewSub(false);
+    toast.success("Subcategory added");
+  };
+
   // Show subcategories for all selected categories
   const availableSubs = subcategories?.filter((s) => selectedCatIds.includes(s.category_id)) ?? [];
 
