@@ -295,6 +295,7 @@ const AdminListings = () => {
       title: l.title,
       description: l.description ?? "",
       image_url: l.image_url ?? "",
+      detail_image_url: (l as any).detail_image_url ?? "",
       location: l.location ?? "",
       phone: l.phone ?? "",
       email: l.email ?? "",
