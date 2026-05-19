@@ -20,13 +20,16 @@ import { toast } from "sonner";
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PF = "'Playfair Display', Georgia, serif";
 
-const OLIVE = "#5C6446";
-const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
+const PAGE_BG = "#ECE3CF";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const MUTED = "#9C9387";
+const LINE = "#EAE4D5";
+const DARK = "#3D2E22";
+const CREAM = "#FFFFFF";
+const SOFT_CREAM = "#F6F1E4";
+const OLIVE = PAGE_BG;
+const RUST = "#C0392B";
 
 const AREA_CODES = [
   { code: "+27", country: "ZA", flag: "🇿🇦" },
@@ -70,18 +73,18 @@ function parsePhone(phone: string) {
 
 const rowLabelStyle: React.CSSProperties = {
   fontFamily: FF,
-  fontSize: 10.5,
-  fontWeight: 400,
-  letterSpacing: "0.18em",
+  fontSize: 11,
+  fontWeight: 600,
+  letterSpacing: "0.16em",
   textTransform: "uppercase",
   color: MUTED,
-  marginBottom: 6,
+  marginBottom: 4,
   display: "block",
 };
 
 const rowValueStyle: React.CSSProperties = {
   fontFamily: FF,
-  fontSize: 16,
+  fontSize: 17,
   fontWeight: 400,
   lineHeight: 1.3,
   letterSpacing: "-0.1px",
@@ -323,13 +326,13 @@ const AccountInfo = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 100, fontFamily: FF }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
       {/* Top bar */}
       <div
         style={{
           paddingTop: 60,
-          paddingLeft: 24,
-          paddingRight: 24,
+          paddingLeft: 20,
+          paddingRight: 20,
           display: "flex",
           alignItems: "center",
           gap: 12,
@@ -340,7 +343,10 @@ const AccountInfo = () => {
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            background: "transparent",
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: "#FFFFFF",
             border: "none",
             padding: 0,
             margin: 0,
@@ -348,66 +354,65 @@ const AccountInfo = () => {
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            lineHeight: 0,
             flexShrink: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
           }}
         >
-          <ArrowLeft size={22} strokeWidth={1.8} color={CREAM} />
+          <ArrowLeft size={20} strokeWidth={2} color={INK} />
         </button>
         <div
           style={{
             flex: 1,
             textAlign: "center",
-            marginRight: 22,
+            marginRight: 40,
             fontFamily: FF,
-            fontSize: 20,
-            fontWeight: 600,
-            color: CREAM,
+            fontSize: 22,
+            fontWeight: 700,
+            color: INK,
             lineHeight: 1,
+            letterSpacing: "-0.2px",
           }}
         >
           Account Info
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+      <div style={{ height: 1, background: LINE, marginTop: 20 }} />
 
       {/* Profile Photo */}
       <div
         style={{
-          paddingLeft: 24,
-          paddingRight: 24,
-          marginTop: 28,
+          paddingLeft: 20,
+          paddingRight: 20,
+          marginTop: 24,
           marginBottom: 10,
           fontFamily: FF,
           fontSize: 11,
-          fontWeight: 400,
-          letterSpacing: "2.4px",
+          fontWeight: 600,
+          letterSpacing: "0.18em",
           textTransform: "uppercase",
-          color: CREAM,
-          opacity: 0.7,
+          color: MUTED,
         }}
       >
         Profile Photo
       </div>
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <div
           style={{
-            background: CREAM,
-            borderRadius: 20,
-            padding: "18px 22px",
+            background: CARD,
+            borderRadius: 16,
+            padding: "14px 16px",
             display: "flex",
             alignItems: "center",
-            gap: 16,
+            gap: 14,
           }}
         >
           <div
             style={{
-              width: 64,
-              height: 64,
-              borderRadius: "50%",
+              width: 52,
+              height: 52,
+              borderRadius: 10,
               background: SOFT_CREAM,
-              border: `1px solid ${LINE}`,
               overflow: "hidden",
               flexShrink: 0,
               display: "flex",
@@ -419,7 +424,7 @@ const AccountInfo = () => {
             {avatarUrl ? (
               <img src={avatarUrl} alt="Profile" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <Camera size={22} strokeWidth={1.5} color={MUTED} />
+              <Camera size={20} strokeWidth={1.5} color={MUTED} />
             )}
             {uploadingAvatar && (
               <div
@@ -432,12 +437,12 @@ const AccountInfo = () => {
                   justifyContent: "center",
                 }}
               >
-                <Loader2 size={20} className="animate-spin" color={CREAM} />
+                <Loader2 size={20} className="animate-spin" color="#FFFFFF" />
               </div>
             )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: FF, fontSize: 14, fontWeight: 400, color: INK, marginBottom: 2 }}>
+            <div style={{ fontFamily: FF, fontSize: 15, fontWeight: 700, color: INK }}>
               {avatarUrl ? "Profile Picture" : "Add a photo"}
             </div>
           </div>
@@ -456,14 +461,14 @@ const AccountInfo = () => {
             onClick={() => fileInputRef.current?.click()}
             disabled={uploadingAvatar}
             style={{
-              background: INK,
-              color: CREAM,
+              background: DARK,
+              color: "#FFFFFF",
               border: "none",
               borderRadius: 999,
-              padding: "10px 16px",
+              padding: "10px 20px",
               fontFamily: FF,
-              fontSize: 13,
-              fontWeight: 400,
+              fontSize: 14,
+              fontWeight: 600,
               cursor: uploadingAvatar ? "not-allowed" : "pointer",
               opacity: uploadingAvatar ? 0.7 : 1,
               flexShrink: 0,
@@ -477,28 +482,27 @@ const AccountInfo = () => {
       {/* Section eyebrow */}
       <div
         style={{
-          paddingLeft: 24,
-          paddingRight: 24,
+          paddingLeft: 20,
+          paddingRight: 20,
           marginBottom: 10,
           fontFamily: FF,
           fontSize: 11,
-          fontWeight: 400,
-          letterSpacing: "2.4px",
+          fontWeight: 600,
+          letterSpacing: "0.18em",
           textTransform: "uppercase",
-          color: CREAM,
-          opacity: 0.7,
+          color: MUTED,
         }}
       >
         Personal Details
       </div>
 
       {/* Personal details card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20 }}>
         <div
           style={{
-            background: CREAM,
-            borderRadius: 20,
-            padding: "4px 22px",
+            background: CARD,
+            borderRadius: 16,
+            padding: "4px 20px",
             overflow: "hidden",
           }}
         >
@@ -612,16 +616,16 @@ const AccountInfo = () => {
           onClick={handleSaveProfile}
           disabled={savingProfile || profileLoading}
           style={{
-            marginTop: 16,
+            marginTop: 20,
             width: "100%",
-            height: 54,
-            background: INK,
-            color: CREAM,
+            height: 56,
+            background: DARK,
+            color: "#FFFFFF",
             border: "none",
             borderRadius: 999,
             fontFamily: FF,
-            fontSize: 15,
-            fontWeight: 400,
+            fontSize: 16,
+            fontWeight: 700,
             letterSpacing: "0.1px",
             cursor: savingProfile ? "not-allowed" : "pointer",
             opacity: savingProfile ? 0.7 : 1,
@@ -634,19 +638,18 @@ const AccountInfo = () => {
           type="button"
           onClick={() => setDeleteOpen(true)}
           style={{
-            display: "block",
-            margin: "24px auto 0",
+            marginTop: 10,
+            width: "100%",
+            height: 56,
             background: "#FFFFFF",
-            border: "1px solid #B00020",
+            border: "none",
             borderRadius: 999,
-            padding: "12px 22px",
             cursor: "pointer",
             fontFamily: FF,
-            fontSize: 14,
-            fontWeight: 500,
-            color: "#B00020",
+            fontSize: 16,
+            fontWeight: 700,
+            color: RUST,
             letterSpacing: "0.02em",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
           }}
         >
           Delete Account
