@@ -17,6 +17,7 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
   const [queue, setQueue] = useState<string[]>([]);
   const [cropSrc, setCropSrc] = useState<string | null>(null);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [showUrlInput, setShowUrlInput] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const urls = value ? value.split("\n").filter(Boolean) : [];
