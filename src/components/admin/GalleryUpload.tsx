@@ -20,6 +20,11 @@ const GalleryUpload = ({ value, onChange }: GalleryUploadProps) => {
   const [showUrlInput, setShowUrlInput] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    if (value && value.trim().length > 0) setShowUrlInput(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const urls = value ? value.split("\n").filter(Boolean) : [];
 
   const readAsDataUrl = (file: Blob) =>
