@@ -512,13 +512,28 @@ const AdminListings = () => {
 
                 <div className="border-t border-border pt-4 mt-2 space-y-3">
                   <p className="text-sm font-medium text-foreground">Custom Detail Rows (optional)</p>
-                  <p className="text-xs text-muted-foreground -mt-2">Add up to 3 custom rows. Each appears as the last item(s) in the Details card. Empty rows are hidden.</p>
-                  {[1, 2, 3].map((n) => {
+                  <p className="text-xs text-muted-foreground -mt-2">Add up to 3 custom rows. Each appears as the last item(s) in the Details card.</p>
+                  {[1, 2, 3].slice(0, customRowsVisible).map((n) => {
                     const titleKey = `custom_title_${n}` as keyof typeof form;
                     const textKey = `custom_text_${n}` as keyof typeof form;
                     return (
                       <div key={n} className="border border-border rounded-lg p-3 space-y-2">
-                        <Label className="text-xs text-muted-foreground">Custom row {n}</Label>
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs text-muted-foreground">Custom row {n}</Label>
+                          {n === customRowsVisible && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => {
+                                setForm({ ...form, [titleKey]: "", [textKey]: "" } as any);
+                                setCustomRowsVisible(customRowsVisible - 1);
+                              }}
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </div>
                         <Input
                           placeholder="Title (e.g. Dress Code)"
                           value={(form[titleKey] as string) || ""}
@@ -534,6 +549,16 @@ const AdminListings = () => {
                       </div>
                     );
                   })}
+                  {customRowsVisible < 3 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setCustomRowsVisible(customRowsVisible + 1)}
+                    >
+                      <Plus className="h-4 w-4" /> Add custom field
+                    </Button>
+                  )}
                 </div>
 
                 {!isAccommodationType && (
