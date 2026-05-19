@@ -296,7 +296,7 @@ const SavedListings = () => {
     primaryTab === "all"
       ? "Search everything saved"
       : primaryTab === "listings"
-        ? "Search saved places"
+        ? "Search saved listings"
         : primaryTab === "events"
           ? "Search saved events"
           : "Search saved specials";
