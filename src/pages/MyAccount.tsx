@@ -477,17 +477,12 @@ const MyAccount = () => {
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
     { label: "Notification Preferences", href: "/notification-preferences", icon: Bell },
   ];
-  const myHoedspruitItems = [
-    isBusinessOwner || ownedListing
-      ? { label: "My Business", href: "/business/dashboard", icon: Briefcase }
-      : { label: "My Business", href: "/for-business", icon: Briefcase },
-    { label: "Local Channels", href: "/local-channels", icon: Users },
-    
-  ];
   const helpInfoItems = [
+    { label: "Local Channels", href: "/local-channels", icon: Users },
     { label: "FAQs", href: "/help-centre", icon: HelpCircle },
     { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
+
   const adminItems = [{ label: "Admin", href: "/admin", icon: LayoutDashboard }];
 
   const Eyebrow = ({ children }: { children: React.ReactNode }) => (
