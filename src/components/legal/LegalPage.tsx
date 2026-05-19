@@ -1,96 +1,141 @@
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import {
+  ArrowLeft,
+  FileText,
+  Heart,
+  ShieldCheck,
+  MapPin,
+  Ban,
+  AlertOctagon,
+  Flag,
+  Mail,
+  Cookie,
+  Eye,
+  Share2,
+  Lock,
+  Baby,
+  RefreshCw,
+  Users,
+  Building2,
+  UserCircle,
+  ScrollText,
+  Copyright,
+  Link2,
+  Scale,
+  AlertTriangle,
+  XCircle,
+  Gavel,
+  Settings,
+  Database,
+} from "lucide-react";
 
-const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const serif = "'Playfair Display', Georgia, serif";
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const C = {
-  olive: "#5C6446",
-  cream: "#EEE8DA",
-  ink: "#2A2A24",
-  rust: "#9B5A3C",
+const BG = "#E6E0CC";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const BODY = "#2b2420";
+const LINE = "rgba(26,26,26,0.08)";
+const ICON_BG = "rgba(26,26,26,0.06)";
+const RUST = "#9B5A3C";
+
+const ICON_MAP: Record<string, React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>> = {
+  // Terms
+  "agreement to terms": FileText,
+  "who we are": Users,
+  "use of the app": Settings,
+  accounts: UserCircle,
+  "content & listings": ScrollText,
+  "user content": Eye,
+  "intellectual property": Copyright,
+  "third-party links": Link2,
+  "limitation of liability": Scale,
+  disclaimer: AlertTriangle,
+  termination: XCircle,
+  "changes to these terms": RefreshCw,
+  "governing law": Gavel,
+  // Privacy
+  "information we collect": Database,
+  "how we use your information": Settings,
+  "data sharing": Share2,
+  "cookies & tracking": Cookie,
+  "your rights": ShieldCheck,
+  "data security": Lock,
+  "children's privacy": Baby,
+  "changes to this policy": RefreshCw,
+  // Cookies
+  "what are cookies": Cookie,
+  "how we use cookies": Settings,
+  "third-party cookies": Share2,
+  "managing your preferences": Settings,
+  // Community
+  "be respectful": Heart,
+  "keep it honest": ShieldCheck,
+  "stay on topic": MapPin,
+  "no spam or self-promotion": Ban,
+  "no illegal content": AlertOctagon,
+  "reporting & enforcement": Flag,
+  contact: Mail,
 };
 
-const titleSizeFor = (s: string) => {
-  const n = s.length;
-  if (n <= 16) return 60;
-  if (n <= 22) return 54;
-  if (n <= 28) return 48;
-  return 42;
+const tap = {
+  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.96)"; },
+  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
+  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
 };
 
 interface LegalPageProps {
-  title: string; // lowercase with full stop, e.g. "terms of use."
-  lastUpdated?: Date;
+  title: string;
   footer: string;
   children: ReactNode;
 }
 
-export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPageProps) => {
+export const LegalPage = ({ title, footer, children }: LegalPageProps) => {
   const navigate = useNavigate();
-  const date = lastUpdated || new Date(document.lastModified || Date.now());
-  const dateStr = date.toLocaleString("en-GB", { month: "long", year: "numeric" });
+  const displayTitle = title.replace(/\.$/, "").replace(/\b\w/g, (c) => c.toUpperCase());
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: C.olive,
-        paddingBottom: 120,
-        fontFamily: sans,
-        color: C.cream,
-      }}
-    >
+    <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 120 }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
+      <div style={{ padding: "56px 20px 0", display: "flex", alignItems: "center", minHeight: 44 }}>
         <button
           onClick={() => navigate(-1)}
+          {...tap}
           aria-label="Back"
           style={{
-            background: "transparent",
-            border: "none",
-            padding: 0,
-            margin: 0,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            lineHeight: 0,
-            flexShrink: 0,
+            width: 40, height: 40, borderRadius: "50%", background: CARD, border: "none",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", flexShrink: 0, transition: "transform 150ms ease-out",
           }}
         >
-          <BackArrowIcon size={22} color={C.cream} />
+          <ArrowLeft size={18} strokeWidth={2} color={INK} />
         </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: sans, fontWeight: 600, fontSize: 20, color: C.cream, lineHeight: 1 }}>
-          {title.replace(/\.$/, "").replace(/\b\w/g, (c) => c.toUpperCase())}
+        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontWeight: 700, fontSize: 17, color: INK, letterSpacing: 0.1 }}>
+          {displayTitle}
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 24 }} />
+      <div style={{ height: 1, background: LINE, marginTop: 22 }} />
 
       {/* Sections */}
-      <div>{children}</div>
+      <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 14 }}>
+        {children}
+      </div>
 
-      {/* Editorial footer */}
-      <div
-        style={{
-          marginTop: 24,
-          paddingTop: 24,
-          paddingLeft: 24,
-          paddingRight: 24,
-          borderTop: "1px solid rgba(238, 232, 218, 0.18)",
-        }}
-      >
+      {/* Footer */}
+      <div style={{ padding: "24px 24px 0", display: "flex", gap: 14, alignItems: "flex-start" }}>
+        <span
+          aria-hidden
+          style={{
+            width: 7, height: 7, borderRadius: "50%", background: INK,
+            flexShrink: 0, marginTop: 9,
+          }}
+        />
         <p
           style={{
-            fontFamily: "Inter, sans-serif",
-            fontStyle: "normal",
-            fontWeight: 400,
-            fontSize: 14,
-            lineHeight: 1.55,
-            color: "rgba(238,232,218,0.65)",
-            margin: 0,
+            fontFamily: SANS, fontStyle: "italic", fontWeight: 400,
+            fontSize: 14, lineHeight: 1.6, color: BODY, margin: 0,
           }}
         >
           {footer}
@@ -100,38 +145,56 @@ export const LegalPage = ({ title, lastUpdated, footer, children }: LegalPagePro
   );
 };
 
-export const Section = ({ heading, children }: { heading: string; children: ReactNode }) => (
-  <section style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 32 }}>
-    <h2
+export const Section = ({ heading, children }: { heading: string; children: ReactNode }) => {
+  const Icon = ICON_MAP[heading.toLowerCase()] || FileText;
+  return (
+    <section
       style={{
-        fontFamily: serif,
-        fontStyle: "italic",
-        fontWeight: 400,
-        fontSize: 26,
-        lineHeight: 1,
-        letterSpacing: "-0.4px",
-        color: C.cream,
-        margin: 0,
-        marginBottom: 14,
-        textTransform: "lowercase",
+        background: CARD,
+        borderRadius: 18,
+        padding: "22px 22px 24px",
       }}
     >
-      {heading}
-    </h2>
-    {children}
-  </section>
-);
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+        <div
+          aria-hidden
+          style={{
+            width: 36, height: 36, borderRadius: "50%", background: ICON_BG,
+            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+          }}
+        >
+          <Icon size={17} color={INK} strokeWidth={1.8} />
+        </div>
+        <h2
+          style={{
+            fontFamily: SANS,
+            fontWeight: 700,
+            fontSize: 17,
+            lineHeight: 1.2,
+            letterSpacing: -0.1,
+            color: INK,
+            margin: 0,
+            textTransform: "none",
+          }}
+        >
+          {heading.replace(/\b\w/g, (c) => c.toUpperCase())}
+        </h2>
+      </div>
+      {children}
+    </section>
+  );
+};
 
 export const P = ({ children, last }: { children: ReactNode; last?: boolean }) => (
   <p
     style={{
-      fontFamily: sans,
+      fontFamily: SANS,
       fontSize: 15,
       fontWeight: 400,
-      lineHeight: 1.65,
-      color: "rgba(238,232,218,0.9)",
+      lineHeight: 1.6,
+      color: BODY,
       margin: 0,
-      marginBottom: last ? 0 : 14,
+      marginBottom: last ? 0 : 12,
     }}
   >
     {children}
@@ -139,17 +202,17 @@ export const P = ({ children, last }: { children: ReactNode; last?: boolean }) =
 );
 
 export const Em = ({ children }: { children: ReactNode }) => (
-  <span style={{ fontFamily: serif, fontStyle: "italic", fontWeight: 400 }}>{children}</span>
+  <span style={{ fontStyle: "italic" }}>{children}</span>
 );
 
 export const A = ({ href, children }: { href: string; children: ReactNode }) => (
   <a
     href={href}
     style={{
-      color: C.cream,
-      textDecoration: "none",
-      borderBottom: "1px solid rgba(238, 232, 218, 0.4)",
-      paddingBottom: 1,
+      color: INK,
+      textDecoration: "underline",
+      textUnderlineOffset: 2,
+      fontWeight: 500,
     }}
   >
     {children}
@@ -157,18 +220,18 @@ export const A = ({ href, children }: { href: string; children: ReactNode }) => 
 );
 
 export const List = ({ items }: { items: ReactNode[] }) => (
-  <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+  <ul style={{ listStyle: "none", padding: 0, margin: "4px 0 0" }}>
     {items.map((item, i) => (
       <li
         key={i}
         style={{
           position: "relative",
-          paddingLeft: 20,
-          fontFamily: sans,
+          paddingLeft: 18,
+          fontFamily: SANS,
           fontSize: 15,
           fontWeight: 400,
-          lineHeight: 1.65,
-          color: "rgba(238,232,218,0.9)",
+          lineHeight: 1.6,
+          color: BODY,
           marginBottom: i === items.length - 1 ? 0 : 8,
         }}
       >
@@ -176,11 +239,11 @@ export const List = ({ items }: { items: ReactNode[] }) => (
           style={{
             position: "absolute",
             left: 0,
-            top: 11,
+            top: 10,
             width: 5,
             height: 5,
             borderRadius: "50%",
-            background: C.rust,
+            background: RUST,
           }}
         />
         {item}
