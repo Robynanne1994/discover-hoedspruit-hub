@@ -479,7 +479,7 @@ const MyAccount = () => {
   ];
   const helpInfoItems = [
     { label: "Local Channels", href: "/local-channels", icon: Users },
-    { label: "FAQs", href: "/help-centre", icon: HelpCircle },
+    { label: "Help Centre", href: "/help-centre", icon: HelpCircle },
     { label: "Feedback", href: "/feedback", icon: MessageSquare },
   ];
 
