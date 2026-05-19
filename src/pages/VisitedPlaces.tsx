@@ -115,7 +115,7 @@ const VisitedPlaces = () => {
       {/* Subtitle */}
       <div style={{ marginTop: 12, paddingLeft: 24, paddingRight: 24 }}>
         <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", letterSpacing: 0.2, lineHeight: 1.4, fontStyle: "italic", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", margin: 0 }}>
-          {visitedCount === 1 ? "1 place you've been to" : `${visitedCount} places you've been to`}
+          {visitedCount === 1 ? "1 listing you've been to" : `${visitedCount} listings you've been to`}
         </p>
       </div>
 
