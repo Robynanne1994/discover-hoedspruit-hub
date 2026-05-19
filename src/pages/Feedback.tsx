@@ -1,6 +1,6 @@
 import { useState, useEffect, CSSProperties } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -9,17 +9,13 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 const FEEDBACK_TYPES = ["General", "Suggestion", "Bug", "Compliment", "Other"] as const;
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
-const OLIVE = "#5C6446";
-const DEEP_OLIVE = "#454C36";
-const CREAM = "#EEE8DA";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const RUST = "#9B5A3C";
-
-const BLOB_RADIUS_A = "50% 45% 55% 50% / 55% 50% 60% 45%";
-const BLOB_RADIUS_B = "55% 45% 50% 55% / 50% 60% 45% 55%";
+const BG = "#E6E0CC";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const MUTED = "#7A6E5C";
+const LABEL = "#9A8E7A";
+const SUBMIT_BG = "#3D2E22";
 
 const tap = {
   onPointerDown: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.98)"; },
@@ -36,18 +32,6 @@ const Feedback = () => {
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Load Playfair Display
-  useEffect(() => {
-    const id = "playfair-display-font";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-    document.head.appendChild(link);
-  }, []);
-
-  // Placeholder styles
   useEffect(() => {
     const id = "feedback-placeholder-style";
     if (document.getElementById(id)) return;
@@ -55,7 +39,6 @@ const Feedback = () => {
     style.id = id;
     style.textContent = `
       .fb-input::placeholder { color: ${MUTED}; opacity: 1; font-family: ${FF}; font-size: 15px; font-weight: 400; }
-      .fb-input:focus { background: ${CREAM} !important; color: ${INK}; }
     `;
     document.head.appendChild(style);
   }, []);
@@ -90,51 +73,71 @@ const Feedback = () => {
   };
 
   const inputBase: CSSProperties = {
-    width: "100%", background: "rgba(238, 232, 218, 0.92)", border: "none",
-    borderRadius: 16, height: 52, padding: "0 20px",
+    width: "100%", background: CARD, border: "none",
+    borderRadius: 999, height: 52, padding: "0 22px",
     fontFamily: FF, fontSize: 15, fontWeight: 400, color: INK,
     outline: "none", boxSizing: "border-box",
   };
 
+  const labelStyle: CSSProperties = {
+    display: "block",
+    fontFamily: FF,
+    fontSize: 11,
+    fontWeight: 500,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    color: LABEL,
+    marginBottom: 8,
+  };
+
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, paddingBottom: 140, fontFamily: FF, position: "relative", overflowX: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: FF, overflowX: "hidden" }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44, position: "relative", zIndex: 3 }}>
+      <div
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
+          paddingLeft: 24,
+          paddingRight: 24,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          minHeight: 44,
+        }}
+      >
         <button
           onClick={() => navigate(-1)}
+          aria-label="Back"
           {...tap}
           style={{
-            background: "transparent", border: "none", padding: 0, margin: 0,
+            width: 40, height: 40, borderRadius: "50%",
+            background: "#fff", border: "none",
             display: "inline-flex", alignItems: "center", justifyContent: "center",
             cursor: "pointer", lineHeight: 0, flexShrink: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
           }}
-          aria-label="Back"
         >
-          <BackArrowIcon size={22} color={CREAM} />
+          <BackArrowIcon size={18} color={INK} />
         </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: FF, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontFamily: FF, fontSize: 20, fontWeight: 700, color: INK, lineHeight: 1 }}>
           Feedback
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, position: "relative", zIndex: 3 }} />
+      <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 20 }} />
 
-      {/* Hero */}
-      <div style={{ position: "relative", padding: "18px 24px 0" }}>
-        <div style={{ position: "relative", zIndex: 2 }}>
-          <p style={{
-            fontFamily: FF, fontSize: 15, fontWeight: 400, lineHeight: 1.65,
-            color: "rgba(238,232,218,0.9)", maxWidth: 260, margin: "0 0 36px",
-          }}>
-            Help us make Hello Hoedspruit better.
-          </p>
-        </div>
-      </div>
+      {/* Heading */}
+      <h1 style={{
+        fontFamily: FF, fontSize: 26, fontWeight: 700, color: INK,
+        lineHeight: 1.2, margin: 0, padding: "28px 24px 24px",
+      }}>
+        Help us make Hello Hoedspruit better.
+      </h1>
 
       {/* Form */}
-      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 10 }}>
-        {/* Type dropdown */}
+      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+        {/* Topic */}
         <div>
+          <label style={labelStyle}>Topic</label>
           <div style={{ position: "relative" }}>
             <select
               className="fb-input"
@@ -151,18 +154,19 @@ const Feedback = () => {
                 cursor: "pointer",
               }}
             >
-              <option value="" disabled>What is this about</option>
+              <option value="" disabled>What is this about?</option>
               {FEEDBACK_TYPES.map((t) => (
                 <option key={t} value={t}>{t}</option>
               ))}
             </select>
-            <span aria-hidden style={{
-              position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)",
-              color: MUTED, fontSize: 13, pointerEvents: "none",
-            }}>▾</span>
+            <ChevronDown
+              size={18}
+              color={MUTED}
+              style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+            />
           </div>
           {errors.type && (
-            <p style={{ fontSize: 12, color: "#FFD9D0", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
+            <p style={{ fontSize: 12, color: "#B0432B", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
               {errors.type}
             </p>
           )}
@@ -170,10 +174,11 @@ const Feedback = () => {
 
         {/* Subject */}
         <div>
+          <label style={labelStyle}>Subject</label>
           <input
             className="fb-input"
             type="text"
-            placeholder="Subject"
+            placeholder="Briefly summarize your feedback"
             value={subject}
             onChange={(e) => {
               setSubject(e.target.value);
@@ -182,17 +187,18 @@ const Feedback = () => {
             style={inputBase}
           />
           {errors.subject && (
-            <p style={{ fontSize: 12, color: "#FFD9D0", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
+            <p style={{ fontSize: 12, color: "#B0432B", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
               {errors.subject}
             </p>
           )}
         </div>
 
-        {/* Textarea */}
+        {/* Message */}
         <div>
+          <label style={labelStyle}>Message</label>
           <textarea
             className="fb-input"
-            placeholder="Share your feedback with us…"
+            placeholder="Tell us more..."
             value={message}
             onChange={(e) => {
               setMessage(e.target.value);
@@ -200,13 +206,14 @@ const Feedback = () => {
             }}
             style={{
               ...inputBase,
-              height: "auto", minHeight: 140,
-              paddingTop: 18, paddingBottom: 18, paddingLeft: 20, paddingRight: 20,
+              borderRadius: 24,
+              height: "auto", minHeight: 160,
+              padding: "18px 22px",
               resize: "none", lineHeight: 1.5,
             }}
           />
           {errors.message && (
-            <p style={{ fontSize: 12, color: "#FFD9D0", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
+            <p style={{ fontSize: 12, color: "#B0432B", margin: "6px 0 0", paddingLeft: 18, fontFamily: FF }}>
               {errors.message}
             </p>
           )}
@@ -218,10 +225,10 @@ const Feedback = () => {
           disabled={submitting}
           {...tap}
           style={{
-            width: "100%", marginTop: 8, marginBottom: 20,
-            background: INK, color: CREAM, border: "none",
-            borderRadius: 999, height: 54,
-            fontFamily: FF, fontSize: 15, fontWeight: 400,
+            width: "100%", marginTop: 10,
+            background: SUBMIT_BG, color: "#fff", border: "none",
+            borderRadius: 999, height: 58,
+            fontFamily: FF, fontSize: 16, fontWeight: 600,
             display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
             cursor: submitting ? "not-allowed" : "pointer",
             opacity: submitting ? 0.7 : 1,
@@ -229,31 +236,17 @@ const Feedback = () => {
           }}
         >
           {submitting ? (
-            <><Loader2 size={16} color={CREAM} className="animate-spin" /> Sending</>
-          ) : "Share Feedback"}
+            <><Loader2 size={16} color="#fff" className="animate-spin" /> Sending</>
+          ) : "Submit Feedback"}
         </button>
-      </div>
 
-      {/* Info card */}
-      <div style={{ padding: "0 24px", marginBottom: 12 }}>
-        <div style={{
-          background: CREAM, borderRadius: 20,
-          padding: "20px 24px 22px",
-          display: "flex", alignItems: "flex-start", gap: 14,
+        {/* Footer note */}
+        <p style={{
+          fontFamily: FF, fontSize: 13.5, fontWeight: 400, lineHeight: 1.55,
+          color: MUTED, textAlign: "center", margin: "8px 8px 0",
         }}>
-          <span aria-hidden style={{
-            flex: "0 0 auto",
-            width: 8, height: 8, borderRadius: "50%",
-            background: RUST, marginTop: 8,
-          }} />
-          <p style={{
-            fontFamily: "Inter, sans-serif", fontStyle: "normal", fontWeight: 400,
-            fontSize: 14.5, lineHeight: 1.55,
-            color: "rgba(42,42,36,0.78)", margin: 0,
-          }}>
-            Every piece of feedback helps us improve. We read everything, and appreciate you taking the time to share your thoughts with us.
-          </p>
-        </div>
+          Every piece of feedback helps us improve. We read everything, and appreciate you taking the time to share your thoughts with us.
+        </p>
       </div>
     </div>
   );
