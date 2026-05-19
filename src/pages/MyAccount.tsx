@@ -659,8 +659,6 @@ const MyAccount = () => {
 
       <div style={{ height: 28 }} />
 
-
-      <div style={{ height: 28 }} />
       <Eyebrow>Help & Info</Eyebrow>
       <Card items={helpInfoItems} />
 
