@@ -1,67 +1,25 @@
 import { useState, useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Search, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, MapPin, AlertTriangle, ChevronRight, X } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const FONT_DISPLAY = "'Playfair Display', Georgia, serif";
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const COLORS = {
-  bg: "#5C6446",
-  cream: "#EEE8DA",
-  ink: "#2A2A24",
-  muted: "#6B6A5E",
+  bg: "#E6E0CC",
+  card: "#FFFFFF",
+  ink: "#020202",
+  muted: "#9A9A92",
+  divider: "rgba(2,2,2,0.08)",
+  emergencyBg: "#FBE6E6",
+  emergencyInk: "#C0392B",
 };
-
-// Aspect ratios per spec
-const ASPECTS = {
-  tall: "1 / 1.15",
-  square: "1 / 1",
-  medium: "1 / 0.95",
-  short: "1 / 0.7",
-} as const;
-
-// Per-category aspect mapping (sensible non-alphabetical order)
-const CARD_ASPECTS: Record<string, string> = {
-  "Restaurants & Cafés": ASPECTS.tall,
-  "Restaurants & Cafes": ASPECTS.tall,
-  "Activities & Adventures": ASPECTS.square,
-  "Property": ASPECTS.short,
-  "Accommodation": ASPECTS.tall,
-  "Home & Garden": ASPECTS.medium,
-  "Shopping": ASPECTS.square,
-  "Auto & Mechanical": ASPECTS.short,
-  "Health & Medical": ASPECTS.medium,
-  "Trades & Services": ASPECTS.tall,
-  "Transport": ASPECTS.short,
-  "Wellness & Beauty": ASPECTS.square,
-  "Education": ASPECTS.medium,
-  "Community": ASPECTS.short,
-  "NGOs & Volunteering": ASPECTS.square,
-  "Art & Culture": ASPECTS.short,
-  "Financial & Legal": ASPECTS.medium,
-};
-const FALLBACK_ASPECTS = [ASPECTS.tall, ASPECTS.square, ASPECTS.medium, ASPECTS.short];
-
-const ArrowOut = ({ size = 14 }: { size?: number }) => (
-  <span
-    style={{
-      fontFamily: FONT_BODY,
-      fontSize: size,
-      fontWeight: 400,
-      color: COLORS.ink,
-      lineHeight: 1,
-    }}
-  >
-    ↗
-  </span>
-);
 
 const Categories = () => {
   const [search, setSearch] = useState("");
-  const navigate = useNavigate();
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories-all"],
@@ -134,14 +92,12 @@ const Categories = () => {
     queryFn: async () => {
       if (!debouncedSearch) return [];
       const escaped = debouncedSearch.replace(/[%,]/g, " ");
-      // Title match
       const titleQ = supabase
         .from("listings")
         .select("id, title, image_url, location, category_id")
         .ilike("title", `%${escaped}%`)
         .limit(20);
 
-      // Category match (direct category_id)
       const catDirectQ = matchingCategoryIds.length
         ? supabase
             .from("listings")
@@ -150,7 +106,6 @@ const Categories = () => {
             .limit(50)
         : null;
 
-      // Category match via junction table
       const junctionQ = matchingCategoryIds.length
         ? supabase
             .from("listing_categories")
@@ -159,11 +114,7 @@ const Categories = () => {
             .limit(200)
         : null;
 
-      const [titleRes, catRes, juncRes] = await Promise.all([
-        titleQ,
-        catDirectQ,
-        junctionQ,
-      ]);
+      const [titleRes, catRes, juncRes] = await Promise.all([titleQ, catDirectQ, junctionQ]);
       if (titleRes.error) throw titleRes.error;
 
       const map = new Map<string, any>();
@@ -184,7 +135,6 @@ const Categories = () => {
     enabled: debouncedSearch.length >= 2,
   });
 
-
   const filteredCategories = useMemo(() => {
     if (!categories) return [];
     if (!debouncedSearch) return categories;
@@ -200,14 +150,11 @@ const Categories = () => {
     [filteredCategories, listingCounts]
   );
 
-  const FEATURED_TITLES = [
-    "Emergency Services",
-  ];
+  const FEATURED_TITLES = ["Emergency Services"];
   const normalizeTitle = (t: string) => t.trim().toLowerCase();
   const featuredSet = new Set(FEATURED_TITLES.map(normalizeTitle));
   const featuredCategories = useMemo(() => {
     const matched = visibleCategories.filter((c) => featuredSet.has(normalizeTitle(c.title)));
-    // Order them per FEATURED_TITLES (with first available as primary)
     const order = FEATURED_TITLES.map(normalizeTitle);
     return matched.sort(
       (a, b) => order.indexOf(normalizeTitle(a.title)) - order.indexOf(normalizeTitle(b.title))
@@ -217,8 +164,6 @@ const Categories = () => {
     () => visibleCategories.filter((c) => !featuredSet.has(normalizeTitle(c.title))),
     [visibleCategories]
   );
-
-  const formatCount = (n: number) => `${n} ${n === 1 ? "Listing" : "Listings"}`;
 
   return (
     <div
@@ -230,72 +175,97 @@ const Categories = () => {
         paddingBottom: 140,
       }}
     >
-      {/* Top bar */}
+      {/* Top bar: centered title + circular search */}
       <div
         style={{
-          padding: "0 24px",
-          minHeight: 28,
+          position: "relative",
+          padding: "0 20px",
+          height: 44,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <div
+        <h1
           style={{
             fontFamily: FONT_BODY,
-            fontSize: 20,
-            fontWeight: 600,
-            color: COLORS.cream,
+            fontSize: 22,
+            fontWeight: 700,
+            color: COLORS.ink,
+            margin: 0,
             lineHeight: 1,
           }}
         >
           Explore
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
-
-      {/* Hero block */}
-      <div style={{ paddingTop: 24, paddingLeft: 24, paddingRight: 24 }}>
-
-        {/* Search pill */}
-        <div
+        </h1>
+        <button
+          onClick={() => setSearchOpen((v) => !v)}
+          aria-label={searchOpen ? "Close search" : "Open search"}
           style={{
-            height: 44,
-            background: "rgba(238, 232, 218, 0.92)",
+            position: "absolute",
+            right: 20,
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: 40,
+            height: 40,
             borderRadius: 999,
-            padding: "0 20px",
+            background: "#FFFFFF",
+            border: "none",
             display: "flex",
             alignItems: "center",
-            gap: 12,
-            marginBottom: 32,
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
           }}
         >
-          <Search size={18} strokeWidth={1.6} color={COLORS.ink} style={{ flexShrink: 0 }} />
-          <input
-            type="text"
-            placeholder="Search categories and listings"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="placeholder:text-[#2b2420]/80"
-            style={{
-              flex: 1,
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              fontFamily: FONT_BODY,
-              fontSize: 14,
-              fontWeight: 400,
-              color: COLORS.ink,
-            }}
-          />
-        </div>
+          {searchOpen ? (
+            <X size={18} strokeWidth={1.8} color={COLORS.ink} />
+          ) : (
+            <Search size={18} strokeWidth={1.8} color={COLORS.ink} />
+          )}
+        </button>
       </div>
 
+      <div style={{ height: 1, background: COLORS.divider, marginTop: 16 }} />
+
+      {/* Inline search input */}
+      {searchOpen && (
+        <div style={{ padding: "16px 20px 0" }}>
+          <div
+            style={{
+              height: 44,
+              background: "#FFFFFF",
+              borderRadius: 999,
+              padding: "0 18px",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <Search size={16} strokeWidth={1.8} color={COLORS.ink} />
+            <input
+              autoFocus
+              type="text"
+              placeholder="Search categories and listings"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              style={{
+                flex: 1,
+                background: "transparent",
+                border: "none",
+                outline: "none",
+                fontFamily: FONT_BODY,
+                fontSize: 14,
+                color: COLORS.ink,
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Listing search results */}
       {listingResults.length > 0 && (
-        <div style={{ padding: "0 24px", marginBottom: 24, display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 8 }}>
           {listingResults.map((listing) => (
             <Link
               key={listing.id}
@@ -303,7 +273,7 @@ const Categories = () => {
               style={{
                 display: "flex",
                 alignItems: "center",
-                background: COLORS.cream,
+                background: COLORS.card,
                 borderRadius: 16,
                 padding: 12,
                 gap: 12,
@@ -316,7 +286,7 @@ const Categories = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 14, fontWeight: 400, color: COLORS.ink, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <p style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                   {listing.title}
                 </p>
                 {listing.location && (
@@ -326,125 +296,84 @@ const Categories = () => {
                   </p>
                 )}
               </div>
-              <ArrowOut size={14} />
+              <ChevronRight size={16} color={COLORS.muted} />
             </Link>
           ))}
         </div>
       )}
 
       {isLoading ? (
-        <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 28 }}>
-          <Skeleton style={{ width: "100%", aspectRatio: "16 / 11", borderRadius: 24, background: "rgba(238,232,218,0.15)" }} />
-          <div style={{ columnCount: 2, columnGap: 14 }}>
+        <div style={{ padding: "28px 20px 0", display: "flex", flexDirection: "column", gap: 20 }}>
+          <Skeleton style={{ width: "100%", height: 72, borderRadius: 16, background: "rgba(2,2,2,0.06)" }} />
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton
-                key={i}
-                style={{
-                  width: "100%",
-                  aspectRatio: FALLBACK_ASPECTS[i % FALLBACK_ASPECTS.length],
-                  borderRadius: 20,
-                  background: "rgba(238,232,218,0.15)",
-                  marginBottom: 14,
-                  display: "inline-block",
-                  breakInside: "avoid",
-                }}
-              />
+              <Skeleton key={i} style={{ width: "100%", aspectRatio: "1 / 1.15", borderRadius: 16, background: "rgba(2,2,2,0.06)" }} />
             ))}
           </div>
         </div>
       ) : visibleCategories.length === 0 && listingResults.length === 0 ? (
-        <div style={{ textAlign: "center", paddingTop: 80, color: COLORS.cream }}>
-          <p style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", fontSize: 28, marginBottom: 8 }}>nothing here.</p>
-          <p style={{ fontSize: 13, color: "rgba(238,232,218,0.7)" }}>Try another search term</p>
+        <div style={{ textAlign: "center", paddingTop: 80, color: COLORS.ink }}>
+          <p style={{ fontFamily: FONT_BODY, fontWeight: 700, fontSize: 20, marginBottom: 6 }}>Nothing here.</p>
+          <p style={{ fontSize: 13, color: COLORS.muted }}>Try another search term</p>
         </div>
       ) : (
         <>
-          {/* In the spotlight */}
+          {/* The essentials */}
           {featuredCategories.length > 0 && (
             <>
-              <SectionHead title="The Essentials" />
-              <div style={{ padding: "0 24px", marginBottom: 28, display: "flex", flexDirection: "column", gap: 16 }}>
+              <SectionHead title="The essentials" />
+              <div style={{ padding: "0 20px", marginBottom: 28, display: "flex", flexDirection: "column", gap: 12 }}>
                 {featuredCategories.map((featured) => (
-                <Link
-                  key={featured.id}
-                  to={`/category/${featured.id}`}
-                  style={{
-                    display: "block",
-                    background: "#ffffff",
-                    borderRadius: 16,
-                    overflow: "hidden",
-                    textDecoration: "none",
-                    transition: "transform 150ms ease-out",
-                  }}
-                  onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
-                  onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                  onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                >
-                  <div style={{ position: "relative", width: "100%", height: 230, background: "#e6e0d2", overflow: "hidden" }}>
-                    {featured.image_url && (
-                      <img
-                        src={featured.image_url}
-                        alt={featured.title}
-                        style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                      />
-                    )}
+                  <Link
+                    key={featured.id}
+                    to={`/category/${featured.id}`}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 16,
+                      background: COLORS.emergencyBg,
+                      borderRadius: 999,
+                      padding: "12px 18px 12px 12px",
+                      textDecoration: "none",
+                    }}
+                  >
                     <div
                       style={{
-                        position: "absolute",
-                        top: 12,
-                        right: 12,
-                        width: 38,
-                        height: 38,
+                        width: 48,
+                        height: 48,
                         borderRadius: 999,
-                        background: "#ffffff",
+                        background: "#FFFFFF",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
+                        flexShrink: 0,
                       }}
                     >
-                      <ArrowOut size={16} />
+                      <AlertTriangle size={22} strokeWidth={2} color={COLORS.emergencyInk} />
                     </div>
-                  </div>
-                  <div style={{ paddingTop: 16, paddingBottom: 14, paddingLeft: 16, paddingRight: 16, textAlign: "center" }}>
-                    <h2
-                      style={{
-                        fontFamily: FONT_BODY,
-                        fontWeight: 700,
-                        fontSize: 18,
-                        lineHeight: 1.2,
-                        color: COLORS.ink,
-                        margin: 0,
-                        marginBottom: 4,
-                      }}
-                    >
-                      {featured.title}
-                    </h2>
-                    <p
-                      style={{
-                        fontFamily: FONT_BODY,
-                        fontSize: 13,
-                        fontWeight: 400,
-                        color: "#9a9a92",
-                        margin: 0,
-                      }}
-                    >
-                      ({formatCount(listingCounts?.[featured.id] || 0)})
-                    </p>
-                  </div>
-                </Link>
+                    <div style={{ flex: 1, textAlign: "center" }}>
+                      <span
+                        style={{
+                          fontFamily: FONT_BODY,
+                          fontWeight: 700,
+                          fontSize: 17,
+                          color: COLORS.emergencyInk,
+                        }}
+                      >
+                        {featured.title}
+                      </span>
+                    </div>
+                    <ChevronRight size={20} color={COLORS.emergencyInk} strokeWidth={1.6} />
+                  </Link>
                 ))}
               </div>
             </>
           )}
 
-          {/* Everything else - masonry */}
+          {/* Everything else - 2 column grid */}
           {gridCategories.length > 0 && (
             <>
-              <SectionHead
-                title="Everything Else"
-                counter={`${gridCategories.length} Categories`}
-              />
+              <SectionHead title="Everything else" />
               <div style={{ padding: "0 20px" }}>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                   {gridCategories.map((cat) => {
@@ -454,8 +383,9 @@ const Categories = () => {
                         key={cat.id}
                         to={`/category/${cat.id}`}
                         style={{
-                          display: "block",
-                          background: "#ffffff",
+                          display: "flex",
+                          flexDirection: "column",
+                          background: COLORS.card,
                           borderRadius: 16,
                           overflow: "hidden",
                           textDecoration: "none",
@@ -465,33 +395,35 @@ const Categories = () => {
                         onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
                         onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
                       >
-                        <div style={{ position: "relative", width: "100%", aspectRatio: "1 / 1", background: "#e6e0d2", overflow: "hidden" }}>
-                          {cat.image_url && (
-                            <img
-                              src={cat.image_url}
-                              alt={cat.title}
-                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                            />
-                          )}
+                        <div style={{ padding: 8 }}>
                           <div
                             style={{
-                              position: "absolute",
-                              top: 8,
-                              right: 8,
-                              width: 30,
-                              height: 30,
-                              borderRadius: 999,
-                              background: "#ffffff",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              boxShadow: "0 1px 3px rgba(0,0,0,0.12)",
+                              position: "relative",
+                              width: "100%",
+                              aspectRatio: "1 / 1",
+                              background: "#e6e0d2",
+                              overflow: "hidden",
+                              borderRadius: 12,
                             }}
                           >
-                            <ArrowOut size={14} />
+                            {cat.image_url && (
+                              <img
+                                src={cat.image_url}
+                                alt={cat.title}
+                                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                              />
+                            )}
                           </div>
                         </div>
-                        <div style={{ paddingTop: 12, paddingBottom: 8, textAlign: "center" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "flex-start",
+                            justifyContent: "space-between",
+                            gap: 8,
+                            padding: "4px 14px 16px",
+                          }}
+                        >
                           <p
                             style={{
                               fontFamily: FONT_BODY,
@@ -500,22 +432,23 @@ const Categories = () => {
                               lineHeight: 1.2,
                               color: COLORS.ink,
                               margin: 0,
-                              marginBottom: 4,
+                              flex: 1,
                             }}
                           >
                             {cat.title}
                           </p>
-                          <p
+                          <span
                             style={{
                               fontFamily: FONT_BODY,
                               fontSize: 13,
                               fontWeight: 400,
-                              color: "#9a9a92",
-                              margin: 0,
+                              color: COLORS.muted,
+                              whiteSpace: "nowrap",
+                              marginTop: 2,
                             }}
                           >
-                            ({formatCount(count)})
-                          </p>
+                            ({count})
+                          </span>
                         </div>
                       </Link>
                     );
@@ -530,46 +463,26 @@ const Categories = () => {
   );
 };
 
-const SectionHead = ({ title, counter }: { title: string; counter?: string }) => (
+const SectionHead = ({ title }: { title: string }) => (
   <div
     style={{
-      display: "flex",
-      alignItems: "baseline",
-      justifyContent: "space-between",
-      padding: "0 24px",
-      marginTop: 8,
-      marginBottom: 16,
+      padding: "0 20px",
+      marginTop: 24,
+      marginBottom: 14,
     }}
   >
     <h2
       style={{
-        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-        fontStyle: "normal",
+        fontFamily: FONT_BODY,
         fontWeight: 700,
-        fontSize: 24,
-        lineHeight: 1,
-        letterSpacing: "-0.5px",
-        color: COLORS.cream,
+        fontSize: 22,
+        lineHeight: 1.1,
+        color: COLORS.ink,
         margin: 0,
-        textTransform: "capitalize",
       }}
     >
       {title}
     </h2>
-    {counter && (
-      <span
-        style={{
-          fontFamily: FONT_BODY,
-          fontSize: 11,
-          fontWeight: 400,
-          letterSpacing: "1.8px",
-          textTransform: "uppercase",
-          color: "rgba(238, 232, 218, 0.75)",
-        }}
-      >
-        {counter}
-      </span>
-    )}
   </div>
 );
 
