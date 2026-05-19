@@ -1,6 +1,6 @@
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -45,98 +45,115 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
   hh_app_updates: false,
 };
 
-const FONT_STACK = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const ITALIC_STACK = "'Playfair Display', Georgia, serif";
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const COLORS = {
-  olive: "#5C6446",
-  cream: "#EEE8DA",
-  softCream: "#F4EFE3",
-  ink: "#2A2A24",
-  muted: "#6B6A5E",
-  line: "#D9D2C0",
-  rust: "#9B5A3C",
+const C = {
+  bg: "#ECE3CF",
+  card: "#FFFFFF",
+  ink: "#1A1A1A",
+  dark: "#2E2418",
+  muted: "#7A6E5C",
+  line: "#E2DAC6",
+  rust: "#C0392B",
+  offTrack: "#D9CFB8",
 };
 
-const baseText: React.CSSProperties = {
-  fontStretch: "normal",
-  fontSynthesis: "none",
-  transform: "none",
-};
-
-const Toggle = ({
-  checked,
-  variant = "ink",
-  disabled,
-}: {
-  checked: boolean;
-  variant?: "ink" | "rust";
-  disabled?: boolean;
-}) => {
-  const onColor = variant === "rust" ? COLORS.rust : COLORS.ink;
-  return (
-    <div
-      style={{
-        width: 44,
-        height: 24,
-        borderRadius: 999,
-        background: checked ? onColor : COLORS.line,
-        position: "relative",
-        transition: "background-color 200ms ease-out",
-        flexShrink: 0,
-        opacity: disabled ? 0.5 : 1,
-        marginTop: 2,
-      }}
-    >
-      <div
-        style={{
-          width: 18,
-          height: 18,
-          borderRadius: "50%",
-          background: "#fff",
-          position: "absolute",
-          top: 3,
-          left: checked ? 23 : 3,
-          transition: "left 200ms ease-out",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
-        }}
-      />
-    </div>
-  );
-};
-
-const Eyebrow = ({ children, opacity = 0.7 }: { children: React.ReactNode; opacity?: number }) => (
+const Toggle = ({ checked, disabled }: { checked: boolean; disabled?: boolean }) => (
   <div
     style={{
-      ...baseText,
-      fontFamily: FONT_STACK,
-      fontSize: 11,
-      fontWeight: 400,
-      color: COLORS.cream,
-      opacity,
-      textTransform: "uppercase",
-      letterSpacing: "0.218em",
-      padding: "0 24px",
-      marginBottom: 10,
+      width: 44,
+      height: 24,
+      borderRadius: 999,
+      background: checked ? C.dark : C.offTrack,
+      position: "relative",
+      transition: "background-color 200ms ease-out",
+      flexShrink: 0,
+      opacity: disabled ? 0.55 : 1,
+      marginTop: 2,
     }}
   >
-    {children}
+    <div
+      style={{
+        width: 18,
+        height: 18,
+        borderRadius: "50%",
+        background: "#fff",
+        position: "absolute",
+        top: 3,
+        left: checked ? 23 : 3,
+        transition: "left 200ms ease-out",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.2)",
+      }}
+    />
   </div>
 );
 
-interface RowProps {
+interface RowDef {
+  key: BoolKey;
   title: string;
-  description: string;
+  filterCol?: CatKey;
+  filterType?: NotificationFilterType;
+}
+
+interface SectionDef {
+  label: string;
+  rows: RowDef[];
+}
+
+const SECTIONS: SectionDef[] = [
+  {
+    label: "Events",
+    rows: [
+      { key: "events_new", title: "New Events", filterCol: "events_new_categories", filterType: "events_new" },
+      { key: "events_reminders", title: "Event Reminders" },
+      { key: "events_updates", title: "Event Updates" },
+    ],
+  },
+  {
+    label: "Listings",
+    rows: [
+      { key: "listings_new", title: "New Listings", filterCol: "listings_new_categories", filterType: "listings_new" },
+      { key: "listings_updates", title: "Listing Updates", filterCol: "listings_updates_categories", filterType: "listings_updates" },
+    ],
+  },
+  {
+    label: "Specials",
+    rows: [
+      { key: "specials_new", title: "New Specials", filterCol: "specials_new_categories", filterType: "specials_new" },
+      { key: "specials_ending", title: "Specials Ending Soon" },
+    ],
+  },
+  {
+    label: "Community",
+    rows: [
+      { key: "community_followers", title: "New Followers" },
+      { key: "community_activity", title: "Activity From People You Follow" },
+    ],
+  },
+  {
+    label: "From Hello Hoedspruit",
+    rows: [
+      { key: "hh_app_updates", title: "App Updates & News" },
+    ],
+  },
+];
+
+const PrefRow = ({
+  title,
+  checked,
+  onToggle,
+  disabled,
+  isFirst,
+  filterLink,
+}: {
+  title: string;
   checked: boolean;
   onToggle: () => void;
   disabled?: boolean;
   isFirst: boolean;
   filterLink?: { to: string; selected: number; total: number };
-}
-
-const PrefRow = ({ title, description, checked, onToggle, disabled, isFirst, filterLink }: RowProps) => {
+}) => {
   const allSelected = filterLink && filterLink.selected === filterLink.total;
-  const noneSelected = filterLink && filterLink.selected === 0 && checked;
   const linkText = filterLink
     ? allSelected
       ? `All ${filterLink.total} categories ›`
@@ -150,40 +167,24 @@ const PrefRow = ({ title, description, checked, onToggle, disabled, isFirst, fil
         alignItems: "flex-start",
         gap: 16,
         padding: "18px 0",
-        borderTop: isFirst ? "none" : `1px solid ${COLORS.line}`,
-        opacity: disabled ? 0.5 : 1,
+        borderTop: isFirst ? "none" : `1px solid ${C.line}`,
+        opacity: disabled ? 0.55 : 1,
         pointerEvents: disabled ? "none" : "auto",
       }}
     >
       <div style={{ flex: 1, paddingRight: 8 }}>
         <div
           style={{
-            ...baseText,
-            fontFamily: FONT_STACK,
+            fontFamily: SANS,
             fontSize: 16,
-            fontWeight: 400,
-            color: COLORS.ink,
+            fontWeight: 700,
+            color: C.ink,
             lineHeight: 1.2,
-            marginBottom: 5,
+            letterSpacing: "-0.1px",
           }}
         >
           {title}
         </div>
-        {description && (
-          <div
-            style={{
-              ...baseText,
-              fontFamily: ITALIC_STACK,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: 13.5,
-              color: COLORS.muted,
-              lineHeight: 1.4,
-            }}
-          >
-            {description}
-          </div>
-        )}
         {filterLink && (
           <Link
             to={filterLink.to}
@@ -191,12 +192,11 @@ const PrefRow = ({ title, description, checked, onToggle, disabled, isFirst, fil
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              marginTop: 10,
-              fontFamily: FONT_STACK,
-              fontSize: 12,
-              fontWeight: 400,
-              color: COLORS.rust,
-              opacity: noneSelected ? 1 : 0.85,
+              marginTop: 8,
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: 500,
+              color: C.rust,
               textDecoration: "none",
             }}
           >
@@ -215,59 +215,9 @@ const PrefRow = ({ title, description, checked, onToggle, disabled, isFirst, fil
   );
 };
 
-interface RowDef {
-  key: BoolKey;
-  title: string;
-  description: string;
-  filterCol?: CatKey;
-  filterType?: NotificationFilterType;
-}
-
-interface SectionDef {
-  label: string;
-  rows: RowDef[];
-}
-
-const SECTIONS: SectionDef[] = [
-  {
-    label: "Events",
-    rows: [
-      { key: "events_new", title: "New Events", description: "", filterCol: "events_new_categories", filterType: "events_new" },
-      { key: "events_reminders", title: "Event Reminders", description: "" },
-      { key: "events_updates", title: "Event Updates", description: "" },
-    ],
-  },
-  {
-    label: "Listings",
-    rows: [
-      { key: "listings_new", title: "New Listings", description: "", filterCol: "listings_new_categories", filterType: "listings_new" },
-      { key: "listings_updates", title: "Listing Updates", description: "", filterCol: "listings_updates_categories", filterType: "listings_updates" },
-    ],
-  },
-  {
-    label: "Specials",
-    rows: [
-      { key: "specials_new", title: "New Specials", description: "", filterCol: "specials_new_categories", filterType: "specials_new" },
-      { key: "specials_ending", title: "Specials Ending Soon", description: "" },
-    ],
-  },
-  {
-    label: "Community",
-    rows: [
-      { key: "community_followers", title: "New Followers", description: "" },
-      { key: "community_activity", title: "Activity From People You Follow", description: "" },
-    ],
-  },
-  {
-    label: "From Hello Hoedspruit",
-    rows: [
-      { key: "hh_app_updates", title: "App Updates & News", description: "" },
-    ],
-  },
-];
-
 const Notifications = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [bools, setBools] = useState<Record<BoolKey, boolean>>({ ...DEFAULT_BOOLS });
   const [cats, setCats] = useState<Record<CatKey, string[] | null>>({
     events_new_categories: null,
@@ -328,17 +278,51 @@ const Notifications = () => {
   const masterOn = bools.push_enabled;
 
   return (
-    <div style={{ background: COLORS.olive, minHeight: "100vh", paddingBottom: 120 }}>
-      <NotifSettingsHeader />
+    <div style={{ background: C.bg, minHeight: "100vh", paddingBottom: 120, fontFamily: SANS }}>
+      {/* Top bar */}
+      <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "60px 20px 18px" }}>
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: C.card,
+            border: "none",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <ArrowLeft size={18} strokeWidth={2} color={C.ink} />
+        </button>
+        <h1
+          style={{
+            margin: 0,
+            fontFamily: SANS,
+            fontWeight: 700,
+            fontSize: 22,
+            color: C.ink,
+            letterSpacing: "-0.3px",
+          }}
+        >
+          Notification Preferences
+        </h1>
+      </div>
+
+      <div style={{ height: 1, background: C.line, margin: "0 20px 24px" }} />
 
       {/* Master card */}
-      <div style={{ padding: "0 24px", marginBottom: 28 }}>
+      <div style={{ padding: "0 20px", marginBottom: 28 }}>
         <div
           onClick={() => toggleBool("push_enabled")}
           style={{
-            background: COLORS.softCream,
-            borderRadius: 20,
-            padding: "18px 22px",
+            background: C.card,
+            borderRadius: 18,
+            padding: "20px 22px",
             display: "flex",
             alignItems: "center",
             gap: 16,
@@ -346,46 +330,40 @@ const Notifications = () => {
           }}
         >
           <div style={{ flex: 1 }}>
-            <div
-              style={{
-                ...baseText,
-                fontFamily: FONT_STACK,
-                fontSize: 17,
-                fontWeight: 400,
-                color: COLORS.ink,
-                marginBottom: 4,
-              }}
-            >
+            <div style={{ fontFamily: SANS, fontSize: 18, fontWeight: 700, color: C.ink, marginBottom: 4, letterSpacing: "-0.2px" }}>
               Push Notifications
             </div>
-            <div
-              style={{
-                ...baseText,
-                fontFamily: "Inter, sans-serif",
-                fontStyle: "normal",
-                fontWeight: 400,
-                fontSize: 13.5,
-                color: COLORS.muted,
-                lineHeight: 1.4,
-              }}
-            >
+            <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 14, color: C.muted, lineHeight: 1.4 }}>
               Turn all alerts on or off in one tap.
             </div>
           </div>
-          <Toggle checked={masterOn} variant="rust" />
+          <Toggle checked={masterOn} />
         </div>
       </div>
 
       {/* Sections */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 24, opacity: loaded ? 1 : 0, transition: "opacity 200ms ease-out" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 22, opacity: loaded ? 1 : 0, transition: "opacity 200ms ease-out" }}>
         {loaded && SECTIONS.map((section) => (
           <div key={section.label}>
-            <Eyebrow>{section.label}</Eyebrow>
-            <div style={{ padding: "0 24px" }}>
+            <div
+              style={{
+                fontFamily: SANS,
+                fontSize: 11,
+                fontWeight: 700,
+                color: C.muted,
+                textTransform: "uppercase",
+                letterSpacing: "0.18em",
+                padding: "0 24px",
+                marginBottom: 10,
+              }}
+            >
+              {section.label}
+            </div>
+            <div style={{ padding: "0 20px" }}>
               <div
                 style={{
-                  background: COLORS.cream,
-                  borderRadius: 20,
+                  background: C.card,
+                  borderRadius: 18,
                   padding: "4px 22px",
                   overflow: "hidden",
                 }}
@@ -393,7 +371,7 @@ const Notifications = () => {
                 {section.rows.map((row, i) => {
                   const filterLink = row.filterCol && row.filterType
                     ? (() => {
-                        const meta = FILTER_TYPE_META[row.filterType];
+                        const meta = FILTER_TYPE_META[row.filterType!];
                         const total = totalCategoryCount(meta.groups);
                         const arr = cats[row.filterCol!];
                         const selected = arr === null ? total : arr.length;
@@ -404,7 +382,6 @@ const Notifications = () => {
                     <PrefRow
                       key={row.key}
                       title={row.title}
-                      description={row.description}
                       checked={bools[row.key]}
                       onToggle={() => toggleBool(row.key)}
                       disabled={!masterOn}
@@ -418,62 +395,8 @@ const Notifications = () => {
           </div>
         ))}
       </div>
-
-      {/* Footnote */}
-      <div style={{ padding: "16px 26px 0 28px", display: "flex", gap: 12, alignItems: "flex-start", marginTop: 16 }}>
-        <div
-          style={{
-            width: 7,
-            height: 7,
-            borderRadius: "50%",
-            background: COLORS.rust,
-            marginTop: 8,
-            flexShrink: 0,
-          }}
-        />
-        <span
-          style={{
-            ...baseText,
-            fontFamily: "Inter, sans-serif",
-            fontStyle: "normal",
-            fontWeight: 400,
-            fontSize: 14,
-            color: COLORS.cream,
-            opacity: 0.7,
-            lineHeight: 1.55,
-          }}
-        >
-          Changes are saved automatically. You can come back and update these at any time.
-        </span>
-      </div>
     </div>
   );
 };
-
-function NotifSettingsHeader() {
-  const navigate = useNavigate();
-  const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  return (
-    <div style={{ background: COLORS.olive }}>
-      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            background: "transparent", border: "none", padding: 0, margin: 0,
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", lineHeight: 0, flexShrink: 0,
-          }}
-        >
-          <BackArrowIcon size={22} color={COLORS.cream} />
-        </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: COLORS.cream, lineHeight: 1 }}>
-          Notification Preferences
-        </div>
-      </div>
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 28 }} />
-    </div>
-  );
-}
 
 export default Notifications;
