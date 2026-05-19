@@ -91,6 +91,27 @@ const AdminListings = () => {
     },
   });
 
+  // Distinct values used across listings for free-form chip fields
+  const { data: distinctChipValues } = useQuery({
+    queryKey: ["admin-distinct-chip-values"],
+    queryFn: async () => {
+      const { data } = await supabase.from("listings").select("meal, vibe, cuisine, seating, service_type");
+      const collect = (key: string) => {
+        const s = new Set<string>();
+        (data ?? []).forEach((row: any) => (row[key] ?? []).forEach((v: string) => v && s.add(v)));
+        return Array.from(s);
+      };
+      return {
+        meal: collect("meal"),
+        vibe: collect("vibe"),
+        cuisine: collect("cuisine"),
+        seating: collect("seating"),
+        service_type: collect("service_type"),
+      } as Record<string, string[]>;
+    },
+  });
+
+
   // Fetch listing_categories for the editing listing
   const { data: editingCatIds } = useQuery({
     queryKey: ["listing-categories", editing?.id],
