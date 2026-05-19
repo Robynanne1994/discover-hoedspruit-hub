@@ -934,7 +934,7 @@ const AdminListings = () => {
 
                 {isNGOType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-sm font-medium text-foreground">NGO & Volunteering Fields</p>
+                    <p className="font-medium text-foreground text-lg text-red-800">NGO & Volunteering Fields</p>
                     <div><Label>Cause</Label><Textarea value={form.cause} onChange={(e) => setForm({ ...form, cause: e.target.value })} placeholder="What cause does this NGO support?" /></div>
                     <div><Label>Impact</Label><Textarea value={form.impact} onChange={(e) => setForm({ ...form, impact: e.target.value })} placeholder="What impact have they made?" /></div>
                     <div><Label>Ways To Give</Label><Textarea value={form.ways_to_give} onChange={(e) => setForm({ ...form, ways_to_give: e.target.value })} placeholder="How can people donate or contribute?" /></div>
