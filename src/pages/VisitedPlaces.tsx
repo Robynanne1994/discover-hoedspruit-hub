@@ -133,7 +133,7 @@ const VisitedPlaces = () => {
           <Search size={18} strokeWidth={2} color="rgba(18,18,20,0.3)" />
           <input
             type="text"
-            placeholder="Search visited places..."
+            placeholder="Search visited listings..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{
