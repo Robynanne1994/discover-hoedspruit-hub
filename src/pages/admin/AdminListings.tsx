@@ -592,7 +592,7 @@ const AdminListings = () => {
                 </div>
 
                 <div className="border-t border-border pt-4 mt-2">
-                  <p className="font-medium text-foreground text-lg text-red-800 mb-3">Detail Page Fields (optional)</p>
+                  <p className="font-medium text-foreground mb-3 text-base text-red-600">Detail Page Fields (optional)</p>
                 </div>
 
                 <div>
