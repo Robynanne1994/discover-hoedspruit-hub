@@ -38,18 +38,19 @@ const pressScale = (s = "0.98") => ({
 
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: FONT, fontWeight: 400, fontSize: 12,
-  letterSpacing: "0.08em", textTransform: "uppercase",
+  fontFamily: FONT, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  letterSpacing: 0, textTransform: "none",
   color: C.heading,
 };
 const paraStyle: React.CSSProperties = {
   fontFamily: FONT, fontWeight: 400, fontSize: 14.5, lineHeight: 1.6,
   color: C.text, margin: "0 0 10px",
 };
-const iconBtn: React.CSSProperties = {
+const floatBtn: React.CSSProperties = {
   width: 40, height: 40, borderRadius: 999,
-  background: "none", border: "none", cursor: "pointer",
+  background: "#FFFFFF", border: "none", cursor: "pointer",
   display: "flex", alignItems: "center", justifyContent: "center",
+  boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
 };
 
 const formatPrice = (raw?: string | null) => {
