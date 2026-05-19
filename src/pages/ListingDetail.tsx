@@ -492,10 +492,10 @@ const ListingDetail = () => {
         style={{
           flex: 1, background: "none", border: "none", cursor: "pointer",
           padding: "14px 4px",
-          fontFamily: FONT, fontWeight: 400, fontSize: 12,
+          fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
           letterSpacing: "0.08em", textTransform: "uppercase",
           color: active ? C.heading : C.muted,
-          borderBottom: `2px solid ${active ? C.primary : "transparent"}`,
+          borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
         }}
       >
