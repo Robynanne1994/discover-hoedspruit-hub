@@ -45,6 +45,7 @@ const AdminListings = () => {
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [customRowsVisible, setCustomRowsVisible] = useState(0);
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
