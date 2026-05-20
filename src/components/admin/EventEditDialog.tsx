@@ -18,9 +18,9 @@ interface Props {
 
 const FIELDS = [
   "title", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
-  "tag", "sub_tag_1", "sub_tag_2", "image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
-  "business_id", "is_featured",
+  "business_id", "business_ids", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url",
   "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2",
   "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3",
