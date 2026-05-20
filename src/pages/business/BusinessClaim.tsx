@@ -148,7 +148,7 @@ const BusinessClaim = () => {
             marginBottom: 24,
           }}
         >
-          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 1.6, color: INK }} />
+          <ArrowLeft size={18} strokeWidth={2} color={INK} />
         </button>
         <div style={{ background: CREAM, borderRadius: 20, padding: 24 }}>
           <p style={{ fontFamily: SANS, fontSize: 12, letterSpacing: "2.4px", textTransform: "uppercase", color: MUTED, margin: 0, marginBottom: 10 }}>
