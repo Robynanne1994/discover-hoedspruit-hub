@@ -241,6 +241,7 @@ const ListingDetail = () => {
   const isListingShopping = listingCategories?.some((c) => isShoppingCategory(c.title)) ?? false;
   const isListingAccommodation = listingCategories?.some((c) => isAccommodationCategory(c.title)) ?? false;
   const isListingNGO = listingCategories?.some((c) => isNGOCategory(c.title)) ?? false;
+  const isListingTrades = listingCategories?.some((c) => isTradesCategory(c.title)) ?? false;
   const l = listing as any;
   const galleryImages = (l.gallery_images as string[] | null) || [];
   const openingHours = l.opening_hours as Record<string, string> | null;
