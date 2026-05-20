@@ -172,7 +172,7 @@ const App = () => (
                 <Route path="events/import" element={<AdminEventsImport />} />
                 <Route path="specials" element={<AdminSpecials />} />
                 <Route path="specials/import" element={<AdminSpecialsImport />} />
-                <Route path="articles" element={<AdminArticles />} />
+                
                 <Route path="bush-telegraph" element={<AdminBushTelegraph />} />
                 <Route path="content" element={<AdminContent />} />
                 <Route path="import" element={<AdminImport />} />
