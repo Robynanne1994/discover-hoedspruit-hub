@@ -830,20 +830,37 @@ const AdminListings = () => {
                       <Label>Shop Type</Label>
                       {(() => {
                         const dbTypes = Array.from(new Set((listings ?? []).map((l: any) => l.shop_type).filter(Boolean))) as string[];
-                        const merged = Array.from(new Set([...SHOP_TYPE_OPTIONS, ...dbTypes]));
+                        const merged = Array.from(new Set([...SHOP_TYPE_OPTIONS, ...customShopTypes, ...dbTypes]));
                         return (
                           <>
-                            <Input
-                              list="shop-type-options"
-                              value={form.shop_type}
-                              onChange={(e) => setForm({ ...form, shop_type: e.target.value })}
-                              placeholder="Select or type a new shop type"
-                            />
-                            <datalist id="shop-type-options">
-                              {merged.map((opt) => (
-                                <option key={opt} value={opt} />
-                              ))}
-                            </datalist>
+                            <Select value={form.shop_type || "__none__"} onValueChange={(v) => setForm({ ...form, shop_type: v === "__none__" ? "" : v })}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select shop type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="__none__">— None —</SelectItem>
+                                {merged.map((opt) => (
+                                  <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="mt-2"
+                              onClick={() => {
+                                const name = window.prompt("Enter new shop type:");
+                                const trimmed = name?.trim();
+                                if (!trimmed) return;
+                                if (!merged.some((o) => o.toLowerCase() === trimmed.toLowerCase())) {
+                                  setCustomShopTypes((prev) => Array.from(new Set([...prev, trimmed])));
+                                }
+                                setForm({ ...form, shop_type: trimmed });
+                              }}
+                            >
+                              Add New Shop Type
+                            </Button>
                           </>
                         );
                       })()}
