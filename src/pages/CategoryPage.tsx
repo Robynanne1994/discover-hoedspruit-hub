@@ -309,6 +309,30 @@ const CategoryPage = () => {
         .in("id", listingIds)
         .order("is_featured", { ascending: false });
       if (error) throw error;
+
+      // Fetch all categories per listing (junction + legacy category_id)
+      const [{ data: allJunction }, { data: allCats }] = await Promise.all([
+        supabase.from("listing_categories").select("listing_id, category_id").in("listing_id", listingIds),
+        supabase.from("categories").select("id, title"),
+      ]);
+      const catTitleById = new Map<string, string>();
+      (allCats || []).forEach((c: any) => catTitleById.set(c.id, c.title));
+      const listingToCats = new Map<string, Set<string>>();
+      (allJunction || []).forEach((r: any) => {
+        const title = catTitleById.get(r.category_id);
+        if (!title) return;
+        if (!listingToCats.has(r.listing_id)) listingToCats.set(r.listing_id, new Set());
+        listingToCats.get(r.listing_id)!.add(title);
+      });
+      (data || []).forEach((l: any) => {
+        const set = listingToCats.get(l.id) || new Set<string>();
+        if (l.category_id) {
+          const legacyTitle = catTitleById.get(l.category_id);
+          if (legacyTitle) set.add(legacyTitle);
+        }
+        l._allCategories = Array.from(set);
+      });
+
       return sanitizeDashesList(data as any[]);
     },
     enabled: !!id,
