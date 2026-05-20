@@ -17,7 +17,7 @@ interface Props {
 }
 
 const FIELDS: (keyof any)[] = [
-  "title", "description", "business_name", "business_id", "image_url", "deal_label",
+  "title", "title_override", "description", "business_name", "business_id", "image_url", "deal_label",
   "valid_from", "valid_until", "is_active", "special_type", "price", "price_label",
   "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
   "original_price", "promo_code", "contact_phone", "contact_whatsapp",
@@ -96,6 +96,25 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
         <DialogHeader><DialogTitle>Edit Special</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
           <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="special-dlg-use-title-override"
+                checked={!!(form.title_override && String(form.title_override).trim())}
+                onCheckedChange={(v) => set("title_override", v ? (form.title_override || form.title || "") : null)}
+              />
+              <Label htmlFor="special-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
+                Use custom title (overrides auto-capitalisation)
+              </Label>
+            </div>
+            {!!(form.title_override && String(form.title_override).trim()) && (
+              <Input
+                placeholder="Custom title — rendered exactly as typed"
+                value={form.title_override || ""}
+                onChange={(e) => set("title_override", e.target.value)}
+              />
+            )}
+          </div>
           <div><Label>Business Name</Label><Input value={form.business_name || ""} onChange={(e) => set("business_name", e.target.value)} /></div>
           <div>
             <Label>Linked Business Listing</Label>

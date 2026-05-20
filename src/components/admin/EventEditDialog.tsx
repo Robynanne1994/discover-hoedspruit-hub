@@ -17,7 +17,7 @@ interface Props {
 }
 
 const FIELDS = [
-  "title", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
+  "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
   "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
   "business_id", "business_ids", "is_featured",
@@ -101,6 +101,25 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
         <DialogHeader><DialogTitle>Edit Event</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
           <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="event-dlg-use-title-override"
+                checked={!!(form.title_override && String(form.title_override).trim())}
+                onCheckedChange={(v) => set("title_override", v ? (form.title_override || form.title || "") : "")}
+              />
+              <Label htmlFor="event-dlg-use-title-override" className="text-sm cursor-pointer font-normal">
+                Use custom title (overrides auto-capitalisation)
+              </Label>
+            </div>
+            {!!(form.title_override && String(form.title_override).trim()) && (
+              <Input
+                placeholder="Custom title — rendered exactly as typed"
+                value={form.title_override || ""}
+                onChange={(e) => set("title_override", e.target.value)}
+              />
+            )}
+          </div>
           <div><Label>Tag/Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
