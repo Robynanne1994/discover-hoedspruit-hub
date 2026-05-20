@@ -44,7 +44,13 @@ const applyToH2s = () => {
   h2s.forEach((el) => {
     // Skip if we've already processed this specific text content
     if (el.dataset.titleCased === el.textContent) return;
-    
+
+    // Honour explicit opt-out (override titles render verbatim)
+    if (el.hasAttribute("data-no-title-case") || el.closest("[data-no-title-case]")) {
+      el.dataset.titleCased = el.textContent || "";
+      return;
+    }
+
     // Check if the H2 has only text nodes or a very simple structure
     // We check children.length === 0 to avoid breaking icons or nested interactive elements
     if (el.children.length === 0 && el.textContent) {

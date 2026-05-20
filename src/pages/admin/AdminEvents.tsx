@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Upload, X, Image as ImageIcon } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -14,7 +15,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -137,6 +138,7 @@ const AdminEvents = () => {
       const galleryArr = values.gallery_images ? values.gallery_images.split("\n").filter(Boolean) : [];
       const payload: any = {
         title: values.title,
+        title_override: (values as any).title_override?.trim() || null,
         description: values.description || null,
         date: values.date || (values.start_date && values.end_date && values.start_date !== values.end_date ? `${values.start_date} to ${values.end_date}` : (values.start_date || "")),
         start_date: values.start_date || null,
@@ -206,6 +208,7 @@ const AdminEvents = () => {
     setEditing(ev);
     setForm({
       title: ev.title,
+      title_override: (ev as any).title_override ?? "",
       description: ev.description ?? "",
       date: ev.date,
       start_date: (ev as any).start_date ?? "",
@@ -263,6 +266,25 @@ const AdminEvents = () => {
             <DialogHeader><DialogTitle>{editing ? "Edit Event" : "Add Event"}</DialogTitle></DialogHeader>
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); upsert.mutate(form); }}>
               <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required /></div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="event-use-title-override"
+                    checked={!!(form.title_override && form.title_override.trim())}
+                    onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title_override || form.title || "") : "" })}
+                  />
+                  <Label htmlFor="event-use-title-override" className="text-sm cursor-pointer font-normal">
+                    Use custom title (overrides auto-capitalisation)
+                  </Label>
+                </div>
+                {!!(form.title_override && form.title_override.trim()) && (
+                  <Input
+                    placeholder="Custom title — rendered exactly as typed"
+                    value={form.title_override}
+                    onChange={(e) => setForm({ ...form, title_override: e.target.value })}
+                  />
+                )}
+              </div>
               <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Start Date</Label><Input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} /></div>
