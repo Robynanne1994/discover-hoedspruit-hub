@@ -381,6 +381,9 @@ export type Database = {
       }
       events: {
         Row: {
+          additional_emails: string[]
+          additional_phones: string[]
+          additional_whatsapps: string[]
           booking_link: string | null
           booking_link_label: string | null
           business_id: string | null
@@ -424,6 +427,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          additional_emails?: string[]
+          additional_phones?: string[]
+          additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
           business_id?: string | null
@@ -467,6 +473,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          additional_emails?: string[]
+          additional_phones?: string[]
+          additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
           business_id?: string | null
@@ -839,6 +848,9 @@ export type Database = {
       }
       listings: {
         Row: {
+          additional_emails: string[]
+          additional_phones: string[]
+          additional_whatsapps: string[]
           air_conditioned: boolean | null
           airport_shuttle_free: boolean | null
           amenities: string[] | null
@@ -930,6 +942,9 @@ export type Database = {
           wheelchair_toilet: boolean | null
         }
         Insert: {
+          additional_emails?: string[]
+          additional_phones?: string[]
+          additional_whatsapps?: string[]
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
@@ -1021,6 +1036,9 @@ export type Database = {
           wheelchair_toilet?: boolean | null
         }
         Update: {
+          additional_emails?: string[]
+          additional_phones?: string[]
+          additional_whatsapps?: string[]
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
@@ -1290,6 +1308,9 @@ export type Database = {
       }
       specials: {
         Row: {
+          additional_emails: string[]
+          additional_phones: string[]
+          additional_whatsapps: string[]
           booking_link: string | null
           booking_link_label: string | null
           booking_required: boolean
@@ -1324,6 +1345,9 @@ export type Database = {
           valid_until: string | null
         }
         Insert: {
+          additional_emails?: string[]
+          additional_phones?: string[]
+          additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
           booking_required?: boolean
@@ -1358,6 +1382,9 @@ export type Database = {
           valid_until?: string | null
         }
         Update: {
+          additional_emails?: string[]
+          additional_phones?: string[]
+          additional_whatsapps?: string[]
           booking_link?: string | null
           booking_link_label?: string | null
           booking_required?: boolean
