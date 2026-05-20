@@ -152,7 +152,7 @@ const ContactUs = () => {
             lineHeight: 1,
           }}
         >
-          Contact Us
+          Contact us
         </div>
       </div>
 
