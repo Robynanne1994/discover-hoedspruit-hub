@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
+import MultiContactField from "@/components/admin/MultiContactField";
+import { sanitizeContactArray } from "@/lib/contacts";
 
 interface Props {
   open: boolean;
@@ -19,7 +21,7 @@ interface Props {
 const FIELDS = [
   "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
   "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
-  "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
+  "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
   "business_id", "business_ids", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url",
   "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2",
@@ -55,6 +57,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       const ids = Array.isArray(form.business_ids) ? form.business_ids.filter(Boolean) : [];
       payload.business_ids = ids;
       payload.business_id = ids[0] ?? null;
+      payload.additional_emails = sanitizeContactArray(form.additional_emails);
+      payload.additional_phones = sanitizeContactArray(form.additional_phones);
+      payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
       // `date` is required (NOT NULL). Auto-fill from start/end dates if left blank.
       if (!payload.date || !String(payload.date).trim()) {
         if (payload.start_date && payload.end_date && payload.start_date !== payload.end_date) {
@@ -180,7 +185,34 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Contact Email</Label><Input value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} /></div>
             <div><Label>Contact Phone</Label><Input value={form.contact_phone || ""} onChange={(e) => set("contact_phone", e.target.value)} /></div>
           </div>
-          <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+27 ..." /></div>
+          <MultiContactField
+            label="Contact Email"
+            type="email"
+            primary={form.contact_email || ""}
+            onPrimaryChange={(v) => set("contact_email", v)}
+            extras={form.additional_emails || []}
+            onExtrasChange={(v) => set("additional_emails", v)}
+            addLabel="Add email"
+          />
+          <MultiContactField
+            label="Contact Phone"
+            type="tel"
+            primary={form.contact_phone || ""}
+            onPrimaryChange={(v) => set("contact_phone", v)}
+            extras={form.additional_phones || []}
+            onExtrasChange={(v) => set("additional_phones", v)}
+            addLabel="Add phone"
+          />
+          <MultiContactField
+            label="Contact WhatsApp"
+            type="tel"
+            primary={form.contact_whatsapp || ""}
+            onPrimaryChange={(v) => set("contact_whatsapp", v)}
+            extras={form.additional_whatsapps || []}
+            onExtrasChange={(v) => set("additional_whatsapps", v)}
+            placeholder="+27 ..."
+            addLabel="Add WhatsApp"
+          />
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
           <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By</Label></div>
           {(() => {
