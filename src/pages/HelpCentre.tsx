@@ -17,7 +17,7 @@ const ROWS = [
   { title: "FAQs", to: "/faqs" },
   { title: "About", to: "/about" },
   { title: "Terms & Policies", to: "/terms" },
-  { title: "Contact Us", to: "/contact" },
+  { title: "Contact us", to: "/contact" },
 ];
 
 const tap = {
