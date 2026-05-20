@@ -441,6 +441,18 @@ const ListingDetail = () => {
     );
   }
 
+  if (isListingTrades) {
+    const tradesFields: Array<{ label: string; on: any }> = [];
+    if (l.business_started_year) tradesFields.push({ label: `Since ${l.business_started_year}`, on: "__text__" });
+    if (typeof l.after_hours_available === "boolean") tradesFields.push({ label: "After hours available", on: l.after_hours_available });
+    if (typeof l.callout_fee === "boolean") tradesFields.push({ label: "Callout fee", on: l.callout_fee });
+    if (tradesFields.length) sections.push({ key: "trades-service", title: "Service info", iconComp: Info, fields: tradesFields });
+    if (l.specialities && l.specialities.trim()) {
+      sections.push({ key: "trades-specialities", title: "Specialities", iconComp: Sparkles, fields: [{ label: l.specialities, on: "__text__" }] });
+    }
+  }
+
+
   const hasDetails = sections.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
     ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
