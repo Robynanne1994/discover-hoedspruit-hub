@@ -273,25 +273,43 @@ const AdminEvents = () => {
                 <div><Label>Sub-tag 1 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_1} onChange={(e) => setForm({ ...form, sub_tag_1: e.target.value })} placeholder="e.g. Family-friendly" /></div>
                 <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
               </div>
-              <div>
-                <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
-                <select
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  value={form.business_id}
-                  onChange={(e) => setForm({ ...form, business_id: e.target.value })}
-                >
-                  <option value="">— Not linked —</option>
-                  {(listings || []).map((l: any) => (
-                    <option key={l.id} value={l.id}>{l.title}</option>
-                  ))}
-                </select>
+              <div className="space-y-2">
+                <Label>Linked Business Listings</Label>
+                {((form as any).business_ids || []).map((bid: string, idx: number) => (
+                  <div key={idx} className="flex gap-2">
+                    <select
+                      className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      value={bid || ""}
+                      onChange={(e) => {
+                        const arr = [...((form as any).business_ids || [])];
+                        arr[idx] = e.target.value;
+                        setForm({ ...form, business_ids: arr, business_id: arr[0] || "" } as any);
+                      }}
+                    >
+                      <option value="">— Select a listing —</option>
+                      {(listings || []).map((l: any) => (
+                        <option key={l.id} value={l.id}>{l.title}</option>
+                      ))}
+                    </select>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => {
+                      const arr = [...((form as any).business_ids || [])];
+                      arr.splice(idx, 1);
+                      setForm({ ...form, business_ids: arr, business_id: arr[0] || "" } as any);
+                    }}>Remove</Button>
+                  </div>
+                ))}
+                <Button type="button" variant="outline" size="sm" onClick={() => {
+                  const arr = [...((form as any).business_ids || []), ""];
+                  setForm({ ...form, business_ids: arr } as any);
+                }}>+ Add Linked Listing</Button>
               </div>
               <div><Label>Recurrence</Label>
                 <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={form.recurrence} onChange={(e) => setForm({ ...form, recurrence: e.target.value })}>
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
                 </select>
               </div>
-              <div className="space-y-2"><Label>Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={4/3} /></div>
+              <div className="space-y-2"><Label>Card Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={16/9} /></div>
+              <div className="space-y-2"><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={(form as any).detail_image_url || ""} onChange={(v) => setForm({ ...form, detail_image_url: v } as any)} aspect={4/3} /></div>
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
               <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
