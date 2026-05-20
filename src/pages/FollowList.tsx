@@ -446,12 +446,12 @@ const FollowList = () => {
       </div>
 
       {/* List card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         {isLoading ? (
           <div
             style={{
-              background: COLOR.cream,
-              borderRadius: 20,
+              background: COLOR.card,
+              borderRadius: 18,
               padding: "6px 18px",
               overflow: "hidden",
             }}
@@ -482,11 +482,11 @@ const FollowList = () => {
               style={{
                 margin: 0,
                 marginBottom: 12,
-                fontFamily: SERIF,
+                fontFamily: SANS,
                 fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 22,
-                color: "rgba(238,232,218,0.8)",
+                fontWeight: 500,
+                fontSize: 20,
+                color: COLOR.ink,
               }}
             >
               {isFollowers ? "No followers yet." : "No one to follow yet."}
@@ -496,9 +496,9 @@ const FollowList = () => {
                 margin: "0 auto",
                 fontFamily: SANS,
                 fontWeight: 400,
-                fontSize: 15,
+                fontSize: 14,
                 lineHeight: 1.55,
-                color: "rgba(238,232,218,0.7)",
+                color: COLOR.muted,
                 maxWidth: 260,
               }}
             >
@@ -510,8 +510,8 @@ const FollowList = () => {
         ) : (
           <div
             style={{
-              background: COLOR.cream,
-              borderRadius: 20,
+              background: COLOR.card,
+              borderRadius: 18,
               padding: "6px 18px",
               overflow: "hidden",
             }}
