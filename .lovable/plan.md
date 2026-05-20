@@ -1,47 +1,66 @@
 ## Goal
+Add an optional "custom title" override for individual listings, events, and specials so titles that should display in non-title-case (e.g. ALL CAPS acronyms) render exactly as typed — everywhere that item's title shows (cards + detail pages). Default behaviour (auto title-case) stays in place for everything else.
 
-Make `EventDetail.tsx` and `SpecialDetail.tsx` look like `ListingDetail.tsx`. Scope is **visual styling only** — no new sections, no removed data, no behavioural changes. Each page keeps its own tabs (Event: About / Details / Gallery / Location; Special: About / Details / Contact / Terms).
+## How it will work for you
+In each backend editor (Listings, Events, Specials) you'll see, just below the Title field:
 
-## Differences to fix
+- A checkbox: **"Use custom title (overrides auto-capitalisation)"**
+- When ticked, a second text input appears: **"Custom title"**
+- Whatever you type there is rendered verbatim — wherever that item's title shows — bypassing the auto-title-case logic.
+- Unticked = current behaviour (auto title-cased from the normal Title field). Search, sorting, and the underlying `title` field are unchanged.
 
-Comparing the three files, five concrete styling deltas need to flow from Listing → Event + Special:
+## Technical plan
 
-1. **Hero chrome**
-   - Listing: no sticky top bar. The Back / Heart / Share / Edit buttons float as white 40px circles directly over the hero image (top-left for Back, top-right for the rest), with a `boxShadow: 0 2px 8px rgba(0,0,0,0.18)` and respect for `env(safe-area-inset-top)`.
-   - Event/Special today: opaque white sticky `<header>` strip above the hero with a "Event Details" / "Special Details" text label next to the arrow.
-   - Change: remove the sticky text header on Event + Special. Move Back / Heart / Share / Edit into floating circular buttons over the hero, matching Listing exactly (same `floatBtn` style, same positions, same safe-area handling). Remove the now-unused "Event Details" / "Special Details" string.
+### 1. Database
+Single migration adding one nullable column to each table:
+- `listings.title_override text`
+- `events.title_override text`
+- `specials.title_override text`
 
-2. **Section headings (`headStyle`)**
-   - Listing: `fontWeight: 700, fontSize: 22, textTransform: "none", letterSpacing: 0` — bold proper-case "About", "Hours", etc.
-   - Event/Special today: `fontWeight: 400, fontSize: 12, uppercase, letterSpacing: 0.08em` — tiny eyebrow style.
-   - Change: update `headStyle` constant in both files to the Listing values so every `<h2>` (About, The Offer, Promo Code, Location, Terms & Conditions) renders as a bold proper-case heading.
+Null/empty = use the normal title. Non-empty = render this string exactly.
 
-3. **Page title block**
-   - Listing: `fontWeight: 700, fontSize: 28, lineHeight: 1.15`.
-   - Event/Special today: `fontWeight: 400, fontSize: 24, lineHeight: 1.2`.
-   - Change: bump both title `<h1>` styles to match Listing's weight/size/line-height.
+### 2. Bypassing the global title-case transformer
+`src/components/TitleCaseH1.tsx` and `TitleCaseH2.tsx` walk the DOM and re-case any `<h1>`/`<h2>` whose `children.length === 0` (leaf text nodes only). Two small reinforcements:
 
-4. **Action pills (`PillBtn`)**
-   - Listing: `padding: 14px 18px`, `fontSize: 14`, `gap: 8`, icon size 16, label + icon colored `C.heading` (black), letter-spacing `0.01em`.
-   - Event/Special today: `padding: 10px 14px`, `fontSize: 13`, `gap: 6`, icon size 14, label + icon colored `C.primary` (brown).
-   - Change: update `PillBtn` in both files to the Listing dimensions and colors. Keep the existing `pressScale`, `flexShrink`, `width: full` logic. The "Add to Calendar" button on Event keeps its `onClick` branch; only the styling moves.
+- Update both transformers to also skip any element with `data-no-title-case` (defense-in-depth, in case a heading has nested content).
+- At every title render site, when an override exists, render the heading as:
+  ```tsx
+  <h1 data-no-title-case><span>{titleOverride}</span></h1>
+  ```
+  The inner `<span>` already makes `children.length > 0`, which the existing transformer skips; the data attribute is belt-and-braces.
 
-5. **Sticky tab bar**
-   - Listing: active tab uses `fontWeight: 700`, `borderBottom: 2px solid C.heading`.
-   - Event/Special today: active tab uses `fontWeight: 400`, `borderBottom: 2px solid C.primary`.
-   - Change: `TabBtn` in both files matches Listing — bold weight + heading-colored underline when active. The `top: 57` offset for Event/Special's tab bar (which exists because of the now-removed sticky header) drops back to `top: 0`, matching Listing.
+### 3. Render sites to update
+A small helper `useDisplayTitle(item)` returning `{ text, isOverride }` will be used at each site so the pattern is consistent.
 
-## Out of scope (user picked "Visual styling only")
+Listings:
+- `src/pages/ListingDetail.tsx` (detail H1)
+- `src/components/home/HomeListings.tsx`, `HomeListingCarousel.tsx`, `VenueCard.tsx`, `FeaturedCarousel.tsx`, `EatSection.tsx`, `DoSection.tsx`, `StaySection.tsx`, `ShopSection.tsx` (any card that prints `listing.title`)
+- `src/pages/CategoryPage.tsx`, `src/pages/Search.tsx`, `SavedListings.tsx`, `VisitedPlaces.tsx`, `Directories.tsx` (list/grid cards)
 
-- No changes to tab keys, tab content order, or which sections are shown.
-- No new "related events" / "related specials" / "related listings" carousels on either page.
-- Special detail page has no gallery data today and stays without a gallery tab.
-- Event keeps its own `EventEditDialog`; Special keeps its `SpecialEditDialog`. The floating Edit pencil over the hero still opens those dialogs (Listing routes to `/admin/listings` instead — we match the visual treatment, not the destination).
-- No edits to `ListingDetail.tsx` itself.
+Events:
+- `src/pages/EventDetail.tsx` (detail H1)
+- `src/components/events/EventCard.tsx`, `src/components/home/HomeWhatsOn.tsx`, `WhatsOnToday.tsx`, `src/pages/Events.tsx`, `EventsCalendar.tsx`
 
-## Files touched
+Specials:
+- `src/pages/SpecialDetail.tsx`
+- `src/components/home/HomeSpecials.tsx`, `SpecialsSection.tsx`, `src/pages/Specials.tsx`
 
-- `src/pages/EventDetail.tsx` — replace header chrome, update `headStyle`, `<h1>` style, `PillBtn`, `TabBtn`.
-- `src/pages/SpecialDetail.tsx` — same five edits.
+(Exact list will be confirmed by `rg` during implementation; the helper makes each change a one-line swap.)
 
-Roughly ~60 lines changed per file, no new dependencies.
+### 4. Backend editor changes
+- `src/pages/admin/AdminListings.tsx` — add checkbox + conditional input near the Title field in the edit form.
+- `src/components/admin/EventEditDialog.tsx` and `src/pages/admin/AdminEvents.tsx` (create form) — same UI.
+- `src/components/admin/SpecialEditDialog.tsx` and `src/pages/admin/AdminSpecials.tsx` (create form) — same UI; add `title_override` to the `FIELDS` array so it persists.
+
+Checkbox state derives from `!!form.title_override` so existing rows just work. Untoggling clears the field on save.
+
+### 5. Out of scope
+- Bulk-import CSVs are untouched (column simply absent → no override).
+- Business-owner self-service forms (`BusinessSpecialForm`, `BusinessEventForm`) — admin-only for now, as you described this as a backend editor need. Happy to extend to those forms if you want.
+
+## Files touched (summary)
+- 1 migration
+- 2 small edits to `TitleCaseH1.tsx` / `TitleCaseH2.tsx`
+- 1 new helper `src/lib/displayTitle.ts`
+- ~15 render sites (one-line swap each)
+- 5 admin editor files
