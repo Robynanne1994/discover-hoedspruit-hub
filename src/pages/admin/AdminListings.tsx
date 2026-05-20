@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory } from "@/lib/categoryFields";
+import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory } from "@/lib/categoryFields";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
@@ -33,7 +33,10 @@ const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["Shopping Centre", "Curios & Gifts", "General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Stationery Shop", "Other"];
 const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
 
-const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years" };
+const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance", "Irrigation", "Tree felling/pruning", "Interior design", "Upholstery", "Equipment rental", "Equipment servicing/repairs"];
+const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
+
+const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[] };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -262,6 +265,8 @@ const AdminListings = () => {
         after_hours_available: values.after_hours_available,
         callout_fee: values.callout_fee,
         specialities: values.specialities?.trim() || null,
+        services_offered: values.services_offered ?? [],
+        plant_types: (values.services_offered ?? []).includes("Nursery") ? (values.plant_types ?? []) : [],
       };
 
       // Treat "-" as empty for any string field on save
@@ -424,6 +429,8 @@ const AdminListings = () => {
       callout_fee: (l as any).callout_fee ?? null,
       specialities: (l as any).specialities ?? "",
       tenure_mode: ((l as any).years_in_business != null && (l as any).business_started_year == null) ? "years" : "started",
+      services_offered: (l as any).services_offered ?? [],
+      plant_types: (l as any).plant_types ?? [],
     });
     const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
     setCustomRowsVisible(populatedCustom);
@@ -490,6 +497,7 @@ const AdminListings = () => {
   const isAccommodationType = categories?.some((c) => selectedCatIds.includes(c.id) && isAccommodationCategory(c.title));
   const isNGOType = categories?.some((c) => selectedCatIds.includes(c.id) && isNGOCategory(c.title));
   const isTradesType = categories?.some((c) => selectedCatIds.includes(c.id) && isTradesCategory(c.title));
+  const isHomeGardenType = categories?.some((c) => selectedCatIds.includes(c.id) && isHomeGardenCategory(c.title));
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
@@ -1085,6 +1093,87 @@ const AdminListings = () => {
                     </div>
                   </div>
                 )}
+
+                {isHomeGardenType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Home & Garden Fields</p>
+
+                    {[
+                      { label: "Services Offered", options: SERVICES_OFFERED_OPTIONS, key: "services_offered" as const },
+                      ...(form.services_offered.includes("Nursery")
+                        ? [{ label: "Plant Types", options: PLANT_TYPES_OPTIONS, key: "plant_types" as const }]
+                        : []),
+                    ].map(({ label, options, key }) => (
+                      <div key={key}>
+                        <Label>{label}</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {options.map((opt) => {
+                            const selected = (form[key] as string[]).includes(opt);
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setForm({ ...form, [key]: selected ? (form[key] as string[]).filter((v) => v !== opt) : [...(form[key] as string[]), opt] })}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {key === "plant_types" && (
+                          <p className="text-[11px] text-muted-foreground mt-1">Only shown because "Nursery" is selected above.</p>
+                        )}
+                      </div>
+                    ))}
+
+                    <div className="space-y-2">
+                      <Label>Tenure</Label>
+                      <div className="flex gap-4 text-sm">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" name="tenure_mode_hg" checked={form.tenure_mode === "started"} onChange={() => setForm({ ...form, tenure_mode: "started" })} />
+                          Year business started
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" name="tenure_mode_hg" checked={form.tenure_mode === "years"} onChange={() => setForm({ ...form, tenure_mode: "years" })} />
+                          Years in business
+                        </label>
+                      </div>
+                      {form.tenure_mode === "started" ? (
+                        <div>
+                          <Input
+                            type="number"
+                            value={form.business_started_year ?? ""}
+                            onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
+                            placeholder="e.g. 2008"
+                          />
+                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <Input
+                            type="number"
+                            value={form.years_in_business ?? ""}
+                            onChange={(e) => setForm({ ...form, years_in_business: e.target.value ? parseInt(e.target.value, 10) : null })}
+                            placeholder="e.g. 15"
+                          />
+                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "X years in business".</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label>Specialities</Label>
+                      <Textarea
+                        value={form.specialities}
+                        onChange={(e) => setForm({ ...form, specialities: e.target.value })}
+                        placeholder="e.g. Permaculture design, indigenous plants, water-wise landscaping"
+                      />
+                    </div>
+                  </div>
+                )}
+
+
 
 
                 <div className="flex gap-2">

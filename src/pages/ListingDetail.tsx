@@ -6,10 +6,10 @@ import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
   Mail, Globe, ArrowUpRight, MapPin, Navigation,
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint,
-  ShoppingBag, CreditCard, Package, Info, Calendar,
+  ShoppingBag, CreditCard, Package, Info, Calendar, Wrench, Leaf,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -248,6 +248,7 @@ const ListingDetail = () => {
   const isListingAccommodation = listingCategories?.some((c) => isAccommodationCategory(c.title)) ?? false;
   const isListingNGO = listingCategories?.some((c) => isNGOCategory(c.title)) ?? false;
   const isListingTrades = listingCategories?.some((c) => isTradesCategory(c.title)) ?? false;
+  const isListingHomeGarden = listingCategories?.some((c) => isHomeGardenCategory(c.title)) ?? false;
   const l = listing as any;
   const galleryImages = (l.gallery_images as string[] | null) || [];
   const openingHours = l.opening_hours as Record<string, string> | null;
@@ -465,6 +466,32 @@ const ListingDetail = () => {
       }
     }
   }
+
+
+  if (isListingHomeGarden) {
+    const services = (l.services_offered as string[] | null) ?? [];
+    const plantTypes = (l.plant_types as string[] | null) ?? [];
+    if (services.length) {
+      sections.push({ key: "hg-services", title: "Services", iconComp: Wrench, fields: services.map((label: string) => ({ label, on: true })) });
+    }
+    if (services.includes("Nursery") && plantTypes.length) {
+      sections.push({ key: "hg-plants", title: "Plant types", iconComp: Leaf, fields: plantTypes.map((label: string) => ({ label, on: true })) });
+    }
+    let tenureLabel: string | null = null;
+    if (l.business_started_year) tenureLabel = `Since ${l.business_started_year}`;
+    else if (l.years_in_business) tenureLabel = `${l.years_in_business} ${l.years_in_business === 1 ? "year" : "years"} in business`;
+    if (tenureLabel) {
+      sections.push({ key: "hg-tenure", title: "In business", iconComp: Calendar, fields: [{ label: tenureLabel, on: true }] });
+    }
+    if (l.specialities && l.specialities.trim()) {
+      const items = l.specialities.split(",").map((s: string) => s.trim()).filter(Boolean);
+      if (items.length) {
+        sections.push({ key: "hg-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
+      }
+    }
+  }
+
+
 
 
   const hasDetails = sections.length > 0;

@@ -1,33 +1,44 @@
 ## Goal
-Add a `years_in_business` alternative to `business_started_year`, with a radio toggle in admin to populate only one, and matching icons on the listing detail page.
+Add a Home & Garden category-specific field layer with 4 new fields, following the existing trades/restaurants/accommodation pattern.
 
-## Database
-Migration: add `years_in_business integer nullable` to `listings`.
+## Database (migration)
+Add to `listings`:
+- `services_offered text[]` (nullable, default `'{}'`)
+- `plant_types text[]` (nullable, default `'{}'`)
+
+Reuse existing columns: `business_started_year`, `years_in_business`, `specialities` (already on the table).
+
+## Shared config (`src/lib/categoryFields.ts`)
+- Add `HOME_GARDEN_ONLY_FIELDS = ["services_offered", "plant_types", "business_started_year", "years_in_business", "specialities"]`
+- Add `HOME_GARDEN_CATEGORY_PATTERN = /home\s*(&|and)?\s*garden/i` and `isHomeGardenCategory()`
+- Extend `getCSVHeadersForCategory` to append `HOME_GARDEN_ONLY_FIELDS` when the category matches.
 
 ## Admin editor (`AdminListings.tsx`)
-Replace the single "Year Business Started" input in the Trades & Services section with:
-- A radio group: ( ) Year business started · ( ) Years in business
-- Default selection inferred from existing data (if `business_started_year` is set → "Year started"; else if `years_in_business` is set → "Years in business"; else "Year started").
-- When "Year started" is active: show number input → writes `business_started_year`, clears `years_in_business` on save.
-- When "Years in business" is active: show number input → writes `years_in_business`, clears `business_started_year` on save.
-- Helper text under each: "Displayed as 'Since YYYY'" / "Displayed as 'X years in business'".
-- Add `years_in_business` to `emptyForm`, the load mapping, the save payload, and `TRADES_ONLY_FIELDS` in `categoryFields.ts`.
+- Add `services_offered`, `plant_types` to `emptyForm`, load mapping, and save payload.
+- Define option lists:
+  - `SERVICES_OFFERED_OPTIONS`: Nursery, Landscaping, Garden maintenance, Irrigation, Tree felling/pruning, Interior design, Upholstery, Equipment rental, Equipment servicing/repairs
+  - `PLANT_TYPES_OPTIONS`: Indigenous, Water-wise, Exotic, Trees, Succulents, Veggies & Herbs, Pot plants
+- Add an `isHomeGardenType` flag mirroring `isTradesType`.
+- Render a new "Home & Garden details" section when `isHomeGardenType`:
+  - Multi-select chips for `services_offered` (same pattern as cuisine/vibe).
+  - Multi-select chips for `plant_types` — **only rendered when `form.services_offered.includes("Nursery")`**; if Nursery is removed, clear `plant_types` to `[]` on save.
+  - Tenure radio (Year started / Years in business) and `specialities` textarea — reuse the existing trades JSX block.
 
 ## Listing detail (`ListingDetail.tsx`)
-In the trades section that currently emits "Since YYYY":
-- Keep `Since YYYY` when `business_started_year` is set.
-- Else if `years_in_business` is set, emit `${n} years in business`.
-- Render this single row with its own dedicated icon to the left (instead of grouping under the generic Service info `Info` icon). Use `Calendar` from lucide-react (calendar matches "since YYYY" and tenure). Keep `After hours available` and `Callout fee` in their existing two-column Service info block.
-
-Implementation: split sections so the tenure row becomes its own section `{ key: "trades-tenure", title: "In business", iconComp: Calendar, fields: [{ label, on: true }] }` — uses the existing tick-icon row renderer.
+- Add `isListingHomeGarden` flag.
+- When true, render new sections (existing icon-row renderer patterns):
+  - **"Services"** — tick row per `services_offered` value (icon: `Wrench`).
+  - **"Plant types"** — only if Nursery is in `services_offered` AND `plant_types.length > 0`; tick rows (icon: `Leaf`).
+  - **Tenure row** — reuse the existing `Calendar` tenure row already used by trades.
+  - **Specialities** — reuse the trades specialities block.
 
 ## Out of scope
-- CSV import column for the new field (admin can edit inline after import); will be auto-included via `TRADES_ONLY_FIELDS`.
-- Showing tenure on landing-page cards.
+- Filtering on the Home & Garden category page.
+- Showing these fields on home/category cards.
 
 ## Steps
-1. Migration: add `years_in_business` column (await approval).
-2. Update `categoryFields.ts` to include the new field.
-3. Update `AdminListings.tsx`: radio toggle + conditional inputs + save logic.
-4. Update `ListingDetail.tsx`: new tenure section with Calendar icon, supporting both fields.
-5. Spot-check in preview on a trades listing.
+1. Migration: add 2 new columns (await approval).
+2. Update `categoryFields.ts`.
+3. Update `AdminListings.tsx` — form state, options, conditional UI, save logic.
+4. Update `ListingDetail.tsx` — new sections gated by `isListingHomeGarden`.
+5. Verify in preview on a Home & Garden listing.
