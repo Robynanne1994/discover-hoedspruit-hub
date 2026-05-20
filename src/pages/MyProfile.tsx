@@ -4,13 +4,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
-import { Pencil, Heart, Settings } from "lucide-react";
+import { Pencil, Heart, SlidersHorizontal, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const PAGE_BG = "#5C6446";
-const CREAM = "#EEE8DA";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
+const PAGE_BG = "#E6E0CC";
+const CARD = "#FFFFFF";
+const INNER = "#EFE7D3";
+const INK = "#1A1A1A";
+const MUTED = "#8A8275";
+const SUBTLE = "rgba(26,26,26,0.55)";
+const LINE = "rgba(26,26,26,0.10)";
 const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
