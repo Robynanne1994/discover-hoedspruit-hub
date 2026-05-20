@@ -64,10 +64,11 @@ const Search = () => {
               }}
               aria-label="Go back"
               style={{
-                background: "none",
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "#FFFFFF",
                 border: "none",
-                padding: 4,
-                margin: -4,
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
@@ -75,7 +76,7 @@ const Search = () => {
                 color: "#0a0a0a",
               }}
             >
-              <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="19" y1="12" x2="5" y2="12" />
                 <polyline points="12 19 5 12 12 5" />
               </svg>
@@ -85,8 +86,8 @@ const Search = () => {
             style={{
               margin: 0,
               fontFamily: FONT,
-              fontWeight: 600,
-              fontSize: 20,
+              fontWeight: 700,
+              fontSize: 19,
               lineHeight: 1,
               letterSpacing: "0.01em",
               color: "#0a0a0a",
@@ -97,7 +98,6 @@ const Search = () => {
           </h1>
           <div />
         </div>
-        <div style={{ height: 1, width: "100%", background: "rgba(10,10,10,0.1)" }} />
       </div>
 
       {/* Top tabs: Users / Businesses */}
