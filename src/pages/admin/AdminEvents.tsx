@@ -310,19 +310,41 @@ const AdminEvents = () => {
                 <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
               </label>
               <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By</Label></div>
-              {[1, 2, 3].map((n) => {
-                const nameKey = (n === 1 ? "hosted_by_name" : `hosted_by_name_${n}`) as keyof typeof form;
-                const subKey = (n === 1 ? "hosted_by_subtitle" : `hosted_by_subtitle_${n}`) as keyof typeof form;
-                const imgKey = (n === 1 ? "hosted_by_image_url" : `hosted_by_image_url_${n}`) as keyof typeof form;
+              {(() => {
+                const initial = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
+                const shown = (form as any).__hostsShown ?? initial;
+                const setShown = (n: number) => setForm({ ...form, __hostsShown: n } as any);
+                if (shown === 0) {
+                  return <Button type="button" variant="outline" onClick={() => setShown(1)}>+ Add Host</Button>;
+                }
                 return (
-                  <div key={n} className="space-y-3 p-3 border rounded">
-                    <Label className="text-sm font-semibold">Host {n}</Label>
-                    <div><Label>Name</Label><Input value={(form[nameKey] as string) || ""} onChange={(e) => setForm({ ...form, [nameKey]: e.target.value })} placeholder="e.g. Kristi & Joëlle" /></div>
-                    <div><Label>Subtitle</Label><Input value={(form[subKey] as string) || ""} onChange={(e) => setForm({ ...form, [subKey]: e.target.value })} placeholder="e.g. Yoga Teachers" /></div>
-                    <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={(form[imgKey] as string) || ""} onChange={(url) => setForm({ ...form, [imgKey]: url })} /></div>
-                  </div>
+                  <>
+                    {[1, 2, 3].slice(0, shown).map((n) => {
+                      const nameKey = (n === 1 ? "hosted_by_name" : `hosted_by_name_${n}`) as keyof typeof form;
+                      const subKey = (n === 1 ? "hosted_by_subtitle" : `hosted_by_subtitle_${n}`) as keyof typeof form;
+                      const imgKey = (n === 1 ? "hosted_by_image_url" : `hosted_by_image_url_${n}`) as keyof typeof form;
+                      return (
+                        <div key={n} className="space-y-3 p-3 border rounded">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-sm font-semibold">Host {n}</Label>
+                            {n === shown && (
+                              <Button type="button" variant="ghost" size="sm" onClick={() => {
+                                setForm({ ...form, [nameKey]: "", [subKey]: "", [imgKey]: "", __hostsShown: shown - 1 } as any);
+                              }}>Remove</Button>
+                            )}
+                          </div>
+                          <div><Label>Name</Label><Input value={(form[nameKey] as string) || ""} onChange={(e) => setForm({ ...form, [nameKey]: e.target.value })} placeholder="e.g. Kristi & Joëlle" /></div>
+                          <div><Label>Subtitle</Label><Input value={(form[subKey] as string) || ""} onChange={(e) => setForm({ ...form, [subKey]: e.target.value })} placeholder="e.g. Yoga Teachers" /></div>
+                          <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={(form[imgKey] as string) || ""} onChange={(url) => setForm({ ...form, [imgKey]: url })} /></div>
+                        </div>
+                      );
+                    })}
+                    {shown < 3 && (
+                      <Button type="button" variant="outline" onClick={() => setShown(shown + 1)}>+ Add Another Host</Button>
+                    )}
+                  </>
                 );
-              })}
+              })()}
               <Button type="submit" className="w-full" disabled={upsert.isPending}>{editing ? "Update" : "Create"}</Button>
             </form>
           </DialogContent>
