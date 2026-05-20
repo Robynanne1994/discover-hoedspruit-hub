@@ -552,7 +552,7 @@ const Events = () => {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              background: "transparent",
+              background: C.white,
               border: "none",
               display: "inline-flex",
               alignItems: "center",
@@ -570,7 +570,7 @@ const Events = () => {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              background: tagFilter ? C.ink : "transparent",
+              background: tagFilter ? C.ink : C.white,
               border: "none",
               display: "inline-flex",
               alignItems: "center",
@@ -581,6 +581,7 @@ const Events = () => {
           >
             <SlidersHorizontal size={20} strokeWidth={2} />
           </button>
+
         </div>
       </div>
 
