@@ -98,6 +98,7 @@ const Search = () => {
           </h1>
           <div />
         </div>
+        <div style={{ height: 1, width: "100%", background: "rgba(10,10,10,0.1)" }} />
       </div>
 
       {/* Top tabs: Users / Businesses */}
