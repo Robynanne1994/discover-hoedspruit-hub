@@ -881,11 +881,16 @@ const ListingDetail = () => {
             </div>
           );
         })()}
-        <h1 style={{
-          margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
-          color: C.heading, letterSpacing: "0.01em",
-        }}>
-          {listing.title}
+        <h1
+          data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
+            color: C.heading, letterSpacing: "0.01em",
+          }}
+        >
+          {(listing as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(listing as any).title_override}</span>
+            : listing.title}
         </h1>
         {listing.location && (
           <div style={{

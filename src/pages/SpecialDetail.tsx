@@ -515,11 +515,16 @@ const SpecialDetail = () => {
             {eyebrowText}
           </div>
         )}
-        <h1 style={{
-          margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
-          color: C.heading, letterSpacing: "0.01em",
-        }}>
-          {special.title}
+        <h1
+          data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
+          style={{
+            margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
+            color: C.heading, letterSpacing: "0.01em",
+          }}
+        >
+          {(special as any).title_override?.trim()
+            ? <span data-no-title-case="true">{(special as any).title_override}</span>
+            : special.title}
         </h1>
         {special.business_name && (
           <div style={{
