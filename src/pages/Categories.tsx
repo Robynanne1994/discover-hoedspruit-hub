@@ -286,8 +286,8 @@ const Categories = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {listing.title}
+                <p {...noTitleCaseProps(listing)} style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {getDisplayTitle(listing)}
                 </p>
                 {listing.location && (
                   <p style={{ display: "flex", alignItems: "center", fontSize: 12, color: COLORS.muted, margin: 0, marginTop: 2, gap: 4 }}>
