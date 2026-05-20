@@ -552,7 +552,7 @@ const Events = () => {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              background: "transparent",
+              background: C.white,
               border: "none",
               display: "inline-flex",
               alignItems: "center",
@@ -570,7 +570,7 @@ const Events = () => {
               width: 36,
               height: 36,
               borderRadius: "50%",
-              background: tagFilter ? C.ink : "transparent",
+              background: tagFilter ? C.ink : C.white,
               border: "none",
               display: "inline-flex",
               alignItems: "center",
@@ -581,11 +581,16 @@ const Events = () => {
           >
             <SlidersHorizontal size={20} strokeWidth={2} />
           </button>
+
         </div>
       </div>
 
+      {/* Divider under title */}
+      <div style={{ height: 1, background: "rgba(2,2,2,0.10)", marginTop: 18, marginLeft: 20, marginRight: 20 }} />
+
       {/* Gap before content */}
       <div style={{ height: 24 }} />
+
 
       {/* Inline search input */}
       {searchOpen && (
