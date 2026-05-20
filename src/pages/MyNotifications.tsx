@@ -252,9 +252,9 @@ export default function MyNotifications() {
             style={{
               width: 40,
               height: 40,
-              borderRadius: 999,
+              borderRadius: "50%",
               background: CARD,
-              border: `1px solid ${HAIRLINE}`,
+              border: "none",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -262,7 +262,7 @@ export default function MyNotifications() {
               padding: 0,
             }}
           >
-            <Settings size={20} strokeWidth={2} color={INK} />
+            <Settings size={18} strokeWidth={1.8} color={INK} />
           </button>
         </div>
       </div>
