@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { format } from "date-fns";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+
 
 interface Special {
   id: string;
@@ -89,8 +91,8 @@ const SpecialsSection = () => {
 
                 {/* Content */}
                 <div style={{ padding: "14px 16px", background: "#ffffff", border: "1px solid rgba(18,18,20,0.06)", borderTop: "none", borderRadius: "0 0 16px 16px" }}>
-                  <div className="font-semibold" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 15, color: "#2b2420", lineHeight: 1.2, marginBottom: 4, letterSpacing: "0.01em", minHeight: "2.4em", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {special.title}
+                  <div {...noTitleCaseProps(special)} className="font-semibold" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 15, color: "#2b2420", lineHeight: 1.2, marginBottom: 4, letterSpacing: "0.01em", minHeight: "2.4em", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                    {getDisplayTitle(special)}
                   </div>
                   <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 12, fontWeight: 400, color: "rgba(18,18,20,0.4)", marginBottom: 8, letterSpacing: "0.01em" }}>
                     {special.business_name}

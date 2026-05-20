@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 import { getEventDates } from "@/lib/eventDates";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const MONTHS_SHORT = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -21,7 +22,7 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, location, date, start_date, end_date, image_url")
+          .select("id, title, title_override, location, date, start_date, end_date, image_url")
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         return ids
@@ -35,7 +36,7 @@ const HomeWhatsOn = () => {
       const todayIso = today.toISOString().slice(0, 10);
       const { data } = await supabase
         .from("events")
-        .select("id, title, location, date, start_date, end_date, image_url")
+        .select("id, title, title_override, location, date, start_date, end_date, image_url")
         .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
@@ -118,6 +119,7 @@ const HomeWhatsOn = () => {
                 )}
                 <div style={{ position: "absolute", left: 14, right: 14, bottom: 14 }}>
                   <div
+                    {...noTitleCaseProps(e)}
                     style={{
                       fontFamily: HN,
                       fontSize: 17,
@@ -126,7 +128,7 @@ const HomeWhatsOn = () => {
                       wordBreak: "break-word",
                     }}
                   >
-                    {e.title}
+                    {getDisplayTitle(e)}
                   </div>
                 </div>
               </Link>
