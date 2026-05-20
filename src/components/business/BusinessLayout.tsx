@@ -99,7 +99,7 @@ const BusinessLayout = ({ businessName, children }: Props) => {
               padding: 0,
             }}
           >
-            <ArrowLeft size={18} strokeWidth={1.6} color={INK} />
+            <ArrowLeft size={18} strokeWidth={2} color={INK} />
           </button>
 
           <h1

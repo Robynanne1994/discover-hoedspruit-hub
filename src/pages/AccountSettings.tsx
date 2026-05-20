@@ -83,7 +83,7 @@ const AccountSettings = () => {
             transition: "transform 150ms ease-out",
           }}
         >
-          <ArrowLeft size={18} strokeWidth={1.6} color={COLORS.ink} />
+          <ArrowLeft size={18} strokeWidth={2} color={COLORS.ink} />
         </button>
         <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 20, color: COLORS.cream, letterSpacing: "0.01em" }}>
           Settings
