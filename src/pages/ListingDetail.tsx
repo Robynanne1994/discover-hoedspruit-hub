@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -68,6 +68,8 @@ type TabKey = "about" | "details" | "specials" | "events" | "gallery" | "locatio
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromCategory = (location.state as { fromCategory?: string } | null)?.fromCategory;
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const [tab, setTab] = useState<TabKey>("about");
@@ -849,15 +851,36 @@ const ListingDetail = () => {
 
       {/* Title block */}
       <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {firstCategory && (
-          <div style={{
-            marginBottom: 8,
-            fontSize: 11, color: C.muted,
-            letterSpacing: "0.12em", textTransform: "uppercase",
-          }}>
-            {firstCategory.title}
-          </div>
-        )}
+        {listingCategories && listingCategories.length > 0 && (() => {
+          const ordered = fromCategory
+            ? [
+                ...listingCategories.filter((c) => c.title === fromCategory),
+                ...listingCategories.filter((c) => c.title !== fromCategory),
+              ]
+            : listingCategories;
+          const titles = ordered.map((c) => c.title);
+          if (titles.length === 0) return null;
+          return (
+            <div style={{
+              marginBottom: 8,
+              fontSize: 11, color: C.muted,
+              letterSpacing: "0.12em", textTransform: "uppercase",
+              display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8,
+            }}>
+              {titles.map((t, i) => (
+                <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                  {i > 0 && (
+                    <span aria-hidden style={{
+                      width: 3, height: 3, borderRadius: "50%",
+                      background: C.muted, display: "inline-block", opacity: 0.6,
+                    }} />
+                  )}
+                  <span>{t}</span>
+                </span>
+              ))}
+            </div>
+          );
+        })()}
         <h1 style={{
           margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
           color: C.heading, letterSpacing: "0.01em",
