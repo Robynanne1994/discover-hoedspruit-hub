@@ -585,8 +585,12 @@ const Events = () => {
         </div>
       </div>
 
+      {/* Divider under title */}
+      <div style={{ height: 1, background: "rgba(2,2,2,0.10)", marginTop: 18, marginLeft: 20, marginRight: 20 }} />
+
       {/* Gap before content */}
       <div style={{ height: 24 }} />
+
 
       {/* Inline search input */}
       {searchOpen && (
