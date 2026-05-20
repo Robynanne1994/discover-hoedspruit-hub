@@ -6,7 +6,7 @@ import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
   Mail, Globe, ArrowUpRight, MapPin, Navigation,
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint,
-  ShoppingBag, CreditCard, Package, Info,
+  ShoppingBag, CreditCard, Package, Info, Calendar,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory } from "@/lib/categoryFields";
