@@ -1031,6 +1031,35 @@ const AdminListings = () => {
                   </div>
                 )}
 
+                {isTradesType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Trades & Services Fields</p>
+                    <div>
+                      <Label>Year Business Started</Label>
+                      <Input
+                        type="number"
+                        value={form.business_started_year ?? ""}
+                        onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 2008"
+                      />
+                      <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
+                    </div>
+                    <div className="space-y-3">
+                      <TriStateToggle label="After Hours Available" value={form.after_hours_available} onChange={(v) => setForm({ ...form, after_hours_available: v })} />
+                      <TriStateToggle label="Callout Fee" value={form.callout_fee} onChange={(v) => setForm({ ...form, callout_fee: v })} />
+                    </div>
+                    <div>
+                      <Label>Specialities</Label>
+                      <Textarea
+                        value={form.specialities}
+                        onChange={(e) => setForm({ ...form, specialities: e.target.value })}
+                        placeholder="e.g. Solar installs, certified wireman, game fencing"
+                      />
+                    </div>
+                  </div>
+                )}
+
+
                 <div className="flex gap-2">
                   {editing && (
                     <Button
