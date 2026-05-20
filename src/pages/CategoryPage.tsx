@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { SlidersHorizontal, MapPin, Search, Heart } from "lucide-react";
+import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -550,35 +551,13 @@ const CategoryPage = () => {
 
       {searchOpen && (
         <div style={{ padding: "16px 20px 0 20px" }}>
-          <div
-            style={{
-              height: 44,
-              background: "#FFFFFF",
-              borderRadius: 9999,
-              padding: "0 18px",
-              display: "flex",
-              alignItems: "center",
-              gap: 10,
-            }}
-          >
-            <Search size={16} strokeWidth={1.8} color={INK} style={{ flexShrink: 0 }} />
-            <input
-              autoFocus
-              type="text"
-              placeholder={`Search ${displayTitle}`}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              style={{
-                flex: 1,
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                fontFamily: sans,
-                fontSize: 14,
-                color: INK,
-              }}
-            />
-          </div>
+          <SearchBar
+            variant="light"
+            value={search}
+            onChange={setSearch}
+            placeholder={`Search ${displayTitle}`}
+            autoFocus
+          />
         </div>
       )}
 

@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X } from "lucide-react";
+import SearchBar from "@/components/ui/SearchBar";
 import { supabase } from "@/integrations/supabase/client";
 import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -597,24 +598,12 @@ const Events = () => {
       {/* Inline search input */}
       {searchOpen && (
         <div style={{ padding: "0 20px 12px 20px" }}>
-          <input
-            autoFocus
-            type="text"
-            placeholder="Search local happenings"
+          <SearchBar
+            variant="light"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%",
-              height: 40,
-              borderRadius: 999,
-              border: "1px solid rgba(2,2,2,0.12)",
-              padding: "0 16px",
-              fontFamily: SANS,
-              fontSize: 14,
-              color: C.ink,
-              background: "transparent",
-              outline: "none",
-            }}
+            onChange={setSearch}
+            placeholder="Search local happenings"
+            autoFocus
           />
         </div>
       )}

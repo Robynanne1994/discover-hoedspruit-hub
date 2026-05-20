@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Star, ArrowLeft, Search } from "lucide-react";
+import SearchBar from "@/components/ui/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
@@ -122,32 +123,12 @@ const VisitedPlaces = () => {
 
       {/* Search */}
       <div style={{ marginTop: 24, paddingLeft: 24, paddingRight: 24 }}>
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          background: "rgba(18,18,20,0.04)",
-          border: "1px solid rgba(18,18,20,0.08)",
-          borderRadius: 16,
-          padding: "14px 16px",
-          gap: 10,
-        }}>
-          <Search size={18} strokeWidth={2} color="rgba(18,18,20,0.3)" />
-          <input
-            type="text"
-            placeholder="Search visited listings..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              flex: 1,
-              background: "none",
-              border: "none",
-              outline: "none",
-              fontSize: 14,
-              color: "#2b2420",
-              letterSpacing: 0.2,
-            }}
-          />
-        </div>
+        <SearchBar
+          variant="light"
+          value={search}
+          onChange={setSearch}
+          placeholder="Search visited listings..."
+        />
       </div>
 
       {/* Content */}
