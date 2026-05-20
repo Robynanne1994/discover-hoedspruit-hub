@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 interface Special {
   id: string;
   title: string;
+  title_override: string | null;
   description: string | null;
   business_name: string;
   business_id: string | null;
@@ -39,6 +40,7 @@ interface Special {
 
 const emptyForm: Omit<Special, "id"> = {
   title: "",
+  title_override: null,
   description: "",
   business_name: "",
   business_id: null,
@@ -152,6 +154,7 @@ const AdminSpecials = () => {
     setCreating(true);
     setForm({
       title: s.title,
+      title_override: (s as any).title_override ?? null,
       description: s.description,
       business_name: s.business_name,
       business_id: s.business_id,
