@@ -464,7 +464,9 @@ const ListingDetail = () => {
       if (items.length) {
         sections.push({ key: "trades-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
       }
+    }
   }
+
 
   if (isListingHomeGarden) {
     const services = (l.services_offered as string[] | null) ?? [];
