@@ -314,7 +314,7 @@ const AdminEvents = () => {
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
                 </select>
               </div>
-              <div className="space-y-2"><Label>Card Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={16/9} /></div>
+              <div className="space-y-2"><Label>Card Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={4/3} /></div>
               <div className="space-y-2"><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={(form as any).detail_image_url || ""} onChange={(v) => setForm({ ...form, detail_image_url: v } as any)} aspect={4/3} /></div>
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
