@@ -350,7 +350,7 @@ const SavedListings = () => {
             cursor: "pointer",
           }}
         >
-          <ArrowLeft style={{ width: 18, height: 18, strokeWidth: 1.6, color: INK }} />
+          <ArrowLeft size={18} strokeWidth={2} color={INK} />
         </button>
       </div>
       {children}
