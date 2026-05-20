@@ -1094,6 +1094,87 @@ const AdminListings = () => {
                   </div>
                 )}
 
+                {isHomeGardenType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Home & Garden Fields</p>
+
+                    {[
+                      { label: "Services Offered", options: SERVICES_OFFERED_OPTIONS, key: "services_offered" as const },
+                      ...(form.services_offered.includes("Nursery")
+                        ? [{ label: "Plant Types", options: PLANT_TYPES_OPTIONS, key: "plant_types" as const }]
+                        : []),
+                    ].map(({ label, options, key }) => (
+                      <div key={key}>
+                        <Label>{label}</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {options.map((opt) => {
+                            const selected = (form[key] as string[]).includes(opt);
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setForm({ ...form, [key]: selected ? (form[key] as string[]).filter((v) => v !== opt) : [...(form[key] as string[]), opt] })}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        {key === "plant_types" && (
+                          <p className="text-[11px] text-muted-foreground mt-1">Only shown because "Nursery" is selected above.</p>
+                        )}
+                      </div>
+                    ))}
+
+                    <div className="space-y-2">
+                      <Label>Tenure</Label>
+                      <div className="flex gap-4 text-sm">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" name="tenure_mode_hg" checked={form.tenure_mode === "started"} onChange={() => setForm({ ...form, tenure_mode: "started" })} />
+                          Year business started
+                        </label>
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input type="radio" name="tenure_mode_hg" checked={form.tenure_mode === "years"} onChange={() => setForm({ ...form, tenure_mode: "years" })} />
+                          Years in business
+                        </label>
+                      </div>
+                      {form.tenure_mode === "started" ? (
+                        <div>
+                          <Input
+                            type="number"
+                            value={form.business_started_year ?? ""}
+                            onChange={(e) => setForm({ ...form, business_started_year: e.target.value ? parseInt(e.target.value, 10) : null })}
+                            placeholder="e.g. 2008"
+                          />
+                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "Since YYYY".</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <Input
+                            type="number"
+                            value={form.years_in_business ?? ""}
+                            onChange={(e) => setForm({ ...form, years_in_business: e.target.value ? parseInt(e.target.value, 10) : null })}
+                            placeholder="e.g. 15"
+                          />
+                          <p className="text-[11px] text-muted-foreground mt-1">Displayed on the front end as "X years in business".</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      <Label>Specialities</Label>
+                      <Textarea
+                        value={form.specialities}
+                        onChange={(e) => setForm({ ...form, specialities: e.target.value })}
+                        placeholder="e.g. Permaculture design, indigenous plants, water-wise landscaping"
+                      />
+                    </div>
+                  </div>
+                )}
+
+
+
 
                 <div className="flex gap-2">
                   {editing && (
