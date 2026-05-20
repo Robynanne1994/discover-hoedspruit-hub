@@ -1233,7 +1233,7 @@ const AdminListings = () => {
           <table className="w-full text-sm min-w-[640px]">
             <thead className="bg-muted">
               <tr>
-                <th className="p-3 w-[40px]">
+                <th className="p-3 w-[40px] bg-slate-400 text-slate-950 border-slate-950 border">
                   <Checkbox
                     checked={filteredListings.length > 0 && filteredListings.every((l) => selectedIds.has(l.id))}
                     onCheckedChange={(v) => {
@@ -1249,7 +1249,7 @@ const AdminListings = () => {
                 <th className="text-left p-3 font-medium text-muted-foreground w-[25%] bg-slate-400 text-slate-950 border-slate-950 border">Categories</th>
                 <th className="text-left p-3 font-medium text-muted-foreground w-[18%] bg-slate-400 text-slate-950 border-slate-950 border">Location</th>
                 <th className="text-left p-3 font-medium text-muted-foreground w-[8%] bg-slate-400 text-slate-950 border-slate-950 border">Featured</th>
-                <th className="p-3 w-[12%]"></th>
+                <th className="p-3 w-[12%] border border-slate-950 bg-slate-400 text-slate-950"></th>
               </tr>
             </thead>
             <tbody>
