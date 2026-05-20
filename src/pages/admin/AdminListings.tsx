@@ -506,7 +506,7 @@ const AdminListings = () => {
   });
 
   return (
-    <div className="font-medium">
+    <div className="font-normal">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Listings</h1>
         <div className="flex flex-wrap gap-2">
