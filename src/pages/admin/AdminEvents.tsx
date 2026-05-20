@@ -260,7 +260,7 @@ const AdminEvents = () => {
               <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Start Date</Label><Input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} /></div>
-                <div><Label>End Date <span className="text-xs text-muted-foreground">(same as start for 1-day)</span></Label><Input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} /></div>
+                <div><Label>End Date</Label><Input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} /></div>
               </div>
               <div><Label>Date Text <span className="text-xs text-muted-foreground">(optional fallback for recurring like "Every Saturday")</span></Label><Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} placeholder="Optional — leave blank to use start/end dates" /></div>
               <div><Label>Location <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
