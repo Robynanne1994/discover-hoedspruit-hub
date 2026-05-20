@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Search, ChevronDown } from "lucide-react";
+import SearchBar from "@/components/ui/SearchBar";
 import BottomNav from "@/components/BottomNav";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -211,35 +212,12 @@ const FAQs = () => {
 
       {/* Search */}
       <div style={{ padding: "20px 20px 0" }}>
-        <div
-          style={{
-            height: 48,
-            background: CARD,
-            borderRadius: 14,
-            padding: "0 18px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-          }}
-        >
-          <Search size={18} strokeWidth={1.8} color={MUTED} style={{ flexShrink: 0 }} />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search FAQs"
-            style={{
-              flex: 1,
-              background: "transparent",
-              border: "none",
-              outline: "none",
-              fontFamily: FF,
-              fontSize: 14.5,
-              color: INK,
-            }}
-          />
-        </div>
+        <SearchBar
+          variant="light"
+          value={query}
+          onChange={setQuery}
+          placeholder="Search FAQs"
+        />
       </div>
 
       {/* Sections */}

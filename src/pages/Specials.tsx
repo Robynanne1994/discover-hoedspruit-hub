@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, SlidersHorizontal, X, Store, Clock } from "lucide-react";
+import SearchBar from "@/components/ui/SearchBar";
 import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
@@ -234,24 +235,12 @@ const Specials = () => {
       {/* Inline search input */}
       {searchOpen && (
         <div style={{ padding: "16px 20px 0 20px" }}>
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Search any local deals"
+          <SearchBar
+            variant="light"
+            inputRef={searchInputRef}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%",
-              height: 44,
-              borderRadius: 999,
-              border: `1px solid ${COLOR.pillBorder}`,
-              padding: "0 18px",
-              fontFamily: SANS,
-              fontSize: 14,
-              color: COLOR.ink,
-              background: COLOR.cardBg,
-              outline: "none",
-            }}
+            onChange={setSearch}
+            placeholder="Search any local deals"
           />
         </div>
       )}

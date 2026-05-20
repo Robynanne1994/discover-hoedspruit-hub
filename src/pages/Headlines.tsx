@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Search } from "lucide-react";
+import SearchBar from "@/components/ui/SearchBar";
 import { format } from "date-fns";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
@@ -121,23 +122,12 @@ const Headlines = () => {
 
       {/* Search */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 22 }}>
-        <div style={{
-          display: "flex", alignItems: "center", gap: 12,
-          background: "rgba(238, 232, 218, 0.92)",
-          borderRadius: 999, height: 52, padding: "0 22px",
-        }}>
-          <Search size={18} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search articles"
-            className="lld-input"
-            style={{
-              border: "none", outline: "none", background: "transparent",
-              fontFamily: SANS, fontSize: 14, color: INK, width: "100%",
-            }}
-          />
-        </div>
+        <SearchBar
+          variant="cream"
+          value={search}
+          onChange={setSearch}
+          placeholder="Search articles"
+        />
       </div>
 
       {/* Category pills */}

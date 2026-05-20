@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Search, ArrowLeft } from "lucide-react";
+import SearchBar from "@/components/ui/SearchBar";
 import { format, parseISO, isFuture, isPast, differenceInDays } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
@@ -1258,33 +1259,12 @@ const SavedListings = () => {
 
       {/* Search */}
       <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 22 }}>
-        <div
-          className="flex items-center"
-          style={{
-            background: CREAM_92,
-            borderRadius: 999,
-            height: 52,
-            padding: "0 22px",
-            gap: 12,
-          }}
-        >
-          <Search
-            style={{ width: 18, height: 18, strokeWidth: 1.6, color: MUTED, flexShrink: 0 }}
-          />
-          <input
-            type="text"
-            placeholder={searchPlaceholder}
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent outline-none"
-            style={{
-              fontFamily: SANS,
-              fontSize: 15,
-              fontWeight: 400,
-              color: INK,
-            }}
-          />
-        </div>
+        <SearchBar
+          variant="cream"
+          value={search}
+          onChange={setSearch}
+          placeholder={searchPlaceholder}
+        />
       </div>
 
       {/* Master tabs */}
