@@ -146,6 +146,7 @@ const AdminEvents = () => {
         sub_tag_1: values.sub_tag_1 || null,
         sub_tag_2: values.sub_tag_2 || null,
         image_url: values.image_url || null,
+        detail_image_url: (values as any).detail_image_url || null,
         start_time: values.start_time || null,
         end_time: values.end_time || null,
         recurrence: values.recurrence || null,
