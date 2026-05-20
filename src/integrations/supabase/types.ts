@@ -944,6 +944,7 @@ export type Database = {
           wheelchair_friendly: boolean | null
           wheelchair_seating: boolean | null
           wheelchair_toilet: boolean | null
+          years_in_business: number | null
         }
         Insert: {
           additional_emails?: string[]
@@ -1042,6 +1043,7 @@ export type Database = {
           wheelchair_friendly?: boolean | null
           wheelchair_seating?: boolean | null
           wheelchair_toilet?: boolean | null
+          years_in_business?: number | null
         }
         Update: {
           additional_emails?: string[]
@@ -1140,6 +1142,7 @@ export type Database = {
           wheelchair_friendly?: boolean | null
           wheelchair_seating?: boolean | null
           wheelchair_toilet?: boolean | null
+          years_in_business?: number | null
         }
         Relationships: [
           {

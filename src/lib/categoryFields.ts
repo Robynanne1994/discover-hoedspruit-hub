@@ -36,7 +36,7 @@ export const NGO_ONLY_FIELDS = [
 ] as const;
 
 export const TRADES_ONLY_FIELDS = [
-  "business_started_year", "after_hours_available", "callout_fee", "specialities"
+  "business_started_year", "years_in_business", "after_hours_available", "callout_fee", "specialities"
 ] as const;
 
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;

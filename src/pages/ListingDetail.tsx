@@ -6,7 +6,7 @@ import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
   Mail, Globe, ArrowUpRight, MapPin, Navigation,
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint,
-  ShoppingBag, CreditCard, Package, Info,
+  ShoppingBag, CreditCard, Package, Info, Calendar,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory } from "@/lib/categoryFields";
@@ -442,8 +442,13 @@ const ListingDetail = () => {
   }
 
   if (isListingTrades) {
+    let tenureLabel: string | null = null;
+    if (l.business_started_year) tenureLabel = `Since ${l.business_started_year}`;
+    else if (l.years_in_business) tenureLabel = `${l.years_in_business} ${l.years_in_business === 1 ? "year" : "years"} in business`;
+    if (tenureLabel) {
+      sections.push({ key: "trades-tenure", title: "In business", iconComp: Calendar, fields: [{ label: tenureLabel, on: true }] });
+    }
     const tradesFields: Array<{ label: string; on: any }> = [];
-    if (l.business_started_year) tradesFields.push({ label: `Since ${l.business_started_year}`, on: "__text__" });
     if (typeof l.after_hours_available === "boolean") tradesFields.push({ label: "After hours available", on: l.after_hours_available });
     if (typeof l.callout_fee === "boolean") tradesFields.push({ label: "Callout fee", on: l.callout_fee });
     if (tradesFields.length) sections.push({ key: "trades-service", title: "Service info", iconComp: Info, fields: tradesFields });
