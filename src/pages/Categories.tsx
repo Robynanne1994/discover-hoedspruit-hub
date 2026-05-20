@@ -94,14 +94,14 @@ const Categories = () => {
       const escaped = debouncedSearch.replace(/[%,]/g, " ");
       const titleQ = supabase
         .from("listings")
-        .select("id, title, image_url, location, category_id")
+        .select("id, title, title_override, image_url, location, category_id")
         .ilike("title", `%${escaped}%`)
         .limit(20);
 
       const catDirectQ = matchingCategoryIds.length
         ? supabase
             .from("listings")
-            .select("id, title, image_url, location, category_id")
+            .select("id, title, title_override, image_url, location, category_id")
             .in("category_id", matchingCategoryIds)
             .limit(50)
         : null;
@@ -126,7 +126,7 @@ const Categories = () => {
       if (missingIds.length) {
         const { data: extra } = await supabase
           .from("listings")
-          .select("id, title, image_url, location, category_id")
+          .select("id, title, title_override, image_url, location, category_id")
           .in("id", missingIds);
         (extra || []).forEach((l) => map.set(l.id, l));
       }

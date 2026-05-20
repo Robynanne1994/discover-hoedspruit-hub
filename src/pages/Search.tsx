@@ -598,7 +598,7 @@ const ListingsResults = ({ query }: { query: string }) => {
     queryFn: async () => {
       let q = supabase
         .from("listings")
-        .select("id, title, location, image_url, is_featured")
+        .select("id, title, title_override, location, image_url, is_featured")
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
         .limit(50);
@@ -618,6 +618,7 @@ const ListingsResults = ({ query }: { query: string }) => {
           to={`/listing/${l.id}`}
           image={l.image_url}
           title={l.title}
+          titleOverride={(l as any).title_override}
           subtitle={l.location}
           action={<InlineSaveButton itemId={l.id} itemType="listing" />}
         />
@@ -636,7 +637,7 @@ const EventsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("events")
-        .select("id, title, location, image_url, date, start_date")
+        .select("id, title, title_override, location, image_url, date, start_date")
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(50);
       if (term) q = q.ilike("title", `%${term}%`);
@@ -655,6 +656,7 @@ const EventsResults = ({ query }: { query: string }) => {
           to={`/events/${e.id}`}
           image={e.image_url}
           title={e.title}
+          titleOverride={(e as any).title_override}
           subtitle={[e.date, e.location].filter(Boolean).join(" · ")}
           action={<InlineSaveButton itemId={e.id} itemType="event" />}
         />
@@ -673,7 +675,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
       const today = new Date().toISOString().slice(0, 10);
       let q = supabase
         .from("specials")
-        .select("id, title, business_name, image_url, deal_label, valid_until")
+        .select("id, title, title_override, business_name, image_url, deal_label, valid_until")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("sort_order", { ascending: true })
@@ -694,6 +696,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
           to={`/specials/${s.id}`}
           image={s.image_url}
           title={s.title}
+          titleOverride={(s as any).title_override}
           subtitle={[s.deal_label, s.business_name].filter(Boolean).join(" · ")}
           action={<InlineSaveButton itemId={s.id} itemType="special" />}
         />
