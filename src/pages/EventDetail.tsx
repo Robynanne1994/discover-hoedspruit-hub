@@ -483,55 +483,66 @@ const EventDetail = () => {
     </div>
   );
 
-  const renderLocation = () => (
-    <div style={{ padding: 20 }}>
-      <h2 style={headStyle}>Location</h2>
-      <div style={{ background: C.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}` }}>
-        <div style={{ position: "relative", height: 200, background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)" }}>
-          {mapCoords && (() => {
-            const d = 0.006;
-            const bbox = `${mapCoords.lon - d}%2C${mapCoords.lat - d}%2C${mapCoords.lon + d}%2C${mapCoords.lat + d}`;
-            return (
-              <iframe
-                title="Map"
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lon}`}
-                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            );
-          })()}
-          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)", pointerEvents: "none" }}>
-            <div style={{ width: 16, height: 16, background: C.primary, borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)", boxShadow: "0 4px 8px rgba(0,0,0,0.25)" }} />
-          </div>
+  const renderLocation = () => {
+    const isSurrounds = (event.location || "").trim().toLowerCase() === "hoedspruit & surrounds";
+    return (
+      <div style={{ padding: 20 }}>
+        <h2 style={headStyle}>Location</h2>
+        <div style={{ background: C.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}` }}>
+          {isSurrounds ? (
+            <div style={{ padding: "32px 20px", textAlign: "center", fontFamily: FONT, fontSize: 14, color: C.heading }}>
+              Hoedspruit &amp; Surrounds
+            </div>
+          ) : (
+            <>
+              <div style={{ position: "relative", height: 200, background: "linear-gradient(135deg, #DDD6C0 0%, #C9C1A8 100%)" }}>
+                {mapCoords && (() => {
+                  const d = 0.006;
+                  const bbox = `${mapCoords.lon - d}%2C${mapCoords.lat - d}%2C${mapCoords.lon + d}%2C${mapCoords.lat + d}`;
+                  return (
+                    <iframe
+                      title="Map"
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${mapCoords.lat}%2C${mapCoords.lon}`}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  );
+                })()}
+                <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -100%)", pointerEvents: "none" }}>
+                  <div style={{ width: 16, height: 16, background: C.primary, borderRadius: "50% 50% 50% 0", transform: "rotate(-45deg)", boxShadow: "0 4px 8px rgba(0,0,0,0.25)" }} />
+                </div>
+              </div>
+              {event.location && (
+                <div style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
+                  <MapPin size={18} color={C.primary} style={{ flexShrink: 0, marginTop: 2 }} />
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, color: C.heading }}>{event.location}</div>
+                </div>
+              )}
+            </>
+          )}
         </div>
-        {event.location && (
-          <div style={{ padding: 16, display: "flex", alignItems: "flex-start", gap: 10 }}>
-            <MapPin size={18} color={C.primary} style={{ flexShrink: 0, marginTop: 2 }} />
-            <div style={{ flex: 1, minWidth: 0, fontSize: 14, color: C.heading }}>{event.location}</div>
-          </div>
+        {!isSurrounds && directionsHref && (
+          <a
+            href={directionsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              background: C.primary, color: "#fff",
+              padding: "14px 20px", borderRadius: 999,
+              textDecoration: "none", fontFamily: FONT, fontSize: 14, fontWeight: 400,
+              letterSpacing: "0.02em",
+            }}
+            {...pressScale()}
+          >
+            <Navigation size={16} />
+            <span>Get Directions</span>
+          </a>
         )}
       </div>
-      {directionsHref && (
-        <a
-          href={directionsHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-            background: C.primary, color: "#fff",
-            padding: "14px 20px", borderRadius: 999,
-            textDecoration: "none", fontFamily: FONT, fontSize: 14, fontWeight: 400,
-            letterSpacing: "0.02em",
-          }}
-          {...pressScale()}
-        >
-          <Navigation size={16} />
-          <span>Get Directions</span>
-        </a>
-      )}
-    </div>
-  );
+    );
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
