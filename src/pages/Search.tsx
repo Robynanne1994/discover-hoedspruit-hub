@@ -393,7 +393,8 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square"
     </div>
     {action && <div style={{ flexShrink: 0 }}>{action}</div>}
   </Link>
-);
+  );
+};
 
 /* -------------------- Outline buttons -------------------- */
 
