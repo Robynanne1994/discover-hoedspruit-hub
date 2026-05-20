@@ -1,35 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, MessageCircle, Mail } from "lucide-react";
+import { ArrowLeft, Search, ChevronDown } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 
-const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
+const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const OLIVE = "#5C6446";
-const CREAM = "#EEE8DA";
-const DEEP_INK = "#2A2A24";
-const MUTED_INK = "#6B6A5E";
-const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
-const DEEP_RUST = "#7E4530";
-
-const BLOB_1 = "50% 45% 55% 50% / 55% 50% 60% 45%";
-const BLOB_2 = "55% 45% 50% 55% / 50% 60% 45% 55%";
-
-const press = (e: React.PointerEvent<HTMLElement>) => {
-  e.currentTarget.style.transform = "scale(0.98)";
-};
-const release = (e: React.PointerEvent<HTMLElement>) => {
-  e.currentTarget.style.transform = "scale(1)";
-};
-
-const BackArrow = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={DEEP_INK} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <line x1="19" y1="12" x2="5" y2="12" />
-    <polyline points="12 19 5 12 12 5" />
-  </svg>
-);
+const PAGE_BG = "#ECE3CF";
+const CARD = "#FFFFFF";
+const INK = "#1A1A1A";
+const BODY = "#5C544A";
+const MUTED = "#9C9387";
+const LINE = "#EAE4D5";
+const ROW_LINE = "#EFE9DA";
 
 type FAQ = { q: string; a: string };
 type Section = { title: string; items: FAQ[] };
@@ -48,13 +30,13 @@ const SECTIONS: Section[] = [
     items: [
       { q: "How do I find a specific business?", a: "Use the search bar on the home screen, or browse by category. You can also filter by area, amenities, and other details on each category page." },
       { q: "Can I save listings to view later?", a: "Yes. Tap the heart icon on any listing to save it to your favourites, and organise them into custom collections from your account." },
-      
       { q: "How do I find events in Hoedspruit?", a: "Open the Events tab to see what's on, browse by date in the calendar view, or save events you're interested in to your saved page." },
     ],
   },
   {
     title: "Listings & Information",
     items: [
+      { q: "How do I list my business?", a: "Head to the Advertise page and send us an enquiry, or email hello@hellohoedspruit.com. Standard listings are free." },
       { q: "How are businesses chosen for listing?", a: "We aim to feature every legitimate business in and around Hoedspruit. Listings are added by our team and verified with the business owner where possible." },
       { q: "Is the information accurate?", a: "We work hard to keep details current, but opening hours, prices, and offerings can change. Always check directly with the business for time-sensitive plans." },
       { q: "Why are some listings missing details?", a: "Some businesses haven't shared all their information yet. If you spot something missing or incorrect, you can suggest an edit from the listing page." },
@@ -63,7 +45,6 @@ const SECTIONS: Section[] = [
   {
     title: "For Business Owners",
     items: [
-      { q: "How do I get my business listed?", a: "Head to the Advertise page and send us an enquiry, or email hello@hellohoedspruit.com. Standard listings are free." },
       { q: "Can I update my listing details?", a: "Yes. Claim your listing from the business portal, or send us your updates and we'll handle them for you." },
       { q: "Can I be featured or advertise?", a: "Yes. We offer featured placement, sponsored content, and event promotion. See the Advertise page for details." },
     ],
@@ -85,55 +66,76 @@ const SECTIONS: Section[] = [
   },
 ];
 
-const Eyebrow = ({ children, opacity = 0.7, size = 11 }: { children: React.ReactNode; opacity?: number; size?: number }) => (
-  <div style={{ fontFamily: SANS, fontSize: size, fontWeight: 400, letterSpacing: "2.4px", textTransform: "uppercase", color: `rgba(238,232,218,${opacity})` }}>
-    {children}
-  </div>
-);
-
-const FAQRow = ({ item, isFirst, open, onToggle }: { item: FAQ; isFirst: boolean; open: boolean; onToggle: () => void }) => (
-  <div style={{ borderTop: isFirst ? "none" : `1px solid ${LINE}` }}>
+const FAQRow = ({
+  item,
+  isFirst,
+  open,
+  onToggle,
+}: {
+  item: FAQ;
+  isFirst: boolean;
+  open: boolean;
+  onToggle: () => void;
+}) => (
+  <div style={{ borderTop: isFirst ? "none" : `1px solid ${ROW_LINE}` }}>
     <button
       onClick={onToggle}
       style={{
         width: "100%",
         display: "flex",
         alignItems: "center",
-        gap: 14,
+        gap: 12,
         background: "none",
         border: "none",
-        padding: "18px 0",
+        padding: "16px 0",
         cursor: "pointer",
         textAlign: "left",
-        fontFamily: SANS,
+        fontFamily: FF,
       }}
     >
-      <span style={{ flex: 1, fontSize: 15.5, fontWeight: 400, lineHeight: 1.3, letterSpacing: "-0.1px", color: DEEP_INK }}>
+      <span
+        style={{
+          flex: 1,
+          fontSize: 14.5,
+          fontWeight: open ? 600 : 500,
+          lineHeight: 1.35,
+          letterSpacing: "-0.1px",
+          color: INK,
+        }}
+      >
         {item.q}
       </span>
       <span
         aria-hidden
         style={{
-          width: 30,
-          height: 30,
+          width: 28,
+          height: 28,
           borderRadius: "50%",
-          background: "rgba(106,106,94,0.1)",
+          background: "#F1ECDD",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexShrink: 0,
           transform: open ? "rotate(180deg)" : "rotate(0deg)",
           transition: "transform 200ms ease-out",
-          fontSize: 12,
-          color: DEEP_INK,
-          lineHeight: 1,
+          color: INK,
         }}
       >
-        ▾
+        <ChevronDown size={14} strokeWidth={2} />
       </span>
     </button>
     {open && (
-      <div style={{ fontSize: 14.5, fontFamily: SANS, fontWeight: 400, lineHeight: 1.55, color: "rgba(42,42,36,0.8)", paddingTop: 4, paddingBottom: 16 }}>
+      <div
+        style={{
+          fontSize: 14,
+          fontFamily: FF,
+          fontWeight: 400,
+          lineHeight: 1.55,
+          color: BODY,
+          paddingBottom: 18,
+          paddingRight: 8,
+        }}
+      >
         {item.a}
       </div>
     )}
@@ -143,17 +145,7 @@ const FAQRow = ({ item, isFirst, open, onToggle }: { item: FAQ; isFirst: boolean
 const FAQs = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [openKey, setOpenKey] = useState<string | null>(null);
-
-  useEffect(() => {
-    const id = "playfair-faqs-font";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-    document.head.appendChild(link);
-  }, []);
+  const [openKey, setOpenKey] = useState<string | null>(`${SECTIONS[0].title}-${SECTIONS[0].items[0].q}`);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -164,14 +156,27 @@ const FAQs = () => {
   }, [query]);
 
   return (
-    <div style={{ minHeight: "100vh", background: OLIVE, fontFamily: SANS, color: CREAM, paddingBottom: 140 }}>
+    <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: 120 }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 60, paddingLeft: 24, paddingRight: 24, display: "flex", alignItems: "center", gap: 12, minHeight: 44 }}>
+      <div
+        style={{
+          paddingTop: 60,
+          paddingLeft: 20,
+          paddingRight: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          minHeight: 44,
+        }}
+      >
         <button
           onClick={() => navigate(-1)}
           aria-label="Back"
           style={{
-            background: "transparent",
+            width: 40,
+            height: 40,
+            borderRadius: 999,
+            background: CARD,
             border: "none",
             padding: 0,
             margin: 0,
@@ -179,64 +184,91 @@ const FAQs = () => {
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            lineHeight: 0,
             flexShrink: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
           }}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={CREAM} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-            <line x1="19" y1="12" x2="5" y2="12" />
-            <polyline points="12 19 5 12 12 5" />
-          </svg>
+          <ArrowLeft size={20} strokeWidth={2} color={INK} />
         </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 22, fontFamily: SANS, fontWeight: 600, fontSize: 20, color: CREAM, lineHeight: 1 }}>
+        <div
+          style={{
+            flex: 1,
+            textAlign: "center",
+            marginRight: 40,
+            fontFamily: FF,
+            fontSize: 22,
+            fontWeight: 700,
+            color: INK,
+            lineHeight: 1,
+            letterSpacing: "-0.2px",
+          }}
+        >
           FAQs
         </div>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20, marginBottom: 20 }} />
+      <div style={{ height: 1, background: LINE, marginTop: 18, marginLeft: 20, marginRight: 20 }} />
 
       {/* Search */}
-      <div style={{ padding: "0 24px", marginBottom: 32 }}>
+      <div style={{ padding: "20px 20px 0" }}>
         <div
           style={{
-            height: 44,
-            background: "rgba(238, 232, 218, 0.92)",
-            borderRadius: 999,
-            padding: "0 20px",
+            height: 48,
+            background: CARD,
+            borderRadius: 14,
+            padding: "0 18px",
             display: "flex",
             alignItems: "center",
             gap: 12,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
           }}
         >
-          <Search size={18} strokeWidth={1.6} color={DEEP_INK} style={{ flexShrink: 0 }} />
+          <Search size={18} strokeWidth={1.8} color={MUTED} style={{ flexShrink: 0 }} />
           <input
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search FAQs"
-            className="placeholder:text-[#2b2420]/80"
             style={{
               flex: 1,
               background: "transparent",
               border: "none",
               outline: "none",
-              fontFamily: SANS,
-              fontSize: 14,
-              color: DEEP_INK,
+              fontFamily: FF,
+              fontSize: 14.5,
+              color: INK,
             }}
           />
         </div>
       </div>
 
       {/* Sections */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 22, marginTop: 24 }}>
         {filtered.map((section) => (
           <div key={section.title}>
-            <div style={{ padding: "0 24px", marginBottom: 10 }}>
-              <Eyebrow>{section.title}</Eyebrow>
+            <div
+              style={{
+                padding: "0 24px",
+                marginBottom: 10,
+                fontFamily: FF,
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: "0.18em",
+                textTransform: "uppercase",
+                color: MUTED,
+              }}
+            >
+              {section.title}
             </div>
-            <div style={{ padding: "0 24px" }}>
-              <div style={{ background: CREAM, borderRadius: 20, padding: "4px 22px", overflow: "hidden" }}>
+            <div style={{ padding: "0 20px" }}>
+              <div
+                style={{
+                  background: CARD,
+                  borderRadius: 18,
+                  padding: "2px 20px",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                }}
+              >
                 {section.items.map((item, idx) => {
                   const key = `${section.title}-${item.q}`;
                   return (
@@ -253,69 +285,6 @@ const FAQs = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* CTA */}
-      <div style={{ padding: "0 24px", marginTop: 28, marginBottom: 12 }}>
-        <div style={{ background: RUST, borderRadius: 28, padding: "30px 28px 28px" }}>
-          <div>
-            <div style={{ marginBottom: 14 }}>
-              <Eyebrow opacity={0.8} size={11.5}>STILL STUCK</Eyebrow>
-            </div>
-            <h2 style={{ fontFamily: SERIF, fontStyle: "italic", fontWeight: 300, fontSize: 38, lineHeight: 1, letterSpacing: "-1px", color: CREAM, margin: 0, marginBottom: 14, textTransform: "lowercase" }}>
-              ask us anything.
-            </h2>
-            <p style={{ fontSize: 14.5, fontWeight: 400, lineHeight: 1.55, color: "rgba(238,232,218,0.9)", margin: 0, marginBottom: 24, maxWidth: 280 }}>
-              Reach out and we'll be in touch ASAP.
-            </p>
-            <div style={{ display: "flex", gap: 10 }}>
-              <a
-                href="https://wa.me/27000000000"
-                target="_blank"
-                rel="noreferrer"
-                onPointerDown={press}
-                onPointerUp={release}
-                onPointerLeave={release}
-                aria-label="WhatsApp"
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 50,
-                  background: CREAM,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textDecoration: "none",
-                  transition: "transform 150ms ease-out",
-                }}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill={DEEP_INK} xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.002-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.886 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.488-8.413z"/>
-                </svg>
-              </a>
-              <a
-                href="mailto:hello@hellohoedspruit.com"
-                onPointerDown={press}
-                onPointerUp={release}
-                onPointerLeave={release}
-                aria-label="Email"
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 50,
-                  background: CREAM,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textDecoration: "none",
-                  transition: "transform 150ms ease-out",
-                }}
-              >
-                <Mail size={20} color={DEEP_INK} strokeWidth={1.6} fill="none" />
-              </a>
-            </div>
-          </div>
-        </div>
       </div>
 
       <BottomNav />
