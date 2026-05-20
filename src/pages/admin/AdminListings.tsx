@@ -258,6 +258,7 @@ const AdminListings = () => {
         volunteering: values.volunteering?.trim() || null,
         visiting: values.visiting?.trim() || null,
         business_started_year: values.business_started_year,
+        years_in_business: values.years_in_business,
         after_hours_available: values.after_hours_available,
         callout_fee: values.callout_fee,
         specialities: values.specialities?.trim() || null,
