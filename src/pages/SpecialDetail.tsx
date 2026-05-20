@@ -13,6 +13,7 @@ import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
 import { formatSAPhone } from "@/lib/formatPhone";
+import { collectContacts } from "@/lib/contacts";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
