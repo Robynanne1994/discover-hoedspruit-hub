@@ -265,6 +265,8 @@ const AdminListings = () => {
         after_hours_available: values.after_hours_available,
         callout_fee: values.callout_fee,
         specialities: values.specialities?.trim() || null,
+        services_offered: values.services_offered ?? [],
+        plant_types: (values.services_offered ?? []).includes("Nursery") ? (values.plant_types ?? []) : [],
       };
 
       // Treat "-" as empty for any string field on save
