@@ -228,6 +228,9 @@ const AdminEvents = () => {
       price: (ev as any).price ?? "",
       notes: (ev as any).notes ?? "",
       business_id: (ev as any).business_id ?? "",
+      business_ids: Array.isArray((ev as any).business_ids) && (ev as any).business_ids.length > 0
+        ? (ev as any).business_ids
+        : ((ev as any).business_id ? [(ev as any).business_id] : []),
       is_featured: !!(ev as any).is_featured,
       hosted_by_name: (ev as any).hosted_by_name ?? "",
       hosted_by_subtitle: (ev as any).hosted_by_subtitle ?? "",
