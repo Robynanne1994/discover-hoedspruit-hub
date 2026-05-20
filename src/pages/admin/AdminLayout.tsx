@@ -11,7 +11,7 @@ import {
   Upload,
   Home,
   Tag,
-  Newspaper,
+  
   Radio,
   Menu,
   ShieldCheck,
