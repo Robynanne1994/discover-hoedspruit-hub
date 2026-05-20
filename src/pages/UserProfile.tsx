@@ -358,7 +358,7 @@ const UserProfile = () => {
               padding: 0,
             }}
           >
-            <ArrowLeft size={16} strokeWidth={1.6} color={INK} />
+            <ArrowLeft size={18} strokeWidth={2} color={INK} />
           </button>
           <button
             onClick={() => setMenuOpen(true)}
