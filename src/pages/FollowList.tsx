@@ -357,7 +357,7 @@ const FollowList = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: COLOR.olive, paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: COLOR.page, paddingBottom: 100 }}>
       {/* Top bar */}
       <div
         style={{
