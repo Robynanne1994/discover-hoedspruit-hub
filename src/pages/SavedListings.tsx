@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Heart, Search, ArrowLeft } from "lucide-react";
 import { format, parseISO, isFuture, isPast, differenceInDays } from "date-fns";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 type PrimaryTab = "all" | "listings" | "events" | "specials";
 const OLIVE = "#5C6446";
@@ -86,7 +87,7 @@ const SavedListings = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating, category_id, categories(title)")
+        .select("id, title, title_override, image_url, location, google_rating, category_id, categories(title)")
         .in("id", ids);
       const { data: junctions } = await supabase
         .from("listing_categories")
@@ -598,6 +599,7 @@ const SavedListings = () => {
               </div>
               <div style={{ padding: "18px 22px 22px" }}>
                 <h3
+                  {...noTitleCaseProps(d)}
                   style={{
                     fontFamily: SANS,
                     fontSize: 18,
@@ -609,7 +611,7 @@ const SavedListings = () => {
                     marginBottom: 8,
                   }}
                 >
-                  {d.title}
+                  {getDisplayTitle(d)}
                 </h3>
                 <div className="flex items-center" style={{ gap: 8 }}>
                   {rating && (
@@ -727,6 +729,7 @@ const SavedListings = () => {
                   {formatEventDate(e)}
                 </p>
                 <p
+                  {...noTitleCaseProps(e)}
                   style={{
                     fontFamily: SANS,
                     fontSize: 15,
@@ -739,7 +742,7 @@ const SavedListings = () => {
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {e.title}
+                  {getDisplayTitle(e)}
                 </p>
                 {e.location && (
                   <p
@@ -849,6 +852,7 @@ const SavedListings = () => {
                   {s.deal_label || s.special_type || "Special"}
                 </p>
                 <p
+                  {...noTitleCaseProps(s)}
                   style={{
                     fontFamily: SANS,
                     fontSize: 15,
@@ -860,7 +864,7 @@ const SavedListings = () => {
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {s.title}
+                  {getDisplayTitle(s)}
                 </p>
                 <p
                   style={{
@@ -986,6 +990,7 @@ const SavedListings = () => {
                     {(d.categoryNames || []).slice(0, 1).join("") || "Place"}
                   </p>
                   <p
+                    {...noTitleCaseProps(d)}
                     style={{
                       fontFamily: SANS,
                       fontSize: 15,
@@ -997,7 +1002,7 @@ const SavedListings = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    {d.title}
+                    {getDisplayTitle(d)}
                   </p>
                   <div className="flex items-center" style={{ gap: 8, marginTop: 2 }}>
 
@@ -1079,6 +1084,7 @@ const SavedListings = () => {
                     {formatEventDate(e)}
                   </p>
                   <p
+                    {...noTitleCaseProps(e)}
                     style={{
                       fontFamily: SANS,
                       fontSize: 15,
@@ -1091,7 +1097,7 @@ const SavedListings = () => {
                       textOverflow: "ellipsis",
                     }}
                   >
-                    {e.title}
+                    {getDisplayTitle(e)}
                   </p>
                   {e.location && (
                     <p
@@ -1169,6 +1175,7 @@ const SavedListings = () => {
                   {s.deal_label || s.special_type || "Special"}
                 </p>
                 <p
+                  {...noTitleCaseProps(s)}
                   style={{
                     fontFamily: SANS,
                     fontSize: 15,
@@ -1180,7 +1187,7 @@ const SavedListings = () => {
                     textOverflow: "ellipsis",
                   }}
                 >
-                  {s.title}
+                  {getDisplayTitle(s)}
                 </p>
                 <p
                   style={{

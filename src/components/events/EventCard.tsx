@@ -3,6 +3,7 @@ import DOMPurify from "dompurify";
 import FavouriteButton from "@/components/FavouriteButton";
 import ShareButton from "@/components/ShareButton";
 import { formatEventDateRange } from "@/lib/eventDates";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const sanitizeHtml = (html: string) =>
   DOMPurify.sanitize(html, { ALLOWED_URI_REGEXP: /^(?:https?|mailto|tel):/i });
@@ -11,6 +12,7 @@ interface EventCardProps {
   event: {
     id: string;
     title: string;
+    title_override?: string | null;
     description?: string | null;
     date: string;
     start_date?: string | null;
@@ -45,8 +47,8 @@ const EventCard = ({ event }: EventCardProps) => {
               {event.tag}
             </span>
           )}
-          <h3 className="font-heading text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-2">
-            {event.title}
+          <h3 {...noTitleCaseProps(event)} className="font-heading text-base font-semibold text-foreground mb-1 group-hover:text-primary transition-colors line-clamp-2">
+            {getDisplayTitle(event)}
           </h3>
           <div className="space-y-1 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">

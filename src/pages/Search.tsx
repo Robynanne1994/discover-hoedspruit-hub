@@ -318,11 +318,15 @@ interface RowProps {
   to: string;
   image?: string | null;
   title: string;
+  titleOverride?: string | null;
   subtitle?: string | null;
   thumb?: "round" | "square";
   action?: React.ReactNode;
 }
-const ResultRow = ({ to, image, title, subtitle, thumb = "square", action }: RowProps) => (
+const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square", action }: RowProps) => {
+  const hasOverride = !!(titleOverride && titleOverride.trim());
+  const display = hasOverride ? titleOverride!.trim() : title;
+  return (
   <Link
     to={to}
     style={{
@@ -355,6 +359,7 @@ const ResultRow = ({ to, image, title, subtitle, thumb = "square", action }: Row
     </div>
     <div style={{ flex: 1, minWidth: 0 }}>
       <p
+        {...(hasOverride ? { "data-no-title-case": "true" } : {})}
         style={{
           margin: 0,
           fontFamily: FONT,
@@ -367,7 +372,7 @@ const ResultRow = ({ to, image, title, subtitle, thumb = "square", action }: Row
           whiteSpace: "nowrap",
         }}
       >
-        {title}
+        {display}
       </p>
       {subtitle && (
         <p
