@@ -120,14 +120,20 @@ const AdminSpecials = () => {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      const cleaned = {
+        ...form,
+        additional_emails: sanitizeContactArray(form.additional_emails),
+        additional_phones: sanitizeContactArray(form.additional_phones),
+        additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
+      };
       if (editing) {
         const { error } = await supabase
           .from("specials")
-          .update(form as any)
+          .update(cleaned as any)
           .eq("id", editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("specials").insert(form as any);
+        const { error } = await supabase.from("specials").insert(cleaned as any);
         if (error) throw error;
       }
     },
