@@ -769,8 +769,9 @@ const CategoryPage = () => {
             const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
             const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
 
-            const sub = l.subtitle || l.category_label || "";
-            const subtitleLine = sub ? `${categoryTitle.replace(/s\s*&.*$/i, "").replace(/s$/, "")} • ${sub}` : categoryTitle;
+            const allCats: string[] = (l as any)._allCategories || [];
+            const otherCats = allCats.filter((c) => c && c !== categoryTitle);
+            const orderedCats = [categoryTitle, ...otherCats];
 
             return (
               <article
