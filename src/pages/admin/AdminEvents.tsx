@@ -309,7 +309,7 @@ const AdminEvents = () => {
                 <span className="text-sm font-medium">Featured event</span>
                 <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
               </label>
-              <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By (optional, up to 3)</Label></div>
+              <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By</Label></div>
               {[1, 2, 3].map((n) => {
                 const nameKey = (n === 1 ? "hosted_by_name" : `hosted_by_name_${n}`) as keyof typeof form;
                 const subKey = (n === 1 ? "hosted_by_subtitle" : `hosted_by_subtitle_${n}`) as keyof typeof form;

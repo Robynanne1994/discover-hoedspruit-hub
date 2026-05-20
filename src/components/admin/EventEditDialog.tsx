@@ -134,7 +134,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           </div>
           <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+27 ..." /></div>
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
-          <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By (optional, up to 3)</Label></div>
+          <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By</Label></div>
           <div className="space-y-3 p-3 border rounded">
             <Label className="text-sm font-semibold">Host 1</Label>
             <div><Label>Name</Label><Input value={form.hosted_by_name || ""} onChange={(e) => set("hosted_by_name", e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
