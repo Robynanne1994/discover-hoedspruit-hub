@@ -828,15 +828,27 @@ const AdminListings = () => {
 
                     <div>
                       <Label>Shop Type</Label>
-                      <Select value={form.shop_type} onValueChange={(v) => setForm({ ...form, shop_type: v })}>
-                        <SelectTrigger><SelectValue placeholder="Select shop type" /></SelectTrigger>
-                        <SelectContent>
-                          {SHOP_TYPE_OPTIONS.map((opt) => (
-                            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      {(() => {
+                        const dbTypes = Array.from(new Set((listings ?? []).map((l: any) => l.shop_type).filter(Boolean))) as string[];
+                        const merged = Array.from(new Set([...SHOP_TYPE_OPTIONS, ...dbTypes]));
+                        return (
+                          <>
+                            <Input
+                              list="shop-type-options"
+                              value={form.shop_type}
+                              onChange={(e) => setForm({ ...form, shop_type: e.target.value })}
+                              placeholder="Select or type a new shop type"
+                            />
+                            <datalist id="shop-type-options">
+                              {merged.map((opt) => (
+                                <option key={opt} value={opt} />
+                              ))}
+                            </datalist>
+                          </>
+                        );
+                      })()}
                     </div>
+
 
                     <div>
                       <Label>Product Categories</Label>
