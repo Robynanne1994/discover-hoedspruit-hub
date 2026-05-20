@@ -90,9 +90,10 @@ const ActionButton = ({
         disabled={disabled}
         style={{
           ...base,
-          background: "transparent",
+          background: COLOR.cream,
           border: `1px solid ${COLOR.line}`,
           color: COLOR.ink,
+          fontWeight: 500,
         }}
       >
         {label}
