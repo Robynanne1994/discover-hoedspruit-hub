@@ -4,6 +4,7 @@ import { Search, MapPin, AlertTriangle, ChevronRight, X, ArrowUpRight } from "lu
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
