@@ -147,39 +147,39 @@ const Specials = () => {
     <div
       style={{
         minHeight: "100vh",
-        paddingTop: 24,
+        paddingTop: 60,
         paddingBottom: 120,
         background: COLOR.pageBg,
         fontFamily: SANS,
         color: COLOR.ink,
       }}
     >
-      {/* Header — title left, filter circle right */}
+      {/* Header — centered title, icons inline on right */}
       <div
         style={{
           paddingLeft: 20,
           paddingRight: 20,
-          paddingTop: 16,
-          display: "flex",
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
+          gap: 8,
         }}
       >
+        <div />
         <h1
           style={{
             fontFamily: SANS,
-            fontSize: 34,
-            fontWeight: 800,
+            fontSize: 22,
+            fontWeight: 700,
             color: COLOR.ink,
             margin: 0,
-            letterSpacing: "-0.6px",
-            lineHeight: 1,
+            letterSpacing: "-0.3px",
+            textAlign: "center",
           }}
         >
           Specials
         </h1>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
           <button
             aria-label={searchOpen ? "Close search" : "Search"}
             onClick={() => {
@@ -191,11 +191,11 @@ const Specials = () => {
               }
             }}
             style={{
-              width: 40,
-              height: 40,
+              width: 36,
+              height: 36,
               borderRadius: "50%",
               background: COLOR.cardBg,
-              border: `1px solid ${COLOR.pillBorder}`,
+              border: "none",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
@@ -203,17 +203,17 @@ const Specials = () => {
               color: COLOR.ink,
             }}
           >
-            {searchOpen ? <X size={18} strokeWidth={2} /> : <Search size={18} strokeWidth={2} />}
+            {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
           </button>
           <button
             aria-label="Filters"
             onClick={() => setShowFilters(true)}
             style={{
-              width: 40,
-              height: 40,
+              width: 36,
+              height: 36,
               borderRadius: "50%",
               background: filterType.length > 0 ? COLOR.ink : COLOR.cardBg,
-              border: `1px solid ${COLOR.pillBorder}`,
+              border: "none",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
@@ -221,13 +221,14 @@ const Specials = () => {
               color: filterType.length > 0 ? COLOR.cardBg : COLOR.ink,
             }}
           >
-            <SlidersHorizontal size={18} strokeWidth={2} />
+            <SlidersHorizontal size={20} strokeWidth={2} />
           </button>
         </div>
       </div>
 
-      {/* Divider under header */}
-      <div style={{ height: 1, background: COLOR.divider, margin: "20px 20px 0 20px" }} />
+      {/* Divider under title */}
+      <div style={{ height: 1, background: "rgba(2,2,2,0.10)", marginTop: 18, marginLeft: 20, marginRight: 20 }} />
+
 
       {/* Inline search input */}
       {searchOpen && (
