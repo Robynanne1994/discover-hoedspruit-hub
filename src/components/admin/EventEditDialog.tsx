@@ -30,7 +30,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(event);
 
-  useEffect(() => { setForm(event); }, [event, open]);
+  useEffect(() => {
+    if (!event) { setForm(event); return; }
+    const seeded = { ...event };
+    if (!Array.isArray(seeded.business_ids) || seeded.business_ids.length === 0) {
+      seeded.business_ids = seeded.business_id ? [seeded.business_id] : [];
+    }
+    setForm(seeded);
+  }, [event, open]);
 
   const { data: listings } = useQuery({
     queryKey: ["all-listings-for-events"],
