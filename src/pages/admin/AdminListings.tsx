@@ -417,6 +417,10 @@ const AdminListings = () => {
       ways_to_give: (l as any).ways_to_give ?? "",
       volunteering: (l as any).volunteering ?? "",
       visiting: (l as any).visiting ?? "",
+      business_started_year: (l as any).business_started_year ?? null,
+      after_hours_available: (l as any).after_hours_available ?? null,
+      callout_fee: (l as any).callout_fee ?? null,
+      specialities: (l as any).specialities ?? "",
     });
     const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
     setCustomRowsVisible(populatedCustom);
