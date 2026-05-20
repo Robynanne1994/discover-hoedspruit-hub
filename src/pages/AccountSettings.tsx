@@ -90,6 +90,9 @@ const AccountSettings = () => {
         </div>
       </div>
 
+      {/* Thin divider under title */}
+      <div style={{ height: 1, background: "rgba(238, 232, 218, 0.25)", margin: "16px 24px 0" }} />
+
       {/* Hero blob */}
       <div style={{ position: "relative", padding: "18px 24px 0", overflow: "hidden" }}>
         <div
