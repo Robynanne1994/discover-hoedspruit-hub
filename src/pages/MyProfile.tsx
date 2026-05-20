@@ -352,9 +352,11 @@ const MyProfile = () => {
             justifyContent: "center",
           }}
         >
-          <SlidersHorizontal size={18} strokeWidth={1.8} color={INK} />
+          <Settings size={18} strokeWidth={1.8} color={INK} />
         </Link>
       </div>
+
+      <div style={{ height: 1, background: LINE, marginTop: 18 }} />
 
       {/* Profile card */}
       <div style={{ padding: "16px 20px 0" }}>
