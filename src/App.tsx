@@ -23,9 +23,6 @@ import AdminEventsImport from "./pages/admin/AdminEventsImport.tsx";
 import AdminHomepage from "./pages/admin/AdminHomepage.tsx";
 import AdminBulkEdit from "./pages/admin/AdminBulkEdit.tsx";
 import AdminSpecials from "./pages/admin/AdminSpecials.tsx";
-import AdminArticles from "./pages/admin/AdminArticles.tsx";
-import Headlines from "./pages/Headlines.tsx";
-import ArticleDetail from "./pages/ArticleDetail.tsx";
 import AdminSpecialsImport from "./pages/admin/AdminSpecialsImport.tsx";
 import AdminBushTelegraph from "./pages/admin/AdminBushTelegraph.tsx";
 import CategoryPage from "./pages/CategoryPage.tsx";
@@ -135,8 +132,7 @@ const App = () => (
               <Route path="/events/:id" element={<EventDetail />} />
               <Route path="/about" element={<About />} />
               
-              <Route path="/headlines" element={<Headlines />} />
-              <Route path="/headlines/:slug" element={<ArticleDetail />} />
+              
               <Route path="/specials" element={<Specials />} />
               <Route path="/specials/:id" element={<SpecialDetail />} />
               <Route path="/directories" element={<Directories />} />
@@ -176,7 +172,7 @@ const App = () => (
                 <Route path="events/import" element={<AdminEventsImport />} />
                 <Route path="specials" element={<AdminSpecials />} />
                 <Route path="specials/import" element={<AdminSpecialsImport />} />
-                <Route path="articles" element={<AdminArticles />} />
+                
                 <Route path="bush-telegraph" element={<AdminBushTelegraph />} />
                 <Route path="content" element={<AdminContent />} />
                 <Route path="import" element={<AdminImport />} />
