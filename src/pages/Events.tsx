@@ -60,6 +60,32 @@ function getWeekendRange(today: Date): { start: Date; end: Date } {
 
 const WEEKDAY_LABELS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 
+function getFilterCount(
+  filter: FilterType,
+  events: any[],
+  selectedDate: Date | null
+): number {
+  if (!events) return 1;
+  const today = startOfToday();
+  const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+  const monthEnd = endOfMonth(today);
+  const weekend = getWeekendRange(today);
+  const yearEnd = new Date(today.getFullYear(), 11, 31);
+
+  return events.filter((e) => {
+    if (!e._parsed) return filter === "all";
+    const d = e._parsed;
+    if (filter === "all") return !isBefore(d, today);
+    if (filter === "today") return isToday(d);
+    if (filter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
+    if (filter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
+    if (filter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
+    if (filter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+    if (filter === "past") return isBefore(d, today) && !isToday(d);
+    return true;
+  }).length;
+}
+
 function fmtTime(t: string | null | undefined): string {
   if (!t) return "";
   const m = String(t).match(/^(\d{1,2}):?(\d{0,2})/);
@@ -620,6 +646,7 @@ const Events = () => {
       >
         {FILTERS.map((f) => {
           const active = !selectedDate && activeFilter === f.value;
+          const count = getFilterCount(f.value, sortedEvents, selectedDate);
           return (
             <button
               key={f.value}
@@ -638,7 +665,7 @@ const Events = () => {
                 letterSpacing: "0.01em",
               }}
             >
-              {f.label}
+              {f.label} <span style={{ opacity: 1 }}>({count})</span>
             </button>
           );
         })}
@@ -667,11 +694,16 @@ const Events = () => {
           >
             {sectionTitle}
           </h2>
-          {filtered.length > 5 && (
-            <span style={{ fontFamily: SANS, fontSize: 12, color: C.muted }}>
-              {filtered.length} total
-            </span>
-          )}
+          <span
+            style={{
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 15,
+              color: C.ink,
+            }}
+          >
+            ({filtered.length})
+          </span>
         </div>
 
         {isLoading ? (
