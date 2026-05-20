@@ -875,33 +875,44 @@ const CategoryPage = () => {
         <div
           style={{
             textAlign: "center",
-            paddingTop: 60,
-            paddingLeft: 20,
-            paddingRight: 20,
+            padding: "60px 24px 80px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
           }}
         >
-          <MapPin size={48} strokeWidth={1.5} color={MUTED} style={{ marginBottom: 16, opacity: 0.5 }} />
-          <p style={{ fontFamily: sans, fontSize: 18, fontWeight: 600, color: INK, margin: 0, marginBottom: 8 }}>
+          <div
+            style={{
+              height: 120,
+              width: 120,
+              borderRadius: 999,
+              background: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 28,
+            }}
+          >
+            <MapPin size={42} strokeWidth={1.6} color={MUTED} />
+          </div>
+          <h2 style={{ fontFamily: sans, fontSize: 26, fontWeight: 700, color: INK, margin: "0 0 14px", letterSpacing: "-0.3px" }}>
             {isSearchEmpty ? "No matches found." : "Nothing here yet."}
-          </p>
-          <p style={{ fontFamily: sans, fontSize: 14, fontWeight: 400, lineHeight: 1.55, color: MUTED, maxWidth: 260, margin: 0 }}>
+          </h2>
+          <p style={{ fontFamily: sans, fontSize: 17, fontWeight: 400, lineHeight: 1.5, color: MUTED, margin: 0 }}>
             {isSearchEmpty ? "Try clearing your filters or search." : "Check back soon as new places join the app."}
           </p>
           {isSearchEmpty && (
             <button
               onClick={clearAllFilters}
               style={{
-                marginTop: 20,
+                marginTop: 28,
                 background: PILL_DARK,
                 color: "#FFFFFF",
                 border: "none",
                 borderRadius: 999,
-                padding: "12px 22px",
+                padding: "16px 36px",
                 fontFamily: sans,
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 500,
                 cursor: "pointer",
               }}
