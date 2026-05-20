@@ -646,7 +646,7 @@ const Events = () => {
       >
         {FILTERS.map((f) => {
           const active = !selectedDate && activeFilter === f.value;
-          const count = useFilterCount(f.value, sortedEvents, selectedDate);
+          const count = getFilterCount(f.value, sortedEvents, selectedDate);
           return (
             <button
               key={f.value}
