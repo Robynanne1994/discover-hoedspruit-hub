@@ -592,16 +592,24 @@ const ListingDetail = () => {
       })()}
 
       {/* Contact rows */}
-      {(listing.email || listing.phone || waClean || listing.website) && (
+      {(listing.email || listing.phone || waClean || listing.website || ((listing as any).additional_emails?.length || (listing as any).additional_phones?.length || (listing as any).additional_whatsapps?.length)) && (
         <div style={{ marginTop: 28 }}>
           <h2 style={headStyle}>Contact</h2>
           <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-            {[
-              listing.phone && { label: "Phone", value: formatSAPhone(listing.phone), href: `tel:${listing.phone}`, Icon: Phone },
-              waClean && { label: "WhatsApp", value: formatSAPhone(whatsappNum!), href: `https://wa.me/${waClean}`, Icon: Phone },
-              listing.email && { label: "Email", value: listing.email, href: `mailto:${listing.email}`, Icon: Mail },
-              listing.website && { label: "Website", value: (listing as any).website_label || listing.website, href: listing.website, Icon: Globe },
-            ].filter(Boolean).map((r: any, i, arr) => (
+            {(() => {
+              const phones = collectContacts(listing.phone, (listing as any).additional_phones);
+              const whatsapps = collectContacts(whatsappNum, (listing as any).additional_whatsapps);
+              const emails = collectContacts(listing.email, (listing as any).additional_emails);
+              const rows: any[] = [];
+              phones.forEach((p, i) => rows.push({ label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
+              whatsapps.forEach((w, i) => {
+                const clean = w.replace(/[^0-9]/g, "");
+                rows.push({ label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: Phone });
+              });
+              emails.forEach((e, i) => rows.push({ label: i === 0 ? "Email" : `Email ${i + 1}`, value: e, href: `mailto:${e}`, Icon: Mail }));
+              if (listing.website) rows.push({ label: "Website", value: (listing as any).website_label || listing.website, href: listing.website, Icon: Globe });
+              return rows;
+            })().map((r: any, i, arr) => (
               <a key={r.label} href={r.href} target="_blank" rel="noopener noreferrer" style={{
                 display: "flex", alignItems: "center", gap: 14,
                 padding: "16px 0", textDecoration: "none",
