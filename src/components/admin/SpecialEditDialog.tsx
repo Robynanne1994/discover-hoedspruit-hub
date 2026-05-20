@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
+import MultiContactField from "@/components/admin/MultiContactField";
+import { sanitizeContactArray } from "@/lib/contacts";
 
 interface Props {
   open: boolean;
@@ -20,7 +22,7 @@ const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id", "image_url", "deal_label",
   "valid_from", "valid_until", "is_active", "special_type", "price", "price_label",
   "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
-  "original_price", "promo_code", "contact_phone", "contact_whatsapp",
+  "original_price", "promo_code", "contact_phone", "contact_whatsapp", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "terms", "category", "eyebrow_categories",
 ];
 
@@ -34,6 +36,8 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
+      payload.additional_phones = sanitizeContactArray(form.additional_phones);
+      payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
       const { error } = await supabase.from("specials").update(payload).eq("id", special.id);
       if (error) throw error;
     },
