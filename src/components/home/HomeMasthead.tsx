@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Bell } from "lucide-react";
+import { Bell, Search } from "lucide-react";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
