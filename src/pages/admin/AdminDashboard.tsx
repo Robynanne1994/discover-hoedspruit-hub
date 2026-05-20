@@ -28,7 +28,7 @@ const AdminDashboard = () => {
   const lists = useCount("lists", "listings");
   const events = useCount("events", "events");
   const specials = useCount("specials", "specials");
-  const articles = useCount("articles", "articles");
+  
   const resources = useCount("resources", "bush_telegraph_resources");
   const businesses = useCount("businesses", "business_accounts");
   const contacts = useCount("contacts", "contact_submissions");
