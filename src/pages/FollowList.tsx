@@ -20,14 +20,16 @@ import {
 } from "@/components/ui/dialog";
 
 const COLOR = {
-  olive: "#5C6446",
-  cream: "#EEE8DA",
-  ink: "#2A2A24",
-  muted: "#6B6A5E",
-  line: "#D9D2C0",
+  page: "#E6E0CC",
+  card: "#FFFFFF",
+  cream: "#F5F0E4",
+  ink: "#1A1A1A",
+  muted: "#8A8275",
+  subtle: "rgba(26,26,26,0.55)",
+  line: "rgba(26,26,26,0.10)",
 };
 
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const AVATAR_GRADIENTS = [
@@ -88,9 +90,10 @@ const ActionButton = ({
         disabled={disabled}
         style={{
           ...base,
-          background: "transparent",
+          background: COLOR.cream,
           border: `1px solid ${COLOR.line}`,
           color: COLOR.ink,
+          fontWeight: 500,
         }}
       >
         {label}
@@ -355,13 +358,13 @@ const FollowList = () => {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: COLOR.olive, paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: COLOR.page, paddingBottom: 100 }}>
       {/* Top bar */}
       <div
         style={{
           paddingTop: 60,
-          paddingLeft: 24,
-          paddingRight: 24,
+          paddingLeft: 20,
+          paddingRight: 20,
           position: "relative",
           display: "flex",
           alignItems: "center",
@@ -374,50 +377,42 @@ const FollowList = () => {
           aria-label="Back"
           style={{
             position: "absolute",
-            left: 24,
-            top: 60,
-            background: "transparent",
+            left: 20,
+            top: 56,
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: COLOR.card,
             border: "none",
-            padding: 0,
-            display: "flex",
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            height: 24,
           }}
         >
-          <ArrowLeft size={22} strokeWidth={1.6} color={COLOR.cream} />
+          <ArrowLeft size={18} strokeWidth={2} color={COLOR.ink} />
         </button>
         <h1
           style={{
             margin: 0,
             fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 20,
-            color: COLOR.cream,
+            fontWeight: 700,
+            fontSize: 22,
+            color: COLOR.ink,
             lineHeight: "24px",
+            letterSpacing: "-0.2px",
           }}
         >
           Connections
         </h1>
       </div>
 
-      {/* Divider */}
-      <div
-        style={{
-          marginTop: 18,
-          height: 1,
-          background: "rgba(238,232,218,0.25)",
-          width: "100%",
-        }}
-      />
-
       {/* Tabs */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, paddingTop: 4, paddingBottom: 20 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 18, paddingBottom: 18 }}>
         <div
           style={{
             display: "flex",
-            borderBottom: "1px solid rgba(238,232,218,0.18)",
+            borderBottom: `1px solid ${COLOR.line}`,
           }}
         >
           {[
@@ -432,15 +427,15 @@ const FollowList = () => {
                 style={{
                   flex: 1,
                   textAlign: "center",
-                  padding: "10px 0",
+                  padding: "12px 0",
                   fontFamily: SANS,
-                  fontWeight: 400,
-                  fontSize: 14,
-                  letterSpacing: "1.6px",
+                  fontWeight: active ? 700 : 500,
+                  fontSize: 13,
+                  letterSpacing: "0.14em",
                   textTransform: "uppercase",
-                  color: active ? COLOR.cream : "rgba(238,232,218,0.55)",
+                  color: active ? COLOR.ink : COLOR.subtle,
                   textDecoration: "none",
-                  borderBottom: active ? `2px solid ${COLOR.cream}` : "2px solid transparent",
+                  borderBottom: active ? `2px solid ${COLOR.ink}` : "2px solid transparent",
                   marginBottom: -1,
                 }}
               >
@@ -452,12 +447,12 @@ const FollowList = () => {
       </div>
 
       {/* List card */}
-      <div style={{ paddingLeft: 24, paddingRight: 24, marginBottom: 24 }}>
+      <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         {isLoading ? (
           <div
             style={{
-              background: COLOR.cream,
-              borderRadius: 20,
+              background: COLOR.card,
+              borderRadius: 18,
               padding: "6px 18px",
               overflow: "hidden",
             }}
@@ -488,11 +483,11 @@ const FollowList = () => {
               style={{
                 margin: 0,
                 marginBottom: 12,
-                fontFamily: SERIF,
+                fontFamily: SANS,
                 fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 22,
-                color: "rgba(238,232,218,0.8)",
+                fontWeight: 500,
+                fontSize: 20,
+                color: COLOR.ink,
               }}
             >
               {isFollowers ? "No followers yet." : "No one to follow yet."}
@@ -502,9 +497,9 @@ const FollowList = () => {
                 margin: "0 auto",
                 fontFamily: SANS,
                 fontWeight: 400,
-                fontSize: 15,
+                fontSize: 14,
                 lineHeight: 1.55,
-                color: "rgba(238,232,218,0.7)",
+                color: COLOR.muted,
                 maxWidth: 260,
               }}
             >
@@ -516,8 +511,8 @@ const FollowList = () => {
         ) : (
           <div
             style={{
-              background: COLOR.cream,
-              borderRadius: 20,
+              background: COLOR.card,
+              borderRadius: 18,
               padding: "6px 18px",
               overflow: "hidden",
             }}
