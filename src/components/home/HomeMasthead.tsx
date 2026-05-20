@@ -59,23 +59,40 @@ const HomeMasthead = () => {
             </p>
           </div>
         </div>
-        <Link
-          to="/my-notifications"
-          aria-label="Notifications"
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 999,
-            background: "#ffffff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
-            border: "1px solid rgba(0,0,0,0.06)",
-          }}
-        >
-          <Bell size={20} color="#020202" strokeWidth={1.6} />
-        </Link>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <Link
+            to="/search"
+            aria-label="Search"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 999,
+              background: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(0,0,0,0.06)",
+            }}
+          >
+            <Search size={20} color="#020202" strokeWidth={1.6} />
+          </Link>
+          <Link
+            to="/my-notifications"
+            aria-label="Notifications"
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 999,
+              background: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "1px solid rgba(0,0,0,0.06)",
+            }}
+          >
+            <Bell size={20} color="#020202" strokeWidth={1.6} />
+          </Link>
+        </div>
       </div>
     </div>
   );
