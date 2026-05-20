@@ -8,7 +8,7 @@ import {
   ShieldCheck,
   Inbox,
   Tag,
-  Newspaper,
+  
   Radio,
   Users,
   Briefcase,
