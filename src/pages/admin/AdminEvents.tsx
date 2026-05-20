@@ -213,6 +213,7 @@ const AdminEvents = () => {
       sub_tag_1: (ev as any).sub_tag_1 ?? "",
       sub_tag_2: (ev as any).sub_tag_2 ?? "",
       image_url: ev.image_url ?? "",
+      detail_image_url: (ev as any).detail_image_url ?? "",
       start_time: ev.start_time ?? "",
       end_time: ev.end_time ?? "",
       recurrence: ev.recurrence ?? "",
