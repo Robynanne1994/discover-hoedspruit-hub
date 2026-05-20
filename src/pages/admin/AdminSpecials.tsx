@@ -219,6 +219,25 @@ const AdminSpecials = () => {
           </div>
 
           <div><Label>Title *</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="special-use-title-override"
+                checked={!!(form.title_override && form.title_override.trim())}
+                onCheckedChange={(v) => setForm({ ...form, title_override: v ? (form.title_override || form.title || "") : null })}
+              />
+              <Label htmlFor="special-use-title-override" className="text-sm cursor-pointer font-normal">
+                Use custom title (overrides auto-capitalisation)
+              </Label>
+            </div>
+            {!!(form.title_override && form.title_override.trim()) && (
+              <Input
+                placeholder="Custom title — rendered exactly as typed"
+                value={form.title_override || ""}
+                onChange={(e) => setForm({ ...form, title_override: e.target.value })}
+              />
+            )}
+          </div>
           <div><Label>Deal Label * (e.g. "20% OFF", "2 FOR 1")</Label><Input value={form.deal_label} onChange={(e) => setForm({ ...form, deal_label: e.target.value })} /></div>
           <div><Label>Business Name *</Label><Input value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} /></div>
           <div>
