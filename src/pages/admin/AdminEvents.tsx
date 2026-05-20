@@ -271,7 +271,7 @@ const AdminEvents = () => {
               <div><Label>Tag</Label><Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} placeholder="e.g. Market, Sport, Dining" /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Sub-tag 1 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_1} onChange={(e) => setForm({ ...form, sub_tag_1: e.target.value })} placeholder="e.g. Family-friendly" /></div>
-                <div><Label>Sub-tag 2 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
+                <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
               </div>
               <div>
                 <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
