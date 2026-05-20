@@ -225,26 +225,46 @@ export default function MyNotifications() {
           )}
         </div>
 
-        <button
-          onClick={markAllRead}
-          disabled={!hasUnread}
-          aria-label="Mark all as read"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: CARD,
-            border: `1px solid ${HAIRLINE}`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: hasUnread ? "pointer" : "default",
-            opacity: hasUnread ? 1 : 0.5,
-            padding: 0,
-          }}
-        >
-          <CheckCheck size={20} strokeWidth={2} color={INK} />
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          {hasUnread && (
+            <button
+              onClick={markAllRead}
+              aria-label="Mark all as read"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: CARD,
+                border: `1px solid ${HAIRLINE}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                padding: 0,
+              }}
+            >
+              <CheckCheck size={20} strokeWidth={2} color={INK} />
+            </button>
+          )}
+          <button
+            onClick={() => navigate("/notification-preferences")}
+            aria-label="Notification settings"
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: CARD,
+              border: `1px solid ${HAIRLINE}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+            }}
+          >
+            <Settings size={20} strokeWidth={2} color={INK} />
+          </button>
+        </div>
       </div>
 
       <div style={{ height: 1, background: HAIRLINE, margin: "0 0 8px" }} />
