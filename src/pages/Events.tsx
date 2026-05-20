@@ -552,37 +552,37 @@ const Events = () => {
               }
             }}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: C.white,
-              border: "none",
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.06)",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: C.ink,
+              color: "#020202",
             }}
           >
-            {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
+            {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
           </button>
           <button
             aria-label="Filters"
             onClick={() => setRefineOpen(true)}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: tagFilter ? C.ink : C.white,
-              border: "none",
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: tagFilter ? C.ink : "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.06)",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: tagFilter ? C.page : C.ink,
+              color: tagFilter ? C.page : "#020202",
             }}
           >
-            <SlidersHorizontal size={20} strokeWidth={2} />
+            <SlidersHorizontal size={18} strokeWidth={1.8} />
           </button>
 
         </div>

@@ -56,8 +56,8 @@ const HomeMasthead = () => {
             to="/search"
             aria-label="Search"
             style={{
-              width: 44,
-              height: 44,
+              width: 40,
+              height: 40,
               borderRadius: 999,
               background: "#ffffff",
               display: "flex",
@@ -66,14 +66,14 @@ const HomeMasthead = () => {
               border: "1px solid rgba(0,0,0,0.06)",
             }}
           >
-            <Search size={20} color="#020202" strokeWidth={1.6} />
+            <Search size={18} color="#020202" strokeWidth={1.8} />
           </Link>
           <Link
             to="/my-notifications"
             aria-label="Notifications"
             style={{
-              width: 44,
-              height: 44,
+              width: 40,
+              height: 40,
               borderRadius: 999,
               background: "#ffffff",
               display: "flex",
@@ -82,7 +82,7 @@ const HomeMasthead = () => {
               border: "1px solid rgba(0,0,0,0.06)",
             }}
           >
-            <Bell size={20} color="#020202" strokeWidth={1.6} />
+            <Bell size={18} color="#020202" strokeWidth={1.8} />
           </Link>
         </div>
       </div>

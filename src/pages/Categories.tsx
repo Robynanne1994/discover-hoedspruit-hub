@@ -211,18 +211,17 @@ const Categories = () => {
             height: 40,
             borderRadius: 999,
             background: "#FFFFFF",
-            border: "none",
+            border: "1px solid rgba(0,0,0,0.06)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
           }}
         >
           {searchOpen ? (
-            <X size={18} strokeWidth={1.8} color={COLORS.ink} />
+            <X size={18} strokeWidth={1.8} color="#020202" />
           ) : (
-            <Search size={18} strokeWidth={1.8} color={COLORS.ink} />
+            <Search size={18} strokeWidth={1.8} color="#020202" />
           )}
         </button>
       </div>
