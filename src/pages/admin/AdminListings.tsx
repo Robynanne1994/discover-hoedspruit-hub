@@ -429,6 +429,8 @@ const AdminListings = () => {
       callout_fee: (l as any).callout_fee ?? null,
       specialities: (l as any).specialities ?? "",
       tenure_mode: ((l as any).years_in_business != null && (l as any).business_started_year == null) ? "years" : "started",
+      services_offered: (l as any).services_offered ?? [],
+      plant_types: (l as any).plant_types ?? [],
     });
     const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
     setCustomRowsVisible(populatedCustom);
