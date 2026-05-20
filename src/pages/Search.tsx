@@ -132,7 +132,7 @@ const Search = () => {
                   right: "20%",
                   bottom: -1,
                   height: 2,
-                  background: active ? PRIMARY : "transparent",
+                  background: active ? INK : "transparent",
                   borderRadius: 2,
                 }}
               />
