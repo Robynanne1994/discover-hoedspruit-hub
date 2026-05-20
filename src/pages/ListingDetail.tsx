@@ -6,10 +6,10 @@ import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
   Mail, Globe, ArrowUpRight, MapPin, Navigation,
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint,
-  ShoppingBag, CreditCard, Package, Info, Calendar,
+  ShoppingBag, CreditCard, Package, Info, Calendar, Wrench, Leaf,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
