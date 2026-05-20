@@ -68,6 +68,8 @@ type TabKey = "about" | "details" | "specials" | "events" | "gallery" | "locatio
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromCategory = (location.state as { fromCategory?: string } | null)?.fromCategory;
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const [tab, setTab] = useState<TabKey>("about");
