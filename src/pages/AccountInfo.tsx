@@ -377,7 +377,7 @@ const AccountInfo = () => {
         </div>
       </div>
 
-      <div style={{ height: 1, background: LINE, marginTop: 20 }} />
+      <div style={{ height: 1, background: LINE, marginTop: 18, marginLeft: 20, marginRight: 20 }} />
 
       {/* Profile Photo */}
       <div
