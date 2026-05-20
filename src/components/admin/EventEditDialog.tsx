@@ -44,6 +44,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
+      // Normalize business_ids -> ensure array, sync legacy single business_id to first entry
+      const ids = Array.isArray(form.business_ids) ? form.business_ids.filter(Boolean) : [];
+      payload.business_ids = ids;
+      payload.business_id = ids[0] ?? null;
       // `date` is required (NOT NULL). Auto-fill from start/end dates if left blank.
       if (!payload.date || !String(payload.date).trim()) {
         if (payload.start_date && payload.end_date && payload.start_date !== payload.end_date) {
