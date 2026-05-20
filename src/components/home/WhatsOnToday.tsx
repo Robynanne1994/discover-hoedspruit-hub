@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import HomeSectionHeader from "./HomeSectionHeader";
 
 import { getEventDates } from "@/lib/eventDates";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const WhatsOnToday = () => {
   const { data: events, isLoading } = useQuery({
@@ -12,7 +13,7 @@ const WhatsOnToday = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("events")
-        .select("id, title, location, start_time, date, start_date, end_date")
+        .select("id, title, title_override, location, start_time, date, start_date, end_date")
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
 
@@ -116,7 +117,7 @@ const WhatsOnToday = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.2, marginBottom: 3 }}>{event.title}</div>
+                <div {...noTitleCaseProps(event)} style={{ fontFamily: "var(--font-heading)", fontSize: 15, fontWeight: 600, color: "#2b2420", lineHeight: 1.2, marginBottom: 3 }}>{getDisplayTitle(event)}</div>
                 {event.location && (
                   <div style={{ fontSize: 12, color: "rgba(18,18,20,0.4)" }}>{event.location}</div>
                 )}

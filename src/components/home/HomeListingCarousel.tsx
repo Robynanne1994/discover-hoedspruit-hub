@@ -1,9 +1,11 @@
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 interface Listing {
   id: string;
   title: string;
+  title_override?: string | null;
   image_url: string | null;
   google_rating: number | null;
 }
@@ -49,17 +51,20 @@ const HomeListingCarousel = ({ listings }: HomeListingCarouselProps) => {
               background: "linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)",
             }} />
             <div style={{ position: "absolute", bottom: 14, left: 14, right: 14 }}>
-              <div style={{ 
-                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                fontSize: 18, 
-                fontWeight: 400, 
-                color: "#2A2A24", 
-                lineHeight: 1.2, 
-                letterSpacing: "-0.25px",
-                textTransform: "capitalize",
-                marginBottom: 4 
-              }}>
-                {listing.title}
+              <div
+                {...noTitleCaseProps(listing)}
+                style={{
+                  fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                  fontSize: 18,
+                  fontWeight: 400,
+                  color: "#2A2A24",
+                  lineHeight: 1.2,
+                  letterSpacing: "-0.25px",
+                  textTransform: "capitalize",
+                  marginBottom: 4,
+                }}
+              >
+                {getDisplayTitle(listing)}
               </div>
               {listing.google_rating && listing.google_rating > 0 && (
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>

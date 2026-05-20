@@ -226,7 +226,7 @@ function EventCard({ event }: { event: EventRow }) {
           />
         )}
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-foreground mb-1">{event.title}</h4>
+          <h4 {...((event as any).title_override?.trim() ? { "data-no-title-case": "true" } : {})} className="font-semibold text-foreground mb-1">{(event as any).title_override?.trim() || event.title}</h4>
           {event.tag && (
             <span className="inline-block text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-2 py-0.5 mb-2">
               {event.tag}

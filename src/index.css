@@ -341,3 +341,10 @@ h1 {
 .home-page h1 {
   text-transform: capitalize !important;
 }
+
+/* Override: when an item has a custom title, render exactly as typed.
+   Wins over any text-transform / capitalize rules on parent elements. */
+[data-no-title-case],
+[data-no-title-case] * {
+  text-transform: none !important;
+}

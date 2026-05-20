@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface Special {
   id: string;
   title: string;
+  title_override?: string | null;
   business_name: string;
   image_url: string | null;
   deal_label: string;
@@ -22,7 +24,7 @@ const HomeSpecials = () => {
       const today = new Date().toISOString().slice(0, 10);
       const { data } = await supabase
         .from("specials")
-        .select("id, title, business_name, image_url, deal_label, valid_until")
+        .select("id, title, title_override, business_name, image_url, deal_label, valid_until")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("sort_order", { ascending: true });
@@ -82,6 +84,7 @@ const HomeSpecials = () => {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div
+                  {...noTitleCaseProps(s)}
                   style={{
                     fontFamily: HN,
                     fontSize: 15,
@@ -91,7 +94,7 @@ const HomeSpecials = () => {
                     wordBreak: "break-word",
                   }}
                 >
-                  {s.title}
+                  {getDisplayTitle(s)}
                 </div>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 4, fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
                   <MapPin size={12} strokeWidth={1.6} style={{ marginTop: 2, flexShrink: 0 }} />

@@ -4,6 +4,7 @@ import { Search, MapPin, AlertTriangle, ChevronRight, X, ArrowUpRight } from "lu
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -94,14 +95,14 @@ const Categories = () => {
       const escaped = debouncedSearch.replace(/[%,]/g, " ");
       const titleQ = supabase
         .from("listings")
-        .select("id, title, image_url, location, category_id")
+        .select("id, title, title_override, image_url, location, category_id")
         .ilike("title", `%${escaped}%`)
         .limit(20);
 
       const catDirectQ = matchingCategoryIds.length
         ? supabase
             .from("listings")
-            .select("id, title, image_url, location, category_id")
+            .select("id, title, title_override, image_url, location, category_id")
             .in("category_id", matchingCategoryIds)
             .limit(50)
         : null;
@@ -126,7 +127,7 @@ const Categories = () => {
       if (missingIds.length) {
         const { data: extra } = await supabase
           .from("listings")
-          .select("id, title, image_url, location, category_id")
+          .select("id, title, title_override, image_url, location, category_id")
           .in("id", missingIds);
         (extra || []).forEach((l) => map.set(l.id, l));
       }
@@ -286,8 +287,8 @@ const Categories = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                  {listing.title}
+                <p {...noTitleCaseProps(listing)} style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {getDisplayTitle(listing)}
                 </p>
                 {listing.location && (
                   <p style={{ display: "flex", alignItems: "center", fontSize: 12, color: COLORS.muted, margin: 0, marginTop: 2, gap: 4 }}>

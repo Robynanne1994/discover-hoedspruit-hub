@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import HomeSectionHead from "./HomeSectionHead";
 import FavouriteButton from "@/components/FavouriteButton";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -64,6 +65,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                 <FavouriteButton itemId={l.id} itemType="listing" />
               </div>
               <div
+                {...noTitleCaseProps(l)}
                 style={{
                   fontFamily: HN,
                   fontSize: 13,
@@ -73,7 +75,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                   wordBreak: "break-word",
                 }}
               >
-                {cleanName(l.title)}
+                {(l as any).title_override?.trim() ? getDisplayTitle(l) : cleanName(l.title)}
               </div>
               {(l.subtitle || l.category_label) && (
                 <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E", marginBottom: 3 }}>

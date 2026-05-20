@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "react-router-dom";
 import SectionHeader from "./SectionHeader";
 import { MapPin } from "lucide-react";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const FeaturedCarousel = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -15,7 +16,7 @@ const FeaturedCarousel = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("listings")
-        .select("id, title, description, image_url, location")
+        .select("id, title, title_override, description, image_url, location")
         .eq("is_featured", true)
         .limit(6);
       if (error) throw error;
@@ -69,10 +70,11 @@ const FeaturedCarousel = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-5">
               <h3
+                {...noTitleCaseProps(item)}
                 className="text-white font-semibold text-lg leading-snug mb-1"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
-                {item.title}
+                {getDisplayTitle(item)}
               </h3>
               {item.location && (
                 <div className="flex items-center gap-1.5">
