@@ -344,15 +344,6 @@ const AdminSpecials = () => {
             onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
             addLabel="Add WhatsApp"
           />
-          <MultiContactField
-            label="Contact Email (optional)"
-            type="email"
-            primary={(form.additional_emails?.[0] as string) ? "" : ""}
-            onPrimaryChange={() => {}}
-            extras={form.additional_emails || []}
-            onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
-            addLabel="Add email"
-          />
 
           <GroupLabel>Other</GroupLabel>
           <div><Label>Terms & Conditions (optional)</Label><Textarea placeholder="e.g. T's & C's apply. Sit down only." value={form.terms || ""} onChange={(e) => setForm({ ...form, terms: e.target.value || null })} style={{ minHeight: 80 }} /></div>
