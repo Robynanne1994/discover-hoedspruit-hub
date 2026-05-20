@@ -918,12 +918,14 @@ export type Database = {
           payment_methods: string[] | null
           pets_allowed: boolean | null
           phone: string | null
+          plant_types: string[] | null
           practitioners: string[] | null
           price_level: number | null
           price_range: string | null
           product_categories: string[] | null
           seating: string[] | null
           service_type: string[] | null
+          services_offered: string[] | null
           shop_type: string | null
           show_attributes: boolean
           sleeps: number | null
@@ -1017,12 +1019,14 @@ export type Database = {
           payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
+          plant_types?: string[] | null
           practitioners?: string[] | null
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
           seating?: string[] | null
           service_type?: string[] | null
+          services_offered?: string[] | null
           shop_type?: string | null
           show_attributes?: boolean
           sleeps?: number | null
@@ -1116,12 +1120,14 @@ export type Database = {
           payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
+          plant_types?: string[] | null
           practitioners?: string[] | null
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
           seating?: string[] | null
           service_type?: string[] | null
+          services_offered?: string[] | null
           shop_type?: string | null
           show_attributes?: boolean
           sleeps?: number | null
