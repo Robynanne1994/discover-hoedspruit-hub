@@ -135,24 +135,43 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} placeholder="+27 ..." /></div>
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
           <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By</Label></div>
-          <div className="space-y-3 p-3 border rounded">
-            <Label className="text-sm font-semibold">Host 1</Label>
-            <div><Label>Name</Label><Input value={form.hosted_by_name || ""} onChange={(e) => set("hosted_by_name", e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
-            <div><Label>Subtitle</Label><Input value={form.hosted_by_subtitle || ""} onChange={(e) => set("hosted_by_subtitle", e.target.value)} placeholder="e.g. Yoga Teachers" /></div>
-            <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url || ""} onChange={(url) => set("hosted_by_image_url", url)} /></div>
-          </div>
-          <div className="space-y-3 p-3 border rounded">
-            <Label className="text-sm font-semibold">Host 2</Label>
-            <div><Label>Name</Label><Input value={form.hosted_by_name_2 || ""} onChange={(e) => set("hosted_by_name_2", e.target.value)} /></div>
-            <div><Label>Subtitle</Label><Input value={form.hosted_by_subtitle_2 || ""} onChange={(e) => set("hosted_by_subtitle_2", e.target.value)} /></div>
-            <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url_2 || ""} onChange={(url) => set("hosted_by_image_url_2", url)} /></div>
-          </div>
-          <div className="space-y-3 p-3 border rounded">
-            <Label className="text-sm font-semibold">Host 3</Label>
-            <div><Label>Name</Label><Input value={form.hosted_by_name_3 || ""} onChange={(e) => set("hosted_by_name_3", e.target.value)} /></div>
-            <div><Label>Subtitle</Label><Input value={form.hosted_by_subtitle_3 || ""} onChange={(e) => set("hosted_by_subtitle_3", e.target.value)} /></div>
-            <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form.hosted_by_image_url_3 || ""} onChange={(url) => set("hosted_by_image_url_3", url)} /></div>
-          </div>
+          {(() => {
+            const hostCount = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
+            const [shown, setShownLocal] = [form.__hostsShown ?? hostCount, (n: number) => set("__hostsShown", n)];
+            if (shown === 0) {
+              return (
+                <Button type="button" variant="outline" onClick={() => setShownLocal(1)}>+ Add Host</Button>
+              );
+            }
+            const hosts: Array<{ n: number; nameKey: string; subKey: string; imgKey: string }> = [
+              { n: 1, nameKey: "hosted_by_name", subKey: "hosted_by_subtitle", imgKey: "hosted_by_image_url" },
+              { n: 2, nameKey: "hosted_by_name_2", subKey: "hosted_by_subtitle_2", imgKey: "hosted_by_image_url_2" },
+              { n: 3, nameKey: "hosted_by_name_3", subKey: "hosted_by_subtitle_3", imgKey: "hosted_by_image_url_3" },
+            ];
+            return (
+              <>
+                {hosts.slice(0, shown).map((h) => (
+                  <div key={h.n} className="space-y-3 p-3 border rounded">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-semibold">Host {h.n}</Label>
+                      {h.n === shown && shown > 0 && (
+                        <Button type="button" variant="ghost" size="sm" onClick={() => {
+                          set(h.nameKey, ""); set(h.subKey, ""); set(h.imgKey, "");
+                          setShownLocal(shown - 1);
+                        }}>Remove</Button>
+                      )}
+                    </div>
+                    <div><Label>Name</Label><Input value={form[h.nameKey] || ""} onChange={(e) => set(h.nameKey, e.target.value)} placeholder="e.g. Kristi & Joëlle" /></div>
+                    <div><Label>Subtitle</Label><Input value={form[h.subKey] || ""} onChange={(e) => set(h.subKey, e.target.value)} placeholder="e.g. Yoga Teachers" /></div>
+                    <div><Label>Photo</Label><ImageUpload bucket="listing-images" value={form[h.imgKey] || ""} onChange={(url) => set(h.imgKey, url)} /></div>
+                  </div>
+                ))}
+                {shown < 3 && (
+                  <Button type="button" variant="outline" onClick={() => setShownLocal(shown + 1)}>+ Add Another Host</Button>
+                )}
+              </>
+            );
+          })()}
         </div>
         <DialogFooter className="gap-2 sm:justify-between">
           <Button
