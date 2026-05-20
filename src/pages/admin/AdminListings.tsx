@@ -52,6 +52,7 @@ const AdminListings = () => {
   const [newSubParent, setNewSubParent] = useState<string>("");
   const [showNewSub, setShowNewSub] = useState(false);
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
+  const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
