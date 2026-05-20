@@ -620,6 +620,7 @@ const Events = () => {
       >
         {FILTERS.map((f) => {
           const active = !selectedDate && activeFilter === f.value;
+          const count = useFilterCount(f.value, sortedEvents, selectedDate);
           return (
             <button
               key={f.value}
@@ -638,7 +639,7 @@ const Events = () => {
                 letterSpacing: "0.01em",
               }}
             >
-              {f.label}
+              {f.label} <span style={{ opacity: 1 }}>({count})</span>
             </button>
           );
         })}
@@ -667,11 +668,16 @@ const Events = () => {
           >
             {sectionTitle}
           </h2>
-          {filtered.length > 5 && (
-            <span style={{ fontFamily: SANS, fontSize: 12, color: C.muted }}>
-              {filtered.length} total
-            </span>
-          )}
+          <span
+            style={{
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 15,
+              color: C.ink,
+            }}
+          >
+            ({filtered.length})
+          </span>
         </div>
 
         {isLoading ? (
