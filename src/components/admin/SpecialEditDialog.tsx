@@ -195,10 +195,24 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <div><Label>Original Price <span className="text-xs text-muted-foreground">(strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
           </div>
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><Label>Contact Phone</Label><Input value={form.contact_phone || ""} onChange={(e) => set("contact_phone", e.target.value)} /></div>
-            <div><Label>WhatsApp</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => set("contact_whatsapp", e.target.value)} /></div>
-          </div>
+          <MultiContactField
+            label="Contact Phone"
+            type="tel"
+            primary={form.contact_phone || ""}
+            onPrimaryChange={(v) => set("contact_phone", v)}
+            extras={form.additional_phones || []}
+            onExtrasChange={(v) => set("additional_phones", v)}
+            addLabel="Add phone"
+          />
+          <MultiContactField
+            label="WhatsApp"
+            type="tel"
+            primary={form.contact_whatsapp || ""}
+            onPrimaryChange={(v) => set("contact_whatsapp", v)}
+            extras={form.additional_whatsapps || []}
+            onExtrasChange={(v) => set("additional_whatsapps", v)}
+            addLabel="Add WhatsApp"
+          />
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground">(optional — shown instead of the URL)</span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Category</Label><Input value={form.category || ""} onChange={(e) => set("category", e.target.value)} /></div>
