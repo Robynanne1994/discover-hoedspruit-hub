@@ -615,10 +615,10 @@ const ListingDetail = () => {
                   {openStatus.state === "open" ? "Open now" : openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}
                 </span>
                 {openStatus.state === "open" && openStatus.closes && (
-                  <span style={{ fontSize: 14, color: C.muted }}>· Closes {openStatus.closes}</span>
+                  <span style={{ fontSize: 14, color: C.text }}>· Closes {openStatus.closes}</span>
                 )}
                 {openStatus.state === "closed" && openStatus.opensAt && (
-                  <span style={{ fontSize: 14, color: C.muted }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
+                  <span style={{ fontSize: 14, color: C.text }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
                 )}
               </div>
             )}
@@ -1060,7 +1060,7 @@ const SuggestEditFooter = ({ onClick }: { onClick: () => void }) => (
   <div style={{ marginTop: 32, textAlign: "center" }}>
     <button onClick={onClick} style={{
       background: "none", border: "none", cursor: "pointer", padding: 0,
-      fontFamily: FONT, fontSize: 13, color: C.muted,
+      fontFamily: FONT, fontSize: 13, color: C.text,
       textDecoration: "underline", textUnderlineOffset: 3,
     }}>
       Suggest an edit to this listing.
