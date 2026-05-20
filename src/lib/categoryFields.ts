@@ -62,6 +62,10 @@ export function isNGOCategory(categoryTitle: string): boolean {
   return NGO_CATEGORY_PATTERN.test(categoryTitle);
 }
 
+export function isTradesCategory(categoryTitle: string): boolean {
+  return TRADES_CATEGORY_PATTERN.test(categoryTitle);
+}
+
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
@@ -76,5 +80,9 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isNGOCategory(categoryTitle)) {
     headers.push(...NGO_ONLY_FIELDS);
   }
+  if (categoryTitle && isTradesCategory(categoryTitle)) {
+    headers.push(...TRADES_ONLY_FIELDS);
+  }
   return headers;
 }
+
