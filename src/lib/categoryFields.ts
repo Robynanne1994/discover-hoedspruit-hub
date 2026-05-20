@@ -92,6 +92,9 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isTradesCategory(categoryTitle)) {
     headers.push(...TRADES_ONLY_FIELDS);
   }
+  if (categoryTitle && isHomeGardenCategory(categoryTitle)) {
+    headers.push(...HOME_GARDEN_ONLY_FIELDS);
+  }
   return headers;
 }
 
