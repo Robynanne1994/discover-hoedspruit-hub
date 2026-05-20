@@ -71,6 +71,10 @@ export function isTradesCategory(categoryTitle: string): boolean {
   return TRADES_CATEGORY_PATTERN.test(categoryTitle);
 }
 
+export function isHomeGardenCategory(categoryTitle: string): boolean {
+  return HOME_GARDEN_CATEGORY_PATTERN.test(categoryTitle);
+}
+
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
