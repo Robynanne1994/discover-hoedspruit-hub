@@ -181,6 +181,9 @@ const AdminSpecials = () => {
       promo_code: s.promo_code,
       contact_phone: s.contact_phone,
       contact_whatsapp: s.contact_whatsapp,
+      additional_emails: ((s as any).additional_emails ?? []) as string[],
+      additional_phones: ((s as any).additional_phones ?? []) as string[],
+      additional_whatsapps: ((s as any).additional_whatsapps ?? []) as string[],
       terms: s.terms,
       category: s.category,
     });
