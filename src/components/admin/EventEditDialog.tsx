@@ -106,24 +106,46 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
             <div><Label>Sub-tag 2 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
           </div>
-          <div>
-            <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
-            <select
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={form.business_id || ""}
-              onChange={(e) => set("business_id", e.target.value || null)}
-            >
-              <option value="">— Not linked —</option>
-              {(listings || []).map((l: any) => (
-                <option key={l.id} value={l.id}>{l.title}</option>
-              ))}
-            </select>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
+            <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
+          </div>
+          <div className="space-y-2">
+            <Label>Linked Business Listings</Label>
+            {(Array.isArray(form.business_ids) ? form.business_ids : []).map((bid: string, idx: number) => (
+              <div key={idx} className="flex gap-2">
+                <select
+                  className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={bid || ""}
+                  onChange={(e) => {
+                    const arr = [...(form.business_ids || [])];
+                    arr[idx] = e.target.value || null;
+                    set("business_ids", arr.filter((x) => x !== null));
+                  }}
+                >
+                  <option value="">— Select a listing —</option>
+                  {(listings || []).map((l: any) => (
+                    <option key={l.id} value={l.id}>{l.title}</option>
+                  ))}
+                </select>
+                <Button type="button" variant="ghost" size="sm" onClick={() => {
+                  const arr = [...(form.business_ids || [])];
+                  arr.splice(idx, 1);
+                  set("business_ids", arr);
+                }}>Remove</Button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={() => {
+              const arr = [...(form.business_ids || []), ""];
+              set("business_ids", arr);
+            }}>+ Add Linked Listing</Button>
           </div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
-          <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
+          <div><Label>Card Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={16/9} /></div>
+          <div><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
-            <div><Label>End Date <span className="text-xs text-muted-foreground">(same as start for 1-day event)</span></Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
+            <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
           </div>
           <div><Label>Date <span className="text-xs text-muted-foreground">(legacy free-text — used only when start/end dates are empty, e.g. "Every Saturday")</span></Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
           <div className="grid grid-cols-2 gap-3">
