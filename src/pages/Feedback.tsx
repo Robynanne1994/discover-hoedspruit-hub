@@ -243,7 +243,7 @@ const Feedback = () => {
         {/* Footer note */}
         <p style={{
           fontFamily: FF, fontSize: 13.5, fontWeight: 400, lineHeight: 1.55,
-          color: MUTED, textAlign: "center", margin: "8px 8px 0",
+          color: "#4A3F35", textAlign: "left", margin: "8px 0 0",
         }}>
           Every piece of feedback helps us improve. We read everything, and appreciate you taking the time to share your thoughts with us.
         </p>
