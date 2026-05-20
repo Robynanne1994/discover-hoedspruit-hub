@@ -8,16 +8,16 @@ const HomeMasthead = () => {
   return (
     <div style={{ paddingTop: 56, padding: "56px 20px 0" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
+        <div style={{ display: "flex", alignItems: "stretch", gap: 12, minWidth: 0 }}>
           <img
             src={hhLogo}
             alt="Hello Hoedspruit"
             style={{
-              width: 48,
-              height: 48,
-              borderRadius: 999,
+              height: 62,
+              width: "auto",
               objectFit: "contain",
               flexShrink: 0,
+              alignSelf: "stretch",
             }}
           />
           <div style={{ minWidth: 0 }}>
