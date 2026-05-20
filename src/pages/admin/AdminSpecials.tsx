@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
+import MultiContactField from "@/components/admin/MultiContactField";
+import { sanitizeContactArray } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -34,6 +36,9 @@ interface Special {
   promo_code: string | null;
   contact_phone: string | null;
   contact_whatsapp: string | null;
+  additional_emails: string[];
+  additional_phones: string[];
+  additional_whatsapps: string[];
   terms: string | null;
   category: string | null;
 }
@@ -59,6 +64,9 @@ const emptyForm: Omit<Special, "id"> = {
   promo_code: null,
   contact_phone: null,
   contact_whatsapp: null,
+  additional_emails: [],
+  additional_phones: [],
+  additional_whatsapps: [],
   terms: null,
   category: null,
 };
