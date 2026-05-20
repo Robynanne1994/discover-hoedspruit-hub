@@ -13,6 +13,7 @@ import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
 import { formatSAPhone } from "@/lib/formatPhone";
+import { collectContacts } from "@/lib/contacts";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -412,8 +413,16 @@ const SpecialDetail = () => {
 
   const renderContact = () => {
     const rows: { Icon: any; label: string; value: string; href: string; external?: boolean }[] = [];
-    if (phoneClean) rows.push({ Icon: Phone, label: "Phone", value: formatSAPhone(special.contact_phone!), href: `tel:${phoneClean}` });
-    if (waClean) rows.push({ Icon: Phone, label: "WhatsApp", value: formatSAPhone(special.contact_whatsapp!), href: `https://wa.me/${waClean}`, external: true });
+    const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
+    const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
+    phones.forEach((p, i) => {
+      const clean = p.replace(/\s/g, "");
+      rows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${clean}` });
+    });
+    whatsapps.forEach((w, i) => {
+      const clean = w.replace(/[^0-9]/g, "");
+      rows.push({ Icon: Phone, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
+    });
     if (special.booking_link) rows.push({
       Icon: ExternalLink, label: "Booking",
       value: sp.booking_link_label?.trim() || special.booking_link,

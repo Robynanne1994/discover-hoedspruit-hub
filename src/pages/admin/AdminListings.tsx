@@ -17,6 +17,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import ImageUpload from "@/components/admin/ImageUpload";
 import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
+import MultiContactField from "@/components/admin/MultiContactField";
+import { sanitizeContactArray } from "@/lib/contacts";
 
 type Listing = Tables<"listings">;
 
@@ -31,7 +33,7 @@ const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["Shopping Centre", "Curios & Gifts", "General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Stationery Shop", "Other"];
 const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
 
-const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", whatsapp: "", google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string };
+const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -180,6 +182,9 @@ const AdminListings = () => {
         website: values.website || null,
         website_label: values.website_label || null,
         whatsapp: values.whatsapp || null,
+        additional_emails: sanitizeContactArray(values.additional_emails),
+        additional_phones: sanitizeContactArray(values.additional_phones),
+        additional_whatsapps: sanitizeContactArray(values.additional_whatsapps),
           google_maps_link: values.google_maps_link || null,
           google_rating: values.google_rating,
           google_reviews_count: values.google_reviews_count,
@@ -334,6 +339,9 @@ const AdminListings = () => {
       website: l.website ?? "",
       website_label: (l as any).website_label ?? "",
       whatsapp: (l as any).whatsapp ?? "",
+      additional_emails: ((l as any).additional_emails ?? []) as string[],
+      additional_phones: ((l as any).additional_phones ?? []) as string[],
+      additional_whatsapps: ((l as any).additional_whatsapps ?? []) as string[],
       google_maps_link: (l as any).google_maps_link ?? "",
       google_rating: (l as any).google_rating ?? null,
       google_reviews_count: (l as any).google_reviews_count ?? null,
@@ -591,16 +599,39 @@ const AdminListings = () => {
                   <ImageUpload bucket="listing-images" value={form.detail_image_url} onChange={(url) => setForm({ ...form, detail_image_url: url })} aspect={4/3} />
                 </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><Label>Phone</Label><Input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} /></div>
-                  <div><Label>Email</Label><Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></div>
-                </div>
+                <MultiContactField
+                  label="Phone"
+                  type="tel"
+                  primary={form.phone}
+                  onPrimaryChange={(v) => setForm({ ...form, phone: v })}
+                  extras={form.additional_phones}
+                  onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                  addLabel="Add phone"
+                />
+                <MultiContactField
+                  label="Email"
+                  type="email"
+                  primary={form.email}
+                  onPrimaryChange={(v) => setForm({ ...form, email: v })}
+                  extras={form.additional_emails}
+                  onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                  addLabel="Add email"
+                />
                 <div><Label>Website</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." /></div>
                 <div>
                   <Label>Website Display Text</Label>
                   <Input value={form.website_label} onChange={(e) => setForm({ ...form, website_label: e.target.value })} placeholder="e.g. Visit our Facebook page" />
                 </div>
-                <div><Label>WhatsApp Number</Label><Input value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} placeholder="e.g. +27791234567" /></div>
+                <MultiContactField
+                  label="WhatsApp Number"
+                  type="tel"
+                  primary={form.whatsapp}
+                  onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
+                  extras={form.additional_whatsapps}
+                  onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                  placeholder="e.g. +27791234567"
+                  addLabel="Add WhatsApp"
+                />
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>

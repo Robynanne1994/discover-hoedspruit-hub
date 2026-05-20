@@ -9,6 +9,8 @@ import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
+import MultiContactField from "@/components/admin/MultiContactField";
+import { sanitizeContactArray } from "@/lib/contacts";
 import { Plus, Pencil, Trash2, X, FileSpreadsheet } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -34,6 +36,9 @@ interface Special {
   promo_code: string | null;
   contact_phone: string | null;
   contact_whatsapp: string | null;
+  additional_emails: string[];
+  additional_phones: string[];
+  additional_whatsapps: string[];
   terms: string | null;
   category: string | null;
 }
@@ -59,6 +64,9 @@ const emptyForm: Omit<Special, "id"> = {
   promo_code: null,
   contact_phone: null,
   contact_whatsapp: null,
+  additional_emails: [],
+  additional_phones: [],
+  additional_whatsapps: [],
   terms: null,
   category: null,
 };
@@ -112,14 +120,20 @@ const AdminSpecials = () => {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      const cleaned = {
+        ...form,
+        additional_emails: sanitizeContactArray(form.additional_emails),
+        additional_phones: sanitizeContactArray(form.additional_phones),
+        additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
+      };
       if (editing) {
         const { error } = await supabase
           .from("specials")
-          .update(form as any)
+          .update(cleaned as any)
           .eq("id", editing.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase.from("specials").insert(form as any);
+        const { error } = await supabase.from("specials").insert(cleaned as any);
         if (error) throw error;
       }
     },
@@ -173,6 +187,9 @@ const AdminSpecials = () => {
       promo_code: s.promo_code,
       contact_phone: s.contact_phone,
       contact_whatsapp: s.contact_whatsapp,
+      additional_emails: ((s as any).additional_emails ?? []) as string[],
+      additional_phones: ((s as any).additional_phones ?? []) as string[],
+      additional_whatsapps: ((s as any).additional_whatsapps ?? []) as string[],
       terms: s.terms,
       category: s.category,
     });
@@ -315,8 +332,24 @@ const AdminSpecials = () => {
           <div><Label>Promo Code (optional)</Label><Input placeholder="e.g. WINTER2026" value={form.promo_code || ""} onChange={(e) => setForm({ ...form, promo_code: e.target.value || null })} /></div>
 
           <GroupLabel>Contact</GroupLabel>
-          <div><Label>Contact Phone (optional)</Label><Input value={form.contact_phone || ""} onChange={(e) => setForm({ ...form, contact_phone: e.target.value || null })} /></div>
-          <div><Label>WhatsApp (optional)</Label><Input value={form.contact_whatsapp || ""} onChange={(e) => setForm({ ...form, contact_whatsapp: e.target.value || null })} /></div>
+          <MultiContactField
+            label="Contact Phone (optional)"
+            type="tel"
+            primary={form.contact_phone || ""}
+            onPrimaryChange={(v) => setForm({ ...form, contact_phone: v || null })}
+            extras={form.additional_phones || []}
+            onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+            addLabel="Add phone"
+          />
+          <MultiContactField
+            label="WhatsApp (optional)"
+            type="tel"
+            primary={form.contact_whatsapp || ""}
+            onPrimaryChange={(v) => setForm({ ...form, contact_whatsapp: v || null })}
+            extras={form.additional_whatsapps || []}
+            onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+            addLabel="Add WhatsApp"
+          />
 
           <GroupLabel>Other</GroupLabel>
           <div><Label>Terms & Conditions (optional)</Label><Textarea placeholder="e.g. T's & C's apply. Sit down only." value={form.terms || ""} onChange={(e) => setForm({ ...form, terms: e.target.value || null })} style={{ minHeight: 80 }} /></div>
