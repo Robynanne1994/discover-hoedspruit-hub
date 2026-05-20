@@ -14,7 +14,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
+const emptyForm = { title: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -146,6 +146,7 @@ const AdminEvents = () => {
         sub_tag_1: values.sub_tag_1 || null,
         sub_tag_2: values.sub_tag_2 || null,
         image_url: values.image_url || null,
+        detail_image_url: (values as any).detail_image_url || null,
         start_time: values.start_time || null,
         end_time: values.end_time || null,
         recurrence: values.recurrence || null,
@@ -159,7 +160,8 @@ const AdminEvents = () => {
         booking_link: values.booking_link || null,
         price: values.price || null,
         notes: values.notes || null,
-        business_id: values.business_id || null,
+        business_id: ((values as any).business_ids?.[0]) || values.business_id || null,
+        business_ids: Array.isArray((values as any).business_ids) ? (values as any).business_ids.filter(Boolean) : [],
         is_featured: !!values.is_featured,
         hosted_by_name: values.hosted_by_name || null,
         hosted_by_subtitle: values.hosted_by_subtitle || null,
@@ -213,6 +215,7 @@ const AdminEvents = () => {
       sub_tag_1: (ev as any).sub_tag_1 ?? "",
       sub_tag_2: (ev as any).sub_tag_2 ?? "",
       image_url: ev.image_url ?? "",
+      detail_image_url: (ev as any).detail_image_url ?? "",
       start_time: ev.start_time ?? "",
       end_time: ev.end_time ?? "",
       recurrence: ev.recurrence ?? "",
@@ -227,6 +230,9 @@ const AdminEvents = () => {
       price: (ev as any).price ?? "",
       notes: (ev as any).notes ?? "",
       business_id: (ev as any).business_id ?? "",
+      business_ids: Array.isArray((ev as any).business_ids) && (ev as any).business_ids.length > 0
+        ? (ev as any).business_ids
+        : ((ev as any).business_id ? [(ev as any).business_id] : []),
       is_featured: !!(ev as any).is_featured,
       hosted_by_name: (ev as any).hosted_by_name ?? "",
       hosted_by_subtitle: (ev as any).hosted_by_subtitle ?? "",
@@ -260,7 +266,7 @@ const AdminEvents = () => {
               <div><Label>Description <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={4} /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Start Date</Label><Input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} /></div>
-                <div><Label>End Date <span className="text-xs text-muted-foreground">(same as start for 1-day)</span></Label><Input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} /></div>
+                <div><Label>End Date</Label><Input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} /></div>
               </div>
               <div><Label>Date Text <span className="text-xs text-muted-foreground">(optional fallback for recurring like "Every Saturday")</span></Label><Input value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} placeholder="Optional — leave blank to use start/end dates" /></div>
               <div><Label>Location <span className="text-xs text-muted-foreground">(HTML supported)</span></Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
@@ -271,27 +277,45 @@ const AdminEvents = () => {
               <div><Label>Tag</Label><Input value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} placeholder="e.g. Market, Sport, Dining" /></div>
               <div className="grid grid-cols-2 gap-4">
                 <div><Label>Sub-tag 1 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_1} onChange={(e) => setForm({ ...form, sub_tag_1: e.target.value })} placeholder="e.g. Family-friendly" /></div>
-                <div><Label>Sub-tag 2 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
+                <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value })} placeholder="e.g. Outdoor" /></div>
               </div>
-              <div>
-                <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
-                <select
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                  value={form.business_id}
-                  onChange={(e) => setForm({ ...form, business_id: e.target.value })}
-                >
-                  <option value="">— Not linked —</option>
-                  {(listings || []).map((l: any) => (
-                    <option key={l.id} value={l.id}>{l.title}</option>
-                  ))}
-                </select>
+              <div className="space-y-2">
+                <Label>Linked Business Listings</Label>
+                {((form as any).business_ids || []).map((bid: string, idx: number) => (
+                  <div key={idx} className="flex gap-2">
+                    <select
+                      className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      value={bid || ""}
+                      onChange={(e) => {
+                        const arr = [...((form as any).business_ids || [])];
+                        arr[idx] = e.target.value;
+                        setForm({ ...form, business_ids: arr, business_id: arr[0] || "" } as any);
+                      }}
+                    >
+                      <option value="">— Select a listing —</option>
+                      {(listings || []).map((l: any) => (
+                        <option key={l.id} value={l.id}>{l.title}</option>
+                      ))}
+                    </select>
+                    <Button type="button" variant="ghost" size="sm" onClick={() => {
+                      const arr = [...((form as any).business_ids || [])];
+                      arr.splice(idx, 1);
+                      setForm({ ...form, business_ids: arr, business_id: arr[0] || "" } as any);
+                    }}>Remove</Button>
+                  </div>
+                ))}
+                <Button type="button" variant="outline" size="sm" onClick={() => {
+                  const arr = [...((form as any).business_ids || []), ""];
+                  setForm({ ...form, business_ids: arr } as any);
+                }}>+ Add Linked Listing</Button>
               </div>
               <div><Label>Recurrence</Label>
                 <select className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" value={form.recurrence} onChange={(e) => setForm({ ...form, recurrence: e.target.value })}>
                   {RECURRENCE_OPTIONS.map((opt) => <option key={opt} value={opt}>{opt || "Not recurring"}</option>)}
                 </select>
               </div>
-              <div className="space-y-2"><Label>Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={4/3} /></div>
+              <div className="space-y-2"><Label>Card Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url} onChange={(v) => setForm({ ...form, image_url: v })} aspect={16/9} /></div>
+              <div className="space-y-2"><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={(form as any).detail_image_url || ""} onChange={(v) => setForm({ ...form, detail_image_url: v } as any)} aspect={4/3} /></div>
               <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
               <div><Label>Social Media Link</Label><Input value={form.social_media_link} onChange={(e) => setForm({ ...form, social_media_link: e.target.value })} placeholder="https://instagram.com/..." /></div>
               <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>

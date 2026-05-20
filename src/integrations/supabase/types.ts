@@ -384,12 +384,14 @@ export type Database = {
           booking_link: string | null
           booking_link_label: string | null
           business_id: string | null
+          business_ids: string[] | null
           contact_email: string | null
           contact_phone: string | null
           contact_whatsapp: string | null
           created_at: string
           date: string
           description: string | null
+          detail_image_url: string | null
           end_date: string | null
           end_time: string | null
           gallery_images: string[] | null
@@ -424,12 +426,14 @@ export type Database = {
           booking_link?: string | null
           booking_link_label?: string | null
           business_id?: string | null
+          business_ids?: string[] | null
           contact_email?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
           date: string
           description?: string | null
+          detail_image_url?: string | null
           end_date?: string | null
           end_time?: string | null
           gallery_images?: string[] | null
@@ -464,12 +468,14 @@ export type Database = {
           booking_link?: string | null
           booking_link_label?: string | null
           business_id?: string | null
+          business_ids?: string[] | null
           contact_email?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
           date?: string
           description?: string | null
+          detail_image_url?: string | null
           end_date?: string | null
           end_time?: string | null
           gallery_images?: string[] | null

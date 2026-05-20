@@ -18,9 +18,9 @@ interface Props {
 
 const FIELDS = [
   "title", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
-  "tag", "sub_tag_1", "sub_tag_2", "image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp",
-  "business_id", "is_featured",
+  "business_id", "business_ids", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url",
   "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2",
   "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3",
@@ -30,7 +30,14 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(event);
 
-  useEffect(() => { setForm(event); }, [event, open]);
+  useEffect(() => {
+    if (!event) { setForm(event); return; }
+    const seeded = { ...event };
+    if (!Array.isArray(seeded.business_ids) || seeded.business_ids.length === 0) {
+      seeded.business_ids = seeded.business_id ? [seeded.business_id] : [];
+    }
+    setForm(seeded);
+  }, [event, open]);
 
   const { data: listings } = useQuery({
     queryKey: ["all-listings-for-events"],
@@ -44,6 +51,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
     mutationFn: async () => {
       const payload: any = {};
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
+      // Normalize business_ids -> ensure array, sync legacy single business_id to first entry
+      const ids = Array.isArray(form.business_ids) ? form.business_ids.filter(Boolean) : [];
+      payload.business_ids = ids;
+      payload.business_id = ids[0] ?? null;
       // `date` is required (NOT NULL). Auto-fill from start/end dates if left blank.
       if (!payload.date || !String(payload.date).trim()) {
         if (payload.start_date && payload.end_date && payload.start_date !== payload.end_date) {
@@ -93,26 +104,44 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Tag/Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
-            <div><Label>Sub-tag 2 <span className="text-xs text-muted-foreground">(optional)</span></Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
+            <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
           </div>
-          <div>
-            <Label>Linked Business Listing <span className="text-xs text-muted-foreground">(optional)</span></Label>
-            <select
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={form.business_id || ""}
-              onChange={(e) => set("business_id", e.target.value || null)}
-            >
-              <option value="">— Not linked —</option>
-              {(listings || []).map((l: any) => (
-                <option key={l.id} value={l.id}>{l.title}</option>
-              ))}
-            </select>
+          <div className="space-y-2">
+            <Label>Linked Business Listings</Label>
+            {(Array.isArray(form.business_ids) ? form.business_ids : []).map((bid: string, idx: number) => (
+              <div key={idx} className="flex gap-2">
+                <select
+                  className="flex-1 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  value={bid || ""}
+                  onChange={(e) => {
+                    const arr = [...(form.business_ids || [])];
+                    arr[idx] = e.target.value || null;
+                    set("business_ids", arr.filter((x) => x !== null));
+                  }}
+                >
+                  <option value="">— Select a listing —</option>
+                  {(listings || []).map((l: any) => (
+                    <option key={l.id} value={l.id}>{l.title}</option>
+                  ))}
+                </select>
+                <Button type="button" variant="ghost" size="sm" onClick={() => {
+                  const arr = [...(form.business_ids || [])];
+                  arr.splice(idx, 1);
+                  set("business_ids", arr);
+                }}>Remove</Button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={() => {
+              const arr = [...(form.business_ids || []), ""];
+              set("business_ids", arr);
+            }}>+ Add Linked Listing</Button>
           </div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
-          <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
+          <div><Label>Card Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={16/9} /></div>
+          <div><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
-            <div><Label>End Date <span className="text-xs text-muted-foreground">(same as start for 1-day event)</span></Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
+            <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
           </div>
           <div><Label>Date <span className="text-xs text-muted-foreground">(legacy free-text — used only when start/end dates are empty, e.g. "Every Saturday")</span></Label><Input value={form.date || ""} onChange={(e) => set("date", e.target.value)} placeholder="Optional fallback text" /></div>
           <div className="grid grid-cols-2 gap-3">
@@ -124,7 +153,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
           <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => set("notes", e.target.value)} placeholder="Additional info shown under price" /></div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
-          <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground">(optional — shown instead of the URL)</span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
+          <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
           <div><Label>Social Media Label</Label><Input value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Instagram, Facebook" /></div>
