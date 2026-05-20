@@ -366,11 +366,10 @@ const AccountInfo = () => {
             textAlign: "center",
             marginRight: 40,
             fontFamily: FF,
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: 700,
             color: INK,
             lineHeight: 1,
-            letterSpacing: "-0.2px",
           }}
         >
           Account Info
