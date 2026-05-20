@@ -144,35 +144,12 @@ const Search = () => {
 
       {/* Search input */}
       <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
-        <div
-          style={{
-            height: 48,
-            background: "#FFFFFF",
-            borderRadius: 999,
-            padding: "0 20px",
-            display: "flex",
-            alignItems: "center",
-            gap: 12,
-          }}
-        >
-          <SearchIcon size={18} strokeWidth={1.6} color={INK} style={{ flexShrink: 0 }} />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={placeholder}
-            className="placeholder:text-[#2b2420]/80"
-            style={{
-              flex: 1,
-              background: "transparent",
-              outline: "none",
-              border: "none",
-              fontFamily: FONT,
-              fontSize: 14,
-              color: INK,
-            }}
-          />
-        </div>
+        <SearchBar
+          variant="cream"
+          value={query}
+          onChange={setQuery}
+          placeholder={placeholder}
+        />
       </div>
 
       {/* Sub pills */}
