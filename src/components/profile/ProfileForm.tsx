@@ -240,7 +240,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
           }}
           aria-label="Back"
         >
-          <ArrowLeft size={18} strokeWidth={1.6} color={DEEP} />
+          <ArrowLeft size={18} strokeWidth={2} color={DEEP} />
         </button>
         <button
           onClick={() => navigate(-1)}
