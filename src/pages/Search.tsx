@@ -12,8 +12,8 @@ const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PRIMARY = "#715a3d";
 const INK = "#020202";
 const BODY = "#2b2420";
-const PAGE_BG = "#ebebeb";
-const IVORY = "#f5f0e8";
+const PAGE_BG = "#E6E0CC";
+const IVORY = "#DCD4BD";
 const DIVIDER = "rgba(18,18,20,0.08)";
 
 type TopTab = "users" | "businesses";
