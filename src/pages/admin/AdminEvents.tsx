@@ -12,10 +12,12 @@ import { Link } from "react-router-dom";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ImageUpload from "@/components/admin/ImageUpload";
+import MultiContactField from "@/components/admin/MultiContactField";
+import { sanitizeContactArray } from "@/lib/contacts";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -158,6 +160,9 @@ const AdminEvents = () => {
         contact_email: values.contact_email || null,
         contact_phone: values.contact_phone || null,
         contact_whatsapp: values.contact_whatsapp || null,
+        additional_emails: sanitizeContactArray(values.additional_emails),
+        additional_phones: sanitizeContactArray(values.additional_phones),
+        additional_whatsapps: sanitizeContactArray(values.additional_whatsapps),
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
         price: values.price || null,
@@ -228,6 +233,9 @@ const AdminEvents = () => {
       contact_email: (ev as any).contact_email ?? "",
       contact_phone: (ev as any).contact_phone ?? "",
       contact_whatsapp: (ev as any).contact_whatsapp ?? "",
+      additional_emails: ((ev as any).additional_emails ?? []) as string[],
+      additional_phones: ((ev as any).additional_phones ?? []) as string[],
+      additional_whatsapps: ((ev as any).additional_whatsapps ?? []) as string[],
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
       price: (ev as any).price ?? "",
@@ -344,11 +352,36 @@ const AdminEvents = () => {
               <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
               <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} placeholder="Additional info shown under price on event page" /></div>
-              <div className="grid grid-cols-2 gap-4">
-                <div><Label>Contact Email</Label><Input type="email" value={form.contact_email} onChange={(e) => setForm({ ...form, contact_email: e.target.value })} placeholder="info@example.com" /></div>
-                <div><Label>Contact Phone</Label><Input value={form.contact_phone} onChange={(e) => setForm({ ...form, contact_phone: e.target.value })} placeholder="+27 ..." /></div>
-              </div>
-              <div><Label>Contact WhatsApp</Label><Input value={form.contact_whatsapp} onChange={(e) => setForm({ ...form, contact_whatsapp: e.target.value })} placeholder="+27 ..." /></div>
+              <MultiContactField
+                label="Contact Email"
+                type="email"
+                primary={form.contact_email}
+                onPrimaryChange={(v) => setForm({ ...form, contact_email: v })}
+                extras={form.additional_emails}
+                onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                placeholder="info@example.com"
+                addLabel="Add email"
+              />
+              <MultiContactField
+                label="Contact Phone"
+                type="tel"
+                primary={form.contact_phone}
+                onPrimaryChange={(v) => setForm({ ...form, contact_phone: v })}
+                extras={form.additional_phones}
+                onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                placeholder="+27 ..."
+                addLabel="Add phone"
+              />
+              <MultiContactField
+                label="Contact WhatsApp"
+                type="tel"
+                primary={form.contact_whatsapp}
+                onPrimaryChange={(v) => setForm({ ...form, contact_whatsapp: v })}
+                extras={form.additional_whatsapps}
+                onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                placeholder="+27 ..."
+                addLabel="Add WhatsApp"
+              />
               <EventGalleryUpload value={form.gallery_images} onChange={(v) => setForm({ ...form, gallery_images: v })} />
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm({ ...form, is_featured: e.target.checked })} className="h-4 w-4" />
