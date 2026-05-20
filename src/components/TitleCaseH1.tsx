@@ -32,6 +32,11 @@ const applyToAll = () => {
   const h1s = document.querySelectorAll<HTMLElement>("h1");
   h1s.forEach((el) => {
     if (el.dataset.titleCased === el.textContent) return;
+    // Honour explicit opt-out (override titles render verbatim)
+    if (el.hasAttribute("data-no-title-case") || el.closest("[data-no-title-case]")) {
+      el.dataset.titleCased = el.textContent || "";
+      return;
+    }
     // Only transform leaf text (no nested elements with their own meaning)
     if (el.children.length === 0 && el.textContent) {
       const next = toTitleCase(el.textContent);
