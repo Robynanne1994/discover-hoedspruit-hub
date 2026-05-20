@@ -309,6 +309,30 @@ const CategoryPage = () => {
         .in("id", listingIds)
         .order("is_featured", { ascending: false });
       if (error) throw error;
+
+      // Fetch all categories per listing (junction + legacy category_id)
+      const [{ data: allJunction }, { data: allCats }] = await Promise.all([
+        supabase.from("listing_categories").select("listing_id, category_id").in("listing_id", listingIds),
+        supabase.from("categories").select("id, title"),
+      ]);
+      const catTitleById = new Map<string, string>();
+      (allCats || []).forEach((c: any) => catTitleById.set(c.id, c.title));
+      const listingToCats = new Map<string, Set<string>>();
+      (allJunction || []).forEach((r: any) => {
+        const title = catTitleById.get(r.category_id);
+        if (!title) return;
+        if (!listingToCats.has(r.listing_id)) listingToCats.set(r.listing_id, new Set());
+        listingToCats.get(r.listing_id)!.add(title);
+      });
+      (data || []).forEach((l: any) => {
+        const set = listingToCats.get(l.id) || new Set<string>();
+        if (l.category_id) {
+          const legacyTitle = catTitleById.get(l.category_id);
+          if (legacyTitle) set.add(legacyTitle);
+        }
+        l._allCategories = Array.from(set);
+      });
+
       return sanitizeDashesList(data as any[]);
     },
     enabled: !!id,
@@ -745,8 +769,9 @@ const CategoryPage = () => {
             const hasHours = l.opening_hours && Object.values(l.opening_hours as Record<string, string>).some((v) => v);
             const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
 
-            const sub = l.subtitle || l.category_label || "";
-            const subtitleLine = sub ? `${categoryTitle.replace(/s\s*&.*$/i, "").replace(/s$/, "")} • ${sub}` : categoryTitle;
+            const allCats: string[] = (l as any)._allCategories || [];
+            const otherCats = allCats.filter((c) => c && c !== categoryTitle);
+            const orderedCats = [categoryTitle, ...otherCats];
 
             return (
               <article
@@ -837,8 +862,24 @@ const CategoryPage = () => {
                     )}
                   </div>
 
-                  <div style={{ fontFamily: sans, fontSize: 13, color: MUTED, marginBottom: l.location ? 10 : 0 }}>
-                    {subtitleLine}
+                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED, marginBottom: l.location ? 10 : 0 }}>
+                    {orderedCats.map((c, i) => (
+                      <span key={`${c}-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        {i > 0 && (
+                          <span
+                            aria-hidden
+                            style={{
+                              width: 3,
+                              height: 3,
+                              borderRadius: "50%",
+                              background: MUTED,
+                              display: "inline-block",
+                            }}
+                          />
+                        )}
+                        <span>{c}</span>
+                      </span>
+                    ))}
                   </div>
 
                   {l.location && (
