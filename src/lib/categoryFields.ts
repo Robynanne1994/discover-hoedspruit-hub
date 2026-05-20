@@ -39,6 +39,10 @@ export const TRADES_ONLY_FIELDS = [
   "business_started_year", "years_in_business", "after_hours_available", "callout_fee", "specialities"
 ] as const;
 
+export const HOME_GARDEN_ONLY_FIELDS = [
+  "services_offered", "plant_types", "business_started_year", "years_in_business", "specialities"
+] as const;
+
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
 export const SHOPPING_CATEGORY_PATTERN = /^shopping$/i;
 export const ACCOMMODATION_CATEGORY_PATTERN = /^accommodation$/i;
