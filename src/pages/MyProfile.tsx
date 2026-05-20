@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
-import { Pencil, Heart, SlidersHorizontal, Star } from "lucide-react";
+import { Pencil, Heart, Settings, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PAGE_BG = "#E6E0CC";
