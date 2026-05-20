@@ -464,8 +464,32 @@ const ListingDetail = () => {
       if (items.length) {
         sections.push({ key: "trades-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
       }
+  }
+
+  if (isListingHomeGarden) {
+    const services = (l.services_offered as string[] | null) ?? [];
+    const plantTypes = (l.plant_types as string[] | null) ?? [];
+    if (services.length) {
+      sections.push({ key: "hg-services", title: "Services", iconComp: Wrench, fields: services.map((label: string) => ({ label, on: true })) });
+    }
+    if (services.includes("Nursery") && plantTypes.length) {
+      sections.push({ key: "hg-plants", title: "Plant types", iconComp: Leaf, fields: plantTypes.map((label: string) => ({ label, on: true })) });
+    }
+    let tenureLabel: string | null = null;
+    if (l.business_started_year) tenureLabel = `Since ${l.business_started_year}`;
+    else if (l.years_in_business) tenureLabel = `${l.years_in_business} ${l.years_in_business === 1 ? "year" : "years"} in business`;
+    if (tenureLabel) {
+      sections.push({ key: "hg-tenure", title: "In business", iconComp: Calendar, fields: [{ label: tenureLabel, on: true }] });
+    }
+    if (l.specialities && l.specialities.trim()) {
+      const items = l.specialities.split(",").map((s: string) => s.trim()).filter(Boolean);
+      if (items.length) {
+        sections.push({ key: "hg-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
+      }
     }
   }
+
+
 
 
   const hasDetails = sections.length > 0;
