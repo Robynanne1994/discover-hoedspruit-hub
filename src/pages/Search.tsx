@@ -145,8 +145,8 @@ const Search = () => {
       <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
         <div
           style={{
-            height: 44,
-            background: "rgba(238, 232, 218, 0.92)",
+            height: 48,
+            background: "#FFFFFF",
             borderRadius: 999,
             padding: "0 20px",
             display: "flex",
