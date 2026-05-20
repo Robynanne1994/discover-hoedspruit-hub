@@ -407,6 +407,8 @@ const FollowList = () => {
         </h1>
       </div>
 
+      <div style={{ height: 1, background: COLOR.line, marginTop: 18 }} />
+
       {/* Tabs */}
       <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 18, paddingBottom: 18 }}>
         <div
