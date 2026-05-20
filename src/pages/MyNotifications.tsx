@@ -310,17 +310,32 @@ export default function MyNotifications() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              padding: "80px 24px",
+              padding: "60px 24px 80px",
             }}
           >
-            <Bell size={48} strokeWidth={1.5} color={MUTED} style={{ opacity: 0.55 }} />
+            <div
+              style={{
+                width: 120,
+                height: 120,
+                borderRadius: 999,
+                background: CARD,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: 40,
+              }}
+            >
+              <Bell size={48} strokeWidth={1.5} color={MUTED} />
+            </div>
             <p
               style={{
                 fontFamily: SANS,
                 fontWeight: 700,
-                fontSize: 17,
+                fontSize: 26,
                 color: INK,
-                margin: "16px 0 8px",
+                margin: "0 0 14px",
+                textAlign: "center",
+                letterSpacing: "-0.3px",
               }}
             >
               No notifications yet
@@ -328,9 +343,8 @@ export default function MyNotifications() {
             <p
               style={{
                 fontFamily: SANS,
-                fontSize: 14,
+                fontSize: 17,
                 color: MUTED,
-                maxWidth: 260,
                 textAlign: "center",
                 margin: 0,
               }}
