@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
-import { Pencil, Heart, SlidersHorizontal, Star } from "lucide-react";
+import { Pencil, Heart, Settings, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PAGE_BG = "#E6E0CC";
@@ -352,9 +352,11 @@ const MyProfile = () => {
             justifyContent: "center",
           }}
         >
-          <SlidersHorizontal size={18} strokeWidth={1.8} color={INK} />
+          <Settings size={18} strokeWidth={1.8} color={INK} />
         </Link>
       </div>
+
+      <div style={{ height: 1, background: LINE, marginTop: 18 }} />
 
       {/* Profile card */}
       <div style={{ padding: "16px 20px 0" }}>
@@ -432,7 +434,7 @@ const MyProfile = () => {
                 height: 32,
                 padding: "0 14px",
                 borderRadius: 999,
-                background: "transparent",
+                background: INNER,
                 color: INK,
                 border: `1px solid ${LINE}`,
                 fontFamily: SANS,
