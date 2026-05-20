@@ -4,13 +4,16 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
-import { Pencil, Heart, Settings } from "lucide-react";
+import { Pencil, Heart, SlidersHorizontal, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const PAGE_BG = "#5C6446";
-const CREAM = "#EEE8DA";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
+const PAGE_BG = "#E6E0CC";
+const CARD = "#FFFFFF";
+const INNER = "#EFE7D3";
+const INK = "#1A1A1A";
+const MUTED = "#8A8275";
+const SUBTLE = "rgba(26,26,26,0.55)";
+const LINE = "rgba(26,26,26,0.10)";
 const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -43,9 +46,9 @@ function SubTabs<T extends string>({
             type="button"
             onClick={() => onChange(opt.id)}
             style={{
-              background: active ? CREAM : "transparent",
-              color: active ? INK : CREAM,
-              border: `1px solid ${active ? CREAM : "rgba(238,232,218,0.4)"}`,
+              background: active ? INK : "transparent",
+              color: active ? "#fff" : INK,
+              border: `1px solid ${active ? INK : LINE}`,
               borderRadius: 999,
               padding: "6px 14px",
               cursor: "pointer",
@@ -205,7 +208,7 @@ const MyProfile = () => {
       key={it.id}
       to={href}
       style={{
-        background: CREAM,
+        background: CARD,
         borderRadius: 16,
         overflow: "hidden",
         textDecoration: "none",
@@ -220,6 +223,28 @@ const MyProfile = () => {
             loading="lazy"
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
+        )}
+        {type === "listing" && it.google_rating && (
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              background: "rgba(255,255,255,0.92)",
+              borderRadius: 999,
+              padding: "3px 9px 3px 7px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              fontFamily: SANS,
+              fontSize: 12,
+              fontWeight: 600,
+              color: INK,
+            }}
+          >
+            <Star size={11} strokeWidth={1.8} color={INK} />
+            {Number(it.google_rating).toFixed(1)}
+          </div>
         )}
         <button
           type="button"
@@ -248,17 +273,17 @@ const MyProfile = () => {
         <div
           style={{
             fontFamily: SANS,
-            fontWeight: 400,
+            fontWeight: 700,
             fontSize: 15,
             lineHeight: 1.25,
             color: INK,
             marginBottom: 4,
-            letterSpacing: "0.01em",
+            letterSpacing: "-0.1px",
           }}
         >
           {titleCase(it.title)}
         </div>
-        <div style={{ fontFamily: SANS, fontSize: 12, color: MUTED, letterSpacing: "0.01em" }}>
+        <div style={{ fontFamily: SANS, fontSize: 12.5, color: MUTED, letterSpacing: "0.01em" }}>
           {subtitle}
         </div>
       </div>
@@ -272,8 +297,7 @@ const MyProfile = () => {
         textAlign: "center",
         fontFamily: SANS,
         fontSize: 14,
-        color: CREAM,
-        opacity: 0.7,
+        color: SUBTLE,
         letterSpacing: "0.01em",
       }}
     >
@@ -288,7 +312,7 @@ const MyProfile = () => {
         background: PAGE_BG,
         paddingBottom: 100,
         fontFamily: SANS,
-        color: CREAM,
+        color: INK,
       }}
     >
       {/* Top header bar */}
@@ -305,10 +329,10 @@ const MyProfile = () => {
           style={{
             margin: 0,
             fontFamily: SANS,
-            fontWeight: 600,
-            fontSize: 20,
+            fontWeight: 700,
+            fontSize: 19,
             letterSpacing: "0.01em",
-            color: CREAM,
+            color: INK,
             justifySelf: "center",
           }}
         >
@@ -322,64 +346,60 @@ const MyProfile = () => {
             width: 40,
             height: 40,
             borderRadius: "50%",
-            background: CREAM,
+            background: CARD,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
         >
-          <Settings size={18} strokeWidth={1.6} color={INK} />
+          <SlidersHorizontal size={18} strokeWidth={1.8} color={INK} />
         </Link>
       </div>
 
-      <div style={{ height: 1, background: "rgba(238,232,218,0.18)", marginTop: 20 }} />
+      {/* Profile card */}
+      <div style={{ padding: "16px 20px 0" }}>
+        <section style={{ background: CARD, borderRadius: 18, padding: "16px 16px 14px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <div
+              style={{
+                width: 64,
+                height: 64,
+                borderRadius: "50%",
+                overflow: "hidden",
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
+              }}
+            >
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt=""
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              ) : (
+                <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 26, color: "#fff" }}>
+                  {getInitial(profile?.display_name || profile?.username)}
+                </span>
+              )}
+            </div>
 
-      {/* Profile section — avatar + name + stats */}
-      <div style={{ padding: "20px 24px 0" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              width: 84,
-              height: 84,
-              borderRadius: "50%",
-              overflow: "hidden",
-              flexShrink: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
-            }}
-          >
-            {profile?.avatar_url ? (
-              <img
-                src={profile.avatar_url}
-                alt=""
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
-              />
-            ) : (
-              <span style={{ fontFamily: SANS, fontWeight: 600, fontSize: 32, color: CREAM }}>
-                {getInitial(profile?.display_name || profile?.username)}
-              </span>
-            )}
-          </div>
-
-          <div style={{ flex: 1, minWidth: 0 }}>
-            {isLoading ? (
-              <Skeleton className="h-7 w-40 bg-white/10" />
-            ) : (
-              <>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              {isLoading ? (
+                <Skeleton className="h-7 w-40" />
+              ) : (
+                <>
                   <h2
                     style={{
                       fontFamily: SANS,
                       fontWeight: 700,
-                      fontSize: 24,
+                      fontSize: 22,
                       lineHeight: 1.15,
                       letterSpacing: "-0.4px",
-                      color: CREAM,
+                      color: INK,
                       margin: 0,
-                      minWidth: 0,
                       overflow: "hidden",
                       textOverflow: "ellipsis",
                       whiteSpace: "nowrap",
@@ -393,87 +413,99 @@ const MyProfile = () => {
                         fontFamily: SANS,
                         fontWeight: 400,
                         fontSize: 13,
-                        color: CREAM,
-                        opacity: 0.7,
-                        marginTop: 4,
+                        color: SUBTLE,
+                        marginTop: 2,
                       }}
                     >
                       @{profile.username.toLowerCase()}
                     </div>
                   )}
-                </div>
-                <button
-                  onClick={() => navigate("/account-settings/info")}
-                  aria-label="Edit profile"
+                </>
+              )}
+            </div>
+
+            <button
+              onClick={() => navigate("/account-settings/info")}
+              aria-label="Edit profile"
+              style={{
+                flexShrink: 0,
+                height: 32,
+                padding: "0 14px",
+                borderRadius: 999,
+                background: "transparent",
+                color: INK,
+                border: `1px solid ${LINE}`,
+                fontFamily: SANS,
+                fontWeight: 600,
+                fontSize: 13,
+                letterSpacing: "0.02em",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <Pencil size={12} strokeWidth={2} color={INK} />
+              Edit
+            </button>
+          </div>
+
+          {/* Stats inner card */}
+          <div
+            style={{
+              marginTop: 14,
+              background: INNER,
+              borderRadius: 14,
+              padding: "12px 6px",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+            }}
+          >
+            {[
+              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#" },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#" },
+              { label: "SAVED", value: savedCount ?? 0, to: "/saved" },
+            ].map((s, i) => (
+              <Link
+                key={s.label}
+                to={s.to}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textDecoration: "none",
+                  borderLeft: i === 0 ? "none" : `1px solid rgba(26,26,26,0.12)`,
+                }}
+              >
+                <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 1 }}>
+                  {fmtCount(s.value)}
+                </span>
+                <span
                   style={{
-                    flexShrink: 0,
-                    height: 28,
-                    padding: "0 12px",
-                    borderRadius: 999,
-                    background: CREAM,
-                    color: INK,
-                    border: "none",
                     fontFamily: SANS,
-                    fontWeight: 500,
-                    fontSize: 12,
-                    letterSpacing: "0.02em",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 5,
+                    fontSize: 10.5,
+                    fontWeight: 600,
+                    letterSpacing: "0.12em",
+                    color: SUBTLE,
+                    marginTop: 6,
                   }}
                 >
-                  <Pencil size={11} strokeWidth={1.8} color={INK} />
-                  Edit
-                </button>
-              </div>
-              </>
-            )}
+                  {s.label}
+                </span>
+              </Link>
+            ))}
           </div>
-        </div>
-
-        {/* Stats row */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: 18 }}>
-          <Link
-            to={id ? `/profile/${id}/followers` : "#"}
-            style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
-          >
-            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>
-              {(counts?.followers ?? 0) === 1 ? "Follower" : "Followers"}
-            </span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
-              {fmtCount(counts?.followers ?? 0)}
-            </span>
-          </Link>
-          <Link
-            to={id ? `/profile/${id}/following` : "#"}
-            style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
-          >
-            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Following</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
-              {fmtCount(counts?.following ?? 0)}
-            </span>
-          </Link>
-          <Link
-            to="/saved"
-            style={{ display: "flex", flexDirection: "column", textDecoration: "none" }}
-          >
-            <span style={{ fontSize: 12, color: CREAM, opacity: 0.7, fontFamily: SANS }}>Saved</span>
-            <span style={{ fontSize: 20, fontWeight: 700, color: CREAM, fontFamily: SANS, marginTop: 2 }}>
-              {fmtCount(savedCount ?? 0)}
-            </span>
-          </Link>
-        </div>
+        </section>
       </div>
 
       {/* Top tabs */}
       <div
         style={{
-          marginTop: 28,
+          marginTop: 22,
           display: "flex",
           padding: "0 20px",
           gap: 0,
-          borderBottom: "1px solid rgba(238,232,218,0.18)",
+          borderBottom: `1px solid ${LINE}`,
         }}
       >
         {(["listings", "deals", "events"] as Tab[]).map((t) => {
@@ -492,7 +524,7 @@ const MyProfile = () => {
                 fontFamily: SANS,
                 fontSize: 16,
                 fontWeight: active ? 700 : 400,
-                color: active ? CREAM : "rgba(238,232,218,0.5)",
+                color: active ? INK : SUBTLE,
                 letterSpacing: "0.02em",
                 position: "relative",
                 textTransform: "capitalize",
@@ -506,7 +538,7 @@ const MyProfile = () => {
                   right: "20%",
                   bottom: -1,
                   height: 2,
-                  background: active ? CREAM : "transparent",
+                  background: active ? INK : "transparent",
                   borderRadius: 2,
                 }}
               />
@@ -514,6 +546,7 @@ const MyProfile = () => {
           );
         })}
       </div>
+
 
       {/* Tab content */}
       <div style={{ padding: "20px 20px 0" }}>
