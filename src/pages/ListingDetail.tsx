@@ -632,7 +632,7 @@ const ListingDetail = () => {
               phones.forEach((p, i) => rows.push({ label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
               whatsapps.forEach((w, i) => {
                 const clean = w.replace(/[^0-9]/g, "");
-                rows.push({ label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: Phone });
+                rows.push({ label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
               });
               emails.forEach((e, i) => rows.push({ label: i === 0 ? "Email" : `Email ${i + 1}`, value: e, href: `mailto:${e}`, Icon: Mail }));
               if (listing.website) rows.push({ label: "Website", value: (listing as any).website_label || listing.website, href: listing.website, Icon: Globe });
