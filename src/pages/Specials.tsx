@@ -193,37 +193,37 @@ const Specials = () => {
               }
             }}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: COLOR.cardBg,
-              border: "none",
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.06)",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: COLOR.ink,
+              color: "#020202",
             }}
           >
-            {searchOpen ? <X size={22} strokeWidth={2} /> : <Search size={22} strokeWidth={2} />}
+            {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
           </button>
           <button
             aria-label="Filters"
             onClick={() => setShowFilters(true)}
             style={{
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              background: filterType.length > 0 ? COLOR.ink : COLOR.cardBg,
-              border: "none",
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: filterType.length > 0 ? COLOR.ink : "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.06)",
               display: "inline-flex",
               alignItems: "center",
               justifyContent: "center",
               cursor: "pointer",
-              color: filterType.length > 0 ? COLOR.cardBg : COLOR.ink,
+              color: filterType.length > 0 ? COLOR.cardBg : "#020202",
             }}
           >
-            <SlidersHorizontal size={20} strokeWidth={2} />
+            <SlidersHorizontal size={18} strokeWidth={1.8} />
           </button>
         </div>
       </div>
