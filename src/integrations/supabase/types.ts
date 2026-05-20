@@ -851,11 +851,14 @@ export type Database = {
           additional_emails: string[]
           additional_phones: string[]
           additional_whatsapps: string[]
+          after_hours_available: boolean | null
           air_conditioned: boolean | null
           airport_shuttle_free: boolean | null
           amenities: string[] | null
           breakfast_included: boolean | null
           business_owner_id: string | null
+          business_started_year: number | null
+          callout_fee: boolean | null
           category_id: string | null
           cause: string | null
           child_friendly: boolean | null
@@ -925,6 +928,7 @@ export type Database = {
           show_attributes: boolean
           sleeps: number | null
           smoking_allowed: boolean | null
+          specialities: string | null
           title: string
           title_override: string | null
           updated_at: string
@@ -945,11 +949,14 @@ export type Database = {
           additional_emails?: string[]
           additional_phones?: string[]
           additional_whatsapps?: string[]
+          after_hours_available?: boolean | null
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
           breakfast_included?: boolean | null
           business_owner_id?: string | null
+          business_started_year?: number | null
+          callout_fee?: boolean | null
           category_id?: string | null
           cause?: string | null
           child_friendly?: boolean | null
@@ -1019,6 +1026,7 @@ export type Database = {
           show_attributes?: boolean
           sleeps?: number | null
           smoking_allowed?: boolean | null
+          specialities?: string | null
           title: string
           title_override?: string | null
           updated_at?: string
@@ -1039,11 +1047,14 @@ export type Database = {
           additional_emails?: string[]
           additional_phones?: string[]
           additional_whatsapps?: string[]
+          after_hours_available?: boolean | null
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
           breakfast_included?: boolean | null
           business_owner_id?: string | null
+          business_started_year?: number | null
+          callout_fee?: boolean | null
           category_id?: string | null
           cause?: string | null
           child_friendly?: boolean | null
@@ -1113,6 +1124,7 @@ export type Database = {
           show_attributes?: boolean
           sleeps?: number | null
           smoking_allowed?: boolean | null
+          specialities?: string | null
           title?: string
           title_override?: string | null
           updated_at?: string
