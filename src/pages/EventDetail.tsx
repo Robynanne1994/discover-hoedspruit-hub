@@ -416,9 +416,15 @@ const EventDetail = () => {
   }
   if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
   if (notes) detailRows.push({ Icon: StickyNote, label: "Notes", value: <span style={{ whiteSpace: "pre-line" }}>{notes}</span> });
-  if (contactPhone) detailRows.push({ Icon: Phone, label: "Phone", value: formatSAPhone(contactPhone), href: `tel:${contactPhone.replace(/\s/g, "")}` });
-  if (waClean) detailRows.push({ Icon: Phone, label: "WhatsApp", value: formatSAPhone(contactWhatsapp), href: `https://wa.me/${waClean}`, external: true });
-  if (contactEmail) detailRows.push({ Icon: Mail, label: "Email", value: contactEmail, href: `mailto:${contactEmail}`, external: true });
+  const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
+  const allWhatsapps = collectContacts(contactWhatsapp, (e as any).additional_whatsapps);
+  const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
+  allPhones.forEach((p, i) => detailRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
+  allWhatsapps.forEach((w, i) => {
+    const clean = w.replace(/[^0-9]/g, "");
+    detailRows.push({ Icon: Phone, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
+  });
+  allEmails.forEach((em, i) => detailRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
 
   const renderDetails = () => (
     <div style={{ padding: 20 }}>
