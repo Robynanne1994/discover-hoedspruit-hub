@@ -257,6 +257,10 @@ const AdminListings = () => {
         ways_to_give: values.ways_to_give?.trim() || null,
         volunteering: values.volunteering?.trim() || null,
         visiting: values.visiting?.trim() || null,
+        business_started_year: values.business_started_year,
+        after_hours_available: values.after_hours_available,
+        callout_fee: values.callout_fee,
+        specialities: values.specialities?.trim() || null,
       };
 
       // Treat "-" as empty for any string field on save
