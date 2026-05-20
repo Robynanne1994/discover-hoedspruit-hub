@@ -20,14 +20,16 @@ import {
 } from "@/components/ui/dialog";
 
 const COLOR = {
-  olive: "#5C6446",
-  cream: "#EEE8DA",
-  ink: "#2A2A24",
-  muted: "#6B6A5E",
-  line: "#D9D2C0",
+  page: "#E6E0CC",
+  card: "#FFFFFF",
+  cream: "#F5F0E4",
+  ink: "#1A1A1A",
+  muted: "#8A8275",
+  subtle: "rgba(26,26,26,0.55)",
+  line: "rgba(26,26,26,0.10)",
 };
 
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const AVATAR_GRADIENTS = [
