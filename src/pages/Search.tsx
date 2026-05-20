@@ -252,7 +252,7 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
               boxShadow: active ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
             }}
           >
-            <Icon size={20} color={active ? PRIMARY : "rgba(18,18,20,0.55)"} strokeWidth={1.8} />
+            <Icon size={20} color={active ? INK : "rgba(18,18,20,0.55)"} strokeWidth={1.8} />
             <span
               style={{
                 fontFamily: FONT,
