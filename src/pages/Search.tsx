@@ -12,8 +12,8 @@ const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PRIMARY = "#715a3d";
 const INK = "#020202";
 const BODY = "#2b2420";
-const PAGE_BG = "#ebebeb";
-const IVORY = "#f5f0e8";
+const PAGE_BG = "#E6E0CC";
+const IVORY = "#DCD4BD";
 const DIVIDER = "rgba(18,18,20,0.08)";
 
 type TopTab = "users" | "businesses";
@@ -64,10 +64,11 @@ const Search = () => {
               }}
               aria-label="Go back"
               style={{
-                background: "none",
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "#FFFFFF",
                 border: "none",
-                padding: 4,
-                margin: -4,
                 cursor: "pointer",
                 display: "inline-flex",
                 alignItems: "center",
@@ -75,7 +76,7 @@ const Search = () => {
                 color: "#0a0a0a",
               }}
             >
-              <svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <line x1="19" y1="12" x2="5" y2="12" />
                 <polyline points="12 19 5 12 12 5" />
               </svg>
@@ -85,8 +86,8 @@ const Search = () => {
             style={{
               margin: 0,
               fontFamily: FONT,
-              fontWeight: 600,
-              fontSize: 20,
+              fontWeight: 700,
+              fontSize: 19,
               lineHeight: 1,
               letterSpacing: "0.01em",
               color: "#0a0a0a",
@@ -97,7 +98,6 @@ const Search = () => {
           </h1>
           <div />
         </div>
-        <div style={{ height: 1, width: "100%", background: "rgba(10,10,10,0.1)" }} />
       </div>
 
       {/* Top tabs: Users / Businesses */}
@@ -132,7 +132,7 @@ const Search = () => {
                   right: "20%",
                   bottom: -1,
                   height: 2,
-                  background: active ? PRIMARY : "transparent",
+                  background: active ? INK : "transparent",
                   borderRadius: 2,
                 }}
               />
@@ -145,8 +145,8 @@ const Search = () => {
       <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
         <div
           style={{
-            height: 44,
-            background: "rgba(238, 232, 218, 0.92)",
+            height: 48,
+            background: "#FFFFFF",
             borderRadius: 999,
             padding: "0 20px",
             display: "flex",
@@ -252,7 +252,7 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
               boxShadow: active ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
             }}
           >
-            <Icon size={20} color={active ? PRIMARY : "rgba(18,18,20,0.55)"} strokeWidth={1.8} />
+            <Icon size={20} color={active ? INK : "rgba(18,18,20,0.55)"} strokeWidth={1.8} />
             <span
               style={{
                 fontFamily: FONT,
