@@ -862,8 +862,24 @@ const CategoryPage = () => {
                     )}
                   </div>
 
-                  <div style={{ fontFamily: sans, fontSize: 13, color: MUTED, marginBottom: l.location ? 10 : 0 }}>
-                    {subtitleLine}
+                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED, marginBottom: l.location ? 10 : 0 }}>
+                    {orderedCats.map((c, i) => (
+                      <span key={`${c}-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                        {i > 0 && (
+                          <span
+                            aria-hidden
+                            style={{
+                              width: 3,
+                              height: 3,
+                              borderRadius: "50%",
+                              background: MUTED,
+                              display: "inline-block",
+                            }}
+                          />
+                        )}
+                        <span>{c}</span>
+                      </span>
+                    ))}
                   </div>
 
                   {l.location && (
