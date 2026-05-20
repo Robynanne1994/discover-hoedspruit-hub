@@ -448,7 +448,10 @@ const ListingDetail = () => {
     if (typeof l.callout_fee === "boolean") tradesFields.push({ label: "Callout fee", on: l.callout_fee });
     if (tradesFields.length) sections.push({ key: "trades-service", title: "Service info", iconComp: Info, fields: tradesFields });
     if (l.specialities && l.specialities.trim()) {
-      sections.push({ key: "trades-specialities", title: "Specialities", iconComp: Sparkles, fields: [{ label: l.specialities, on: "__text__" }] });
+      const items = l.specialities.split(",").map((s: string) => s.trim()).filter(Boolean);
+      if (items.length) {
+        sections.push({ key: "trades-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
+      }
     }
   }
 
