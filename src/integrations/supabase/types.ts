@@ -420,6 +420,7 @@ export type Database = {
           sub_tag_2: string | null
           tag: string | null
           title: string
+          title_override: string | null
           updated_at: string
         }
         Insert: {
@@ -462,6 +463,7 @@ export type Database = {
           sub_tag_2?: string | null
           tag?: string | null
           title: string
+          title_override?: string | null
           updated_at?: string
         }
         Update: {
@@ -504,6 +506,7 @@ export type Database = {
           sub_tag_2?: string | null
           tag?: string | null
           title?: string
+          title_override?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -911,6 +914,7 @@ export type Database = {
           sleeps: number | null
           smoking_allowed: boolean | null
           title: string
+          title_override: string | null
           updated_at: string
           vibe: string[] | null
           visiting: string | null
@@ -1001,6 +1005,7 @@ export type Database = {
           sleeps?: number | null
           smoking_allowed?: boolean | null
           title: string
+          title_override?: string | null
           updated_at?: string
           vibe?: string[] | null
           visiting?: string | null
@@ -1091,6 +1096,7 @@ export type Database = {
           sleeps?: number | null
           smoking_allowed?: boolean | null
           title?: string
+          title_override?: string | null
           updated_at?: string
           vibe?: string[] | null
           visiting?: string | null
@@ -1312,6 +1318,7 @@ export type Database = {
           special_type: string | null
           terms: string | null
           title: string
+          title_override: string | null
           updated_at: string
           valid_from: string | null
           valid_until: string | null
@@ -1345,6 +1352,7 @@ export type Database = {
           special_type?: string | null
           terms?: string | null
           title: string
+          title_override?: string | null
           updated_at?: string
           valid_from?: string | null
           valid_until?: string | null
@@ -1378,6 +1386,7 @@ export type Database = {
           special_type?: string | null
           terms?: string | null
           title?: string
+          title_override?: string | null
           updated_at?: string
           valid_from?: string | null
           valid_until?: string | null
