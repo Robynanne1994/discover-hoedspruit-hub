@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Bell, Search } from "lucide-react";
+import hhLogo from "@/assets/hh-logo.png";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -8,26 +9,17 @@ const HomeMasthead = () => {
     <div style={{ paddingTop: 56, padding: "56px 20px 0" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
-          <div
-            aria-hidden
+          <img
+            src={hhLogo}
+            alt="Hello Hoedspruit"
             style={{
               width: 48,
               height: 48,
               borderRadius: 999,
-              background: "#020202",
-              color: "#ebebeb",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontFamily: HN,
-              fontWeight: 400,
-              fontSize: 16,
-              letterSpacing: "0.02em",
+              objectFit: "contain",
               flexShrink: 0,
             }}
-          >
-            hh
-          </div>
+          />
           <div style={{ minWidth: 0 }}>
             <h1
               style={{
