@@ -434,7 +434,7 @@ const MyProfile = () => {
                 height: 32,
                 padding: "0 14px",
                 borderRadius: 999,
-                background: "transparent",
+                background: INNER,
                 color: INK,
                 border: `1px solid ${LINE}`,
                 fontFamily: SANS,
