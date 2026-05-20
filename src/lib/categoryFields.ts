@@ -48,6 +48,7 @@ export const SHOPPING_CATEGORY_PATTERN = /^shopping$/i;
 export const ACCOMMODATION_CATEGORY_PATTERN = /^accommodation$/i;
 export const NGO_CATEGORY_PATTERN = /ngo|volunteer/i;
 export const TRADES_CATEGORY_PATTERN = /trades?\s*(&|and)?\s*services?/i;
+export const HOME_GARDEN_CATEGORY_PATTERN = /home\s*(&|and)?\s*garden/i;
 
 
 export function isRestaurantCategory(categoryTitle: string): boolean {
