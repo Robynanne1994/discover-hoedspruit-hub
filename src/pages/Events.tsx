@@ -18,6 +18,7 @@ import {
   format,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -269,6 +270,7 @@ const EventCard = ({ event }: { event: any }) => {
       </div>
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <h3
+          {...noTitleCaseProps(event)}
           style={{
             fontFamily: SANS,
             fontWeight: 700,
@@ -281,7 +283,7 @@ const EventCard = ({ event }: { event: any }) => {
             overflowWrap: "anywhere",
           }}
         >
-          {event.title}
+          {getDisplayTitle(event)}
         </h3>
         <p
           style={{

@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Star, ArrowLeft, Search } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const VisitedPlaces = () => {
   const { user, loading } = useAuth();
@@ -27,7 +28,7 @@ const VisitedPlaces = () => {
       const listingIds = beenHere.map((b) => b.listing_id);
       const { data: listings } = await supabase
         .from("listings")
-        .select("id, title, image_url, location, google_rating")
+        .select("id, title, title_override, image_url, location, google_rating")
         .in("id", listingIds);
 
       const listingsMap = Object.fromEntries(
@@ -192,8 +193,8 @@ const VisitedPlaces = () => {
                       background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)",
                     }} />
                     <div style={{ position: "absolute", bottom: 16, left: 16, right: 16 }}>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}>
-                        {detail.title}
+                      <div {...noTitleCaseProps(detail)} style={{ fontSize: 16, fontWeight: 700, color: "#ffffff", lineHeight: 1.2, marginBottom: 4 }}>
+                        {getDisplayTitle(detail)}
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                         {rating && (

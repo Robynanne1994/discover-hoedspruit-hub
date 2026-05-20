@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -421,6 +422,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
           </div>
         )}
         <h3
+          {...noTitleCaseProps(special)}
           style={{
             fontFamily: SANS,
             fontSize: 19,
@@ -432,7 +434,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             letterSpacing: "-0.2px",
           }}
         >
-          {special.title}
+          {getDisplayTitle(special)}
         </h3>
         {special.description && (
           <p

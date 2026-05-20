@@ -10,6 +10,7 @@ import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFie
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip } from "@/components/RefineDrawer";
+import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
 const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic"];
@@ -821,6 +822,7 @@ const CategoryPage = () => {
                 <div style={{ padding: "16px 18px 18px" }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
                     <h3
+                      {...noTitleCaseProps(l)}
                       style={{
                         fontFamily: sans,
                         fontSize: 20,
@@ -833,7 +835,7 @@ const CategoryPage = () => {
                         wordBreak: "break-word",
                       }}
                     >
-                      {l.title}
+                      {getDisplayTitle(l)}
                     </h3>
                     {open !== null && (
                       <span
