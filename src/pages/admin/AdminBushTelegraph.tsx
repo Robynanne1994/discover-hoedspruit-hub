@@ -266,6 +266,7 @@ const AdminBushTelegraph = () => {
       tag_2: r.tag_2 ?? "",
       is_featured: r.is_featured,
       sort_order: r.sort_order,
+      cta_label: r.cta_label ?? "",
     });
     setOpen(true);
   };
