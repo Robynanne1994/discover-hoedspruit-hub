@@ -141,15 +141,27 @@ const LocalChannelDetail = () => {
 
       {/* Body */}
       <div style={{ padding: "24px 20px 0" }}>
-        <div style={{ fontFamily: HN, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: MUTED, marginBottom: 8 }}>
-          {resource.platform}
-        </div>
+        {(() => {
+          const tags = [resource.tag_1, resource.tag_2].filter((t: string | null) => t && t.trim());
+          if (!tags.length) return null;
+          return (
+            <div style={{ fontFamily: HN, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: MUTED, marginBottom: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              {tags.map((t: string, i: number) => (
+                <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                  {i > 0 && <span style={{ width: 4, height: 4, borderRadius: 999, background: MUTED, display: "inline-block" }} />}
+                  <span>{t}</span>
+                </span>
+              ))}
+            </div>
+          );
+        })()}
         <h1
           data-no-title-case={resource.title_override?.trim() ? "true" : undefined}
           style={{ fontFamily: HN, fontWeight: 700, fontSize: 28, lineHeight: 1.1, color: INK, margin: 0, textTransform: resource.title_override?.trim() ? "none" : undefined }}
         >
           {displayTitle}
         </h1>
+
 
         {metaParts.length > 0 && (
           <div style={{
@@ -197,7 +209,7 @@ const LocalChannelDetail = () => {
             : (resource.years_running != null
                 ? `${resource.years_running} ${resource.years_running === 1 ? "year" : "years"}`
                 : null);
-          const hasAny = admins.length > 0 || yearsValue || resource.post_frequency || resource.tag_1 || resource.tag_2;
+          const hasAny = admins.length > 0 || yearsValue || resource.post_frequency;
           return (
             <div style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
               {admins.length > 0 && (
@@ -225,8 +237,7 @@ const LocalChannelDetail = () => {
               )}
               {yearsValue && <InfoRow label={resource.since_year ? "Running" : "Years Running"} value={yearsValue} />}
               {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
-              {resource.tag_1 && <InfoRow label="Tag" value={resource.tag_1} />}
-              {resource.tag_2 && <InfoRow label="Tag" value={resource.tag_2} />}
+
               {!hasAny && (
                 <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
                   No additional details yet.
