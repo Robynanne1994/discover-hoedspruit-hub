@@ -176,7 +176,7 @@ const EventDetail = () => {
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
-  const [tab, setTab] = useState<TabKey>("about");
+  const [tab, setTab] = useState<TabKey>("details");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [mapCoords, setMapCoords] = useState<{ lat: number; lon: number } | null>(null);
