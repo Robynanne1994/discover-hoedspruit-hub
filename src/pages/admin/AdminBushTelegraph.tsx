@@ -167,7 +167,10 @@ const AdminBushTelegraph = () => {
 
   const upsertMutation = useMutation({
     mutationFn: async (payload: typeof emptyForm & { id?: string }) => {
-      const { id, use_title_override, years_running, ...rest } = payload;
+      const { id, use_title_override, years_running, since_year, years_mode, admins, ...rest } = payload;
+      const cleanAdmins = (admins || [])
+        .map((a) => ({ name: (a.name || "").trim(), image_url: (a.image_url || "").trim() }))
+        .filter((a) => a.name || a.image_url);
       const data: any = {
         ...rest,
         sort_order: Number(rest.sort_order) || 0,
@@ -178,8 +181,10 @@ const AdminBushTelegraph = () => {
         image_url: rest.image_url || null,
         detail_image_url: rest.detail_image_url || null,
         qr_image_url: rest.qr_image_url || null,
-        admin_name: rest.admin_name?.trim() || null,
-        years_running: years_running === "" || years_running === null ? null : Number(years_running) || null,
+        admins: cleanAdmins,
+        admin_name: cleanAdmins[0]?.name || null,
+        years_running: years_mode === "years" && years_running !== "" ? Number(years_running) || null : null,
+        since_year: years_mode === "since" && since_year !== "" ? Number(since_year) || null : null,
         post_frequency: rest.post_frequency?.trim() || null,
         tag_1: rest.tag_1?.trim() || null,
         tag_2: rest.tag_2?.trim() || null,
