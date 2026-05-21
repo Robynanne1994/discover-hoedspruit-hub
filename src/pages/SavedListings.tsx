@@ -281,11 +281,22 @@ const SavedListings = () => {
     return true;
   });
 
+  const filteredChannels = (savedChannels || []).filter((f: any) => {
+    const d = f.details;
+    if (!d) return false;
+    if (search.trim()) {
+      const hay = `${d.title || ""} ${d.title_override || ""} ${d.platform || ""}`.toLowerCase();
+      if (!hay.includes(search.toLowerCase())) return false;
+    }
+    return true;
+  });
+
   // Counts (total saved per tab, not filtered)
   const listingsCount = (favourites || []).length;
   const eventsCount = (savedEvents || []).length;
   const specialsCount = (savedSpecials || []).length;
-  const totalCount = listingsCount + eventsCount + specialsCount;
+  const channelsCount = (savedChannels || []).length;
+  const totalCount = listingsCount + eventsCount + specialsCount + channelsCount;
 
   const activeCount =
     primaryTab === "all"
@@ -294,7 +305,9 @@ const SavedListings = () => {
         ? listingsCount
         : primaryTab === "events"
           ? eventsCount
-          : specialsCount;
+          : primaryTab === "specials"
+            ? specialsCount
+            : channelsCount;
 
   // Lede
   const lede = (() => {
@@ -313,6 +326,11 @@ const SavedListings = () => {
         ? "1 event, saved for the diary."
         : `${activeCount} events, saved for the diary.`;
     }
+    if (primaryTab === "channels") {
+      return activeCount === 1
+        ? "1 channel, ready when you need it."
+        : `${activeCount} channels, ready when you need them.`;
+    }
     return activeCount === 1
       ? "1 special, before it goes."
       : `${activeCount} specials, before they go.`;
@@ -325,7 +343,19 @@ const SavedListings = () => {
         ? "Search saved listings"
         : primaryTab === "events"
           ? "Search saved events"
-          : "Search saved specials";
+          : primaryTab === "channels"
+            ? "Search saved channels"
+            : "Search saved specials";
+
+  const channelPlatforms = (() => {
+    const set = new Set<string>();
+    (savedChannels || []).forEach((f: any) => {
+      if (f.details?.platform) set.add(f.details.platform);
+    });
+    return Array.from(set).sort();
+  })();
+
+  const [channelFilter, setChannelFilter] = useState("All");
 
   const subFilters: string[] =
     primaryTab === "all"
@@ -334,7 +364,9 @@ const SavedListings = () => {
         ? ["All", ...listingCategories]
         : primaryTab === "events"
           ? ["All", "Upcoming", "Past", ...eventTags]
-          : ["All", "Active", "Expiring Soon", ...specialTypes];
+          : primaryTab === "channels"
+            ? ["All", ...channelPlatforms]
+            : ["All", "Active", "Expiring Soon", ...specialTypes];
 
   const activeSubFilter =
     primaryTab === "all"
