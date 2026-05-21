@@ -21,11 +21,15 @@ const BottomNav = () => {
       className="fixed left-3 right-3 z-50 md:hidden"
       style={{
         bottom: 12,
-        background: "#2b2420",
+        background: "rgba(40, 36, 32, 0.55)",
+        backdropFilter: "blur(28px) saturate(180%)",
+        WebkitBackdropFilter: "blur(28px) saturate(180%)",
         borderRadius: 28,
         height: 74,
         padding: "0 10px",
-        boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
+        border: "1px solid rgba(255,255,255,0.18)",
+        boxShadow:
+          "0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.2)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 6 }}>
@@ -52,7 +56,14 @@ const BottomNav = () => {
                 textDecoration: "none",
                 height: 48,
                 borderRadius: 999,
-                background: isActive ? PILL_BG : "transparent",
+                background: isActive
+                  ? "rgba(255,255,255,0.85)"
+                  : "transparent",
+                backdropFilter: isActive ? "blur(12px) saturate(180%)" : undefined,
+                WebkitBackdropFilter: isActive ? "blur(12px) saturate(180%)" : undefined,
+                boxShadow: isActive
+                  ? "inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 8px rgba(0,0,0,0.15)"
+                  : "none",
                 gap: 8,
                 padding: isActive ? "0 16px" : 0,
                 transition: "flex 200ms ease, background 200ms ease, padding 200ms ease",
@@ -60,7 +71,7 @@ const BottomNav = () => {
             >
               <Icon
                 size={24}
-                color={isActive ? PILL_FG : INACTIVE}
+                color={isActive ? PILL_FG : "#ffffff"}
                 strokeWidth={isActive ? 2.25 : 1.75}
               />
               {isActive && (
