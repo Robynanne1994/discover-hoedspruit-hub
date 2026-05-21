@@ -128,6 +128,8 @@ const BusinessEventForm = ({ mode }: Props) => {
       price: price || null,
       booking_link: bookingLink || null,
       booking_link_label: bookingLink ? "Book Now" : null,
+      hosted_by_name: hostedByName || null,
+      hosted_by_link: hostedByLink || null,
       sub_tag_1: category1 || null,
       sub_tag_2: category2 || null,
       category_3: category3 || null,
