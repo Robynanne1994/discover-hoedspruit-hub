@@ -394,6 +394,8 @@ const SpecialDetail = () => {
       value: sp.booking_link_label?.trim() || special.booking_link,
       href: special.booking_link, external: true,
     });
+    const email = (special as any).contact_email?.trim();
+    if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
 
     return (
       <div style={{ padding: 20 }}>
