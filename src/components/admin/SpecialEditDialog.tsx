@@ -26,7 +26,7 @@ const FIELDS: (keyof any)[] = [
   "valid_from", "valid_until", "card_footer_text", "is_active", "special_type",
   "price", "price_label", "original_price",
   "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
-  "promo_code", "contact_phone", "contact_whatsapp", "additional_phones", "additional_whatsapps",
+  "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "terms", "category", "eyebrow_categories",
 ];
 
