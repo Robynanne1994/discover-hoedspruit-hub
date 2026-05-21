@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon } fro
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
 import ShareButton from "@/components/ShareButton";
+import FavouriteButton from "@/components/FavouriteButton";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#ebebeb";
