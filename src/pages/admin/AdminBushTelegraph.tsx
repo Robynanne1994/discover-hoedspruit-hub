@@ -244,8 +244,12 @@ const AdminBushTelegraph = () => {
       image_url: r.image_url ?? "",
       detail_image_url: r.detail_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
-      admin_name: r.admin_name ?? "",
+      admins: Array.isArray(r.admins) && r.admins.length
+        ? r.admins.map((a: any) => ({ name: a?.name ?? "", image_url: a?.image_url ?? "" }))
+        : (r.admin_name ? [{ name: r.admin_name, image_url: "" }] : []),
+      years_mode: r.since_year != null ? "since" : "years",
       years_running: r.years_running ?? "",
+      since_year: r.since_year ?? "",
       post_frequency: r.post_frequency ?? "",
       tag_1: r.tag_1 ?? "",
       tag_2: r.tag_2 ?? "",
