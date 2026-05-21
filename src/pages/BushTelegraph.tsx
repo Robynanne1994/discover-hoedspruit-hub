@@ -101,7 +101,7 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
             background: r.image_url ? `center/cover no-repeat url(${r.image_url})` : gradientFor(r.id),
           }}
         />
-        <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h4
             data-no-title-case={hasOverride ? "true" : undefined}
             style={{
@@ -125,12 +125,6 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
                 </span>
               ))}
             </div>
-          )}
-          {r.description && (
-            <p style={{
-              fontFamily: HN, fontWeight: 400, fontSize: 13.5, lineHeight: 1.5,
-              color: MUTED, margin: "0 0 12px",
-            }}>{r.description}</p>
           )}
           {tags.length > 0 && (
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
