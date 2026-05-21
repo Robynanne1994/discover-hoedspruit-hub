@@ -538,17 +538,15 @@ const SpecialDetail = () => {
       {/* Sticky tab bar */}
       {(() => {
         const hasAbout = !!(special.description?.trim()) ||
-          !!(sp.price || sp.price_label || sp.offer_headline || sp.offer_sublabel || sp.duration_headline || sp.duration_sublabel) ||
+          detailRows.length > 0 ||
           !!special.promo_code;
-        const hasDetails = detailRows.length > 0;
         const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
         const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
-        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link;
+        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email;
         const hasTerms = !!special.terms?.trim();
 
         const availableTabs: TabKey[] = [
           ...(hasAbout ? ["about" as TabKey] : []),
-          ...(hasDetails ? ["details" as TabKey] : []),
           ...(hasContact ? ["contact" as TabKey] : []),
           ...(hasTerms ? ["terms" as TabKey] : []),
         ];
@@ -566,15 +564,13 @@ const SpecialDetail = () => {
               background: C.surface, borderBottom: `1px solid ${C.border}`,
               display: "flex", padding: "0 8px",
             }}>
-              {hasAbout && <TabBtn k="about" label="About" />}
-              {hasDetails && <TabBtn k="details" label="Details" />}
+              {hasAbout && <TabBtn k="about" label="Details" />}
               {hasContact && <TabBtn k="contact" label="Contact" />}
               {hasTerms && <TabBtn k="terms" label="Terms" />}
             </nav>
 
             <main>
               {activeTab === "about" && renderAbout()}
-              {activeTab === "details" && renderDetails()}
               {activeTab === "contact" && renderContact()}
               {activeTab === "terms" && renderTerms()}
             </main>
