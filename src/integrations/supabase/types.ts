@@ -1411,6 +1411,7 @@ export type Database = {
           day_of_week: string[] | null
           deal_label: string
           description: string | null
+          detail_image_url: string | null
           duration_headline: string | null
           duration_sublabel: string | null
           eyebrow_categories: string[] | null
@@ -1449,6 +1450,7 @@ export type Database = {
           day_of_week?: string[] | null
           deal_label: string
           description?: string | null
+          detail_image_url?: string | null
           duration_headline?: string | null
           duration_sublabel?: string | null
           eyebrow_categories?: string[] | null
@@ -1487,6 +1489,7 @@ export type Database = {
           day_of_week?: string[] | null
           deal_label?: string
           description?: string | null
+          detail_image_url?: string | null
           duration_headline?: string | null
           duration_sublabel?: string | null
           eyebrow_categories?: string[] | null
