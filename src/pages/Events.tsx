@@ -553,7 +553,7 @@ const Events = () => {
       case "past":
         return "Past Events";
       default:
-        return "All Upcoming Events";
+        return "Upcoming Events";
     }
   }, [activeFilter, selectedDate]);
 
