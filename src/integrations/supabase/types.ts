@@ -402,6 +402,9 @@ export type Database = {
           hosted_by_image_url: string | null
           hosted_by_image_url_2: string | null
           hosted_by_image_url_3: string | null
+          hosted_by_link: string | null
+          hosted_by_link_2: string | null
+          hosted_by_link_3: string | null
           hosted_by_name: string | null
           hosted_by_name_2: string | null
           hosted_by_name_3: string | null
@@ -448,6 +451,9 @@ export type Database = {
           hosted_by_image_url?: string | null
           hosted_by_image_url_2?: string | null
           hosted_by_image_url_3?: string | null
+          hosted_by_link?: string | null
+          hosted_by_link_2?: string | null
+          hosted_by_link_3?: string | null
           hosted_by_name?: string | null
           hosted_by_name_2?: string | null
           hosted_by_name_3?: string | null
@@ -494,6 +500,9 @@ export type Database = {
           hosted_by_image_url?: string | null
           hosted_by_image_url_2?: string | null
           hosted_by_image_url_3?: string | null
+          hosted_by_link?: string | null
+          hosted_by_link_2?: string | null
+          hosted_by_link_3?: string | null
           hosted_by_name?: string | null
           hosted_by_name_2?: string | null
           hosted_by_name_3?: string | null
