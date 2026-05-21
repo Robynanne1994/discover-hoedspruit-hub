@@ -19,6 +19,7 @@ import {
   format,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
+import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
