@@ -739,7 +739,6 @@ const Events = () => {
               color: C.ink,
             }}
           >
-            ({filtered.length})
           </span>
         </div>
 
