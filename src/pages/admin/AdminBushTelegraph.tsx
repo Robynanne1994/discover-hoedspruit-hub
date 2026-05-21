@@ -48,6 +48,7 @@ type Resource = {
   is_featured: boolean;
   sort_order: number;
   slug: string | null;
+  cta_label: string | null;
 };
 
 const emptyForm = {
@@ -72,6 +73,7 @@ const emptyForm = {
   tag_2: "",
   is_featured: false,
   sort_order: 0,
+  cta_label: "",
 };
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
@@ -192,6 +194,7 @@ const AdminBushTelegraph = () => {
         post_frequency: rest.post_frequency?.trim() || null,
         tag_1: rest.tag_1?.trim() || null,
         tag_2: rest.tag_2?.trim() || null,
+        cta_label: rest.cta_label?.trim() || null,
       };
       if (id) {
         const { error } = await supabase.from("bush_telegraph_resources").update(data).eq("id", id);
@@ -264,6 +267,7 @@ const AdminBushTelegraph = () => {
       tag_2: r.tag_2 ?? "",
       is_featured: r.is_featured,
       sort_order: r.sort_order,
+      cta_label: r.cta_label ?? "",
     });
     setOpen(true);
   };
@@ -591,10 +595,21 @@ const AdminBushTelegraph = () => {
             </div>
 
             {(form.resource_type === "link" || form.resource_type === "internal") && (
-              <div>
-                <Label>URL {form.resource_type === "internal" ? "(in-app path, e.g. /events)" : "*"}</Label>
-                <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://..." />
-              </div>
+              <>
+                <div>
+                  <Label>URL {form.resource_type === "internal" ? "(in-app path, e.g. /events)" : "*"}</Label>
+                  <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://..." />
+                </div>
+                <div>
+                  <Label>Button label (optional)</Label>
+                  <Input
+                    value={form.cta_label}
+                    onChange={(e) => setForm({ ...form, cta_label: e.target.value })}
+                    placeholder={form.resource_type === "internal" ? "Open Page" : "Open Channel"}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Custom text for the action button on the detail page. Leave blank to use the default.</p>
+                </div>
+              </>
             )}
 
             {(form.resource_type === "qr" || form.resource_type === "image") && (

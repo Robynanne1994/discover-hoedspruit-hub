@@ -96,9 +96,12 @@ const LocalChannelDetail = () => {
     }
   };
 
-  const primaryLabel = isImageType
+  const defaultLabel = isImageType
     ? (type === "qr" ? "Show QR Code" : "View Image")
     : (type === "internal" ? "Open Page" : "Open Channel");
+  const primaryLabel = (!isImageType && resource.cta_label && resource.cta_label.trim())
+    ? resource.cta_label.trim()
+    : defaultLabel;
   const PrimaryIcon = isImageType ? (type === "qr" ? QrCode : ImageIcon) : ExternalLink;
 
   const metaParts = [resource.meta, resource.meta_2].filter((m: string | null) => m && m.trim());
