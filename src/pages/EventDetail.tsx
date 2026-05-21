@@ -349,7 +349,7 @@ const EventDetail = () => {
       display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
       padding: "14px 18px", borderRadius: 999,
       background: disabled ? "#f5f0e8" : C.surface,
-      border: `1px solid ${disabled ? "transparent" : C.border}`,
+      border: `1px solid ${C.border}`,
       color: disabled ? C.muted : C.heading,
       textDecoration: "none",
       cursor: disabled ? "not-allowed" : "pointer",
