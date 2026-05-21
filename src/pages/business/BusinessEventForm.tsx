@@ -27,6 +27,8 @@ const BusinessEventForm = ({ mode }: Props) => {
   const [location, setLocation] = useState("");
   const [price, setPrice] = useState("");
   const [bookingLink, setBookingLink] = useState("");
+  const [hostedByName, setHostedByName] = useState("");
+  const [hostedByLink, setHostedByLink] = useState("");
   const [category1, setCategory1] = useState("");
   const [category2, setCategory2] = useState("");
   const [category3, setCategory3] = useState("");
@@ -72,6 +74,8 @@ const BusinessEventForm = ({ mode }: Props) => {
         setLocation(p.location ?? "");
         setPrice(p.price ?? "");
         setBookingLink(p.booking_link ?? "");
+        setHostedByName(p.hosted_by_name ?? "");
+        setHostedByLink(p.hosted_by_link ?? "");
         setCategory1(p.sub_tag_1 ?? p.category_1 ?? "");
         setCategory2(p.sub_tag_2 ?? p.category_2 ?? "");
         setCategory3(p.category_3 ?? "");
@@ -124,6 +128,8 @@ const BusinessEventForm = ({ mode }: Props) => {
       price: price || null,
       booking_link: bookingLink || null,
       booking_link_label: bookingLink ? "Book Now" : null,
+      hosted_by_name: hostedByName || null,
+      hosted_by_link: hostedByLink || null,
       sub_tag_1: category1 || null,
       sub_tag_2: category2 || null,
       category_3: category3 || null,
@@ -221,6 +227,8 @@ const BusinessEventForm = ({ mode }: Props) => {
         </div>
         <div><Label>Price</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R150 / Free" /></div>
         <div><Label>Booking link</Label><Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." type="url" /></div>
+        <div><Label>Host name</Label><Input value={hostedByName} onChange={(e) => setHostedByName(e.target.value)} placeholder="e.g. Hoedspruit Music Society" /></div>
+        <div><Label>Host link</Label><Input value={hostedByLink} onChange={(e) => setHostedByLink(e.target.value)} placeholder="https://... (website or social)" type="url" /></div>
         {(() => {
           const limitWords = (val: string) => val.split(/\s+/).filter(Boolean).slice(0, 2).join(" ") + (val.endsWith(" ") && val.split(/\s+/).filter(Boolean).length < 2 ? " " : "");
           return (
