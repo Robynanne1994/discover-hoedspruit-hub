@@ -447,8 +447,15 @@ const Events = () => {
 
   const sortedEvents = useMemo(() => {
     if (!events) return [];
+    const now = new Date();
     return [...events]
-      .map((e) => ({ ...e, _parsed: getEventSortDate(e) }))
+      .map((e) => {
+        const next = getNextOccurrence(e, now);
+        // _parsed = the date used for filtering pills / week strip / "is in the future?"
+        // Prefer the next upcoming occurrence (handles performances + recurrence);
+        // fall back to the legacy start date so "Past" filter still works for old events.
+        return { ...e, _parsed: next ? next.date : getEventSortDate(e) };
+      })
       .sort((a, b) => {
         if (a._parsed && b._parsed) return a._parsed.getTime() - b._parsed.getTime();
         if (a._parsed) return -1;
