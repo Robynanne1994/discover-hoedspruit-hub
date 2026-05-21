@@ -105,7 +105,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader><DialogTitle>Edit Event</DialogTitle></DialogHeader>
         <div className="space-y-3 py-2">
-          <div><Label>Title</Label><Input value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
+          <div><Label>Title</Label><Textarea rows={2} className="resize-none" value={form.title || ""} onChange={(e) => set("title", e.target.value)} /></div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Switch
@@ -118,7 +118,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
               </Label>
             </div>
             {!!(form.title_override && String(form.title_override).trim()) && (
-              <Input
+              <Textarea
+                rows={2}
+                className="resize-none"
                 placeholder="Custom title — rendered exactly as typed"
                 value={form.title_override || ""}
                 onChange={(e) => set("title_override", e.target.value)}
