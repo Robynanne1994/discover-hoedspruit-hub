@@ -298,12 +298,30 @@ const EventDetail = () => {
     return `${displayHour}:${String(m).padStart(2, "0")} ${ampm}`;
   };
 
+  const performances = getPerformances(e);
+  const isMultiPerformance = performances.length > 0;
+  const recurrenceRule = parseRecurrenceRule(e.recurrence);
+  const nextOccurrence = getNextOccurrence(e);
+
   const startTimeRaw = e.start_time ? String(e.start_time).trim() : "";
   const endTimeRaw = e.end_time ? String(e.end_time).trim() : "";
   const startTimeFmt = startTimeRaw ? formatTime(startTimeRaw) : null;
   const endTimeFmt = endTimeRaw && endTimeRaw !== startTimeRaw ? formatTime(endTimeRaw) : null;
-  const timeDisplay = startTimeFmt ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}` : (endTimeFmt || null);
-  const dateDisplay = formatEventDateRange(e, { long: true });
+  const legacyTimeDisplay = startTimeFmt ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}` : (endTimeFmt || null);
+
+  // Date/time labels shown in the title block — adapt to event shape.
+  let dateDisplay: string | null = formatEventDateRange(e, { long: true });
+  let timeDisplay: string | null = legacyTimeDisplay;
+  if (isMultiPerformance && nextOccurrence) {
+    const d = nextOccurrence.date;
+    dateDisplay = `Next: ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}, ${d.getDate()} ${["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]} ${d.getFullYear()}`;
+    const t = formatTime(nextOccurrence.startTime || null);
+    const tEnd = nextOccurrence.endTime && nextOccurrence.endTime !== nextOccurrence.startTime ? formatTime(nextOccurrence.endTime) : null;
+    timeDisplay = t ? `${t}${tEnd ? ` – ${tEnd}` : ""}` : null;
+  } else if (recurrenceRule && nextOccurrence) {
+    const d = nextOccurrence.date;
+    dateDisplay = `Next: ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}, ${d.getDate()} ${["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]} ${d.getFullYear()}`;
+  }
 
   const mapsLink = e.google_maps_link || null;
   const socialLink = e.social_media_link || null;
@@ -322,14 +340,10 @@ const EventDetail = () => {
   const eyebrowText = [e.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "")[0] || null;
 
   const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
-  const canAddToCal = !!(e.start_date || e.date);
+  const canAddToCal = !!(e.start_date || e.date || isMultiPerformance) && !!nextOccurrence;
 
-  // Determine if event is in the past (end date or start date before today)
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const { start, end } = getEventDates(e);
-  const checkDate = end || start;
-  const isPast = checkDate ? checkDate < today : false;
+  // Past = no upcoming occurrence of any kind.
+  const isPast = isEventPastUnified(e);
 
   // Action pills
   const actions = [
