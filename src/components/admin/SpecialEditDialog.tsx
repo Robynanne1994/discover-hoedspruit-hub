@@ -274,7 +274,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           {/* Dual images with locked default crop */}
           <div>
             <Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on the specials listing — 3:4)</span></Label>
-            <ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={3/4} />
+            <ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={4/3} />
           </div>
           <div>
             <Label>Detail Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on the individual special page — 4:3)</span></Label>
