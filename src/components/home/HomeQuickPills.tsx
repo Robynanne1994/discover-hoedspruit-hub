@@ -32,8 +32,7 @@ const HomeQuickPills = () => {
             onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
             style={{
-              flexShrink:  1,
-              minWidth: 1,
+              flexShrink: 0,
               whiteSpace: "nowrap",
               background: "#ffffff",
               border: "1px solid rgba(0,0,0,0.08)",
