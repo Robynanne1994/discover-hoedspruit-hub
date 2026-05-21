@@ -36,7 +36,7 @@ const HomeSpecials = () => {
 
   return (
     <section>
-      <HomeSectionHead primary="Active Specials" actionHref="/specials" />
+      <HomeSectionHead primary="Active specials" actionHref="/specials" />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
         <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
           {specials.map((s) => (
