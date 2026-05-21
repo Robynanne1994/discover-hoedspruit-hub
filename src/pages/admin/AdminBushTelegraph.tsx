@@ -10,7 +10,10 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
+
+type AdminEntry = { name: string; image_url: string };
+type YearsMode = "years" | "since";
 
 const RESOURCE_TYPES = [
   { value: "link", label: "External link" },
