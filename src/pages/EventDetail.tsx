@@ -328,8 +328,8 @@ const EventDetail = () => {
   const socialLabel = e.social_media_label || null;
   const contactEmail = e.contact_email || null;
   const contactPhone = e.contact_phone || null;
-  const contactWhatsapp = e.contact_whatsapp || null;
-  const waClean = contactWhatsapp ? contactWhatsapp.replace(/[^0-9]/g, "") : null;
+  const contactWhatsApp = e.contact_whatsapp || null;
+  const waClean = contactWhatsApp ? contactWhatsApp.replace(/[^0-9]/g, "") : null;
   const galleryImages: string[] = e.gallery_images ?? [];
   const bookingLink = e.booking_link || null;
   const bookingLinkLabel = e.booking_link_label?.trim() || null;
