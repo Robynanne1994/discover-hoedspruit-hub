@@ -266,7 +266,7 @@ const MyProfile = () => {
             }}
           >
             <Star size={11} strokeWidth={1.8} color={INK} />
-            {Number(it.google_rating).toFixed(1)}
+            {Number(it.google_rating).toFixed(1).replace(/\.0$/, "")}
           </div>
         )}
         <button
@@ -584,7 +584,7 @@ const MyProfile = () => {
                   "listing",
                   `/listing/${it.id}`,
                   <>
-                    {it.google_rating && <span>★ {Number(it.google_rating).toFixed(1)}</span>}
+                    {it.google_rating && <span>★ {Number(it.google_rating).toFixed(1).replace(/\.0$/, "")}</span>}
                     {it.google_rating && it.location && <span> · </span>}
                     {it.location && <span>{it.location}</span>}
                   </>,

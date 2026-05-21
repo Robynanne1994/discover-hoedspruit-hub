@@ -648,7 +648,7 @@ const UserProfile = () => {
             hrefFor: (l) => `/listing/${l.id}`,
             subtitleFor: (l) => (
               <>
-                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1)}</span>}
+                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>}
                 {l.google_rating && l.location && (
                   <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
                 )}
@@ -696,7 +696,7 @@ const UserProfile = () => {
             hrefFor: (l) => `/listing/${l.id}`,
             subtitleFor: (l) => (
               <>
-                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1)}</span>}
+                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>}
                 {l.google_rating && l.location && (
                   <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
                 )}

@@ -181,7 +181,7 @@ const VisitedPlaces = () => {
                         {rating && (
                           <>
                             <Star size={12} fill="#E8A83E" color="#E8A83E" />
-                            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{rating.toFixed(1)}</span>
+                            <span style={{ fontSize: 13, color: "rgba(255,255,255,0.7)" }}>{rating.toFixed(1).replace(/\.0$/, "")}</span>
                           </>
                         )}
                         {rating && location && <span style={{ fontSize: 13, color: "rgba(255,255,255,0.4)" }}>·</span>}

@@ -84,7 +84,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
               )}
               {l.google_rating != null && (
                 <div style={{ fontFamily: HN, fontSize: 11, color: "#6B6A5E" }}>
-                  ★ {Number(l.google_rating).toFixed(1)}
+                  ★ {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
                   {l.google_reviews_count ? ` · ${l.google_reviews_count}` : ""}
                 </div>
               )}

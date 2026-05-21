@@ -271,7 +271,7 @@ const RestaurantQuiz = ({ onBack }: RestaurantQuizProps) => {
                         )}
                         {listing.google_rating && (
                           <span className="flex items-center gap-1">
-                            <Star className="w-3 h-3" /> {Number(listing.google_rating).toFixed(1)}
+                            <Star className="w-3 h-3" /> {Number(listing.google_rating).toFixed(1).replace(/\.0$/, "")}
                           </span>
                         )}
                       </div>

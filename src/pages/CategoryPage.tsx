@@ -813,7 +813,7 @@ const CategoryPage = () => {
                       }}
                     >
                       <span style={{ color: INK }}>★</span>
-                      {Number(l.google_rating).toFixed(1)}
+                      {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}
                       {l.google_reviews_count ? (
                         <span style={{ fontWeight: 400, color: MUTED }}>({l.google_reviews_count})</span>
                       ) : null}

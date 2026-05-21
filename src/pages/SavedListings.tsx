@@ -617,7 +617,7 @@ const SavedListings = () => {
                 <div className="flex items-center" style={{ gap: 8 }}>
                   {rating && (
                     <span style={{ fontFamily: SANS, fontSize: 13, color: MUTED }}>
-                      ★ {rating.toFixed(1)}
+                      ★ {rating.toFixed(1).replace(/\.0$/, "")}
                     </span>
                   )}
                   {rating && d.location && (
