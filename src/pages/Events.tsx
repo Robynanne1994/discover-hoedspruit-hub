@@ -106,7 +106,7 @@ function eventDateLine(e: any): string {
   const dPart = sameDay
     ? format(start, "EEE, d MMM")
     : `${format(start, "d")} – ${format(end!, "d MMM")}`;
-  const time = fmtTime(e.start_time);
+  const time = sameDay ? fmtTime(e.start_time) : "";
   return time ? `${dPart} • ${time}` : dPart;
 }
 
