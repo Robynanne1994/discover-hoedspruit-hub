@@ -209,6 +209,11 @@ const AdminBushTelegraph = () => {
       setOpen(false);
       setEditing(null);
       setForm(emptyForm);
+      if (returnTo) {
+        const dest = returnTo;
+        setReturnTo(null);
+        navigate(dest);
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });
