@@ -349,7 +349,7 @@ export default function MyNotifications() {
                 margin: 0,
               }}
             >
-              When something happens, it'll appear here.
+              When you receive notifications, they'll appear here.
             </p>
           </div>
         )}
