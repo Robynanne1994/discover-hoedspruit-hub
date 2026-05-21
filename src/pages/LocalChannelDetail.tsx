@@ -128,7 +128,7 @@ const LocalChannelDetail = () => {
             />
             {isAdmin && (
               <CircleBtn
-                onClick={() => navigate(`/admin/bush-telegraph?edit=${resource.id}`)}
+                onClick={() => navigate(`/admin/bush-telegraph?edit=${resource.id}&returnTo=${encodeURIComponent(location.pathname)}`)}
                 ariaLabel="Edit resource"
               >
                 <Pencil size={18} color={INK} strokeWidth={2} />
