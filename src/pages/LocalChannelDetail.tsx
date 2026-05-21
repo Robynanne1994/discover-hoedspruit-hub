@@ -115,11 +115,16 @@ const LocalChannelDetail = () => {
           <CircleBtn onClick={() => navigate(-1)} ariaLabel="Back">
             <ArrowLeft size={18} color={INK} strokeWidth={2} />
           </CircleBtn>
-          <ShareButton
-            title={displayTitle}
-            text={resource.description || resource.meta || ""}
-            url={typeof window !== "undefined" ? window.location.href : ""}
-          />
+          <div style={{ display: "flex", gap: 8, position: "relative" }}>
+            <div style={{ position: "relative", width: 40, height: 40 }}>
+              <FavouriteButton itemId={resource.id} itemType="resource" />
+            </div>
+            <ShareButton
+              title={displayTitle}
+              text={resource.description || resource.meta || ""}
+              url={typeof window !== "undefined" ? window.location.href : ""}
+            />
+          </div>
         </div>
       </div>
 
