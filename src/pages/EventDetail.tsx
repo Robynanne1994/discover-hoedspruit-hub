@@ -814,24 +814,31 @@ const EventDetail = () => {
         )}
       </div>
 
-      {/* Sticky tab bar */}
-      <nav style={{
-        position: "sticky", top: 0, zIndex: 30,
-        background: C.surface, borderBottom: `1px solid ${C.border}`,
-        display: "flex", padding: "0 8px",
-      }}>
-        <TabBtn k="about" label="About" />
-        <TabBtn k="details" label="Details" />
-        {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
-        <TabBtn k="location" label="Location" />
-      </nav>
+      {(() => {
+        const hasAboutContent = !!(e.description?.trim() || e.hosted_by_name || e.hosted_by_name_2 || e.hosted_by_name_3);
+        return (
+          <>
+            <nav style={{
+              position: "sticky", top: 0, zIndex: 30,
+              background: C.surface, borderBottom: `1px solid ${C.border}`,
+              display: "flex", padding: "0 8px",
+            }}>
+              {hasAboutContent && <TabBtn k="about" label="About" />}
+              <TabBtn k="details" label="Details" />
+              {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
+              <TabBtn k="location" label="Location" />
+            </nav>
 
-      <main>
-        {tab === "about" && renderAbout()}
-        {tab === "details" && renderDetails()}
-        {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
-        {tab === "location" && renderLocation()}
-      </main>
+            <main>
+              {tab === "about" && hasAboutContent && renderAbout()}
+              {tab === "details" && renderDetails()}
+              {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
+              {tab === "location" && renderLocation()}
+            </main>
+          </>
+        );
+      })()}
+
 
       <ImageLightbox
         images={galleryImages}
