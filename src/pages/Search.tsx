@@ -579,7 +579,7 @@ const ListingsResults = ({ query }: { query: string }) => {
         .select("id, title, title_override, location, image_url, is_featured")
         .order("is_featured", { ascending: false })
         .order("created_at", { ascending: false })
-        .limit(50);
+        .limit(term ? 50 : 15);
       if (term) q = q.ilike("title", `%${term}%`);
       const { data } = await q;
       return data || [];
@@ -597,10 +597,31 @@ const ListingsResults = ({ query }: { query: string }) => {
           image={l.image_url}
           title={l.title}
           titleOverride={(l as any).title_override}
-          subtitle={l.location}
+          subtitle={null}
           action={<InlineSaveButton itemId={l.id} itemType="listing" />}
         />
       ))}
+      {!term && (
+        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
+          <Link
+            to="/categories"
+            style={{
+              background: "transparent",
+              border: `1.5px solid ${PRIMARY}`,
+              borderRadius: 999,
+              padding: "12px 24px",
+              fontFamily: FONT,
+              fontSize: 14,
+              fontWeight: 700,
+              color: PRIMARY,
+              textDecoration: "none",
+              letterSpacing: "0.02em",
+            }}
+          >
+            Discover more
+          </Link>
+        </div>
+      )}
     </>
   );
 };
