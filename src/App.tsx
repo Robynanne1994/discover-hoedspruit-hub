@@ -34,6 +34,7 @@ import Directories from "./pages/Directories.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
 import MyProfile from "./pages/MyProfile.tsx";
 import BushTelegraph from "./pages/BushTelegraph.tsx";
+import LocalChannelDetail from "./pages/LocalChannelDetail.tsx";
 import SavedListings from "./pages/SavedListings.tsx";
 import VisitedPlaces from "./pages/VisitedPlaces.tsx";
 import NotFound from "./pages/NotFound.tsx";
