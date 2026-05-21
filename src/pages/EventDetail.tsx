@@ -70,15 +70,29 @@ const toIcsDate = (d: Date) =>
 const escIcs = (s: string) =>
   s.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
 
-const buildIcs = (e: any): string | null => {
-  const startDateStr = e.start_date || e.date;
-  if (!startDateStr) return null;
-  const startTime = (e.start_time || "00:00").slice(0, 5);
-  const startISO = `${startDateStr}T${startTime}:00`;
-  const start = new Date(startISO);
-  if (isNaN(start.getTime())) return null;
-  const endDateStr = e.end_date || startDateStr;
-  const endTime = (e.end_time || "").slice(0, 5);
+// Resolve the start/end Date pair to use when adding to calendar.
+// For multi-performance / recurring events this is the *next* upcoming occurrence.
+const resolveCalendarRange = (e: any): { start: Date; end: Date } | null => {
+  const next = getNextOccurrence(e);
+  let start: Date | null = null;
+  let endDateStr: string | null = null;
+  let endTime: string = "";
+
+  if (next) {
+    start = next.date;
+    endDateStr = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+    endTime = (next.endTime || "").slice(0, 5);
+  } else {
+    // fall back to legacy single/continuous fields
+    const startDateStr = e.start_date || e.date;
+    if (!startDateStr) return null;
+    const startTime = (e.start_time || "00:00").slice(0, 5);
+    start = new Date(`${startDateStr}T${startTime}:00`);
+    if (isNaN(start.getTime())) return null;
+    endDateStr = e.end_date || startDateStr;
+    endTime = (e.end_time || "").slice(0, 5);
+  }
+
   let end: Date;
   if (endTime) {
     end = new Date(`${endDateStr}T${endTime}:00`);
@@ -86,6 +100,12 @@ const buildIcs = (e: any): string | null => {
   } else {
     end = new Date(start.getTime() + 60 * 60 * 1000);
   }
+  return { start, end };
+};
+
+const buildIcs = (e: any): string | null => {
+  const range = resolveCalendarRange(e);
+  if (!range) return null;
   const now = new Date();
   return [
     "BEGIN:VCALENDAR",
@@ -94,8 +114,8 @@ const buildIcs = (e: any): string | null => {
     "BEGIN:VEVENT",
     `UID:${e.id}@hellohoedspruit`,
     `DTSTAMP:${toIcsDate(now)}`,
-    `DTSTART:${toIcsDate(start)}`,
-    `DTEND:${toIcsDate(end)}`,
+    `DTSTART:${toIcsDate(range.start)}`,
+    `DTEND:${toIcsDate(range.end)}`,
     `SUMMARY:${escIcs(e.title || "")}`,
     e.description ? `DESCRIPTION:${escIcs(e.description)}` : "",
     e.location ? `LOCATION:${escIcs(e.location)}` : "",
@@ -108,26 +128,14 @@ const buildIcs = (e: any): string | null => {
 // Google Calendar app on Android, Google Calendar in browser elsewhere),
 // which adds the event to the user's own calendar instead of downloading a file.
 const buildGoogleCalUrl = (e: any): string | null => {
-  const startDateStr = e.start_date || e.date;
-  if (!startDateStr) return null;
-  const startTime = (e.start_time || "00:00").slice(0, 5);
-  const start = new Date(`${startDateStr}T${startTime}:00`);
-  if (isNaN(start.getTime())) return null;
-  const endDateStr = e.end_date || startDateStr;
-  const endTime = (e.end_time || "").slice(0, 5);
-  let end: Date;
-  if (endTime) {
-    end = new Date(`${endDateStr}T${endTime}:00`);
-    if (isNaN(end.getTime())) end = new Date(start.getTime() + 60 * 60 * 1000);
-  } else {
-    end = new Date(start.getTime() + 60 * 60 * 1000);
-  }
+  const range = resolveCalendarRange(e);
+  if (!range) return null;
   const fmt = (d: Date) =>
     `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: e.title || "",
-    dates: `${fmt(start)}/${fmt(end)}`,
+    dates: `${fmt(range.start)}/${fmt(range.end)}`,
   });
   if (e.description) params.set("details", String(e.description).replace(/<[^>]*>/g, ""));
   if (e.location) params.set("location", String(e.location).replace(/<[^>]*>/g, ""));
