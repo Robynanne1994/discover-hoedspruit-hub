@@ -676,6 +676,30 @@ const MyProfile = () => {
             </>
           );
         })()}
+
+        {tab === "resources" && (
+          savedResources?.length ? (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              {savedResources.map((it: any) => {
+                const displayTitle = (it.title_override?.trim()) || it.title;
+                const metaParts = [it.meta, it.meta_2].filter((m: string | null) => m && m.trim());
+                const href = it.slug ? `/local-channels/${it.slug}` : `/local-channels`;
+                return renderCard(
+                  { ...it, title: displayTitle },
+                  "resource",
+                  href,
+                  <>
+                    {it.platform && <span>{it.platform}</span>}
+                    {it.platform && metaParts.length > 0 && <span> · </span>}
+                    {metaParts.length > 0 && <span>{metaParts.join(" · ")}</span>}
+                  </>,
+                );
+              })}
+            </div>
+          ) : (
+            <EmptyTab text="No saved resources yet." />
+          )
+        )}
       </div>
     </div>
   );
