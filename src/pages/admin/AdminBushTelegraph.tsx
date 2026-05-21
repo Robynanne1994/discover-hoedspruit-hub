@@ -38,7 +38,9 @@ type Resource = {
   detail_image_url: string | null;
   qr_image_url: string | null;
   admin_name: string | null;
+  admins: AdminEntry[] | null;
   years_running: number | null;
+  since_year: number | null;
   post_frequency: string | null;
   tag_1: string | null;
   tag_2: string | null;
@@ -60,8 +62,10 @@ const emptyForm = {
   image_url: "",
   detail_image_url: "",
   qr_image_url: "",
-  admin_name: "",
+  admins: [] as AdminEntry[],
+  years_mode: "years" as YearsMode,
   years_running: "" as string | number,
+  since_year: "" as string | number,
   post_frequency: "",
   tag_1: "",
   tag_2: "",
