@@ -47,6 +47,7 @@ const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) =>
 const LocalChannelDetail = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
+  const { isAdmin } = useAuth();
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const { data: resource, isLoading } = useQuery({
