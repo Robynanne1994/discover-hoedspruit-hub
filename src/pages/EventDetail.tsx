@@ -386,10 +386,10 @@ const EventDetail = () => {
     const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
 
-    const hosts: { name: string; subtitle?: string; image?: string }[] = [];
-    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url });
-    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2 });
-    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3 });
+    const hosts: { name: string; subtitle?: string; image?: string; link?: string }[] = [];
+    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url, link: (e as any).hosted_by_link });
+    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2, link: (e as any).hosted_by_link_2 });
+    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3, link: (e as any).hosted_by_link_3 });
 
     return (
       <div style={{ padding: 20 }}>
