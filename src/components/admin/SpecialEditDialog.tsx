@@ -222,7 +222,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
                 )}
               </>
             )}
-            <p className="text-xs text-muted-foreground mt-1">Linking allows users to tap the business name to view the full listing.</p>
+            
           </div>
           <div><Label>Deal Label <span className="text-xs text-muted-foreground">(legacy — used only if no categories set)</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
 
