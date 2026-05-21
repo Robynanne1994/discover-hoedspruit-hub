@@ -589,7 +589,7 @@ const ListingsResults = ({ query }: { query: string }) => {
   if (!data || data.length === 0) return <EmptyRow text={term ? "No listings found" : "No listings"} />;
   return (
     <>
-      <SectionHeader label={term ? "Listings" : "Suggested listings"} count={data.length} />
+      <SectionHeader label={term ? "Listings" : "Suggested"} count={data.length} />
       {data.map((l) => (
         <ResultRow
           key={l.id}
