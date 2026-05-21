@@ -372,16 +372,16 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
           <div
             style={{
               position: "absolute",
-              top: 14,
-              left: 14,
+              top: 12,
+              left: 12,
               background: COLOR.badge,
               color: COLOR.badgeFg,
-              padding: "7px 14px",
+              padding: "5px 10px",
               borderRadius: 999,
               fontFamily: SANS,
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: 700,
-              letterSpacing: "0.12em",
+              letterSpacing: "0.04em",
               textTransform: "uppercase",
             }}
           >
