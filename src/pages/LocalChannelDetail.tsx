@@ -211,7 +211,7 @@ const LocalChannelDetail = () => {
                 : null);
           const hasAny = admins.length > 0 || yearsValue || resource.post_frequency;
           return (
-            <div style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
+            <div className="[&>*:last-child]:!border-b-0" style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
               {admins.length > 0 && (
                 <div style={{ padding: "14px 0", borderBottom: `1px solid ${LINE}` }}>
                   <div style={{ fontFamily: HN, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 10 }}>
