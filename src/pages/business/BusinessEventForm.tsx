@@ -227,6 +227,8 @@ const BusinessEventForm = ({ mode }: Props) => {
         </div>
         <div><Label>Price</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R150 / Free" /></div>
         <div><Label>Booking link</Label><Input value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." type="url" /></div>
+        <div><Label>Host name</Label><Input value={hostedByName} onChange={(e) => setHostedByName(e.target.value)} placeholder="e.g. Hoedspruit Music Society" /></div>
+        <div><Label>Host link</Label><Input value={hostedByLink} onChange={(e) => setHostedByLink(e.target.value)} placeholder="https://... (website or social)" type="url" /></div>
         {(() => {
           const limitWords = (val: string) => val.split(/\s+/).filter(Boolean).slice(0, 2).join(" ") + (val.endsWith(" ") && val.split(/\s+/).filter(Boolean).length < 2 ? " " : "");
           return (
