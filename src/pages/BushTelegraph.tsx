@@ -77,31 +77,52 @@ const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode
   </button>
 );
 
-const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void }) => {
+const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen: (r: Resource) => void; isSaved: boolean; onToggleSave: (e: React.MouseEvent) => void }) => {
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
   const metaParts = [r.meta, r.meta_2].filter((m) => m && m.trim());
   const displayTitle = (r.title_override?.trim()) || r.title;
   const hasOverride = !!r.title_override?.trim();
 
   return (
-    <button
-      onClick={() => onOpen(r)}
+    <div
       style={{
         textAlign: "left", background: CARD, border: "none",
-        borderRadius: 18, padding: "16px 18px 18px", cursor: "pointer",
+        borderRadius: 18, padding: "16px 18px 18px",
         position: "relative", display: "block", width: "100%",
         fontFamily: HN, transition: "transform 120ms ease",
       }}
       {...press}
     >
-      <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+      {/* Heart save button — top right */}
+      <button
+        onClick={onToggleSave}
+        style={{
+          position: "absolute", top: 12, right: 12, zIndex: 2,
+          width: 32, height: 32, borderRadius: 999,
+          background: isSaved ? DARK : "rgba(122, 110, 92, 0.12)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          border: "none", cursor: "pointer", transition: "background 150ms ease-out",
+        }}
+        aria-label={isSaved ? "Remove from saved" : "Save"}
+      >
+        <Heart
+          size={15}
+          strokeWidth={1.8}
+          style={{
+            color: isSaved ? CARD : INK,
+            fill: isSaved ? CARD : "none",
+          }}
+        />
+      </button>
+
+      <div onClick={() => onOpen(r)} style={{ display: "flex", gap: 14, alignItems: "flex-start", cursor: "pointer" }}>
         <div
           style={{
             width: 52, height: 52, borderRadius: "50%", flexShrink: 0,
             background: r.image_url ? `center/cover no-repeat url(${r.image_url})` : gradientFor(r.id),
           }}
         />
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
           <h4
             data-no-title-case={hasOverride ? "true" : undefined}
             style={{
@@ -141,7 +162,7 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
           )}
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 
