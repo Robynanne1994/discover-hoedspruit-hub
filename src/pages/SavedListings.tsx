@@ -962,7 +962,126 @@ const SavedListings = () => {
     );
   };
 
-  // ------- All (combined) -------
+  // ------- Channels -------
+  const renderChannels = () => {
+    if (filteredChannelsByPill.length === 0) return renderEmpty();
+    return (
+      <div
+        style={{
+          background: CREAM,
+          borderRadius: 24,
+          marginLeft: 24,
+          marginRight: 24,
+          padding: "6px 20px",
+          overflow: "hidden",
+        }}
+      >
+        {filteredChannelsByPill.map((fav: any, idx: number) => {
+          const c = fav.details;
+          const href = c.slug ? `/local-channels/${c.slug}` : c.url || "/local-channels";
+          const isExternal = !c.slug && !!c.url;
+          const Tag: any = isExternal ? "a" : Link;
+          const linkProps: any = isExternal
+            ? { href, target: "_blank", rel: "noopener noreferrer" }
+            : { to: href };
+          return (
+            <Tag
+              key={fav.id}
+              {...linkProps}
+              className="flex items-center"
+              style={{
+                gap: 14,
+                paddingTop: 16,
+                paddingBottom: 16,
+                borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                textDecoration: "none",
+              }}
+            >
+              <div
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  background: "#e6dfcf",
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: SANS,
+                  color: MUTED,
+                }}
+              >
+                {c.image_url ? (
+                  <img
+                    src={c.image_url}
+                    alt=""
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <span>{(c.platform || "•").slice(0, 1)}</span>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 11.5,
+                    color: MUTED,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    margin: 0,
+                    marginBottom: 3,
+                  }}
+                >
+                  {c.platform || "Channel"}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 15,
+                    color: INK,
+                    lineHeight: 1.25,
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {c.title_override?.trim() || c.title}
+                </p>
+                {(c.meta || c.meta_2) && (
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 12.5,
+                      color: MUTED,
+                      margin: 0,
+                      marginTop: 2,
+                    }}
+                  >
+                    {[c.meta, c.meta_2].filter((m: string | null) => m && m.trim()).join(" · ")}
+                  </p>
+                )}
+              </div>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  color: INK,
+                  opacity: 0.7,
+                  flexShrink: 0,
+                }}
+              >
+                ↗
+              </span>
+            </Tag>
+          );
+        })}
+      </div>
+    );
+  };
+
   const renderAll = () => {
     const allItems = [
       ...(favourites || []).map((f: any) => ({
