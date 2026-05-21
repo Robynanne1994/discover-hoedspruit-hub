@@ -261,6 +261,19 @@ const AdminBushTelegraph = () => {
     setOpen(true);
   };
 
+  useEffect(() => {
+    const editId = searchParams.get("edit");
+    if (editId && resources.length && !open) {
+      const r = resources.find((x) => x.id === editId);
+      if (r) {
+        startEdit(r);
+        searchParams.delete("edit");
+        setSearchParams(searchParams, { replace: true });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resources, searchParams]);
+
   const submit = () => {
     if (!form.title.trim()) {
       toast.error("Title is required");
