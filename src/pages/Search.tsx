@@ -638,7 +638,7 @@ const EventsResults = ({ query }: { query: string }) => {
         .from("events")
         .select("id, title, title_override, location, image_url, date, start_date")
         .order("start_date", { ascending: true, nullsFirst: false })
-        .limit(50);
+        .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
       const { data } = await q;
       return (data || []).filter((e) => !e.start_date || e.start_date >= today);
@@ -648,7 +648,7 @@ const EventsResults = ({ query }: { query: string }) => {
   if (!data || data.length === 0) return <EmptyRow text={term ? "No events found" : "No upcoming events"} />;
   return (
     <>
-      <SectionHeader label={term ? "Events" : "Upcoming events"} count={data.length} />
+      <SectionHeader label={term ? "Events" : "Upcoming events"} />
       {data.map((e) => (
         <ResultRow
           key={e.id}
@@ -660,6 +660,27 @@ const EventsResults = ({ query }: { query: string }) => {
           action={<InlineSaveButton itemId={e.id} itemType="event" />}
         />
       ))}
+      {!term && (
+        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
+          <Link
+            to="/events"
+            style={{
+              background: "transparent",
+              border: `1.5px solid ${PRIMARY}`,
+              borderRadius: 999,
+              padding: "12px 24px",
+              fontFamily: FONT,
+              fontSize: 14,
+              fontWeight: 700,
+              color: PRIMARY,
+              textDecoration: "none",
+              letterSpacing: "0.02em",
+            }}
+          >
+            Discover more events
+          </Link>
+        </div>
+      )}
     </>
   );
 };
