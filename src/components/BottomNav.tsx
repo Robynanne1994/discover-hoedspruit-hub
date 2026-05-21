@@ -17,21 +17,52 @@ const BottomNav = () => {
   const location = useLocation();
 
   return (
-    <nav
-      className="fixed left-3 right-3 z-50 md:hidden"
-      style={{
-        bottom: 12,
-        background: "rgba(40, 36, 32, 0.55)",
-        backdropFilter: "blur(28px) saturate(180%)",
-        WebkitBackdropFilter: "blur(28px) saturate(180%)",
-        borderRadius: 28,
-        height: 74,
-        padding: "0 10px",
-        border: "1px solid rgba(255,255,255,0.18)",
-        boxShadow:
-          "0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.2)",
-      }}
-    >
+    <>
+      {/* SVG displacement filter for the liquid glass refraction */}
+      <svg
+        aria-hidden
+        width="0"
+        height="0"
+        style={{ position: "absolute", width: 0, height: 0 }}
+      >
+        <defs>
+          <filter id="liquid-glass-distortion" x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.008 0.012"
+              numOctaves="2"
+              seed="7"
+              result="noise"
+            />
+            <feGaussianBlur in="noise" stdDeviation="2" result="softNoise" />
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="softNoise"
+              scale="60"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+        </defs>
+      </svg>
+
+      <nav
+        className="fixed left-3 right-3 z-50 md:hidden"
+        style={{
+          bottom: 12,
+          background: "rgba(40, 36, 32, 0.35)",
+          backdropFilter:
+            "url(#liquid-glass-distortion) blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+          borderRadius: 28,
+          height: 74,
+          padding: "0 10px",
+          border: "1px solid rgba(255,255,255,0.22)",
+          boxShadow:
+            "0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -1px 0 rgba(0,0,0,0.2), inset 0 0 20px rgba(255,255,255,0.05)",
+          isolation: "isolate",
+        }}
+      >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 6 }}>
         {navItems.map((item) => {
           const isActive =
