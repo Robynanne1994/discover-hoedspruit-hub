@@ -126,6 +126,14 @@ const LocalChannelDetail = () => {
               text={resource.description || resource.meta || ""}
               url={typeof window !== "undefined" ? window.location.href : ""}
             />
+            {isAdmin && (
+              <CircleBtn
+                onClick={() => navigate(`/admin/bush-telegraph?edit=${resource.id}`)}
+                ariaLabel="Edit resource"
+              >
+                <Pencil size={18} color={INK} strokeWidth={2} />
+              </CircleBtn>
+            )}
           </div>
         </div>
       </div>
