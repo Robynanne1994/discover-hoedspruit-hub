@@ -100,6 +100,7 @@ export type Database = {
       bush_telegraph_resources: {
         Row: {
           admin_name: string | null
+          admins: Json
           created_at: string
           description: string | null
           detail_image_url: string | null
@@ -112,6 +113,7 @@ export type Database = {
           post_frequency: string | null
           qr_image_url: string | null
           resource_type: string
+          since_year: number | null
           slug: string | null
           sort_order: number
           tag_1: string | null
@@ -124,6 +126,7 @@ export type Database = {
         }
         Insert: {
           admin_name?: string | null
+          admins?: Json
           created_at?: string
           description?: string | null
           detail_image_url?: string | null
@@ -136,6 +139,7 @@ export type Database = {
           post_frequency?: string | null
           qr_image_url?: string | null
           resource_type?: string
+          since_year?: number | null
           slug?: string | null
           sort_order?: number
           tag_1?: string | null
@@ -148,6 +152,7 @@ export type Database = {
         }
         Update: {
           admin_name?: string | null
+          admins?: Json
           created_at?: string
           description?: string | null
           detail_image_url?: string | null
@@ -160,6 +165,7 @@ export type Database = {
           post_frequency?: string | null
           qr_image_url?: string | null
           resource_type?: string
+          since_year?: number | null
           slug?: string | null
           sort_order?: number
           tag_1?: string | null
