@@ -1,4 +1,5 @@
 import HomeMasthead from "@/components/home/HomeMasthead";
+import HomeQuickPills from "@/components/home/HomeQuickPills";
 import HomeCategoryChips from "@/components/home/HomeCategoryChips";
 import HomeSpecials from "@/components/home/HomeSpecials";
 import HomeWhatsOn from "@/components/home/HomeWhatsOn";
@@ -19,6 +20,7 @@ const Index = () => {
       }}
     >
       <HomeMasthead />
+      <HomeQuickPills />
       <div style={{ height: 24 }} />
       <HomeCategoryChips />
 
