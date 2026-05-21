@@ -596,7 +596,7 @@ const AdminBushTelegraph = () => {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Meta 1 (e.g. "Facebook Group")</Label>
+                <Label>Meta 1</Label>
                 <Input value={form.meta} onChange={(e) => setForm({ ...form, meta: e.target.value })} />
               </div>
               <div>
