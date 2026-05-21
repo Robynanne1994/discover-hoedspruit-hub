@@ -670,7 +670,6 @@ const AdminBushTelegraph = () => {
             </div>
 
             <div className="rounded-lg border border-border p-3 space-y-4">
-              <p className="text-xs uppercase tracking-wider text-muted-foreground">Optional details (hidden on frontend if empty)</p>
 
               {/* Admins (array) */}
               <div className="space-y-3">
