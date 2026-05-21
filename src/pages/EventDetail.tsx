@@ -538,8 +538,6 @@ const EventDetail = () => {
                 style={{
                   display: "flex", alignItems: "center", gap: 10,
                   padding: "6px 10px", borderRadius: 8,
-                  background: isNext ? "#f5f0e8" : "transparent",
-                  borderLeft: isNext ? `3px solid ${C.primary}` : "3px solid transparent",
                   opacity: past ? 0.45 : 1,
                 }}
               >
@@ -550,9 +548,8 @@ const EventDetail = () => {
                 {isNext && (
                   <span style={{
                     fontFamily: FONT, fontSize: 10, fontWeight: 700,
-                    letterSpacing: "0.1em", color: C.primary,
-                    background: "#fff", border: `1px solid ${C.primary}`,
-                    borderRadius: 999, padding: "2px 8px",
+                    letterSpacing: "0.1em", color: C.muted,
+                    background: "#f5f0e8", borderRadius: 999, padding: "2px 8px",
                   }}>NEXT</span>
                 )}
               </div>
