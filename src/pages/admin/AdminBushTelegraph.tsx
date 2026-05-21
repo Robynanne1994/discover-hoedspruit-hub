@@ -114,6 +114,7 @@ const escapeCSV = (v: string) =>
 const AdminBushTelegraph = () => {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [editing, setEditing] = useState<Resource | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [open, setOpen] = useState(false);
