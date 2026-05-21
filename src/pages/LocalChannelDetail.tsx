@@ -177,18 +177,53 @@ const LocalChannelDetail = () => {
         </button>
 
         {/* Details */}
-        <div style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
-          {resource.admin_name && <InfoRow label="Admin" value={resource.admin_name} />}
-          {resource.years_running != null && <InfoRow label="Years Running" value={`${resource.years_running} ${resource.years_running === 1 ? "year" : "years"}`} />}
-          {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
-          {resource.tag_1 && <InfoRow label="Tag" value={resource.tag_1} />}
-          {resource.tag_2 && <InfoRow label="Tag" value={resource.tag_2} />}
-          {!resource.admin_name && resource.years_running == null && !resource.post_frequency && !resource.tag_1 && !resource.tag_2 && (
-            <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
-              No additional details yet.
+        {(() => {
+          const admins: { name: string; image_url?: string }[] = Array.isArray(resource.admins) && resource.admins.length
+            ? resource.admins.filter((a: any) => a?.name || a?.image_url)
+            : (resource.admin_name ? [{ name: resource.admin_name }] : []);
+          const yearsValue = resource.since_year
+            ? `Since ${resource.since_year}`
+            : (resource.years_running != null
+                ? `${resource.years_running} ${resource.years_running === 1 ? "year" : "years"}`
+                : null);
+          const hasAny = admins.length > 0 || yearsValue || resource.post_frequency || resource.tag_1 || resource.tag_2;
+          return (
+            <div style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
+              {admins.length > 0 && (
+                <div style={{ padding: "14px 0", borderBottom: `1px solid ${LINE}` }}>
+                  <div style={{ fontFamily: HN, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 10 }}>
+                    {admins.length === 1 ? "Admin" : "Admins"}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {admins.map((a, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{
+                          width: 36, height: 36, borderRadius: 999, overflow: "hidden",
+                          background: IVORY, display: "flex", alignItems: "center", justifyContent: "center",
+                          fontFamily: HN, fontSize: 13, fontWeight: 700, color: PRIMARY, flexShrink: 0,
+                        }}>
+                          {a.image_url
+                            ? <img src={a.image_url} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            : (a.name || "?").trim().charAt(0).toUpperCase()}
+                        </div>
+                        <span style={{ fontFamily: HN, fontSize: 14, color: BODY }}>{a.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {yearsValue && <InfoRow label={resource.since_year ? "Running" : "Years Running"} value={yearsValue} />}
+              {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
+              {resource.tag_1 && <InfoRow label="Tag" value={resource.tag_1} />}
+              {resource.tag_2 && <InfoRow label="Tag" value={resource.tag_2} />}
+              {!hasAny && (
+                <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
+                  No additional details yet.
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          );
+        })()}
       </div>
 
       {/* In-app lightbox for QR/image */}
