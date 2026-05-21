@@ -190,6 +190,30 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>Start Time</Label><Input type="time" value={form.start_time || ""} onChange={(e) => set("start_time", e.target.value || null)} /></div>
             <div><Label>End Time</Label><Input type="time" value={form.end_time || ""} onChange={(e) => set("end_time", e.target.value || null)} /></div>
           </div>
+          <div className="space-y-2 p-3 border rounded">
+            <Label className="text-sm font-semibold">Performances <span className="text-xs text-muted-foreground font-normal">(use for same show on multiple separate dates, e.g. a musical)</span></Label>
+            <p className="text-xs text-muted-foreground">When set, each row becomes a separate performance. Start/End Date above are auto-filled from the first and last performance.</p>
+            {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
+              <div key={idx} className="flex gap-2 items-end">
+                <div className="flex-1"><Label className="text-xs">Date</Label><Input type="date" value={p?.date || ""} onChange={(e) => {
+                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], date: e.target.value }; set("performances", arr);
+                }} /></div>
+                <div className="w-24"><Label className="text-xs">Start</Label><Input type="time" value={p?.time || ""} onChange={(e) => {
+                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], time: e.target.value }; set("performances", arr);
+                }} /></div>
+                <div className="w-24"><Label className="text-xs">End</Label><Input type="time" value={p?.end_time || ""} onChange={(e) => {
+                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], end_time: e.target.value }; set("performances", arr);
+                }} /></div>
+                <Button type="button" variant="ghost" size="sm" onClick={() => {
+                  const arr = [...(form.performances || [])]; arr.splice(idx, 1); set("performances", arr.length ? arr : null);
+                }}>×</Button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={() => {
+              const arr = [...(Array.isArray(form.performances) ? form.performances : []), { date: "", time: form.start_time || "", end_time: form.end_time || "" }];
+              set("performances", arr);
+            }}>+ Add performance date</Button>
+          </div>
           <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
           <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
           <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
