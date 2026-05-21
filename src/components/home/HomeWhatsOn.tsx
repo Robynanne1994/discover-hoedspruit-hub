@@ -22,7 +22,7 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, title_override, location, date, start_date, end_date, image_url")
+          .select("id, title, title_override, location, date, start_date, end_date, image_url, homepage_image_url")
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         return ids
@@ -36,7 +36,7 @@ const HomeWhatsOn = () => {
       const todayIso = today.toISOString().slice(0, 10);
       const { data } = await supabase
         .from("events")
-        .select("id, title, title_override, location, date, start_date, end_date, image_url")
+        .select("id, title, title_override, location, date, start_date, end_date, image_url, homepage_image_url")
         .or(`end_date.gte.${todayIso},start_date.gte.${todayIso}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(20);
@@ -81,9 +81,9 @@ const HomeWhatsOn = () => {
                   display: "block",
                 }}
               >
-                {e.image_url && (
+                {(e.homepage_image_url || e.image_url) && (
                   <img
-                    src={e.image_url}
+                    src={e.homepage_image_url || e.image_url}
                     alt={e.title}
                     loading="lazy"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
