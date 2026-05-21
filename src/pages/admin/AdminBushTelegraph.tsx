@@ -10,7 +10,10 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import ImageUpload from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown, X } from "lucide-react";
+
+type AdminEntry = { name: string; image_url: string };
+type YearsMode = "years" | "since";
 
 const RESOURCE_TYPES = [
   { value: "link", label: "External link" },
@@ -35,7 +38,9 @@ type Resource = {
   detail_image_url: string | null;
   qr_image_url: string | null;
   admin_name: string | null;
+  admins: AdminEntry[] | null;
   years_running: number | null;
+  since_year: number | null;
   post_frequency: string | null;
   tag_1: string | null;
   tag_2: string | null;
@@ -57,8 +62,10 @@ const emptyForm = {
   image_url: "",
   detail_image_url: "",
   qr_image_url: "",
-  admin_name: "",
+  admins: [] as AdminEntry[],
+  years_mode: "years" as YearsMode,
   years_running: "" as string | number,
+  since_year: "" as string | number,
   post_frequency: "",
   tag_1: "",
   tag_2: "",
@@ -160,7 +167,10 @@ const AdminBushTelegraph = () => {
 
   const upsertMutation = useMutation({
     mutationFn: async (payload: typeof emptyForm & { id?: string }) => {
-      const { id, use_title_override, years_running, ...rest } = payload;
+      const { id, use_title_override, years_running, since_year, years_mode, admins, ...rest } = payload;
+      const cleanAdmins = (admins || [])
+        .map((a) => ({ name: (a.name || "").trim(), image_url: (a.image_url || "").trim() }))
+        .filter((a) => a.name || a.image_url);
       const data: any = {
         ...rest,
         sort_order: Number(rest.sort_order) || 0,
@@ -171,8 +181,10 @@ const AdminBushTelegraph = () => {
         image_url: rest.image_url || null,
         detail_image_url: rest.detail_image_url || null,
         qr_image_url: rest.qr_image_url || null,
-        admin_name: rest.admin_name?.trim() || null,
-        years_running: years_running === "" || years_running === null ? null : Number(years_running) || null,
+        admins: cleanAdmins,
+        admin_name: cleanAdmins[0]?.name || null,
+        years_running: years_mode === "years" && years_running !== "" ? Number(years_running) || null : null,
+        since_year: years_mode === "since" && since_year !== "" ? Number(since_year) || null : null,
         post_frequency: rest.post_frequency?.trim() || null,
         tag_1: rest.tag_1?.trim() || null,
         tag_2: rest.tag_2?.trim() || null,
@@ -232,8 +244,12 @@ const AdminBushTelegraph = () => {
       image_url: r.image_url ?? "",
       detail_image_url: r.detail_image_url ?? "",
       qr_image_url: r.qr_image_url ?? "",
-      admin_name: r.admin_name ?? "",
+      admins: Array.isArray(r.admins) && r.admins.length
+        ? r.admins.map((a: any) => ({ name: a?.name ?? "", image_url: a?.image_url ?? "" }))
+        : (r.admin_name ? [{ name: r.admin_name, image_url: "" }] : []),
+      years_mode: r.since_year != null ? "since" : "years",
       years_running: r.years_running ?? "",
+      since_year: r.since_year ?? "",
       post_frequency: r.post_frequency ?? "",
       tag_1: r.tag_1 ?? "",
       tag_2: r.tag_2 ?? "",
@@ -605,26 +621,103 @@ const AdminBushTelegraph = () => {
               </div>
             </div>
 
-            <div className="rounded-lg border border-border p-3 space-y-3">
+            <div className="rounded-lg border border-border p-3 space-y-4">
               <p className="text-xs uppercase tracking-wider text-muted-foreground">Optional details (hidden on frontend if empty)</p>
-              <div>
-                <Label>Admin</Label>
-                <Input value={form.admin_name} onChange={(e) => setForm({ ...form, admin_name: e.target.value })} placeholder="e.g. Jane Smith" />
+
+              {/* Admins (array) */}
+              <div className="space-y-3">
+                <Label>Admins</Label>
+                {form.admins.length === 0 && (
+                  <p className="text-xs text-muted-foreground">No admins yet.</p>
+                )}
+                {form.admins.map((a, idx) => (
+                  <div key={idx} className="rounded-md border border-border p-3 space-y-2 relative">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-medium text-muted-foreground">Admin {idx + 1}</p>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => setForm({ ...form, admins: form.admins.filter((_, i) => i !== idx) })}
+                        aria-label="Remove admin"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                    <div>
+                      <Label className="text-xs">Name</Label>
+                      <Input
+                        value={a.name}
+                        onChange={(e) => {
+                          const next = [...form.admins];
+                          next[idx] = { ...next[idx], name: e.target.value };
+                          setForm({ ...form, admins: next });
+                        }}
+                        placeholder="e.g. Jane Smith"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Photo</Label>
+                      <ImageUpload
+                        bucket="local-channels-images"
+                        value={a.image_url}
+                        onChange={(url) => {
+                          const next = [...form.admins];
+                          next[idx] = { ...next[idx], image_url: url };
+                          setForm({ ...form, admins: next });
+                        }}
+                        aspect={1}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1"
+                  onClick={() => setForm({ ...form, admins: [...form.admins, { name: "", image_url: "" }] })}
+                >
+                  <Plus className="h-3 w-3" /> Add another admin
+                </Button>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>Years Running</Label>
+
+              {/* Years / Since */}
+              <div className="space-y-2">
+                <Label>How long it's been running</Label>
+                <Select
+                  value={form.years_mode}
+                  onValueChange={(v: YearsMode) =>
+                    setForm({ ...form, years_mode: v, years_running: v === "years" ? form.years_running : "", since_year: v === "since" ? form.since_year : "" })
+                  }
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="years">Years running</SelectItem>
+                    <SelectItem value="since">Since year</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.years_mode === "years" ? (
                   <Input
                     type="number"
                     value={form.years_running}
                     onChange={(e) => setForm({ ...form, years_running: e.target.value })}
                     placeholder="e.g. 5"
                   />
-                </div>
-                <div>
-                  <Label>Avg. Posts Frequency</Label>
-                  <Input value={form.post_frequency} onChange={(e) => setForm({ ...form, post_frequency: e.target.value })} placeholder="e.g. 3 / week" />
-                </div>
+                ) : (
+                  <Input
+                    type="number"
+                    value={form.since_year}
+                    onChange={(e) => setForm({ ...form, since_year: e.target.value })}
+                    placeholder="e.g. 2018"
+                  />
+                )}
+              </div>
+
+              <div>
+                <Label>Avg. Posts Frequency</Label>
+                <Input value={form.post_frequency} onChange={(e) => setForm({ ...form, post_frequency: e.target.value })} placeholder="e.g. 3 / week" />
               </div>
             </div>
 
