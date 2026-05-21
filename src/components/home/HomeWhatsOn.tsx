@@ -22,7 +22,7 @@ const HomeWhatsOn = () => {
         const ids = siteContent.content as string[];
         const { data } = await supabase
           .from("events")
-          .select("id, title, title_override, location, date, start_date, end_date, image_url")
+          .select("id, title, title_override, location, date, start_date, end_date, image_url, homepage_image_url")
           .in("id", ids);
         const map = new Map((data || []).map((e) => [e.id, e]));
         return ids
