@@ -612,7 +612,7 @@ const AdminBushTelegraph = () => {
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Tag 1 (optional)</Label>
+                <Label>Tag 1</Label>
                 <Input value={form.tag_1} onChange={(e) => setForm({ ...form, tag_1: e.target.value })} />
               </div>
               <div>
