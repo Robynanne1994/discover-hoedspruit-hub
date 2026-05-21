@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
@@ -19,18 +21,29 @@ interface Props {
 }
 
 const FIELDS: (keyof any)[] = [
-  "title", "title_override", "description", "business_name", "business_id", "image_url", "deal_label",
-  "valid_from", "valid_until", "card_footer_text", "is_active", "special_type", "price", "price_label",
+  "title", "title_override", "description", "business_name", "business_id",
+  "image_url", "detail_image_url", "deal_label",
+  "valid_from", "valid_until", "card_footer_text", "is_active", "special_type",
+  "price", "price_label", "original_price",
   "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
-  "original_price", "promo_code", "contact_phone", "contact_whatsapp", "additional_phones", "additional_whatsapps",
+  "promo_code", "contact_phone", "contact_whatsapp", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "terms", "category", "eyebrow_categories",
 ];
 
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(special);
+  const [newCategory, setNewCategory] = useState("");
+  const [localExtraCategories, setLocalExtraCategories] = useState<string[]>([]);
 
-  useEffect(() => { setForm(special); }, [special, open]);
+  useEffect(() => {
+    setForm(special);
+    setNewCategory("");
+    setLocalExtraCategories([]);
+  }, [special, open]);
+
+  // Always-active toggle: no valid_until means ongoing
+  const isAlwaysActive = !form?.valid_from && !form?.valid_until;
 
   const save = useMutation({
     mutationFn: async () => {
@@ -38,6 +51,12 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      // Normalise category arrays
+      const cats: string[] = Array.isArray(form.eyebrow_categories)
+        ? form.eyebrow_categories.map((c: any) => String(c || "").trim()).filter(Boolean)
+        : [];
+      payload.eyebrow_categories = cats;
+      payload.category = cats[0] || null;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       payload.is_active = !(form.valid_until && new Date(form.valid_until) < today);
@@ -50,6 +69,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       qc.invalidateQueries({ queryKey: ["home-specials"] });
       qc.invalidateQueries({ queryKey: ["homepage-specials"] });
       qc.invalidateQueries({ queryKey: ["admin-specials"] });
+      qc.invalidateQueries({ queryKey: ["admin-special-categories"] });
       onOpenChange(false);
     },
     onError: (e: any) => toast.error(e.message || "Failed to save"),
@@ -80,6 +100,54 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       return data || [];
     },
   });
+
+  // Pull all existing categories from all specials so they're available as pills
+  const { data: allCategoryRows } = useQuery({
+    queryKey: ["admin-special-categories"],
+    queryFn: async () => {
+      const { data } = await supabase.from("specials").select("category, eyebrow_categories").limit(5000);
+      return data || [];
+    },
+  });
+
+  const availableCategories = useMemo(() => {
+    const set = new Set<string>();
+    (allCategoryRows || []).forEach((r: any) => {
+      if (r.category && typeof r.category === "string") set.add(r.category.trim());
+      if (Array.isArray(r.eyebrow_categories)) {
+        r.eyebrow_categories.forEach((c: any) => {
+          if (c && typeof c === "string") set.add(c.trim());
+        });
+      }
+    });
+    localExtraCategories.forEach((c) => set.add(c));
+    (form?.eyebrow_categories || []).forEach((c: string) => { if (c) set.add(c.trim()); });
+    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
+  }, [allCategoryRows, localExtraCategories, form?.eyebrow_categories]);
+
+  const selectedCategories: string[] = useMemo(
+    () => (form?.eyebrow_categories || []).filter((c: any) => c && String(c).trim()),
+    [form?.eyebrow_categories]
+  );
+
+  const toggleCategory = (cat: string) => {
+    const current = new Set(selectedCategories.map((c) => c.trim()));
+    if (current.has(cat)) current.delete(cat);
+    else current.add(cat);
+    set("eyebrow_categories", Array.from(current));
+  };
+
+  const addNewCategory = () => {
+    const name = newCategory.trim();
+    if (!name) return;
+    if (!availableCategories.includes(name)) {
+      setLocalExtraCategories((prev) => [...prev, name]);
+    }
+    if (!selectedCategories.includes(name)) {
+      set("eyebrow_categories", [...selectedCategories, name]);
+    }
+    setNewCategory("");
+  };
 
   const [businessQuery, setBusinessQuery] = useState("");
   useEffect(() => {
@@ -156,51 +224,115 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             )}
             <p className="text-xs text-muted-foreground mt-1">Linking allows users to tap the business name to view the full listing.</p>
           </div>
-          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(legacy — used only if no eyebrow categories set)</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
-          <div>
-            <Label>Eyebrow Categories <span className="text-xs text-muted-foreground">(up to 3, shown above title)</span></Label>
-            <div className="grid grid-cols-3 gap-2 mt-1">
-              {[0, 1, 2].map((i) => (
-                <Input
-                  key={i}
-                  placeholder={`Category ${i + 1}`}
-                  value={(form.eyebrow_categories || [])[i] || ""}
-                  onChange={(e) => {
-                    const arr = [...(form.eyebrow_categories || ["", "", ""])];
-                    while (arr.length < 3) arr.push("");
-                    arr[i] = e.target.value;
-                    set("eyebrow_categories", arr.map((v) => (v || "").trim()).filter(Boolean));
-                  }}
-                />
-              ))}
+          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(legacy — used only if no categories set)</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
+
+          {/* Categories — multi-select pills + add new */}
+          <div className="border rounded-md p-3 space-y-3">
+            <div>
+              <Label>Categories <span className="text-xs text-muted-foreground font-normal">(tap to select — appears above title)</span></Label>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {availableCategories.length === 0 && (
+                  <p className="text-xs text-muted-foreground">No categories yet — add one below.</p>
+                )}
+                {availableCategories.map((cat) => {
+                  const isSelected = selectedCategories.map((c) => c.trim()).includes(cat);
+                  return (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => toggleCategory(cat)}
+                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-background text-foreground border-border hover:bg-muted"
+                      }`}
+                    >
+                      {cat}
+                      {isSelected && <X className="inline-block h-3 w-3 ml-1.5 -mt-0.5" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="flex gap-2 pt-1">
+              <Input
+                placeholder="Add new category..."
+                value={newCategory}
+                onChange={(e) => setNewCategory(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { e.preventDefault(); addNewCategory(); }
+                }}
+              />
+              <Button type="button" variant="outline" onClick={addNewCategory} disabled={!newCategory.trim()}>
+                <Plus className="h-4 w-4 mr-1" /> Add
+              </Button>
             </div>
           </div>
+
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
-          <div><Label>Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} /></div>
-          <div className="grid grid-cols-2 gap-3">
-            <div><Label>Valid From</Label><Input type="date" value={form.valid_from || ""} onChange={(e) => set("valid_from", e.target.value || null)} /></div>
-            <div><Label>Valid Until</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => set("valid_until", e.target.value || null)} /></div>
+
+          {/* Dual images with locked default crop */}
+          <div>
+            <Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on the specials listing — 3:4)</span></Label>
+            <ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={3/4} />
           </div>
+          <div>
+            <Label>Detail Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on the individual special page — 4:3)</span></Label>
+            <ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} />
+          </div>
+
+          {/* Validity + always active */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="special-always-active"
+                checked={isAlwaysActive}
+                onCheckedChange={(v) => {
+                  if (v) {
+                    set("valid_from", null);
+                    set("valid_until", null);
+                  }
+                }}
+              />
+              <Label htmlFor="special-always-active" className="text-sm cursor-pointer font-normal">
+                Always active — ongoing until further notice
+              </Label>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Valid From</Label>
+                <Input
+                  type="date"
+                  value={form.valid_from || ""}
+                  onChange={(e) => set("valid_from", e.target.value || null)}
+                  disabled={isAlwaysActive}
+                />
+              </div>
+              <div>
+                <Label>Valid Until</Label>
+                <Input
+                  type="date"
+                  value={form.valid_until || ""}
+                  onChange={(e) => set("valid_until", e.target.value || null)}
+                  disabled={isAlwaysActive}
+                />
+              </div>
+            </div>
+          </div>
+
           <div>
             <Label>Card Footer Text <span className="text-xs text-muted-foreground font-normal">(optional — overrides the auto "Valid until..." text on the listing card)</span></Label>
             <Input value={form.card_footer_text || ""} onChange={(e) => set("card_footer_text", e.target.value)} placeholder="e.g. Weekends only" />
           </div>
+
+          {/* Simplified price block */}
           <div className="border rounded-md p-3 space-y-3">
-            <p className="text-sm font-medium">Highlight Sections <span className="text-xs text-muted-foreground font-normal">(3-column block under title)</span></p>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
-              <div><Label>Price Sublabel</Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. PER UNIT" /></div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label>Offer Headline</Label><Input value={form.offer_headline || ""} onChange={(e) => set("offer_headline", e.target.value)} placeholder="e.g. Buy 2" /></div>
-              <div><Label>Offer Sublabel</Label><Input value={form.offer_sublabel || ""} onChange={(e) => set("offer_sublabel", e.target.value)} placeholder="e.g. GET 1 FREE" /></div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div><Label>Duration Headline</Label><Input value={form.duration_headline || ""} onChange={(e) => set("duration_headline", e.target.value)} placeholder="e.g. 5 Months" /></div>
-              <div><Label>Duration Sublabel</Label><Input value={form.duration_sublabel || ""} onChange={(e) => set("duration_sublabel", e.target.value)} placeholder="e.g. APR — AUG" /></div>
-            </div>
-            <div><Label>Original Price <span className="text-xs text-muted-foreground">(strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
+            <p className="text-sm font-medium">Price</p>
+            <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} placeholder="e.g. R480 or 20% OFF" /></div>
+            <div><Label>Price Notes <span className="text-xs text-muted-foreground font-normal">(optional)</span></Label><Input value={form.price_label || ""} onChange={(e) => set("price_label", e.target.value)} placeholder="e.g. per person, weekends only" /></div>
+            <div><Label>Original Price <span className="text-xs text-muted-foreground font-normal">(optional — strikethrough)</span></Label><Input value={form.original_price || ""} onChange={(e) => set("original_price", e.target.value)} /></div>
           </div>
+
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
           <MultiContactField
             label="Contact Phone"
@@ -222,10 +354,8 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           />
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground">(optional — shown instead of the URL)</span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
-          <div><Label>Category</Label><Input value={form.category || ""} onChange={(e) => set("category", e.target.value)} /></div>
           <div><Label>Special Type</Label><Input value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} /></div>
           <div><Label>Terms</Label><Textarea rows={3} value={form.terms || ""} onChange={(e) => set("terms", e.target.value)} /></div>
-          
         </div>
         <DialogFooter className="gap-2 sm:justify-between">
           <Button

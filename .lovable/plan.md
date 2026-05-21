@@ -1,80 +1,52 @@
-## Local Channels — Major Upgrade
+# Specials Editor Overhaul
 
-Turning Local Channels into a full first-class content type (like Listings/Events/Specials) with a detail page, dual images, custom platforms, QR support, and richer metadata.
+## 1. Categories (replace eyebrow + single category)
 
----
+- Remove the **Eyebrow Categories** (3-input grid) section from `SpecialEditDialog`.
+- Replace the single **Category** text input with a **multi-select pill picker**:
+  - Query all distinct values currently used across `specials.category` + `specials.eyebrow_categories` (via a `useQuery` on the full specials list, deduped client-side) to build the pill list.
+  - Selected categories render as filled brown pills; unselected as outlined pills. Tap to toggle.
+  - Below the pills: an inline **"+ Add new"** input + button. Typing a new name and clicking Add (or Enter) adds it to both the current selection and the available pill list immediately (local state merge), so future specials see it too once saved.
+- Storage: write the full selected array to `eyebrow_categories` and set `category` to the first selected value (keeps existing listing/detail rendering working without code changes on the public side).
 
-### 1. Database changes (migration)
+## 2. Highlight Sections → simplified Price block + dual images
 
-Add to `bush_telegraph_resources`:
-- `title_override` text
-- `meta_2` text — second meta line (e.g. members count)
-- `resource_type` text — `'link' | 'qr' | 'image' | 'internal'` (default `'link'`)
-- `detail_image_url` text — separate image used on the detail page hero
-- `qr_image_url` text — uploaded QR/image (used when resource_type is `qr`/`image`)
-- `admin_name` text
-- `years_running` integer
-- `post_frequency` text
-- `slug` text (auto-generated from title for the detail URL)
+**Remove** the entire "Highlight Sections" card (Price/Price Sublabel, Offer Headline/Sublabel, Duration Headline/Sublabel, Original Price).
 
-Drop column `tone` (no longer used).
+**Replace** with a clean 3-field block:
+- **Price** → `price`
+- **Price notes** (free text, e.g. "per person", "weekends only") → reuses existing `price_label` column
+- **Original price** (optional, strikethrough) → `original_price`
 
-New table `local_channel_platforms`:
-- `id uuid pk`, `name text unique`, `sort_order int`, `created_at timestamptz`
-- RLS: public select, admin manage
-- Seed with existing platforms (Facebook, WhatsApp, Instagram, Websites)
+Offer/duration columns (`offer_headline`, `offer_sublabel`, `duration_headline`, `duration_sublabel`) stay in the DB but are no longer editable here. The public `SpecialDetail` page already only renders them when present, so dropping them from the editor is safe.
 
-### 2. Admin editor (`AdminBushTelegraph.tsx`)
+**Images** — replace the single `image_url` field with two `ImageUpload` components (matching `EventEditDialog` pattern):
+- **Card Cover Image** → `image_url`, `aspect={3/4}` (matches listing-card 3:4 ratio used on the Specials page)
+- **Detail Cover Image** → new column `detail_image_url`, `aspect={4/3}` (matches the special detail hero)
+- `ImageUpload` already supplies the crop dialog + eyedrop/reposition tool, and `aspect` locks the default crop frame to the target display size.
+- On the public side, `SpecialDetail` switches to `detail_image_url || image_url`; the Specials listing page keeps using `image_url`.
 
-- Remove tone control.
-- Title + Title Override toggle (matches Events/Listings pattern).
-- Platform: dropdown sourced from `local_channel_platforms` + "+ Add new platform" button (inline create → upserts row, refetches, selects it).
-- Resource type: select (Link / QR code / Image / Internal page).
-- URL: shown when type = link/internal.
-- QR/Image upload: shown when type = qr/image (uses `ImageUpload` → `local-channels-images` bucket).
-- Meta 1 (Platform meta) and Meta 2 (Members / activity) — two separate inputs.
-- Listing image (existing `image_url`) — with `ImageUpload` + crop.
-- Detail image (new `detail_image_url`) — with `ImageUpload` + crop.
-- New optional fields: Admin, Years Running, Average Frequency of Posts.
+## 3. "Always active" toggle next to validity dates
 
-### 3. Frontend list (`BushTelegraph.tsx` + `HomeLocalChannels.tsx`)
+- Add a checkbox **"Always active — no end date"** beside the Valid From / Valid Until inputs.
+- When ticked: both date inputs are disabled and cleared, and on save `valid_from`/`valid_until` are written as `null`. The existing `is_active` auto-calc already treats null `valid_until` as active, so the special stays live indefinitely.
+- The card footer's auto "Valid until…" text already falls back gracefully when no dates are set (and can be overridden by `card_footer_text`).
 
-- Card no longer opens outbound link directly — navigates to `/local-channels/:slug`.
-- Show meta as `meta 1  •  meta 2` (small bullet separator) when both exist.
-- Use `DisplayTitle` for title override support.
+## Database migration
 
-### 4. New detail page (`LocalChannelDetail.tsx`)
+Single migration adding one column:
+```sql
+ALTER TABLE public.specials ADD COLUMN detail_image_url text;
+```
+No data backfill needed — public pages fall back to `image_url` when `detail_image_url` is null.
 
-Same shell/structure as `ListingDetail`:
-- Hero with `detail_image_url` (fallback to `image_url`), back button, share, favourite.
-- Title (with override), platform eyebrow, meta 1 • meta 2.
-- Tabs: Details / About.
-- Action button(s):
-  - `link` / `internal` → "Open channel" → opens URL (external = new tab, internal = in-app route).
-  - `qr` / `image` → "Show QR code" → opens an in-app lightbox with a back button (uses existing `ImageLightbox`).
-- Info rows (only shown when populated): Admin, Years Running, Avg. Post Frequency, Description.
-- Add route in `App.tsx`: `/local-channels/:slug`.
+## Files touched
 
-### 5. Image cropping + eyedropper
+- `supabase/migrations/<new>.sql` — add `detail_image_url`
+- `src/components/admin/SpecialEditDialog.tsx` — all UI changes above
+- `src/pages/SpecialDetail.tsx` — use `detail_image_url || image_url` for the hero image
 
-Both image fields use the existing `ImageUpload` → `ImageCropDialog`, which already provides crop. "Eyedropper" in the existing flow refers to the dominant-color/positioning controls already present in `ImageCropDialog`; both image slots will reuse that same component for consistency with Listings/Events.
+## Out of scope
 
-### 6. Slug generation
-
-DB trigger generating slug from title on insert/update when slug is null/empty (mirrors `generate_article_slug`).
-
----
-
-### Files to touch
-
-- migration: add columns, drop tone, create platforms table + trigger
-- `src/pages/admin/AdminBushTelegraph.tsx` — full editor revamp
-- `src/pages/BushTelegraph.tsx` — card link to detail, meta split, title override
-- `src/components/home/HomeLocalChannels.tsx` — same updates
-- `src/pages/LocalChannelDetail.tsx` — new
-- `src/App.tsx` — route
-- `src/integrations/supabase/types.ts` — auto-regenerated
-
----
-
-Confirm and I'll build it.
+- The business-facing `BusinessSpecialForm.tsx` editor is not touched (user asked about the admin backend editor only).
+- Public Specials listing card layout is unchanged.

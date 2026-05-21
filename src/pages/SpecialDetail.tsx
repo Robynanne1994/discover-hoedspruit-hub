@@ -480,8 +480,8 @@ const SpecialDetail = () => {
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
       {/* Hero (4:3) with floating action buttons */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
-        {special.image_url && (
-          <img src={special.image_url} alt={special.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+        {(special.detail_image_url || special.image_url) && (
+          <img src={special.detail_image_url || special.image_url} alt={special.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         )}
         <button
           onClick={() => navigate(-1)}
