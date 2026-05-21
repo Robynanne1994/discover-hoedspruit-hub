@@ -120,8 +120,12 @@ const AdminSpecials = () => {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const isExpired = !!form.valid_until && new Date(form.valid_until) < today;
       const cleaned = {
         ...form,
+        is_active: !isExpired,
         additional_emails: sanitizeContactArray(form.additional_emails),
         additional_phones: sanitizeContactArray(form.additional_phones),
         additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
