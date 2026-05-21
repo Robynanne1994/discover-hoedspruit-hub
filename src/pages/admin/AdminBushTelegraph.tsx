@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -115,6 +115,8 @@ const AdminBushTelegraph = () => {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [returnTo, setReturnTo] = useState<string | null>(null);
   const [editing, setEditing] = useState<Resource | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [open, setOpen] = useState(false);
@@ -207,6 +209,11 @@ const AdminBushTelegraph = () => {
       setOpen(false);
       setEditing(null);
       setForm(emptyForm);
+      if (returnTo) {
+        const dest = returnTo;
+        setReturnTo(null);
+        navigate(dest);
+      }
     },
     onError: (e: Error) => toast.error(e.message),
   });
@@ -263,11 +270,14 @@ const AdminBushTelegraph = () => {
 
   useEffect(() => {
     const editId = searchParams.get("edit");
+    const ret = searchParams.get("returnTo");
     if (editId && resources.length && !open) {
       const r = resources.find((x) => x.id === editId);
       if (r) {
+        if (ret) setReturnTo(ret);
         startEdit(r);
         searchParams.delete("edit");
+        searchParams.delete("returnTo");
         setSearchParams(searchParams, { replace: true });
       }
     }

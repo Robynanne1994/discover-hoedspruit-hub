@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -46,6 +46,7 @@ const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) =>
 
 const LocalChannelDetail = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { slug } = useParams<{ slug: string }>();
   const { isAdmin } = useAuth();
   const [lightboxOpen, setLightboxOpen] = useState(false);
@@ -128,7 +129,7 @@ const LocalChannelDetail = () => {
             />
             {isAdmin && (
               <CircleBtn
-                onClick={() => navigate(`/admin/bush-telegraph?edit=${resource.id}`)}
+                onClick={() => navigate(`/admin/bush-telegraph?edit=${resource.id}&returnTo=${encodeURIComponent(location.pathname)}`)}
                 ariaLabel="Edit resource"
               >
                 <Pencil size={18} color={INK} strokeWidth={2} />
