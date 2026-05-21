@@ -115,6 +115,8 @@ const AdminBushTelegraph = () => {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [returnTo, setReturnTo] = useState<string | null>(null);
   const [editing, setEditing] = useState<Resource | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [open, setOpen] = useState(false);
