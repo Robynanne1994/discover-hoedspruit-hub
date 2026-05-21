@@ -191,6 +191,8 @@ const SavedListings = () => {
       queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
       queryClient.invalidateQueries({ queryKey: ["saved-events-page"] });
       queryClient.invalidateQueries({ queryKey: ["saved-specials-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-channels-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-resource-ids"] });
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
       queryClient.invalidateQueries({ queryKey: ["favourite"] });
     },
