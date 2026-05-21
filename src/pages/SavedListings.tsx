@@ -54,7 +54,7 @@ const SavedListings = () => {
 
   const [primaryTab, setPrimaryTab] = useState<PrimaryTab>(() => {
     const tab = searchParams.get("tab");
-    if (tab === "all" || tab === "events" || tab === "specials" || tab === "listings") return tab;
+    if (tab === "all" || tab === "events" || tab === "specials" || tab === "listings" || tab === "channels") return tab;
     if (persisted.tab) return persisted.tab;
     return "all";
   });
