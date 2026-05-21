@@ -25,7 +25,7 @@ const getInitial = (s?: string | null) =>
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 
-type Tab = "listings" | "deals" | "events";
+type Tab = "listings" | "deals" | "events" | "resources";
 
 function SubTabs<T extends string>({
   value,
