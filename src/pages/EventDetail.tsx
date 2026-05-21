@@ -328,8 +328,8 @@ const EventDetail = () => {
   const socialLabel = e.social_media_label || null;
   const contactEmail = e.contact_email || null;
   const contactPhone = e.contact_phone || null;
-  const contactWhatsapp = e.contact_whatsapp || null;
-  const waClean = contactWhatsapp ? contactWhatsapp.replace(/[^0-9]/g, "") : null;
+  const contactWhatsApp = e.contact_whatsapp || null;
+  const waClean = contactWhatsApp ? contactWhatsApp.replace(/[^0-9]/g, "") : null;
   const galleryImages: string[] = e.gallery_images ?? [];
   const bookingLink = e.booking_link || null;
   const bookingLinkLabel = e.booking_link_label?.trim() || null;
@@ -571,7 +571,7 @@ const EventDetail = () => {
   if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
   if (notes) detailRows.push({ Icon: StickyNote, label: "Notes", value: <span style={{ whiteSpace: "pre-line" }}>{notes}</span> });
   const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
-  const allWhatsapps = collectContacts(contactWhatsapp, (e as any).additional_whatsapps);
+  const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
   const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
   allPhones.forEach((p, i) => detailRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {

@@ -41,7 +41,7 @@ const BusinessListing = () => {
   const [description, setDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
   const [phone, setPhone] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
+  const [whatsapp, setWhatsApp] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [location, setLocation] = useState("");
@@ -64,7 +64,7 @@ const BusinessListing = () => {
         setDescription(full.description ?? "");
         setLongDescription((full as any).long_description ?? "");
         setPhone(full.phone ?? "");
-        setWhatsapp(full.whatsapp ?? "");
+        setWhatsApp(full.whatsapp ?? "");
         setEmail(full.email ?? "");
         setWebsite(full.website ?? "");
         setLocation(full.location ?? "");
@@ -138,7 +138,7 @@ const BusinessListing = () => {
   const submit = async () => {
     setBusy(true);
     const payload = {
-      title, description, long_description: longDescription, phone, whatsapp, email, website, location,
+      title, description, long_description: longDescription, phone, whatsapp: whatsapp, email, website, location,
       image_url: imageUrl, gallery_images: gallery, opening_hours: serializeHours(hours),
     };
     const { error } = await supabase.from("listing_edits_pending").insert({
@@ -254,7 +254,7 @@ const BusinessListing = () => {
         </div>
         <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} /></div>
         <div><Label>Phone</Label><Input value={phone} onChange={(e) => setPhone(e.target.value)} /></div>
-        <div><Label>WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="e.g. +27 82 123 4567" /></div>
+        <div><Label>WhatsApp</Label><Input value={whatsapp} onChange={(e) => setWhatsApp(e.target.value)} placeholder="e.g. +27 82 123 4567" /></div>
         <div><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
         <div><Label>Website</Label><Input value={website} onChange={(e) => setWebsite(e.target.value)} /></div>
 
