@@ -94,17 +94,6 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
       }}
       {...press}
     >
-      <div
-        aria-hidden
-        style={{
-          position: "absolute", top: 14, right: 14, width: 30, height: 30,
-          borderRadius: 999, background: SOFT_CREAM,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: INK,
-        }}
-      >
-        <ArrowUpRight size={14} strokeWidth={2} />
-      </div>
       <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
         <div
           style={{
