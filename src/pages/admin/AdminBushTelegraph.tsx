@@ -595,10 +595,21 @@ const AdminBushTelegraph = () => {
             </div>
 
             {(form.resource_type === "link" || form.resource_type === "internal") && (
-              <div>
-                <Label>URL {form.resource_type === "internal" ? "(in-app path, e.g. /events)" : "*"}</Label>
-                <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://..." />
-              </div>
+              <>
+                <div>
+                  <Label>URL {form.resource_type === "internal" ? "(in-app path, e.g. /events)" : "*"}</Label>
+                  <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://..." />
+                </div>
+                <div>
+                  <Label>Button label (optional)</Label>
+                  <Input
+                    value={form.cta_label}
+                    onChange={(e) => setForm({ ...form, cta_label: e.target.value })}
+                    placeholder={form.resource_type === "internal" ? "Open Page" : "Open Channel"}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Custom text for the action button on the detail page. Leave blank to use the default.</p>
+                </div>
+              </>
             )}
 
             {(form.resource_type === "qr" || form.resource_type === "image") && (
