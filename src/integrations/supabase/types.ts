@@ -1403,6 +1403,7 @@ export type Database = {
           booking_required: boolean
           business_id: string | null
           business_name: string
+          card_footer_text: string | null
           category: string | null
           contact_phone: string | null
           contact_whatsapp: string | null
@@ -1440,6 +1441,7 @@ export type Database = {
           booking_required?: boolean
           business_id?: string | null
           business_name: string
+          card_footer_text?: string | null
           category?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null
@@ -1477,6 +1479,7 @@ export type Database = {
           booking_required?: boolean
           business_id?: string | null
           business_name?: string
+          card_footer_text?: string | null
           category?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null

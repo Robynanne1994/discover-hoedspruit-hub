@@ -20,7 +20,7 @@ interface Props {
 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id", "image_url", "deal_label",
-  "valid_from", "valid_until", "is_active", "special_type", "price", "price_label",
+  "valid_from", "valid_until", "card_footer_text", "is_active", "special_type", "price", "price_label",
   "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
   "original_price", "promo_code", "contact_phone", "contact_whatsapp", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "terms", "category", "eyebrow_categories",
@@ -180,6 +180,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Valid From</Label><Input type="date" value={form.valid_from || ""} onChange={(e) => set("valid_from", e.target.value || null)} /></div>
             <div><Label>Valid Until</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => set("valid_until", e.target.value || null)} /></div>
+          </div>
+          <div>
+            <Label>Card Footer Text <span className="text-xs text-muted-foreground font-normal">(optional — overrides the auto "Valid until..." text on the listing card)</span></Label>
+            <Input value={form.card_footer_text || ""} onChange={(e) => set("card_footer_text", e.target.value)} placeholder="e.g. Weekends only" />
           </div>
           <div className="border rounded-md p-3 space-y-3">
             <p className="text-sm font-medium">Highlight Sections <span className="text-xs text-muted-foreground font-normal">(3-column block under title)</span></p>

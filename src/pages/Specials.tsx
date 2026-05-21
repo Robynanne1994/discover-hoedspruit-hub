@@ -345,7 +345,7 @@ const Specials = () => {
 };
 
 const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
-  const validText = formatValidTill(special);
+  const validText = (special.card_footer_text && String(special.card_footer_text).trim()) || formatValidTill(special);
   return (
     <article
       onClick={onClick}
@@ -372,16 +372,16 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
           <div
             style={{
               position: "absolute",
-              top: 14,
-              left: 14,
+              top: 12,
+              left: 12,
               background: COLOR.badge,
               color: COLOR.badgeFg,
-              padding: "7px 14px",
+              padding: "5px 10px",
               borderRadius: 999,
               fontFamily: SANS,
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: 700,
-              letterSpacing: "0.12em",
+              letterSpacing: "0.04em",
               textTransform: "uppercase",
             }}
           >
@@ -423,23 +423,6 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
         >
           {getDisplayTitle(special)}
         </h3>
-        {special.description && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 14,
-              lineHeight: 1.45,
-              color: COLOR.mutedInk,
-              margin: 0,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {special.description}
-          </p>
-        )}
 
         {/* Divider */}
         <div style={{ height: 1, background: COLOR.divider, margin: "16px 0 14px 0" }} />
