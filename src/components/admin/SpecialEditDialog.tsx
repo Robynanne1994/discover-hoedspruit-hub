@@ -38,6 +38,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      payload.is_active = !(form.valid_until && new Date(form.valid_until) < today);
       const { error } = await supabase.from("specials").update(payload).eq("id", special.id);
       if (error) throw error;
     },
@@ -218,7 +221,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div><Label>Category</Label><Input value={form.category || ""} onChange={(e) => set("category", e.target.value)} /></div>
           <div><Label>Special Type</Label><Input value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} /></div>
           <div><Label>Terms</Label><Textarea rows={3} value={form.terms || ""} onChange={(e) => set("terms", e.target.value)} /></div>
-          <div className="flex items-center gap-2"><Switch checked={!!form.is_active} onCheckedChange={(v) => set("is_active", v)} /><Label>Active</Label></div>
+          
         </div>
         <DialogFooter className="gap-2 sm:justify-between">
           <Button

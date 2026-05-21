@@ -120,8 +120,12 @@ const AdminSpecials = () => {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const isExpired = !!form.valid_until && new Date(form.valid_until) < today;
       const cleaned = {
         ...form,
+        is_active: !isExpired,
         additional_emails: sanitizeContactArray(form.additional_emails),
         additional_phones: sanitizeContactArray(form.additional_phones),
         additional_whatsapps: sanitizeContactArray(form.additional_whatsapps),
@@ -363,11 +367,8 @@ const AdminSpecials = () => {
           </div>
 
           <div className="border-t border-border pt-4 mt-4 space-y-4">
-            <div className="flex items-center gap-3">
-              <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
-              <Label>Active</Label>
-            </div>
             <div><Label>Sort Order</Label><Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} /></div>
+
 
             <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.deal_label || !form.business_name}>
               {editing ? "Update Special" : "Create Special"}
