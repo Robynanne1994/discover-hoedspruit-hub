@@ -607,7 +607,7 @@ const AdminBushTelegraph = () => {
                     onChange={(e) => setForm({ ...form, cta_label: e.target.value })}
                     placeholder={form.resource_type === "internal" ? "Open Page" : "Open Channel"}
                   />
-                  <p className="text-xs text-muted-foreground mt-1">Custom text for the action button on the detail page. Leave blank to use the default.</p>
+                  
                 </div>
               </>
             )}
