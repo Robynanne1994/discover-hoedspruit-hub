@@ -94,6 +94,7 @@ const MyProfile = () => {
       queryClient.invalidateQueries({ queryKey: ["my-saved-listings"] });
       queryClient.invalidateQueries({ queryKey: ["my-saved-events"] });
       queryClient.invalidateQueries({ queryKey: ["my-saved-specials"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
       queryClient.invalidateQueries({ queryKey: ["my-saved-count"] });
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
       queryClient.invalidateQueries({ queryKey: ["favourite"] });
