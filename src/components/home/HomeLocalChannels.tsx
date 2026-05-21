@@ -59,6 +59,10 @@ const HomeLocalChannels = () => {
               gap: 12,
               textDecoration: "none",
               transition: "transform 150ms ease-out",
+              border: "none",
+              textAlign: "left",
+              cursor: "pointer",
+              width: "100%",
             }}
           >
             <div
