@@ -600,7 +600,7 @@ const AdminBushTelegraph = () => {
                 <Input value={form.meta} onChange={(e) => setForm({ ...form, meta: e.target.value })} />
               </div>
               <div>
-                <Label>Meta 2 (e.g. "9.8k members")</Label>
+                <Label>Meta 2 (Members)</Label>
                 <Input value={form.meta_2} onChange={(e) => setForm({ ...form, meta_2: e.target.value })} />
               </div>
             </div>
