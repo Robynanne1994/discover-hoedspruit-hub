@@ -241,6 +241,14 @@ const EventDetail = () => {
   // Geocode for Location tab
   useEffect(() => {
     if (!event) return;
+    const hasAboutContent = !!((event as any).description?.trim() || (event as any).hosted_by_name || (event as any).hosted_by_name_2 || (event as any).hosted_by_name_3);
+    if (hasAboutContent) setTab("about");
+  }, [event]);
+
+  // Geocode for Location tab
+  useEffect(() => {
+
+    if (!event) return;
     setMapCoords(null);
     const link: string | null = (event as any).google_maps_link || null;
     const loc: string | null = event.location || null;
