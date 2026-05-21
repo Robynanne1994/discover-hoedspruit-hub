@@ -516,7 +516,7 @@ const Events = () => {
       case "past":
         return "Past Events";
       default:
-        return "Upcoming Events";
+        return "All Upcoming Events";
     }
   }, [activeFilter, selectedDate]);
 

@@ -54,7 +54,7 @@ const HomeWhatsOn = () => {
 
   return (
     <section>
-      <HomeSectionHead primary="Upcoming Events" actionHref="/events" />
+      <HomeSectionHead primary="All Upcoming Events" actionHref="/events" />
       <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20 }}>
         <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
           {events.map((e) => {

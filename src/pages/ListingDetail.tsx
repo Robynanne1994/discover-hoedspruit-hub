@@ -771,7 +771,7 @@ const ListingDetail = () => {
 
   const renderEvents = () => (
     <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 12 }}>
-      <h2 style={headStyle}>Upcoming Events</h2>
+      <h2 style={headStyle}>All Upcoming Events</h2>
       {(relatedEvents ?? [])
         .slice()
         .sort((a: any, b: any) => {
