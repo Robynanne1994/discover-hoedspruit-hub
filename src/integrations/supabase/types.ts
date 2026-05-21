@@ -416,6 +416,7 @@ export type Database = {
           is_featured: boolean
           location: string | null
           notes: string | null
+          performances: Json | null
           price: string | null
           recurrence: string | null
           social_media_label: string | null
@@ -465,6 +466,7 @@ export type Database = {
           is_featured?: boolean
           location?: string | null
           notes?: string | null
+          performances?: Json | null
           price?: string | null
           recurrence?: string | null
           social_media_label?: string | null
@@ -514,6 +516,7 @@ export type Database = {
           is_featured?: boolean
           location?: string | null
           notes?: string | null
+          performances?: Json | null
           price?: string | null
           recurrence?: string | null
           social_media_label?: string | null
