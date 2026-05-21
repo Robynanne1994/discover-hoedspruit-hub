@@ -101,6 +101,27 @@ function fmtTime(t: string | null | undefined): string {
 }
 
 function eventDateLine(e: any): string {
+  // Multi-performance → show the next upcoming performance + "+N more dates"
+  if (hasPerformances(e)) {
+    const next = getNextOccurrence(e);
+    if (next) {
+      const more = getUpcomingPerformancesCount(e);
+      const time = next.startTime ? fmtTime(next.startTime) : "";
+      const datePart = format(next.date, "EEE, d MMM");
+      const base = time ? `${datePart} • ${time}` : datePart;
+      return more > 0 ? `${base} · +${more} more date${more === 1 ? "" : "s"}` : base;
+    }
+    // all in the past — fall through to the last performance label
+  }
+  // Recurring (structured rule) → show next occurrence
+  if (parseRecurrenceRule(e.recurrence)) {
+    const next = getNextOccurrence(e);
+    if (next) {
+      const time = next.startTime ? fmtTime(next.startTime) : "";
+      const datePart = `Next: ${format(next.date, "EEE, d MMM")}`;
+      return time ? `${datePart} • ${time}` : datePart;
+    }
+  }
   const { start, end } = getEventDates(e);
   if (!start) return (e.date || "").replace(/<[^>]*>/g, "").trim();
   const sameDay = !end || start.getTime() === end.getTime();
