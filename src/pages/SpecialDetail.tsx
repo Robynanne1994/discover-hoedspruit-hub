@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import {
   Heart, Phone, Share2, Store, Clock, Calendar, ExternalLink, Copy, Pencil,
-  ArrowUpRight, Banknote, Tag, Send,
+  ArrowUpRight, Banknote, Tag, Send, Mail,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
