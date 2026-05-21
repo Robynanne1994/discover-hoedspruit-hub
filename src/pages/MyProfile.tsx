@@ -187,6 +187,28 @@ const MyProfile = () => {
     enabled: !!id,
   });
 
+  const { data: savedResources } = useQuery({
+    queryKey: ["my-saved-resources", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "resource")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: resources } = await supabase
+        .from("bush_telegraph_resources")
+        .select("id, title, title_override, image_url, platform, meta, meta_2, slug")
+        .in("id", ids);
+      const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
+    },
+    enabled: !!id,
+  });
+
   const { data: savedCount } = useQuery({
     queryKey: ["my-saved-count", id],
     queryFn: async () => {
