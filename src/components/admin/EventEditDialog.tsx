@@ -181,6 +181,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
           <div><Label>Card Cover Image</Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={4/3} /></div>
           <div><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} /></div>
+          <div><Label>Homepage Upcoming Events Image</Label><ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={23/30} /></div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Date</Label><Input type="date" value={form.start_date || ""} onChange={(e) => set("start_date", e.target.value || null)} /></div>
             <div><Label>End Date</Label><Input type="date" value={form.end_date || ""} onChange={(e) => set("end_date", e.target.value || null)} /></div>
