@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
-import { Search, MapPin, AlertTriangle, ChevronRight, X, ArrowUpRight } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Search, MapPin, AlertTriangle, ChevronRight, X, ArrowUpRight, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -21,6 +21,9 @@ const COLORS = {
 const Categories = () => {
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["categories-all"],
@@ -187,6 +190,29 @@ const Categories = () => {
           justifyContent: "center",
         }}
       >
+        {fromSearch && (
+          <button
+            onClick={() => navigate("/search")}
+            aria-label="Back to search"
+            style={{
+              position: "absolute",
+              left: 20,
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.06)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+            }}
+          >
+            <ArrowLeft size={18} strokeWidth={1.8} color="#020202" />
+          </button>
+        )}
         <h1
           style={{
             fontFamily: FONT_BODY,

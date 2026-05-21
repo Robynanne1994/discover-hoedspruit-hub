@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
-import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import { supabase } from "@/integrations/supabase/client";
 import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
@@ -427,6 +427,9 @@ const EventCard = ({ event }: { event: any }) => {
 
 // Page --------------------------------------------------------------
 const Events = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [weekAnchor, setWeekAnchor] = useState<Date>(startOfToday());
@@ -589,7 +592,28 @@ const Events = () => {
           gap: 8,
         }}
       >
-        <div />
+        <div>
+          {fromSearch && (
+            <button
+              onClick={() => navigate("/search")}
+              aria-label="Back to search"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid rgba(0,0,0,0.06)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "#020202",
+              }}
+            >
+              <ArrowLeft size={18} strokeWidth={1.8} />
+            </button>
+          )}
+        </div>
         <h1
           style={{
             fontFamily: SANS,

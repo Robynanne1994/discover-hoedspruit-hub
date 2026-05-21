@@ -605,6 +605,7 @@ const ListingsResults = ({ query }: { query: string }) => {
         <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
           <Link
             to="/categories"
+            state={{ fromSearch: true }}
             style={{
               background: "transparent",
               border: `1.5px solid ${PRIMARY}`,
@@ -664,6 +665,7 @@ const EventsResults = ({ query }: { query: string }) => {
         <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
           <Link
             to="/events"
+            state={{ fromSearch: true }}
             style={{
               background: "transparent",
               border: `1.5px solid ${PRIMARY}`,
@@ -725,6 +727,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
         <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
           <Link
             to="/specials"
+            state={{ fromSearch: true }}
             style={{
               background: "transparent",
               border: `1.5px solid ${PRIMARY}`,

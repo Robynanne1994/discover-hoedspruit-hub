@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Store, Clock } from "lucide-react";
+import { Search, SlidersHorizontal, X, Store, Clock, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -71,6 +71,8 @@ const useSaved = (id: string) => {
 
 const Specials = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
   const [search, setSearch] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
@@ -167,7 +169,28 @@ const Specials = () => {
           gap: 8,
         }}
       >
-        <div />
+        <div>
+          {fromSearch && (
+            <button
+              onClick={() => navigate("/search")}
+              aria-label="Back to search"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid rgba(0,0,0,0.06)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "#020202",
+              }}
+            >
+              <ArrowLeft size={18} strokeWidth={1.8} />
+            </button>
+          )}
+        </div>
         <h1
           style={{
             fontFamily: SANS,
