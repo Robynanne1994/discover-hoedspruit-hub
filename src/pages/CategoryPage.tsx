@@ -311,9 +311,10 @@ const CategoryPage = () => {
       if (error) throw error;
 
       // Fetch all categories per listing (junction + legacy category_id)
-      const [{ data: allJunction }, { data: allCats }] = await Promise.all([
+      const [{ data: allJunction }, { data: allCats }, { data: catSubs }] = await Promise.all([
         supabase.from("listing_categories").select("listing_id, category_id").in("listing_id", listingIds),
         supabase.from("categories").select("id, title"),
+        supabase.from("subcategories").select("id, title").eq("category_id", id!),
       ]);
       const catTitleById = new Map<string, string>();
       (allCats || []).forEach((c: any) => catTitleById.set(c.id, c.title));
@@ -324,6 +325,26 @@ const CategoryPage = () => {
         if (!listingToCats.has(r.listing_id)) listingToCats.set(r.listing_id, new Set());
         listingToCats.get(r.listing_id)!.add(title);
       });
+
+      // Fetch subcategory assignments for the current category
+      const subIdToTitle = new Map<string, string>();
+      (catSubs || []).forEach((s: any) => subIdToTitle.set(s.id, s.title));
+      const listingToSubs = new Map<string, string[]>();
+      if (subIdToTitle.size > 0) {
+        const { data: lSubs } = await supabase
+          .from("listing_subcategories")
+          .select("listing_id, subcategory_id")
+          .in("listing_id", listingIds)
+          .in("subcategory_id", Array.from(subIdToTitle.keys()));
+        (lSubs || []).forEach((r: any) => {
+          const t = subIdToTitle.get(r.subcategory_id);
+          if (!t) return;
+          if (!listingToSubs.has(r.listing_id)) listingToSubs.set(r.listing_id, []);
+          const arr = listingToSubs.get(r.listing_id)!;
+          if (!arr.includes(t)) arr.push(t);
+        });
+      }
+
       (data || []).forEach((l: any) => {
         const set = listingToCats.get(l.id) || new Set<string>();
         if (l.category_id) {
@@ -331,7 +352,9 @@ const CategoryPage = () => {
           if (legacyTitle) set.add(legacyTitle);
         }
         l._allCategories = Array.from(set);
+        l._subTitles = listingToSubs.get(l.id) || [];
       });
+
 
       return sanitizeDashesList(data as any[]);
     },
@@ -770,8 +793,10 @@ const CategoryPage = () => {
             const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
 
             const allCats: string[] = (l as any)._allCategories || [];
+            const subTitles: string[] = (l as any)._subTitles || [];
             const otherCats = allCats.filter((c) => c && c !== categoryTitle);
-            const orderedCats = [categoryTitle, ...otherCats];
+            const orderedCats = subTitles.length > 0 ? subTitles : [categoryTitle, ...otherCats];
+
 
             return (
               <article
