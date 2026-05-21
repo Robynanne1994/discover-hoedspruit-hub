@@ -20,7 +20,7 @@ interface Props {
 
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id", "image_url", "deal_label",
-  "valid_from", "valid_until", "is_active", "special_type", "price", "price_label",
+  "valid_from", "valid_until", "card_footer_text", "is_active", "special_type", "price", "price_label",
   "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
   "original_price", "promo_code", "contact_phone", "contact_whatsapp", "additional_phones", "additional_whatsapps",
   "booking_link", "booking_link_label", "terms", "category", "eyebrow_categories",
