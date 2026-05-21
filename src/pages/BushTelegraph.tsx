@@ -499,7 +499,25 @@ const BushTelegraph = () => {
                 count={section.items.length}
               />
               <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 20px" }}>
-                {section.items.map((r) => <ChannelCard key={r.id} r={r} onOpen={openResource} />)}
+                {section.items.map((r) => {
+                  const isSaved = !!(savedResourceIds && savedResourceIds.has(r.id));
+                  return (
+                    <ChannelCard
+                      key={r.id}
+                      r={r}
+                      onOpen={openResource}
+                      isSaved={isSaved}
+                      onToggleSave={(e) => {
+                        e.stopPropagation();
+                        if (!user) {
+                          toast.error("Please sign in to save");
+                          return;
+                        }
+                        toggleSave.mutate({ itemId: r.id, isSaved });
+                      }}
+                    />
+                  );
+                })}
               </div>
             </div>
           );
