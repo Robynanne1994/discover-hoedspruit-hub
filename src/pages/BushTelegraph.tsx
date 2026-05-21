@@ -205,8 +205,12 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
           Know a good local channel, group or feed? Drop the details and we'll have a look.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
-          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={inputStyle} />
+          {isGuest && (
+            <>
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={inputStyle} />
+            </>
+          )}
           <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="Resource name" style={inputStyle} />
           <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="Resource link" style={inputStyle} />
           <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Tell us a little about this resource and why it should be listed" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
