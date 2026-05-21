@@ -689,9 +689,8 @@ const MyProfile = () => {
                   "resource",
                   href,
                   <>
-                    {it.platform && <span>{it.platform}</span>}
-                    {it.platform && metaParts.length > 0 && <span> · </span>}
-                    {metaParts.length > 0 && <span>{metaParts.join(" · ")}</span>}
+                    {metaParts.length > 1 && <span>{metaParts.join(" · ")}</span>}
+                    {metaParts.length === 1 && <span>{metaParts[0]}</span>}
                   </>,
                 );
               })}
