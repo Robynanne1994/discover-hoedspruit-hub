@@ -152,6 +152,8 @@ const inputStyle: React.CSSProperties = {
 };
 
 const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  const { user } = useAuth();
+  const isGuest = !user;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [resourceName, setResourceName] = useState("");
@@ -162,14 +164,16 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
   if (!open) return null;
 
   const submit = async () => {
-    if (!name.trim() || !email.trim() || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
+    const effectiveName = isGuest ? name.trim() : ((user?.user_metadata as any)?.full_name || user?.email || "Member");
+    const effectiveEmail = isGuest ? email.trim() : (user?.email || "");
+    if ((isGuest && (!name.trim() || !email.trim())) || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
       toast.error("Please fill in all the fields.");
       return;
     }
     setSubmitting(true);
     const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nAbout: ${reason.trim()}`;
     const { error } = await supabase.from("contact_submissions").insert({
-      name: name.trim(), email: email.trim(), message: composed,
+      name: effectiveName, email: effectiveEmail, message: composed,
     });
     setSubmitting(false);
     if (error) { toast.error("Couldn't send right now. Try again shortly."); return; }
@@ -201,8 +205,12 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
           Know a good local channel, group or feed? Drop the details and we'll have a look.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
-          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={inputStyle} />
+          {isGuest && (
+            <>
+              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
+              <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={inputStyle} />
+            </>
+          )}
           <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="Resource name" style={inputStyle} />
           <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="Resource link" style={inputStyle} />
           <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Tell us a little about this resource and why it should be listed" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
