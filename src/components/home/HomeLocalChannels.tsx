@@ -17,6 +17,9 @@ const PLATFORM_INITIAL: Record<string, string> = {
 
 const HomeLocalChannels = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
   const { data: resources } = useQuery({
     queryKey: ["home-local-channels"],
     queryFn: async () => {
@@ -27,6 +30,45 @@ const HomeLocalChannels = () => {
         .order("sort_order", { ascending: true })
         .limit(4);
       return data || [];
+    },
+  });
+
+  const { data: savedResourceIds } = useQuery({
+    queryKey: ["saved-resource-ids", user?.id],
+    queryFn: async () => {
+      if (!user) return new Set<string>();
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("item_id")
+        .eq("user_id", user.id)
+        .eq("item_type", "resource");
+      return new Set((data || []).map((f: any) => f.item_id));
+    },
+    enabled: !!user,
+  });
+
+  const toggleSave = useMutation({
+    mutationFn: async ({ itemId, isSaved }: { itemId: string; isSaved: boolean }) => {
+      if (!user) {
+        toast.error("Please sign in to save");
+        return;
+      }
+      if (isSaved) {
+        await supabase
+          .from("favourites" as any)
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", itemId)
+          .eq("item_type", "resource");
+      } else {
+        await supabase
+          .from("favourites" as any)
+          .insert({ user_id: user.id, item_id: itemId, item_type: "resource" });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["saved-resource-ids"] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
     },
   });
 
