@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
 import ShareButton from "@/components/ShareButton";
 import FavouriteButton from "@/components/FavouriteButton";
+import { useAuth } from "@/hooks/useAuth";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#ebebeb";
