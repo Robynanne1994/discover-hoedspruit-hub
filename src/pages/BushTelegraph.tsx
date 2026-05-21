@@ -19,15 +19,19 @@ const TAG_BG = "#EFE7D3";
 const SOFT_CREAM = "#F4EFE3";
 const CREAM = "#EEE8DA";
 
-type Platform = "Facebook" | "WhatsApp" | "Instagram" | "Websites";
+type Platform = string;
 
 interface Resource {
   id: string;
+  slug: string | null;
   title: string;
+  title_override: string | null;
   platform: Platform;
   meta: string;
+  meta_2: string;
   description: string;
   url: string;
+  resource_type: string;
   is_featured: boolean;
   image_url: string | null;
   tag_1: string | null;
