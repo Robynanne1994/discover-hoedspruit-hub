@@ -621,26 +621,103 @@ const AdminBushTelegraph = () => {
               </div>
             </div>
 
-            <div className="rounded-lg border border-border p-3 space-y-3">
+            <div className="rounded-lg border border-border p-3 space-y-4">
               <p className="text-xs uppercase tracking-wider text-muted-foreground">Optional details (hidden on frontend if empty)</p>
-              <div>
-                <Label>Admin</Label>
-                <Input value={form.admin_name} onChange={(e) => setForm({ ...form, admin_name: e.target.value })} placeholder="e.g. Jane Smith" />
+
+              {/* Admins (array) */}
+              <div className="space-y-3">
+                <Label>Admins</Label>
+                {form.admins.length === 0 && (
+                  <p className="text-xs text-muted-foreground">No admins yet.</p>
+                )}
+                {form.admins.map((a, idx) => (
+                  <div key={idx} className="rounded-md border border-border p-3 space-y-2 relative">
+                    <div className="flex items-center justify-between">
+                      <p className="text-xs font-medium text-muted-foreground">Admin {idx + 1}</p>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => setForm({ ...form, admins: form.admins.filter((_, i) => i !== idx) })}
+                        aria-label="Remove admin"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                    <div>
+                      <Label className="text-xs">Name</Label>
+                      <Input
+                        value={a.name}
+                        onChange={(e) => {
+                          const next = [...form.admins];
+                          next[idx] = { ...next[idx], name: e.target.value };
+                          setForm({ ...form, admins: next });
+                        }}
+                        placeholder="e.g. Jane Smith"
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">Photo</Label>
+                      <ImageUpload
+                        bucket="local-channels-images"
+                        value={a.image_url}
+                        onChange={(url) => {
+                          const next = [...form.admins];
+                          next[idx] = { ...next[idx], image_url: url };
+                          setForm({ ...form, admins: next });
+                        }}
+                        aspect={1}
+                      />
+                    </div>
+                  </div>
+                ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="gap-1"
+                  onClick={() => setForm({ ...form, admins: [...form.admins, { name: "", image_url: "" }] })}
+                >
+                  <Plus className="h-3 w-3" /> Add another admin
+                </Button>
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label>Years Running</Label>
+
+              {/* Years / Since */}
+              <div className="space-y-2">
+                <Label>How long it's been running</Label>
+                <Select
+                  value={form.years_mode}
+                  onValueChange={(v: YearsMode) =>
+                    setForm({ ...form, years_mode: v, years_running: v === "years" ? form.years_running : "", since_year: v === "since" ? form.since_year : "" })
+                  }
+                >
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="years">Years running</SelectItem>
+                    <SelectItem value="since">Since year</SelectItem>
+                  </SelectContent>
+                </Select>
+                {form.years_mode === "years" ? (
                   <Input
                     type="number"
                     value={form.years_running}
                     onChange={(e) => setForm({ ...form, years_running: e.target.value })}
                     placeholder="e.g. 5"
                   />
-                </div>
-                <div>
-                  <Label>Avg. Posts Frequency</Label>
-                  <Input value={form.post_frequency} onChange={(e) => setForm({ ...form, post_frequency: e.target.value })} placeholder="e.g. 3 / week" />
-                </div>
+                ) : (
+                  <Input
+                    type="number"
+                    value={form.since_year}
+                    onChange={(e) => setForm({ ...form, since_year: e.target.value })}
+                    placeholder="e.g. 2018"
+                  />
+                )}
+              </div>
+
+              <div>
+                <Label>Avg. Posts Frequency</Label>
+                <Input value={form.post_frequency} onChange={(e) => setForm({ ...form, post_frequency: e.target.value })} placeholder="e.g. 3 / week" />
               </div>
             </div>
 
