@@ -435,7 +435,7 @@ const BushTelegraph = () => {
                 count={section.items.length}
               />
               <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 20px" }}>
-                {section.items.map((r) => <ChannelCard key={r.id} r={r} />)}
+                {section.items.map((r) => <ChannelCard key={r.id} r={r} onOpen={openResource} />)}
               </div>
             </div>
           );
