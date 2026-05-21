@@ -699,7 +699,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("sort_order", { ascending: true })
-        .limit(50);
+        .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
       const { data } = await q;
       return data || [];
@@ -709,7 +709,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
   if (!data || data.length === 0) return <EmptyRow text={term ? "No specials found" : "No active specials"} />;
   return (
     <>
-      <SectionHeader label={term ? "Specials" : "Active specials"} count={data.length} />
+      <SectionHeader label={term ? "Specials" : "Active specials"} />
       {data.map((s) => (
         <ResultRow
           key={s.id}
@@ -721,6 +721,27 @@ const SpecialsResults = ({ query }: { query: string }) => {
           action={<InlineSaveButton itemId={s.id} itemType="special" />}
         />
       ))}
+      {!term && (
+        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
+          <Link
+            to="/specials"
+            style={{
+              background: "transparent",
+              border: `1.5px solid ${PRIMARY}`,
+              borderRadius: 999,
+              padding: "12px 24px",
+              fontFamily: FONT,
+              fontSize: 14,
+              fontWeight: 700,
+              color: PRIMARY,
+              textDecoration: "none",
+              letterSpacing: "0.02em",
+            }}
+          >
+            Discover more deals
+          </Link>
+        </div>
+      )}
     </>
   );
 };
