@@ -261,11 +261,6 @@ const SpecialDetail = () => {
     const desc = (special.description || "").trim();
     const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
-    const offerCols = [
-      { icon: Banknote, label: "Price", headline: sp.price, sublabel: sp.price_label },
-      { icon: Tag, label: "Offer", headline: sp.offer_headline, sublabel: sp.offer_sublabel },
-      { icon: Clock, label: "Duration", headline: sp.duration_headline, sublabel: sp.duration_sublabel },
-    ].filter((c) => c.headline || c.sublabel);
 
     return (
       <div style={{ padding: 20 }}>
