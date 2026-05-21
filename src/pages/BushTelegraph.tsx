@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { Plus, X, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, X, Pencil, ArrowLeft, ArrowUpRight, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -77,31 +77,52 @@ const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode
   </button>
 );
 
-const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void }) => {
+const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen: (r: Resource) => void; isSaved: boolean; onToggleSave: (e: React.MouseEvent) => void }) => {
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
   const metaParts = [r.meta, r.meta_2].filter((m) => m && m.trim());
   const displayTitle = (r.title_override?.trim()) || r.title;
   const hasOverride = !!r.title_override?.trim();
 
   return (
-    <button
-      onClick={() => onOpen(r)}
+    <div
       style={{
         textAlign: "left", background: CARD, border: "none",
-        borderRadius: 18, padding: "16px 18px 18px", cursor: "pointer",
+        borderRadius: 18, padding: "16px 18px 18px",
         position: "relative", display: "block", width: "100%",
         fontFamily: HN, transition: "transform 120ms ease",
       }}
       {...press}
     >
-      <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
+      {/* Heart save button — top right */}
+      <button
+        onClick={onToggleSave}
+        style={{
+          position: "absolute", top: 12, right: 12, zIndex: 2,
+          width: 32, height: 32, borderRadius: 999,
+          background: isSaved ? DARK : "rgba(122, 110, 92, 0.12)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          border: "none", cursor: "pointer", transition: "background 150ms ease-out",
+        }}
+        aria-label={isSaved ? "Remove from saved" : "Save"}
+      >
+        <Heart
+          size={15}
+          strokeWidth={1.8}
+          style={{
+            color: isSaved ? CARD : INK,
+            fill: isSaved ? CARD : "none",
+          }}
+        />
+      </button>
+
+      <div onClick={() => onOpen(r)} style={{ display: "flex", gap: 14, alignItems: "flex-start", cursor: "pointer" }}>
         <div
           style={{
             width: 52, height: 52, borderRadius: "50%", flexShrink: 0,
             background: r.image_url ? `center/cover no-repeat url(${r.image_url})` : gradientFor(r.id),
           }}
         />
-        <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
           <h4
             data-no-title-case={hasOverride ? "true" : undefined}
             style={{
@@ -141,7 +162,7 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
           )}
         </div>
       </div>
-    </button>
+    </div>
   );
 };
 
@@ -241,7 +262,8 @@ const SectionHeader = ({ title, count }: { title: string; count: number }) => (
 
 const BushTelegraph = () => {
   const navigate = useNavigate();
-  const { isAdmin } = useAuth();
+  const { user, isAdmin } = useAuth();
+  const queryClient = useQueryClient();
   const [active, setActive] = useState<string>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -249,6 +271,52 @@ const BushTelegraph = () => {
     if (r.slug) navigate(`/local-channels/${r.slug}`);
     else if (r.url) window.open(r.url, "_blank", "noopener,noreferrer");
   };
+
+  const { data: savedResourceIds } = useQuery({
+    queryKey: ["saved-resource-ids", user?.id],
+    queryFn: async () => {
+      if (!user) return new Set<string>();
+      const { data } = await supabase
+        .from("favourites" as any)
+        .select("item_id")
+        .eq("user_id", user.id)
+        .eq("item_type", "resource");
+      return new Set((data || []).map((f: any) => f.item_id));
+    },
+    enabled: !!user,
+  });
+
+  const toggleSave = useMutation({
+    mutationFn: async ({ itemId, isSaved }: { itemId: string; isSaved: boolean }) => {
+      if (!user) throw new Error("not-signed-in");
+      if (isSaved) {
+        const { error } = await supabase
+          .from("favourites" as any)
+          .delete()
+          .eq("user_id", user.id)
+          .eq("item_id", itemId)
+          .eq("item_type", "resource");
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("favourites" as any)
+          .insert({ user_id: user.id, item_id: itemId, item_type: "resource" });
+        if (error) throw error;
+      }
+    },
+    onSuccess: (_d, vars) => {
+      queryClient.invalidateQueries({ queryKey: ["saved-resource-ids"] });
+      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-channels"] });
+      queryClient.invalidateQueries({ queryKey: ["favourite", "resource", vars.itemId] });
+      toast.success(vars.isSaved ? "Removed from saved" : "Saved to your resources");
+    },
+    onError: (err: any) => {
+      if (err?.message === "not-signed-in") toast.error("Please sign in to save");
+      else toast.error(err?.message || "Could not update saved");
+    },
+  });
 
   const { data: resources = [] } = useQuery({
     queryKey: ["bush-telegraph"],
@@ -431,7 +499,25 @@ const BushTelegraph = () => {
                 count={section.items.length}
               />
               <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 20px" }}>
-                {section.items.map((r) => <ChannelCard key={r.id} r={r} onOpen={openResource} />)}
+                {section.items.map((r) => {
+                  const isSaved = !!(savedResourceIds && savedResourceIds.has(r.id));
+                  return (
+                    <ChannelCard
+                      key={r.id}
+                      r={r}
+                      onOpen={openResource}
+                      isSaved={isSaved}
+                      onToggleSave={(e) => {
+                        e.stopPropagation();
+                        if (!user) {
+                          toast.error("Please sign in to save");
+                          return;
+                        }
+                        toggleSave.mutate({ itemId: r.id, isSaved });
+                      }}
+                    />
+                  );
+                })}
               </div>
             </div>
           );
