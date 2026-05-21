@@ -21,7 +21,7 @@ const BottomNav = () => {
       className="fixed left-3 right-3 z-50 md:hidden"
       style={{
         bottom: 12,
-        background: "rgba(40, 36, 32, 0.15)",
+        background: "rgba(40, 36, 32, 0.20)",
         backdropFilter: "blur(28px) saturate(180%)",
         WebkitBackdropFilter: "blur(28px) saturate(180%)",
         borderRadius: 28,
