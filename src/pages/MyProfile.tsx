@@ -223,7 +223,7 @@ const MyProfile = () => {
 
   const renderCard = (
     it: any,
-    type: "listing" | "event" | "special",
+    type: "listing" | "event" | "special" | "resource",
     href: string,
     subtitle: React.ReactNode,
   ) => (
