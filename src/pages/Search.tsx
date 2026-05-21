@@ -144,9 +144,9 @@ const Search = () => {
       </div>
 
       {/* Search input */}
-      <div style={{ padding: "20px 24px 0 24px", marginBottom: 22 }}>
+      <div style={{ padding: "16px 20px 0 20px", marginBottom: 22 }}>
         <SearchBar
-          variant="cream"
+          variant="light"
           value={query}
           onChange={setQuery}
           placeholder={placeholder}
