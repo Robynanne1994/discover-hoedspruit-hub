@@ -601,7 +601,7 @@ const AdminBushTelegraph = () => {
                   <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://..." />
                 </div>
                 <div>
-                  <Label>Button label (optional)</Label>
+                  <Label>Button Label</Label>
                   <Input
                     value={form.cta_label}
                     onChange={(e) => setForm({ ...form, cta_label: e.target.value })}
