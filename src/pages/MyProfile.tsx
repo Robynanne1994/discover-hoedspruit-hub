@@ -25,7 +25,7 @@ const getInitial = (s?: string | null) =>
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 
-type Tab = "listings" | "deals" | "events";
+type Tab = "listings" | "deals" | "events" | "resources";
 
 function SubTabs<T extends string>({
   value,
@@ -94,6 +94,7 @@ const MyProfile = () => {
       queryClient.invalidateQueries({ queryKey: ["my-saved-listings"] });
       queryClient.invalidateQueries({ queryKey: ["my-saved-events"] });
       queryClient.invalidateQueries({ queryKey: ["my-saved-specials"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
       queryClient.invalidateQueries({ queryKey: ["my-saved-count"] });
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
       queryClient.invalidateQueries({ queryKey: ["favourite"] });
@@ -186,6 +187,28 @@ const MyProfile = () => {
     enabled: !!id,
   });
 
+  const { data: savedResources } = useQuery({
+    queryKey: ["my-saved-resources", id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "resource")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: resources } = await supabase
+        .from("bush_telegraph_resources")
+        .select("id, title, title_override, image_url, platform, meta, meta_2, slug")
+        .in("id", ids);
+      const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
+    },
+    enabled: !!id,
+  });
+
   const { data: savedCount } = useQuery({
     queryKey: ["my-saved-count", id],
     queryFn: async () => {
@@ -200,7 +223,7 @@ const MyProfile = () => {
 
   const renderCard = (
     it: any,
-    type: "listing" | "event" | "special",
+    type: "listing" | "event" | "special" | "resource",
     href: string,
     subtitle: React.ReactNode,
   ) => (
@@ -510,7 +533,7 @@ const MyProfile = () => {
           borderBottom: `1px solid ${LINE}`,
         }}
       >
-        {(["listings", "deals", "events"] as Tab[]).map((t) => {
+        {(["listings", "deals", "events", "resources"] as Tab[]).map((t) => {
           const active = tab === t;
           return (
             <button
@@ -653,6 +676,30 @@ const MyProfile = () => {
             </>
           );
         })()}
+
+        {tab === "resources" && (
+          savedResources?.length ? (
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              {savedResources.map((it: any) => {
+                const displayTitle = (it.title_override?.trim()) || it.title;
+                const metaParts = [it.meta, it.meta_2].filter((m: string | null) => m && m.trim());
+                const href = it.slug ? `/local-channels/${it.slug}` : `/local-channels`;
+                return renderCard(
+                  { ...it, title: displayTitle },
+                  "resource",
+                  href,
+                  <>
+                    {it.platform && <span>{it.platform}</span>}
+                    {it.platform && metaParts.length > 0 && <span> · </span>}
+                    {metaParts.length > 0 && <span>{metaParts.join(" · ")}</span>}
+                  </>,
+                );
+              })}
+            </div>
+          ) : (
+            <EmptyTab text="No saved resources yet." />
+          )
+        )}
       </div>
     </div>
   );
