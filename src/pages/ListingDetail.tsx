@@ -495,6 +495,12 @@ const ListingDetail = () => {
 
 
 
+  // Move custom rows to the top so they appear above amenity/true-false cards
+  const customSections = sections.filter(s => s.key.startsWith("custom-"));
+  const otherSections = sections.filter(s => !s.key.startsWith("custom-"));
+  sections.length = 0;
+  sections.push(...customSections, ...otherSections);
+
   const hasDetails = sections.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
     ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
