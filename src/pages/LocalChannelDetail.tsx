@@ -215,7 +215,7 @@ const LocalChannelDetail = () => {
               {yearsValue && <InfoRow label={resource.since_year ? "Running" : "Years Running"} value={yearsValue} />}
               {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
               {admins.length > 0 && (
-                <div style={{ padding: "14px 1px", borderBottom: `1px solid ${LINE}` }}>
+                <div style={{ padding: "14px 0", borderBottom: `1px solid ${LINE}` }}>
                   <div style={{ fontFamily: HN, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 10 }}>
                     {admins.length === 1 ? "Admin" : "Admins"}
                   </div>
