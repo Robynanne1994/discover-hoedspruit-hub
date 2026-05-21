@@ -23,9 +23,9 @@ const FIELDS = [
   "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
   "business_id", "business_ids", "is_featured",
-  "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url",
-  "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2",
-  "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3",
+  "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url", "hosted_by_link",
+  "hosted_by_name_2", "hosted_by_subtitle_2", "hosted_by_image_url_2", "hosted_by_link_2",
+  "hosted_by_name_3", "hosted_by_subtitle_3", "hosted_by_image_url_3", "hosted_by_link_3",
 ];
 
 const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
