@@ -1,0 +1,1 @@
+ALTER TABLE public.specials ADD COLUMN card_footer_text text;
