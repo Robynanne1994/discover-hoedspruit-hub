@@ -10,7 +10,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import { format, parseISO, isFuture, isPast, differenceInDays } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
-type PrimaryTab = "all" | "listings" | "events" | "specials";
+type PrimaryTab = "all" | "listings" | "events" | "specials" | "channels";
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
 const CREAM_92 = "rgba(238, 232, 218, 0.92)";
