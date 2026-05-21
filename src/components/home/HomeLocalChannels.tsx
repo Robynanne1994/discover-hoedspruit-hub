@@ -87,115 +87,131 @@ const HomeLocalChannels = () => {
         actionHref="/local-channels"
       />
       <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 4 }}>
-        {resources.map((r: any) => (
-          <button
-            key={r.id}
-            type="button"
-            onClick={() => openResource(r)}
-            onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
-            onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-            style={{
-              background: "#ffffff",
-              borderRadius: 16,
-              padding: 12,
-              display: "flex",
-              alignItems: "center",
-              gap: 12,
-              textDecoration: "none",
-              transition: "transform 150ms ease-out",
-              border: "none",
-              textAlign: "left",
-              cursor: "pointer",
-              width: "100%",
-            }}
-          >
+        {resources.map((r: any) => {
+          const isSaved = !!(savedResourceIds && savedResourceIds.has(r.id));
+          return (
             <div
+              key={r.id}
               style={{
-                width: 74,
-                height: 74,
-                borderRadius: 14,
-                overflow: "hidden",
-                background: "#F4EFE3",
-                flexShrink: 0,
+                background: "#ffffff",
+                borderRadius: 16,
+                padding: 12,
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                fontFamily: HN,
-                fontSize: 22,
-                color: "#6B6A5E",
+                gap: 12,
+                textDecoration: "none",
+                transition: "transform 150ms ease-out",
+                border: "none",
+                textAlign: "left",
+                cursor: "pointer",
+                width: "100%",
+                position: "relative",
               }}
             >
-              {r.image_url ? (
-                <img
-                  src={r.image_url}
-                  alt=""
-                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                />
-              ) : (
-                <span>{PLATFORM_INITIAL[r.platform] || "•"}</span>
-              )}
-            </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
               <div
+                onClick={() => openResource(r)}
+                onPointerDown={(e) => (e.currentTarget.style.transform = "scale(1)")}
                 style={{
-                  fontFamily: HN,
-                  fontSize: 10.5,
-                  color: "#6B6A5E",
-                  textTransform: "uppercase",
-                  letterSpacing: "1.8px",
-                  marginBottom: 4,
-                }}
-              >
-                {r.platform || "Channel"}
-              </div>
-              <div
-                style={{
-                  fontFamily: HN,
-                  fontSize: 14.5,
-                  color: "#2A2A24",
-                  lineHeight: 1.3,
-                  marginBottom: 5,
+                  width: 74,
+                  height: 74,
+                  borderRadius: 14,
                   overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  display: "-webkit-box",
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: "vertical",
+                  background: "#F4EFE3",
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: HN,
+                  fontSize: 22,
+                  color: "#6B6A5E",
                 }}
               >
-                {r.title_override?.trim() || r.title}
+                {r.image_url ? (
+                  <img
+                    src={r.image_url}
+                    alt=""
+                    style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+                  />
+                ) : (
+                  <span>{PLATFORM_INITIAL[r.platform] || "•"}</span>
+                )}
               </div>
-              {(r.meta || r.meta_2) && (
-                <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: HN, fontSize: 12, color: "#6B6A5E", flexWrap: "wrap" }}>
-                  {[r.meta, r.meta_2].filter((m: string | null) => m && m.trim()).map((m: string, i: number) => (
-                    <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      {i > 0 && <span style={{ width: 3, height: 3, borderRadius: 999, background: "#6B6A5E", display: "inline-block" }} />}
-                      <span>{m}</span>
-                    </span>
-                  ))}
+              <div onClick={() => openResource(r)} style={{ flex: 1, minWidth: 1, cursor: "pointer" }}>
+                <div
+                  style={{
+                    fontFamily: HN,
+                    fontSize: 10.5,
+                    color: "#6B6A5E",
+                    textTransform: "uppercase",
+                    letterSpacing: "1.8px",
+                    marginBottom: 4,
+                  }}
+                >
+                  {r.platform || "Channel"}
                 </div>
-              )}
+                <div
+                  style={{
+                    fontFamily: HN,
+                    fontSize: 14.5,
+                    color: "#2A2A24",
+                    lineHeight: 1.3,
+                    marginBottom: 5,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {r.title_override?.trim() || r.title}
+                </div>
+                {(r.meta || r.meta_2) && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: HN, fontSize: 12, color: "#6B6A5E", flexWrap: "wrap" }}>
+                    {[r.meta, r.meta_2].filter((m: string | null) => m && m.trim()).map((m: string, i: number) => (
+                      <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        {i > 0 && <span style={{ width: 3, height: 3, borderRadius: 999, background: "#6B6A5E", display: "inline-block" }} />}
+                        <span>{m}</span>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!user) {
+                    toast.error("Please sign in to save");
+                    return;
+                  }
+                  toggleSave.mutate({ itemId: r.id, isSaved });
+                }}
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 999,
+                  background: isSaved ? "#5b4632" : "rgba(107, 106, 94, 0.12)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                  border: "none",
+                  cursor: "pointer",
+                  transition: "background 150ms ease-out",
+                }}
+                aria-label={isSaved ? "Remove from saved" : "Save"}
+              >
+                <Heart
+                  size={16}
+                  strokeWidth={1.8}
+                  style={{
+                    color: isSaved ? "#fff" : "#2A2A24",
+                    fill: isSaved ? "#fff" : "none",
+                  }}
+                />
+              </button>
             </div>
-            <div
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 999,
-                background: "rgba(107, 106, 94, 0.12)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                flexShrink: 0,
-                fontFamily: HN,
-                fontSize: 14,
-                color: "#2A2A24",
-                lineHeight: 1,
-              }}
-            >
-              ↗
-            </div>
-          </button>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
