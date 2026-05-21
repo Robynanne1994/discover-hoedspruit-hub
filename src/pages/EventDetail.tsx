@@ -432,7 +432,7 @@ const EventDetail = () => {
 
     return (
       <div style={{ padding: 20 }}>
-        {desc ? (
+        {desc && (
           <>
             <h2 style={headStyle}>About</h2>
             <div style={!aboutExpanded && isLong ? {
@@ -454,6 +454,7 @@ const EventDetail = () => {
             )}
           </>
         )}
+
 
 
         {hosts.length > 0 && (
