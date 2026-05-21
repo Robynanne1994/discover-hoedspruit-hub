@@ -39,7 +39,7 @@ interface Resource {
 }
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "WhatsApp", "Instagram"];
-const CHIPS: ("All" | Platform)[] = ["All", "Facebook", "WhatsApp", "Instagram"];
+const CHIPS: string[] = ["All", "Facebook", "WhatsApp", "Instagram"];
 
 const AVATAR_GRADIENTS = [
   "linear-gradient(135deg, #C9A87C 0%, #8E6F4A 100%)",
