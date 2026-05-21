@@ -81,9 +81,9 @@ const HomeWhatsOn = () => {
                   display: "block",
                 }}
               >
-                {e.image_url && (
+                {(e.homepage_image_url || e.image_url) && (
                   <img
-                    src={e.image_url}
+                    src={e.homepage_image_url || e.image_url}
                     alt={e.title}
                     loading="lazy"
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
