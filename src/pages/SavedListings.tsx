@@ -155,6 +155,28 @@ const SavedListings = () => {
     },
     enabled: !!user,
   });
+  // Saved channels (local channels / bush telegraph resources)
+  const { data: savedChannels, isLoading: channelsLoading } = useQuery({
+    queryKey: ["saved-channels-page", user?.id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("*")
+        .eq("user_id", user!.id)
+        .eq("item_type", "resource")
+        .order("created_at", { ascending: false });
+      if (!favs || favs.length === 0) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: channels } = await supabase
+        .from("bush_telegraph_resources")
+        .select("id, slug, title, title_override, platform, meta, meta_2, url, image_url")
+        .in("id", ids);
+      const map = Object.fromEntries((channels || []).map((c: any) => [c.id, c]));
+      return favs.map((f) => ({ ...f, details: map[f.item_id] })).filter((f) => f.details);
+    },
+    enabled: !!user,
+  });
+
 
   const removeFavourite = useMutation({
     mutationFn: async (fav: { item_id: string; item_type: string }) => {
