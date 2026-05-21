@@ -423,23 +423,6 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
         >
           {getDisplayTitle(special)}
         </h3>
-        {special.description && (
-          <p
-            style={{
-              fontFamily: SANS,
-              fontSize: 14,
-              lineHeight: 1.45,
-              color: COLOR.mutedInk,
-              margin: 0,
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
-            {special.description}
-          </p>
-        )}
 
         {/* Divider */}
         <div style={{ height: 1, background: COLOR.divider, margin: "16px 0 14px 0" }} />
