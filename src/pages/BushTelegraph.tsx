@@ -130,10 +130,11 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               {tags.map((t, i) => (
                 <span key={i} style={{
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
                   fontFamily: HN, fontWeight: 600, fontSize: 10.5, lineHeight: 1,
                   letterSpacing: "0.14em", textTransform: "uppercase",
                   background: TAG_BG, color: MUTED,
-                  padding: "6px 11px", borderRadius: 6,
+                  padding: "8px 11px 9px", borderRadius: 6,
                 }}>{t}</span>
               ))}
             </div>
