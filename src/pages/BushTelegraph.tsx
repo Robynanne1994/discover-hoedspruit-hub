@@ -152,6 +152,8 @@ const inputStyle: React.CSSProperties = {
 };
 
 const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
+  const { user } = useAuth();
+  const isGuest = !user;
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [resourceName, setResourceName] = useState("");
@@ -162,14 +164,16 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
   if (!open) return null;
 
   const submit = async () => {
-    if (!name.trim() || !email.trim() || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
+    const effectiveName = isGuest ? name.trim() : ((user?.user_metadata as any)?.full_name || user?.email || "Member");
+    const effectiveEmail = isGuest ? email.trim() : (user?.email || "");
+    if ((isGuest && (!name.trim() || !email.trim())) || !resourceName.trim() || !resourceLink.trim() || !reason.trim()) {
       toast.error("Please fill in all the fields.");
       return;
     }
     setSubmitting(true);
     const composed = `[Local Channels suggestion]\nResource name: ${resourceName.trim()}\nResource link: ${resourceLink.trim()}\nAbout: ${reason.trim()}`;
     const { error } = await supabase.from("contact_submissions").insert({
-      name: name.trim(), email: email.trim(), message: composed,
+      name: effectiveName, email: effectiveEmail, message: composed,
     });
     setSubmitting(false);
     if (error) { toast.error("Couldn't send right now. Try again shortly."); return; }
