@@ -318,8 +318,9 @@ const ListingDetail = () => {
       const href = m[2] || m[3];
       nodes.push(
         <a key={`l-${i++}`} href={href} target="_blank" rel="noopener noreferrer"
-          style={{ color: C.primary, textDecoration: "underline", textUnderlineOffset: 2, wordBreak: "break-word" }}>
+          style={{ color: C.primary, textDecoration: "none", fontWeight: 400, wordBreak: "break-word", display: "inline-flex", alignItems: "center", gap: 4 }}>
           {label}
+          <ArrowUpRight size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
         </a>
       );
       lastIndex = m.index + m[0].length;
