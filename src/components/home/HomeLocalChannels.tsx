@@ -49,26 +49,33 @@ const HomeLocalChannels = () => {
 
   const toggleSave = useMutation({
     mutationFn: async ({ itemId, isSaved }: { itemId: string; isSaved: boolean }) => {
-      if (!user) {
-        toast.error("Please sign in to save");
-        return;
-      }
+      if (!user) throw new Error("not-signed-in");
       if (isSaved) {
-        await supabase
+        const { error } = await supabase
           .from("favourites" as any)
           .delete()
           .eq("user_id", user.id)
           .eq("item_id", itemId)
           .eq("item_type", "resource");
+        if (error) throw error;
       } else {
-        await supabase
+        const { error } = await supabase
           .from("favourites" as any)
           .insert({ user_id: user.id, item_id: itemId, item_type: "resource" });
+        if (error) throw error;
       }
     },
-    onSuccess: () => {
+    onSuccess: (_d, vars) => {
       queryClient.invalidateQueries({ queryKey: ["saved-resource-ids"] });
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-channels"] });
+      queryClient.invalidateQueries({ queryKey: ["favourite", "resource", vars.itemId] });
+      toast.success(vars.isSaved ? "Removed from saved" : "Saved to your resources");
+    },
+    onError: (err: any) => {
+      if (err?.message === "not-signed-in") toast.error("Please sign in to save");
+      else toast.error(err?.message || "Could not update saved");
     },
   });
 
