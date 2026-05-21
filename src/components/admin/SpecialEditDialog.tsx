@@ -38,6 +38,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      payload.is_active = !(form.valid_until && new Date(form.valid_until) < today);
       const { error } = await supabase.from("specials").update(payload).eq("id", special.id);
       if (error) throw error;
     },
