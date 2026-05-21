@@ -73,6 +73,7 @@ const emptyForm = {
   tag_2: "",
   is_featured: false,
   sort_order: 0,
+  cta_label: "",
 };
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
