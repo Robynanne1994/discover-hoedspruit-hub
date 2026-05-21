@@ -453,9 +453,8 @@ const EventDetail = () => {
               </button>
             )}
           </>
-        ) : (
-          <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No description yet.</p>
         )}
+
 
         {hosts.length > 0 && (
           <div style={{ marginTop: 28 }}>
