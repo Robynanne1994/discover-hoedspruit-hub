@@ -459,7 +459,7 @@ const ListingDetail = () => {
     const tradesFields: Array<{ label: string; on: any }> = [];
     if (typeof l.after_hours_available === "boolean") tradesFields.push({ label: "After hours available", on: l.after_hours_available });
     if (typeof l.callout_fee === "boolean") tradesFields.push({ label: "Callout fee", on: l.callout_fee });
-    if (tradesFields.length) sections.push({ key: "trades-service", title: "Service info", iconComp: Info, fields: tradesFields });
+    if (tradesFields.length) sections.push({ key: "trades-service", title: "Service info", iconComp: MessageCircleMore, fields: tradesFields });
     if (l.specialities && l.specialities.trim()) {
       const items = l.specialities.split(",").map((s: string) => s.trim()).filter(Boolean);
       if (items.length) {
