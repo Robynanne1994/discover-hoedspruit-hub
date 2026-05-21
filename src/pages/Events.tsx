@@ -494,9 +494,17 @@ const Events = () => {
 
     const today = startOfToday();
 
-    // Specific date selected → show only events on that date
+    // Specific date selected → show only events on that date.
+    // For multi-performance / recurring events, match if ANY occurrence falls on that day.
     if (selectedDate) {
-      return list.filter((e) => e._parsed && isSameDay(e._parsed, selectedDate));
+      const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+      const dayEnd = new Date(dayStart);
+      dayEnd.setDate(dayEnd.getDate() + 1);
+      return list.filter((e) => {
+        const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
+        if (occs.length > 0) return true;
+        return e._parsed && isSameDay(e._parsed, selectedDate);
+      });
     }
 
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
