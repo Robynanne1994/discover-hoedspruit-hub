@@ -194,6 +194,7 @@ const AdminBushTelegraph = () => {
         post_frequency: rest.post_frequency?.trim() || null,
         tag_1: rest.tag_1?.trim() || null,
         tag_2: rest.tag_2?.trim() || null,
+        cta_label: rest.cta_label?.trim() || null,
       };
       if (id) {
         const { error } = await supabase.from("bush_telegraph_resources").update(data).eq("id", id);
