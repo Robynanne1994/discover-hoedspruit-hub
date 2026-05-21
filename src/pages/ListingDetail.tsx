@@ -978,7 +978,7 @@ const ListingDetail = () => {
         {l.google_rating != null && (
           <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
             <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
-            <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1)}</span>
+            <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
             {l.google_reviews_count != null && (
               <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
             )}

@@ -79,7 +79,7 @@ const ReviewSection = ({ listingId }: ReviewSectionProps) => {
   });
 
   const avgRating = reviews?.length
-    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1)
+    ? (reviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviews.length).toFixed(1).replace(/\.0$/, "")
     : null;
 
   return (
