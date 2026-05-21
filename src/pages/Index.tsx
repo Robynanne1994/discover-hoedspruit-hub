@@ -20,6 +20,7 @@ const Index = () => {
       }}
     >
       <HomeMasthead />
+      <HomeQuickPills />
       <div style={{ height: 24 }} />
       <HomeCategoryChips />
 
