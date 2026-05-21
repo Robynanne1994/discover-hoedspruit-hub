@@ -302,7 +302,7 @@ const BushTelegraph = () => {
   }, [active, nonFeatured, resources]);
 
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
-  const featuredChips = featured?.meta ? featured.meta.split(" · ").filter(Boolean) : [];
+  const featuredChips = featured ? [featured.meta, featured.meta_2].filter((m) => m && m.trim()) : [];
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
