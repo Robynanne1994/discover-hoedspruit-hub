@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -113,6 +114,7 @@ const escapeCSV = (v: string) =>
 const AdminBushTelegraph = () => {
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [editing, setEditing] = useState<Resource | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [open, setOpen] = useState(false);
@@ -258,6 +260,19 @@ const AdminBushTelegraph = () => {
     });
     setOpen(true);
   };
+
+  useEffect(() => {
+    const editId = searchParams.get("edit");
+    if (editId && resources.length && !open) {
+      const r = resources.find((x) => x.id === editId);
+      if (r) {
+        startEdit(r);
+        searchParams.delete("edit");
+        setSearchParams(searchParams, { replace: true });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resources, searchParams]);
 
   const submit = () => {
     if (!form.title.trim()) {

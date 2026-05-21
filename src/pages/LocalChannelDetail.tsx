@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
 import ShareButton from "@/components/ShareButton";
 import FavouriteButton from "@/components/FavouriteButton";
+import { useAuth } from "@/hooks/useAuth";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#ebebeb";
@@ -46,6 +47,7 @@ const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) =>
 const LocalChannelDetail = () => {
   const navigate = useNavigate();
   const { slug } = useParams<{ slug: string }>();
+  const { isAdmin } = useAuth();
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
   const { data: resource, isLoading } = useQuery({
@@ -124,6 +126,14 @@ const LocalChannelDetail = () => {
               text={resource.description || resource.meta || ""}
               url={typeof window !== "undefined" ? window.location.href : ""}
             />
+            {isAdmin && (
+              <CircleBtn
+                onClick={() => navigate(`/admin/bush-telegraph?edit=${resource.id}`)}
+                ariaLabel="Edit resource"
+              >
+                <Pencil size={18} color={INK} strokeWidth={2} />
+              </CircleBtn>
+            )}
           </div>
         </div>
       </div>
