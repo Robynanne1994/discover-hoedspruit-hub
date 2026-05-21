@@ -1099,6 +1099,11 @@ const SavedListings = () => {
         kind: "special" as const,
         sortAt: f.created_at,
       })),
+      ...(savedChannels || []).map((f: any) => ({
+        ...f,
+        kind: "channel" as const,
+        sortAt: f.created_at,
+      })),
     ]
       .filter((it) => {
         if (!search.trim()) return true;
