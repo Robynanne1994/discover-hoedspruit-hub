@@ -488,7 +488,7 @@ const SavedListings = () => {
     );
   }
 
-  if (loading || isLoading || eventsLoading || specialsLoading) {
+  if (loading || isLoading || eventsLoading || specialsLoading || channelsLoading) {
     return (
       <PageShell>
         <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
