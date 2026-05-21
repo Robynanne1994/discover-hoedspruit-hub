@@ -1518,6 +1518,7 @@ const SavedListings = () => {
               { key: "listings" as const, label: "Listings", count: listingsCount },
               { key: "events" as const, label: "Events", count: eventsCount },
               { key: "specials" as const, label: "Specials", count: specialsCount },
+              { key: "channels" as const, label: "Channels", count: channelsCount },
             ] as const
           ).map((t) => {
             const active = primaryTab === t.key;
