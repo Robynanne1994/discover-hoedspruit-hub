@@ -399,16 +399,13 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
               alignItems: "center",
               gap: 6,
               fontFamily: SANS,
-              fontSize: 11,
-              fontWeight: 600,
-              letterSpacing: "0.14em",
+              fontSize: 13,
               color: COLOR.mutedInk,
-              textTransform: "uppercase",
               marginBottom: 8,
             }}
           >
-            <Store size={13} strokeWidth={2} />
-            {special.business_name}
+            <Store size={13} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
+            <span>{special.business_name}</span>
           </div>
         )}
         <h3
