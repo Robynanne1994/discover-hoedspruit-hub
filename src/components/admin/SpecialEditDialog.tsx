@@ -181,6 +181,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <div><Label>Valid From</Label><Input type="date" value={form.valid_from || ""} onChange={(e) => set("valid_from", e.target.value || null)} /></div>
             <div><Label>Valid Until</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => set("valid_until", e.target.value || null)} /></div>
           </div>
+          <div>
+            <Label>Card Footer Text <span className="text-xs text-muted-foreground font-normal">(optional — overrides the auto "Valid until..." text on the listing card)</span></Label>
+            <Input value={form.card_footer_text || ""} onChange={(e) => set("card_footer_text", e.target.value)} placeholder="e.g. Weekends only" />
+          </div>
           <div className="border rounded-md p-3 space-y-3">
             <p className="text-sm font-medium">Highlight Sections <span className="text-xs text-muted-foreground font-normal">(3-column block under title)</span></p>
             <div className="grid grid-cols-2 gap-3">
