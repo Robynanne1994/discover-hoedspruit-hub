@@ -209,7 +209,7 @@ const LocalChannelDetail = () => {
             : (resource.years_running != null
                 ? `${resource.years_running} ${resource.years_running === 1 ? "year" : "years"}`
                 : null);
-          const hasAny = admins.length > 0 || yearsValue || resource.post_frequency || resource.tag_1 || resource.tag_2;
+          const hasAny = admins.length > 0 || yearsValue || resource.post_frequency;
           return (
             <div style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
               {admins.length > 0 && (
