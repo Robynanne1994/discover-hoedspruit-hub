@@ -537,7 +537,7 @@ const UsersResults = ({
     enabled: !!currentUserId || sub === "suggested",
   });
 
-  const headerLabel = sub === "suggested" ? "People to follow" : sub === "followers" ? "Followers" : "Following";
+  const headerLabel = sub === "suggested" ? "Discover" : sub === "followers" ? "Followers" : "Following";
 
   if (isLoading) return <EmptyRow text="Loading…" />;
   if (!rows || rows.length === 0) {
