@@ -48,6 +48,7 @@ type Resource = {
   is_featured: boolean;
   sort_order: number;
   slug: string | null;
+  cta_label: string | null;
 };
 
 const emptyForm = {
