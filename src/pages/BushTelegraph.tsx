@@ -250,8 +250,13 @@ const SectionHeader = ({ title, count }: { title: string; count: number }) => (
 const BushTelegraph = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
-  const [active, setActive] = useState<"All" | Platform>("All");
+  const [active, setActive] = useState<string>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const openResource = (r: Resource) => {
+    if (r.slug) navigate(`/local-channels/${r.slug}`);
+    else if (r.url) window.open(r.url, "_blank", "noopener,noreferrer");
+  };
 
   const { data: resources = [] } = useQuery({
     queryKey: ["bush-telegraph"],
@@ -263,11 +268,15 @@ const BushTelegraph = () => {
       if (error) throw error;
       return (data || []).map((r: any) => ({
         id: r.id,
+        slug: r.slug ?? null,
         title: r.title,
+        title_override: r.title_override ?? null,
         platform: r.platform as Platform,
         meta: r.meta ?? "",
+        meta_2: r.meta_2 ?? "",
         description: r.description ?? "",
-        url: r.url,
+        url: r.url ?? "",
+        resource_type: r.resource_type ?? "link",
         is_featured: !!r.is_featured,
         image_url: r.image_url ?? null,
         tag_1: r.tag_1 ?? null,
