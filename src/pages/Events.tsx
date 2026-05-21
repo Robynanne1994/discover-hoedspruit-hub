@@ -19,6 +19,7 @@ import {
   format,
 } from "date-fns";
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
+import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, getEventOccurrences } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -100,6 +101,27 @@ function fmtTime(t: string | null | undefined): string {
 }
 
 function eventDateLine(e: any): string {
+  // Multi-performance → show the next upcoming performance + "+N more dates"
+  if (hasPerformances(e)) {
+    const next = getNextOccurrence(e);
+    if (next) {
+      const more = getUpcomingPerformancesCount(e);
+      const time = next.startTime ? fmtTime(next.startTime) : "";
+      const datePart = format(next.date, "EEE, d MMM");
+      const base = time ? `${datePart} • ${time}` : datePart;
+      return more > 0 ? `${base} · +${more} more date${more === 1 ? "" : "s"}` : base;
+    }
+    // all in the past — fall through to the last performance label
+  }
+  // Recurring (structured rule) → show next occurrence
+  if (parseRecurrenceRule(e.recurrence)) {
+    const next = getNextOccurrence(e);
+    if (next) {
+      const time = next.startTime ? fmtTime(next.startTime) : "";
+      const datePart = `Next: ${format(next.date, "EEE, d MMM")}`;
+      return time ? `${datePart} • ${time}` : datePart;
+    }
+  }
   const { start, end } = getEventDates(e);
   if (!start) return (e.date || "").replace(/<[^>]*>/g, "").trim();
   const sameDay = !end || start.getTime() === end.getTime();
@@ -425,8 +447,15 @@ const Events = () => {
 
   const sortedEvents = useMemo(() => {
     if (!events) return [];
+    const now = new Date();
     return [...events]
-      .map((e) => ({ ...e, _parsed: getEventSortDate(e) }))
+      .map((e) => {
+        const next = getNextOccurrence(e, now);
+        // _parsed = the date used for filtering pills / week strip / "is in the future?"
+        // Prefer the next upcoming occurrence (handles performances + recurrence);
+        // fall back to the legacy start date so "Past" filter still works for old events.
+        return { ...e, _parsed: next ? next.date : getEventSortDate(e) };
+      })
       .sort((a, b) => {
         if (a._parsed && b._parsed) return a._parsed.getTime() - b._parsed.getTime();
         if (a._parsed) return -1;
@@ -465,9 +494,17 @@ const Events = () => {
 
     const today = startOfToday();
 
-    // Specific date selected → show only events on that date
+    // Specific date selected → show only events on that date.
+    // For multi-performance / recurring events, match if ANY occurrence falls on that day.
     if (selectedDate) {
-      return list.filter((e) => e._parsed && isSameDay(e._parsed, selectedDate));
+      const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+      const dayEnd = new Date(dayStart);
+      dayEnd.setDate(dayEnd.getDate() + 1);
+      return list.filter((e) => {
+        const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
+        if (occs.length > 0) return true;
+        return e._parsed && isSameDay(e._parsed, selectedDate);
+      });
     }
 
     const weekEnd = endOfWeek(today, { weekStartsOn: 1 });

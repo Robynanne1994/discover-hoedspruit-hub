@@ -20,7 +20,7 @@ interface Props {
 
 const FIELDS = [
   "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
-  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "recurrence", "price", "notes", "booking_link", "booking_link_label",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "recurrence", "performances", "price", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
   "business_id", "business_ids", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url", "hosted_by_link",
@@ -60,6 +60,22 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       payload.additional_emails = sanitizeContactArray(form.additional_emails);
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      // Normalize performances: keep only rows with a valid date, sort by date+time,
+      // and auto-derive start_date/end_date so existing queries/calendar still work.
+      const rawPerfs = Array.isArray(form.performances) ? form.performances : [];
+      const cleanPerfs = rawPerfs
+        .filter((p: any) => p && typeof p.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(p.date))
+        .map((p: any) => ({
+          date: p.date,
+          time: p.time && /^\d{1,2}:\d{2}/.test(p.time) ? p.time.slice(0, 5) : null,
+          end_time: p.end_time && /^\d{1,2}:\d{2}/.test(p.end_time) ? p.end_time.slice(0, 5) : null,
+        }))
+        .sort((a: any, b: any) => (a.date === b.date ? (a.time || "").localeCompare(b.time || "") : a.date.localeCompare(b.date)));
+      payload.performances = cleanPerfs.length > 0 ? cleanPerfs : null;
+      if (cleanPerfs.length > 0) {
+        payload.start_date = cleanPerfs[0].date;
+        payload.end_date = cleanPerfs[cleanPerfs.length - 1].date;
+      }
       // `date` is required (NOT NULL). Auto-fill from start/end dates if left blank.
       if (!payload.date || !String(payload.date).trim()) {
         if (payload.start_date && payload.end_date && payload.start_date !== payload.end_date) {
@@ -173,6 +189,30 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div className="grid grid-cols-2 gap-3">
             <div><Label>Start Time</Label><Input type="time" value={form.start_time || ""} onChange={(e) => set("start_time", e.target.value || null)} /></div>
             <div><Label>End Time</Label><Input type="time" value={form.end_time || ""} onChange={(e) => set("end_time", e.target.value || null)} /></div>
+          </div>
+          <div className="space-y-2 p-3 border rounded">
+            <Label className="text-sm font-semibold">Performances <span className="text-xs text-muted-foreground font-normal">(use for same show on multiple separate dates, e.g. a musical)</span></Label>
+            <p className="text-xs text-muted-foreground">When set, each row becomes a separate performance. Start/End Date above are auto-filled from the first and last performance.</p>
+            {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
+              <div key={idx} className="flex gap-2 items-end">
+                <div className="flex-1"><Label className="text-xs">Date</Label><Input type="date" value={p?.date || ""} onChange={(e) => {
+                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], date: e.target.value }; set("performances", arr);
+                }} /></div>
+                <div className="w-24"><Label className="text-xs">Start</Label><Input type="time" value={p?.time || ""} onChange={(e) => {
+                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], time: e.target.value }; set("performances", arr);
+                }} /></div>
+                <div className="w-24"><Label className="text-xs">End</Label><Input type="time" value={p?.end_time || ""} onChange={(e) => {
+                  const arr = [...(form.performances || [])]; arr[idx] = { ...arr[idx], end_time: e.target.value }; set("performances", arr);
+                }} /></div>
+                <Button type="button" variant="ghost" size="sm" onClick={() => {
+                  const arr = [...(form.performances || [])]; arr.splice(idx, 1); set("performances", arr.length ? arr : null);
+                }}>×</Button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" size="sm" onClick={() => {
+              const arr = [...(Array.isArray(form.performances) ? form.performances : []), { date: "", time: form.start_time || "", end_time: form.end_time || "" }];
+              set("performances", arr);
+            }}>+ Add performance date</Button>
           </div>
           <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
           <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>

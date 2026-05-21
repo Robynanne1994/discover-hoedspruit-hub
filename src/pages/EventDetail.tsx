@@ -13,6 +13,7 @@ import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
+import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isEventPastUnified, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 
@@ -69,15 +70,29 @@ const toIcsDate = (d: Date) =>
 const escIcs = (s: string) =>
   s.replace(/\\/g, "\\\\").replace(/\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
 
-const buildIcs = (e: any): string | null => {
-  const startDateStr = e.start_date || e.date;
-  if (!startDateStr) return null;
-  const startTime = (e.start_time || "00:00").slice(0, 5);
-  const startISO = `${startDateStr}T${startTime}:00`;
-  const start = new Date(startISO);
-  if (isNaN(start.getTime())) return null;
-  const endDateStr = e.end_date || startDateStr;
-  const endTime = (e.end_time || "").slice(0, 5);
+// Resolve the start/end Date pair to use when adding to calendar.
+// For multi-performance / recurring events this is the *next* upcoming occurrence.
+const resolveCalendarRange = (e: any): { start: Date; end: Date } | null => {
+  const next = getNextOccurrence(e);
+  let start: Date | null = null;
+  let endDateStr: string | null = null;
+  let endTime: string = "";
+
+  if (next) {
+    start = next.date;
+    endDateStr = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+    endTime = (next.endTime || "").slice(0, 5);
+  } else {
+    // fall back to legacy single/continuous fields
+    const startDateStr = e.start_date || e.date;
+    if (!startDateStr) return null;
+    const startTime = (e.start_time || "00:00").slice(0, 5);
+    start = new Date(`${startDateStr}T${startTime}:00`);
+    if (isNaN(start.getTime())) return null;
+    endDateStr = e.end_date || startDateStr;
+    endTime = (e.end_time || "").slice(0, 5);
+  }
+
   let end: Date;
   if (endTime) {
     end = new Date(`${endDateStr}T${endTime}:00`);
@@ -85,6 +100,12 @@ const buildIcs = (e: any): string | null => {
   } else {
     end = new Date(start.getTime() + 60 * 60 * 1000);
   }
+  return { start, end };
+};
+
+const buildIcs = (e: any): string | null => {
+  const range = resolveCalendarRange(e);
+  if (!range) return null;
   const now = new Date();
   return [
     "BEGIN:VCALENDAR",
@@ -93,8 +114,8 @@ const buildIcs = (e: any): string | null => {
     "BEGIN:VEVENT",
     `UID:${e.id}@hellohoedspruit`,
     `DTSTAMP:${toIcsDate(now)}`,
-    `DTSTART:${toIcsDate(start)}`,
-    `DTEND:${toIcsDate(end)}`,
+    `DTSTART:${toIcsDate(range.start)}`,
+    `DTEND:${toIcsDate(range.end)}`,
     `SUMMARY:${escIcs(e.title || "")}`,
     e.description ? `DESCRIPTION:${escIcs(e.description)}` : "",
     e.location ? `LOCATION:${escIcs(e.location)}` : "",
@@ -107,26 +128,14 @@ const buildIcs = (e: any): string | null => {
 // Google Calendar app on Android, Google Calendar in browser elsewhere),
 // which adds the event to the user's own calendar instead of downloading a file.
 const buildGoogleCalUrl = (e: any): string | null => {
-  const startDateStr = e.start_date || e.date;
-  if (!startDateStr) return null;
-  const startTime = (e.start_time || "00:00").slice(0, 5);
-  const start = new Date(`${startDateStr}T${startTime}:00`);
-  if (isNaN(start.getTime())) return null;
-  const endDateStr = e.end_date || startDateStr;
-  const endTime = (e.end_time || "").slice(0, 5);
-  let end: Date;
-  if (endTime) {
-    end = new Date(`${endDateStr}T${endTime}:00`);
-    if (isNaN(end.getTime())) end = new Date(start.getTime() + 60 * 60 * 1000);
-  } else {
-    end = new Date(start.getTime() + 60 * 60 * 1000);
-  }
+  const range = resolveCalendarRange(e);
+  if (!range) return null;
   const fmt = (d: Date) =>
     `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}00Z`;
   const params = new URLSearchParams({
     action: "TEMPLATE",
     text: e.title || "",
-    dates: `${fmt(start)}/${fmt(end)}`,
+    dates: `${fmt(range.start)}/${fmt(range.end)}`,
   });
   if (e.description) params.set("details", String(e.description).replace(/<[^>]*>/g, ""));
   if (e.location) params.set("location", String(e.location).replace(/<[^>]*>/g, ""));
@@ -289,12 +298,30 @@ const EventDetail = () => {
     return `${displayHour}:${String(m).padStart(2, "0")} ${ampm}`;
   };
 
+  const performances = getPerformances(e);
+  const isMultiPerformance = performances.length > 0;
+  const recurrenceRule = parseRecurrenceRule(e.recurrence);
+  const nextOccurrence = getNextOccurrence(e);
+
   const startTimeRaw = e.start_time ? String(e.start_time).trim() : "";
   const endTimeRaw = e.end_time ? String(e.end_time).trim() : "";
   const startTimeFmt = startTimeRaw ? formatTime(startTimeRaw) : null;
   const endTimeFmt = endTimeRaw && endTimeRaw !== startTimeRaw ? formatTime(endTimeRaw) : null;
-  const timeDisplay = startTimeFmt ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}` : (endTimeFmt || null);
-  const dateDisplay = formatEventDateRange(e, { long: true });
+  const legacyTimeDisplay = startTimeFmt ? `${startTimeFmt}${endTimeFmt ? ` – ${endTimeFmt}` : ""}` : (endTimeFmt || null);
+
+  // Date/time labels shown in the title block — adapt to event shape.
+  let dateDisplay: string | null = formatEventDateRange(e, { long: true });
+  let timeDisplay: string | null = legacyTimeDisplay;
+  if (isMultiPerformance && nextOccurrence) {
+    const d = nextOccurrence.date;
+    dateDisplay = `Next: ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}, ${d.getDate()} ${["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]} ${d.getFullYear()}`;
+    const t = formatTime(nextOccurrence.startTime || null);
+    const tEnd = nextOccurrence.endTime && nextOccurrence.endTime !== nextOccurrence.startTime ? formatTime(nextOccurrence.endTime) : null;
+    timeDisplay = t ? `${t}${tEnd ? ` – ${tEnd}` : ""}` : null;
+  } else if (recurrenceRule && nextOccurrence) {
+    const d = nextOccurrence.date;
+    dateDisplay = `Next: ${["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}, ${d.getDate()} ${["January","February","March","April","May","June","July","August","September","October","November","December"][d.getMonth()]} ${d.getFullYear()}`;
+  }
 
   const mapsLink = e.google_maps_link || null;
   const socialLink = e.social_media_link || null;
@@ -313,14 +340,10 @@ const EventDetail = () => {
   const eyebrowText = [e.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "")[0] || null;
 
   const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
-  const canAddToCal = !!(e.start_date || e.date);
+  const canAddToCal = !!(e.start_date || e.date || isMultiPerformance) && !!nextOccurrence;
 
-  // Determine if event is in the past (end date or start date before today)
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const { start, end } = getEventDates(e);
-  const checkDate = end || start;
-  const isPast = checkDate ? checkDate < today : false;
+  // Past = no upcoming occurrence of any kind.
+  const isPast = isEventPastUnified(e);
 
   // Action pills
   const actions = [
@@ -491,9 +514,61 @@ const EventDetail = () => {
   };
 
   const detailRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
-  if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay });
-  if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay });
-  if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none") {
+  if (isMultiPerformance) {
+    const todayMid = new Date();
+    todayMid.setHours(0, 0, 0, 0);
+    const nextKey = nextOccurrence ? `${nextOccurrence.date.getFullYear()}-${pad(nextOccurrence.date.getMonth() + 1)}-${pad(nextOccurrence.date.getDate())}` : null;
+    detailRows.push({
+      Icon: Calendar,
+      label: "Performances",
+      value: (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {performances.map((p, i) => {
+            const d = new Date(`${p.date}T00:00:00`);
+            const past = d < todayMid;
+            const isNext = !past && nextKey === p.date;
+            const weekday = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
+            const month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()];
+            const tLabel = p.time ? formatTime(p.time) : "";
+            const tEnd = p.end_time && p.end_time !== p.time ? formatTime(p.end_time) : "";
+            const timeStr = tLabel ? `${tLabel}${tEnd ? ` – ${tEnd}` : ""}` : "";
+            return (
+              <div
+                key={i}
+                style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "6px 10px", borderRadius: 8,
+                  background: isNext ? "#f5f0e8" : "transparent",
+                  borderLeft: isNext ? `3px solid ${C.primary}` : "3px solid transparent",
+                  opacity: past ? 0.45 : 1,
+                }}
+              >
+                <span style={{ fontFamily: FONT, fontSize: 14, color: C.heading, flex: 1 }}>
+                  {weekday}, {d.getDate()} {month} {d.getFullYear()}
+                  {timeStr ? <span style={{ color: C.muted }}> · {timeStr}</span> : null}
+                </span>
+                {isNext && (
+                  <span style={{
+                    fontFamily: FONT, fontSize: 10, fontWeight: 700,
+                    letterSpacing: "0.1em", color: C.primary,
+                    background: "#fff", border: `1px solid ${C.primary}`,
+                    borderRadius: 999, padding: "2px 8px",
+                  }}>NEXT</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ),
+    });
+    if (timeDisplay && nextOccurrence) {
+      // Already inline above — no separate Time row.
+    }
+  } else {
+    if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay });
+    if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay });
+  }
+  if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
     detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
   }
   if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
