@@ -176,19 +176,21 @@ const NotificationCategories = () => {
           aria-label="Go back"
           onClick={() => navigate(-1)}
           style={{
-            background: "transparent",
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#fff",
             border: "none",
-            padding: 0,
-            margin: 0,
             display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            lineHeight: 0,
-            flexShrink: 0,
+            lineHeight: 1,
+            flexShrink: 1,
+            boxShadow: "0 1px 2px rgba(0,0,1,0.05)",
           }}
         >
-          <BackArrowIcon size={22} color={COLORS.ink} />
+          <BackArrowIcon size={18} color={COLORS.ink} />
         </button>
         <div
           style={{
