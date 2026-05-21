@@ -99,52 +99,76 @@ export type Database = {
       }
       bush_telegraph_resources: {
         Row: {
+          admin_name: string | null
           created_at: string
           description: string | null
+          detail_image_url: string | null
           id: string
           image_url: string | null
           is_featured: boolean
           meta: string | null
+          meta_2: string | null
           platform: string
+          post_frequency: string | null
+          qr_image_url: string | null
+          resource_type: string
+          slug: string | null
           sort_order: number
           tag_1: string | null
           tag_2: string | null
           title: string
-          tone: string
+          title_override: string | null
           updated_at: string
           url: string
+          years_running: number | null
         }
         Insert: {
+          admin_name?: string | null
           created_at?: string
           description?: string | null
+          detail_image_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
           meta?: string | null
+          meta_2?: string | null
           platform: string
+          post_frequency?: string | null
+          qr_image_url?: string | null
+          resource_type?: string
+          slug?: string | null
           sort_order?: number
           tag_1?: string | null
           tag_2?: string | null
           title: string
-          tone?: string
+          title_override?: string | null
           updated_at?: string
           url: string
+          years_running?: number | null
         }
         Update: {
+          admin_name?: string | null
           created_at?: string
           description?: string | null
+          detail_image_url?: string | null
           id?: string
           image_url?: string | null
           is_featured?: boolean
           meta?: string | null
+          meta_2?: string | null
           platform?: string
+          post_frequency?: string | null
+          qr_image_url?: string | null
+          resource_type?: string
+          slug?: string | null
           sort_order?: number
           tag_1?: string | null
           tag_2?: string | null
           title?: string
-          tone?: string
+          title_override?: string | null
           updated_at?: string
           url?: string
+          years_running?: number | null
         }
         Relationships: []
       }
@@ -1171,6 +1195,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      local_channel_platforms: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          sort_order?: number
+        }
+        Relationships: []
       }
       notification_preferences: {
         Row: {

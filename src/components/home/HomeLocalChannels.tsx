@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import HomeSectionHead from "./HomeSectionHead";
 
@@ -13,12 +13,13 @@ const PLATFORM_INITIAL: Record<string, string> = {
 };
 
 const HomeLocalChannels = () => {
+  const navigate = useNavigate();
   const { data: resources } = useQuery({
     queryKey: ["home-local-channels"],
     queryFn: async () => {
       const { data } = await supabase
         .from("bush_telegraph_resources")
-        .select("id, title, platform, meta, url, image_url, is_featured, sort_order")
+        .select("id, slug, title, title_override, platform, meta, meta_2, url, image_url, is_featured, sort_order, resource_type")
         .order("is_featured", { ascending: false })
         .order("sort_order", { ascending: true })
         .limit(4);
@@ -27,6 +28,11 @@ const HomeLocalChannels = () => {
   });
 
   if (!resources || resources.length === 0) return null;
+
+  const openResource = (r: any) => {
+    if (r.slug) navigate(`/local-channels/${r.slug}`);
+    else if (r.url) window.open(r.url, "_blank", "noopener,noreferrer");
+  };
 
   return (
     <section>
@@ -37,11 +43,10 @@ const HomeLocalChannels = () => {
       />
       <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 4 }}>
         {resources.map((r: any) => (
-          <a
+          <button
             key={r.id}
-            href={r.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            type="button"
+            onClick={() => openResource(r)}
             onPointerDown={(e) => (e.currentTarget.style.transform = "scale(0.98)")}
             onPointerUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
             onPointerLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -54,6 +59,10 @@ const HomeLocalChannels = () => {
               gap: 12,
               textDecoration: "none",
               transition: "transform 150ms ease-out",
+              border: "none",
+              textAlign: "left",
+              cursor: "pointer",
+              width: "100%",
             }}
           >
             <div
@@ -109,11 +118,16 @@ const HomeLocalChannels = () => {
                   WebkitBoxOrient: "vertical",
                 }}
               >
-                {r.title}
+                {r.title_override?.trim() || r.title}
               </div>
-              {r.meta && (
-                <div style={{ fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
-                  {r.meta}
+              {(r.meta || r.meta_2) && (
+                <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: HN, fontSize: 12, color: "#6B6A5E", flexWrap: "wrap" }}>
+                  {[r.meta, r.meta_2].filter((m: string | null) => m && m.trim()).map((m: string, i: number) => (
+                    <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      {i > 0 && <span style={{ width: 3, height: 3, borderRadius: 999, background: "#6B6A5E", display: "inline-block" }} />}
+                      <span>{m}</span>
+                    </span>
+                  ))}
                 </div>
               )}
             </div>
@@ -135,7 +149,7 @@ const HomeLocalChannels = () => {
             >
               ↗
             </div>
-          </a>
+          </button>
         ))}
       </div>
     </section>

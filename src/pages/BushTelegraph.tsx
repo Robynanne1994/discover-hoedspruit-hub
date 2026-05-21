@@ -19,15 +19,19 @@ const TAG_BG = "#EFE7D3";
 const SOFT_CREAM = "#F4EFE3";
 const CREAM = "#EEE8DA";
 
-type Platform = "Facebook" | "WhatsApp" | "Instagram" | "Websites";
+type Platform = string;
 
 interface Resource {
   id: string;
+  slug: string | null;
   title: string;
+  title_override: string | null;
   platform: Platform;
   meta: string;
+  meta_2: string;
   description: string;
   url: string;
+  resource_type: string;
   is_featured: boolean;
   image_url: string | null;
   tag_1: string | null;
@@ -35,7 +39,7 @@ interface Resource {
 }
 
 const PLATFORM_ORDER: Platform[] = ["Facebook", "WhatsApp", "Instagram"];
-const CHIPS: ("All" | Platform)[] = ["All", "Facebook", "WhatsApp", "Instagram"];
+const CHIPS: string[] = ["All", "Facebook", "WhatsApp", "Instagram"];
 
 const AVATAR_GRADIENTS = [
   "linear-gradient(135deg, #C9A87C 0%, #8E6F4A 100%)",
@@ -73,13 +77,15 @@ const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode
   </button>
 );
 
-const ChannelCard = ({ r }: { r: Resource }) => {
+const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void }) => {
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
-  const open = () => window.open(r.url, "_blank", "noopener,noreferrer");
+  const metaParts = [r.meta, r.meta_2].filter((m) => m && m.trim());
+  const displayTitle = (r.title_override?.trim()) || r.title;
+  const hasOverride = !!r.title_override?.trim();
 
   return (
     <button
-      onClick={open}
+      onClick={() => onOpen(r)}
       style={{
         textAlign: "left", background: CARD, border: "none",
         borderRadius: 18, padding: "16px 18px 18px", cursor: "pointer",
@@ -107,16 +113,28 @@ const ChannelCard = ({ r }: { r: Resource }) => {
           }}
         />
         <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
-          <h4 style={{
-            fontFamily: HN, fontWeight: 700, fontSize: 16, lineHeight: 1.25,
-            letterSpacing: "-0.2px", color: INK, margin: 0,
-          }}>{r.title}</h4>
-          {r.meta && (
+          <h4
+            data-no-title-case={hasOverride ? "true" : undefined}
+            style={{
+              fontFamily: HN, fontWeight: 700, fontSize: 16, lineHeight: 1.25,
+              letterSpacing: "-0.2px", color: INK, margin: 0,
+              textTransform: hasOverride ? "none" : undefined,
+            }}
+          >{displayTitle}</h4>
+          {metaParts.length > 0 && (
             <div style={{
+              display: "flex", alignItems: "center", gap: 8,
               fontFamily: HN, fontWeight: 500, fontSize: 12.5, color: RUST,
-              margin: "4px 0 10px",
+              margin: "4px 0 10px", flexWrap: "wrap",
             }}>
-              {r.meta}
+              {metaParts.map((m, i) => (
+                <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {i > 0 && (
+                    <span style={{ width: 3, height: 3, borderRadius: 999, background: RUST, display: "inline-block" }} />
+                  )}
+                  <span>{m}</span>
+                </span>
+              ))}
             </div>
           )}
           {r.description && (
@@ -232,8 +250,13 @@ const SectionHeader = ({ title, count }: { title: string; count: number }) => (
 const BushTelegraph = () => {
   const navigate = useNavigate();
   const { isAdmin } = useAuth();
-  const [active, setActive] = useState<"All" | Platform>("All");
+  const [active, setActive] = useState<string>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const openResource = (r: Resource) => {
+    if (r.slug) navigate(`/local-channels/${r.slug}`);
+    else if (r.url) window.open(r.url, "_blank", "noopener,noreferrer");
+  };
 
   const { data: resources = [] } = useQuery({
     queryKey: ["bush-telegraph"],
@@ -245,11 +268,15 @@ const BushTelegraph = () => {
       if (error) throw error;
       return (data || []).map((r: any) => ({
         id: r.id,
+        slug: r.slug ?? null,
         title: r.title,
+        title_override: r.title_override ?? null,
         platform: r.platform as Platform,
         meta: r.meta ?? "",
+        meta_2: r.meta_2 ?? "",
         description: r.description ?? "",
-        url: r.url,
+        url: r.url ?? "",
+        resource_type: r.resource_type ?? "link",
         is_featured: !!r.is_featured,
         image_url: r.image_url ?? null,
         tag_1: r.tag_1 ?? null,
@@ -275,7 +302,7 @@ const BushTelegraph = () => {
   }, [active, nonFeatured, resources]);
 
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
-  const featuredChips = featured?.meta ? featured.meta.split(" · ").filter(Boolean) : [];
+  const featuredChips = featured ? [featured.meta, featured.meta_2].filter((m) => m && m.trim()) : [];
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
@@ -341,7 +368,7 @@ const BushTelegraph = () => {
       {featured && active === "All" && (
         <div style={{ padding: "0 20px", marginBottom: 28 }}>
           <div
-            onClick={() => window.open(featured.url, "_blank", "noopener,noreferrer")}
+            onClick={() => openResource(featured)}
             style={{
               background: DARK, borderRadius: 22,
               padding: "22px 22px 22px", position: "relative", overflow: "hidden",
@@ -364,10 +391,14 @@ const BushTelegraph = () => {
                 textTransform: "uppercase", color: "rgba(238, 232, 218, 0.7)",
                 marginBottom: 14,
               }}>Featured</div>
-              <h2 style={{
-                fontFamily: HN, fontWeight: 800, fontSize: 28,
-                lineHeight: 1.1, letterSpacing: "-0.5px", color: CREAM, margin: "0 0 12px",
-              }}>{featured.title}</h2>
+              <h2
+                data-no-title-case={featured.title_override?.trim() ? "true" : undefined}
+                style={{
+                  fontFamily: HN, fontWeight: 800, fontSize: 28,
+                  lineHeight: 1.1, letterSpacing: "-0.5px", color: CREAM, margin: "0 0 12px",
+                  textTransform: featured.title_override?.trim() ? "none" : undefined,
+                }}
+              >{featured.title_override?.trim() || featured.title}</h2>
               {featured.description && (
                 <p style={{
                   fontFamily: HN, fontWeight: 400, fontSize: 14, lineHeight: 1.55,
@@ -408,7 +439,7 @@ const BushTelegraph = () => {
                 count={section.items.length}
               />
               <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 20px" }}>
-                {section.items.map((r) => <ChannelCard key={r.id} r={r} />)}
+                {section.items.map((r) => <ChannelCard key={r.id} r={r} onOpen={openResource} />)}
               </div>
             </div>
           );

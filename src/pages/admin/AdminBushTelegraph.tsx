@@ -12,35 +12,56 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, Upload, FileSpreadsheet, CheckCircle, ArrowUpDown } from "lucide-react";
 
-const PLATFORMS = ["Facebook", "WhatsApp", "Instagram", "Websites", "Radio"] as const;
-const TONES = ["warm", "warm-grey", "coral", "dark"] as const;
-const HEADERS = ["title", "platform", "meta", "description", "url", "image_url", "tag_1", "tag_2", "tone", "is_featured", "sort_order"];
+const RESOURCE_TYPES = [
+  { value: "link", label: "External link" },
+  { value: "qr", label: "QR code" },
+  { value: "image", label: "Image" },
+  { value: "internal", label: "Internal page" },
+] as const;
+
+const HEADERS = ["title", "platform", "meta", "meta_2", "description", "url", "image_url", "detail_image_url", "qr_image_url", "resource_type", "admin_name", "years_running", "post_frequency", "tag_1", "tag_2", "title_override", "is_featured", "sort_order"];
 
 type Resource = {
   id: string;
   title: string;
+  title_override: string | null;
   platform: string;
   meta: string | null;
+  meta_2: string | null;
   description: string | null;
   url: string;
+  resource_type: string;
   image_url: string | null;
+  detail_image_url: string | null;
+  qr_image_url: string | null;
+  admin_name: string | null;
+  years_running: number | null;
+  post_frequency: string | null;
   tag_1: string | null;
   tag_2: string | null;
-  tone: string;
   is_featured: boolean;
   sort_order: number;
+  slug: string | null;
 };
 
 const emptyForm = {
   title: "",
+  title_override: "",
+  use_title_override: false,
   platform: "Facebook",
   meta: "",
+  meta_2: "",
   description: "",
   url: "",
+  resource_type: "link",
   image_url: "",
+  detail_image_url: "",
+  qr_image_url: "",
+  admin_name: "",
+  years_running: "" as string | number,
+  post_frequency: "",
   tag_1: "",
   tag_2: "",
-  tone: "warm",
   is_featured: false,
   sort_order: 0,
 };
@@ -88,6 +109,8 @@ const AdminBushTelegraph = () => {
   const [editing, setEditing] = useState<Resource | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [open, setOpen] = useState(false);
+  const [newPlatformOpen, setNewPlatformOpen] = useState(false);
+  const [newPlatformName, setNewPlatformName] = useState("");
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
   const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
@@ -100,19 +123,57 @@ const AdminBushTelegraph = () => {
         .select("*")
         .order("sort_order", { ascending: true });
       if (error) throw error;
-      return data as Resource[];
+      return (data as any[]) as Resource[];
     },
+  });
+
+  const { data: platforms = [] } = useQuery({
+    queryKey: ["local-channel-platforms"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("local_channel_platforms" as any)
+        .select("name")
+        .order("sort_order", { ascending: true })
+        .order("name", { ascending: true });
+      if (error) throw error;
+      return (data as any[]).map((p) => p.name as string);
+    },
+  });
+
+  const addPlatformMutation = useMutation({
+    mutationFn: async (name: string) => {
+      const clean = name.trim();
+      if (!clean) throw new Error("Platform name required");
+      const { error } = await supabase.from("local_channel_platforms" as any).insert({ name: clean, sort_order: 999 });
+      if (error) throw error;
+      return clean;
+    },
+    onSuccess: (name) => {
+      qc.invalidateQueries({ queryKey: ["local-channel-platforms"] });
+      setForm((f) => ({ ...f, platform: name }));
+      setNewPlatformOpen(false);
+      setNewPlatformName("");
+      toast.success(`Platform "${name}" added`);
+    },
+    onError: (e: Error) => toast.error(e.message),
   });
 
   const upsertMutation = useMutation({
     mutationFn: async (payload: typeof emptyForm & { id?: string }) => {
-      const { id, ...rest } = payload;
-      const data = {
+      const { id, use_title_override, years_running, ...rest } = payload;
+      const data: any = {
         ...rest,
         sort_order: Number(rest.sort_order) || 0,
+        title_override: use_title_override && rest.title_override?.trim() ? rest.title_override.trim() : null,
         meta: rest.meta || null,
+        meta_2: rest.meta_2 || null,
         description: rest.description || null,
         image_url: rest.image_url || null,
+        detail_image_url: rest.detail_image_url || null,
+        qr_image_url: rest.qr_image_url || null,
+        admin_name: rest.admin_name?.trim() || null,
+        years_running: years_running === "" || years_running === null ? null : Number(years_running) || null,
+        post_frequency: rest.post_frequency?.trim() || null,
         tag_1: rest.tag_1?.trim() || null,
         tag_2: rest.tag_2?.trim() || null,
       };
@@ -127,6 +188,7 @@ const AdminBushTelegraph = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-bush-telegraph"] });
       qc.invalidateQueries({ queryKey: ["bush-telegraph"] });
+      qc.invalidateQueries({ queryKey: ["home-local-channels"] });
       toast.success(editing ? "Resource updated" : "Resource added");
       setOpen(false);
       setEditing(null);
@@ -143,6 +205,7 @@ const AdminBushTelegraph = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-bush-telegraph"] });
       qc.invalidateQueries({ queryKey: ["bush-telegraph"] });
+      qc.invalidateQueries({ queryKey: ["home-local-channels"] });
       toast.success("Resource deleted");
     },
     onError: (e: Error) => toast.error(e.message),
@@ -150,7 +213,7 @@ const AdminBushTelegraph = () => {
 
   const startAdd = () => {
     setEditing(null);
-    setForm(emptyForm);
+    setForm({ ...emptyForm, platform: platforms[0] || "Facebook" });
     setOpen(true);
   };
 
@@ -158,14 +221,22 @@ const AdminBushTelegraph = () => {
     setEditing(r);
     setForm({
       title: r.title,
+      title_override: r.title_override ?? "",
+      use_title_override: !!(r.title_override && r.title_override.trim()),
       platform: r.platform,
       meta: r.meta ?? "",
+      meta_2: r.meta_2 ?? "",
       description: r.description ?? "",
-      url: r.url,
+      url: r.url ?? "",
+      resource_type: r.resource_type || "link",
       image_url: r.image_url ?? "",
+      detail_image_url: r.detail_image_url ?? "",
+      qr_image_url: r.qr_image_url ?? "",
+      admin_name: r.admin_name ?? "",
+      years_running: r.years_running ?? "",
+      post_frequency: r.post_frequency ?? "",
       tag_1: r.tag_1 ?? "",
       tag_2: r.tag_2 ?? "",
-      tone: r.tone,
       is_featured: r.is_featured,
       sort_order: r.sort_order,
     });
@@ -173,8 +244,18 @@ const AdminBushTelegraph = () => {
   };
 
   const submit = () => {
-    if (!form.title.trim() || !form.url.trim()) {
-      toast.error("Title and URL are required");
+    if (!form.title.trim()) {
+      toast.error("Title is required");
+      return;
+    }
+    const needsUrl = form.resource_type === "link" || form.resource_type === "internal";
+    const needsImage = form.resource_type === "qr" || form.resource_type === "image";
+    if (needsUrl && !form.url.trim()) {
+      toast.error("URL is required for link/internal resource types");
+      return;
+    }
+    if (needsImage && !form.qr_image_url.trim()) {
+      toast.error("Please upload an image / QR code");
       return;
     }
     upsertMutation.mutate({ ...form, id: editing?.id });
@@ -210,24 +291,25 @@ const AdminBushTelegraph = () => {
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title`); continue; }
         csvTitles.add(title.toLowerCase());
 
-        const platform = r.platform?.trim();
-        const url = r.url?.trim();
-        if (!platform || !PLATFORMS.includes(platform as any)) {
-          results.errors.push(`Row ${i + 2}: Invalid platform "${platform}"`); continue;
-        }
-        if (!url) { results.errors.push(`Row ${i + 2}: Missing url`); continue; }
+        const platform = r.platform?.trim() || "Facebook";
 
-        const tone = r.tone?.trim() || "warm";
-        const payload = {
+        const payload: any = {
           title,
+          title_override: r.title_override?.trim() || null,
           platform,
           meta: r.meta || null,
+          meta_2: r.meta_2 || null,
           description: r.description || null,
-          url,
+          url: r.url?.trim() || "",
+          resource_type: r.resource_type?.trim() || "link",
           image_url: r.image_url?.trim() || null,
+          detail_image_url: r.detail_image_url?.trim() || null,
+          qr_image_url: r.qr_image_url?.trim() || null,
+          admin_name: r.admin_name?.trim() || null,
+          years_running: r.years_running ? parseInt(r.years_running) || null : null,
+          post_frequency: r.post_frequency?.trim() || null,
           tag_1: r.tag_1?.trim() || null,
           tag_2: r.tag_2?.trim() || null,
-          tone: TONES.includes(tone as any) ? tone : "warm",
           is_featured: r.is_featured?.toLowerCase() === "true" || r.is_featured === "1",
           sort_order: r.sort_order ? parseInt(r.sort_order) || 0 : 0,
         };
@@ -272,16 +354,17 @@ const AdminBushTelegraph = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = HEADERS.join(",") + "\n" +
-      '"Hoedspruit Helpers","Facebook","Facebook Group · 14.2k members","The unofficial town hall...","https://facebook.com/groups/example","https://example.com/image.jpg","Community","Free","warm","true","0"\n';
+    const csv = HEADERS.join(",") + "\n";
     downloadCSV(csv, "local_channels_template.csv");
   };
 
   const downloadExport = () => {
     if (!resources.length) { toast.error("No resources to export"); return; }
     const rows = resources.map((r) => [
-      r.title, r.platform, r.meta ?? "", r.description ?? "", r.url,
-      r.image_url ?? "", r.tag_1 ?? "", r.tag_2 ?? "", r.tone,
+      r.title, r.platform, r.meta ?? "", r.meta_2 ?? "", r.description ?? "", r.url ?? "",
+      r.image_url ?? "", r.detail_image_url ?? "", r.qr_image_url ?? "", r.resource_type ?? "link",
+      r.admin_name ?? "", r.years_running != null ? String(r.years_running) : "", r.post_frequency ?? "",
+      r.tag_1 ?? "", r.tag_2 ?? "", r.title_override ?? "",
       r.is_featured ? "true" : "false", String(r.sort_order ?? 0),
     ].map(escapeCSV).join(","));
     downloadCSV(HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "local_channels_export.csv");
@@ -293,7 +376,7 @@ const AdminBushTelegraph = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold text-white">Local Channels</h1>
-          <p className="text-white/70 text-sm">Manage off-app resources (Facebook, WhatsApp, Instagram, Websites, Radio).</p>
+          <p className="text-white/70 text-sm">Manage off-app resources, groups and feeds.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={downloadExport} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">
@@ -318,7 +401,7 @@ const AdminBushTelegraph = () => {
           <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
           <p className="font-medium">{fileName || "Click to upload CSV"}</p>
           <p className="text-xs text-muted-foreground mt-1">Columns: {HEADERS.join(", ")}</p>
-          <p className="text-xs text-muted-foreground mt-1">Matched by title (case-insensitive). Missing rows will be deleted. tag_1 / tag_2 are optional.</p>
+          <p className="text-xs text-muted-foreground mt-1">Matched by title (case-insensitive). Missing rows will be deleted.</p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
 
@@ -329,22 +412,6 @@ const AdminBushTelegraph = () => {
               <Button onClick={() => importMutation.mutate()} disabled={importMutation.isPending}>
                 {importMutation.isPending ? "Importing..." : "Import All"}
               </Button>
-            </div>
-            <div className="overflow-x-auto max-h-64 overflow-y-auto border border-border rounded-lg">
-              <table className="w-full text-xs">
-                <thead className="bg-muted sticky top-0">
-                  <tr>
-                    {parsed.headers.map((h) => <th key={h} className="p-2 text-left whitespace-nowrap">{h}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {parsed.rows.slice(0, 20).map((row, i) => (
-                    <tr key={i} className="border-t border-border">
-                      {parsed.headers.map((h) => <td key={h} className="p-2 max-w-[180px] truncate">{row[h] || "—"}</td>)}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
           </div>
         )}
@@ -380,7 +447,7 @@ const AdminBushTelegraph = () => {
                   <th className="p-3 text-left">Image</th>
                   <th className="p-3 text-left">Title</th>
                   <th className="p-3 text-left">Platform</th>
-                  <th className="p-3 text-left">Tags</th>
+                  <th className="p-3 text-left">Type</th>
                   <th className="p-3 text-left">Featured</th>
                   <th className="p-3 text-right">Actions</th>
                 </tr>
@@ -396,11 +463,9 @@ const AdminBushTelegraph = () => {
                         <span className="text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="p-3 font-medium">{r.title}</td>
+                    <td className="p-3 font-medium">{r.title_override?.trim() || r.title}</td>
                     <td className="p-3">{r.platform}</td>
-                    <td className="p-3 text-muted-foreground">
-                      {[r.tag_1, r.tag_2].filter(Boolean).join(", ") || "—"}
-                    </td>
+                    <td className="p-3 text-muted-foreground">{r.resource_type}</td>
                     <td className="p-3">{r.is_featured ? "★" : ""}</td>
                     <td className="p-3 text-right">
                       <Button variant="ghost" size="icon" onClick={() => startEdit(r)}><Pencil className="h-4 w-4" /></Button>
@@ -426,61 +491,143 @@ const AdminBushTelegraph = () => {
           <DialogHeader>
             <DialogTitle>{editing ? "Edit Resource" : "Add Resource"}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div>
               <Label>Title *</Label>
               <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
             </div>
-            <div className="grid grid-cols-2 gap-3">
+
+            <div className="rounded-lg border border-border p-3 space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm">Use custom display title</Label>
+                <Switch
+                  checked={form.use_title_override}
+                  onCheckedChange={(c) => setForm({ ...form, use_title_override: c })}
+                />
+              </div>
+              {form.use_title_override && (
+                <Input
+                  value={form.title_override}
+                  onChange={(e) => setForm({ ...form, title_override: e.target.value })}
+                  placeholder="Custom title shown to users (exact casing)"
+                />
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
               <div>
                 <Label>Platform *</Label>
-                <Select value={form.platform} onValueChange={(v) => setForm({ ...form, platform: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {PLATFORMS.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Avatar Tone</Label>
-                <Select value={form.tone} onValueChange={(v) => setForm({ ...form, tone: v })}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {TONES.map((t) => <SelectItem key={t} value={t}>{t}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <div className="flex gap-2">
+                  <Select value={form.platform} onValueChange={(v) => setForm({ ...form, platform: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {platforms.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Button type="button" variant="outline" size="sm" onClick={() => setNewPlatformOpen(true)} className="gap-1 shrink-0">
+                    <Plus className="h-3 w-3" /> New
+                  </Button>
+                </div>
               </div>
             </div>
+
             <div>
-              <Label>Image (URL or upload)</Label>
+              <Label>Resource type *</Label>
+              <Select value={form.resource_type} onValueChange={(v) => setForm({ ...form, resource_type: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {RESOURCE_TYPES.map((t) => <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {(form.resource_type === "link" || form.resource_type === "internal") && (
+              <div>
+                <Label>URL {form.resource_type === "internal" ? "(in-app path, e.g. /events)" : "*"}</Label>
+                <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} placeholder="https://..." />
+              </div>
+            )}
+
+            {(form.resource_type === "qr" || form.resource_type === "image") && (
+              <div>
+                <Label>{form.resource_type === "qr" ? "QR code image *" : "Image *"}</Label>
+                <ImageUpload
+                  bucket="local-channels-images"
+                  value={form.qr_image_url}
+                  onChange={(url) => setForm({ ...form, qr_image_url: url })}
+                />
+              </div>
+            )}
+
+            <div>
+              <Label>Listing card image</Label>
               <ImageUpload
                 bucket="local-channels-images"
                 value={form.image_url}
                 onChange={(url) => setForm({ ...form, image_url: url })}
               />
             </div>
+
+            <div>
+              <Label>Detail page image</Label>
+              <ImageUpload
+                bucket="local-channels-images"
+                value={form.detail_image_url}
+                onChange={(url) => setForm({ ...form, detail_image_url: url })}
+                aspect={4 / 3}
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <Label>Tag 1 (optional)</Label>
-                <Input value={form.tag_1} onChange={(e) => setForm({ ...form, tag_1: e.target.value })} placeholder="e.g. Community" />
+                <Label>Meta 1 (e.g. "Facebook Group")</Label>
+                <Input value={form.meta} onChange={(e) => setForm({ ...form, meta: e.target.value })} />
               </div>
               <div>
-                <Label>Tag 2 (optional)</Label>
-                <Input value={form.tag_2} onChange={(e) => setForm({ ...form, tag_2: e.target.value })} placeholder="e.g. Free" />
+                <Label>Meta 2 (e.g. "9.8k members")</Label>
+                <Input value={form.meta_2} onChange={(e) => setForm({ ...form, meta_2: e.target.value })} />
               </div>
             </div>
-            <div>
-              <Label>Meta (e.g. "Facebook Group · 9.8k members")</Label>
-              <Input value={form.meta} onChange={(e) => setForm({ ...form, meta: e.target.value })} />
-            </div>
+
             <div>
               <Label>Description</Label>
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
             </div>
-            <div>
-              <Label>URL *</Label>
-              <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} />
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Tag 1 (optional)</Label>
+                <Input value={form.tag_1} onChange={(e) => setForm({ ...form, tag_1: e.target.value })} />
+              </div>
+              <div>
+                <Label>Tag 2 (optional)</Label>
+                <Input value={form.tag_2} onChange={(e) => setForm({ ...form, tag_2: e.target.value })} />
+              </div>
             </div>
+
+            <div className="rounded-lg border border-border p-3 space-y-3">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">Optional details (hidden on frontend if empty)</p>
+              <div>
+                <Label>Admin</Label>
+                <Input value={form.admin_name} onChange={(e) => setForm({ ...form, admin_name: e.target.value })} placeholder="e.g. Jane Smith" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Years Running</Label>
+                  <Input
+                    type="number"
+                    value={form.years_running}
+                    onChange={(e) => setForm({ ...form, years_running: e.target.value })}
+                    placeholder="e.g. 5"
+                  />
+                </div>
+                <div>
+                  <Label>Avg. Posts Frequency</Label>
+                  <Input value={form.post_frequency} onChange={(e) => setForm({ ...form, post_frequency: e.target.value })} placeholder="e.g. 3 / week" />
+                </div>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-3 items-end">
               <div>
                 <Label>Sort Order</Label>
@@ -488,7 +635,7 @@ const AdminBushTelegraph = () => {
               </div>
               <div className="flex items-center gap-2 pb-2">
                 <Switch checked={form.is_featured} onCheckedChange={(c) => setForm({ ...form, is_featured: c })} />
-                <Label>Featured (This Week's Pick)</Label>
+                <Label>Featured</Label>
               </div>
             </div>
           </div>
@@ -496,6 +643,33 @@ const AdminBushTelegraph = () => {
             <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
             <Button onClick={submit} disabled={upsertMutation.isPending}>
               {upsertMutation.isPending ? "Saving..." : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* New platform dialog */}
+      <Dialog open={newPlatformOpen} onOpenChange={setNewPlatformOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Add new platform</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Label>Platform name</Label>
+            <Input
+              value={newPlatformName}
+              onChange={(e) => setNewPlatformName(e.target.value)}
+              placeholder="e.g. Telegram"
+              autoFocus
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setNewPlatformOpen(false)}>Cancel</Button>
+            <Button
+              onClick={() => addPlatformMutation.mutate(newPlatformName)}
+              disabled={addPlatformMutation.isPending || !newPlatformName.trim()}
+            >
+              {addPlatformMutation.isPending ? "Adding..." : "Add"}
             </Button>
           </DialogFooter>
         </DialogContent>
