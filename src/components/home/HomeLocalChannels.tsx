@@ -147,7 +147,7 @@ const HomeLocalChannels = () => {
                     marginBottom: 4,
                   }}
                 >
-                  {r.platform || "Channel"}
+                  {r.meta || r.platform || "Channel"}
                 </div>
                 <div
                   style={{
@@ -165,14 +165,9 @@ const HomeLocalChannels = () => {
                 >
                   {r.title_override?.trim() || r.title}
                 </div>
-                {(r.meta || r.meta_2) && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: HN, fontSize: 12, color: "#6B6A5E", flexWrap: "wrap" }}>
-                    {[r.meta, r.meta_2].filter((m: string | null) => m && m.trim()).map((m: string, i: number) => (
-                      <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                        {i > 0 && <span style={{ width: 3, height: 3, borderRadius: 999, background: "#6B6A5E", display: "inline-block" }} />}
-                        <span>{m}</span>
-                      </span>
-                    ))}
+                {r.meta_2 && (
+                  <div style={{ fontFamily: HN, fontSize: 12, color: "#6B6A5E" }}>
+                    {r.meta_2}
                   </div>
                 )}
               </div>
