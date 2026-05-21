@@ -195,7 +195,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
           </button>
         </div>
         <h2 style={{ fontFamily: HN, fontWeight: 800, fontSize: 28, lineHeight: 1.1, letterSpacing: "-0.5px", color: INK, margin: "0 0 10px" }}>
-          Suggest a channel
+          Suggest a Channel
         </h2>
         <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
           Know a good local channel, group or feed? Drop the details and we'll have a look.
