@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import {
   Heart, Phone, Share2, Store, Clock, Calendar, ExternalLink, Copy, Pencil,
-  ArrowUpRight, Banknote, Tag, Send,
+  ArrowUpRight, Banknote, Tag, Send, Mail,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -256,16 +256,43 @@ const SpecialDetail = () => {
     );
   };
 
+  const detailRows: { icon: any; label: string; value: React.ReactNode; href?: string; internal?: boolean }[] = [];
+  if (special.business_name) {
+    detailRows.push({
+      icon: Store, label: "Business", value: special.business_name,
+      href: special.business_id ? `/listing/${special.business_id}` : undefined,
+      internal: true,
+    });
+  }
+  if (priceFmt) {
+    detailRows.push({
+      icon: Banknote, label: "Price",
+      value: originalFmt ? (
+        <span>{priceFmt} <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span></span>
+      ) : priceFmt,
+    });
+  }
+  if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });
+  if (special.day_of_week?.length) {
+    detailRows.push({
+      icon: Clock, label: "Days",
+      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
+    });
+  }
+  if (fromDate || untilDate) {
+    detailRows.push({
+      icon: Calendar, label: "Validity",
+      value: fromDate && untilDate ? `${fmt(fromDate)} – ${fmt(untilDate)}`
+        : untilDate ? `Until ${fmt(untilDate)}`
+        : `From ${fmt(fromDate!)}`,
+    });
+  }
+
   // ----- Tab content -----
   const renderAbout = () => {
     const desc = (special.description || "").trim();
     const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
-    const offerCols = [
-      { icon: Banknote, label: "Price", headline: sp.price, sublabel: sp.price_label },
-      { icon: Tag, label: "Offer", headline: sp.offer_headline, sublabel: sp.offer_sublabel },
-      { icon: Clock, label: "Duration", headline: sp.duration_headline, sublabel: sp.duration_sublabel },
-    ].filter((c) => c.headline || c.sublabel);
 
     return (
       <div style={{ padding: 20 }}>
@@ -292,27 +319,30 @@ const SpecialDetail = () => {
           </>
         )}
 
-        {offerCols.length > 0 && (
+        {detailRows.length > 0 && (
           <div style={{ marginTop: desc ? 28 : 0 }}>
-            <h2 style={headStyle}>The Offer</h2>
+            <h2 style={headStyle}>Details</h2>
             <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-              {offerCols.map((c, i) => (
-                <div key={i} style={{
+              {detailRows.map((r, i) => {
+                const inner = (
+                  <>
+                    <r.icon size={18} strokeWidth={1.5} color={C.primary} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                    </div>
+                    {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                  </>
+                );
+                const rowStyle: React.CSSProperties = {
                   display: "flex", alignItems: "center", gap: 14,
-                  padding: "14px 0",
+                  padding: "14px 0", textDecoration: "none",
                   borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-                }}>
-                  <c.icon size={18} strokeWidth={1.5} color={C.primary} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>
-                      {c.label}
-                    </div>
-                    <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-                      {[c.headline, c.sublabel].filter(Boolean).join(" · ")}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                };
+                if (r.href && r.internal) return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
+                if (r.href) return <a key={i} href={r.href} target="_blank" rel="noopener noreferrer" style={rowStyle}>{inner}</a>;
+                return <div key={i} style={rowStyle}>{inner}</div>;
+              })}
             </div>
           </div>
         )}
@@ -347,73 +377,6 @@ const SpecialDetail = () => {
     );
   };
 
-  const detailRows: { icon: any; label: string; value: React.ReactNode; href?: string; internal?: boolean }[] = [];
-  if (special.business_name) {
-    detailRows.push({
-      icon: Store, label: "Business", value: special.business_name,
-      href: special.business_id ? `/listing/${special.business_id}` : undefined,
-      internal: true,
-    });
-  }
-  if (priceFmt) {
-    detailRows.push({
-      icon: Banknote, label: "Price",
-      value: originalFmt ? (
-        <span>{priceFmt} <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span></span>
-      ) : priceFmt,
-    });
-  }
-  if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });
-  if (special.day_of_week?.length) {
-    detailRows.push({
-      icon: Clock, label: "Days",
-      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
-    });
-  }
-  if (fromDate || untilDate) {
-    detailRows.push({
-      icon: Calendar, label: "Validity",
-      value: fromDate && untilDate ? `${fmt(fromDate)} – ${fmt(untilDate)}`
-        : untilDate ? `Until ${fmt(untilDate)}`
-        : `From ${fmt(fromDate!)}`,
-    });
-  }
-
-  const renderDetails = () => (
-    <div style={{ padding: 20 }}>
-      {detailRows.length === 0 ? (
-        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
-      ) : (
-        <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-          {detailRows.map((r, i) => {
-            const inner = (
-              <>
-                <r.icon size={18} strokeWidth={1.5} color={C.primary} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
-                </div>
-                {r.href && <ArrowUpRight size={16} color={C.muted} />}
-              </>
-            );
-            const rowStyle: React.CSSProperties = {
-              display: "flex", alignItems: "center", gap: 14,
-              padding: "14px 0", textDecoration: "none",
-              borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-            };
-            if (r.href && r.internal) {
-              return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
-            }
-            if (r.href) {
-              return <a key={i} href={r.href} target="_blank" rel="noopener noreferrer" style={rowStyle}>{inner}</a>;
-            }
-            return <div key={i} style={rowStyle}>{inner}</div>;
-          })}
-        </div>
-      )}
-    </div>
-  );
-
   const renderContact = () => {
     const rows: { Icon: any; label: string; value: string; href: string; external?: boolean }[] = [];
     const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
@@ -431,6 +394,8 @@ const SpecialDetail = () => {
       value: sp.booking_link_label?.trim() || special.booking_link,
       href: special.booking_link, external: true,
     });
+    const email = (special as any).contact_email?.trim();
+    if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
 
     return (
       <div style={{ padding: 20 }}>
@@ -575,17 +540,15 @@ const SpecialDetail = () => {
       {/* Sticky tab bar */}
       {(() => {
         const hasAbout = !!(special.description?.trim()) ||
-          !!(sp.price || sp.price_label || sp.offer_headline || sp.offer_sublabel || sp.duration_headline || sp.duration_sublabel) ||
+          detailRows.length > 0 ||
           !!special.promo_code;
-        const hasDetails = detailRows.length > 0;
         const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
         const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
-        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link;
+        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email;
         const hasTerms = !!special.terms?.trim();
 
         const availableTabs: TabKey[] = [
           ...(hasAbout ? ["about" as TabKey] : []),
-          ...(hasDetails ? ["details" as TabKey] : []),
           ...(hasContact ? ["contact" as TabKey] : []),
           ...(hasTerms ? ["terms" as TabKey] : []),
         ];
@@ -603,15 +566,13 @@ const SpecialDetail = () => {
               background: C.surface, borderBottom: `1px solid ${C.border}`,
               display: "flex", padding: "0 8px",
             }}>
-              {hasAbout && <TabBtn k="about" label="About" />}
-              {hasDetails && <TabBtn k="details" label="Details" />}
+              {hasAbout && <TabBtn k="about" label="Details" />}
               {hasContact && <TabBtn k="contact" label="Contact" />}
               {hasTerms && <TabBtn k="terms" label="Terms" />}
             </nav>
 
             <main>
               {activeTab === "about" && renderAbout()}
-              {activeTab === "details" && renderDetails()}
               {activeTab === "contact" && renderContact()}
               {activeTab === "terms" && renderTerms()}
             </main>

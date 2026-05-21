@@ -1405,6 +1405,7 @@ export type Database = {
           business_name: string
           card_footer_text: string | null
           category: string | null
+          contact_email: string | null
           contact_phone: string | null
           contact_whatsapp: string | null
           created_at: string
@@ -1444,6 +1445,7 @@ export type Database = {
           business_name: string
           card_footer_text?: string | null
           category?: string | null
+          contact_email?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
@@ -1483,6 +1485,7 @@ export type Database = {
           business_name?: string
           card_footer_text?: string | null
           category?: string | null
+          contact_email?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
