@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
-import { formatEventDateRange } from "@/lib/eventDates";
+import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 
