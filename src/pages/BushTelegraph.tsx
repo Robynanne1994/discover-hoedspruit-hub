@@ -94,17 +94,6 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
       }}
       {...press}
     >
-      <div
-        aria-hidden
-        style={{
-          position: "absolute", top: 14, right: 14, width: 30, height: 30,
-          borderRadius: 999, background: SOFT_CREAM,
-          display: "flex", alignItems: "center", justifyContent: "center",
-          color: INK,
-        }}
-      >
-        <ArrowUpRight size={14} strokeWidth={2} />
-      </div>
       <div style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
         <div
           style={{
@@ -112,7 +101,7 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
             background: r.image_url ? `center/cover no-repeat url(${r.image_url})` : gradientFor(r.id),
           }}
         />
-        <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h4
             data-no-title-case={hasOverride ? "true" : undefined}
             style={{
@@ -136,12 +125,6 @@ const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void
                 </span>
               ))}
             </div>
-          )}
-          {r.description && (
-            <p style={{
-              fontFamily: HN, fontWeight: 400, fontSize: 13.5, lineHeight: 1.5,
-              color: MUTED, margin: "0 0 12px",
-            }}>{r.description}</p>
           )}
           {tags.length > 0 && (
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
