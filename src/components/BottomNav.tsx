@@ -122,8 +122,9 @@ const BottomNav = () => {
             </Link>
           );
         })}
-      </div>
-    </nav>
+        </div>
+      </nav>
+    </>
   );
 };
 
