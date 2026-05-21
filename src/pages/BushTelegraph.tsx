@@ -391,10 +391,14 @@ const BushTelegraph = () => {
                 textTransform: "uppercase", color: "rgba(238, 232, 218, 0.7)",
                 marginBottom: 14,
               }}>Featured</div>
-              <h2 style={{
-                fontFamily: HN, fontWeight: 800, fontSize: 28,
-                lineHeight: 1.1, letterSpacing: "-0.5px", color: CREAM, margin: "0 0 12px",
-              }}>{featured.title}</h2>
+              <h2
+                data-no-title-case={featured.title_override?.trim() ? "true" : undefined}
+                style={{
+                  fontFamily: HN, fontWeight: 800, fontSize: 28,
+                  lineHeight: 1.1, letterSpacing: "-0.5px", color: CREAM, margin: "0 0 12px",
+                  textTransform: featured.title_override?.trim() ? "none" : undefined,
+                }}
+              >{featured.title_override?.trim() || featured.title}</h2>
               {featured.description && (
                 <p style={{
                   fontFamily: HN, fontWeight: 400, fontSize: 14, lineHeight: 1.55,
