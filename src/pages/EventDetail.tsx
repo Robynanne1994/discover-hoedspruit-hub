@@ -514,9 +514,61 @@ const EventDetail = () => {
   };
 
   const detailRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
-  if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay });
-  if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay });
-  if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none") {
+  if (isMultiPerformance) {
+    const todayMid = new Date();
+    todayMid.setHours(0, 0, 0, 0);
+    const nextKey = nextOccurrence ? `${nextOccurrence.date.getFullYear()}-${pad(nextOccurrence.date.getMonth() + 1)}-${pad(nextOccurrence.date.getDate())}` : null;
+    detailRows.push({
+      Icon: Calendar,
+      label: "Performances",
+      value: (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          {performances.map((p, i) => {
+            const d = new Date(`${p.date}T00:00:00`);
+            const past = d < todayMid;
+            const isNext = !past && nextKey === p.date;
+            const weekday = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()];
+            const month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()];
+            const tLabel = p.time ? formatTime(p.time) : "";
+            const tEnd = p.end_time && p.end_time !== p.time ? formatTime(p.end_time) : "";
+            const timeStr = tLabel ? `${tLabel}${tEnd ? ` – ${tEnd}` : ""}` : "";
+            return (
+              <div
+                key={i}
+                style={{
+                  display: "flex", alignItems: "center", gap: 10,
+                  padding: "6px 10px", borderRadius: 8,
+                  background: isNext ? "#f5f0e8" : "transparent",
+                  borderLeft: isNext ? `3px solid ${C.primary}` : "3px solid transparent",
+                  opacity: past ? 0.45 : 1,
+                }}
+              >
+                <span style={{ fontFamily: FONT, fontSize: 14, color: C.heading, flex: 1 }}>
+                  {weekday}, {d.getDate()} {month} {d.getFullYear()}
+                  {timeStr ? <span style={{ color: C.muted }}> · {timeStr}</span> : null}
+                </span>
+                {isNext && (
+                  <span style={{
+                    fontFamily: FONT, fontSize: 10, fontWeight: 700,
+                    letterSpacing: "0.1em", color: C.primary,
+                    background: "#fff", border: `1px solid ${C.primary}`,
+                    borderRadius: 999, padding: "2px 8px",
+                  }}>NEXT</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ),
+    });
+    if (timeDisplay && nextOccurrence) {
+      // Already inline above — no separate Time row.
+    }
+  } else {
+    if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay });
+    if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay });
+  }
+  if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
     detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
   }
   if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
