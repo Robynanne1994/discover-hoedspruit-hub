@@ -256,6 +256,38 @@ const SpecialDetail = () => {
     );
   };
 
+  const detailRows: { icon: any; label: string; value: React.ReactNode; href?: string; internal?: boolean }[] = [];
+  if (special.business_name) {
+    detailRows.push({
+      icon: Store, label: "Business", value: special.business_name,
+      href: special.business_id ? `/listing/${special.business_id}` : undefined,
+      internal: true,
+    });
+  }
+  if (priceFmt) {
+    detailRows.push({
+      icon: Banknote, label: "Price",
+      value: originalFmt ? (
+        <span>{priceFmt} <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span></span>
+      ) : priceFmt,
+    });
+  }
+  if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });
+  if (special.day_of_week?.length) {
+    detailRows.push({
+      icon: Clock, label: "Days",
+      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
+    });
+  }
+  if (fromDate || untilDate) {
+    detailRows.push({
+      icon: Calendar, label: "Validity",
+      value: fromDate && untilDate ? `${fmt(fromDate)} – ${fmt(untilDate)}`
+        : untilDate ? `Until ${fmt(untilDate)}`
+        : `From ${fmt(fromDate!)}`,
+    });
+  }
+
   // ----- Tab content -----
   const renderAbout = () => {
     const desc = (special.description || "").trim();
