@@ -270,11 +270,14 @@ const AdminBushTelegraph = () => {
 
   useEffect(() => {
     const editId = searchParams.get("edit");
+    const ret = searchParams.get("returnTo");
     if (editId && resources.length && !open) {
       const r = resources.find((x) => x.id === editId);
       if (r) {
+        if (ret) setReturnTo(ret);
         startEdit(r);
         searchParams.delete("edit");
+        searchParams.delete("returnTo");
         setSearchParams(searchParams, { replace: true });
       }
     }
