@@ -237,8 +237,7 @@ const LocalChannelDetail = () => {
               )}
               {yearsValue && <InfoRow label={resource.since_year ? "Running" : "Years Running"} value={yearsValue} />}
               {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
-              {resource.tag_1 && <InfoRow label="Tag" value={resource.tag_1} />}
-              {resource.tag_2 && <InfoRow label="Tag" value={resource.tag_2} />}
+
               {!hasAny && (
                 <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
                   No additional details yet.
