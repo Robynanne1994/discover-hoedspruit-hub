@@ -616,7 +616,7 @@ const AdminBushTelegraph = () => {
                 <Input value={form.tag_1} onChange={(e) => setForm({ ...form, tag_1: e.target.value })} />
               </div>
               <div>
-                <Label>Tag 2 (optional)</Label>
+                <Label>Tag 2</Label>
                 <Input value={form.tag_2} onChange={(e) => setForm({ ...form, tag_2: e.target.value })} />
               </div>
             </div>
