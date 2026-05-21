@@ -77,13 +77,15 @@ const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode
   </button>
 );
 
-const ChannelCard = ({ r }: { r: Resource }) => {
+const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void }) => {
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
-  const open = () => window.open(r.url, "_blank", "noopener,noreferrer");
+  const metaParts = [r.meta, r.meta_2].filter((m) => m && m.trim());
+  const displayTitle = (r.title_override?.trim()) || r.title;
+  const hasOverride = !!r.title_override?.trim();
 
   return (
     <button
-      onClick={open}
+      onClick={() => onOpen(r)}
       style={{
         textAlign: "left", background: CARD, border: "none",
         borderRadius: 18, padding: "16px 18px 18px", cursor: "pointer",
@@ -111,16 +113,28 @@ const ChannelCard = ({ r }: { r: Resource }) => {
           }}
         />
         <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
-          <h4 style={{
-            fontFamily: HN, fontWeight: 700, fontSize: 16, lineHeight: 1.25,
-            letterSpacing: "-0.2px", color: INK, margin: 0,
-          }}>{r.title}</h4>
-          {r.meta && (
+          <h4
+            data-no-title-case={hasOverride ? "true" : undefined}
+            style={{
+              fontFamily: HN, fontWeight: 700, fontSize: 16, lineHeight: 1.25,
+              letterSpacing: "-0.2px", color: INK, margin: 0,
+              textTransform: hasOverride ? "none" : undefined,
+            }}
+          >{displayTitle}</h4>
+          {metaParts.length > 0 && (
             <div style={{
+              display: "flex", alignItems: "center", gap: 8,
               fontFamily: HN, fontWeight: 500, fontSize: 12.5, color: RUST,
-              margin: "4px 0 10px",
+              margin: "4px 0 10px", flexWrap: "wrap",
             }}>
-              {r.meta}
+              {metaParts.map((m, i) => (
+                <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {i > 0 && (
+                    <span style={{ width: 3, height: 3, borderRadius: 999, background: RUST, display: "inline-block" }} />
+                  )}
+                  <span>{m}</span>
+                </span>
+              ))}
             </div>
           )}
           {r.description && (
