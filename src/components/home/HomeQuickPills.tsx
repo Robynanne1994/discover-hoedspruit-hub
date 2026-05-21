@@ -14,7 +14,9 @@ const PILLS = [
 const HomeQuickPills = () => {
   return (
     <div style={{ padding: "0 20px", marginTop: 16 }}>
+      <style>{`.quick-pills-scroll::-webkit-scrollbar{display:none;}`}</style>
       <div
+        className="quick-pills-scroll"
         style={{
           display: "flex",
           gap: 8,
