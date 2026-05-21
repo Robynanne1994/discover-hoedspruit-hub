@@ -287,27 +287,30 @@ const SpecialDetail = () => {
           </>
         )}
 
-        {offerCols.length > 0 && (
+        {detailRows.length > 0 && (
           <div style={{ marginTop: desc ? 28 : 0 }}>
-            <h2 style={headStyle}>The Offer</h2>
+            <h2 style={headStyle}>Details</h2>
             <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-              {offerCols.map((c, i) => (
-                <div key={i} style={{
+              {detailRows.map((r, i) => {
+                const inner = (
+                  <>
+                    <r.icon size={18} strokeWidth={1.5} color={C.primary} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                    </div>
+                    {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                  </>
+                );
+                const rowStyle: React.CSSProperties = {
                   display: "flex", alignItems: "center", gap: 14,
-                  padding: "14px 0",
+                  padding: "14px 0", textDecoration: "none",
                   borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-                }}>
-                  <c.icon size={18} strokeWidth={1.5} color={C.primary} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>
-                      {c.label}
-                    </div>
-                    <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-                      {[c.headline, c.sublabel].filter(Boolean).join(" · ")}
-                    </div>
-                  </div>
-                </div>
-              ))}
+                };
+                if (r.href && r.internal) return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
+                if (r.href) return <a key={i} href={r.href} target="_blank" rel="noopener noreferrer" style={rowStyle}>{inner}</a>;
+                return <div key={i} style={rowStyle}>{inner}</div>;
+              })}
             </div>
           </div>
         )}
