@@ -1612,6 +1612,7 @@ const SavedListings = () => {
       {primaryTab === "listings" && renderListings()}
       {primaryTab === "events" && renderEvents()}
       {primaryTab === "specials" && renderSpecials()}
+      {primaryTab === "channels" && renderChannels()}
     </PageShell>
   );
 };
