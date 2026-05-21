@@ -1,0 +1,1 @@
+ALTER TABLE public.bush_telegraph_resources ADD COLUMN cta_label text;

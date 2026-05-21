@@ -102,6 +102,7 @@ export type Database = {
           admin_name: string | null
           admins: Json
           created_at: string
+          cta_label: string | null
           description: string | null
           detail_image_url: string | null
           id: string
@@ -128,6 +129,7 @@ export type Database = {
           admin_name?: string | null
           admins?: Json
           created_at?: string
+          cta_label?: string | null
           description?: string | null
           detail_image_url?: string | null
           id?: string
@@ -154,6 +156,7 @@ export type Database = {
           admin_name?: string | null
           admins?: Json
           created_at?: string
+          cta_label?: string | null
           description?: string | null
           detail_image_url?: string | null
           id?: string
