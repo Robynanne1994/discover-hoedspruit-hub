@@ -462,12 +462,14 @@ const SpecialDetail = () => {
   const renderTerms = () => (
     <div style={{ padding: 20 }}>
       {special.terms ? (
-        <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
+        <>
           <h2 style={headStyle}>Terms & Conditions</h2>
-          <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5, color: C.text }}>
-            {special.terms}
-          </p>
-        </div>
+          <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
+            <p style={{ ...paraStyle, margin: 1, whiteSpace: "pre-line", fontSize: 13.5, color: C.text }}>
+              {special.terms}
+            </p>
+          </div>
+        </>
       ) : (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No terms provided.</p>
       )}
