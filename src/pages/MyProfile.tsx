@@ -533,7 +533,7 @@ const MyProfile = () => {
           borderBottom: `1px solid ${LINE}`,
         }}
       >
-        {(["listings", "deals", "events"] as Tab[]).map((t) => {
+        {(["listings", "deals", "events", "resources"] as Tab[]).map((t) => {
           const active = tab === t;
           return (
             <button
