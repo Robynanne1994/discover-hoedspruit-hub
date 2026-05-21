@@ -212,6 +212,8 @@ const LocalChannelDetail = () => {
           const hasAny = admins.length > 0 || yearsValue || resource.post_frequency;
           return (
             <div className="[&>*:last-child]:!border-b-0" style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
+              {yearsValue && <InfoRow label={resource.since_year ? "Running" : "Years Running"} value={yearsValue} />}
+              {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
               {admins.length > 0 && (
                 <div style={{ padding: "14px 0", borderBottom: `1px solid ${LINE}` }}>
                   <div style={{ fontFamily: HN, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 10 }}>
@@ -235,8 +237,6 @@ const LocalChannelDetail = () => {
                   </div>
                 </div>
               )}
-              {yearsValue && <InfoRow label={resource.since_year ? "Running" : "Years Running"} value={yearsValue} />}
-              {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
 
               {!hasAny && (
                 <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
