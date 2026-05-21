@@ -352,6 +352,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             onExtrasChange={(v) => set("additional_whatsapps", v)}
             addLabel="Add WhatsApp"
           />
+          <div><Label>Contact Email</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} placeholder="e.g. info@example.com" /></div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Special Type</Label><Input value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} /></div>
