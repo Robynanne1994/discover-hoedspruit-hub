@@ -198,11 +198,7 @@ const SpecialDetail = () => {
     phoneClean && { key: "call", label: "Call", href: `tel:${phoneClean}`, Icon: Phone, ext: false },
     waClean && {
       key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${waClean}`, ext: true,
-      Icon: ({ size = 18 }: { size?: number }) => (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill={C.primary} aria-hidden="true">
-          <path d="M19.05 4.91A10 10 0 0 0 12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.91-7.02Z" />
-        </svg>
-      ),
+      Icon: WhatsAppIcon,
     },
     special.booking_link && {
       key: "booking", label: (sp.booking_link_label?.trim() || "Booking"),
