@@ -318,8 +318,9 @@ const ListingDetail = () => {
       const href = m[2] || m[3];
       nodes.push(
         <a key={`l-${i++}`} href={href} target="_blank" rel="noopener noreferrer"
-          style={{ color: C.primary, textDecoration: "underline", textUnderlineOffset: 2, wordBreak: "break-word" }}>
+          style={{ color: C.primary, textDecoration: "none", fontWeight: 400, wordBreak: "break-word", display: "inline-flex", alignItems: "center", gap: 4 }}>
           {label}
+          <ArrowUpRight size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
         </a>
       );
       lastIndex = m.index + m[0].length;
@@ -493,6 +494,12 @@ const ListingDetail = () => {
 
 
 
+
+  // Move custom rows to the top so they appear above amenity/true-false cards
+  const customSections = sections.filter(s => s.key.startsWith("custom-"));
+  const otherSections = sections.filter(s => !s.key.startsWith("custom-"));
+  sections.length = 0;
+  sections.push(...customSections, ...otherSections);
 
   const hasDetails = sections.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
