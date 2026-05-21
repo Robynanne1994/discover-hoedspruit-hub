@@ -571,23 +571,51 @@ const SpecialDetail = () => {
       </div>
 
       {/* Sticky tab bar */}
-      <nav style={{
-        position: "sticky", top: 0, zIndex: 30,
-        background: C.surface, borderBottom: `1px solid ${C.border}`,
-        display: "flex", padding: "0 8px",
-      }}>
-        <TabBtn k="about" label="About" />
-        <TabBtn k="details" label="Details" />
-        <TabBtn k="contact" label="Contact" />
-        {special.terms?.trim() && <TabBtn k="terms" label="Terms" />}
-      </nav>
+      {(() => {
+        const hasAbout = !!(special.description?.trim()) ||
+          !!(sp.price || sp.price_label || sp.offer_headline || sp.offer_sublabel || sp.duration_headline || sp.duration_sublabel) ||
+          !!special.promo_code;
+        const hasDetails = detailRows.length > 0;
+        const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
+        const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
+        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link;
+        const hasTerms = !!special.terms?.trim();
 
-      <main>
-        {tab === "about" && renderAbout()}
-        {tab === "details" && renderDetails()}
-        {tab === "contact" && renderContact()}
-        {tab === "terms" && special.terms?.trim() && renderTerms()}
-      </main>
+        const availableTabs: TabKey[] = [
+          ...(hasAbout ? ["about" as TabKey] : []),
+          ...(hasDetails ? ["details" as TabKey] : []),
+          ...(hasContact ? ["contact" as TabKey] : []),
+          ...(hasTerms ? ["terms" as TabKey] : []),
+        ];
+        const activeTab: TabKey | null = availableTabs.includes(tab) ? tab : (availableTabs[0] ?? null);
+        if (activeTab && activeTab !== tab && availableTabs.length > 0 && !availableTabs.includes(tab)) {
+          // Defer state update to next tick to avoid render-time setState
+          queueMicrotask(() => setTab(activeTab));
+        }
+        if (availableTabs.length === 0) return null;
+
+        return (
+          <>
+            <nav style={{
+              position: "sticky", top: 0, zIndex: 30,
+              background: C.surface, borderBottom: `1px solid ${C.border}`,
+              display: "flex", padding: "0 8px",
+            }}>
+              {hasAbout && <TabBtn k="about" label="About" />}
+              {hasDetails && <TabBtn k="details" label="Details" />}
+              {hasContact && <TabBtn k="contact" label="Contact" />}
+              {hasTerms && <TabBtn k="terms" label="Terms" />}
+            </nav>
+
+            <main>
+              {activeTab === "about" && renderAbout()}
+              {activeTab === "details" && renderDetails()}
+              {activeTab === "contact" && renderContact()}
+              {activeTab === "terms" && renderTerms()}
+            </main>
+          </>
+        );
+      })()}
 
       {isAdmin && (
         <SpecialEditDialog open={editOpen} onOpenChange={setEditOpen} special={special} />
