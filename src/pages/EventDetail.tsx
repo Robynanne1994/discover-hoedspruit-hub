@@ -422,40 +422,51 @@ const EventDetail = () => {
           <div style={{ marginTop: 28 }}>
             <h2 style={{ ...headStyle, marginBottom: 14 }}>Hosted by</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {hosts.map((h, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 14,
-                    background: C.surface, borderRadius: 16, padding: "14px 16px",
-                    border: `1px solid ${C.border}`,
-                  }}
-                >
-                  {h.image ? (
-                    <img
-                      src={h.image}
-                      alt={h.name}
-                      style={{ width: 48, height: 48, borderRadius: 999, objectFit: "cover", flexShrink: 0 }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        width: 48, height: 48, borderRadius: 999,
-                        background: C.ivory, flexShrink: 1,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}
-                    >
-                      <span style={{ fontFamily: FONT, fontSize: 18, color: C.muted }}>{h.name.charAt(0).toUpperCase()}</span>
-                    </div>
-                  )}
-                  <div style={{ minWidth: 1 }}>
-                    <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 700, color: C.heading }}>{h.name}</div>
-                    {h.subtitle && (
-                      <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted, marginTop: 2 }}>{h.subtitle}</div>
+              {hosts.map((h, i) => {
+                const Tag: any = h.link ? "a" : "div";
+                const tagProps = h.link
+                  ? { href: h.link, target: "_blank", rel: "noopener noreferrer" }
+                  : {};
+                return (
+                  <Tag
+                    key={i}
+                    {...tagProps}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 14,
+                      background: C.surface, borderRadius: 16, padding: "14px 16px",
+                      border: `1px solid ${C.border}`,
+                      textDecoration: "none", color: "inherit",
+                    }}
+                  >
+                    {h.image ? (
+                      <img
+                        src={h.image}
+                        alt={h.name}
+                        style={{ width: 48, height: 48, borderRadius: 999, objectFit: "cover", flexShrink: 0 }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 48, height: 48, borderRadius: 999,
+                          background: C.ivory, flexShrink: 0,
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}
+                      >
+                        <span style={{ fontFamily: FONT, fontSize: 18, color: C.muted }}>{h.name.charAt(0).toUpperCase()}</span>
+                      </div>
                     )}
-                  </div>
-                </div>
-              ))}
+                    <div style={{ minWidth: 1, flex: 1 }}>
+                      <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 700, color: C.heading }}>{h.name}</div>
+                      {h.subtitle && (
+                        <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted, marginTop: 2 }}>{h.subtitle}</div>
+                      )}
+                    </div>
+                    {h.link && (
+                      <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />
+                    )}
+                  </Tag>
+                );
+              })}
             </div>
           </div>
         )}
