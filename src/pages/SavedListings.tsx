@@ -375,13 +375,21 @@ const SavedListings = () => {
         ? listingFilter
         : primaryTab === "events"
           ? eventFilter
-          : specialFilter;
+          : primaryTab === "channels"
+            ? channelFilter
+            : specialFilter;
 
   const setActiveSubFilter = (v: string) => {
     if (primaryTab === "listings") setListingFilter(v);
     else if (primaryTab === "events") setEventFilter(v);
     else if (primaryTab === "specials") setSpecialFilter(v);
+    else if (primaryTab === "channels") setChannelFilter(v);
   };
+
+  const filteredChannelsByPill = filteredChannels.filter((f: any) => {
+    if (channelFilter === "All") return true;
+    return f.details?.platform === channelFilter;
+  });
 
   // ------- shells -------
   const PageShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
