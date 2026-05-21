@@ -527,7 +527,15 @@ const AdminBushTelegraph = () => {
       </div>
 
       {/* Edit Dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={(o) => {
+        setOpen(o);
+        if (!o && returnTo) {
+          const dest = returnTo;
+          setReturnTo(null);
+          setEditing(null);
+          navigate(dest);
+        }
+      }}>
         <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editing ? "Edit Resource" : "Add Resource"}</DialogTitle>
