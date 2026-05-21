@@ -60,6 +60,22 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       payload.additional_emails = sanitizeContactArray(form.additional_emails);
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      // Normalize performances: keep only rows with a valid date, sort by date+time,
+      // and auto-derive start_date/end_date so existing queries/calendar still work.
+      const rawPerfs = Array.isArray(form.performances) ? form.performances : [];
+      const cleanPerfs = rawPerfs
+        .filter((p: any) => p && typeof p.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(p.date))
+        .map((p: any) => ({
+          date: p.date,
+          time: p.time && /^\d{1,2}:\d{2}/.test(p.time) ? p.time.slice(0, 5) : null,
+          end_time: p.end_time && /^\d{1,2}:\d{2}/.test(p.end_time) ? p.end_time.slice(0, 5) : null,
+        }))
+        .sort((a: any, b: any) => (a.date === b.date ? (a.time || "").localeCompare(b.time || "") : a.date.localeCompare(b.date)));
+      payload.performances = cleanPerfs.length > 0 ? cleanPerfs : null;
+      if (cleanPerfs.length > 0) {
+        payload.start_date = cleanPerfs[0].date;
+        payload.end_date = cleanPerfs[cleanPerfs.length - 1].date;
+      }
       // `date` is required (NOT NULL). Auto-fill from start/end dates if left blank.
       if (!payload.date || !String(payload.date).trim()) {
         if (payload.start_date && payload.end_date && payload.start_date !== payload.end_date) {
