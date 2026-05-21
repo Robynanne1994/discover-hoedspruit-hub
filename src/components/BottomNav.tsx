@@ -56,7 +56,14 @@ const BottomNav = () => {
                 textDecoration: "none",
                 height: 48,
                 borderRadius: 999,
-                background: isActive ? PILL_BG : "transparent",
+                background: isActive
+                  ? "rgba(255,255,255,0.85)"
+                  : "transparent",
+                backdropFilter: isActive ? "blur(12px) saturate(180%)" : undefined,
+                WebkitBackdropFilter: isActive ? "blur(12px) saturate(180%)" : undefined,
+                boxShadow: isActive
+                  ? "inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 8px rgba(0,0,0,0.15)"
+                  : "none",
                 gap: 8,
                 padding: isActive ? "0 16px" : 0,
                 transition: "flex 200ms ease, background 200ms ease, padding 200ms ease",
@@ -64,7 +71,7 @@ const BottomNav = () => {
             >
               <Icon
                 size={24}
-                color={isActive ? PILL_FG : INACTIVE}
+                color={isActive ? PILL_FG : "#ffffff"}
                 strokeWidth={isActive ? 2.25 : 1.75}
               />
               {isActive && (
