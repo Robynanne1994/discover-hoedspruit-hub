@@ -368,7 +368,7 @@ const BushTelegraph = () => {
       {featured && active === "All" && (
         <div style={{ padding: "0 20px", marginBottom: 28 }}>
           <div
-            onClick={() => window.open(featured.url, "_blank", "noopener,noreferrer")}
+            onClick={() => openResource(featured)}
             style={{
               background: DARK, borderRadius: 22,
               padding: "22px 22px 22px", position: "relative", overflow: "hidden",
