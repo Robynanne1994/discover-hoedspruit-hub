@@ -149,7 +149,7 @@ const HomeLocalChannels = () => {
             >
               ↗
             </div>
-          </a>
+          </button>
         ))}
       </div>
     </section>
