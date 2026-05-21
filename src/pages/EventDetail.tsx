@@ -385,6 +385,12 @@ const EventDetail = () => {
     const desc = (e.description || "").trim();
     const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
+
+    const hosts: { name: string; subtitle?: string; image?: string }[] = [];
+    if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url });
+    if (e.hosted_by_name_2) hosts.push({ name: e.hosted_by_name_2, subtitle: e.hosted_by_subtitle_2, image: e.hosted_by_image_url_2 });
+    if (e.hosted_by_name_3) hosts.push({ name: e.hosted_by_name_3, subtitle: e.hosted_by_subtitle_3, image: e.hosted_by_image_url_3 });
+
     return (
       <div style={{ padding: 20 }}>
         {desc ? (
@@ -412,6 +418,47 @@ const EventDetail = () => {
           <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No description yet.</p>
         )}
 
+        {hosts.length > 0 && (
+          <div style={{ marginTop: 28 }}>
+            <h2 style={{ ...headStyle, marginBottom: 14 }}>Hosted by</h2>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {hosts.map((h, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 14,
+                    background: C.surface, borderRadius: 16, padding: "14px 16px",
+                    border: `1px solid ${C.border}`,
+                  }}
+                >
+                  {h.image ? (
+                    <img
+                      src={h.image}
+                      alt={h.name}
+                      style={{ width: 48, height: 48, borderRadius: 999, objectFit: "cover", flexShrink: 0 }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: 48, height: 48, borderRadius: 999,
+                        background: C.ivory, flexShrink: 1,
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}
+                    >
+                      <span style={{ fontFamily: FONT, fontSize: 18, color: C.muted }}>{h.name.charAt(0).toUpperCase()}</span>
+                    </div>
+                  )}
+                  <div style={{ minWidth: 1 }}>
+                    <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 700, color: C.heading }}>{h.name}</div>
+                    {h.subtitle && (
+                      <div style={{ fontFamily: FONT, fontSize: 12, color: C.muted, marginTop: 2 }}>{h.subtitle}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   };
