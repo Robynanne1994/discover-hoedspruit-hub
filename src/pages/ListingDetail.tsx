@@ -817,7 +817,7 @@ const ListingDetail = () => {
         <h2 style={headStyle}>Location</h2>
         <div style={{ background: C.surface, borderRadius: 16, overflow: "hidden", border: `1px solid ${C.border}` }}>
           {isSurrounds ? (
-            <div style={{ padding: "32px 20px", textAlign: "center", fontFamily: FONT, fontSize: 14, color: C.heading }}>
+            <div style={{ padding: "24px 20px", textAlign: "left", fontFamily: FONT, fontSize: 14, color: C.heading }}>
               Hoedspruit &amp; Surrounds
             </div>
           ) : (
