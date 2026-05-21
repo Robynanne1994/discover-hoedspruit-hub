@@ -709,7 +709,26 @@ const EventDetail = () => {
           </div>
         )}
 
-        {actions.length > 0 && (
+        {isPast ? (
+          <div style={{
+            marginTop: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            padding: "14px 18px",
+            borderRadius: 999,
+            background: "#f5f0e8",
+            border: `1px solid ${C.border}`,
+            color: C.muted,
+            fontFamily: FONT, fontWeight: 400, fontSize: 14,
+            letterSpacing: "0.01em",
+            opacity: 1,
+          }}>
+            <Calendar size={16} strokeWidth={1.75} color={C.muted} />
+            <span>EVENT HAS PASSED</span>
+          </div>
+        ) : actions.length > 0 && (
           <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
             {actions.map((a, i) => {
               const isLastOdd = actions.length % 2 === 1 && i === actions.length - 1;
