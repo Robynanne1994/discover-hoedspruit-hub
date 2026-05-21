@@ -10,7 +10,7 @@ import SearchBar from "@/components/ui/SearchBar";
 import { format, parseISO, isFuture, isPast, differenceInDays } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
-type PrimaryTab = "all" | "listings" | "events" | "specials";
+type PrimaryTab = "all" | "listings" | "events" | "specials" | "channels";
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
 const CREAM_92 = "rgba(238, 232, 218, 0.92)";
@@ -54,7 +54,7 @@ const SavedListings = () => {
 
   const [primaryTab, setPrimaryTab] = useState<PrimaryTab>(() => {
     const tab = searchParams.get("tab");
-    if (tab === "all" || tab === "events" || tab === "specials" || tab === "listings") return tab;
+    if (tab === "all" || tab === "events" || tab === "specials" || tab === "listings" || tab === "channels") return tab;
     if (persisted.tab) return persisted.tab;
     return "all";
   });
@@ -155,6 +155,28 @@ const SavedListings = () => {
     },
     enabled: !!user,
   });
+  // Saved channels (local channels / bush telegraph resources)
+  const { data: savedChannels, isLoading: channelsLoading } = useQuery({
+    queryKey: ["saved-channels-page", user?.id],
+    queryFn: async () => {
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("*")
+        .eq("user_id", user!.id)
+        .eq("item_type", "resource")
+        .order("created_at", { ascending: false });
+      if (!favs || favs.length === 0) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: channels } = await supabase
+        .from("bush_telegraph_resources")
+        .select("id, slug, title, title_override, platform, meta, meta_2, url, image_url")
+        .in("id", ids);
+      const map = Object.fromEntries((channels || []).map((c: any) => [c.id, c]));
+      return favs.map((f) => ({ ...f, details: map[f.item_id] })).filter((f) => f.details);
+    },
+    enabled: !!user,
+  });
+
 
   const removeFavourite = useMutation({
     mutationFn: async (fav: { item_id: string; item_type: string }) => {
@@ -169,6 +191,8 @@ const SavedListings = () => {
       queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
       queryClient.invalidateQueries({ queryKey: ["saved-events-page"] });
       queryClient.invalidateQueries({ queryKey: ["saved-specials-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-channels-page"] });
+      queryClient.invalidateQueries({ queryKey: ["saved-resource-ids"] });
       queryClient.invalidateQueries({ queryKey: ["favourites"] });
       queryClient.invalidateQueries({ queryKey: ["favourite"] });
     },
@@ -257,11 +281,22 @@ const SavedListings = () => {
     return true;
   });
 
+  const filteredChannels = (savedChannels || []).filter((f: any) => {
+    const d = f.details;
+    if (!d) return false;
+    if (search.trim()) {
+      const hay = `${d.title || ""} ${d.title_override || ""} ${d.platform || ""}`.toLowerCase();
+      if (!hay.includes(search.toLowerCase())) return false;
+    }
+    return true;
+  });
+
   // Counts (total saved per tab, not filtered)
   const listingsCount = (favourites || []).length;
   const eventsCount = (savedEvents || []).length;
   const specialsCount = (savedSpecials || []).length;
-  const totalCount = listingsCount + eventsCount + specialsCount;
+  const channelsCount = (savedChannels || []).length;
+  const totalCount = listingsCount + eventsCount + specialsCount + channelsCount;
 
   const activeCount =
     primaryTab === "all"
@@ -270,7 +305,9 @@ const SavedListings = () => {
         ? listingsCount
         : primaryTab === "events"
           ? eventsCount
-          : specialsCount;
+          : primaryTab === "specials"
+            ? specialsCount
+            : channelsCount;
 
   // Lede
   const lede = (() => {
@@ -289,6 +326,11 @@ const SavedListings = () => {
         ? "1 event, saved for the diary."
         : `${activeCount} events, saved for the diary.`;
     }
+    if (primaryTab === "channels") {
+      return activeCount === 1
+        ? "1 channel, ready when you need it."
+        : `${activeCount} channels, ready when you need them.`;
+    }
     return activeCount === 1
       ? "1 special, before it goes."
       : `${activeCount} specials, before they go.`;
@@ -301,7 +343,19 @@ const SavedListings = () => {
         ? "Search saved listings"
         : primaryTab === "events"
           ? "Search saved events"
-          : "Search saved specials";
+          : primaryTab === "channels"
+            ? "Search saved channels"
+            : "Search saved specials";
+
+  const channelPlatforms = (() => {
+    const set = new Set<string>();
+    (savedChannels || []).forEach((f: any) => {
+      if (f.details?.platform) set.add(f.details.platform);
+    });
+    return Array.from(set).sort();
+  })();
+
+  const [channelFilter, setChannelFilter] = useState("All");
 
   const subFilters: string[] =
     primaryTab === "all"
@@ -310,7 +364,9 @@ const SavedListings = () => {
         ? ["All", ...listingCategories]
         : primaryTab === "events"
           ? ["All", "Upcoming", "Past", ...eventTags]
-          : ["All", "Active", "Expiring Soon", ...specialTypes];
+          : primaryTab === "channels"
+            ? ["All", ...channelPlatforms]
+            : ["All", "Active", "Expiring Soon", ...specialTypes];
 
   const activeSubFilter =
     primaryTab === "all"
@@ -319,13 +375,21 @@ const SavedListings = () => {
         ? listingFilter
         : primaryTab === "events"
           ? eventFilter
-          : specialFilter;
+          : primaryTab === "channels"
+            ? channelFilter
+            : specialFilter;
 
   const setActiveSubFilter = (v: string) => {
     if (primaryTab === "listings") setListingFilter(v);
     else if (primaryTab === "events") setEventFilter(v);
     else if (primaryTab === "specials") setSpecialFilter(v);
+    else if (primaryTab === "channels") setChannelFilter(v);
   };
+
+  const filteredChannelsByPill = filteredChannels.filter((f: any) => {
+    if (channelFilter === "All") return true;
+    return f.details?.platform === channelFilter;
+  });
 
   // ------- shells -------
   const PageShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -424,7 +488,7 @@ const SavedListings = () => {
     );
   }
 
-  if (loading || isLoading || eventsLoading || specialsLoading) {
+  if (loading || isLoading || eventsLoading || specialsLoading || channelsLoading) {
     return (
       <PageShell>
         <div style={{ paddingTop: 18, paddingLeft: 24, paddingRight: 24 }}>
@@ -898,7 +962,126 @@ const SavedListings = () => {
     );
   };
 
-  // ------- All (combined) -------
+  // ------- Channels -------
+  const renderChannels = () => {
+    if (filteredChannelsByPill.length === 0) return renderEmpty();
+    return (
+      <div
+        style={{
+          background: CREAM,
+          borderRadius: 24,
+          marginLeft: 24,
+          marginRight: 24,
+          padding: "6px 20px",
+          overflow: "hidden",
+        }}
+      >
+        {filteredChannelsByPill.map((fav: any, idx: number) => {
+          const c = fav.details;
+          const href = c.slug ? `/local-channels/${c.slug}` : c.url || "/local-channels";
+          const isExternal = !c.slug && !!c.url;
+          const Tag: any = isExternal ? "a" : Link;
+          const linkProps: any = isExternal
+            ? { href, target: "_blank", rel: "noopener noreferrer" }
+            : { to: href };
+          return (
+            <Tag
+              key={fav.id}
+              {...linkProps}
+              className="flex items-center"
+              style={{
+                gap: 14,
+                paddingTop: 16,
+                paddingBottom: 16,
+                borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                textDecoration: "none",
+              }}
+            >
+              <div
+                style={{
+                  width: 54,
+                  height: 54,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  background: "#e6dfcf",
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontFamily: SANS,
+                  color: MUTED,
+                }}
+              >
+                {c.image_url ? (
+                  <img
+                    src={c.image_url}
+                    alt=""
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  />
+                ) : (
+                  <span>{(c.platform || "•").slice(0, 1)}</span>
+                )}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 11.5,
+                    color: MUTED,
+                    letterSpacing: "1.6px",
+                    textTransform: "uppercase",
+                    margin: 0,
+                    marginBottom: 3,
+                  }}
+                >
+                  {c.platform || "Channel"}
+                </p>
+                <p
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 15,
+                    color: INK,
+                    lineHeight: 1.25,
+                    margin: 0,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  {c.title_override?.trim() || c.title}
+                </p>
+                {(c.meta || c.meta_2) && (
+                  <p
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 12.5,
+                      color: MUTED,
+                      margin: 0,
+                      marginTop: 2,
+                    }}
+                  >
+                    {[c.meta, c.meta_2].filter((m: string | null) => m && m.trim()).join(" · ")}
+                  </p>
+                )}
+              </div>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  color: INK,
+                  opacity: 0.7,
+                  flexShrink: 0,
+                }}
+              >
+                ↗
+              </span>
+            </Tag>
+          );
+        })}
+      </div>
+    );
+  };
+
   const renderAll = () => {
     const allItems = [
       ...(favourites || []).map((f: any) => ({
@@ -914,6 +1097,11 @@ const SavedListings = () => {
       ...(savedSpecials || []).map((f: any) => ({
         ...f,
         kind: "special" as const,
+        sortAt: f.created_at,
+      })),
+      ...(savedChannels || []).map((f: any) => ({
+        ...f,
+        kind: "channel" as const,
         sortAt: f.created_at,
       })),
     ]
@@ -1129,6 +1317,60 @@ const SavedListings = () => {
             );
           }
 
+          if (it.kind === "channel") {
+            const c = it.details;
+            const href = c.slug ? `/local-channels/${c.slug}` : c.url || "/local-channels";
+            const isExternal = !c.slug && !!c.url;
+            const Tag: any = isExternal ? "a" : Link;
+            const linkProps: any = isExternal
+              ? { href, target: "_blank", rel: "noopener noreferrer" }
+              : { to: href };
+            return (
+              <Tag
+                key={it.id}
+                {...linkProps}
+                className="flex items-center"
+                style={{
+                  gap: 14,
+                  paddingTop: 16,
+                  paddingBottom: 16,
+                  borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                  textDecoration: "none",
+                }}
+              >
+                <div
+                  style={{
+                    width: 54,
+                    height: 54,
+                    borderRadius: 12,
+                    overflow: "hidden",
+                    background: "#e6dfcf",
+                    flexShrink: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: MUTED,
+                  }}
+                >
+                  {c.image_url ? (
+                    <img src={c.image_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <span>{(c.platform || "•").slice(0, 1)}</span>
+                  )}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontFamily: SANS, fontSize: 11.5, color: MUTED, letterSpacing: "1.6px", textTransform: "uppercase", margin: 0, marginBottom: 3 }}>
+                    {c.platform || "Channel"}
+                  </p>
+                  <p style={{ fontFamily: SANS, fontSize: 15, color: INK, lineHeight: 1.25, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {c.title_override?.trim() || c.title}
+                  </p>
+                </div>
+                <span style={{ fontFamily: SANS, fontSize: 14, color: INK, opacity: 0.7, flexShrink: 0 }}>↗</span>
+              </Tag>
+            );
+          }
+
           // special
           const s = it.details;
           return (
@@ -1276,6 +1518,7 @@ const SavedListings = () => {
               { key: "listings" as const, label: "Listings", count: listingsCount },
               { key: "events" as const, label: "Events", count: eventsCount },
               { key: "specials" as const, label: "Specials", count: specialsCount },
+              { key: "channels" as const, label: "Channels", count: channelsCount },
             ] as const
           ).map((t) => {
             const active = primaryTab === t.key;
@@ -1369,6 +1612,7 @@ const SavedListings = () => {
       {primaryTab === "listings" && renderListings()}
       {primaryTab === "events" && renderEvents()}
       {primaryTab === "specials" && renderSpecials()}
+      {primaryTab === "channels" && renderChannels()}
     </PageShell>
   );
 };
