@@ -315,11 +315,19 @@ const EventDetail = () => {
   const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
   const canAddToCal = !!(e.start_date || e.date);
 
+  // Determine if event is in the past (end date or start date before today)
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const { start, end } = getEventDates(e);
+  const checkDate = end || start;
+  const isPast = checkDate ? checkDate < today : false;
+
   // Action pills
   const actions = [
     bookingLink && {
       key: "booking", label: bookingLinkLabel || "Book / Tickets",
       href: bookingLink, Icon: ExternalLink, ext: true,
+      disabled: isPast,
     },
     socialLink && {
       key: "social", label: socialLabel || "Website",
@@ -333,23 +341,31 @@ const EventDetail = () => {
       key: "calendar", label: "Add to Calendar",
       onClick: () => addToCalendar(e), Icon: CalendarPlus,
     },
-  ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean }>;
+  ].filter(Boolean) as Array<{ key: string; label: string; href?: string; onClick?: () => void; Icon: any; ext?: boolean; disabled?: boolean }>;
 
   const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
+    const disabled = a.disabled;
     const baseStyle: React.CSSProperties = {
       display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
       padding: "14px 18px", borderRadius: 999,
-      background: C.surface, border: `1px solid ${C.border}`,
-      color: C.heading, textDecoration: "none", cursor: "pointer",
+      background: disabled ? "#f5f0e8" : C.surface,
+      border: `1px solid ${disabled ? "transparent" : C.border}`,
+      color: disabled ? C.muted : C.heading,
+      textDecoration: "none",
+      cursor: disabled ? "not-allowed" : "pointer",
       fontFamily: FONT, fontWeight: 400, fontSize: 14,
-      letterSpacing: "0.01em", flexShrink: 0,
+      letterSpacing: "0.01em", flexShrink: 1,
       width: full ? "100%" : undefined,
       transition: "transform 150ms ease-out",
+      opacity: disabled ? 0.7 : 1,
     };
     const inner = (<>
-      <a.Icon size={16} strokeWidth={1.75} color={C.heading} />
+      <a.Icon size={16} strokeWidth={1.75} color={disabled ? C.muted : C.heading} />
       <span>{a.label}</span>
     </>);
+    if (disabled) {
+      return <div style={baseStyle}>{inner}</div>;
+    }
     if (a.onClick) {
       return <button type="button" onClick={a.onClick} style={baseStyle} {...pressScale()}>{inner}</button>;
     }
