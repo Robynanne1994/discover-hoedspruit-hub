@@ -1,0 +1,1 @@
+ALTER TABLE public.specials ADD COLUMN IF NOT EXISTS contact_email text;
