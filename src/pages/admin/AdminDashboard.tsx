@@ -32,7 +32,16 @@ const AdminDashboard = () => {
   const resources = useCount("resources", "bush_telegraph_resources");
   const businesses = useCount("businesses", "business_accounts");
   const contacts = useCount("contacts", "contact_submissions");
-  const feedback = useCount("feedback", "feedback");
+  const feedback = useQuery({
+    queryKey: ["admin-count-feedback-unread"],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("feedback")
+        .select("*", { count: "exact", head: true })
+        .eq("is_read", false);
+      return count ?? 0;
+    },
+  });
 
   // moderation = pending across the three pending tables
   const moderation = useQuery({
