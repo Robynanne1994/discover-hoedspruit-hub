@@ -270,7 +270,10 @@ const AdminSubmissions = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setViewing({ kind: "resource", data: r })}
+                  onClick={() => {
+                    setViewing({ kind: "resource", data: r });
+                    if (!r.is_read) markContactRead.mutate(r.id);
+                  }}
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
