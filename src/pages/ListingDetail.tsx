@@ -354,7 +354,7 @@ const ListingDetail = () => {
       { label: "Nappy changing station", value: l.nappy_changing_station },
       { label: "Kids playground", value: l.kids_playground },
     ]);
-    if (kids.length) sections.push({ key: "kids", title: "Kids & family", iconSrc: kidsFamilyIconSrc, fields: kids });
+    if (kids.length) sections.push({ key: "kids", title: "Kids & family", iconComp: Baby, fields: kids });
 
     const access = filterDefined([
       { label: "Wheelchair friendly", value: l.wheelchair_friendly },
@@ -363,7 +363,7 @@ const ListingDetail = () => {
       { label: "Accessible toilet", value: l.wheelchair_toilet },
       { label: "Accessible parking", value: l.wheelchair_car_park },
     ]);
-    if (access.length) sections.push({ key: "accessibility", title: "Accessibility", iconSrc: accessibilityIconSrc, fields: access });
+    if (access.length) sections.push({ key: "accessibility", title: "Accessibility", iconComp: Accessibility, fields: access });
 
     const amen = filterDefined([
       { label: "Toilets", value: l.has_toilet },
@@ -371,12 +371,12 @@ const ListingDetail = () => {
       { label: "Smoking section", value: l.smoking_allowed },
       { label: "Pet friendly", value: l.pets_allowed },
     ]);
-    if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconSrc: amenitiesIconSrc, fields: amen });
+    if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconComp: Home, fields: amen });
 
-    if (l.seating?.length) sections.push({ key: "seating", title: "Seating", iconSrc: seatingIconSrc, fields: l.seating.map((s: string) => ({ label: toTitleCase(s.replace(/ seating$/i, "")), on: true })) });
-    if (l.meal?.length) sections.push({ key: "meals", title: "Meals served", iconSrc: mealsIconSrc, fields: l.meal.map((m: string) => ({ label: toTitleCase(m), on: true })) });
-    if (l.cuisine?.length) sections.push({ key: "cuisine", title: "Cuisine", iconSrc: cuisineIconSrc, fields: l.cuisine.map((c: string) => ({ label: toTitleCase(c), on: true })) });
-    if (l.vibe?.length) sections.push({ key: "vibe", title: "Vibe", iconSrc: vibeIconSrc, fields: l.vibe.map((v: string) => ({ label: toTitleCase(v), on: true })) });
+    if (l.seating?.length) sections.push({ key: "seating", title: "Seating", iconComp: Sofa, fields: l.seating.map((s: string) => ({ label: toTitleCase(s.replace(/ seating$/i, "")), on: true })) });
+    if (l.meal?.length) sections.push({ key: "meals", title: "Meals served", iconComp: Utensils, fields: l.meal.map((m: string) => ({ label: toTitleCase(m), on: true })) });
+    if (l.cuisine?.length) sections.push({ key: "cuisine", title: "Cuisine", iconComp: Soup, fields: l.cuisine.map((c: string) => ({ label: toTitleCase(c), on: true })) });
+    if (l.vibe?.length) sections.push({ key: "vibe", title: "Vibe", iconComp: Music, fields: l.vibe.map((v: string) => ({ label: toTitleCase(v), on: true })) });
   }
 
   if (isListingAccommodation) {
