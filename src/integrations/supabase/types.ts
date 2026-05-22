@@ -1830,6 +1830,18 @@ export type Database = {
         }
         Returns: boolean
       }
+      search_public_profiles: {
+        Args: { _limit?: number; _term: string }
+        Returns: {
+          activity_private: boolean
+          avatar_url: string
+          bio: string
+          display_name: string
+          id: string
+          location: string
+          username: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user" | "business_owner"
