@@ -1,60 +1,55 @@
-## Cleanup audit
+# Smarter "Top Rated" sort (no UI rating changes)
 
-Below is everything that appears unreachable or unused in the current codebase. Nothing has been deleted yet — this is the proposed cleanup list. Items are grouped by confidence.
+## Goal
 
-### 1. Definitely unused — safe to delete
+Keep every displayed rating exactly as it is today (Google star + count on cards, real user-review average on the listing detail page). **Only the "Top Rated" sort order changes** so a single 5★ review can't outrank a place with hundreds of strong reviews.
 
-**Home components (orphaned, no imports anywhere):**
-- `src/components/home/CategoryPills.tsx`
-- `src/components/home/DoSection.tsx`
-- `src/components/home/EatSection.tsx`
-- `src/components/home/ShopSection.tsx`
-- `src/components/home/StaySection.tsx`
-- `src/components/home/SpecialsSection.tsx`
-- `src/components/home/FeaturedCarousel.tsx`
-- `src/components/home/HomeGetListed.tsx`
-- `src/components/home/HomeHero.tsx`
-- `src/components/home/HomeQuickPills.tsx`
-- `src/components/home/HomeSectionHeader.tsx` (only `HomeSectionHead` is used)
-- `src/components/home/SectionHeader.tsx` (Search & BushTelegraph define their own local `SectionHeader`)
-- `src/components/home/VenueCard.tsx`
-- `src/components/home/WhatsOnToday.tsx`
-- `src/components/home/HomeListingCarousel.tsx` (only imported by the dead Eat/Do/Shop/StaySection files above)
+## What changes
 
-**Pages whose route exists but nothing links to them:**
-- `src/pages/VisitedPlaces.tsx` — route `/visited` registered, but zero links anywhere in the app (BottomNav, MyAccount, MyProfile etc. do not reference it).
-- `src/pages/EventsCalendar.tsx` — route `/events/calendar` registered, zero references anywhere.
-- `src/pages/AccountSettings.tsx` — imported in `App.tsx` but the `/account-settings` route is a `<Navigate to="/my-account" />` redirect, so the component is never rendered.
+- **Sorting only**: the "Top Rated" option in the Category page sort dropdown (`src/pages/CategoryPage.tsx`, line 444) will sort by a fair, sample-size-aware score instead of raw `google_rating`.
+- **Nothing visible changes** on cards, listing detail, reviews section, or homepage rails.
 
-If you delete these, also remove the matching `import` lines and `<Route>` entries in `src/App.tsx`.
+## How the score works (Bayesian average)
 
-### 2. Reachable only through `Navbar`, which itself looks orphaned
+```text
+score = (v / (v + m)) * R + (m / (v + m)) * C
+```
 
-`src/components/Navbar.tsx` is only imported by these four pages: `Auth.tsx`, `Directories.tsx`, `EventsCalendar.tsx`, `RestaurantQuiz.tsx`. It is NOT part of the global layout (the app uses `BottomNav` + per-page headers).
+- `R` = the listing's average rating
+- `v` = number of reviews backing that rating
+- `C` = global average rating across all listings (the "prior")
+- `m` = smoothing weight — how many reviews a listing needs before its own rating dominates the prior
 
-Inside `Navbar` the only internal links are `/directories`, `/quiz`, `/my-account`, `/auth`, `/my-notifications`. Searching the rest of the codebase:
-- `/directories` — only linked from `Navbar` itself.
-- `/quiz` — only linked from `Navbar` itself.
+Effect: listings with very few reviews get pulled toward the global average, so they can't leapfrog well-reviewed places. Once a listing has enough reviews, its real rating takes over.
 
-So `Directories` and `RestaurantQuiz` are effectively only reachable from a navbar that only shows up on their own pages. Worth confirming with you whether these features are still meant to exist:
-- `src/pages/Directories.tsx`
-- `src/pages/RestaurantQuiz.tsx` (+ `src/components/quiz/RestaurantQuiz.tsx`)
-- `src/components/Navbar.tsx` (can be deleted if both above go)
+### Combining Google + internal reviews
 
-### 3. Things to double-check before deleting
+Each listing has two rating sources:
+- Google: `google_rating` + `google_reviews_count`
+- Internal: average + count from the `reviews` table
 
-These exist and are linked, but you may have intentionally hidden them:
-- `/contact` → `ContactUs.tsx` — linked only from inside `HelpCentre`.
-- `/help-centre` → `HelpCentre.tsx` — linked from `GlobalMenu` and `MyAccount`.
-- `/feedback` → `Feedback.tsx` — linked only from `MyAccount`.
-- `/faqs` → `FAQs.tsx` — linked only from `HelpCentre`.
-- `/terms`, `/terms-of-use`, `/privacy-policy`, `/cookie-policy`, `/content-guidelines` — all reachable via `TermsPolicies`. Keep if you want legal pages live.
-- `/account-settings/info` → `AccountInfo.tsx` — linked from `MyAccount`, keep.
-- `/notification-preferences` → `Notifications.tsx` — linked from `MyAccount`/notifications, keep.
+We combine them into one `(R, v)` pair using a weighted average:
+- `v = google_reviews_count + internal_count`
+- `R = (google_rating * google_count + internal_avg * internal_count) / v`
 
-### 4. Suggested next step
+Then apply the Bayesian formula above.
 
-Tell me which of the groups above to remove and I'll do it in one pass (delete files, prune `src/App.tsx` imports/routes, and remove the related menu entries). My recommendation:
-- Delete everything in group 1 outright.
-- Decide on group 2 (Directories / Restaurant Quiz / Navbar) — if you don't use them, delete all three plus `Navbar.tsx`.
-- Leave group 3 as-is unless you specifically want to retire a page.
+### Constants
+
+- `m = 5` (low bar suited to a small-town directory)
+- `C = 4.3` (hardcoded, stable global prior — matches typical Google averages locally)
+
+Listings with zero reviews from both sources get score = `C`, so they sit in the middle rather than at the top or bottom.
+
+## Technical details
+
+1. Add a small helper `src/lib/ratingScore.ts` exporting `bayesianScore(listing, internalAvg, internalCount)`.
+2. In `CategoryPage.tsx`, fetch per-listing internal review aggregates once (single query: `select listing_id, rating from reviews where listing_id in (...)`), build a map, and use it in the `sortBy === "rating"` branch.
+3. No schema changes, no triggers, no migrations. Pure client-side sort tweak.
+4. The `ReviewSection` component and all displayed ratings are untouched.
+
+## Out of scope
+
+- Homepage "Top Rated" rails (if any exist) — can be migrated later if you want consistency.
+- Showing the Bayesian score anywhere in the UI.
+- Storing the score on the listing row.
