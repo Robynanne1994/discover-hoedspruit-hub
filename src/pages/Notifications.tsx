@@ -255,7 +255,7 @@ const Notifications = () => {
         };
         const updates: Partial<Record<BoolKey, boolean>> = {};
         for (const [catKey, boolKey] of Object.entries(catToBool) as [CatKey, BoolKey][]) {
-          if (loadedCats[catKey] !== null && loadedCats[catKey]!.length === 1 && b[boolKey]) {
+          if (loadedCats[catKey] !== null && loadedCats[catKey]!.length === 0 && b[boolKey]) {
             b[boolKey] = false;
             updates[boolKey] = false;
           }
