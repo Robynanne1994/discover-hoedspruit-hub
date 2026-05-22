@@ -6,12 +6,10 @@ import {
   List,
   Calendar,
   FolderOpen,
-  FileText,
   LogOut,
   Upload,
   Home,
   Tag,
-  
   Radio,
   Menu,
   ShieldCheck,
@@ -35,7 +33,6 @@ const navItems = [
   { label: "Specials", path: "/admin/specials", icon: Tag },
   
   { label: "Local Channels", path: "/admin/bush-telegraph", icon: Radio },
-  { label: "Site Content", path: "/admin/content", icon: FileText },
   { label: "Notifications", path: "/admin/notifications", icon: Bell },
   { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
