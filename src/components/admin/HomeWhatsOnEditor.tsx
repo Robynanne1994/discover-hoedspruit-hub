@@ -99,7 +99,7 @@ const HomeWhatsOnEditor = () => {
   const available = searchResults.filter((e) => !curatedIds.includes(e.id));
 
   return (
-    <div className="border border-border rounded-lg p-4 space-y-4">
+    <div className="border border-border rounded-lg p-4 space-y-4 border-slate-950">
       <div>
         <h3 className="font-bold text-lg">What's On (Featured Events)</h3>
         <p className="text-xs text-muted-foreground">
