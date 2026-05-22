@@ -1,48 +1,46 @@
-## Admin Reports Section
+## Goal
+Make the notification preference toggles (the items shown when a user drills into "New Listings", "Listing Updates", "New Specials", "New Events") editable from the admin backend instead of being hardcoded in `src/lib/notificationCategories.ts`.
 
-Add a new "Reports" area to the admin where you can generate and download CSV reports on-demand. Each report runs against the live database and downloads a `.csv` file you can open in Google Sheets/Numbers/Excel.
+## Approach
 
-### Navigation
-- Add a **Reports** item (FileBarChart icon) to the admin sidebar in `src/pages/admin/AdminLayout.tsx`, route `/admin/reports`.
-- Register the route in `src/App.tsx`.
+### 1. Database (new tables)
+Create two simple tables, plus seed them with the current hardcoded values:
 
-### New page: `src/pages/admin/AdminReports.tsx`
-A single page listing each report as a card with:
-- Title + short description of what it includes
-- A live count (e.g. "23 listings affected") fetched on demand
-- A **Download CSV** button
+- `notification_category_groups`
+  - `id` (uuid), `filter_type` (text: `events_new` | `listings_new` | `listings_updates` | `specials_new`), `label` (text), `sort_order` (int)
+- `notification_category_items`
+  - `id` (uuid), `group_id` (uuid fk → groups), `slug` (text, stable — saved in user prefs), `label` (text), `sort_order` (int)
 
-Reports included (each as its own card, downloads its own CSV):
+RLS:
+- Public SELECT (so the user-facing notifications page can read them).
+- Admin-only INSERT/UPDATE/DELETE via `has_role(auth.uid(), 'admin')`.
 
-1. **Listings — broken / missing images** — rows where `image_url` or `detail_image_url` is null/empty, OR where a HEAD request to the URL fails (non-2xx).
-2. **Events — broken / missing images** — same logic against `events.image_url`, `detail_image_url`, `homepage_image_url`.
-3. **Specials — broken / missing images** — same logic against `specials.image_url`, `detail_image_url`.
-4. **Listings — missing descriptions** — `description` or `long_description` null/empty.
-5. **Events — missing descriptions** — `events.description` null/empty (events only have one description field; will flag empty).
-6. **Specials — missing descriptions** — `specials.description` null/empty.
-7. **Listings — missing opening hours** — `opening_hours` null or `{}` / no days populated.
-8. **Listings — missing all contact details** — no `phone`, `whatsapp`, `email`, `website`, `additional_phones`, `additional_whatsapps`, `additional_emails`.
-9. **External (not-uploaded) images across listings / events / specials** — any image URL that does NOT start with the Supabase storage host (`<project>.supabase.co/storage/v1/object/public/`). One combined CSV with a `type` column (listing/event/special) + which field is external.
+Note: a single shared catalog (`listings_new`/`listings_updates`/`specials_new` all use the LISTING groups today). To keep it editable per-type without duplication confusion, I'll store one row per `filter_type` even if the labels overlap — admins can then customise specials vs listings separately if they want. Seed will copy the same listing list into all three listing-based types.
 
-### CSV format
-Every CSV includes:
-- `id`, `title`, `admin_edit_url` (deep link to the relevant admin edit page), plus the fields specific to that report (e.g. which image URL is broken, which contact fields are missing).
+### 2. Admin page
+New route `/admin/notification-categories` (link from AdminLayout sidebar).
 
-Generated client-side using a small `toCsv()` helper and `Blob` + `URL.createObjectURL` — no edge function needed.
+UI per filter type tab (Events, New Listings, Listing Updates, Specials):
+- List of groups with drag-handle reorder (or up/down buttons — simpler).
+- Inside each group, list of items with label + slug + reorder + delete.
+- "Add group" and "Add item" buttons.
+- Edit label inline; slug auto-generated from label on create but editable (warning shown that changing slug breaks saved preferences).
+- Save button persists changes.
 
-### Broken-image detection
-For reports 1–3, the "missing" check is instant (SQL). The "broken" check (URL returns error / 404) is done client-side by issuing parallel `fetch(url, { method: 'HEAD', mode: 'no-cors' })` with a concurrency limit (e.g. 8 at a time) and a 5s timeout. URLs that fail or time out are flagged `broken`. A progress bar shows scan status while running, since this can take a while on hundreds of rows.
+### 3. User-facing page
+`NotificationCategories.tsx` currently imports static `FILTER_TYPE_META` / `LISTING_CATEGORY_GROUPS` / `EVENT_CATEGORY_GROUPS`. Replace with a `useQuery` that fetches groups + items for the active `filter_type` from the new tables. Keep the static `FILTER_TYPE_META` for page header copy (eyebrow/title/subline/column) — only the groups become dynamic.
 
-### Technical notes
-- New file: `src/pages/admin/AdminReports.tsx`
-- New helper: `src/lib/reports/csv.ts` (CSV escaping + download trigger)
-- New helper: `src/lib/reports/checkImage.ts` (concurrent HEAD checker with timeout)
-- No DB migrations — all reports are reads against existing tables.
-- Future reports can be added by appending a new card config to the page.
+The `count` field (grey number next to each toggle today, e.g. "Restaurants & Cafés 52") will be dropped from the editor since it's category-listing counts that don't really match these slugs — or I can keep it as an optional editable number. **Question for you below.**
 
-### Out of scope (for now)
-- Scheduled / emailed reports
-- Saving report history
-- Excel `.xlsx` (CSV opens cleanly in Numbers, Sheets, Excel)
+### 4. Migration of existing user data
+No change needed — user preferences are stored by slug in `notification_preferences.*_categories` arrays. As long as seeded slugs match the current hardcoded ones, existing saved selections keep working.
 
-Ready to build when you approve.
+## Technical details
+- Files added: `supabase/migrations/<ts>_notification_categories.sql`, `src/pages/admin/AdminNotificationCategories.tsx`, `src/hooks/useNotificationCategories.ts`.
+- Files changed: `src/App.tsx` (route), `src/pages/admin/AdminLayout.tsx` (nav link), `src/pages/NotificationCategories.tsx` (replace static import with query), `src/lib/notificationCategories.ts` (keep `FILTER_TYPE_META` headers, remove the group arrays or mark them as fallback only).
+
+## One question before I build
+The grey number (e.g. "Restaurants & Cafés **52**") next to each toggle — do you want:
+1. To **remove** it (cleanest editor, less to maintain), or
+2. To keep it as a **manually editable number** in the admin, or
+3. To have it **auto-calculate** from how many real listings/events match that slug?
