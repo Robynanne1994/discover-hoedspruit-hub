@@ -8,6 +8,7 @@ import TitleCaseH2 from "@/components/TitleCaseH2";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
 import loadingIcon from "@/assets/loading-icon.svg";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
@@ -86,6 +87,7 @@ const queryClient = new QueryClient();
 
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
+  const { isGuest } = useGuestAuth();
   const location = useLocation();
   // The Business Portal has its own auth flow and must be reachable without
   // signing in to the consumer app first.
@@ -97,7 +99,9 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
       </div>
     );
   }
-  if (!user) return <Welcome />;
+  // Welcome route is always reachable so guests can return to sign up/in.
+  if (location.pathname === "/welcome") return <>{children}</>;
+  if (!user && !isGuest) return <Welcome />;
   return <>{children}</>;
 };
 
