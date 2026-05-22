@@ -124,6 +124,7 @@ const App = () => (
           <GuestAuthProvider>
             <AuthGate>
               <Routes>
+                <Route path="/" element={<Index />} />
                 <Route path="/welcome" element={<Welcome />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<SearchPage />} />
@@ -203,12 +204,13 @@ const App = () => (
                 <Route path="/business/billing" element={<BusinessBilling />} />
               </Route>
               <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ScrollToTop />
-            <TitleCaseH1 />
-            <TitleCaseH2 />
-            <ConditionalBottomNav />
-          </AuthGate>
+              </Routes>
+              <ScrollToTop />
+              <TitleCaseH1 />
+              <TitleCaseH2 />
+              <ConditionalBottomNav />
+            </AuthGate>
+          </GuestAuthProvider>
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
