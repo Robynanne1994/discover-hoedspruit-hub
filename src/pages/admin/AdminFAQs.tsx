@@ -183,13 +183,11 @@ const AdminFAQs = () => {
   };
 
   const swap = async (a: FAQRow, b: FAQRow) => {
-    const { error } = await supabase
-      .from("faqs")
-      .upsert([
-        { id: a.id, sort_order: b.sort_order },
-        { id: b.id, sort_order: a.sort_order },
-      ]);
-    if (error) return toast.error(error.message);
+    const [r1, r2] = await Promise.all([
+      supabase.from("faqs").update({ sort_order: b.sort_order }).eq("id", a.id),
+      supabase.from("faqs").update({ sort_order: a.sort_order }).eq("id", b.id),
+    ]);
+    if (r1.error || r2.error) return toast.error((r1.error || r2.error)!.message);
     load();
   };
 
