@@ -234,7 +234,7 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
       <SectionTitleEditor sectionKey={sectionKey} defaultLabel={label} />
 
       <div>
-        <p className="text-sm text-muted-foreground mb-2 text-slate-100">
+        <p className="text-sm text-muted-foreground mb-2">
           Selected ({curatedIds.length}/4) — {curatedIds.length === 0 ? "showing auto-picks" : "showing curated picks"}
         </p>
         <div className="space-y-2">

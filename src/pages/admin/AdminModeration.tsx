@@ -217,7 +217,7 @@ const AdminModeration = () => {
   return (
     <div className="text-zinc-950">
       <h1 className="text-2xl font-bold mb-1">Moderation queue</h1>
-      <p className="text-sm text-muted-foreground mb-6 text-slate-100">Review pending submissions from business owners.</p>
+      <p className="text-sm text-muted-foreground mb-6">Review pending submissions from business owners.</p>
 
       <div className="flex gap-2 flex-wrap mb-6">
         {TABS.map((t) => (
