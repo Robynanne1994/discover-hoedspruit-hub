@@ -539,6 +539,11 @@ const MyProfile = () => {
       >
         {(["listings", "deals", "events", "resources"] as Tab[]).map((t) => {
           const active = tab === t;
+          const tabCount =
+            t === "listings" ? saved?.length ?? 0
+            : t === "deals" ? savedSpecials?.length ?? 0
+            : t === "events" ? savedEvents?.length ?? 0
+            : savedResources?.length ?? 0;
           return (
             <button
               key={t}
@@ -559,7 +564,7 @@ const MyProfile = () => {
                 textTransform: "capitalize",
               }}
             >
-              {t}
+              {t} ({tabCount})
               <span
                 style={{
                   position: "absolute",
