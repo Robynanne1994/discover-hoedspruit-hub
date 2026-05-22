@@ -7,6 +7,7 @@ import {
   Mail, Globe, ArrowUpRight, MapPin, Navigation,
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
+  Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory } from "@/lib/categoryFields";
@@ -15,17 +16,8 @@ import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
 import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
-import kidsFamilyIconSrc from "@/assets/kids-family-icon.svg";
-import vibeIconSrc from "@/assets/vibe-icon.svg";
-import seatingIconSrc from "@/assets/seating-icon.svg";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
-import serviceIconSrc from "@/assets/service-icon.svg";
-import amenitiesIconSrc from "@/assets/amenities-icon.svg";
-import accessibilityIconSrc from "@/assets/accessibility-icon.svg";
-import pricingIconSrc from "@/assets/pricing-icon.svg";
-import cuisineIconSrc from "@/assets/cuisine-icon.svg";
-import mealsIconSrc from "@/assets/meals-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 
@@ -52,14 +44,6 @@ const C = {
   accent: "#B8916A",
 };
 
-const iconImg = (src: string, size = 18): React.CSSProperties => ({
-  width: size, height: size, objectFit: "contain", display: "block",
-  filter: "brightness(0) saturate(100%) invert(36%) sepia(13%) saturate(1024%) hue-rotate(2deg) brightness(94%) contrast(86%)",
-});
-
-const Img = ({ src, size = 18 }: { src: string; size?: number }) => (
-  <img src={src} alt="" style={iconImg(src, size)} />
-);
 
 const pressScale = (s = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${s})`),
@@ -331,7 +315,7 @@ const ListingDetail = () => {
 
   // ----- Detail sections (flattened from old accordion logic) -----
   type DField = { label: string; on: boolean | string };
-  type DSection = { key: string; title: string; fields: DField[]; iconSrc?: string; iconComp?: any };
+  type DSection = { key: string; title: string; fields: DField[]; iconComp?: any };
   const sections: DSection[] = [];
   const filterDefined = (arr: { label: string; value: boolean | string | null }[]): DField[] =>
     arr.filter(f => f.value === true || f.value === false || typeof f.value === "string")
@@ -339,7 +323,7 @@ const ListingDetail = () => {
 
   if (l.price_level) {
     const labels: Record<number, string> = { 1: "Budget-friendly", 2: "Mid-range", 3: "Upscale", 4: "Fine dining" };
-    sections.push({ key: "pricing", title: "Pricing", iconSrc: pricingIconSrc,
+    sections.push({ key: "pricing", title: "Pricing", iconComp: Tag,
       fields: [{ label: `${labels[l.price_level] || ""} (${"R".repeat(l.price_level)})`, on: true }] });
   }
 
@@ -353,7 +337,7 @@ const ListingDetail = () => {
     }).filter((s: string) => !/reservation/i.test(s));
     const svc: DField[] = known.map(k => ({ label: k, on: norm.some((s: string) => s.toLowerCase() === k.toLowerCase()) }));
     norm.forEach((s: string) => { if (!known.some(k => k.toLowerCase() === s.toLowerCase())) svc.push({ label: s, on: true }); });
-    if (svc.length) sections.push({ key: "service", title: "Service options", iconSrc: serviceIconSrc, fields: svc });
+    if (svc.length) sections.push({ key: "service", title: "Service options", iconComp: ClipboardList, fields: svc });
 
     const kids = filterDefined([
       { label: "Good for kids", value: l.good_for_kids },
@@ -362,7 +346,7 @@ const ListingDetail = () => {
       { label: "Nappy changing station", value: l.nappy_changing_station },
       { label: "Kids playground", value: l.kids_playground },
     ]);
-    if (kids.length) sections.push({ key: "kids", title: "Kids & family", iconSrc: kidsFamilyIconSrc, fields: kids });
+    if (kids.length) sections.push({ key: "kids", title: "Kids & family", iconComp: Baby, fields: kids });
 
     const access = filterDefined([
       { label: "Wheelchair friendly", value: l.wheelchair_friendly },
@@ -371,7 +355,7 @@ const ListingDetail = () => {
       { label: "Accessible toilet", value: l.wheelchair_toilet },
       { label: "Accessible parking", value: l.wheelchair_car_park },
     ]);
-    if (access.length) sections.push({ key: "accessibility", title: "Accessibility", iconSrc: accessibilityIconSrc, fields: access });
+    if (access.length) sections.push({ key: "accessibility", title: "Accessibility", iconComp: Accessibility, fields: access });
 
     const amen = filterDefined([
       { label: "Toilets", value: l.has_toilet },
@@ -379,12 +363,12 @@ const ListingDetail = () => {
       { label: "Smoking section", value: l.smoking_allowed },
       { label: "Pet friendly", value: l.pets_allowed },
     ]);
-    if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconSrc: amenitiesIconSrc, fields: amen });
+    if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconComp: Home, fields: amen });
 
-    if (l.seating?.length) sections.push({ key: "seating", title: "Seating", iconSrc: seatingIconSrc, fields: l.seating.map((s: string) => ({ label: toTitleCase(s.replace(/ seating$/i, "")), on: true })) });
-    if (l.meal?.length) sections.push({ key: "meals", title: "Meals served", iconSrc: mealsIconSrc, fields: l.meal.map((m: string) => ({ label: toTitleCase(m), on: true })) });
-    if (l.cuisine?.length) sections.push({ key: "cuisine", title: "Cuisine", iconSrc: cuisineIconSrc, fields: l.cuisine.map((c: string) => ({ label: toTitleCase(c), on: true })) });
-    if (l.vibe?.length) sections.push({ key: "vibe", title: "Vibe", iconSrc: vibeIconSrc, fields: l.vibe.map((v: string) => ({ label: toTitleCase(v), on: true })) });
+    if (l.seating?.length) sections.push({ key: "seating", title: "Seating", iconComp: Sofa, fields: l.seating.map((s: string) => ({ label: toTitleCase(s.replace(/ seating$/i, "")), on: true })) });
+    if (l.meal?.length) sections.push({ key: "meals", title: "Meals served", iconComp: Utensils, fields: l.meal.map((m: string) => ({ label: toTitleCase(m), on: true })) });
+    if (l.cuisine?.length) sections.push({ key: "cuisine", title: "Cuisine", iconComp: Soup, fields: l.cuisine.map((c: string) => ({ label: toTitleCase(c), on: true })) });
+    if (l.vibe?.length) sections.push({ key: "vibe", title: "Vibe", iconComp: Music, fields: l.vibe.map((v: string) => ({ label: toTitleCase(v), on: true })) });
   }
 
   if (isListingAccommodation) {
@@ -411,7 +395,7 @@ const ListingDetail = () => {
       { label: "Aircon", value: l.has_aircon }, { label: "Laundry service", value: l.has_laundry }, { label: "Wi-Fi", value: l.has_wifi_accom },
     ]);
     if (rooms.length) sections.push({ key: "accom-rooms", title: "Rooms", iconComp: BedDouble, fields: rooms });
-    if (l.child_friendly === true) sections.push({ key: "accom-children", title: "Children", iconSrc: kidsFamilyIconSrc, fields: [{ label: "Child friendly", on: true }] });
+    if (l.child_friendly === true) sections.push({ key: "accom-children", title: "Children", iconComp: Baby, fields: [{ label: "Child friendly", on: true }] });
     if (l.pets_allowed === true) sections.push({ key: "accom-pets", title: "Pets", iconComp: PawPrint, fields: [{ label: "Pet friendly", on: true }] });
   }
 
@@ -703,7 +687,7 @@ const ListingDetail = () => {
           {sections.map((s) => (
             <div key={s.key} style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                {s.iconSrc ? <Img src={s.iconSrc} size={18} /> : s.iconComp ? <s.iconComp size={18} strokeWidth={1.5} color={C.primary} /> : null}
+                {s.iconComp && <s.iconComp size={18} strokeWidth={1.5} color={C.primary} />}
                 <h3 style={{
                   margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
                   letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading,
