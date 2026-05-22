@@ -44,14 +44,6 @@ const C = {
   accent: "#B8916A",
 };
 
-const iconImg = (src: string, size = 18): React.CSSProperties => ({
-  width: size, height: size, objectFit: "contain", display: "block",
-  filter: "brightness(0) saturate(100%) invert(36%) sepia(13%) saturate(1024%) hue-rotate(2deg) brightness(94%) contrast(86%)",
-});
-
-const Img = ({ src, size = 18 }: { src: string; size?: number }) => (
-  <img src={src} alt="" style={iconImg(src, size)} />
-);
 
 const pressScale = (s = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${s})`),
@@ -695,7 +687,7 @@ const ListingDetail = () => {
           {sections.map((s) => (
             <div key={s.key} style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-                {s.iconSrc ? <Img src={s.iconSrc} size={18} /> : s.iconComp ? <s.iconComp size={18} strokeWidth={1.5} color={C.primary} /> : null}
+                {s.iconComp && <s.iconComp size={18} strokeWidth={1.5} color={C.primary} />}
                 <h3 style={{
                   margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
                   letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading,
