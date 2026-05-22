@@ -602,10 +602,8 @@ const MyProfile = () => {
                   "listing",
                   `/listing/${it.id}`,
                   <>
-                    {it.google_rating && <span>★ {Number(it.google_rating).toFixed(1).replace(/\.0$/, "")}</span>}
-                    {it.google_rating && it.location && <span> · </span>}
                     {it.location && <span>{it.location}</span>}
-                  </>,
+                  </>
                 ),
               )}
             </div>
