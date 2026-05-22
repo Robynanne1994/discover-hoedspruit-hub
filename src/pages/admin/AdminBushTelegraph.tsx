@@ -420,8 +420,8 @@ const AdminBushTelegraph = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">Local Channels</h1>
-          <p className="text-white/70 text-sm">Manage off-app resources, groups and feeds.</p>
+          <h1 className="text-2xl font-bold text-foreground">Local Channels</h1>
+          <p className="text-muted-foreground text-sm">Manage off-app resources, groups and feeds.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" size="sm" onClick={downloadExport} className="gap-2 opacity-100 bg-gray-400 text-slate-50 border-slate-950">

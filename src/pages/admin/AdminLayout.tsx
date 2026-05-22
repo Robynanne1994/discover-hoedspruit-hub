@@ -136,7 +136,7 @@ const AdminLayout = () => {
           </span>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8 overflow-auto min-w-0 text-white [&_h1]:text-white [&_h2]:text-white [&_h3]:text-white [&_.bg-card]:text-zinc-950 [&_.bg-card_h1]:text-zinc-950 [&_.bg-card_h2]:text-zinc-950 [&_.bg-card_h3]:text-zinc-950 [&_.bg-muted]:text-zinc-950 [&_.bg-background]:text-zinc-950 [&_.text-muted-foreground]:text-slate-100 [&_.bg-card_.text-muted-foreground]:text-muted-foreground [&_.bg-muted_.text-muted-foreground]:text-muted-foreground [&_.bg-background_.text-muted-foreground]:text-muted-foreground" style={{ overscrollBehaviorX: "contain", background: "#5C6446" }}>
+        <main className="flex-1 p-4 lg:p-8 overflow-auto min-w-0" style={{ overscrollBehaviorX: "contain", background: "#ebebeb" }}>
           <Outlet />
         </main>
       </div>
