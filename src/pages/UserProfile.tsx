@@ -75,12 +75,8 @@ const UserProfile = () => {
   const { data: profile, isLoading } = useQuery({
     queryKey: ["user-profile", id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", id!)
-        .single();
-      return data;
+      const { data } = await supabase.rpc("get_public_profiles", { _ids: [id!] });
+      return (data && data[0]) || null;
     },
     enabled: !!id,
   });
