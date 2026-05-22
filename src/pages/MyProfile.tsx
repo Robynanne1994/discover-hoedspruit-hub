@@ -564,16 +564,18 @@ const MyProfile = () => {
                 textTransform: "capitalize",
               }}
             >
-              {t}{' '}
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 400,
-                  color: SUBTLE,
-                }}
-              >
-                ({tabCount})
-              </span>
+              {t}
+              {active && (
+                <span
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 400,
+                    color: SUBTLE,
+                  }}
+                >
+                  {' '}({tabCount})
+                </span>
+              )}
               <span
                 style={{
                   position: "absolute",
