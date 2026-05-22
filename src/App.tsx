@@ -15,6 +15,7 @@ import Welcome from "./pages/Welcome.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
+import AdminNotifications from "./pages/admin/AdminNotifications.tsx";
 import AdminListings from "./pages/admin/AdminListings.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminContent from "./pages/admin/AdminContent.tsx";
@@ -168,6 +169,7 @@ const App = () => (
                 
                 <Route path="bush-telegraph" element={<AdminBushTelegraph />} />
                 <Route path="content" element={<AdminContent />} />
+                <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="import" element={<AdminImport />} />
                 <Route path="moderation" element={<AdminModeration />} />
                 <Route path="users" element={<AdminUsers />} />

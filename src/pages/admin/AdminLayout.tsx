@@ -18,6 +18,7 @@ import {
   Users,
   Inbox,
   FileBarChart,
+  Bell,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -34,6 +35,7 @@ const navItems = [
   
   { label: "Local Channels", path: "/admin/bush-telegraph", icon: Radio },
   { label: "Site Content", path: "/admin/content", icon: FileText },
+  { label: "Notifications", path: "/admin/notifications", icon: Bell },
   { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
