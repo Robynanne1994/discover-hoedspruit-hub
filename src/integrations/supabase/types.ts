@@ -1802,6 +1802,26 @@ export type Database = {
     }
     Functions: {
       claim_business_owner_role: { Args: never; Returns: undefined }
+      get_been_here_count: { Args: { _listing_id: string }; Returns: number }
+      get_public_profiles: {
+        Args: { _ids: string[] }
+        Returns: {
+          activity_private: boolean
+          avatar_url: string
+          bio: string
+          display_name: string
+          id: string
+          location: string
+          username: string
+        }[]
+      }
+      get_user_been_here: {
+        Args: { _user_id: string }
+        Returns: {
+          created_at: string
+          listing_id: string
+        }[]
+      }
       get_user_saved_count: { Args: { _user_id: string }; Returns: number }
       has_role: {
         Args: {
@@ -1809,6 +1829,18 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      search_public_profiles: {
+        Args: { _limit?: number; _term: string }
+        Returns: {
+          activity_private: boolean
+          avatar_url: string
+          bio: string
+          display_name: string
+          id: string
+          location: string
+          username: string
+        }[]
       }
     }
     Enums: {

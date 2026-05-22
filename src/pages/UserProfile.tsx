@@ -75,12 +75,8 @@ const UserProfile = () => {
   const { data: profile, isLoading } = useQuery({
     queryKey: ["user-profile", id],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", id!)
-        .single();
-      return data;
+      const { data } = await supabase.rpc("get_public_profiles", { _ids: [id!] });
+      return (data && data[0]) || null;
     },
     enabled: !!id,
   });
@@ -194,20 +190,16 @@ const UserProfile = () => {
   const { data: beenTo } = useQuery({
     queryKey: ["user-been-to", id],
     queryFn: async () => {
-      const { data: rows } = await supabase
-        .from("been_here")
-        .select("listing_id, created_at")
-        .eq("user_id", id!)
-        .order("created_at", { ascending: false })
-        .limit(20);
-      if (!rows?.length) return [];
-      const ids = rows.map((r) => r.listing_id);
+      const { data: rows } = await supabase.rpc("get_user_been_here", { _user_id: id! });
+      const limited = (rows || []).slice(0, 20);
+      if (!limited.length) return [];
+      const ids = limited.map((r: any) => r.listing_id);
       const { data: listings } = await supabase
         .from("listings")
         .select("id, title, image_url, location, google_rating")
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
-      return rows.map((r) => map[r.listing_id]).filter(Boolean);
+      return limited.map((r: any) => map[r.listing_id]).filter(Boolean);
     },
     enabled: !!id,
   });
@@ -224,12 +216,7 @@ const UserProfile = () => {
           .eq("user_id", id!)
           .order("created_at", { ascending: false })
           .limit(200),
-        supabase
-          .from("been_here")
-          .select("listing_id, created_at")
-          .eq("user_id", id!)
-          .order("created_at", { ascending: false })
-          .limit(200),
+        supabase.rpc("get_user_been_here", { _user_id: id! }),
       ]);
       const listingIds = new Set<string>();
       const eventIds = new Set<string>();

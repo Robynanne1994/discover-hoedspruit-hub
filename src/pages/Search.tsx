@@ -509,16 +509,13 @@ const UsersResults = ({
             .eq("follower_id", currentUserId);
           followingIds = (f || []).map((r: any) => r.following_id);
         }
-        let q = supabase
-          .from("profiles")
-          .select("id, display_name, avatar_url, location, username")
-          .order("created_at", { ascending: false })
-          .limit(50);
-        if (term) q = q.or(`display_name.ilike.%${term}%,username.ilike.%${term}%`);
-        const { data } = await q;
+        const { data } = await supabase.rpc("search_public_profiles", {
+          _term: term || "",
+          _limit: 50,
+        });
         const excluded = new Set<string>(followingIds);
         if (currentUserId) excluded.add(currentUserId);
-        return (data || []).filter((p) => !excluded.has(p.id));
+        return (data || []).filter((p: any) => !excluded.has(p.id));
       }
       if (!currentUserId) return [];
       const col = sub === "followers" ? "follower_id" : "following_id";
@@ -526,13 +523,14 @@ const UsersResults = ({
       const { data: links } = await supabase.from("follows").select(col).eq(matchCol, currentUserId);
       const ids = (links || []).map((d: any) => d[col]);
       if (!ids.length) return [];
-      let q = supabase
-        .from("profiles")
-        .select("id, display_name, avatar_url, location, username")
-        .in("id", ids);
-      if (term) q = q.or(`display_name.ilike.%${term}%,username.ilike.%${term}%`);
-      const { data } = await q;
-      return data || [];
+      const { data } = await supabase.rpc("get_public_profiles", { _ids: ids });
+      const filtered = term
+        ? (data || []).filter((p: any) =>
+            (p.display_name || "").toLowerCase().includes(term.toLowerCase()) ||
+            (p.username || "").toLowerCase().includes(term.toLowerCase()),
+          )
+        : data || [];
+      return filtered;
     },
     enabled: !!currentUserId || sub === "suggested",
   });

@@ -89,9 +89,7 @@ export const useFollowersList = (userId: string | undefined) => {
       if (!data?.length) return [];
       const ids = data.map((d) => d.follower_id);
       const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, display_name, avatar_url, location, username")
-        .in("id", ids);
+        .rpc("get_public_profiles", { _ids: ids });
       return profiles || [];
     },
     enabled: !!userId,
@@ -109,9 +107,7 @@ export const useFollowingList = (userId: string | undefined) => {
       if (!data?.length) return [];
       const ids = data.map((d) => d.following_id);
       const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, display_name, avatar_url, location, username")
-        .in("id", ids);
+        .rpc("get_public_profiles", { _ids: ids });
       return profiles || [];
     },
     enabled: !!userId,
