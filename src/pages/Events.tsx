@@ -409,11 +409,11 @@ const EventCard = ({ event }: { event: any }) => {
           <span
             style={{
               fontFamily: SANS,
-              fontSize: 11,
+              fontSize: 9,
               color: C.body,
               background: C.tag,
               borderRadius: 999,
-              padding: "4px 10px",
+              padding: "3px 8px",
               whiteSpace: "nowrap",
             }}
           >
