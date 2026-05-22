@@ -487,38 +487,42 @@ const MyProfile = () => {
             }}
           >
             {[
-              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#" },
-              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#" },
-              { label: "SAVED", value: savedCount ?? 0, to: "/saved" },
-            ].map((s, i) => (
-              <Link
-                key={s.label}
-                to={s.to}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textDecoration: "none",
-                  borderLeft: i === 0 ? "none" : `1px solid rgba(26,26,26,0.12)`,
-                }}
-              >
-                <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 1 }}>
-                  {fmtCount(s.value)}
-                </span>
-                <span
-                  style={{
-                    fontFamily: SANS,
-                    fontSize: 10.5,
-                    fontWeight: 600,
-                    letterSpacing: "0.12em",
-                    color: SUBTLE,
-                    marginTop: 6,
-                  }}
-                >
-                  {s.label}
-                </span>
-              </Link>
-            ))}
+              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#", clickable: true },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#", clickable: true },
+              { label: "SAVED", value: savedCount ?? 0, to: "#", clickable: false },
+            ].map((s, i) => {
+              const inner = (
+                <>
+                  <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 1 }}>
+                    {fmtCount(s.value)}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 10.5,
+                      fontWeight: 600,
+                      letterSpacing: "0.12em",
+                      color: SUBTLE,
+                      marginTop: 6,
+                    }}
+                  >
+                    {s.label}
+                  </span>
+                </>
+              );
+              const sharedStyle: React.CSSProperties = {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textDecoration: "none",
+                borderLeft: i === 0 ? "none" : `1px solid rgba(26,26,26,0.12)`,
+              };
+              return s.clickable ? (
+                <Link key={s.label} to={s.to} style={sharedStyle}>{inner}</Link>
+              ) : (
+                <div key={s.label} style={sharedStyle}>{inner}</div>
+              );
+            })}
           </div>
         </section>
       </div>
