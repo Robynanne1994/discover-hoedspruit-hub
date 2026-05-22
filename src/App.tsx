@@ -169,6 +169,7 @@ const App = () => (
                 
                 <Route path="bush-telegraph" element={<AdminBushTelegraph />} />
                 <Route path="content" element={<AdminContent />} />
+                <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="import" element={<AdminImport />} />
                 <Route path="moderation" element={<AdminModeration />} />
                 <Route path="users" element={<AdminUsers />} />
