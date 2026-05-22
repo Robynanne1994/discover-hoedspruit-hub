@@ -1,6 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useGuestAuth } from "@/hooks/useGuestAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -9,8 +10,11 @@ import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 
 const Welcome = () => {
-  const [mode, setMode] = useState<"welcome" | "signin" | "signup">("welcome");
+  const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
+  const initialMode = location.state?.mode ?? "welcome";
+  const [mode, setMode] = useState<"welcome" | "signin" | "signup">(initialMode);
   const navigate = useNavigate();
+  const { enterGuest } = useGuestAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +22,10 @@ const Welcome = () => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
+
+  useEffect(() => {
+    if (location.state?.mode) setMode(location.state.mode);
+  }, [location.state?.mode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,7 +122,10 @@ const Welcome = () => {
           </Button>
 
           <Button
-            onClick={() => navigate("/")}
+            onClick={() => {
+              enterGuest();
+              navigate("/");
+            }}
             variant="outline"
             className="w-full mt-3"
             style={{

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Star, Trash2 } from "lucide-react";
@@ -14,7 +14,7 @@ interface ReviewSectionProps {
 
 const ReviewSection = ({ listingId }: ReviewSectionProps) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const requireAuth = useRequireAuth();
   const queryClient = useQueryClient();
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -104,9 +104,14 @@ const ReviewSection = ({ listingId }: ReviewSectionProps) => {
       <h2 className="font-sans text-2xl font-bold text-foreground mb-4">Reviews</h2>
 
       {/* Write review form */}
-      {user && !existingReview ? (
+      {!existingReview ? (
         <form
-          onSubmit={(e) => { e.preventDefault(); if (rating === 0) { toast.error("Please select a rating"); return; } submitReview.mutate(); }}
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (!requireAuth("leave a review")) return;
+            if (rating === 0) { toast.error("Please select a rating"); return; }
+            submitReview.mutate();
+          }}
           className="bg-card border border-border rounded-xl p-5 mb-6 space-y-4"
         >
           <p className="font-medium text-foreground text-sm">Leave a review</p>
@@ -115,7 +120,10 @@ const ReviewSection = ({ listingId }: ReviewSectionProps) => {
               <button
                 key={s}
                 type="button"
-                onClick={() => setRating(s)}
+                onClick={() => {
+                  if (!requireAuth("leave a review")) return;
+                  setRating(s);
+                }}
                 onMouseEnter={() => setHoverRating(s)}
                 onMouseLeave={() => setHoverRating(0)}
                 className="p-0.5"
@@ -128,17 +136,13 @@ const ReviewSection = ({ listingId }: ReviewSectionProps) => {
             placeholder="Share your experience (optional)"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
+            onFocus={() => requireAuth("leave a review")}
             rows={3}
           />
           <Button type="submit" size="sm" disabled={submitReview.isPending}>
             Submit Review
           </Button>
         </form>
-      ) : !user ? (
-        <div className="bg-card border border-border rounded-xl p-5 mb-6 text-center">
-          <p className="text-muted-foreground text-sm mb-3">Sign in to leave a review</p>
-          <Button size="sm" variant="outline" onClick={() => navigate("/auth")}>Sign In</Button>
-        </div>
       ) : null}
 
       {/* Reviews list */}

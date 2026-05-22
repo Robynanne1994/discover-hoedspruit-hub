@@ -26,6 +26,7 @@ import {
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 import ReportUserDialog from "@/components/ReportUserDialog";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 
 const PAGE_BG = "#5C6446";
 const CREAM = "#EEE8DA";
@@ -66,6 +67,7 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
 const UserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
+  const requireAuth = useRequireAuth();
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -915,6 +917,7 @@ const UserProfile = () => {
                 label: "Report User",
                 onClick: () => {
                   setMenuOpen(false);
+                  if (!requireAuth("report users")) return;
                   setReportOpen(true);
                 },
               },
@@ -922,6 +925,7 @@ const UserProfile = () => {
                 label: "Block User",
                 onClick: () => {
                   setMenuOpen(false);
+                  if (!requireAuth("block users")) return;
                   toast("User blocked");
                 },
               },
