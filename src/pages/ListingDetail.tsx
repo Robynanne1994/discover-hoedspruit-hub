@@ -695,6 +695,7 @@ const ListingDetail = () => {
 
   const renderDetails = () => (
     <div style={{ padding: "20px" }}>
+      <h2 style={headStyle}>Details</h2>
       {sections.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
       ) : (
@@ -719,7 +720,7 @@ const ListingDetail = () => {
                         {on
                           ? <Check size={16} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
                           : <XIcon size={16} strokeWidth={2} color={C.muted} style={{ flexShrink: 0 }} />}
-                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4 }}>
+                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4, textTransform: "capitalize" }}>
                           {f.label}
                         </span>
                       </div>
