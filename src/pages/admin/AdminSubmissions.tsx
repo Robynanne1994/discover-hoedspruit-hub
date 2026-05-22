@@ -40,6 +40,24 @@ type AdvertiseEnquiry = Contact & {
   parsed: { business: string; about: string };
 };
 
+type FeedbackProfile = { display_name: string | null; email: string | null };
+
+type ViewingSubmission =
+  | { kind: "contact"; data: Contact }
+  | { kind: "resource"; data: ResourceSuggestion }
+  | { kind: "advertise"; data: AdvertiseEnquiry }
+  | { kind: "feedback"; data: Feedback & { _profile?: FeedbackProfile } };
+
+type ContactSubmissionsAdminClient = {
+  from: (table: "contact_submissions") => {
+    update: (values: { is_read: boolean }) => {
+      eq: (column: "id", value: string) => Promise<{ error: Error | null }>;
+    };
+  };
+};
+
+const contactSubmissionsClient = supabase as unknown as ContactSubmissionsAdminClient;
+
 const LC_TAG = "[Local Channels suggestion]";
 const AD_TAG = "[Advertising Enquiry]";
 
@@ -69,7 +87,7 @@ function parseAdvertiseEnquiry(c: Contact): AdvertiseEnquiry | null {
 
 const AdminSubmissions = () => {
   const qc = useQueryClient();
-  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource" | "advertise"; data: any } | null>(null);
+  const [viewing, setViewing] = useState<ViewingSubmission | null>(null);
 
   const contactsQ = useQuery({
     queryKey: ["admin-contact-submissions"],
