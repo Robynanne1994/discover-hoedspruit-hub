@@ -31,14 +31,25 @@ const AdminDashboard = () => {
   
   const resources = useCount("resources", "bush_telegraph_resources");
   const businesses = useCount("businesses", "business_accounts");
-  const contacts = useCount("contacts", "contact_submissions");
+  const contacts = useQuery({
+    queryKey: ["admin-count-contact-submissions-unread"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("contact_submissions" as any)
+        .select("*", { count: "exact", head: true })
+        .eq("is_read", false);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
   const feedback = useQuery({
     queryKey: ["admin-count-feedback-unread"],
     queryFn: async () => {
-      const { count } = await supabase
+      const { count, error } = await supabase
         .from("feedback")
         .select("*", { count: "exact", head: true })
         .eq("is_read", false);
+      if (error) throw error;
       return count ?? 0;
     },
   });
