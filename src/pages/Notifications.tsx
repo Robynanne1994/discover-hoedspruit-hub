@@ -277,21 +277,39 @@ const Notifications = () => {
     async (key: BoolKey) => {
       if (!user) return;
       const next = !bools[key];
-      const prev = bools;
+      const prevBools = bools;
+      const prevCats = cats;
+
+      // Find if this bool is linked to a category column
+      const linkedRow = SECTIONS.flatMap((s) => s.rows).find((r) => r.key === key);
+      const filterCol = linkedRow?.filterCol;
+
+      const update: Record<string, any> = { [key]: next };
+      const nextCats = { ...cats };
+      if (filterCol) {
+        // Toggle on => select all (null sentinel). Toggle off => clear (empty array).
+        nextCats[filterCol] = next ? null : [];
+        update[filterCol] = next ? null : [];
+      }
+
       setBools((b) => ({ ...b, [key]: next }));
+      if (filterCol) setCats(nextCats);
+
       const { error } = await supabase
         .from("notification_preferences")
-        .update({ [key]: next } as any)
+        .update(update as any)
         .eq("user_id", user.id);
       if (error) {
-        setBools(prev);
+        setBools(prevBools);
+        setCats(prevCats);
         toast.error("Could not save preference");
       } else {
         toast("Saved.", { duration: 1500 });
       }
     },
-    [user, bools],
+    [user, bools, cats],
   );
+
 
   const masterOn = bools.push_enabled;
 
