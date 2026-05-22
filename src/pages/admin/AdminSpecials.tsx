@@ -422,7 +422,7 @@ const AdminSpecials = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-slate-950 truncate">{s.title}</span>
-                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold">{s.deal_label}</span>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold text-slate-950">{s.deal_label}</span>
                         {!isSpecialActive(s) && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded">Passed</span>}
                       </div>
                       <p className="text-sm text-muted-foreground">{s.business_name} · {s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</p>
