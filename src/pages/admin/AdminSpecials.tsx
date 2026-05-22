@@ -97,6 +97,11 @@ const AdminSpecials = () => {
   const [editing, setEditing] = useState<Special | null>(null);
   const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<Omit<Special, "id">>(emptyForm);
+  const [tab, setTab] = useState<"active" | "passed">("active");
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const isSpecialActive = (s: Special) =>
+    s.is_active && (!s.valid_until || s.valid_until >= todayStr);
 
   const { data: specials, isLoading } = useQuery({
     queryKey: ["admin-specials"],
