@@ -122,14 +122,20 @@ const NotificationCategories = () => {
   const persist = useCallback(
     async (next: string[]) => {
       if (!user || !meta) return;
+      const payload: Record<string, any> = { [meta.column]: next };
+      // Keep the parent toggle on the main preferences page in sync:
+      // if the user selects any category here, ensure the parent toggle is on.
+      if (next.length > 0 && type) {
+        payload[type] = true;
+      }
       const { error } = await supabase
         .from("notification_preferences")
-        .update({ [meta.column]: next } as any)
+        .update(payload as any)
         .eq("user_id", user.id);
       if (error) toast.error("Could not save");
       else toast("Saved.", { duration: 1500 });
     },
-    [user, meta],
+    [user, meta, type],
   );
 
   if (!meta) return <Navigate to="/notifications" replace />;
