@@ -193,7 +193,7 @@ const AdminNotifications = () => {
               return (
                 <div key={g.id} className="bg-card rounded-lg p-4 space-y-3">
                   <div className="flex items-center gap-2">
-                    <button onClick={() => renameGroup(g)} className="text-lg font-semibold flex-1 text-left hover:underline">
+                    <button onClick={() => renameGroup(g)} className="text-lg font-semibold flex-1 text-left hover:underline text-slate-950">
                       {g.label}
                     </button>
                     <Button size="sm" variant="ghost" onClick={() => moveGroup(g, -1)}><ChevronUp className="h-4 w-4" /></Button>

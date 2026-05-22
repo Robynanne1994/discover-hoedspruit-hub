@@ -287,7 +287,7 @@ const ReportCard = ({ report }: { report: ReportDef }) => {
   return (
     <div className="bg-card border border-border rounded-xl p-5 flex flex-col gap-3">
       <div>
-        <h3 className="font-heading text-base font-semibold text-foreground">{report.title}</h3>
+        <h3 className="font-heading text-base font-semibold text-slate-950">{report.title}</h3>
         <p className="text-sm text-muted-foreground mt-1">{report.description}</p>
       </div>
       {progress && (

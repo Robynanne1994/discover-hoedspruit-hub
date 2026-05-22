@@ -180,7 +180,7 @@ const AdminUsers = () => {
                   </div>
                 )}
                 <div>
-                  <div className="text-base font-semibold">
+                  <div className="text-base font-semibold text-slate-950">
                     {selected.profile?.display_name || selected.profile?.username || "Unnamed"}
                   </div>
                   {selected.profile?.username && (

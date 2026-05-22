@@ -151,7 +151,7 @@ const AdminContent = () => {
       <div className="space-y-8 max-w-2xl">
         {/* Header / Logo */}
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-          <h2 className="font-heading text-xl font-semibold text-foreground">Header / Logo</h2>
+          <h2 className="font-heading text-xl font-semibold text-slate-950">Header / Logo</h2>
           <div>
             <Label>Logo Image</Label>
             <ImageUpload bucket="listing-images" value={logoUrl} onChange={setLogoUrl} />
@@ -161,7 +161,7 @@ const AdminContent = () => {
 
         {/* Hero Image */}
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-          <h2 className="font-heading text-xl font-semibold text-foreground">Homepage Hero Image</h2>
+          <h2 className="font-heading text-xl font-semibold text-slate-950">Homepage Hero Image</h2>
           <p className="text-sm text-muted-foreground">Recommended size: 1080×720px (landscape). This image appears at the top of the homepage.</p>
           <div>
             <Label>Hero Background Image</Label>
@@ -172,7 +172,7 @@ const AdminContent = () => {
 
         {/* Advertise Section */}
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-          <h2 className="font-heading text-xl font-semibold text-foreground">Advertise Section</h2>
+          <h2 className="font-heading text-xl font-semibold text-slate-950">Advertise Section</h2>
           <div><Label>Title</Label><Input value={advTitle} onChange={(e) => setAdvTitle(e.target.value)} /></div>
           <div><Label>Description</Label><Textarea value={advDescription} onChange={(e) => setAdvDescription(e.target.value)} rows={3} /></div>
           <div><Label>Benefits (one per line)</Label><Textarea value={advBenefits} onChange={(e) => setAdvBenefits(e.target.value)} rows={4} /></div>
@@ -181,7 +181,7 @@ const AdminContent = () => {
 
         {/* Footer Section */}
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
-          <h2 className="font-heading text-xl font-semibold text-foreground">Footer</h2>
+          <h2 className="font-heading text-xl font-semibold text-slate-950">Footer</h2>
           <div><Label>Tagline</Label><Textarea value={footerTagline} onChange={(e) => setFooterTagline(e.target.value)} rows={3} /></div>
           <div><Label>Address</Label><Input value={footerAddress} onChange={(e) => setFooterAddress(e.target.value)} /></div>
           <div><Label>Email</Label><Input value={footerEmail} onChange={(e) => setFooterEmail(e.target.value)} /></div>

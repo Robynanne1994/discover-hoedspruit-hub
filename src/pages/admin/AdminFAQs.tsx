@@ -262,7 +262,7 @@ const AdminFAQs = () => {
       {sections.map(({ title, items }) => (
         <div key={title} className="bg-card border rounded-lg p-4 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+            <h2 className="text-lg font-semibold text-slate-950">{title}</h2>
             <div className="flex gap-2">
               <Button size="sm" variant="outline" onClick={() => addNewInSection(title)}>
                 <Plus className="h-3.5 w-3.5 mr-1" /> Question
