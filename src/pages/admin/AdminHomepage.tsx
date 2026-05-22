@@ -230,7 +230,7 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
   const availableResults = searchResults.filter((l) => !curatedIds.includes(l.id));
 
   return (
-    <div className="border border-border rounded-lg p-4 space-y-4">
+    <div className="border border-border rounded-lg p-4 space-y-4 border-slate-950">
       <SectionTitleEditor sectionKey={sectionKey} defaultLabel={label} />
 
       <div>
