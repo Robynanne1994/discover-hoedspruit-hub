@@ -92,11 +92,24 @@ const AdminDashboard = () => {
     },
   });
 
+  const userReports = useQuery({
+    queryKey: ["admin-count-user-reports-unread"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("user_reports")
+        .select("*", { count: "exact", head: true })
+        .eq("is_read", false);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
+
   const submissions = (contacts.data ?? 0) + (feedback.data ?? 0);
 
   const cards = [
     { label: "Moderation", count: moderation.data, to: "/admin/moderation", icon: ShieldCheck, hint: "Pending items" },
     { label: "Submissions", count: submissions, to: "/admin/submissions", icon: Inbox, hint: "Contact + feedback" },
+    { label: "Reported Users", count: userReports.data, to: "/admin/user-reports", icon: Flag, hint: "Unread reports" },
     { label: "Categories", count: cats.data, to: "/admin/categories", icon: FolderOpen },
     { label: "Listings", count: lists.data, to: "/admin/listings", icon: List },
     { label: "Events", count: events.data, to: "/admin/events", icon: Calendar },
