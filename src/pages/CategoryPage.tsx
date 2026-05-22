@@ -716,6 +716,29 @@ const CategoryPage = () => {
                 );
               })}
             </div>
+            {activeSubId && (
+              <button
+                onClick={() => handleSubFilter(null)}
+                style={{
+                  marginTop: 12,
+                  background: "transparent",
+                  border: "none",
+                  color: INK,
+                  fontFamily: sans,
+                  fontSize: 13,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                  padding: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                }}
+              >
+                <span style={{ fontSize: 16, lineHeight: 1 }}>×</span>
+                Clear filter
+              </button>
+            )}
           </div>
         );
       })()}
