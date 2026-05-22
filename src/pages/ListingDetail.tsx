@@ -345,7 +345,7 @@ const ListingDetail = () => {
     }).filter((s: string) => !/reservation/i.test(s));
     const svc: DField[] = known.map(k => ({ label: k, on: norm.some((s: string) => s.toLowerCase() === k.toLowerCase()) }));
     norm.forEach((s: string) => { if (!known.some(k => k.toLowerCase() === s.toLowerCase())) svc.push({ label: s, on: true }); });
-    if (svc.length) sections.push({ key: "service", title: "Service options", iconSrc: serviceIconSrc, fields: svc });
+    if (svc.length) sections.push({ key: "service", title: "Service options", iconComp: ClipboardList, fields: svc });
 
     const kids = filterDefined([
       { label: "Good for kids", value: l.good_for_kids },
