@@ -12,6 +12,7 @@ import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import { bayesianScore } from "@/lib/ratingScore";
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
 const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic"];
@@ -366,6 +367,27 @@ const CategoryPage = () => {
     else setSearchParams({});
   };
 
+  // Aggregate internal reviews per listing — only used for "Top Rated" sort.
+  const listingIds = useMemo(() => (listings || []).map((l: any) => l.id), [listings]);
+  const { data: reviewAggregates } = useQuery({
+    queryKey: ["review-aggregates", listingIds],
+    enabled: listingIds.length > 0,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("reviews")
+        .select("listing_id, rating")
+        .in("listing_id", listingIds);
+      const map = new Map<string, { sum: number; count: number }>();
+      (data || []).forEach((r: any) => {
+        const cur = map.get(r.listing_id) || { sum: 0, count: 0 };
+        cur.sum += r.rating;
+        cur.count += 1;
+        map.set(r.listing_id, cur);
+      });
+      return map;
+    },
+  });
+
   const activeFilterCount = [
     activeSubId ? 1 : 0,
     filterCuisine.length > 0 ? 1 : 0,
@@ -441,9 +463,22 @@ const CategoryPage = () => {
     });
 
     if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
-    if (sortBy === "rating") return [...result].sort((a, b) => (b.google_rating || 0) - (a.google_rating || 0));
+    if (sortBy === "rating") {
+      const scoreFor = (l: any) => {
+        const agg = reviewAggregates?.get(l.id);
+        const internalCount = agg?.count ?? 0;
+        const internalAvg = internalCount > 0 ? (agg!.sum / internalCount) : 0;
+        return bayesianScore({
+          googleRating: l.google_rating,
+          googleCount: l.google_reviews_count,
+          internalAvg,
+          internalCount,
+        });
+      };
+      return [...result].sort((a, b) => scoreFor(b) - scoreFor(a));
+    }
     return result;
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search, reviewAggregates]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
