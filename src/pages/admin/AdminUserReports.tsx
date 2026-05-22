@@ -135,7 +135,7 @@ const AdminUserReports = () => {
   return (
     <div>
       <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground mb-2">Reported Users</h1>
-      <p className="text-sm text-muted-foreground mb-6">
+      <p className="text-sm text-muted-foreground mb-6 text-slate-950">
         Reports submitted by users (or guests) about other users.
       </p>
 
