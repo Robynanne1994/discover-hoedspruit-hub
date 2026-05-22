@@ -126,7 +126,6 @@ const App = () => (
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/events" element={<Events />} />
-              <Route path="/events/calendar" element={<EventsCalendar />} />
               <Route path="/events/:id" element={<EventDetail />} />
               <Route path="/about" element={<About />} />
               
@@ -141,7 +140,6 @@ const App = () => (
               <Route path="/local-channels/:slug" element={<LocalChannelDetail />} />
               
               <Route path="/saved" element={<SavedListings />} />
-              <Route path="/visited" element={<VisitedPlaces />} />
               <Route path="/account-settings" element={<Navigate to="/my-account" replace />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
               <Route path="/terms" element={<TermsPolicies />} />
