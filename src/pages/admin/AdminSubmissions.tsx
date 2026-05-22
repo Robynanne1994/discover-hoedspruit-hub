@@ -14,6 +14,7 @@ type Contact = {
   name: string;
   email: string;
   message: string;
+  is_read?: boolean;
   created_at: string;
 };
 
@@ -134,6 +135,17 @@ const AdminSubmissions = () => {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-feedback"] }),
   });
 
+  const markContactRead = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("contact_submissions" as any)
+        .update({ is_read: true })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-contact-submissions"] }),
+  });
+
   const deleteFeedback = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("feedback").delete().eq("id", id);
@@ -209,7 +221,10 @@ const AdminSubmissions = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setViewing({ kind: "contact", data: c })}
+                  onClick={() => {
+                    setViewing({ kind: "contact", data: c });
+                    if (!c.is_read) markContactRead.mutate(c.id);
+                  }}
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
