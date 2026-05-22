@@ -241,23 +241,20 @@ const REPORTS: ReportDef[] = [
       const out: Record<string, unknown>[] = [];
       const listings = await fetchAll<any>("listings", "id, title, image_url, detail_image_url");
       for (const r of listings) {
-        for (const field of ["image_url", "detail_image_url"]) {
-          if (isExternalImage(r[field])) out.push({ type: "listing", id: r.id, title: r.title, field, url: r[field], admin_edit_url: editUrl("listing", r.id) });
-        }
+        const hasExternal = ["image_url", "detail_image_url"].some((f) => isExternalImage(r[f]));
+        if (hasExternal) out.push({ title: r.title, admin_edit_url: editUrl("listing", r.id) });
       }
       const events = await fetchAll<any>("events", "id, title, image_url, detail_image_url, homepage_image_url");
       for (const r of events) {
-        for (const field of ["image_url", "detail_image_url", "homepage_image_url"]) {
-          if (isExternalImage(r[field])) out.push({ type: "event", id: r.id, title: r.title, field, url: r[field], admin_edit_url: editUrl("event", r.id) });
-        }
+        const hasExternal = ["image_url", "detail_image_url", "homepage_image_url"].some((f) => isExternalImage(r[f]));
+        if (hasExternal) out.push({ title: r.title, admin_edit_url: editUrl("event", r.id) });
       }
       const specials = await fetchAll<any>("specials", "id, title, image_url, detail_image_url");
       for (const r of specials) {
-        for (const field of ["image_url", "detail_image_url"]) {
-          if (isExternalImage(r[field])) out.push({ type: "special", id: r.id, title: r.title, field, url: r[field], admin_edit_url: editUrl("special", r.id) });
-        }
+        const hasExternal = ["image_url", "detail_image_url"].some((f) => isExternalImage(r[f]));
+        if (hasExternal) out.push({ title: r.title, admin_edit_url: editUrl("special", r.id) });
       }
-      return { rows: out, columns: ["type", "id", "title", "field", "url", "admin_edit_url"], filename: "external-images.csv" };
+      return { rows: out, columns: ["title", "admin_edit_url"], filename: "external-images.csv" };
     },
   },
 ];
