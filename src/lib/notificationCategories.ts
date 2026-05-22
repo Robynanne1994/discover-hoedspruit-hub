@@ -106,7 +106,7 @@ export const FILTER_TYPE_META: Record<
   events_new: {
     eyebrow: "NEW EVENTS",
     title: "pick your kind of fun.",
-    subline: "Choose which event types you want to hear about.",
+    subline: "Choose which event types you want to be notified about.",
     groups: EVENT_CATEGORY_GROUPS,
     column: "events_new_categories",
     itemNoun: { one: "event", many: "events" },
