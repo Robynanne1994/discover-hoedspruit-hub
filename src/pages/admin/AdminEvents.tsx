@@ -117,6 +117,15 @@ const AdminEvents = () => {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Event | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [tab, setTab] = useState<"active" | "passed">("active");
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const isEventActive = (ev: any) => {
+    if (ev?.recurrence && String(ev.recurrence).trim() !== "") return true;
+    const end = ev?.end_date || ev?.start_date;
+    if (!end) return true;
+    return String(end) >= todayStr;
+  };
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["admin-events"],
