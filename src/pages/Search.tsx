@@ -531,19 +531,6 @@ const UsersResults = ({
           )
         : data || [];
       return filtered;
-      if (!currentUserId) return [];
-      const col = sub === "followers" ? "follower_id" : "following_id";
-      const matchCol = sub === "followers" ? "following_id" : "follower_id";
-      const { data: links } = await supabase.from("follows").select(col).eq(matchCol, currentUserId);
-      const ids = (links || []).map((d: any) => d[col]);
-      if (!ids.length) return [];
-      let q = supabase
-        .from("profiles")
-        .select("id, display_name, avatar_url, location, username")
-        .in("id", ids);
-      if (term) q = q.or(`display_name.ilike.%${term}%,username.ilike.%${term}%`);
-      const { data } = await q;
-      return data || [];
     },
     enabled: !!currentUserId || sub === "suggested",
   });
