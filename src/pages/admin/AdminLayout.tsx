@@ -38,6 +38,7 @@ const navItems = [
   { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
   { label: "Reported Users", path: "/admin/user-reports", icon: Flag },
+  { label: "FAQs", path: "/admin/faqs", icon: HelpCircle },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 
