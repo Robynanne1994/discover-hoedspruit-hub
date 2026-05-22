@@ -644,6 +644,53 @@ const CategoryPage = () => {
         </div>
       </div>
 
+      {/* Health & Medical quick subcategory tiles */}
+      {categoryTitle === "Health & Medical" && subcategories && (() => {
+        const QUICK = [
+          { title: "Pharmacies", icon: PillIcon },
+          { title: "Dentists", icon: Smile },
+          { title: "GPs", icon: Stethoscope },
+          { title: "Clinics", icon: HeartPulse },
+          { title: "Optometrists", icon: Eye },
+        ];
+        const tileWidth = `calc((100vw - 40px - 12px) / 4)`;
+        return (
+          <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20, marginBottom: 18 }}>
+            <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
+              {QUICK.map(({ title, icon: Icon }) => {
+                const sub = subcategories.find((s) => s.title === title);
+                if (!sub) return null;
+                const isActive = activeSubId === sub.id;
+                return (
+                  <button
+                    key={sub.id}
+                    onClick={() => handleSubFilter(isActive ? null : sub.id)}
+                    style={{
+                      flexShrink: 0,
+                      width: tileWidth,
+                      background: isActive ? PILL_DARK : "#ffffff",
+                      color: isActive ? "#ffffff" : INK,
+                      borderRadius: 16,
+                      padding: "16px 8px 12px",
+                      border: "none",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 8,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Icon size={26} color={isActive ? "#ffffff" : INK} strokeWidth={1.4} />
+                    <span style={{ fontFamily: sans, fontSize: 12, letterSpacing: "0.01em" }}>{title}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
+
       <RefineDrawer
         open={refineOpen}
         onClose={() => setRefineOpen(false)}
