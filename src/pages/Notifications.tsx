@@ -262,7 +262,7 @@ const Notifications = () => {
         }
         setBools(b);
         setCats(loadedCats);
-        if (Object.keys(updates).length > 1) {
+        if (Object.keys(updates).length > 0) {
           await supabase.from("notification_preferences").update(updates as any).eq("user_id", user.id);
         }
       } else {
