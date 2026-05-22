@@ -293,7 +293,7 @@ const AdminCategories = () => {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <div>
-          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Categories</h1>
+          <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950">Categories</h1>
           <p className="text-sm text-muted-foreground mt-1">Drag <GripVertical className="inline h-3 w-3" /> handles to reorder.</p>
         </div>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
