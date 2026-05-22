@@ -19,6 +19,7 @@ import {
   Inbox,
   FileBarChart,
   Bell,
+  Flag,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -38,6 +39,7 @@ const navItems = [
   { label: "Notifications", path: "/admin/notifications", icon: Bell },
   { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
+  { label: "Reported Users", path: "/admin/user-reports", icon: Flag },
   { label: "Import CSV", path: "/admin/import", icon: Upload },
 ];
 

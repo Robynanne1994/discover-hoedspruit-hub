@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import ReportUserDialog from "@/components/ReportUserDialog";
 
 const PAGE_BG = "#5C6446";
 const CREAM = "#EEE8DA";
@@ -69,6 +70,7 @@ const UserProfile = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["user-profile", id],
@@ -926,7 +928,7 @@ const UserProfile = () => {
                 label: "Report User",
                 onClick: () => {
                   setMenuOpen(false);
-                  toast("Report submitted. Thank you.");
+                  setReportOpen(true);
                 },
               },
               {
@@ -1016,6 +1018,15 @@ const UserProfile = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {id && (
+        <ReportUserDialog
+          open={reportOpen}
+          onOpenChange={setReportOpen}
+          reportedUserId={id}
+          reportedUserName={titleCase(profile?.display_name)}
+        />
+      )}
 
       <BottomNav />
     </div>

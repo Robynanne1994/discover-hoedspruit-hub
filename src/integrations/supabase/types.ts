@@ -1704,6 +1704,51 @@ export type Database = {
           },
         ]
       }
+      user_reports: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          detail: string
+          id: string
+          is_read: boolean
+          reason: string
+          reported_user_id: string
+          reporter_email: string | null
+          reporter_name: string | null
+          reporter_user_id: string | null
+          resolved_at: string | null
+          status: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          detail: string
+          id?: string
+          is_read?: boolean
+          reason: string
+          reported_user_id: string
+          reporter_email?: string | null
+          reporter_name?: string | null
+          reporter_user_id?: string | null
+          resolved_at?: string | null
+          status?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          detail?: string
+          id?: string
+          is_read?: boolean
+          reason?: string
+          reported_user_id?: string
+          reporter_email?: string | null
+          reporter_name?: string | null
+          reporter_user_id?: string | null
+          resolved_at?: string | null
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
