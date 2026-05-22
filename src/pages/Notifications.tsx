@@ -253,25 +253,17 @@ const Notifications = () => {
           listings_updates_categories: "listings_updates",
           specials_new_categories: "specials_new",
         };
-        let needsUpdate = false;
+        const updates: Partial<Record<BoolKey, boolean>> = {};
         for (const [catKey, boolKey] of Object.entries(catToBool) as [CatKey, BoolKey][]) {
-          if (loadedCats[catKey] !== null && loadedCats[catKey]!.length === 0 && b[boolKey]) {
+          if (loadedCats[catKey] !== null && loadedCats[catKey]!.length === 1 && b[boolKey]) {
             b[boolKey] = false;
-            needsUpdate = true;
+            updates[boolKey] = false;
           }
         }
         setBools(b);
         setCats(loadedCats);
-        if (needsUpdate) {
-          const updates: Partial<Record<BoolKey, boolean>> = {};
-          for (const [catKey, boolKey] of Object.entries(catToBool) as [CatKey, BoolKey][]) {
-            if (loadedCats[catKey] !== null && loadedCats[catKey]!.length === 1 && !b[boolKey]) {
-              updates[boolKey] = false;
-            }
-          }
-          if (Object.keys(updates).length > 0) {
-            await supabase.from("notification_preferences").update(updates as any).eq("user_id", user.id);
-          }
+        if (Object.keys(updates).length > 1) {
+          await supabase.from("notification_preferences").update(updates as any).eq("user_id", user.id);
         }
       } else {
         await supabase.from("notification_preferences").insert({ user_id: user.id, ...DEFAULT_BOOLS });
