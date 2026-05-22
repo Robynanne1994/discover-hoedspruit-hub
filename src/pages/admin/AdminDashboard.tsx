@@ -125,7 +125,7 @@ const AdminDashboard = () => {
     { label: "Categories", count: cats.data, to: "/admin/categories", icon: FolderOpen },
     { label: "Listings", count: lists.data, to: "/admin/listings", icon: List },
     { label: "Events", count: events.data, to: "/admin/events", icon: Calendar },
-    { label: "Specials", count: specials.data, to: "/admin/specials", icon: Tag },
+    { label: "Active Specials", count: specials.data, to: "/admin/specials", icon: Tag },
     
     { label: "Resources", count: resources.data, to: "/admin/bush-telegraph", icon: Radio },
     { label: "Users", count: users.data, to: "/admin/users", icon: Users },
