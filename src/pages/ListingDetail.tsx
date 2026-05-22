@@ -16,17 +16,8 @@ import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
 import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
-import kidsFamilyIconSrc from "@/assets/kids-family-icon.svg";
-import vibeIconSrc from "@/assets/vibe-icon.svg";
-import seatingIconSrc from "@/assets/seating-icon.svg";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
-import serviceIconSrc from "@/assets/service-icon.svg";
-import amenitiesIconSrc from "@/assets/amenities-icon.svg";
-import accessibilityIconSrc from "@/assets/accessibility-icon.svg";
-import pricingIconSrc from "@/assets/pricing-icon.svg";
-import cuisineIconSrc from "@/assets/cuisine-icon.svg";
-import mealsIconSrc from "@/assets/meals-icon.svg";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 
