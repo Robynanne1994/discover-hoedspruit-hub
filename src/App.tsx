@@ -121,9 +121,10 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <AuthGate>
-            <Routes>
-              <Route path="/" element={<Index />} />
+          <GuestAuthProvider>
+            <AuthGate>
+              <Routes>
+                <Route path="/welcome" element={<Welcome />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/category/:id" element={<CategoryPage />} />
