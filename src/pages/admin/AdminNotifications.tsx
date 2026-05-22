@@ -170,7 +170,7 @@ const AdminNotifications = () => {
   return (
     <div className="space-y-6 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-bold">Notifications</h1>
+        <h1 className="text-2xl font-bold text-slate-950">Notifications</h1>
         <p className="text-sm opacity-80 mt-1">
           Edit the sub-headings and toggle options shown when users refine each notification type. Assign which
           categories / tags feed into each toggle.
