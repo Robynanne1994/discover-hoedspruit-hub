@@ -245,7 +245,7 @@ const AdminModeration = () => {
             <div key={it.id} className="bg-card border border-border rounded-xl p-4">
               <div className="flex justify-between items-center gap-3">
                 <div className="min-w-0">
-                  <div className="font-medium truncate">
+                  <div className="font-medium truncate text-slate-950">
                     {tab === "claims" ? `Claim for: ${live?.title ?? it.listing_id}` :
                      tab === "listing" ? `Listing edit: ${live?.title ?? it.listing_id}` :
                      tab === "features" ? `Feature ${it.item_type}` :

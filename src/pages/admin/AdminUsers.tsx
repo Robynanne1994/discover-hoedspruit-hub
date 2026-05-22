@@ -131,7 +131,7 @@ const AdminUsers = () => {
                         </div>
                       )}
                       <div className="min-w-0">
-                        <div className="font-medium truncate">
+                        <div className="font-medium truncate text-slate-950">
                           {u.profile?.display_name || u.profile?.username || "—"}
                         </div>
                         <div className="text-xs text-muted-foreground md:hidden truncate">{u.email}</div>

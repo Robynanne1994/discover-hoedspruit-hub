@@ -245,7 +245,7 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
                 <img src={listing.image_url} alt="" className="w-10 h-10 rounded object-cover" />
               )}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{listing.title}</p>
+                <p className="text-sm font-medium truncate text-slate-950">{listing.title}</p>
                 <p className="text-xs text-muted-foreground truncate">{listing.location}</p>
               </div>
               <Button size="icon" variant="ghost" onClick={() => removeListing(listing.id)}>

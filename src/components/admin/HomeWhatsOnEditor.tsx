@@ -117,7 +117,7 @@ const HomeWhatsOnEditor = () => {
               <GripVertical className="h-4 w-4 text-muted-foreground" />
               {ev.image_url && <img src={ev.image_url} alt="" className="w-10 h-10 rounded object-cover" />}
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{ev.title}</p>
+                <p className="text-sm font-medium truncate text-slate-950">{ev.title}</p>
                 <p className="text-xs text-muted-foreground truncate">{ev.date}{ev.location ? ` · ${ev.location}` : ""}</p>
               </div>
               <Button size="icon" variant="ghost" onClick={() => remove(ev.id)}>
