@@ -34,7 +34,7 @@ import MyAccount from "./pages/MyAccount.tsx";
 import MyProfile from "./pages/MyProfile.tsx";
 import BushTelegraph from "./pages/BushTelegraph.tsx";
 import LocalChannelDetail from "./pages/LocalChannelDetail.tsx";
-import SavedListings from "./pages/SavedListings.tsx";
+
 import NotFound from "./pages/NotFound.tsx";
 import Categories from "./pages/Categories.tsx";
 
@@ -136,7 +136,6 @@ const App = () => (
               <Route path="/local-channels" element={<BushTelegraph />} />
               <Route path="/local-channels/:slug" element={<LocalChannelDetail />} />
               
-              <Route path="/saved" element={<SavedListings />} />
               <Route path="/account-settings" element={<Navigate to="/my-account" replace />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
               <Route path="/terms" element={<TermsPolicies />} />

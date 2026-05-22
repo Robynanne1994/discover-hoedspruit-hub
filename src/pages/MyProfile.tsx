@@ -130,7 +130,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "listing")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
@@ -152,7 +152,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "event")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: events } = await supabase
@@ -174,7 +174,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "special")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
@@ -196,7 +196,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "resource")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: resources } = await supabase
@@ -487,38 +487,42 @@ const MyProfile = () => {
             }}
           >
             {[
-              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#" },
-              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#" },
-              { label: "SAVED", value: savedCount ?? 0, to: "/saved" },
-            ].map((s, i) => (
-              <Link
-                key={s.label}
-                to={s.to}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textDecoration: "none",
-                  borderLeft: i === 0 ? "none" : `1px solid rgba(26,26,26,0.12)`,
-                }}
-              >
-                <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 1 }}>
-                  {fmtCount(s.value)}
-                </span>
-                <span
-                  style={{
-                    fontFamily: SANS,
-                    fontSize: 10.5,
-                    fontWeight: 600,
-                    letterSpacing: "0.12em",
-                    color: SUBTLE,
-                    marginTop: 6,
-                  }}
-                >
-                  {s.label}
-                </span>
-              </Link>
-            ))}
+              { label: counts?.followers === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: id ? `/profile/${id}/followers` : "#", clickable: true },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: id ? `/profile/${id}/following` : "#", clickable: true },
+              { label: "SAVED", value: savedCount ?? 0, to: "#", clickable: false },
+            ].map((s, i) => {
+              const inner = (
+                <>
+                  <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 20, color: INK, lineHeight: 1 }}>
+                    {fmtCount(s.value)}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: SANS,
+                      fontSize: 10.5,
+                      fontWeight: 600,
+                      letterSpacing: "0.12em",
+                      color: SUBTLE,
+                      marginTop: 6,
+                    }}
+                  >
+                    {s.label}
+                  </span>
+                </>
+              );
+              const sharedStyle: React.CSSProperties = {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                textDecoration: "none",
+                borderLeft: i === 0 ? "none" : `1px solid rgba(26,26,26,0.12)`,
+              };
+              return s.clickable ? (
+                <Link key={s.label} to={s.to} style={sharedStyle}>{inner}</Link>
+              ) : (
+                <div key={s.label} style={sharedStyle}>{inner}</div>
+              );
+            })}
           </div>
         </section>
       </div>
@@ -535,6 +539,11 @@ const MyProfile = () => {
       >
         {(["listings", "deals", "events", "resources"] as Tab[]).map((t) => {
           const active = tab === t;
+          const tabCount =
+            t === "listings" ? saved?.length ?? 0
+            : t === "deals" ? savedSpecials?.length ?? 0
+            : t === "events" ? savedEvents?.length ?? 0
+            : savedResources?.length ?? 0;
           return (
             <button
               key={t}
@@ -555,7 +564,7 @@ const MyProfile = () => {
                 textTransform: "capitalize",
               }}
             >
-              {t}
+              {t} ({tabCount})
               <span
                 style={{
                   position: "absolute",
