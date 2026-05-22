@@ -382,33 +382,62 @@ const AdminSpecials = () => {
         </div>
       )}
 
-      {isLoading ? (
-        <p className="text-muted-foreground">Loading…</p>
-      ) : !specials?.length ? (
-        <p className="text-muted-foreground">No specials yet. Click "Add Special" to create one.</p>
-      ) : (
-        <div className="space-y-3 max-w-3xl">
-          {specials.map((s) => (
-            <div key={s.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
-              {s.image_url && (
-                <img src={s.image_url} alt={s.title} className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-foreground truncate">{s.title}</span>
-                  <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold">{s.deal_label}</span>
-                  {!s.is_active && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded">Inactive</span>}
-                </div>
-                <p className="text-sm text-muted-foreground">{s.business_name} · {s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</p>
-              </div>
-              <div className="flex gap-1">
-                <Button variant="ghost" size="icon" onClick={() => startEdit(s)}><Pencil className="h-4 w-4" /></Button>
-                <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this special?")) deleteMutation.mutate(s.id); }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-              </div>
+      {(() => {
+        const filtered = (specials ?? []).filter((s) =>
+          tab === "active" ? isSpecialActive(s) : !isSpecialActive(s),
+        );
+        const activeCount = (specials ?? []).filter(isSpecialActive).length;
+        const passedCount = (specials ?? []).length - activeCount;
+        return (
+          <>
+            <div className="flex gap-2 mb-4 max-w-3xl">
+              {(["active", "passed"] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={`px-4 h-9 rounded-full text-sm font-medium border transition-colors ${
+                    tab === t
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card text-foreground border-border hover:border-primary"
+                  }`}
+                >
+                  {t === "active" ? "Active" : "Passed"} ({t === "active" ? activeCount : passedCount})
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+
+            {isLoading ? (
+              <p className="text-muted-foreground">Loading…</p>
+            ) : filtered.length === 0 ? (
+              <p className="text-muted-foreground">
+                {tab === "active" ? "No active specials." : "No passed specials."}
+              </p>
+            ) : (
+              <div className="space-y-3 max-w-3xl">
+                {filtered.map((s) => (
+                  <div key={s.id} className="bg-card border border-border rounded-xl p-4 flex items-center gap-4">
+                    {s.image_url && (
+                      <img src={s.image_url} alt={s.title} className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-foreground truncate">{s.title}</span>
+                        <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold">{s.deal_label}</span>
+                        {!isSpecialActive(s) && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded">Passed</span>}
+                      </div>
+                      <p className="text-sm text-muted-foreground">{s.business_name} · {s.valid_until ? `Until ${s.valid_until}` : "Ongoing"}</p>
+                    </div>
+                    <div className="flex gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => startEdit(s)}><Pencil className="h-4 w-4" /></Button>
+                      <Button variant="ghost" size="icon" onClick={() => { if (confirm("Delete this special?")) deleteMutation.mutate(s.id); }}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        );
+      })()}
     </div>
   );
 };
