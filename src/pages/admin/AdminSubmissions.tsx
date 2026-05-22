@@ -124,8 +124,8 @@ const AdminSubmissions = () => {
         .select("id, display_name, email")
         .in("id", ids);
       if (error) throw error;
-      const map: Record<string, { display_name: string | null; email: string | null }> = {};
-      (data ?? []).forEach((p: any) => (map[p.id] = { display_name: p.display_name, email: p.email }));
+      const map: Record<string, FeedbackProfile> = {};
+      (data ?? []).forEach((p) => (map[p.id] = { display_name: p.display_name, email: p.email }));
       return map;
     },
   });
@@ -159,7 +159,7 @@ const AdminSubmissions = () => {
   const markContactRead = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("contact_submissions" as any)
+        .from("contact_submissions")
         .update({ is_read: true })
         .eq("id", id);
       if (error) throw error;
