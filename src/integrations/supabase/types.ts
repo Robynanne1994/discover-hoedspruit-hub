@@ -393,6 +393,7 @@ export type Database = {
           created_at: string
           email: string
           id: string
+          is_read: boolean
           message: string
           name: string
         }
@@ -400,6 +401,7 @@ export type Database = {
           created_at?: string
           email: string
           id?: string
+          is_read?: boolean
           message: string
           name: string
         }
@@ -407,6 +409,7 @@ export type Database = {
           created_at?: string
           email?: string
           id?: string
+          is_read?: boolean
           message?: string
           name?: string
         }
