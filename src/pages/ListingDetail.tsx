@@ -331,7 +331,7 @@ const ListingDetail = () => {
 
   if (l.price_level) {
     const labels: Record<number, string> = { 1: "Budget-friendly", 2: "Mid-range", 3: "Upscale", 4: "Fine dining" };
-    sections.push({ key: "pricing", title: "Pricing", iconSrc: pricingIconSrc,
+    sections.push({ key: "pricing", title: "Pricing", iconComp: Tag,
       fields: [{ label: `${labels[l.price_level] || ""} (${"R".repeat(l.price_level)})`, on: true }] });
   }
 
