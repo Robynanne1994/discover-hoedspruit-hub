@@ -440,42 +440,67 @@ const AdminEvents = () => {
         </div>
       </div>
 
-      {isLoading ? <p className="text-muted-foreground">Loading...</p> : (
-        <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
-          <table className="w-full text-sm min-w-[720px]">
-            <thead className="bg-muted">
-              <tr>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Title</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Date</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Location</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Tag</th>
-                <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Featured</th>
-                <th className="p-3 w-[14%]"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {events?.map((ev) => (
-                <tr key={ev.id} className="border-t border-border">
-                  <td className="p-3 font-medium text-foreground truncate">{ev.title}</td>
-                  <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
-                  <td className="p-3 text-muted-foreground truncate">{ev.location ?? "—"}</td>
-                  <td className="p-3 text-muted-foreground truncate">{ev.tag ?? "—"}</td>
-                  <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "★ Yes" : "—"}</td>
-                  <td className="p-3">
-                    <div className="flex gap-1 justify-end">
-                      <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
-                      <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(ev.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
-                    </div>
-                  </td>
-                </tr>
+      {isLoading ? <p className="text-muted-foreground">Loading...</p> : (() => {
+        const all = events ?? [];
+        const filtered = all.filter((ev: any) => (tab === "active" ? isEventActive(ev) : !isEventActive(ev)));
+        const activeCount = all.filter(isEventActive).length;
+        const passedCount = all.length - activeCount;
+        return (
+          <>
+            <div className="flex gap-2 mb-4">
+              {(["active", "passed"] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setTab(t)}
+                  className={`px-4 h-9 rounded-full text-sm font-medium border transition-colors ${
+                    tab === t
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "bg-card text-foreground border-border hover:border-primary"
+                  }`}
+                >
+                  {t === "active" ? "Active" : "Passed"} ({t === "active" ? activeCount : passedCount})
+                </button>
               ))}
-              {events?.length === 0 && (
-                <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">No events yet.</td></tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      )}
+            </div>
+            <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
+              <table className="w-full text-sm min-w-[720px]">
+                <thead className="bg-muted">
+                  <tr>
+                    <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Title</th>
+                    <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Date</th>
+                    <th className="text-left p-3 font-medium text-muted-foreground w-[22%]">Location</th>
+                    <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Tag</th>
+                    <th className="text-left p-3 font-medium text-muted-foreground w-[10%]">Featured</th>
+                    <th className="p-3 w-[14%]"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((ev) => (
+                    <tr key={ev.id} className="border-t border-border">
+                      <td className="p-3 font-medium text-foreground truncate">{ev.title}</td>
+                      <td className="p-3 text-muted-foreground truncate">{ev.date}</td>
+                      <td className="p-3 text-muted-foreground truncate">{ev.location ?? "—"}</td>
+                      <td className="p-3 text-muted-foreground truncate">{ev.tag ?? "—"}</td>
+                      <td className="p-3 text-muted-foreground">{(ev as any).is_featured ? "★ Yes" : "—"}</td>
+                      <td className="p-3">
+                        <div className="flex gap-1 justify-end">
+                          <Button variant="ghost" size="icon" onClick={() => openEdit(ev)}><Pencil className="h-4 w-4" /></Button>
+                          <Button variant="ghost" size="icon" onClick={() => deleteMut.mutate(ev.id)}><Trash2 className="h-4 w-4 text-destructive" /></Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {filtered.length === 0 && (
+                    <tr><td colSpan={6} className="p-8 text-center text-muted-foreground">
+                      {tab === "active" ? "No active events." : "No passed events."}
+                    </td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </>
+        );
+      })()}
     </div>
   );
 };
