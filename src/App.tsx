@@ -79,6 +79,7 @@ import AdminUsers from "./pages/admin/AdminUsers.tsx";
 import AdminSubmissions from "./pages/admin/AdminSubmissions.tsx";
 import AdminReports from "./pages/admin/AdminReports.tsx";
 import AdminUserReports from "./pages/admin/AdminUserReports.tsx";
+import AdminFAQs from "./pages/admin/AdminFAQs.tsx";
 import { useLocation } from "react-router-dom";
 
 const queryClient = new QueryClient();
@@ -175,6 +176,7 @@ const App = () => (
                 <Route path="submissions" element={<AdminSubmissions />} />
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="user-reports" element={<AdminUserReports />} />
+                <Route path="faqs" element={<AdminFAQs />} />
               </Route>
               <Route path="/business/sign-in" element={<BusinessSignIn />} />
               <Route path="/business/start" element={<BusinessStart />} />

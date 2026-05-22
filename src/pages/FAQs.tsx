@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Search, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BottomNav from "@/components/BottomNav";
+import { supabase } from "@/integrations/supabase/client";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -14,58 +15,10 @@ const MUTED = "#9C9387";
 const LINE = "#EAE4D5";
 const ROW_LINE = "#EFE9DA";
 
-type FAQ = { q: string; a: string };
+type FAQ = { id: string; question: string; answer: string };
 type Section = { title: string; items: FAQ[] };
 
-const SECTIONS: Section[] = [
-  {
-    title: "About Hello Hoedspruit",
-    items: [
-      { q: "What is Hello Hoedspruit?", a: "Hello Hoedspruit is a local guide to everything happening in and around Hoedspruit, from places to eat, stay, and explore to events, specials, and community news." },
-      { q: "Who is behind Hello Hoedspruit?", a: "It's a small local team led by founder Robyn Dawes, born and raised in Hoedspruit, working with local businesses to keep the guide accurate and up to date." },
-      { q: "Is the app free to use?", a: "Yes, the app is free for everyone to download and use. Listed businesses can opt into paid features like featured placement." },
-    ],
-  },
-  {
-    title: "Using The App",
-    items: [
-      { q: "How do I find a specific business?", a: "Use the search bar on the home screen, or browse by category. You can also filter by area, amenities, and other details on each category page." },
-      { q: "Can I save listings to view later?", a: "Yes. Tap the heart icon on any listing to save it to your favourites, and organise them into custom collections from your account." },
-      { q: "How do I find events in Hoedspruit?", a: "Open the Events tab to see what's on, browse by date in the calendar view, or save events you're interested in to your saved page." },
-    ],
-  },
-  {
-    title: "Listings & Information",
-    items: [
-      { q: "How do I list my business?", a: "Head to the Advertise page and send us an enquiry, or email hello@hellohoedspruit.com. Standard listings are free." },
-      { q: "How are businesses chosen for listing?", a: "We aim to feature every legitimate business in and around Hoedspruit. Listings are added by our team and verified with the business owner where possible." },
-      { q: "Is the information accurate?", a: "We work hard to keep details current, but opening hours, prices, and offerings can change. Always check directly with the business for time-sensitive plans." },
-      { q: "Why are some listings missing details?", a: "Some businesses haven't shared all their information yet. If you spot something missing or incorrect, you can suggest an edit from the listing page." },
-    ],
-  },
-  {
-    title: "For Business Owners",
-    items: [
-      { q: "Can I update my listing details?", a: "Yes. Claim your listing from the business portal, or send us your updates and we'll handle them for you." },
-      { q: "Can I be featured or advertise?", a: "Yes. We offer featured placement, sponsored content, and event promotion. See the Advertise page for details." },
-    ],
-  },
-  {
-    title: "Account & Privacy",
-    items: [
-      { q: "Do I need an account to use the app?", a: "Yes, a free account is required to save listings, follow people, and personalise your experience." },
-      { q: "How is my data handled?", a: "We only collect what's needed to run the app, and we never sell your data. See our Privacy Policy for the full breakdown." },
-      { q: "How do I delete my account?", a: "Go to Settings, then Account, and tap Delete Account. This permanently removes your profile and saved data." },
-    ],
-  },
-  {
-    title: "General",
-    items: [
-      { q: "First time in Hoedspruit. Where do I start?", a: "Browse the Explore tab for a feel of the area, check the Lowveld Lowdown for local stories, and see what's on this week in Events." },
-      { q: "How do I report a problem or give feedback?", a: "Use the Feedback page in your account, or message us via WhatsApp or email from the Contact page. We read every message." },
-    ],
-  },
-];
+const stripHtml = (html: string) => html.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").toLowerCase();
 
 const FAQRow = ({
   item,
@@ -104,7 +57,7 @@ const FAQRow = ({
           color: INK,
         }}
       >
-        {item.q}
+        {item.question}
       </span>
       <span
         aria-hidden
@@ -127,6 +80,7 @@ const FAQRow = ({
     </button>
     {open && (
       <div
+        className="faq-answer"
         style={{
           fontSize: 14,
           fontFamily: FF,
@@ -136,9 +90,8 @@ const FAQRow = ({
           paddingBottom: 18,
           paddingRight: 8,
         }}
-      >
-        {item.a}
-      </div>
+        dangerouslySetInnerHTML={{ __html: item.answer }}
+      />
     )}
   </div>
 );
@@ -146,18 +99,60 @@ const FAQRow = ({
 const FAQs = () => {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
-  const [openKey, setOpenKey] = useState<string | null>(`${SECTIONS[0].title}-${SECTIONS[0].items[0].q}`);
+  const [sections, setSections] = useState<Section[]>([]);
+  const [openKey, setOpenKey] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("faqs")
+        .select("id, section, question, answer, sort_order")
+        .eq("is_visible", true)
+        .order("sort_order", { ascending: true });
+      if (!data) return;
+      const map = new Map<string, { title: string; items: FAQ[]; min: number }>();
+      data.forEach((r: any, i: number) => {
+        const existing = map.get(r.section);
+        if (existing) {
+          existing.items.push({ id: r.id, question: r.question, answer: r.answer });
+        } else {
+          map.set(r.section, {
+            title: r.section,
+            items: [{ id: r.id, question: r.question, answer: r.answer }],
+            min: r.sort_order ?? i,
+          });
+        }
+      });
+      const list = Array.from(map.values())
+        .sort((a, b) => a.min - b.min)
+        .map(({ title, items }) => ({ title, items }));
+      setSections(list);
+      if (list[0]?.items[0]) setOpenKey(`${list[0].title}-${list[0].items[0].id}`);
+    })();
+  }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return SECTIONS;
-    return SECTIONS
-      .map((s) => ({ ...s, items: s.items.filter((i) => i.q.toLowerCase().includes(q) || i.a.toLowerCase().includes(q)) }))
+    if (!q) return sections;
+    return sections
+      .map((s) => ({
+        ...s,
+        items: s.items.filter(
+          (i) =>
+            i.question.toLowerCase().includes(q) || stripHtml(i.answer).includes(q),
+        ),
+      }))
       .filter((s) => s.items.length > 0);
-  }, [query]);
+  }, [query, sections]);
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: 120 }}>
+      <style>{`
+        .faq-answer a { color: #1A1A1A; text-decoration: underline; }
+        .faq-answer p { margin: 0 0 8px; }
+        .faq-answer p:last-child { margin-bottom: 0; }
+        .faq-answer ul, .faq-answer ol { margin: 4px 0 8px 18px; padding: 0; }
+      `}</style>
       {/* Top bar */}
       <div
         style={{
@@ -248,7 +243,7 @@ const FAQs = () => {
                 }}
               >
                 {section.items.map((item, idx) => {
-                  const key = `${section.title}-${item.q}`;
+                  const key = `${section.title}-${item.id}`;
                   return (
                     <FAQRow
                       key={key}
