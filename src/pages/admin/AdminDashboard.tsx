@@ -40,7 +40,19 @@ const AdminDashboard = () => {
   const cats = useCount("cats", "categories");
   const lists = useCount("lists", "listings");
   const events = useCount("events", "events");
-  const specials = useCount("specials", "specials");
+  const specials = useQuery({
+    queryKey: ["admin-count-specials-active"],
+    queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const { count, error } = await supabase
+        .from("specials")
+        .select("*", { count: "exact", head: true })
+        .eq("is_active", true)
+        .or(`valid_until.is.null,valid_until.gte.${today}`);
+      if (error) throw error;
+      return count ?? 0;
+    },
+  });
   
   const resources = useCount("resources", "bush_telegraph_resources");
   const businesses = useCount("businesses", "business_accounts");
