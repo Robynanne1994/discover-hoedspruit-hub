@@ -46,7 +46,6 @@ const AdminDashboard = () => {
   const contacts = useQuery({
     queryKey: ["admin-count-contact-submissions-unread"],
     queryFn: async () => {
-      const { count, error } = await supabase
       const { count, error } = await contactSubmissionsClient
         .from("contact_submissions")
         .select("*", { count: "exact", head: true })
