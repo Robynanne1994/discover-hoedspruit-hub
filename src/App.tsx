@@ -15,6 +15,7 @@ import Welcome from "./pages/Welcome.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
+import AdminNotifications from "./pages/admin/AdminNotifications.tsx";
 import AdminListings from "./pages/admin/AdminListings.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
 import AdminContent from "./pages/admin/AdminContent.tsx";
