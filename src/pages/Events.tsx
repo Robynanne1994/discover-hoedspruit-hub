@@ -810,7 +810,7 @@ const Events = () => {
             )}
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {filtered.map((e) => (
               <EventCard key={e.id} event={e} />
             ))}
