@@ -114,7 +114,7 @@ export const FILTER_TYPE_META: Record<
   listings_new: {
     eyebrow: "NEW LISTINGS",
     title: "tell us what to send.",
-    subline: "Choose which categories trigger a notification when a new place joins the app.",
+    subline: "Choose which categories you want to be notified about if a new business listing is added.",
     groups: LISTING_CATEGORY_GROUPS,
     column: "listings_new_categories",
     itemNoun: { one: "listing", many: "listings" },
