@@ -36,17 +36,14 @@ import MyProfile from "./pages/MyProfile.tsx";
 import BushTelegraph from "./pages/BushTelegraph.tsx";
 import LocalChannelDetail from "./pages/LocalChannelDetail.tsx";
 import SavedListings from "./pages/SavedListings.tsx";
-import VisitedPlaces from "./pages/VisitedPlaces.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
-import EventsCalendar from "./pages/EventsCalendar.tsx";
 
 
 import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
-import AccountSettings from "./pages/AccountSettings.tsx";
 import AccountInfo from "./pages/AccountInfo.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 
@@ -129,7 +126,6 @@ const App = () => (
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/events" element={<Events />} />
-              <Route path="/events/calendar" element={<EventsCalendar />} />
               <Route path="/events/:id" element={<EventDetail />} />
               <Route path="/about" element={<About />} />
               
@@ -144,7 +140,6 @@ const App = () => (
               <Route path="/local-channels/:slug" element={<LocalChannelDetail />} />
               
               <Route path="/saved" element={<SavedListings />} />
-              <Route path="/visited" element={<VisitedPlaces />} />
               <Route path="/account-settings" element={<Navigate to="/my-account" replace />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
               <Route path="/terms" element={<TermsPolicies />} />
