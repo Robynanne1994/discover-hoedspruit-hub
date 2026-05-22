@@ -30,14 +30,12 @@ import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
 import Events from "./pages/Events.tsx";
 import About from "./pages/About.tsx";
-import Directories from "./pages/Directories.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
 import MyProfile from "./pages/MyProfile.tsx";
 import BushTelegraph from "./pages/BushTelegraph.tsx";
 import LocalChannelDetail from "./pages/LocalChannelDetail.tsx";
 import SavedListings from "./pages/SavedListings.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
 
 
