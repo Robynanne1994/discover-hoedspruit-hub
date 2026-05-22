@@ -178,7 +178,7 @@ const CardRow = ({
   return (
     <div className="border border-border rounded-lg p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h4 className="font-semibold text-sm">{label}</h4>
+        <h4 className="font-semibold text-sm text-slate-950">{label}</h4>
         {isDirty && (
           <Button
             size="sm"

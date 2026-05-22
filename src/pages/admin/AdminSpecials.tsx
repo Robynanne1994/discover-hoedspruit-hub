@@ -238,7 +238,7 @@ const AdminSpecials = () => {
       {showForm && (
         <div className="bg-card border border-border rounded-xl p-6 mb-8 space-y-4 max-w-2xl">
           <div className="flex items-center justify-between">
-            <h2 className="font-heading text-xl font-semibold text-foreground">
+            <h2 className="font-heading text-xl font-semibold text-slate-950">
               {editing ? "Edit Special" : "New Special"}
             </h2>
             <Button variant="ghost" size="icon" onClick={resetForm}><X className="h-4 w-4" /></Button>
@@ -421,7 +421,7 @@ const AdminSpecials = () => {
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-foreground truncate">{s.title}</span>
+                        <span className="font-semibold text-slate-950 truncate">{s.title}</span>
                         <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded font-semibold">{s.deal_label}</span>
                         {!isSpecialActive(s) && <span className="text-xs bg-destructive/10 text-destructive px-2 py-0.5 rounded">Passed</span>}
                       </div>

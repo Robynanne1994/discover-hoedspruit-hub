@@ -192,7 +192,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <div><Label>End Time</Label><Input type="time" value={form.end_time || ""} onChange={(e) => set("end_time", e.target.value || null)} /></div>
           </div>
           <div className="space-y-2 p-3 border rounded">
-            <Label className="text-sm font-semibold">Performances <span className="text-xs text-muted-foreground font-normal">(use for same show on multiple separate dates, e.g. a musical)</span></Label>
+            <Label className="text-sm font-semibold text-slate-950">Performances <span className="text-xs text-muted-foreground font-normal">(use for same show on multiple separate dates, e.g. a musical)</span></Label>
             <p className="text-xs text-muted-foreground">When set, each row becomes a separate performance. Start/End Date above are auto-filled from the first and last performance.</p>
             {(Array.isArray(form.performances) ? form.performances : []).map((p: any, idx: number) => (
               <div key={idx} className="flex gap-2 items-end">
@@ -253,7 +253,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             addLabel="Add WhatsApp"
           />
           <div className="flex items-center gap-2"><Switch checked={!!form.is_featured} onCheckedChange={(v) => set("is_featured", v)} /><Label>Featured</Label></div>
-          <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By</Label></div>
+          <div className="pt-2 border-t"><Label className="text-base font-semibold text-slate-950">Hosted By</Label></div>
           {(() => {
             const hostCount = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
             const [shown, setShownLocal] = [form.__hostsShown ?? hostCount, (n: number) => set("__hostsShown", n)];
@@ -272,7 +272,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
                 {hosts.slice(0, shown).map((h) => (
                   <div key={h.n} className="space-y-3 p-3 border rounded">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm font-semibold">Host {h.n}</Label>
+                      <Label className="text-sm font-semibold text-slate-950">Host {h.n}</Label>
                       {h.n === shown && shown > 0 && (
                         <Button type="button" variant="ghost" size="sm" onClick={() => {
                           set(h.nameKey, ""); set(h.subKey, ""); set(h.imgKey, ""); set(h.linkKey, "");

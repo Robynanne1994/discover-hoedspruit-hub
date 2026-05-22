@@ -397,7 +397,7 @@ const AdminEvents = () => {
                 <span className="text-sm font-medium">Featured event</span>
                 <span className="text-xs text-muted-foreground">(highlight on homepage / events page)</span>
               </label>
-              <div className="pt-2 border-t"><Label className="text-base font-semibold">Hosted By</Label></div>
+              <div className="pt-2 border-t"><Label className="text-base font-semibold text-slate-950">Hosted By</Label></div>
               {(() => {
                 const initial = form.hosted_by_name_3 ? 3 : form.hosted_by_name_2 ? 2 : form.hosted_by_name ? 1 : 0;
                 const shown = (form as any).__hostsShown ?? initial;
@@ -414,7 +414,7 @@ const AdminEvents = () => {
                       return (
                         <div key={n} className="space-y-3 p-3 border rounded">
                           <div className="flex items-center justify-between">
-                            <Label className="text-sm font-semibold">Host {n}</Label>
+                            <Label className="text-sm font-semibold text-slate-950">Host {n}</Label>
                             {n === shown && (
                               <Button type="button" variant="ghost" size="sm" onClick={() => {
                                 setForm({ ...form, [nameKey]: "", [subKey]: "", [imgKey]: "", __hostsShown: shown - 1 } as any);

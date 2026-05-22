@@ -133,7 +133,7 @@ const AdminLayout = () => {
               </Button>
             </SheetContent>
           </Sheet>
-          <span className="font-heading text-base font-semibold text-foreground truncate">
+          <span className="font-heading text-base font-semibold text-slate-950 truncate">
             {currentTitle}
           </span>
         </header>
