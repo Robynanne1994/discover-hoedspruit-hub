@@ -30,14 +30,12 @@ import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
 import Events from "./pages/Events.tsx";
 import About from "./pages/About.tsx";
-import Directories from "./pages/Directories.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
 import MyProfile from "./pages/MyProfile.tsx";
 import BushTelegraph from "./pages/BushTelegraph.tsx";
 import LocalChannelDetail from "./pages/LocalChannelDetail.tsx";
 import SavedListings from "./pages/SavedListings.tsx";
 import NotFound from "./pages/NotFound.tsx";
-import RestaurantQuiz from "./pages/RestaurantQuiz.tsx";
 import Categories from "./pages/Categories.tsx";
 
 
@@ -121,7 +119,6 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<SearchPage />} />
-              <Route path="/quiz" element={<RestaurantQuiz />} />
               <Route path="/category/:id" element={<CategoryPage />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/contact" element={<ContactUs />} />
@@ -132,7 +129,6 @@ const App = () => (
               
               <Route path="/specials" element={<Specials />} />
               <Route path="/specials/:id" element={<SpecialDetail />} />
-              <Route path="/directories" element={<Directories />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/my-account" element={<MyAccount />} />
               <Route path="/my-profile" element={<MyProfile />} />

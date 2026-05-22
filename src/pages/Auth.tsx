@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import Navbar from "@/components/Navbar";
+
 
 type AccountType = "user" | "business";
 
@@ -78,7 +78,6 @@ const Auth = () => {
   if (step === "claim-prompt") {
     return (
       <div className="min-h-screen" style={{ background: "#5C6446" }}>
-        <Navbar />
         <div className="pt-24 pb-16 flex items-center justify-center px-6">
           <div className="w-full max-w-md text-center bg-card border border-border rounded-xl p-8 space-y-6">
             <h1 className="text-2xl font-bold">Claim your listing?</h1>
@@ -101,7 +100,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen" style={{ background: "#5C6446" }}>
-      <Navbar />
+      
       <div className="pt-24 pb-16 flex items-center justify-center px-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
