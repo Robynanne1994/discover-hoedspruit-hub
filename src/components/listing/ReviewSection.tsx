@@ -35,11 +35,8 @@ const ReviewSection = ({ listingId }: ReviewSectionProps) => {
   const { data: beenHereCount } = useQuery({
     queryKey: ["been-here-count", listingId],
     queryFn: async () => {
-      const { count } = await supabase
-        .from("been_here")
-        .select("id", { count: "exact", head: true })
-        .eq("listing_id", listingId);
-      return count || 0;
+      const { data } = await supabase.rpc("get_been_here_count", { _listing_id: listingId });
+      return (data as number | null) || 0;
     },
   });
 
