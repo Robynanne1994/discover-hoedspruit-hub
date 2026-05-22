@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import ReportUserDialog from "@/components/ReportUserDialog";
 
 const PAGE_BG = "#5C6446";
 const CREAM = "#EEE8DA";
