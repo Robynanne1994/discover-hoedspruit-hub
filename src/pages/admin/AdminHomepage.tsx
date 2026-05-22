@@ -301,7 +301,7 @@ const AdminHomepage = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Homepage Sections</h1>
-        <p className="text-muted-foreground">Choose which 4 listings appear in each homepage section. Leave empty to auto-pick.</p>
+        <p className="text-sm text-muted-foreground mb-6 text-slate-950">Choose which 4 listings appear in each homepage section. Leave empty to auto-pick.</p>
       </div>
       <HomeWhatsOnEditor />
       {SECTIONS.map((section) => (

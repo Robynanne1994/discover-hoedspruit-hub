@@ -200,7 +200,7 @@ const AdminSubmissions = () => {
     <div className="space-y-6 max-w-5xl">
       <div>
         <h1 className="text-2xl font-bold text-foreground">Submissions</h1>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground mb-6 text-slate-950">
           Messages from contact forms, user feedback, and resource suggestions.
         </p>
       </div>
