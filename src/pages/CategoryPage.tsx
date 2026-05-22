@@ -720,23 +720,23 @@ const CategoryPage = () => {
               <button
                 onClick={() => handleSubFilter(null)}
                 style={{
-                  marginTop: 20,
+                  marginTop: 16,
                   background: "rgba(43, 36, 32, 1)",
                   border: "none",
                   color: "#ffffff",
                   fontFamily: sans,
-                  fontSize: 14,
+                  fontSize: 12,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
                   cursor: "pointer",
-                  padding: "10px 16px",
-                  borderRadius: 12,
+                  padding: "6px 12px",
+                  borderRadius: 8,
                   display: "flex",
                   alignItems: "center",
-                  gap: 8,
+                  gap: 6,
                 }}
               >
-                <span style={{ fontSize: 18, lineHeight: 1 }}>×</span>
+                <span style={{ fontSize: 14, lineHeight: 1 }}>×</span>
                 Clear all filters
               </button>
             )}
