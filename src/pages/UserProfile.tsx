@@ -199,7 +199,7 @@ const UserProfile = () => {
         .select("id, title, image_url, location, google_rating")
         .in("id", ids);
       const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
-      return rows.map((r) => map[r.listing_id]).filter(Boolean);
+      return limited.map((r: any) => map[r.listing_id]).filter(Boolean);
     },
     enabled: !!id,
   });
