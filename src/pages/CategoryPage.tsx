@@ -734,6 +734,7 @@ const CategoryPage = () => {
                   display: "flex",
                   alignItems: "center",
                   gap: 6,
+                  alignSelf: "flex-end",
                 }}
               >
                 <span style={{ fontSize: 14, lineHeight: 1 }}>×</span>
