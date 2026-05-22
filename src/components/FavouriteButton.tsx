@@ -2,7 +2,7 @@ import { Heart } from "lucide-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 
 interface FavouriteButtonProps {
   itemId: string;
@@ -11,6 +11,7 @@ interface FavouriteButtonProps {
 
 const FavouriteButton = ({ itemId, itemType }: FavouriteButtonProps) => {
   const { user } = useAuth();
+  const requireAuth = useRequireAuth();
   const queryClient = useQueryClient();
 
   const { data: isFavourited } = useQuery({
@@ -31,10 +32,7 @@ const FavouriteButton = ({ itemId, itemType }: FavouriteButtonProps) => {
 
   const toggle = useMutation({
     mutationFn: async () => {
-      if (!user) {
-        toast.error("Please sign in to save favourites");
-        return;
-      }
+      if (!user) return;
       if (isFavourited) {
         await supabase
           .from("favourites" as any)
@@ -59,6 +57,7 @@ const FavouriteButton = ({ itemId, itemType }: FavouriteButtonProps) => {
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
+        if (!requireAuth("save favourites")) return;
         toggle.mutate();
       }}
       className="absolute top-3 right-3 z-10 bg-white/92 backdrop-blur-sm rounded-full h-9 w-9 flex items-center justify-center hover:bg-white transition-colors"

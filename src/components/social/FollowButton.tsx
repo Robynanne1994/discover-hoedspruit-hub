@@ -1,8 +1,8 @@
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { Button } from "@/components/ui/button";
 import { UserPlus, UserCheck } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface FollowButtonProps {
   targetUserId: string;
@@ -11,19 +11,16 @@ interface FollowButtonProps {
 
 const FollowButton = ({ targetUserId, size = "default" }: FollowButtonProps) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const requireAuth = useRequireAuth();
   const { data: isFollowing, isLoading } = useIsFollowing(targetUserId);
   const { follow, unfollow } = useFollowMutation(targetUserId);
 
-  if (!user || user.id === targetUserId) return null;
+  if (user && user.id === targetUserId) return null;
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    if (!user) {
-      navigate("/auth");
-      return;
-    }
+    if (!requireAuth("follow people")) return;
     if (isFollowing) {
       unfollow.mutate();
     } else {

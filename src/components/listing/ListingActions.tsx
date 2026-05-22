@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { Heart, MapPinCheck, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,7 +12,7 @@ interface ListingActionsProps {
 
 const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const requireAuth = useRequireAuth();
   const queryClient = useQueryClient();
 
   const { data: isFavourited } = useQuery({
@@ -93,14 +92,6 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
     },
   });
 
-  const requireAuth = () => {
-    if (!user) {
-      toast.info("Sign in to use this feature");
-      navigate("/auth");
-      return true;
-    }
-    return false;
-  };
 
   const handleShare = async () => {
     const shareUrl = window.location.href;
@@ -122,7 +113,7 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
   return (
     <div className="flex items-center gap-2">
       <button
-        onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }}
+        onClick={() => { if (requireAuth("save listings")) toggleFavourite.mutate(); }}
         className={`${btnBase} ${
           isFavourited
             ? "bg-[#5b4632]/10 text-[#5b4632] border-[#5b4632]/20"
@@ -142,7 +133,7 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
       </button>
 
       <button
-        onClick={() => { if (!requireAuth()) toggleVisited.mutate(); }}
+        onClick={() => { if (requireAuth("track places you've been")) toggleVisited.mutate(); }}
         className={`${btnBase} ${
           isVisited
             ? "bg-accent/10 text-accent border-accent/20"
