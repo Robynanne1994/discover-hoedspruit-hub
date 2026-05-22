@@ -1019,6 +1019,15 @@ const UserProfile = () => {
         </DialogContent>
       </Dialog>
 
+      {id && (
+        <ReportUserDialog
+          open={reportOpen}
+          onOpenChange={setReportOpen}
+          reportedUserId={id}
+          reportedUserName={titleCase(profile?.display_name)}
+        />
+      )}
+
       <BottomNav />
     </div>
   );
