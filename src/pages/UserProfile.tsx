@@ -928,7 +928,7 @@ const UserProfile = () => {
                 label: "Report User",
                 onClick: () => {
                   setMenuOpen(false);
-                  toast("Report submitted. Thank you.");
+                  setReportOpen(true);
                 },
               },
               {
