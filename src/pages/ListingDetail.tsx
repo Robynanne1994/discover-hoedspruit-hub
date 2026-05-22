@@ -315,7 +315,7 @@ const ListingDetail = () => {
 
   // ----- Detail sections (flattened from old accordion logic) -----
   type DField = { label: string; on: boolean | string };
-  type DSection = { key: string; title: string; fields: DField[]; iconSrc?: string; iconComp?: any };
+  type DSection = { key: string; title: string; fields: DField[]; iconComp?: any };
   const sections: DSection[] = [];
   const filterDefined = (arr: { label: string; value: boolean | string | null }[]): DField[] =>
     arr.filter(f => f.value === true || f.value === false || typeof f.value === "string")
