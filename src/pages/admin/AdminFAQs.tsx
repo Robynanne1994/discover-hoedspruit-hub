@@ -247,7 +247,7 @@ const AdminFAQs = () => {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">FAQs</h1>
+          <h1 className="text-2xl font-bold text-slate-950">FAQs</h1>
           <p className="text-sm text-muted-foreground mb-6 text-slate-950">
             Manage the sections, questions and answers shown on the public FAQs page.
           </p>

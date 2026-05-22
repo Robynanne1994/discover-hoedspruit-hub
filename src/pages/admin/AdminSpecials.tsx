@@ -220,7 +220,7 @@ const AdminSpecials = () => {
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
-        <h1 className="font-heading text-2xl lg:text-3xl font-bold text-foreground">Specials</h1>
+        <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950">Specials</h1>
         {!showForm && (
           <div className="flex flex-wrap gap-2">
             <Link to="/admin/specials/import">

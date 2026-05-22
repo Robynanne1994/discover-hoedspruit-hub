@@ -420,7 +420,7 @@ const AdminBushTelegraph = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Local Channels</h1>
+          <h1 className="text-2xl font-bold text-slate-950">Local Channels</h1>
           <p className="text-sm text-muted-foreground mb-6 text-slate-950">Manage off-app resources, groups and feeds.</p>
         </div>
         <div className="flex flex-wrap gap-2">

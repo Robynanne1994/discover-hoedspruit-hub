@@ -74,7 +74,7 @@ const AdminUsers = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Users</h1>
+          <h1 className="text-2xl font-bold text-slate-950">Users</h1>
           <p className="text-sm text-muted-foreground mb-6 text-slate-950">
             All registered users {data ? `(${data.length})` : ""}
           </p>
