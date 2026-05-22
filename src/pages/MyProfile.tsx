@@ -130,7 +130,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "listing")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
@@ -152,7 +152,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "event")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: events } = await supabase
@@ -174,7 +174,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "special")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
@@ -196,7 +196,7 @@ const MyProfile = () => {
         .eq("user_id", id!)
         .eq("item_type", "resource")
         .order("created_at", { ascending: false })
-        .limit(20);
+        ;
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: resources } = await supabase
