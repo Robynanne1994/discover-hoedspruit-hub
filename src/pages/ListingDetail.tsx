@@ -403,7 +403,7 @@ const ListingDetail = () => {
       { label: "Aircon", value: l.has_aircon }, { label: "Laundry service", value: l.has_laundry }, { label: "Wi-Fi", value: l.has_wifi_accom },
     ]);
     if (rooms.length) sections.push({ key: "accom-rooms", title: "Rooms", iconComp: BedDouble, fields: rooms });
-    if (l.child_friendly === true) sections.push({ key: "accom-children", title: "Children", iconSrc: kidsFamilyIconSrc, fields: [{ label: "Child friendly", on: true }] });
+    if (l.child_friendly === true) sections.push({ key: "accom-children", title: "Children", iconComp: Baby, fields: [{ label: "Child friendly", on: true }] });
     if (l.pets_allowed === true) sections.push({ key: "accom-pets", title: "Pets", iconComp: PawPrint, fields: [{ label: "Pet friendly", on: true }] });
   }
 
