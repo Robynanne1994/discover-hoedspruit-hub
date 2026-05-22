@@ -2,7 +2,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SlidersHorizontal, MapPin, Search, Heart } from "lucide-react";
+import { SlidersHorizontal, MapPin, Search, Heart, Pill as PillIcon, Stethoscope, Eye, HeartPulse, Smile } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useAuth } from "@/hooks/useAuth";
