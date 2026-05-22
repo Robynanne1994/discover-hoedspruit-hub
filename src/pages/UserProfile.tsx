@@ -70,6 +70,7 @@ const UserProfile = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
+  const [reportOpen, setReportOpen] = useState(false);
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["user-profile", id],
