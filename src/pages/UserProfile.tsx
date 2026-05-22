@@ -216,12 +216,7 @@ const UserProfile = () => {
           .eq("user_id", id!)
           .order("created_at", { ascending: false })
           .limit(200),
-        supabase
-          .from("been_here")
-          .select("listing_id, created_at")
-          .eq("user_id", id!)
-          .order("created_at", { ascending: false })
-          .limit(200),
+        supabase.rpc("get_user_been_here", { _user_id: id! }),
       ]);
       const listingIds = new Set<string>();
       const eventIds = new Set<string>();
