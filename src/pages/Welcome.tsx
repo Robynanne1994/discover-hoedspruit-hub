@@ -5,14 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { MapPin, ArrowRight, ArrowLeft, Eye, EyeOff } from "lucide-react";
-import hhLogo from "@/assets/loading-icon.svg";
-
-type Role = "user" | "business";
+import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import hhLogo from "@/assets/hh-logo.png";
 
 const Welcome = () => {
   const [mode, setMode] = useState<"welcome" | "signin" | "signup">("welcome");
-  const [role, setRole] = useState<Role>("user");
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,26 +73,11 @@ const Welcome = () => {
   };
 
   if (mode === "welcome") {
-    const handlePrimary = () => {
-      if (role === "business") {
-        navigate("/business/sign-up");
-      } else {
-        setMode("signup");
-      }
-    };
-    const handleLogin = () => {
-      if (role === "business") {
-        navigate("/business/sign-in");
-      } else {
-        setMode("signin");
-      }
-    };
-
     return (
-      <div className="min-h-screen flex flex-col" style={{ background: "#5C6446", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+      <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         {/* Logo block */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-6">
-          <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 240, height: "auto" }} />
+          <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
         </div>
 
         {/* Bottom action area */}
@@ -103,7 +85,7 @@ const Welcome = () => {
           <h1
             style={{
               fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              color: "#ffffff",
+              color: "#020202",
               fontSize: 26,
               lineHeight: 1.15,
               fontWeight: 550,
@@ -115,44 +97,8 @@ const Welcome = () => {
             Your lowveld local
           </h1>
 
-          {/* Role pill toggle */}
-          <div
-            style={{
-              display: "flex",
-              padding: 4,
-              borderRadius: 999,
-              border: "1px solid rgba(255,255,255,0.45)",
-              background: "rgba(0,0,0,0.18)",
-              marginBottom: 14,
-            }}
-          >
-            {(["user", "business"] as Role[]).map((r) => {
-              const active = role === r;
-              return (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRole(r)}
-                  style={{
-                    flex: 1,
-                    height: 44,
-                    borderRadius: 999,
-                    background: active ? "#f5f0e8" : "transparent",
-                    color: active ? "#020202" : "#ffffff",
-                    fontSize: 14,
-                    fontWeight: active ? 500 : 400,
-                    letterSpacing: "0.01em",
-                    transition: "all 150ms ease",
-                  }}
-                >
-                  {r === "user" ? "I'm a user" : "I'm a business"}
-                </button>
-              );
-            })}
-          </div>
-
           <Button
-            onClick={handlePrimary}
+            onClick={() => setMode("signup")}
             className="w-full"
             style={{
               height: 52,
@@ -167,13 +113,31 @@ const Welcome = () => {
             Create account
           </Button>
 
-          <p style={{ textAlign: "center", color: "#ffffff", fontSize: 14, marginTop: 18 }}>
+          <Button
+            onClick={() => navigate("/")}
+            variant="outline"
+            className="w-full mt-3"
+            style={{
+              height: 52,
+              borderRadius: 16,
+              background: "transparent",
+              border: "1.5px solid #715a3d",
+              color: "#715a3d",
+              fontSize: 16,
+              fontWeight: 500,
+              letterSpacing: "0.01em",
+            }}
+          >
+            Continue as guest
+          </Button>
+
+          <p style={{ textAlign: "center", color: "#2b2420", fontSize: 14, marginTop: 18 }}>
             Already have an account?{" "}
             <button
               type="button"
-              onClick={handleLogin}
+              onClick={() => setMode("signin")}
               style={{
-                color: "#ffffff",
+                color: "#715a3d",
                 fontWeight: 500,
                 textDecoration: "underline",
                 textUnderlineOffset: 3,
@@ -188,7 +152,7 @@ const Welcome = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "#5C6446" }}>
+    <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8" }}>
       <div className="px-6 pt-14 pb-4 relative z-10">
         <button
           type="button"
@@ -196,18 +160,18 @@ const Welcome = () => {
           aria-label="Back"
           className="text-foreground active:scale-95 transition-transform p-2 -ml-2"
         >
-          <ArrowLeft className="lucide lucide-arrow-left text-slate-50" style={{ width: 24, height: 24 }} />
+          <ArrowLeft className="lucide lucide-arrow-left" style={{ width: 24, height: 24, color: "#020202" }} />
         </button>
       </div>
 
       <div className="flex-1 px-6 pb-12 flex flex-col justify-center">
         <h1
           className="mb-1"
-          style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "0.01em", color: "#ffffff" }}
+          style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "0.01em", color: "#020202" }}
         >
           {mode === "signup" ? "Create Account" : "Welcome Back"}
         </h1>
-        <p className="text-sm mb-8" style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}>
+        <p className="text-sm mb-8" style={{ fontFamily: "'Inter', sans-serif", color: "#2b2420" }}>
           {mode === "signup"
             ? "Join the Hello Hoedspruit community"
             : "Sign in to your account"}
@@ -217,7 +181,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
+                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
                   First Name
                 </Label>
                 <Input
@@ -228,10 +192,11 @@ const Welcome = () => {
                   required
                   placeholder="Your first name"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
+                  style={{ background: "#ffffff", color: "#020202" }}
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
+                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
                   Username
                 </Label>
                 <Input
@@ -242,12 +207,13 @@ const Welcome = () => {
                   required
                   placeholder="Choose a unique username"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
+                  style={{ background: "#ffffff", color: "#020202" }}
                 />
               </div>
             </>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
+            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
               Email
             </Label>
             <Input
@@ -258,10 +224,11 @@ const Welcome = () => {
               required
               placeholder="you@example.com"
               className="h-12 rounded-xl bg-card border-border text-[15px]"
+              style={{ background: "#ffffff", color: "#020202" }}
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#ffffff", fontFamily: "Inter, sans-serif" }}>
+            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
               Password
             </Label>
             <div className="relative">
@@ -274,6 +241,7 @@ const Welcome = () => {
                 minLength={6}
                 placeholder="Min 6 characters"
                 className="h-12 rounded-xl bg-card border-border text-[15px] pr-12"
+                style={{ background: "#ffffff", color: "#020202" }}
               />
               <button
                 type="button"
@@ -289,7 +257,7 @@ const Welcome = () => {
           <Button
             type="submit"
             className="w-full h-12 font-semibold rounded-xl mt-2"
-            style={{ background: "#655444", color: "#ffffff", fontSize: 16 }}
+            style={{ background: "#715a3d", color: "#ffffff", fontSize: 16 }}
             disabled={loading}
           >
             {loading
@@ -300,12 +268,12 @@ const Welcome = () => {
           </Button>
         </form>
 
-        <p className="text-center text-sm mt-6" style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}>
+        <p className="text-center text-sm mt-6" style={{ fontFamily: "'Inter', sans-serif", color: "#2b2420" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
             className="font-medium"
-            style={{ fontFamily: "'Inter', sans-serif", color: "#ffffff" }}
+            style={{ fontFamily: "'Inter', sans-serif", color: "#715a3d" }}
           >
             {mode === "signup" ? "Sign in" : "Sign Up"}
           </button>
