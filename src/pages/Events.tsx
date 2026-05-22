@@ -294,7 +294,7 @@ const EventCard = ({ event }: { event: any }) => {
         gap: 14,
         background: C.white,
         borderRadius: 16,
-        padding: "12px 12px 12px 0",
+        padding:  0,
         textDecoration: "none",
         overflow: "hidden",
       }}
@@ -319,7 +319,7 @@ const EventCard = ({ event }: { event: any }) => {
           />
         )}
       </div>
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "12px 12px 12px 0" }}>
         <h3
           {...noTitleCaseProps(event)}
           style={{
