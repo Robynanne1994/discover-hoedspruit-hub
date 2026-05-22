@@ -136,7 +136,7 @@ const AdminLayout = () => {
           </span>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8 overflow-auto min-w-1" style={{ overscrollBehaviorX: "contain", background: "#ebebeb" }}>
+        <main className="flex-1 p-4 lg:p-8 overflow-auto min-w-0" style={{ overscrollBehaviorX: "contain", background: "#ebebeb" }}>
           <Outlet />
         </main>
       </div>
