@@ -108,7 +108,7 @@ const HomeWhatsOnEditor = () => {
       </div>
 
       <div>
-        <p className="text-sm text-muted-foreground mb-2 text-slate-100">
+        <p className="text-sm text-muted-foreground mb-2 text-slate-950">
           Selected ({curatedIds.length}/{MAX}) — {curatedIds.length === 0 ? "showing upcoming events" : "showing curated picks"}
         </p>
         <div className="space-y-2">
