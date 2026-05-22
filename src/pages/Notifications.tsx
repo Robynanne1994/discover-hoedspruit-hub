@@ -240,13 +240,31 @@ const Notifications = () => {
         for (const k of Object.keys(DEFAULT_BOOLS) as BoolKey[]) {
           if ((data as any)[k] !== undefined && (data as any)[k] !== null) b[k] = (data as any)[k];
         }
-        setBools(b);
-        setCats({
+        const loadedCats: Record<CatKey, string[] | null> = {
           events_new_categories: (data as any).events_new_categories ?? null,
           listings_new_categories: (data as any).listings_new_categories ?? null,
           listings_updates_categories: (data as any).listings_updates_categories ?? null,
           specials_new_categories: (data as any).specials_new_categories ?? null,
-        });
+        };
+        // If any category array is explicitly empty, turn off the parent toggle
+        const catToBool: Record<CatKey, BoolKey> = {
+          events_new_categories: "events_new",
+          listings_new_categories: "listings_new",
+          listings_updates_categories: "listings_updates",
+          specials_new_categories: "specials_new",
+        };
+        const updates: Partial<Record<BoolKey, boolean>> = {};
+        for (const [catKey, boolKey] of Object.entries(catToBool) as [CatKey, BoolKey][]) {
+          if (loadedCats[catKey] !== null && loadedCats[catKey]!.length === 0 && b[boolKey]) {
+            b[boolKey] = false;
+            updates[boolKey] = false;
+          }
+        }
+        setBools(b);
+        setCats(loadedCats);
+        if (Object.keys(updates).length > 0) {
+          await supabase.from("notification_preferences").update(updates as any).eq("user_id", user.id);
+        }
       } else {
         await supabase.from("notification_preferences").insert({ user_id: user.id, ...DEFAULT_BOOLS });
       }
