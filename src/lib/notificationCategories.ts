@@ -122,7 +122,7 @@ export const FILTER_TYPE_META: Record<
   listings_updates: {
     eyebrow: "LISTING UPDATES",
     title: "narrow it down.",
-    subline: "Choose which categories you want updates from when followed places change.",
+    subline: "Choose which categories you want updates from when changes are made to business details.",
     groups: LISTING_CATEGORY_GROUPS,
     column: "listings_updates_categories",
     itemNoun: { one: "listing", many: "listings" },
