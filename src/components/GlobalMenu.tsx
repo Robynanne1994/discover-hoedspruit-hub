@@ -24,12 +24,6 @@ type Row = { icon: LucideIcon; label: string; to: string };
 
 const SECTIONS: { label: string; rows: Row[] }[] = [
   {
-    label: "Saved",
-    rows: [
-      { icon: Bookmark, label: "My Hoedspruit", to: "/saved" },
-    ],
-  },
-  {
     label: "Account",
     rows: [
       
