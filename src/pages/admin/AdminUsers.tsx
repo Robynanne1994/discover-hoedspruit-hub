@@ -194,7 +194,6 @@ const AdminUsers = () => {
               <Row label="Email confirmed" value={fmt(selected.email_confirmed_at)} />
               <Row label="Phone" value={selected.phone || selected.profile?.phone || "—"} />
               <Row label="Location" value={selected.profile?.location || "—"} />
-              <Row label="Bio" value={selected.profile?.bio || "—"} />
               <Row label="Provider" value={(selected.providers?.length ? selected.providers : [selected.provider]).filter(Boolean).join(", ") || "email"} />
               <Row label="Roles" value={selected.roles.length ? selected.roles.join(", ") : "user"} />
               <Row label="Favourites" value={String(selected.favourites_count)} />
