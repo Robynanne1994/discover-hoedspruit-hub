@@ -14,6 +14,7 @@ type Contact = {
   name: string;
   email: string;
   message: string;
+  is_read?: boolean;
   created_at: string;
 };
 
@@ -38,6 +39,24 @@ type ResourceSuggestion = Contact & {
 type AdvertiseEnquiry = Contact & {
   parsed: { business: string; about: string };
 };
+
+type FeedbackProfile = { display_name: string | null; email: string | null };
+
+type ViewingSubmission =
+  | { kind: "contact"; data: Contact }
+  | { kind: "resource"; data: ResourceSuggestion }
+  | { kind: "advertise"; data: AdvertiseEnquiry }
+  | { kind: "feedback"; data: Feedback & { _profile?: FeedbackProfile } };
+
+type ContactSubmissionsAdminClient = {
+  from: (table: "contact_submissions") => {
+    update: (values: { is_read: boolean }) => {
+      eq: (column: "id", value: string) => Promise<{ error: Error | null }>;
+    };
+  };
+};
+
+const contactSubmissionsClient = supabase as unknown as ContactSubmissionsAdminClient;
 
 const LC_TAG = "[Local Channels suggestion]";
 const AD_TAG = "[Advertising Enquiry]";
@@ -68,7 +87,7 @@ function parseAdvertiseEnquiry(c: Contact): AdvertiseEnquiry | null {
 
 const AdminSubmissions = () => {
   const qc = useQueryClient();
-  const [viewing, setViewing] = useState<{ kind: "contact" | "feedback" | "resource" | "advertise"; data: any } | null>(null);
+  const [viewing, setViewing] = useState<ViewingSubmission | null>(null);
 
   const contactsQ = useQuery({
     queryKey: ["admin-contact-submissions"],
@@ -105,8 +124,8 @@ const AdminSubmissions = () => {
         .select("id, display_name, email")
         .in("id", ids);
       if (error) throw error;
-      const map: Record<string, { display_name: string | null; email: string | null }> = {};
-      (data ?? []).forEach((p: any) => (map[p.id] = { display_name: p.display_name, email: p.email }));
+      const map: Record<string, FeedbackProfile> = {};
+      (data ?? []).forEach((p) => (map[p.id] = { display_name: p.display_name, email: p.email }));
       return map;
     },
   });
@@ -131,7 +150,24 @@ const AdminSubmissions = () => {
       const { error } = await supabase.from("feedback").update({ is_read }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-feedback"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-feedback"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-feedback-unread"] });
+    },
+  });
+
+  const markContactRead = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from("contact_submissions")
+        .update({ is_read: true })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-contact-submissions"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-contact-submissions-unread"] });
+    },
   });
 
   const deleteFeedback = useMutation({
@@ -141,6 +177,7 @@ const AdminSubmissions = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-feedback"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-feedback-unread"] });
       toast.success("Feedback deleted");
     },
   });
@@ -152,6 +189,7 @@ const AdminSubmissions = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-contact-submissions"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-contact-submissions-unread"] });
       toast.success("Deleted");
     },
   });
@@ -176,6 +214,10 @@ const AdminSubmissions = () => {
           <TabsTrigger value="resources" className="gap-2">
             <Radio className="h-4 w-4" />
             Local Channels ({resourceSuggestions.length})
+          </TabsTrigger>
+          <TabsTrigger value="advertise" className="gap-2">
+            <Megaphone className="h-4 w-4" />
+            Advertise ({advertiseEnquiries.length})
           </TabsTrigger>
           <TabsTrigger value="feedback" className="gap-2">
             <MessageSquare className="h-4 w-4" />
@@ -209,7 +251,10 @@ const AdminSubmissions = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setViewing({ kind: "contact", data: c })}
+                  onClick={() => {
+                    setViewing({ kind: "contact", data: c });
+                    if (!c.is_read) markContactRead.mutate(c.id);
+                  }}
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
@@ -255,7 +300,10 @@ const AdminSubmissions = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setViewing({ kind: "resource", data: r })}
+                  onClick={() => {
+                    setViewing({ kind: "resource", data: r });
+                    if (!r.is_read) markContactRead.mutate(r.id);
+                  }}
                 >
                   <Eye className="h-4 w-4" />
                 </Button>
@@ -264,6 +312,55 @@ const AdminSubmissions = () => {
                   size="icon"
                   onClick={() => {
                     if (confirm("Delete this resource suggestion?")) deleteContact.mutate(r.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4 text-destructive" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </TabsContent>
+
+        <TabsContent value="advertise" className="space-y-2">
+          {contactsQ.isLoading && <p className="text-sm text-muted-foreground">Loading…</p>}
+          {advertiseEnquiries.length === 0 && (
+            <p className="text-sm text-muted-foreground">No advertising enquiries yet.</p>
+          )}
+          {advertiseEnquiries.map((a) => (
+            <div
+              key={a.id}
+              className="bg-card border border-border rounded-lg p-4 flex items-start gap-3"
+            >
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <Badge variant="secondary">Advertise</Badge>
+                  <span className="font-medium text-foreground">{a.parsed.business || a.name}</span>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {a.name} · <a href={`mailto:${a.email}`} className="text-primary hover:underline">{a.email}</a> · {fmt(a.created_at)}
+                </p>
+                {a.parsed.about && (
+                  <p className="text-sm text-foreground mt-2 line-clamp-2 whitespace-pre-wrap">
+                    {a.parsed.about}
+                  </p>
+                )}
+              </div>
+              <div className="flex flex-col gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setViewing({ kind: "advertise", data: a });
+                    if (!a.is_read) markContactRead.mutate(a.id);
+                  }}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    if (confirm("Delete this advertising enquiry?")) deleteContact.mutate(a.id);
                   }}
                 >
                   <Trash2 className="h-4 w-4 text-destructive" />
