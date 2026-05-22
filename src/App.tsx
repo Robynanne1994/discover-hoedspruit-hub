@@ -119,7 +119,6 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/categories" element={<Categories />} />
               <Route path="/search" element={<SearchPage />} />
-              <Route path="/quiz" element={<RestaurantQuiz />} />
               <Route path="/category/:id" element={<CategoryPage />} />
               <Route path="/listing/:id" element={<ListingDetail />} />
               <Route path="/contact" element={<ContactUs />} />
@@ -130,7 +129,6 @@ const App = () => (
               
               <Route path="/specials" element={<Specials />} />
               <Route path="/specials/:id" element={<SpecialDetail />} />
-              <Route path="/directories" element={<Directories />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/my-account" element={<MyAccount />} />
               <Route path="/my-profile" element={<MyProfile />} />
