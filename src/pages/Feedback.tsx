@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { toast } from "sonner";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
@@ -26,6 +27,7 @@ const tap = {
 const Feedback = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const requireAuth = useRequireAuth();
   const [type, setType] = useState<string>("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -50,6 +52,7 @@ const Feedback = () => {
     if (!message.trim()) errs.message = "Please share your feedback";
     setErrors(errs);
     if (Object.keys(errs).length) return;
+    if (!requireAuth("send feedback")) return;
 
     setSubmitting(true);
     try {
