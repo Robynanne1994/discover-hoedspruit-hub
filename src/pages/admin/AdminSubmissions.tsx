@@ -132,7 +132,10 @@ const AdminSubmissions = () => {
       const { error } = await supabase.from("feedback").update({ is_read }).eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-feedback"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-feedback"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-feedback-unread"] });
+    },
   });
 
   const markContactRead = useMutation({
@@ -143,7 +146,10 @@ const AdminSubmissions = () => {
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-contact-submissions"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-contact-submissions"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-contact-submissions-unread"] });
+    },
   });
 
   const deleteFeedback = useMutation({
@@ -153,6 +159,7 @@ const AdminSubmissions = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-feedback"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-feedback-unread"] });
       toast.success("Feedback deleted");
     },
   });
@@ -164,6 +171,7 @@ const AdminSubmissions = () => {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-contact-submissions"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-contact-submissions-unread"] });
       toast.success("Deleted");
     },
   });
