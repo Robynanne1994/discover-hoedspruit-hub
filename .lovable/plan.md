@@ -1,55 +1,48 @@
-# Smarter "Top Rated" sort (no UI rating changes)
+## Admin Reports Section
 
-## Goal
+Add a new "Reports" area to the admin where you can generate and download CSV reports on-demand. Each report runs against the live database and downloads a `.csv` file you can open in Google Sheets/Numbers/Excel.
 
-Keep every displayed rating exactly as it is today (Google star + count on cards, real user-review average on the listing detail page). **Only the "Top Rated" sort order changes** so a single 5★ review can't outrank a place with hundreds of strong reviews.
+### Navigation
+- Add a **Reports** item (FileBarChart icon) to the admin sidebar in `src/pages/admin/AdminLayout.tsx`, route `/admin/reports`.
+- Register the route in `src/App.tsx`.
 
-## What changes
+### New page: `src/pages/admin/AdminReports.tsx`
+A single page listing each report as a card with:
+- Title + short description of what it includes
+- A live count (e.g. "23 listings affected") fetched on demand
+- A **Download CSV** button
 
-- **Sorting only**: the "Top Rated" option in the Category page sort dropdown (`src/pages/CategoryPage.tsx`, line 444) will sort by a fair, sample-size-aware score instead of raw `google_rating`.
-- **Nothing visible changes** on cards, listing detail, reviews section, or homepage rails.
+Reports included (each as its own card, downloads its own CSV):
 
-## How the score works (Bayesian average)
+1. **Listings — broken / missing images** — rows where `image_url` or `detail_image_url` is null/empty, OR where a HEAD request to the URL fails (non-2xx).
+2. **Events — broken / missing images** — same logic against `events.image_url`, `detail_image_url`, `homepage_image_url`.
+3. **Specials — broken / missing images** — same logic against `specials.image_url`, `detail_image_url`.
+4. **Listings — missing descriptions** — `description` or `long_description` null/empty.
+5. **Events — missing descriptions** — `events.description` null/empty (events only have one description field; will flag empty).
+6. **Specials — missing descriptions** — `specials.description` null/empty.
+7. **Listings — missing opening hours** — `opening_hours` null or `{}` / no days populated.
+8. **Listings — missing all contact details** — no `phone`, `whatsapp`, `email`, `website`, `additional_phones`, `additional_whatsapps`, `additional_emails`.
+9. **External (not-uploaded) images across listings / events / specials** — any image URL that does NOT start with the Supabase storage host (`<project>.supabase.co/storage/v1/object/public/`). One combined CSV with a `type` column (listing/event/special) + which field is external.
 
-```text
-score = (v / (v + m)) * R + (m / (v + m)) * C
-```
+### CSV format
+Every CSV includes:
+- `id`, `title`, `admin_edit_url` (deep link to the relevant admin edit page), plus the fields specific to that report (e.g. which image URL is broken, which contact fields are missing).
 
-- `R` = the listing's average rating
-- `v` = number of reviews backing that rating
-- `C` = global average rating across all listings (the "prior")
-- `m` = smoothing weight — how many reviews a listing needs before its own rating dominates the prior
+Generated client-side using a small `toCsv()` helper and `Blob` + `URL.createObjectURL` — no edge function needed.
 
-Effect: listings with very few reviews get pulled toward the global average, so they can't leapfrog well-reviewed places. Once a listing has enough reviews, its real rating takes over.
+### Broken-image detection
+For reports 1–3, the "missing" check is instant (SQL). The "broken" check (URL returns error / 404) is done client-side by issuing parallel `fetch(url, { method: 'HEAD', mode: 'no-cors' })` with a concurrency limit (e.g. 8 at a time) and a 5s timeout. URLs that fail or time out are flagged `broken`. A progress bar shows scan status while running, since this can take a while on hundreds of rows.
 
-### Combining Google + internal reviews
+### Technical notes
+- New file: `src/pages/admin/AdminReports.tsx`
+- New helper: `src/lib/reports/csv.ts` (CSV escaping + download trigger)
+- New helper: `src/lib/reports/checkImage.ts` (concurrent HEAD checker with timeout)
+- No DB migrations — all reports are reads against existing tables.
+- Future reports can be added by appending a new card config to the page.
 
-Each listing has two rating sources:
-- Google: `google_rating` + `google_reviews_count`
-- Internal: average + count from the `reviews` table
+### Out of scope (for now)
+- Scheduled / emailed reports
+- Saving report history
+- Excel `.xlsx` (CSV opens cleanly in Numbers, Sheets, Excel)
 
-We combine them into one `(R, v)` pair using a weighted average:
-- `v = google_reviews_count + internal_count`
-- `R = (google_rating * google_count + internal_avg * internal_count) / v`
-
-Then apply the Bayesian formula above.
-
-### Constants
-
-- `m = 5` (low bar suited to a small-town directory)
-- `C = 4.3` (hardcoded, stable global prior — matches typical Google averages locally)
-
-Listings with zero reviews from both sources get score = `C`, so they sit in the middle rather than at the top or bottom.
-
-## Technical details
-
-1. Add a small helper `src/lib/ratingScore.ts` exporting `bayesianScore(listing, internalAvg, internalCount)`.
-2. In `CategoryPage.tsx`, fetch per-listing internal review aggregates once (single query: `select listing_id, rating from reviews where listing_id in (...)`), build a map, and use it in the `sortBy === "rating"` branch.
-3. No schema changes, no triggers, no migrations. Pure client-side sort tweak.
-4. The `ReviewSection` component and all displayed ratings are untouched.
-
-## Out of scope
-
-- Homepage "Top Rated" rails (if any exist) — can be migrated later if you want consistency.
-- Showing the Bayesian score anywhere in the UI.
-- Storing the score on the listing row.
+Ready to build when you approve.
