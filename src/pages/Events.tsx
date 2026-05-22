@@ -294,15 +294,17 @@ const EventCard = ({ event }: { event: any }) => {
         gap: 14,
         background: C.white,
         borderRadius: 16,
-        padding: 12,
+        padding: "12px 12px 12px 0",
         textDecoration: "none",
+        overflow: "hidden",
       }}
     >
       <div
         style={{
-          width: 88,
-          height: 88,
-          borderRadius: 12,
+          width: 96,
+          alignSelf: "stretch",
+          borderTopLeftRadius: 16,
+          borderBottomLeftRadius: 16,
           overflow: "hidden",
           background: C.ivory,
           flexShrink: 0,
@@ -810,7 +812,7 @@ const Events = () => {
             )}
           </div>
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {filtered.map((e) => (
               <EventCard key={e.id} event={e} />
             ))}
