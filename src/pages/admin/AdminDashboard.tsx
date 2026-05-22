@@ -14,11 +14,23 @@ import {
   Briefcase,
 } from "lucide-react";
 
-const useCount = (key: string, table: string) =>
+type CountableTable = "categories" | "listings" | "events" | "specials" | "bush_telegraph_resources" | "business_accounts";
+
+type ContactSubmissionsCountClient = {
+  from: (table: "contact_submissions") => {
+    select: (columns: string, options: { count: "exact"; head: true }) => {
+      eq: (column: "is_read", value: boolean) => Promise<{ count: number | null; error: Error | null }>;
+    };
+  };
+};
+
+const contactSubmissionsClient = supabase as unknown as ContactSubmissionsCountClient;
+
+const useCount = (key: string, table: CountableTable) =>
   useQuery({
     queryKey: [`admin-count-${key}`],
     queryFn: async () => {
-      const { count } = await supabase.from(table as any).select("*", { count: "exact", head: true });
+      const { count } = await supabase.from(table).select("*", { count: "exact", head: true });
       return count ?? 0;
     },
   });
@@ -35,7 +47,8 @@ const AdminDashboard = () => {
     queryKey: ["admin-count-contact-submissions-unread"],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from("contact_submissions" as any)
+      const { count, error } = await contactSubmissionsClient
+        .from("contact_submissions")
         .select("*", { count: "exact", head: true })
         .eq("is_read", false);
       if (error) throw error;
@@ -74,7 +87,8 @@ const AdminDashboard = () => {
     queryFn: async () => {
       const { data, error } = await supabase.functions.invoke("admin-list-users");
       if (error) throw error;
-      return Array.isArray((data as any)?.users) ? (data as any).users.length : 0;
+      const usersData = data as { users?: unknown[] } | null;
+      return Array.isArray(usersData?.users) ? usersData.users.length : 0;
     },
   });
 
