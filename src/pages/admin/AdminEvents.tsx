@@ -119,11 +119,11 @@ const AdminEvents = () => {
   const [form, setForm] = useState(emptyForm);
   const [tab, setTab] = useState<"active" | "passed">("active");
 
-  const todayStr = new Date().toISOString().slice(0, 10);
   const isEventActive = (ev: any) => {
     if (ev?.recurrence && String(ev.recurrence).trim() !== "") return true;
     const end = ev?.end_date || ev?.start_date;
     if (!end) return true;
+    const todayStr = new Date().toISOString().slice(0, 10);
     return String(end) >= todayStr;
   };
 
