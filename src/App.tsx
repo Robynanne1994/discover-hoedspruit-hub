@@ -93,11 +93,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   // signing in to the consumer app first.
   if (location.pathname.startsWith("/business")) return <>{children}</>;
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#5C6446" }}>
-        <img src={loadingIcon} alt="Loading" className="animate-pulse" style={{ width: 120, height: "auto" }} />
-      </div>
-    );
+    return <LoadingSplash />;
   }
   // Welcome route is always reachable so guests can return to sign up/in.
   if (location.pathname === "/welcome") return <>{children}</>;
