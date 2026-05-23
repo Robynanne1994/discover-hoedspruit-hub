@@ -8,26 +8,33 @@ export const useHomepageSection = (
   return useQuery({
     queryKey: [`homepage-${sectionKey}`],
     queryFn: async () => {
-      // 1. Check for curated picks in site_content
+      const TARGET = 8;
+
+      // 1. Get curated picks (if any)
       const { data: siteContent } = await supabase
         .from("site_content")
         .select("content")
         .eq("section", `homepage-${sectionKey}`)
         .maybeSingle();
 
-      if (siteContent?.content && Array.isArray(siteContent.content) && siteContent.content.length > 0) {
-        const ids = siteContent.content as string[];
+      const curatedIds: string[] =
+        siteContent?.content && Array.isArray(siteContent.content)
+          ? (siteContent.content as string[])
+          : [];
+
+      let curatedListings: any[] = [];
+      if (curatedIds.length > 0) {
         const { data } = await supabase
           .from("listings")
           .select("id, title, title_override, image_url, google_rating, google_reviews_count, location")
-          .in("id", ids);
-
-        // Preserve curated order
+          .in("id", curatedIds);
         const map = new Map((data || []).map((l) => [l.id, l]));
-        return ids.map((id) => map.get(id)).filter(Boolean) as typeof data;
+        curatedListings = curatedIds.map((id) => map.get(id)).filter(Boolean);
       }
 
-      // 2. Fallback: auto-pick from category
+      if (curatedListings.length >= TARGET) return curatedListings.slice(0, TARGET);
+
+      // 2. Fill remaining slots from category auto-picks
       let categoryQuery;
       if (Array.isArray(categorySearch)) {
         categoryQuery = supabase
@@ -44,7 +51,7 @@ export const useHomepageSection = (
       }
 
       const { data: categories } = await categoryQuery;
-      if (!categories?.length) return [];
+      if (!categories?.length) return curatedListings;
 
       const categoryId = categories[0].id;
 
@@ -55,14 +62,18 @@ export const useHomepageSection = (
 
       const ids = linkedIds?.map((l) => l.listing_id) || [];
 
-      const { data } = await supabase
+      const { data: autoPicks } = await supabase
         .from("listings")
         .select("id, title, title_override, image_url, google_rating, google_reviews_count, location")
         .or(`category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`)
-        .limit(8);
+        .limit(TARGET + curatedIds.length);
 
-      return data || [];
+      const curatedIdSet = new Set(curatedListings.map((l) => l.id));
+      const fillers = (autoPicks || []).filter((l) => !curatedIdSet.has(l.id));
+
+      return [...curatedListings, ...fillers].slice(0, TARGET);
     },
+
   });
 };
 
