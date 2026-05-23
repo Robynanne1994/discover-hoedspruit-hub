@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
-import loadingIcon from "@/assets/loading-icon.svg";
+import LoadingSplash from "@/components/LoadingSplash";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Welcome from "./pages/Welcome.tsx";
