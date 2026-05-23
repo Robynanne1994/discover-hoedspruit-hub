@@ -9,7 +9,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
-import loadingIcon from "@/assets/loading-icon.svg";
+import LoadingSplash from "@/components/LoadingSplash";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Welcome from "./pages/Welcome.tsx";
@@ -93,11 +93,7 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   // signing in to the consumer app first.
   if (location.pathname.startsWith("/business")) return <>{children}</>;
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "#5C6446" }}>
-        <img src={loadingIcon} alt="Loading" className="animate-pulse" style={{ width: 120, height: "auto" }} />
-      </div>
-    );
+    return <LoadingSplash />;
   }
   // Welcome route is always reachable so guests can return to sign up/in.
   if (location.pathname === "/welcome") return <>{children}</>;
