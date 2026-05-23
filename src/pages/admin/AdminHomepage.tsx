@@ -216,8 +216,8 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
 
   const addListing = (id: string) => {
     if (curatedIds.includes(id)) return;
-    if (curatedIds.length >= 4) {
-      toast.error("Maximum 4 listings per section");
+    if (curatedIds.length >= 8) {
+      toast.error("Maximum 8 listings per section");
       return;
     }
     saveMutation.mutate([...curatedIds, id]);
@@ -235,7 +235,7 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
 
       <div>
         <p className="text-sm text-muted-foreground mb-2">
-          Selected ({curatedIds.length}/4) — {curatedIds.length === 0 ? "showing auto-picks" : "showing curated picks"}
+          Selected ({curatedIds.length}/8) — {curatedIds.length === 0 ? "showing auto-picks" : "showing curated picks"}
         </p>
         <div className="space-y-2">
           {curatedListings.map((listing) => (
@@ -256,7 +256,7 @@ const SectionEditor = ({ sectionKey, label, categorySearch }: { sectionKey: stri
         </div>
       </div>
 
-      {curatedIds.length < 4 && (
+      {curatedIds.length < 8 && (
         <div>
           <div className="relative mb-2">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -301,7 +301,7 @@ const AdminHomepage = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-slate-950">Homepage Sections</h1>
-        <p className="text-sm text-muted-foreground mb-6 text-slate-950">Choose which 4 listings appear in each homepage section. Leave empty to auto-pick.</p>
+        <p className="text-sm text-muted-foreground mb-6 text-slate-950">Choose which up to 8 listings appear in each homepage section. Leave empty to auto-pick.</p>
       </div>
       <HomeWhatsOnEditor />
       {SECTIONS.map((section) => (
