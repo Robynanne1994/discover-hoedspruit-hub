@@ -36,16 +36,11 @@ type ResourceSuggestion = Contact & {
   };
 };
 
-type AdvertiseEnquiry = Contact & {
-  parsed: { business: string; about: string };
-};
-
 type FeedbackProfile = { display_name: string | null; email: string | null };
 
 type ViewingSubmission =
   | { kind: "contact"; data: Contact }
   | { kind: "resource"; data: ResourceSuggestion }
-  | { kind: "advertise"; data: AdvertiseEnquiry }
   | { kind: "feedback"; data: Feedback & { _profile?: FeedbackProfile } };
 
 type ContactSubmissionsAdminClient = {
@@ -59,7 +54,6 @@ type ContactSubmissionsAdminClient = {
 const contactSubmissionsClient = supabase as unknown as ContactSubmissionsAdminClient;
 
 const LC_TAG = "[Local Channels suggestion]";
-const AD_TAG = "[Advertising Enquiry]";
 
 function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
   if (!c.message.includes(LC_TAG)) return null;
@@ -76,14 +70,6 @@ function parseResourceSuggestion(c: Contact): ResourceSuggestion | null {
   return { ...c, parsed: { resourceName, resourceLink, about } };
 }
 
-function parseAdvertiseEnquiry(c: Contact): AdvertiseEnquiry | null {
-  if (!c.message.includes(AD_TAG)) return null;
-  const rest = c.message.replace(AD_TAG, "").trim();
-  const businessMatch = rest.match(/^Business:\s*([^.]+)\.\s*/);
-  const business = businessMatch ? businessMatch[1].trim() : "";
-  const about = businessMatch ? rest.slice(businessMatch[0].length).trim() : rest;
-  return { ...c, parsed: { business, about } };
-}
 
 const AdminSubmissions = () => {
   const qc = useQueryClient();
@@ -130,19 +116,16 @@ const AdminSubmissions = () => {
     },
   });
 
-  const { regularContacts, resourceSuggestions, advertiseEnquiries } = useMemo(() => {
+  const { regularContacts, resourceSuggestions } = useMemo(() => {
     const all = contactsQ.data ?? [];
     const resources: ResourceSuggestion[] = [];
-    const ads: AdvertiseEnquiry[] = [];
     const regular: Contact[] = [];
     for (const c of all) {
       const r = parseResourceSuggestion(c);
       if (r) { resources.push(r); continue; }
-      const a = parseAdvertiseEnquiry(c);
-      if (a) { ads.push(a); continue; }
       regular.push(c);
     }
-    return { regularContacts: regular, resourceSuggestions: resources, advertiseEnquiries: ads };
+    return { regularContacts: regular, resourceSuggestions: resources };
   }, [contactsQ.data]);
 
   const markRead = useMutation({
