@@ -59,7 +59,7 @@ export const useHomepageSection = (
         .from("listings")
         .select("id, title, title_override, image_url, google_rating, google_reviews_count, location")
         .or(`category_id.eq.${categoryId}${ids.length ? `,id.in.(${ids.join(",")})` : ""}`)
-        .limit(4);
+        .limit(8);
 
       return data || [];
     },
