@@ -17,7 +17,7 @@ const LoadingSplash = () => {
   return (
     <div
       className="min-h-screen flex items-center justify-center"
-      style={{ background: "#5C6446" }}
+      style={{ background: "#ebebeb" }}
     >
       <img
         src={loadingIcon}
