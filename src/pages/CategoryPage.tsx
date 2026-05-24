@@ -700,13 +700,6 @@ const CategoryPage = () => {
         }}
       >
         <div style={{ display: "flex", gap: 8 }}>
-          <Pill
-            active
-            onClick={() => setRefineOpen(true)}
-            icon={<SlidersHorizontal size={14} strokeWidth={2} color="#FFFFFF" />}
-          >
-            Filters{activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
-          </Pill>
           <Pill active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)}>
             Open Now
           </Pill>
