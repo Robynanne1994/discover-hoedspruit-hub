@@ -632,14 +632,59 @@ const CategoryPage = () => {
       <div style={{ height: 1, background: "rgba(2,2,2,0.08)", marginTop: 16 }} />
 
       {searchOpen && (
-        <div style={{ padding: "16px 20px 0 20px" }}>
-          <SearchBar
-            variant="light"
-            value={search}
-            onChange={setSearch}
-            placeholder={`Search ${displayTitle}`}
-            autoFocus
-          />
+        <div style={{ padding: "16px 20px 0 20px", display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ flex: 1 }}>
+            <SearchBar
+              variant="light"
+              value={search}
+              onChange={setSearch}
+              placeholder={`Search ${displayTitle}`}
+              autoFocus
+            />
+          </div>
+          <button
+            onClick={() => setRefineOpen(true)}
+            aria-label="Filters"
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: 999,
+              background: activeFilterCount >  0 ? "#2A2A24" : "#FFFFFF",
+              color: activeFilterCount > 0 ? "#FFFFFF" : "#020202",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+              position: "relative",
+            }}
+          >
+            <SlidersHorizontal size={18} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#020202"} />
+            {activeFilterCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -4,
+                  right: -4,
+                  minWidth: 18,
+                  height: 18,
+                  borderRadius: 999,
+                  background: "#C0392B",
+                  color: "#FFFFFF",
+                  fontFamily: sans,
+                  fontSize: 10,
+                  fontWeight: 700,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 4px",
+                }}
+              >
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
         </div>
       )}
 
