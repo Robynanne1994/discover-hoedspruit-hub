@@ -136,17 +136,39 @@ const AdminCategories = () => {
   });
 
   const { data: subCounts } = useQuery({
-    queryKey: ["admin-listing-subcategories-counts"],
+    queryKey: ["admin-listing-subcategories-counts-aggregated"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("listing_subcategories").select("subcategory_id");
+      // Direct listing→subcategory links
+      const { data: direct, error } = await supabase
+        .from("listing_subcategories")
+        .select("subcategory_id, listing_id");
       if (error) throw error;
-      const map: Record<string, number> = {};
-      (data ?? []).forEach((r: any) => {
-        map[r.subcategory_id] = (map[r.subcategory_id] ?? 0) + 1;
+
+      // Listing→sub_subcategory links + parent subcategory mapping
+      const [{ data: ssLinks }, { data: ssRows }] = await Promise.all([
+        supabase.from("listing_sub_subcategories").select("sub_subcategory_id, listing_id"),
+        supabase.from("sub_subcategories").select("id, subcategory_id"),
+      ]);
+      const ssParent = new Map<string, string>();
+      (ssRows ?? []).forEach((r: any) => ssParent.set(r.id, r.subcategory_id));
+
+      // Build subcategory_id → Set<listing_id> (distinct)
+      const sets: Record<string, Set<string>> = {};
+      (direct ?? []).forEach((r: any) => {
+        (sets[r.subcategory_id] ??= new Set()).add(r.listing_id);
       });
+      (ssLinks ?? []).forEach((r: any) => {
+        const subId = ssParent.get(r.sub_subcategory_id);
+        if (!subId) return;
+        (sets[subId] ??= new Set()).add(r.listing_id);
+      });
+
+      const map: Record<string, number> = {};
+      Object.entries(sets).forEach(([k, v]) => { map[k] = v.size; });
       return map;
     },
   });
+
 
   useEffect(() => {
     if (categories) setOrderedCats(categories);
