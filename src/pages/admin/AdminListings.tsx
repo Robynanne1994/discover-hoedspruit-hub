@@ -441,6 +441,7 @@ const AdminListings = () => {
       meal: (l as any).meal ?? [],
       vibe: (l as any).vibe ?? [],
       cuisine: (l as any).cuisine ?? [],
+      foods: (l as any).foods ?? [],
       seating: (l as any).seating ?? [],
       kids_playground: (l as any).kids_playground ?? null,
       smoking_allowed: (l as any).smoking_allowed ?? null,
