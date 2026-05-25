@@ -287,6 +287,7 @@ const AdminListings = () => {
         has_milkshakes: values.has_milkshakes,
         has_mocktails: values.has_mocktails,
         has_beers_ciders: values.has_beers_ciders,
+        has_iced_coffee: values.has_iced_coffee,
         air_conditioned: values.air_conditioned,
         payment_methods: values.payment_methods,
         delivery_available: values.delivery_available,
