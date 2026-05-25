@@ -787,7 +787,7 @@ const SortableCategoryRow = ({
   onDelete: () => void;
   children?: React.ReactNode;
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: cat.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `cat:${cat.id}` });
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
