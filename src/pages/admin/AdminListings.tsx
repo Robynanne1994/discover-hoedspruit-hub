@@ -53,6 +53,7 @@ const AdminListings = () => {
   const [form, setForm] = useState(emptyForm);
   const [selectedCatIds, setSelectedCatIds] = useState<string[]>([]);
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
+  const [selectedSubSubIds, setSelectedSubSubIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customRowsVisible, setCustomRowsVisible] = useState(0);
@@ -61,6 +62,9 @@ const AdminListings = () => {
   const [newSubName, setNewSubName] = useState("");
   const [newSubParent, setNewSubParent] = useState<string>("");
   const [showNewSub, setShowNewSub] = useState(false);
+  const [newSubSubName, setNewSubSubName] = useState("");
+  const [newSubSubParent, setNewSubSubParent] = useState<string>("");
+  const [showNewSubSub, setShowNewSubSub] = useState(false);
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
   const [newServiceInput, setNewServiceInput] = useState("");
