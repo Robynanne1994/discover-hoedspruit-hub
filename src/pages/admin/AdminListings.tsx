@@ -928,6 +928,7 @@ const AdminListings = () => {
                       { label: "Meal", options: MEAL_OPTIONS, key: "meal" as const },
                       { label: "Vibe", options: VIBE_OPTIONS, key: "vibe" as const },
                       { label: "Cuisine", options: CUISINE_OPTIONS, key: "cuisine" as const },
+                      { label: "Foods", options: FOODS_OPTIONS, key: "foods" as const },
                       { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
                       { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
                     ].map(({ label, options, key }) => {
