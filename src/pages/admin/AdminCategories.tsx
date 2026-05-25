@@ -1017,7 +1017,7 @@ const SortableSubSubRow = ({
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>Choose category</DropdownMenuSubTrigger>
               <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
-                {categories.map((c) => (
+                {(categories ?? []).map((c) => (
                   <DropdownMenuItem key={c.id} onClick={() => onPromoteToSub(c.id)}>{c.title}</DropdownMenuItem>
                 ))}
               </DropdownMenuSubContent>
