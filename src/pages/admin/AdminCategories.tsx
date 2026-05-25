@@ -380,36 +380,141 @@ const AdminCategories = () => {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const handleCategoryDragEnd = (e: DragEndEvent) => {
-    const { active, over } = e;
-    if (!over || active.id === over.id) return;
-    const oldIdx = orderedCats.findIndex((c) => c.id === active.id);
-    const newIdx = orderedCats.findIndex((c) => c.id === over.id);
-    const next = arrayMove(orderedCats, oldIdx, newIdx);
-    setOrderedCats(next);
-    persistCategoryOrder(next);
+  const parseId = (raw: string): { kind: "cat" | "sub" | "subsub"; id: string } | null => {
+    const [kind, id] = raw.split(":");
+    if (!id) return null;
+    if (kind === "cat" || kind === "sub" || kind === "subsub") return { kind, id };
+    return null;
   };
 
-  const handleSubDragEnd = (catId: string) => (e: DragEndEvent) => {
-    const { active, over } = e;
-    if (!over || active.id === over.id) return;
-    const list = orderedSubs[catId] ?? [];
-    const oldIdx = list.findIndex((s) => s.id === active.id);
-    const newIdx = list.findIndex((s) => s.id === over.id);
-    const next = arrayMove(list, oldIdx, newIdx);
-    setOrderedSubs({ ...orderedSubs, [catId]: next });
-    persistSubcategoryOrder(next);
+  const promoteSubSubToSub = async (subSubId: string, targetCategoryId: string) => {
+    const ss = (subSubcategories ?? []).find((s) => s.id === subSubId);
+    if (!ss) return;
+    const { data: inserted, error: insErr } = await supabase
+      .from("subcategories")
+      .insert({ title: ss.title, description: ss.description, sort_order: 999, category_id: targetCategoryId })
+      .select("id")
+      .single();
+    if (insErr || !inserted) { toast.error(insErr?.message ?? "Failed to promote"); return; }
+    const { data: links } = await supabase.from("listing_sub_subcategories").select("listing_id").eq("sub_subcategory_id", subSubId);
+    if (links && links.length > 0) {
+      await supabase.from("listing_subcategories").insert(links.map((l: any) => ({ listing_id: l.listing_id, subcategory_id: inserted.id })));
+    }
+    await supabase.from("listing_sub_subcategories").delete().eq("sub_subcategory_id", subSubId);
+    await supabase.from("sub_subcategories").delete().eq("id", subSubId);
+    qc.invalidateQueries({ queryKey: ["admin-subcategories"] });
+    qc.invalidateQueries({ queryKey: ["admin-sub-subcategories"] });
+    qc.invalidateQueries({ queryKey: ["admin-listing-subcategories-counts"] });
+    qc.invalidateQueries({ queryKey: ["admin-listing-sub-subcategories-counts"] });
+    toast.success("Promoted to subcategory");
   };
 
-  const handleSubSubDragEnd = (subId: string) => (e: DragEndEvent) => {
+  const demoteSubToSubSub = async (subId: string, targetSubcategoryId: string) => {
+    if (subId === targetSubcategoryId) return;
+    const sub = (subcategories ?? []).find((s) => s.id === subId);
+    if (!sub) return;
+    const { data: inserted, error: insErr } = await supabase
+      .from("sub_subcategories")
+      .insert({ title: sub.title, description: sub.description, sort_order: 999, subcategory_id: targetSubcategoryId })
+      .select("id")
+      .single();
+    if (insErr || !inserted) { toast.error(insErr?.message ?? "Failed to demote"); return; }
+    const { data: links } = await supabase.from("listing_subcategories").select("listing_id").eq("subcategory_id", subId);
+    if (links && links.length > 0) {
+      await supabase.from("listing_sub_subcategories").insert(links.map((l: any) => ({ listing_id: l.listing_id, sub_subcategory_id: inserted.id })));
+    }
+    await supabase.from("sub_subcategories").update({ subcategory_id: targetSubcategoryId }).eq("subcategory_id", subId);
+    await supabase.from("listing_subcategories").delete().eq("subcategory_id", subId);
+    await supabase.from("subcategories").delete().eq("id", subId);
+    qc.invalidateQueries({ queryKey: ["admin-subcategories"] });
+    qc.invalidateQueries({ queryKey: ["admin-sub-subcategories"] });
+    qc.invalidateQueries({ queryKey: ["admin-listing-subcategories-counts"] });
+    qc.invalidateQueries({ queryKey: ["admin-listing-sub-subcategories-counts"] });
+    toast.success("Demoted to sub-subcategory");
+  };
+
+  const moveSubToCategory = async (subId: string, targetCategoryId: string) => {
+    const { error } = await supabase.from("subcategories").update({ category_id: targetCategoryId }).eq("id", subId);
+    if (error) { toast.error(error.message); return; }
+    qc.invalidateQueries({ queryKey: ["admin-subcategories"] });
+    toast.success("Moved subcategory");
+  };
+
+  const moveSubSubToSub = async (subSubId: string, targetSubId: string) => {
+    const { error } = await supabase.from("sub_subcategories").update({ subcategory_id: targetSubId }).eq("id", subSubId);
+    if (error) { toast.error(error.message); return; }
+    qc.invalidateQueries({ queryKey: ["admin-sub-subcategories"] });
+    toast.success("Moved sub-subcategory");
+  };
+
+  const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
     if (!over || active.id === over.id) return;
-    const list = orderedSubSubs[subId] ?? [];
-    const oldIdx = list.findIndex((s) => s.id === active.id);
-    const newIdx = list.findIndex((s) => s.id === over.id);
-    const next = arrayMove(list, oldIdx, newIdx);
-    setOrderedSubSubs({ ...orderedSubSubs, [subId]: next });
-    persistSubSubOrder(next);
+    const a = parseId(String(active.id));
+    const o = parseId(String(over.id));
+    if (!a || !o) return;
+
+    if (a.kind === "cat" && o.kind === "cat") {
+      const oldIdx = orderedCats.findIndex((c) => c.id === a.id);
+      const newIdx = orderedCats.findIndex((c) => c.id === o.id);
+      if (oldIdx < 0 || newIdx < 0) return;
+      const next = arrayMove(orderedCats, oldIdx, newIdx);
+      setOrderedCats(next);
+      persistCategoryOrder(next);
+      return;
+    }
+    if (a.kind === "sub" && o.kind === "sub") {
+      const aSub = (subcategories ?? []).find((s) => s.id === a.id);
+      const oSub = (subcategories ?? []).find((s) => s.id === o.id);
+      if (!aSub || !oSub) return;
+      if (aSub.category_id === oSub.category_id) {
+        const list = orderedSubs[aSub.category_id] ?? [];
+        const oldIdx = list.findIndex((s) => s.id === a.id);
+        const newIdx = list.findIndex((s) => s.id === o.id);
+        const next = arrayMove(list, oldIdx, newIdx);
+        setOrderedSubs({ ...orderedSubs, [aSub.category_id]: next });
+        persistSubcategoryOrder(next);
+      } else {
+        if (confirm(`Make "${aSub.title}" a sub-subcategory of "${oSub.title}"? Its listings and any existing sub-subcategories will be moved.`)) {
+          demoteSubToSubSub(a.id, o.id);
+        }
+      }
+      return;
+    }
+    if (a.kind === "subsub" && o.kind === "subsub") {
+      const aSS = (subSubcategories ?? []).find((s) => s.id === a.id);
+      const oSS = (subSubcategories ?? []).find((s) => s.id === o.id);
+      if (!aSS || !oSS) return;
+      if (aSS.subcategory_id === oSS.subcategory_id) {
+        const list = orderedSubSubs[aSS.subcategory_id] ?? [];
+        const oldIdx = list.findIndex((s) => s.id === a.id);
+        const newIdx = list.findIndex((s) => s.id === o.id);
+        const next = arrayMove(list, oldIdx, newIdx);
+        setOrderedSubSubs({ ...orderedSubSubs, [aSS.subcategory_id]: next });
+        persistSubSubOrder(next);
+      } else {
+        moveSubSubToSub(a.id, oSS.subcategory_id);
+      }
+      return;
+    }
+
+    if (a.kind === "sub" && o.kind === "cat") { moveSubToCategory(a.id, o.id); return; }
+    if (a.kind === "subsub" && o.kind === "sub") { moveSubSubToSub(a.id, o.id); return; }
+    if (a.kind === "subsub" && o.kind === "cat") {
+      if (confirm("Promote this sub-subcategory to a top-level subcategory of this category?")) {
+        promoteSubSubToSub(a.id, o.id);
+      }
+      return;
+    }
+    if (a.kind === "sub" && o.kind === "subsub") {
+      const oSS = (subSubcategories ?? []).find((s) => s.id === o.id);
+      const aSub = (subcategories ?? []).find((s) => s.id === a.id);
+      if (!oSS || !aSub) return;
+      if (confirm(`Make "${aSub.title}" a sub-subcategory under the same parent as "${oSS.title}"?`)) {
+        demoteSubToSubSub(a.id, oSS.subcategory_id);
+      }
+      return;
+    }
   };
 
   return (
@@ -546,8 +651,8 @@ const AdminCategories = () => {
             <div className="text-right">Actions</div>
           </div>
 
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCategoryDragEnd}>
-            <SortableContext items={orderedCats.map((c) => c.id)} strategy={verticalListSortingStrategy}>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={orderedCats.map((c) => `cat:${c.id}`)} strategy={verticalListSortingStrategy}>
               {orderedCats.map((cat) => {
                 const subs = orderedSubs[cat.id] ?? [];
                 const isExpanded = expandedCat === cat.id;
@@ -584,7 +689,7 @@ const AdminCategories = () => {
                           </div>
                         </div>
                         {subs.length === 0 ? (
-                          <p className="text-sm text-muted-foreground">No subcategories yet.</p>
+                          <p className="text-sm text-muted-foreground">No subcategories yet. Drag a subcategory or sub-subcategory onto this category to move it here.</p>
                         ) : (
                           (() => {
                             const displaySubs = alphaSort[cat.id]
@@ -614,23 +719,21 @@ const AdminCategories = () => {
                                       </Button>
                                     </div>
                                     {ssList.length === 0 ? (
-                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet.</p>
+                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet. Drag a sub-subcategory onto this subcategory to move it here.</p>
                                     ) : (
-                                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubSubDragEnd(sub.id)}>
-                                        <SortableContext items={ssList.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-                                          <div className="space-y-1.5">
-                                            {ssList.map((ss) => (
-                                              <SortableSubSubRow
-                                                key={ss.id}
-                                                ss={ss}
-                                                count={subSubCounts?.[ss.id] ?? 0}
-                                                onEdit={() => openEditSubSub(ss)}
-                                                onDelete={() => deleteSubSubMut.mutate(ss.id)}
-                                              />
-                                            ))}
-                                          </div>
-                                        </SortableContext>
-                                      </DndContext>
+                                      <SortableContext items={ssList.map((s) => `subsub:${s.id}`)} strategy={verticalListSortingStrategy}>
+                                        <div className="space-y-1.5">
+                                          {ssList.map((ss) => (
+                                            <SortableSubSubRow
+                                              key={ss.id}
+                                              ss={ss}
+                                              count={subSubCounts?.[ss.id] ?? 0}
+                                              onEdit={() => openEditSubSub(ss)}
+                                              onDelete={() => deleteSubSubMut.mutate(ss.id)}
+                                            />
+                                          ))}
+                                        </div>
+                                      </SortableContext>
                                     )}
                                   </div>
                                 </SortableSubRow>
@@ -644,13 +747,11 @@ const AdminCategories = () => {
                               );
                             }
                             return (
-                              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
-                                <SortableContext items={displaySubs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-                                  <div className="space-y-2">
-                                    {displaySubs.map((sub) => renderSub(sub))}
-                                  </div>
-                                </SortableContext>
-                              </DndContext>
+                              <SortableContext items={displaySubs.map((s) => `sub:${s.id}`)} strategy={verticalListSortingStrategy}>
+                                <div className="space-y-2">
+                                  {displaySubs.map((sub) => renderSub(sub))}
+                                </div>
+                              </SortableContext>
                             );
                           })()
                         )}
@@ -686,7 +787,7 @@ const SortableCategoryRow = ({
   onDelete: () => void;
   children?: React.ReactNode;
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: cat.id });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: `cat:${cat.id}` });
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -743,7 +844,7 @@ const SortableSubRow = ({
   hideDrag?: boolean;
   children?: React.ReactNode;
 }) => {
-  const sortable = useSortable({ id: sub.id, disabled: hideDrag });
+  const sortable = useSortable({ id: `sub:${sub.id}`, disabled: hideDrag });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -800,7 +901,7 @@ const SortableSubSubRow = ({
   onDelete: () => void;
   hideDrag?: boolean;
 }) => {
-  const sortable = useSortable({ id: ss.id, disabled: hideDrag });
+  const sortable = useSortable({ id: `subsub:${ss.id}`, disabled: hideDrag });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
