@@ -422,29 +422,65 @@ const AdminCategories = () => {
                       <div className="bg-muted/30 px-4 py-3 border-t border-border">
                         <div className="flex items-center justify-between mb-3">
                           <span className="text-sm font-medium text-muted-foreground">Subcategories</span>
-                          <Button size="sm" variant="outline" className="gap-1" onClick={() => openAddSub(cat.id)}>
-                            <Plus className="h-3 w-3" /> Add
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              variant={alphaSort[cat.id] ? "default" : "outline"}
+                              className="gap-1"
+                              onClick={() => setAlphaSort((prev) => ({ ...prev, [cat.id]: !prev[cat.id] }))}
+                              title={alphaSort[cat.id] ? "Show front-end order" : "Show alphabetical order"}
+                            >
+                              {alphaSort[cat.id] ? <ArrowDownUp className="h-3 w-3" /> : <ArrowDownAZ className="h-3 w-3" />}
+                              {alphaSort[cat.id] ? "Front-end order" : "Alphabetical"}
+                            </Button>
+                            <Button size="sm" variant="outline" className="gap-1" onClick={() => openAddSub(cat.id)}>
+                              <Plus className="h-3 w-3" /> Add
+                            </Button>
+                          </div>
                         </div>
                         {subs.length === 0 ? (
                           <p className="text-sm text-muted-foreground">No subcategories yet.</p>
                         ) : (
-                          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
-                            <SortableContext items={subs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-                              <div className="space-y-2">
-                                {subs.map((sub) => (
-                                  <SortableSubRow
-                                    key={sub.id}
-                                    sub={sub}
-                                    count={subCounts?.[sub.id] ?? 0}
-                                    onView={() => setViewSub(sub)}
-                                    onEdit={() => openEditSub(sub)}
-                                    onDelete={() => deleteSubMut.mutate(sub.id)}
-                                  />
-                                ))}
-                              </div>
-                            </SortableContext>
-                          </DndContext>
+                          (() => {
+                            const displaySubs = alphaSort[cat.id]
+                              ? [...subs].sort((a, b) => a.title.localeCompare(b.title))
+                              : subs;
+                            if (alphaSort[cat.id]) {
+                              return (
+                                <div className="space-y-2">
+                                  {displaySubs.map((sub) => (
+                                    <SortableSubRow
+                                      key={sub.id}
+                                      sub={sub}
+                                      count={subCounts?.[sub.id] ?? 0}
+                                      onView={() => setViewSub(sub)}
+                                      onEdit={() => openEditSub(sub)}
+                                      onDelete={() => deleteSubMut.mutate(sub.id)}
+                                      hideDrag
+                                    />
+                                  ))}
+                                </div>
+                              );
+                            }
+                            return (
+                              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
+                                <SortableContext items={displaySubs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                                  <div className="space-y-2">
+                                    {displaySubs.map((sub) => (
+                                      <SortableSubRow
+                                        key={sub.id}
+                                        sub={sub}
+                                        count={subCounts?.[sub.id] ?? 0}
+                                        onView={() => setViewSub(sub)}
+                                        onEdit={() => openEditSub(sub)}
+                                        onDelete={() => deleteSubMut.mutate(sub.id)}
+                                      />
+                                    ))}
+                                  </div>
+                                </SortableContext>
+                              </DndContext>
+                            );
+                          })()
                         )}
                       </div>
                     )}
