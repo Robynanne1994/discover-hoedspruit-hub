@@ -696,17 +696,25 @@ const SortableCategoryRow = ({
 const SortableSubRow = ({
   sub,
   count,
+  subSubCount,
+  isExpanded,
+  onToggle,
   onView,
   onEdit,
   onDelete,
   hideDrag,
+  children,
 }: {
   sub: Subcategory;
   count: number;
+  subSubCount?: number;
+  isExpanded?: boolean;
+  onToggle?: () => void;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
   hideDrag?: boolean;
+  children?: React.ReactNode;
 }) => {
   const sortable = useSortable({ id: sub.id, disabled: hideDrag });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
@@ -716,24 +724,79 @@ const SortableSubRow = ({
     opacity: isDragging ? 0.6 : 1,
   };
   return (
-    <div ref={setNodeRef} style={style} className="flex items-center justify-between bg-card border border-border rounded-lg px-3 py-2">
+    <div ref={setNodeRef} style={style} className="bg-card border border-border rounded-lg overflow-hidden">
+      <div className="flex items-center justify-between px-3 py-2">
+        <div className="flex items-center gap-2 min-w-0">
+          {!hideDrag && (
+            <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
+              <GripVertical className="h-4 w-4" />
+            </button>
+          )}
+          {onToggle && (
+            <button type="button" onClick={onToggle} className="text-muted-foreground hover:text-foreground">
+              {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            </button>
+          )}
+          <button type="button" onClick={onView} className="min-w-0 text-left hover:text-primary">
+            <span className="font-medium text-foreground text-sm">{sub.title}</span>
+            <span className="text-muted-foreground text-xs ml-1">({count})</span>
+            {subSubCount !== undefined && (
+              <span className="text-muted-foreground text-xs ml-1">· {subSubCount} sub</span>
+            )}
+            {sub.description && <span className="text-muted-foreground text-xs ml-2">— {sub.description}</span>}
+          </button>
+        </div>
+        <div className="flex gap-1">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
+            <Pencil className="h-3 w-3" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onDelete}>
+            <Trash2 className="h-3 w-3 text-destructive" />
+          </Button>
+        </div>
+      </div>
+      {isExpanded && children}
+    </div>
+  );
+};
+
+const SortableSubSubRow = ({
+  ss,
+  count,
+  onEdit,
+  onDelete,
+  hideDrag,
+}: {
+  ss: SubSubcategory;
+  count: number;
+  onEdit: () => void;
+  onDelete: () => void;
+  hideDrag?: boolean;
+}) => {
+  const sortable = useSortable({ id: ss.id, disabled: hideDrag });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.6 : 1,
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="flex items-center justify-between bg-background border border-border rounded-md px-2 py-1.5">
       <div className="flex items-center gap-2 min-w-0">
         {!hideDrag && (
           <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
-            <GripVertical className="h-4 w-4" />
+            <GripVertical className="h-3.5 w-3.5" />
           </button>
         )}
-        <button type="button" onClick={onView} className="min-w-0 text-left hover:text-primary">
-          <span className="font-medium text-foreground text-sm">{sub.title}</span>
-          <span className="text-muted-foreground text-xs ml-1">({count})</span>
-          {sub.description && <span className="text-muted-foreground text-xs ml-2">— {sub.description}</span>}
-        </button>
+        <span className="font-medium text-foreground text-sm">{ss.title}</span>
+        <span className="text-muted-foreground text-xs">({count})</span>
+        {ss.description && <span className="text-muted-foreground text-xs">— {ss.description}</span>}
       </div>
       <div className="flex gap-1">
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
+        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onEdit}>
           <Pencil className="h-3 w-3" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onDelete}>
+        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onDelete}>
           <Trash2 className="h-3 w-3 text-destructive" />
         </Button>
       </div>
