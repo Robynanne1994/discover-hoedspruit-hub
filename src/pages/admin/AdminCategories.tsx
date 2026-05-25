@@ -651,8 +651,8 @@ const AdminCategories = () => {
             <div className="text-right">Actions</div>
           </div>
 
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleCategoryDragEnd}>
-            <SortableContext items={orderedCats.map((c) => c.id)} strategy={verticalListSortingStrategy}>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={orderedCats.map((c) => `cat:${c.id}`)} strategy={verticalListSortingStrategy}>
               {orderedCats.map((cat) => {
                 const subs = orderedSubs[cat.id] ?? [];
                 const isExpanded = expandedCat === cat.id;
@@ -689,7 +689,7 @@ const AdminCategories = () => {
                           </div>
                         </div>
                         {subs.length === 0 ? (
-                          <p className="text-sm text-muted-foreground">No subcategories yet.</p>
+                          <p className="text-sm text-muted-foreground">No subcategories yet. Drag a subcategory or sub-subcategory onto this category to move it here.</p>
                         ) : (
                           (() => {
                             const displaySubs = alphaSort[cat.id]
@@ -719,23 +719,21 @@ const AdminCategories = () => {
                                       </Button>
                                     </div>
                                     {ssList.length === 0 ? (
-                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet.</p>
+                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet. Drag a sub-subcategory onto this subcategory to move it here.</p>
                                     ) : (
-                                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubSubDragEnd(sub.id)}>
-                                        <SortableContext items={ssList.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-                                          <div className="space-y-1.5">
-                                            {ssList.map((ss) => (
-                                              <SortableSubSubRow
-                                                key={ss.id}
-                                                ss={ss}
-                                                count={subSubCounts?.[ss.id] ?? 0}
-                                                onEdit={() => openEditSubSub(ss)}
-                                                onDelete={() => deleteSubSubMut.mutate(ss.id)}
-                                              />
-                                            ))}
-                                          </div>
-                                        </SortableContext>
-                                      </DndContext>
+                                      <SortableContext items={ssList.map((s) => `subsub:${s.id}`)} strategy={verticalListSortingStrategy}>
+                                        <div className="space-y-1.5">
+                                          {ssList.map((ss) => (
+                                            <SortableSubSubRow
+                                              key={ss.id}
+                                              ss={ss}
+                                              count={subSubCounts?.[ss.id] ?? 0}
+                                              onEdit={() => openEditSubSub(ss)}
+                                              onDelete={() => deleteSubSubMut.mutate(ss.id)}
+                                            />
+                                          ))}
+                                        </div>
+                                      </SortableContext>
                                     )}
                                   </div>
                                 </SortableSubRow>
@@ -749,13 +747,11 @@ const AdminCategories = () => {
                               );
                             }
                             return (
-                              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
-                                <SortableContext items={displaySubs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-                                  <div className="space-y-2">
-                                    {displaySubs.map((sub) => renderSub(sub))}
-                                  </div>
-                                </SortableContext>
-                              </DndContext>
+                              <SortableContext items={displaySubs.map((s) => `sub:${s.id}`)} strategy={verticalListSortingStrategy}>
+                                <div className="space-y-2">
+                                  {displaySubs.map((sub) => renderSub(sub))}
+                                </div>
+                              </SortableContext>
                             );
                           })()
                         )}
