@@ -18,12 +18,16 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import {
   DndContext,
   closestCenter,
+  pointerWithin,
+  rectIntersection,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
   DragEndEvent,
+  CollisionDetection,
 } from "@dnd-kit/core";
+
 import {
   arrayMove,
   SortableContext,
