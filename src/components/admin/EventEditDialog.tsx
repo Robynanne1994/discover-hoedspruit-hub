@@ -225,6 +225,10 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
           <div><Label>Social Media Link</Label><Input value={form.social_media_link || ""} onChange={(e) => set("social_media_link", e.target.value)} /></div>
           <div><Label>Social Media Label</Label><Input value={form.social_media_label || ""} onChange={(e) => set("social_media_label", e.target.value)} placeholder="e.g. Instagram, Facebook" /></div>
+          <ListingContactPicker
+            listings={listings || []}
+            onApply={(c) => setForm((f: any) => ({ ...f, ...c }))}
+          />
           <MultiContactField
             label="Contact Email"
             type="email"
