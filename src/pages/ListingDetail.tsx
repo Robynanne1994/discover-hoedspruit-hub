@@ -449,7 +449,7 @@ const ListingDetail = () => {
     ]);
     if (food.length) sections.push({ key: "accom-food", title: "Food & drink", iconComp: Coffee, fields: food });
     const shuttleLabel = l.has_airport_shuttle === true
-      ? (l.airport_shuttle_free === true ? "Airport shuttle (free)"
+      ? (l.airport_shuttle_free === true ? "Airport shuttle (Free)"
         : l.airport_shuttle_free === false ? "Airport shuttle (extra charge)" : "Airport shuttle")
       : "Airport shuttle";
     const transport = filterDefined([
