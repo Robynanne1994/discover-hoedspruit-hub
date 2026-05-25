@@ -170,7 +170,7 @@ const App = () => (
                 <Route path="specials" element={<AdminSpecials />} />
                 <Route path="specials/import" element={<AdminSpecialsImport />} />
                 
-                <Route path="bush-telegraph" element={<AdminBushTelegraph />} />
+                <Route path="local-channels" element={<AdminBushTelegraph />} />
                 <Route path="notifications" element={<AdminNotifications />} />
                 <Route path="import" element={<AdminImport />} />
                 <Route path="moderation" element={<AdminModeration />} />

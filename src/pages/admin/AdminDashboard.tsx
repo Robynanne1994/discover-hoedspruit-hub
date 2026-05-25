@@ -127,7 +127,7 @@ const AdminDashboard = () => {
     { label: "Events", count: events.data, to: "/admin/events", icon: Calendar },
     { label: "Active Specials", count: specials.data, to: "/admin/specials", icon: Tag },
     
-    { label: "Resources", count: resources.data, to: "/admin/bush-telegraph", icon: Radio },
+    { label: "Resources", count: resources.data, to: "/admin/local-channels", icon: Radio },
     { label: "Users", count: users.data, to: "/admin/users", icon: Users },
     { label: "Businesses", count: businesses.data, to: "/admin/users?tab=businesses", icon: Briefcase },
   ];

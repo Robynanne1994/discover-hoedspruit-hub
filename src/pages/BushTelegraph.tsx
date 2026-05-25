@@ -376,7 +376,7 @@ const BushTelegraph = () => {
         </div>
         <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
           {isAdmin && (
-            <CircleBtn onClick={() => navigate("/admin/bush-telegraph")} ariaLabel="Edit local channels">
+            <CircleBtn onClick={() => navigate("/admin/local-channels")} ariaLabel="Edit local channels">
               <Pencil size={16} color={INK} strokeWidth={2} />
             </CircleBtn>
           )}
