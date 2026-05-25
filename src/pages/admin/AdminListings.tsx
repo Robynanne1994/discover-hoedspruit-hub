@@ -20,6 +20,8 @@ import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
 import { sanitizeContactArray } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
+import { DISPLAY_SECTIONS, sectionsForGroup, type DisplayMode, type SectionGroup, DISPLAY_DEFAULTS_SECTION } from "@/lib/detailsDisplayModes";
+import { DetailsDisplayModeEditor, DetailsDisplayDefaultsEditor } from "@/components/admin/DetailsDisplayModeEditor";
 
 type Listing = Tables<"listings">;
 
@@ -38,7 +40,7 @@ const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance"
 const HG_SERVICES_SECTION = "home_garden_services";
 const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 
-const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", facebook: "" as string, instagram: "" as string, whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[] };
+const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", facebook: "" as string, instagram: "" as string, whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -324,6 +326,7 @@ const AdminListings = () => {
         specialities: values.specialities?.trim() || null,
         services_offered: values.services_offered ?? [],
         plant_types: (values.services_offered ?? []).includes("Nursery") ? (values.plant_types ?? []) : [],
+        details_display_mode: values.details_display_mode ?? {},
       };
 
       // Treat "-" as empty for any string field on save
@@ -490,6 +493,7 @@ const AdminListings = () => {
       tenure_mode: ((l as any).years_in_business != null && (l as any).business_started_year == null) ? "years" : "started",
       services_offered: (l as any).services_offered ?? [],
       plant_types: (l as any).plant_types ?? [],
+      details_display_mode: ((l as any).details_display_mode ?? {}) as Record<string, DisplayMode | "default">,
     });
     const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
     setCustomRowsVisible(populatedCustom);
@@ -793,6 +797,19 @@ const AdminListings = () => {
                     </Button>
                   )}
                 </div>
+
+                <DetailsDisplayModeEditor
+                  value={form.details_display_mode}
+                  onChange={(v) => setForm({ ...form, details_display_mode: v })}
+                  groups={[
+                    ...(isRestaurantType ? ["restaurant" as SectionGroup] : []),
+                    ...(isAccommodationType ? ["accommodation" as SectionGroup] : []),
+                    ...(isShoppingType ? ["shopping" as SectionGroup] : []),
+                    ...(isTradesType ? ["trades" as SectionGroup] : []),
+                  ]}
+                />
+
+
 
                 {!isAccommodationType && (
                 <div>
@@ -1288,6 +1305,17 @@ const AdminListings = () => {
           </Dialog>
         </div>
       </div>
+
+      <details className="mb-4 rounded-lg border border-border bg-background">
+        <summary className="cursor-pointer px-4 py-2 text-sm font-semibold text-slate-950">
+          Details cards — global display defaults
+        </summary>
+        <div className="p-4 pt-0">
+          <DetailsDisplayDefaultsEditor />
+        </div>
+      </details>
+
+
 
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

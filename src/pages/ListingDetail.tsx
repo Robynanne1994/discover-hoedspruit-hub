@@ -21,6 +21,7 @@ import { collectContacts } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
+import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true" {...props}>
@@ -178,6 +179,18 @@ const ListingDetail = () => {
       return !!data;
     },
     enabled: !!user && !!id,
+  });
+
+  const { data: displayDefaults } = useQuery({
+    queryKey: ["details-display-defaults"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", "details_display_defaults")
+        .maybeSingle();
+      return ((data?.content as any)?.defaults ?? {}) as Record<string, "yes_only" | "all">;
+    },
   });
 
   const toggleFavourite = useMutation({
@@ -494,8 +507,20 @@ const ListingDetail = () => {
     }
   }
 
-
-
+  // Apply per-listing / global "yes only" vs "all" display mode for yes-no cards
+  {
+    const perListing = ((l as any).details_display_mode ?? {}) as Record<string, DisplayMode | "default">;
+    const yesNoKeys = new Set(DISPLAY_SECTIONS.map((s) => s.key));
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const s = sections[i];
+      if (!yesNoKeys.has(s.key)) continue;
+      const mode = resolveSectionMode(s.key, perListing, displayDefaults);
+      if (mode === "yes_only") {
+        s.fields = s.fields.filter((f) => f.on === true);
+        if (s.fields.length === 0) sections.splice(i, 1);
+      }
+    }
+  }
 
   // Move custom rows to the top so they appear above amenity/true-false cards
   const customSections = sections.filter(s => s.key.startsWith("custom-"));
