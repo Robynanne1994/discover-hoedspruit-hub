@@ -96,6 +96,28 @@ const AdminCategories = () => {
     },
   });
 
+  const { data: subSubcategories } = useQuery({
+    queryKey: ["admin-sub-subcategories"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("sub_subcategories").select("*").order("sort_order");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: subSubCounts } = useQuery({
+    queryKey: ["admin-listing-sub-subcategories-counts"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("listing_sub_subcategories").select("sub_subcategory_id");
+      if (error) throw error;
+      const map: Record<string, number> = {};
+      (data ?? []).forEach((r: any) => {
+        map[r.sub_subcategory_id] = (map[r.sub_subcategory_id] ?? 0) + 1;
+      });
+      return map;
+    },
+  });
+
   // Listing counts per category and subcategory
   const { data: catCounts } = useQuery({
     queryKey: ["admin-listing-categories-counts"],
