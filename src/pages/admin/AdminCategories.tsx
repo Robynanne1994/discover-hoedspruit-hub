@@ -700,7 +700,7 @@ const AdminCategories = () => {
             <div className="text-right">Actions</div>
           </div>
 
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <DndContext sensors={sensors} collisionDetection={hierarchicalCollision} onDragEnd={handleDragEnd}>
             <SortableContext items={orderedCats.map((c) => `cat:${c.id}`)} strategy={verticalListSortingStrategy}>
               {orderedCats.map((cat) => {
                 const subs = orderedSubs[cat.id] ?? [];
