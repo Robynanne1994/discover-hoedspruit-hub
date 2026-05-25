@@ -19,6 +19,7 @@ import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
 import { sanitizeContactArray } from "@/lib/contacts";
+import { formatServiceLabel } from "@/lib/serviceLabels";
 
 type Listing = Tables<"listings">;
 
