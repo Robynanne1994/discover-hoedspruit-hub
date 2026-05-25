@@ -752,7 +752,7 @@ const ListingDetail = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {sections.map((s) => (
             <div key={s.key} style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
                 {s.iconComp && <s.iconComp size={18} strokeWidth={1.5} color={C.primary} />}
                 <h3 style={{
                   margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
