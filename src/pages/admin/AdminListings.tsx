@@ -408,6 +408,14 @@ const AdminListings = () => {
         const { error: subErr } = await supabase.from("listing_subcategories").insert(rows);
         if (subErr) throw subErr;
       }
+
+      // Sync sub-subcategories
+      await supabase.from("listing_sub_subcategories").delete().eq("listing_id", listingId);
+      if (selectedSubSubIds.length > 0) {
+        const rows = selectedSubSubIds.map((ssId) => ({ listing_id: listingId, sub_subcategory_id: ssId }));
+        const { error: ssErr } = await supabase.from("listing_sub_subcategories").insert(rows);
+        if (ssErr) throw ssErr;
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
