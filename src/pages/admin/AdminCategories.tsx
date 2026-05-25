@@ -233,6 +233,55 @@ const AdminCategories = () => {
     },
   });
 
+  const upsertSubSub = useMutation({
+    mutationFn: async (values: { title: string; description: string; sort_order: number; subcategory_id: string }) => {
+      const payload = {
+        title: values.title,
+        description: values.description || null,
+        sort_order: values.sort_order,
+        subcategory_id: values.subcategory_id,
+      };
+      if (editingSubSub) {
+        const { error } = await supabase.from("sub_subcategories").update(payload).eq("id", editingSubSub.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("sub_subcategories").insert(payload);
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-sub-subcategories"] });
+      toast.success(editingSubSub ? "Sub-subcategory updated" : "Sub-subcategory created");
+      resetSubSubForm();
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  const deleteSubSubMut = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("sub_subcategories").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-sub-subcategories"] });
+      toast.success("Sub-subcategory deleted");
+    },
+  });
+
+  const persistSubSubOrder = async (items: SubSubcategory[]) => {
+    const updates = items.map((it, idx) =>
+      supabase.from("sub_subcategories").update({ sort_order: idx }).eq("id", it.id)
+    );
+    const results = await Promise.all(updates);
+    const failed = results.find((r) => r.error);
+    if (failed?.error) {
+      toast.error("Failed to save order");
+      qc.invalidateQueries({ queryKey: ["admin-sub-subcategories"] });
+    } else {
+      toast.success("Order saved");
+    }
+  };
+
   const persistCategoryOrder = async (items: Category[]) => {
     const updates = items.map((it, idx) =>
       supabase.from("categories").update({ sort_order: idx }).eq("id", it.id)
