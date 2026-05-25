@@ -463,7 +463,7 @@ const ListingDetail = () => {
     ]);
     if (wellness.length) sections.push({ key: "accom-wellness", title: "Wellness", iconComp: HeartPulse, fields: wellness });
     const rooms = filterDefined([
-      { label: "Aircon", value: l.has_aircon }, { label: "Laundry service", value: l.has_laundry }, { label: "Wi-Fi", value: l.has_wifi_accom },
+      { label: "Aircon", value: l.has_aircon }, { label: "Laundry service", value: l.has_laundry }, { label: "WiFi", value: l.has_wifi_accom },
     ]);
     if (rooms.length) sections.push({ key: "accom-rooms", title: "Rooms", iconComp: BedDouble, fields: rooms });
     if (l.child_friendly === true) sections.push({ key: "accom-children", title: "Children", iconComp: Baby, fields: [{ label: "Child friendly", on: true }] });
