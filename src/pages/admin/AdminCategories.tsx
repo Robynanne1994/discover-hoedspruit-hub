@@ -64,12 +64,29 @@ const AdminCategories = () => {
     queryKey: ["admin-subcategory-listings", viewSub?.id],
     enabled: !!viewSub,
     queryFn: async () => {
+      // Direct subcategory links
       const { data: links, error: linkErr } = await supabase
         .from("listing_subcategories")
         .select("listing_id")
         .eq("subcategory_id", viewSub!.id);
       if (linkErr) throw linkErr;
-      const ids = (links ?? []).map((l: any) => l.listing_id);
+      const idSet = new Set<string>((links ?? []).map((l: any) => l.listing_id as string));
+
+      // Plus listings from any sub-subcategories under this subcategory
+      const { data: ssList } = await supabase
+        .from("sub_subcategories")
+        .select("id")
+        .eq("subcategory_id", viewSub!.id);
+      const ssIds = (ssList ?? []).map((s: any) => s.id as string);
+      if (ssIds.length > 0) {
+        const { data: ssLinks } = await supabase
+          .from("listing_sub_subcategories")
+          .select("listing_id")
+          .in("sub_subcategory_id", ssIds);
+        (ssLinks ?? []).forEach((l: any) => idSet.add(l.listing_id as string));
+      }
+
+      const ids = Array.from(idSet);
       if (ids.length === 0) return [];
       const { data, error } = await supabase
         .from("listings")
@@ -80,6 +97,7 @@ const AdminCategories = () => {
       return data ?? [];
     },
   });
+
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["admin-categories"],
@@ -136,17 +154,39 @@ const AdminCategories = () => {
   });
 
   const { data: subCounts } = useQuery({
-    queryKey: ["admin-listing-subcategories-counts"],
+    queryKey: ["admin-listing-subcategories-counts-aggregated"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("listing_subcategories").select("subcategory_id");
+      // Direct listing→subcategory links
+      const { data: direct, error } = await supabase
+        .from("listing_subcategories")
+        .select("subcategory_id, listing_id");
       if (error) throw error;
-      const map: Record<string, number> = {};
-      (data ?? []).forEach((r: any) => {
-        map[r.subcategory_id] = (map[r.subcategory_id] ?? 0) + 1;
+
+      // Listing→sub_subcategory links + parent subcategory mapping
+      const [{ data: ssLinks }, { data: ssRows }] = await Promise.all([
+        supabase.from("listing_sub_subcategories").select("sub_subcategory_id, listing_id"),
+        supabase.from("sub_subcategories").select("id, subcategory_id"),
+      ]);
+      const ssParent = new Map<string, string>();
+      (ssRows ?? []).forEach((r: any) => ssParent.set(r.id, r.subcategory_id));
+
+      // Build subcategory_id → Set<listing_id> (distinct)
+      const sets: Record<string, Set<string>> = {};
+      (direct ?? []).forEach((r: any) => {
+        (sets[r.subcategory_id] ??= new Set()).add(r.listing_id);
       });
+      (ssLinks ?? []).forEach((r: any) => {
+        const subId = ssParent.get(r.sub_subcategory_id);
+        if (!subId) return;
+        (sets[subId] ??= new Set()).add(r.listing_id);
+      });
+
+      const map: Record<string, number> = {};
+      Object.entries(sets).forEach(([k, v]) => { map[k] = v.size; });
       return map;
     },
   });
+
 
   useEffect(() => {
     if (categories) setOrderedCats(categories);
