@@ -834,6 +834,10 @@ const SortableSubRow = ({
   onEdit,
   onDelete,
   hideDrag,
+  categories,
+  subcategories,
+  onMoveToCategory,
+  onDemoteToSubSub,
   children,
 }: {
   sub: Subcategory;
@@ -845,6 +849,10 @@ const SortableSubRow = ({
   onEdit: () => void;
   onDelete: () => void;
   hideDrag?: boolean;
+  categories: Category[];
+  subcategories: Subcategory[];
+  onMoveToCategory: (categoryId: string) => void;
+  onDemoteToSubSub: (targetSubId: string) => void;
   children?: React.ReactNode;
 }) => {
   const sortable = useSortable({ id: `sub:${sub.id}`, disabled: hideDrag });
@@ -878,6 +886,39 @@ const SortableSubRow = ({
           </button>
         </div>
         <div className="flex gap-1">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-7 w-7" title="Move">
+                <MoveRight className="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 bg-popover z-50">
+              <DropdownMenuLabel>Move subcategory to…</DropdownMenuLabel>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Another category</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                  {categories.filter((c) => c.id !== sub.category_id).map((c) => (
+                    <DropdownMenuItem key={c.id} onClick={() => onMoveToCategory(c.id)}>{c.title}</DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Demote to sub-subcategory under…</DropdownMenuLabel>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Choose parent subcategory</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                  {subcategories.filter((s) => s.id !== sub.id).map((s) => {
+                    const parent = categories.find((c) => c.id === s.category_id);
+                    return (
+                      <DropdownMenuItem key={s.id} onClick={() => onDemoteToSubSub(s.id)}>
+                        {parent?.title ?? "?"} › {s.title}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
             <Pencil className="h-3 w-3" />
           </Button>
