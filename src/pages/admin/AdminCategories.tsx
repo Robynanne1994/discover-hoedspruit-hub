@@ -713,6 +713,14 @@ const AdminCategories = () => {
                                   onEdit={() => openEditSub(sub)}
                                   onDelete={() => deleteSubMut.mutate(sub.id)}
                                   hideDrag={hideDrag}
+                                  categories={orderedCats}
+                                  subcategories={subcategories ?? []}
+                                  onMoveToCategory={(cid) => moveSubToCategory(sub.id, cid)}
+                                  onDemoteToSubSub={(targetSubId) => {
+                                    if (confirm(`Make "${sub.title}" a sub-subcategory under the chosen subcategory? Its listings and any existing sub-subcategories will be moved.`)) {
+                                      demoteSubToSubSub(sub.id, targetSubId);
+                                    }
+                                  }}
                                 >
                                   <div className="bg-muted/40 px-3 py-2 border-t border-border">
                                     <div className="flex items-center justify-between mb-2">
@@ -722,7 +730,7 @@ const AdminCategories = () => {
                                       </Button>
                                     </div>
                                     {ssList.length === 0 ? (
-                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet. Drag a sub-subcategory onto this subcategory to move it here.</p>
+                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet. Use the Move menu on any subcategory or sub-subcategory to move it here.</p>
                                     ) : (
                                       <SortableContext items={ssList.map((s) => `subsub:${s.id}`)} strategy={verticalListSortingStrategy}>
                                         <div className="space-y-1.5">
@@ -733,6 +741,14 @@ const AdminCategories = () => {
                                               count={subSubCounts?.[ss.id] ?? 0}
                                               onEdit={() => openEditSubSub(ss)}
                                               onDelete={() => deleteSubSubMut.mutate(ss.id)}
+                                              categories={orderedCats}
+                                              subcategories={subcategories ?? []}
+                                              onMoveToSub={(targetSubId) => moveSubSubToSub(ss.id, targetSubId)}
+                                              onPromoteToSub={(targetCategoryId) => {
+                                                if (confirm(`Promote "${ss.title}" to a top-level subcategory under the chosen category?`)) {
+                                                  promoteSubSubToSub(ss.id, targetCategoryId);
+                                                }
+                                              }}
                                             />
                                           ))}
                                         </div>
