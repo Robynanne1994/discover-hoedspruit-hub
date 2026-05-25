@@ -34,8 +34,8 @@ const COLUMNS = [
   { key: "high_chairs", label: "High Chairs", type: "switch", width: "95px" },
   { key: "nappy_changing_station", label: "Nappy Changing Station", type: "switch", width: "150px" },
   { key: "has_toilet", label: "Toilet", type: "switch", width: "70px" },
-  { key: "has_wifi", label: "Wi-Fi", type: "switch", width: "70px" },
-  { key: "has_free_wifi", label: "Free Wi-Fi", type: "switch", width: "85px" },
+  { key: "has_wifi", label: "WiFi", type: "switch", width: "70px" },
+  { key: "has_free_wifi", label: "Free WiFi", type: "switch", width: "85px" },
 ] as const;
 
 const AdminBulkEdit = () => {

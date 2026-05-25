@@ -79,8 +79,20 @@ const formatDetailLabel = (s: string): string => {
   return parts.map((p, i) => {
     if (!p.trim()) return p;
     const lower = p.toLowerCase();
+    
+    // Special cases
+    if (lower === "wifi") return "WiFi";
+    if (lower === "(free)") return "(Free)";
+    if (lower === "wifi(free)") return "WiFi (Free)";
+
     const cleaned = lower.replace(/[^a-z']/g, "");
     if (i !== firstIdx && SMALL_WORDS_DETAILS.has(cleaned)) return lower;
+    
+    // Handle words starting with punctuation like (
+    if (p.startsWith("(")) {
+      return "(" + lower.charAt(1).toUpperCase() + lower.slice(2);
+    }
+    
     return lower.charAt(0).toUpperCase() + lower.slice(1);
   }).join("");
 };
@@ -437,7 +449,7 @@ const ListingDetail = () => {
     ]);
     if (food.length) sections.push({ key: "accom-food", title: "Food & drink", iconComp: Coffee, fields: food });
     const shuttleLabel = l.has_airport_shuttle === true
-      ? (l.airport_shuttle_free === true ? "Airport shuttle (free)"
+      ? (l.airport_shuttle_free === true ? "Airport shuttle (Free)"
         : l.airport_shuttle_free === false ? "Airport shuttle (extra charge)" : "Airport shuttle")
       : "Airport shuttle";
     const transport = filterDefined([
@@ -451,7 +463,7 @@ const ListingDetail = () => {
     ]);
     if (wellness.length) sections.push({ key: "accom-wellness", title: "Wellness", iconComp: HeartPulse, fields: wellness });
     const rooms = filterDefined([
-      { label: "Aircon", value: l.has_aircon }, { label: "Laundry service", value: l.has_laundry }, { label: "Wi-Fi", value: l.has_wifi_accom },
+      { label: "Aircon", value: l.has_aircon }, { label: "Laundry service", value: l.has_laundry }, { label: "WiFi", value: l.has_wifi_accom },
     ]);
     if (rooms.length) sections.push({ key: "accom-rooms", title: "Rooms", iconComp: BedDouble, fields: rooms });
     if (l.child_friendly === true) sections.push({ key: "accom-children", title: "Children", iconComp: Baby, fields: [{ label: "Child friendly", on: true }] });
