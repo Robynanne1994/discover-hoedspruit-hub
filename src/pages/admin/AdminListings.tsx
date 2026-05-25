@@ -20,6 +20,7 @@ import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
 import { sanitizeContactArray } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
+import { DISPLAY_SECTIONS, sectionsForGroup, type DisplayMode, type SectionGroup, DISPLAY_DEFAULTS_SECTION } from "@/lib/detailsDisplayModes";
 
 type Listing = Tables<"listings">;
 
