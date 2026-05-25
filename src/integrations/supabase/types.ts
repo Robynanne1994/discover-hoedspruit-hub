@@ -939,6 +939,7 @@ export type Database = {
           has_aircon: boolean | null
           has_airport_shuttle: boolean | null
           has_bar: boolean | null
+          has_beers_ciders: boolean | null
           has_breakfast: boolean | null
           has_champagne: boolean | null
           has_cocktails: boolean | null
@@ -948,6 +949,8 @@ export type Database = {
           has_free_parking: boolean | null
           has_free_wifi: boolean | null
           has_laundry: boolean | null
+          has_milkshakes: boolean | null
+          has_mocktails: boolean | null
           has_restaurant: boolean | null
           has_room_service: boolean | null
           has_secure_parking: boolean | null
@@ -1049,6 +1052,7 @@ export type Database = {
           has_aircon?: boolean | null
           has_airport_shuttle?: boolean | null
           has_bar?: boolean | null
+          has_beers_ciders?: boolean | null
           has_breakfast?: boolean | null
           has_champagne?: boolean | null
           has_cocktails?: boolean | null
@@ -1058,6 +1062,8 @@ export type Database = {
           has_free_parking?: boolean | null
           has_free_wifi?: boolean | null
           has_laundry?: boolean | null
+          has_milkshakes?: boolean | null
+          has_mocktails?: boolean | null
           has_restaurant?: boolean | null
           has_room_service?: boolean | null
           has_secure_parking?: boolean | null
@@ -1159,6 +1165,7 @@ export type Database = {
           has_aircon?: boolean | null
           has_airport_shuttle?: boolean | null
           has_bar?: boolean | null
+          has_beers_ciders?: boolean | null
           has_breakfast?: boolean | null
           has_champagne?: boolean | null
           has_cocktails?: boolean | null
@@ -1168,6 +1175,8 @@ export type Database = {
           has_free_parking?: boolean | null
           has_free_wifi?: boolean | null
           has_laundry?: boolean | null
+          has_milkshakes?: boolean | null
+          has_mocktails?: boolean | null
           has_restaurant?: boolean | null
           has_room_service?: boolean | null
           has_secure_parking?: boolean | null
