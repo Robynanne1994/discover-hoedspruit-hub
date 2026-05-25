@@ -401,6 +401,17 @@ const AdminCategories = () => {
     persistSubcategoryOrder(next);
   };
 
+  const handleSubSubDragEnd = (subId: string) => (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const list = orderedSubSubs[subId] ?? [];
+    const oldIdx = list.findIndex((s) => s.id === active.id);
+    const newIdx = list.findIndex((s) => s.id === over.id);
+    const next = arrayMove(list, oldIdx, newIdx);
+    setOrderedSubSubs({ ...orderedSubSubs, [subId]: next });
+    persistSubSubOrder(next);
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
