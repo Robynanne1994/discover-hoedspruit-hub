@@ -1,0 +1,1 @@
+ALTER TABLE public.listings ADD COLUMN IF NOT EXISTS details_display_mode jsonb NOT NULL DEFAULT '{}'::jsonb;

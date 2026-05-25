@@ -926,6 +926,7 @@ export type Database = {
           delivery_available: boolean | null
           description: string | null
           detail_image_url: string | null
+          details_display_mode: Json
           email: string | null
           emergency_24hr: boolean | null
           facebook: string | null
@@ -1029,6 +1030,7 @@ export type Database = {
           delivery_available?: boolean | null
           description?: string | null
           detail_image_url?: string | null
+          details_display_mode?: Json
           email?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
@@ -1132,6 +1134,7 @@ export type Database = {
           delivery_available?: boolean | null
           description?: string | null
           detail_image_url?: string | null
+          details_display_mode?: Json
           email?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
