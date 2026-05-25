@@ -770,8 +770,8 @@ const ListingDetail = () => {
                         {on
                           ? <Check size={16} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
                           : <XIcon size={16} strokeWidth={2} color={C.muted} style={{ flexShrink: 0 }} />}
-                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4, textTransform: s.key === "accom-distance" ? "none" : "capitalize" }}>
-                          {f.label}
+                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4 }}>
+                          {s.key === "accom-distance" ? f.label : formatDetailLabel(f.label)}
                         </span>
                       </div>
                     );
