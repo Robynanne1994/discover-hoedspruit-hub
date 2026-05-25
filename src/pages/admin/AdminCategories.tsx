@@ -427,6 +427,23 @@ const AdminCategories = () => {
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
+  // Hierarchical collision detection: prefer the row the pointer is directly over.
+  // If pointer is over a nested child, exclude the active item itself, then pick
+  // the deepest match (subsub > sub > cat) so dragging onto a parent row nests.
+  const hierarchicalCollision: CollisionDetection = (args) => {
+    const pointerCollisions = pointerWithin(args).filter((c) => c.id !== args.active.id);
+    if (pointerCollisions.length > 0) {
+      // Prefer deepest level (subsub > sub > cat)
+      const rank = (id: string) => (id.startsWith("subsub:") ? 3 : id.startsWith("sub:") ? 2 : 1);
+      pointerCollisions.sort((a, b) => rank(String(b.id)) - rank(String(a.id)));
+      return [pointerCollisions[0]];
+    }
+    const rectColls = rectIntersection(args).filter((c) => c.id !== args.active.id);
+    if (rectColls.length > 0) return rectColls;
+    return closestCenter(args).filter((c) => c.id !== args.active.id);
+  };
+
+
   const parseId = (raw: string): { kind: "cat" | "sub" | "subsub"; id: string } | null => {
     const [kind, id] = raw.split(":");
     if (!id) return null;
