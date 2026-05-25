@@ -17,7 +17,7 @@ export const RESTAURANT_ONLY_FIELDS = [
   "kids_menu", "high_chairs", "nappy_changing_station", "wheelchair_car_park", "wheelchair_entrance",
   "wheelchair_seating", "wheelchair_toilet", "has_toilet", "has_wifi", "has_free_wifi",
   "has_wine_list", "has_cocktails", "has_craft_beer", "has_smoothies", "has_coffee", "has_champagne",
-  "has_milkshakes", "has_mocktails", "has_beers_ciders"
+  "has_milkshakes", "has_mocktails", "has_beers_ciders", "has_iced_coffee"
 ] as const;
 
 export const SHOPPING_ONLY_FIELDS = [
