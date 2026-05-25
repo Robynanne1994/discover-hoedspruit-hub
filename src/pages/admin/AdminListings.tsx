@@ -798,6 +798,19 @@ const AdminListings = () => {
                   )}
                 </div>
 
+                <DetailsDisplayModeEditor
+                  value={form.details_display_mode}
+                  onChange={(v) => setForm({ ...form, details_display_mode: v })}
+                  groups={[
+                    ...(isRestaurantType ? ["restaurant" as SectionGroup] : []),
+                    ...(isAccommodationType ? ["accommodation" as SectionGroup] : []),
+                    ...(isShoppingType ? ["shopping" as SectionGroup] : []),
+                    ...(isTradesType ? ["trades" as SectionGroup] : []),
+                  ]}
+                />
+
+
+
                 {!isAccommodationType && (
                 <div>
                   <Label>Opening Hours</Label>
