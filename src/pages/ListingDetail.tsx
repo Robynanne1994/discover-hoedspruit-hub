@@ -417,6 +417,7 @@ const ListingDetail = () => {
       { label: l.has_wifi === true && l.has_free_wifi === true ? "WiFi (Free)" : "WiFi", value: l.has_wifi },
       { label: "Smoking section", value: l.smoking_allowed },
       { label: "Pet friendly", value: l.pets_allowed },
+      { label: "Drive-through", value: (l as any).drive_through },
     ]);
     if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconComp: Home, fields: amen });
 
