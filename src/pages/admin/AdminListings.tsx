@@ -421,7 +421,7 @@ const AdminListings = () => {
       phone: l.phone ?? "",
       email: l.email ?? "",
       website: l.website ?? "",
-      website_label: (l as any).website_label ?? "",
+      
       facebook: (l as any).facebook ?? "",
       instagram: (l as any).instagram ?? "",
       whatsapp: (l as any).whatsapp ?? "",
