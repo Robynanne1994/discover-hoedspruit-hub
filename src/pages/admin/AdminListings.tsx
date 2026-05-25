@@ -866,8 +866,8 @@ const AdminListings = () => {
                       <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Amenities</p>
                       <div className="space-y-3">
                         <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
-                        <TriStateToggle label="Wi-Fi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
-                        <TriStateToggle label="Free Wi-Fi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
+                        <TriStateToggle label="WiFi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
+                        <TriStateToggle label="Free WiFi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
                       </div>
                     </div>
 
