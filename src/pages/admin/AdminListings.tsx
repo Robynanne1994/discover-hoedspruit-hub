@@ -899,6 +899,9 @@ const AdminListings = () => {
                         <TriStateToggle label="Smoothies" value={form.has_smoothies} onChange={(v) => setForm({ ...form, has_smoothies: v })} />
                         <TriStateToggle label="Coffee" value={form.has_coffee} onChange={(v) => setForm({ ...form, has_coffee: v })} />
                         <TriStateToggle label="Champagne" value={form.has_champagne} onChange={(v) => setForm({ ...form, has_champagne: v })} />
+                        <TriStateToggle label="Milkshakes" value={form.has_milkshakes} onChange={(v) => setForm({ ...form, has_milkshakes: v })} />
+                        <TriStateToggle label="Mocktails" value={form.has_mocktails} onChange={(v) => setForm({ ...form, has_mocktails: v })} />
+                        <TriStateToggle label="Beers / Ciders" value={form.has_beers_ciders} onChange={(v) => setForm({ ...form, has_beers_ciders: v })} />
                       </div>
                     </div>
 
