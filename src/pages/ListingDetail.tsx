@@ -70,6 +70,21 @@ const pressScale = (s = "0.98") => ({
 const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
+const SMALL_WORDS_DETAILS = new Set(["of", "for", "from", "to", "by", "a", "an"]);
+const formatDetailLabel = (s: string): string => {
+  if (!s) return s;
+  const parts = s.split(/(\s+)/);
+  let firstIdx = -1;
+  for (let i = 0; i < parts.length; i++) { if (parts[i].trim()) { firstIdx = i; break; } }
+  return parts.map((p, i) => {
+    if (!p.trim()) return p;
+    const lower = p.toLowerCase();
+    const cleaned = lower.replace(/[^a-z']/g, "");
+    if (i !== firstIdx && SMALL_WORDS_DETAILS.has(cleaned)) return lower;
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  }).join("");
+};
+
 type TabKey = "about" | "details" | "specials" | "events" | "gallery" | "location";
 
 const ListingDetail = () => {
@@ -352,7 +367,7 @@ const ListingDetail = () => {
   if (l.price_level) {
     const labels: Record<number, string> = { 1: "Budget-friendly", 2: "Mid-range", 3: "Upscale", 4: "Fine dining" };
     sections.push({ key: "pricing", title: "Pricing", iconComp: Tag,
-      fields: [{ label: `${labels[l.price_level] || ""} (${"R".repeat(l.price_level)})`, on: true }] });
+      fields: [{ label: labels[l.price_level] || "", on: true }] });
   }
 
   if (isListingRestaurant) {
@@ -555,7 +570,13 @@ const ListingDetail = () => {
       href: l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`,
       Icon: Send, ext: true,
     },
-    listing.website && { key: "website", label: "Website", href: listing.website, Icon: Globe, ext: true },
+    (listing.website
+      ? { key: "website", label: "Website", href: listing.website, Icon: Globe, ext: true }
+      : (listing as any).facebook
+        ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
+        : (listing as any).instagram
+          ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
+          : null),
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
 
   // ----- Sub-components -----
@@ -749,8 +770,8 @@ const ListingDetail = () => {
                         {on
                           ? <Check size={16} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
                           : <XIcon size={16} strokeWidth={2} color={C.muted} style={{ flexShrink: 0 }} />}
-                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4, textTransform: s.key === "accom-distance" ? "none" : "capitalize" }}>
-                          {f.label}
+                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4 }}>
+                          {s.key === "accom-distance" ? f.label : formatDetailLabel(f.label)}
                         </span>
                       </div>
                     );
@@ -895,10 +916,10 @@ const ListingDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              background: C.primary, color: "#fff",
-              padding: "14px 20px", borderRadius: 999,
-              textDecoration: "none", fontFamily: FONT, fontSize: 14, fontWeight: 400,
-              letterSpacing: "0.02em",
+              background: "#423324", color: "#FFFFFF",
+              height: 48, padding: "12px 20px", borderRadius: 16,
+              textDecoration: "none", fontFamily: FONT, fontSize: 15, fontWeight: 600,
+              textTransform: "capitalize",
             }}
             {...pressScale()}
           >
