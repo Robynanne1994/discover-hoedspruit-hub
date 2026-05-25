@@ -342,6 +342,16 @@ const AdminSpecials = () => {
           <div><Label>Promo Code (optional)</Label><Input placeholder="e.g. WINTER2026" value={form.promo_code || ""} onChange={(e) => setForm({ ...form, promo_code: e.target.value || null })} /></div>
 
           <GroupLabel>Contact</GroupLabel>
+          <ListingContactPicker
+            listings={listings || []}
+            onApply={(c) => setForm({
+              ...form,
+              contact_phone: c.contact_phone || null,
+              contact_whatsapp: c.contact_whatsapp || null,
+              additional_phones: c.additional_phones,
+              additional_whatsapps: c.additional_whatsapps,
+            })}
+          />
           <MultiContactField
             label="Contact Phone (optional)"
             type="tel"
