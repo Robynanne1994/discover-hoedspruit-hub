@@ -844,7 +844,7 @@ const SortableSubRow = ({
   hideDrag?: boolean;
   children?: React.ReactNode;
 }) => {
-  const sortable = useSortable({ id: sub.id, disabled: hideDrag });
+  const sortable = useSortable({ id: `sub:${sub.id}`, disabled: hideDrag });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
