@@ -883,6 +883,19 @@ const AdminListings = () => {
                       </div>
                     </div>
 
+                    {/* Drinks Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Drinks</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Wine List" value={form.has_wine_list} onChange={(v) => setForm({ ...form, has_wine_list: v })} />
+                        <TriStateToggle label="Cocktails" value={form.has_cocktails} onChange={(v) => setForm({ ...form, has_cocktails: v })} />
+                        <TriStateToggle label="Craft Beer" value={form.has_craft_beer} onChange={(v) => setForm({ ...form, has_craft_beer: v })} />
+                        <TriStateToggle label="Smoothies" value={form.has_smoothies} onChange={(v) => setForm({ ...form, has_smoothies: v })} />
+                        <TriStateToggle label="Coffee" value={form.has_coffee} onChange={(v) => setForm({ ...form, has_coffee: v })} />
+                        <TriStateToggle label="Champagne" value={form.has_champagne} onChange={(v) => setForm({ ...form, has_champagne: v })} />
+                      </div>
+                    </div>
+
                     <div>
                       <Label>Price Level</Label>
                       <Select value={form.price_level?.toString() ?? ""} onValueChange={(v) => setForm({ ...form, price_level: v ? parseInt(v) : null })}>
