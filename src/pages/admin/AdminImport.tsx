@@ -584,7 +584,6 @@ const AdminImport = () => {
         phone: l.phone ?? "",
         email: l.email ?? "",
         website: l.website ?? "",
-        website_label: l.website_label ?? "",
         whatsapp: l.whatsapp ?? "",
         google_maps_link: l.google_maps_link ?? "",
         google_rating: l.google_rating == null ? "" : String(l.google_rating),
