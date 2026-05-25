@@ -496,6 +496,7 @@ const AdminListings = () => {
       has_wifi_accom: (l as any).has_wifi_accom ?? null,
       has_free_parking: (l as any).has_free_parking ?? null,
       has_secure_parking: (l as any).has_secure_parking ?? null,
+      is_franchise: (l as any).is_franchise ?? null,
       custom_title_1: (l as any).custom_title_1 ?? "",
       custom_text_1: (l as any).custom_text_1 ?? "",
       custom_title_2: (l as any).custom_title_2 ?? "",
