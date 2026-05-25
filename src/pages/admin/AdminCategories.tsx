@@ -938,12 +938,20 @@ const SortableSubSubRow = ({
   onEdit,
   onDelete,
   hideDrag,
+  categories,
+  subcategories,
+  onMoveToSub,
+  onPromoteToSub,
 }: {
   ss: SubSubcategory;
   count: number;
   onEdit: () => void;
   onDelete: () => void;
   hideDrag?: boolean;
+  categories: Category[];
+  subcategories: Subcategory[];
+  onMoveToSub: (targetSubId: string) => void;
+  onPromoteToSub: (targetCategoryId: string) => void;
 }) => {
   const sortable = useSortable({ id: `subsub:${ss.id}`, disabled: hideDrag });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
@@ -965,6 +973,39 @@ const SortableSubSubRow = ({
         {ss.description && <span className="text-muted-foreground text-xs">— {ss.description}</span>}
       </div>
       <div className="flex gap-1">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-6 w-6" title="Move">
+              <MoveRight className="h-3 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 bg-popover z-50">
+            <DropdownMenuLabel>Move to subcategory…</DropdownMenuLabel>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Choose subcategory</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                {subcategories.filter((s) => s.id !== ss.subcategory_id).map((s) => {
+                  const parent = categories.find((c) => c.id === s.category_id);
+                  return (
+                    <DropdownMenuItem key={s.id} onClick={() => onMoveToSub(s.id)}>
+                      {parent?.title ?? "?"} › {s.title}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Promote to subcategory under…</DropdownMenuLabel>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Choose category</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                {categories.map((c) => (
+                  <DropdownMenuItem key={c.id} onClick={() => onPromoteToSub(c.id)}>{c.title}</DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onEdit}>
           <Pencil className="h-3 w-3" />
         </Button>
