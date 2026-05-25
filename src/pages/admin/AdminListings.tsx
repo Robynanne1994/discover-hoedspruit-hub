@@ -53,6 +53,7 @@ const AdminListings = () => {
   const [form, setForm] = useState(emptyForm);
   const [selectedCatIds, setSelectedCatIds] = useState<string[]>([]);
   const [selectedSubIds, setSelectedSubIds] = useState<string[]>([]);
+  const [selectedSubSubIds, setSelectedSubSubIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [customRowsVisible, setCustomRowsVisible] = useState(0);
@@ -61,6 +62,9 @@ const AdminListings = () => {
   const [newSubName, setNewSubName] = useState("");
   const [newSubParent, setNewSubParent] = useState<string>("");
   const [showNewSub, setShowNewSub] = useState(false);
+  const [newSubSubName, setNewSubSubName] = useState("");
+  const [newSubSubParent, setNewSubSubParent] = useState<string>("");
+  const [showNewSubSub, setShowNewSubSub] = useState(false);
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
   const [newServiceInput, setNewServiceInput] = useState("");
@@ -155,6 +159,14 @@ const AdminListings = () => {
     },
   });
 
+  const { data: subSubcategories } = useQuery({
+    queryKey: ["admin-sub-subcategories-select"],
+    queryFn: async () => {
+      const { data } = await supabase.from("sub_subcategories").select("id, title, subcategory_id").order("sort_order");
+      return data ?? [];
+    },
+  });
+
   // Distinct values used across listings for free-form chip fields
   const { data: distinctChipValues } = useQuery({
     queryKey: ["admin-distinct-chip-values"],
@@ -205,6 +217,20 @@ const AdminListings = () => {
     enabled: !!editing,
   });
 
+  // Fetch listing_sub_subcategories for the editing listing
+  const { data: editingSubSubIds } = useQuery({
+    queryKey: ["listing-sub-subcategories", editing?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("listing_sub_subcategories")
+        .select("sub_subcategory_id")
+        .eq("listing_id", editing!.id);
+      if (error) throw error;
+      return data.map((r: any) => r.sub_subcategory_id as string);
+    },
+    enabled: !!editing,
+  });
+
   useEffect(() => {
     if (editingCatIds) setSelectedCatIds(editingCatIds);
   }, [editingCatIds]);
@@ -212,6 +238,10 @@ const AdminListings = () => {
   useEffect(() => {
     if (editingSubIds) setSelectedSubIds(editingSubIds);
   }, [editingSubIds]);
+
+  useEffect(() => {
+    if (editingSubSubIds) setSelectedSubSubIds(editingSubSubIds);
+  }, [editingSubSubIds]);
 
   // Auto-open edit dialog from ?edit= query param
   useEffect(() => {
@@ -378,6 +408,14 @@ const AdminListings = () => {
         const { error: subErr } = await supabase.from("listing_subcategories").insert(rows);
         if (subErr) throw subErr;
       }
+
+      // Sync sub-subcategories
+      await supabase.from("listing_sub_subcategories").delete().eq("listing_id", listingId);
+      if (selectedSubSubIds.length > 0) {
+        const rows = selectedSubSubIds.map((ssId) => ({ listing_id: listingId, sub_subcategory_id: ssId }));
+        const { error: ssErr } = await supabase.from("listing_sub_subcategories").insert(rows);
+        if (ssErr) throw ssErr;
+      }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
@@ -406,7 +444,7 @@ const AdminListings = () => {
     onError: (e) => toast.error(e.message),
   });
 
-  const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setSelectedSubIds([]); setCustomRowsVisible(0); setOpen(false); };
+  const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setSelectedSubIds([]); setSelectedSubSubIds([]); setCustomRowsVisible(0); setOpen(false); };
 
   const openEdit = (l: Listing) => {
     setEditing(l);
@@ -579,8 +617,35 @@ const AdminListings = () => {
     toast.success("Subcategory added");
   };
 
+  const toggleSubSub = (id: string) => {
+    setSelectedSubSubIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const addSubSubcategory = async () => {
+    const name = newSubSubName.trim();
+    const parentId = newSubSubParent || selectedSubIds[0];
+    if (!name || !parentId) { toast.error("Pick a parent subcategory"); return; }
+    const existing = subSubcategories?.find((s) => s.subcategory_id === parentId && s.title.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      if (!selectedSubSubIds.includes(existing.id)) toggleSubSub(existing.id);
+      setNewSubSubName(""); setNewSubSubParent(""); setShowNewSubSub(false);
+      toast.info("Sub-subcategory already exists — selected it");
+      return;
+    }
+    const siblings = subSubcategories?.filter((s) => s.subcategory_id === parentId) ?? [];
+    const { data, error } = await supabase.from("sub_subcategories").insert({ title: name, subcategory_id: parentId, sort_order: siblings.length }).select("id, title, subcategory_id").single();
+    if (error || !data) { toast.error(error?.message || "Failed to add sub-subcategory"); return; }
+    await qc.invalidateQueries({ queryKey: ["admin-sub-subcategories-select"] });
+    setSelectedSubSubIds((prev) => [...prev, data.id]);
+    setNewSubSubName(""); setNewSubSubParent(""); setShowNewSubSub(false);
+    toast.success("Sub-subcategory added");
+  };
+
   // Show subcategories for all selected categories
   const availableSubs = subcategories?.filter((s) => selectedCatIds.includes(s.category_id)) ?? [];
+  const availableSubSubs = subSubcategories?.filter((s) => selectedSubIds.includes(s.subcategory_id)) ?? [];
 
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
@@ -695,6 +760,54 @@ const AdminListings = () => {
                     ) : (
                       <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1 border-gray-950 bg-gray-400 text-gray-950 opacity-100" onClick={() => setShowNewSub(true)}>
                         <Plus className="h-3.5 w-3.5" /> Add subcategory
+                      </Button>
+                    )}
+                  </div>
+                )}
+                {selectedSubIds.length > 0 && (
+                  <div>
+                    <Label>Sub-subcategories</Label>
+                    {availableSubSubs.length > 0 && (
+                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3 border-gray-950 bg-slate-50">
+                        {availableSubSubs.map((ss) => {
+                          const parent = subcategories?.find((s) => s.id === ss.subcategory_id);
+                          return (
+                            <div key={ss.id} className="flex items-center gap-2">
+                              <Checkbox
+                                id={`subsub-${ss.id}`}
+                                checked={selectedSubSubIds.includes(ss.id)}
+                                onCheckedChange={() => toggleSubSub(ss.id)}
+                              />
+                              <label htmlFor={`subsub-${ss.id}`} className="text-sm text-foreground cursor-pointer">
+                                {ss.title}
+                                {parent && selectedSubIds.length > 1 && (
+                                  <span className="text-xs text-muted-foreground ml-1">({parent.title})</span>
+                                )}
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {showNewSubSub ? (
+                      <div className="flex flex-wrap gap-2 mt-2 items-center">
+                        {selectedSubIds.length > 1 && (
+                          <Select value={newSubSubParent} onValueChange={setNewSubSubParent}>
+                            <SelectTrigger className="h-8 text-sm w-[160px] border-gray-950 bg-slate-50"><SelectValue placeholder="Parent subcategory" /></SelectTrigger>
+                            <SelectContent>
+                              {subcategories?.filter((s) => selectedSubIds.includes(s.id)).map((s) => (
+                                <SelectItem key={s.id} value={s.id}>{s.title}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        <Input value={newSubSubName} onChange={(e) => setNewSubSubName(e.target.value)} placeholder="New sub-subcategory name" className="h-8 text-sm flex-1 min-w-[140px] border-gray-950 bg-slate-50" autoFocus />
+                        <Button type="button" size="sm" onClick={addSubSubcategory}>Save</Button>
+                        <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSubSub(false); setNewSubSubName(""); setNewSubSubParent(""); }}>Cancel</Button>
+                      </div>
+                    ) : (
+                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1 border-gray-950 bg-gray-400 text-gray-950 opacity-100" onClick={() => setShowNewSubSub(true)}>
+                        <Plus className="h-3.5 w-3.5" /> Add sub-subcategory
                       </Button>
                     )}
                   </div>
