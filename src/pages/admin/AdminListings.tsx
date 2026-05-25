@@ -19,6 +19,7 @@ import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
 import { sanitizeContactArray } from "@/lib/contacts";
+import { formatServiceLabel } from "@/lib/serviceLabels";
 
 type Listing = Tables<"listings">;
 
@@ -33,7 +34,8 @@ const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["Shopping Centre", "Curios & Gifts", "General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Stationery Shop", "Other"];
 const ACCOMMODATION_PRICE_RANGE_OPTIONS = ["Budget", "Mid-range", "Luxury"];
 
-const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance", "Irrigation", "Tree felling/pruning", "Interior design", "Upholstery", "Equipment rental", "Equipment servicing/repairs"];
+const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance", "Irrigation", "Tree felling/pruning", "Bush Clearing", "Swimming Pool Services", "Interior design", "Upholstery", "Equipment rental", "Equipment servicing/repairs"];
+const HG_SERVICES_SECTION = "home_garden_services";
 const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 
 const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[] };
@@ -58,6 +60,59 @@ const AdminListings = () => {
   const [showNewSub, setShowNewSub] = useState(false);
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
+  const [newServiceInput, setNewServiceInput] = useState("");
+
+  // Custom (admin-added) Home & Garden services, persisted in site_content
+  const { data: customHGServices } = useQuery({
+    queryKey: ["hg-custom-services"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", HG_SERVICES_SECTION)
+        .maybeSingle();
+      const items = (data?.content as any)?.items;
+      return Array.isArray(items) ? (items as string[]) : [];
+    },
+  });
+
+  const addHGServiceMutation = useMutation({
+    mutationFn: async (label: string) => {
+      const trimmed = label.trim();
+      if (!trimmed) throw new Error("Empty");
+      const existing = [...SERVICES_OFFERED_OPTIONS, ...(customHGServices ?? [])];
+      if (existing.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
+        throw new Error("This service is already in the list.");
+      }
+      const next = [...(customHGServices ?? []), trimmed];
+      const { data: row } = await supabase
+        .from("site_content")
+        .select("id")
+        .eq("section", HG_SERVICES_SECTION)
+        .maybeSingle();
+      if (row?.id) {
+        const { error } = await supabase
+          .from("site_content")
+          .update({ content: { items: next } })
+          .eq("section", HG_SERVICES_SECTION);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("site_content")
+          .insert({ section: HG_SERVICES_SECTION, content: { items: next } });
+        if (error) throw error;
+      }
+      return trimmed;
+    },
+    onSuccess: (label) => {
+      qc.invalidateQueries({ queryKey: ["hg-custom-services"] });
+      setForm((f) => ({ ...f, services_offered: f.services_offered.includes(label) ? f.services_offered : [...f.services_offered, label] }));
+      setNewServiceInput("");
+      toast.success("Service added");
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Could not add service"),
+  });
+
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
@@ -1099,9 +1154,9 @@ const AdminListings = () => {
                     <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Home & Garden Fields</p>
 
                     {[
-                      { label: "Services Offered", options: SERVICES_OFFERED_OPTIONS, key: "services_offered" as const },
+                      { label: "Services Offered", options: Array.from(new Set([...SERVICES_OFFERED_OPTIONS, ...(customHGServices ?? []), ...form.services_offered])), key: "services_offered" as const },
                       ...(form.services_offered.includes("Nursery")
-                        ? [{ label: "Plant Types", options: PLANT_TYPES_OPTIONS, key: "plant_types" as const }]
+                        ? [{ label: "Plant Types", options: PLANT_TYPES_OPTIONS as readonly string[], key: "plant_types" as const }]
                         : []),
                     ].map(({ label, options, key }) => (
                       <div key={key}>
@@ -1116,16 +1171,41 @@ const AdminListings = () => {
                                 onClick={() => setForm({ ...form, [key]: selected ? (form[key] as string[]).filter((v) => v !== opt) : [...(form[key] as string[]), opt] })}
                                 className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
                               >
-                                {opt}
+                                {formatServiceLabel(opt)}
                               </button>
                             );
                           })}
                         </div>
+                        {key === "services_offered" && (
+                          <div className="mt-2 flex gap-2">
+                            <Input
+                              value={newServiceInput}
+                              onChange={(e) => setNewServiceInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  if (newServiceInput.trim()) addHGServiceMutation.mutate(newServiceInput);
+                                }
+                              }}
+                              placeholder="Add another service (e.g. Paving)"
+                              className="h-9"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() => newServiceInput.trim() && addHGServiceMutation.mutate(newServiceInput)}
+                              disabled={addHGServiceMutation.isPending || !newServiceInput.trim()}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        )}
                         {key === "plant_types" && (
                           <p className="text-[11px] text-muted-foreground mt-1">Only shown because "Nursery" is selected above.</p>
                         )}
                       </div>
                     ))}
+
 
                     <div className="space-y-2">
                       <Label>Tenure</Label>
