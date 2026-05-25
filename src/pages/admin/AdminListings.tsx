@@ -280,6 +280,7 @@ const AdminListings = () => {
         wheelchair_toilet: values.wheelchair_toilet,
         has_toilet: values.has_toilet,
         has_wifi: values.has_wifi,
+        drive_through: values.drive_through,
         has_free_wifi: values.has_free_wifi,
         has_wine_list: values.has_wine_list,
         has_cocktails: values.has_cocktails,
