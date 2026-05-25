@@ -901,7 +901,7 @@ const SortableSubSubRow = ({
   onDelete: () => void;
   hideDrag?: boolean;
 }) => {
-  const sortable = useSortable({ id: ss.id, disabled: hideDrag });
+  const sortable = useSortable({ id: `subsub:${ss.id}`, disabled: hideDrag });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
