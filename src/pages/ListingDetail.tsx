@@ -420,6 +420,16 @@ const ListingDetail = () => {
     ]);
     if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconComp: Home, fields: amen });
 
+    const drinks = filterDefined([
+      { label: "Wine list", value: l.has_wine_list },
+      { label: "Cocktails", value: l.has_cocktails },
+      { label: "Craft beer", value: l.has_craft_beer },
+      { label: "Smoothies", value: l.has_smoothies },
+      { label: "Coffee", value: l.has_coffee },
+      { label: "Champagne", value: l.has_champagne },
+    ]);
+    if (drinks.length) sections.push({ key: "drinks", title: "Drinks", iconComp: Wine, fields: drinks });
+
     if (l.seating?.length) sections.push({ key: "seating", title: "Seating", iconComp: Sofa, fields: l.seating.map((s: string) => ({ label: toTitleCase(s.replace(/ seating$/i, "")), on: true })) });
     if (l.meal?.length) {
       const mealOrder = ["breakfast", "lunch", "dinner"];
