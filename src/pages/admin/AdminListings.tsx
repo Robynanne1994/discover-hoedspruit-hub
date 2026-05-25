@@ -886,6 +886,7 @@ const AdminListings = () => {
                         <TriStateToggle label="Free WiFi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
                         <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
                         <TriStateToggle label="Smoking Section" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
+                        <TriStateToggle label="Drive-Through" value={form.drive_through} onChange={(v) => setForm({ ...form, drive_through: v })} />
                       </div>
                     </div>
 
