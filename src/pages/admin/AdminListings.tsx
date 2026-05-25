@@ -617,8 +617,35 @@ const AdminListings = () => {
     toast.success("Subcategory added");
   };
 
+  const toggleSubSub = (id: string) => {
+    setSelectedSubSubIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
+
+  const addSubSubcategory = async () => {
+    const name = newSubSubName.trim();
+    const parentId = newSubSubParent || selectedSubIds[0];
+    if (!name || !parentId) { toast.error("Pick a parent subcategory"); return; }
+    const existing = subSubcategories?.find((s) => s.subcategory_id === parentId && s.title.toLowerCase() === name.toLowerCase());
+    if (existing) {
+      if (!selectedSubSubIds.includes(existing.id)) toggleSubSub(existing.id);
+      setNewSubSubName(""); setNewSubSubParent(""); setShowNewSubSub(false);
+      toast.info("Sub-subcategory already exists — selected it");
+      return;
+    }
+    const siblings = subSubcategories?.filter((s) => s.subcategory_id === parentId) ?? [];
+    const { data, error } = await supabase.from("sub_subcategories").insert({ title: name, subcategory_id: parentId, sort_order: siblings.length }).select("id, title, subcategory_id").single();
+    if (error || !data) { toast.error(error?.message || "Failed to add sub-subcategory"); return; }
+    await qc.invalidateQueries({ queryKey: ["admin-sub-subcategories-select"] });
+    setSelectedSubSubIds((prev) => [...prev, data.id]);
+    setNewSubSubName(""); setNewSubSubParent(""); setShowNewSubSub(false);
+    toast.success("Sub-subcategory added");
+  };
+
   // Show subcategories for all selected categories
   const availableSubs = subcategories?.filter((s) => selectedCatIds.includes(s.category_id)) ?? [];
+  const availableSubSubs = subSubcategories?.filter((s) => selectedSubIds.includes(s.subcategory_id)) ?? [];
 
   // Check if any selected category is a restaurant type
   const isRestaurantType = categories?.some((c) => selectedCatIds.includes(c.id) && /restaurant|caf[eé]/i.test(c.title));
