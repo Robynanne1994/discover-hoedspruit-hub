@@ -459,6 +459,7 @@ const AdminListings = () => {
       wheelchair_toilet: (l as any).wheelchair_toilet ?? null,
       has_toilet: (l as any).has_toilet ?? null,
       has_wifi: (l as any).has_wifi ?? null,
+      drive_through: (l as any).drive_through ?? null,
       has_free_wifi: (l as any).has_free_wifi ?? null,
       has_wine_list: (l as any).has_wine_list ?? null,
       has_cocktails: (l as any).has_cocktails ?? null,
