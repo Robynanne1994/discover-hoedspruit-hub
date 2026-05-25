@@ -409,7 +409,20 @@ const ListingDetail = () => {
     if (amen.length) sections.push({ key: "amenities", title: "Amenities", iconComp: Home, fields: amen });
 
     if (l.seating?.length) sections.push({ key: "seating", title: "Seating", iconComp: Sofa, fields: l.seating.map((s: string) => ({ label: toTitleCase(s.replace(/ seating$/i, "")), on: true })) });
-    if (l.meal?.length) sections.push({ key: "meals", title: "Meals served", iconComp: Utensils, fields: l.meal.map((m: string) => ({ label: toTitleCase(m), on: true })) });
+    if (l.meal?.length) {
+      const mealOrder = ["breakfast", "lunch", "dinner"];
+      const sortedMeals = [...l.meal].sort((a: string, b: string) => {
+        const aLower = a.toLowerCase();
+        const bLower = b.toLowerCase();
+        const aIndex = mealOrder.indexOf(aLower);
+        const bIndex = mealOrder.indexOf(bLower);
+        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+        if (aIndex !== -1) return -1;
+        if (bIndex !== -1) return 1;
+        return aLower.localeCompare(bLower);
+      });
+      sections.push({ key: "meals", title: "Meals served", iconComp: Utensils, fields: sortedMeals.map((m: string) => ({ label: toTitleCase(m), on: true })) });
+    }
     if (l.cuisine?.length) sections.push({ key: "cuisine", title: "Cuisine", iconComp: Soup, fields: l.cuisine.map((c: string) => ({ label: toTitleCase(c), on: true })) });
     if (l.vibe?.length) sections.push({ key: "vibe", title: "Vibe", iconComp: Music, fields: l.vibe.map((v: string) => ({ label: toTitleCase(v), on: true })) });
   }
