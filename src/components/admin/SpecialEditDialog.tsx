@@ -12,6 +12,7 @@ import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
+import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
 
 interface Props {
@@ -334,6 +335,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           </div>
 
           <div><Label>Promo Code</Label><Input value={form.promo_code || ""} onChange={(e) => set("promo_code", e.target.value)} /></div>
+          <ListingContactPicker
+            listings={listings || []}
+            onApply={(c) => setForm((f: any) => ({ ...f, ...c }))}
+          />
           <MultiContactField
             label="Contact Phone"
             type="tel"
