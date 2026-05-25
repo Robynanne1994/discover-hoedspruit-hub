@@ -1306,6 +1306,17 @@ const AdminListings = () => {
         </div>
       </div>
 
+      <details className="mb-4 rounded-lg border border-border bg-background">
+        <summary className="cursor-pointer px-4 py-2 text-sm font-semibold text-slate-950">
+          Details cards — global display defaults
+        </summary>
+        <div className="p-4 pt-0">
+          <DetailsDisplayDefaultsEditor />
+        </div>
+      </details>
+
+
+
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
