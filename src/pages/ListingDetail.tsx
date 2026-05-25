@@ -507,8 +507,20 @@ const ListingDetail = () => {
     }
   }
 
-
-
+  // Apply per-listing / global "yes only" vs "all" display mode for yes-no cards
+  {
+    const perListing = ((l as any).details_display_mode ?? {}) as Record<string, DisplayMode | "default">;
+    const yesNoKeys = new Set(DISPLAY_SECTIONS.map((s) => s.key));
+    for (let i = sections.length - 1; i >= 0; i--) {
+      const s = sections[i];
+      if (!yesNoKeys.has(s.key)) continue;
+      const mode = resolveSectionMode(s.key, perListing, displayDefaults);
+      if (mode === "yes_only") {
+        s.fields = s.fields.filter((f) => f.on === true);
+        if (s.fields.length === 0) sections.splice(i, 1);
+      }
+    }
+  }
 
   // Move custom rows to the top so they appear above amenity/true-false cards
   const customSections = sections.filter(s => s.key.startsWith("custom-"));
