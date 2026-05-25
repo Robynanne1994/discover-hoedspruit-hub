@@ -79,8 +79,20 @@ const formatDetailLabel = (s: string): string => {
   return parts.map((p, i) => {
     if (!p.trim()) return p;
     const lower = p.toLowerCase();
+    
+    // Special cases
+    if (lower === "wifi") return "WiFi";
+    if (lower === "(free)") return "(Free)";
+    if (lower === "wifi(free)") return "WiFi (Free)";
+
     const cleaned = lower.replace(/[^a-z']/g, "");
     if (i !== firstIdx && SMALL_WORDS_DETAILS.has(cleaned)) return lower;
+    
+    // Handle words starting with punctuation like (
+    if (p.startsWith("(")) {
+      return "(" + lower.charAt(1).toUpperCase() + lower.slice(2);
+    }
+    
     return lower.charAt(0).toUpperCase() + lower.slice(1);
   }).join("");
 };
