@@ -266,6 +266,7 @@ const AdminListings = () => {
         meal: values.meal,
         vibe: values.vibe,
         cuisine: values.cuisine,
+        foods: values.foods,
         seating: values.seating,
         kids_playground: values.kids_playground,
         smoking_allowed: values.smoking_allowed,
