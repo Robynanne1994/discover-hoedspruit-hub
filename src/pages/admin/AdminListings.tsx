@@ -403,6 +403,8 @@ const AdminListings = () => {
       email: l.email ?? "",
       website: l.website ?? "",
       website_label: (l as any).website_label ?? "",
+      facebook: (l as any).facebook ?? "",
+      instagram: (l as any).instagram ?? "",
       whatsapp: (l as any).whatsapp ?? "",
       additional_emails: ((l as any).additional_emails ?? []) as string[],
       additional_phones: ((l as any).additional_phones ?? []) as string[],
