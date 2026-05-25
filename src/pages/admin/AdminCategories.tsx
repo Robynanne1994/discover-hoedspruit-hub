@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical, ArrowDownAZ, ArrowDownUp } from "lucide-react";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
@@ -48,6 +48,7 @@ const AdminCategories = () => {
   const [orderedSubs, setOrderedSubs] = useState<Record<string, Subcategory[]>>({});
 
   const [viewSub, setViewSub] = useState<Subcategory | null>(null);
+  const [alphaSort, setAlphaSort] = useState<Record<string, boolean>>({});
 
   const { data: subListings, isLoading: subListingsLoading } = useQuery({
     queryKey: ["admin-subcategory-listings", viewSub?.id],
@@ -421,29 +422,65 @@ const AdminCategories = () => {
                       <div className="bg-muted/30 px-4 py-3 border-t border-border">
                         <div className="flex items-center justify-between mb-3">
                           <span className="text-sm font-medium text-muted-foreground">Subcategories</span>
-                          <Button size="sm" variant="outline" className="gap-1" onClick={() => openAddSub(cat.id)}>
-                            <Plus className="h-3 w-3" /> Add
-                          </Button>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              size="sm"
+                              variant={alphaSort[cat.id] ? "default" : "outline"}
+                              className="gap-1"
+                              onClick={() => setAlphaSort((prev) => ({ ...prev, [cat.id]: !prev[cat.id] }))}
+                              title={alphaSort[cat.id] ? "Show front-end order" : "Show alphabetical order"}
+                            >
+                              {alphaSort[cat.id] ? <ArrowDownUp className="h-3 w-3" /> : <ArrowDownAZ className="h-3 w-3" />}
+                              {alphaSort[cat.id] ? "Front-end order" : "Alphabetical"}
+                            </Button>
+                            <Button size="sm" variant="outline" className="gap-1" onClick={() => openAddSub(cat.id)}>
+                              <Plus className="h-3 w-3" /> Add
+                            </Button>
+                          </div>
                         </div>
                         {subs.length === 0 ? (
                           <p className="text-sm text-muted-foreground">No subcategories yet.</p>
                         ) : (
-                          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
-                            <SortableContext items={subs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
-                              <div className="space-y-2">
-                                {subs.map((sub) => (
-                                  <SortableSubRow
-                                    key={sub.id}
-                                    sub={sub}
-                                    count={subCounts?.[sub.id] ?? 0}
-                                    onView={() => setViewSub(sub)}
-                                    onEdit={() => openEditSub(sub)}
-                                    onDelete={() => deleteSubMut.mutate(sub.id)}
-                                  />
-                                ))}
-                              </div>
-                            </SortableContext>
-                          </DndContext>
+                          (() => {
+                            const displaySubs = alphaSort[cat.id]
+                              ? [...subs].sort((a, b) => a.title.localeCompare(b.title))
+                              : subs;
+                            if (alphaSort[cat.id]) {
+                              return (
+                                <div className="space-y-2">
+                                  {displaySubs.map((sub) => (
+                                    <SortableSubRow
+                                      key={sub.id}
+                                      sub={sub}
+                                      count={subCounts?.[sub.id] ?? 0}
+                                      onView={() => setViewSub(sub)}
+                                      onEdit={() => openEditSub(sub)}
+                                      onDelete={() => deleteSubMut.mutate(sub.id)}
+                                      hideDrag
+                                    />
+                                  ))}
+                                </div>
+                              );
+                            }
+                            return (
+                              <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
+                                <SortableContext items={displaySubs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                                  <div className="space-y-2">
+                                    {displaySubs.map((sub) => (
+                                      <SortableSubRow
+                                        key={sub.id}
+                                        sub={sub}
+                                        count={subCounts?.[sub.id] ?? 0}
+                                        onView={() => setViewSub(sub)}
+                                        onEdit={() => openEditSub(sub)}
+                                        onDelete={() => deleteSubMut.mutate(sub.id)}
+                                      />
+                                    ))}
+                                  </div>
+                                </SortableContext>
+                              </DndContext>
+                            );
+                          })()
                         )}
                       </div>
                     )}
@@ -517,14 +554,17 @@ const SortableSubRow = ({
   onView,
   onEdit,
   onDelete,
+  hideDrag,
 }: {
   sub: Subcategory;
   count: number;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  hideDrag?: boolean;
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: sub.id });
+  const sortable = useSortable({ id: sub.id, disabled: hideDrag });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -533,9 +573,11 @@ const SortableSubRow = ({
   return (
     <div ref={setNodeRef} style={style} className="flex items-center justify-between bg-card border border-border rounded-lg px-3 py-2">
       <div className="flex items-center gap-2 min-w-0">
-        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
-          <GripVertical className="h-4 w-4" />
-        </button>
+        {!hideDrag && (
+          <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
+            <GripVertical className="h-4 w-4" />
+          </button>
+        )}
         <button type="button" onClick={onView} className="min-w-0 text-left hover:text-primary">
           <span className="font-medium text-foreground text-sm">{sub.title}</span>
           <span className="text-muted-foreground text-xs ml-1">({count})</span>
