@@ -362,6 +362,10 @@ const AdminEvents = () => {
               <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
               <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} placeholder="Additional info shown under price on event page" /></div>
+              <ListingContactPicker
+                listings={listings || []}
+                onApply={(c) => setForm({ ...form, ...c })}
+              />
               <MultiContactField
                 label="Contact Email"
                 type="email"
