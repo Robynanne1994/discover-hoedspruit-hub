@@ -764,6 +764,54 @@ const AdminListings = () => {
                     )}
                   </div>
                 )}
+                {selectedSubIds.length > 0 && (
+                  <div>
+                    <Label>Sub-subcategories</Label>
+                    {availableSubSubs.length > 0 && (
+                      <div className="space-y-2 max-h-40 overflow-y-auto border border-border rounded-lg p-3 border-gray-950 bg-slate-50">
+                        {availableSubSubs.map((ss) => {
+                          const parent = subcategories?.find((s) => s.id === ss.subcategory_id);
+                          return (
+                            <div key={ss.id} className="flex items-center gap-2">
+                              <Checkbox
+                                id={`subsub-${ss.id}`}
+                                checked={selectedSubSubIds.includes(ss.id)}
+                                onCheckedChange={() => toggleSubSub(ss.id)}
+                              />
+                              <label htmlFor={`subsub-${ss.id}`} className="text-sm text-foreground cursor-pointer">
+                                {ss.title}
+                                {parent && selectedSubIds.length > 1 && (
+                                  <span className="text-xs text-muted-foreground ml-1">({parent.title})</span>
+                                )}
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                    {showNewSubSub ? (
+                      <div className="flex flex-wrap gap-2 mt-2 items-center">
+                        {selectedSubIds.length > 1 && (
+                          <Select value={newSubSubParent} onValueChange={setNewSubSubParent}>
+                            <SelectTrigger className="h-8 text-sm w-[160px] border-gray-950 bg-slate-50"><SelectValue placeholder="Parent subcategory" /></SelectTrigger>
+                            <SelectContent>
+                              {subcategories?.filter((s) => selectedSubIds.includes(s.id)).map((s) => (
+                                <SelectItem key={s.id} value={s.id}>{s.title}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        <Input value={newSubSubName} onChange={(e) => setNewSubSubName(e.target.value)} placeholder="New sub-subcategory name" className="h-8 text-sm flex-1 min-w-[140px] border-gray-950 bg-slate-50" autoFocus />
+                        <Button type="button" size="sm" onClick={addSubSubcategory}>Save</Button>
+                        <Button type="button" size="sm" variant="ghost" onClick={() => { setShowNewSubSub(false); setNewSubSubName(""); setNewSubSubParent(""); }}>Cancel</Button>
+                      </div>
+                    ) : (
+                      <Button type="button" variant="ghost" size="sm" className="mt-2 h-8 px-2 gap-1 border-gray-950 bg-gray-400 text-gray-950 opacity-100" onClick={() => setShowNewSubSub(true)}>
+                        <Plus className="h-3.5 w-3.5" /> Add sub-subcategory
+                      </Button>
+                    )}
+                  </div>
+                )}
                 <div>
                   <Label>Card Cover Image</Label>
                   
