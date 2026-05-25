@@ -28,7 +28,7 @@ type Listing = Tables<"listings">;
 const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub", "Snacks", "Light Meals"];
-const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic", "Romantic", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite"];
+const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic", "Romantic", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite", "Instagrammable", "Quiet Space"];
 const CUISINE_OPTIONS = ["Italian", "Indian", "Mexican", "Asian", "Local", "Vegan", "Vegetarian", "Healthy Eats"];
 const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Desserts", "Fast Food", "Gelato", "Wraps", "Salads", "Chicken", "Sandwiches"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Bar"];
