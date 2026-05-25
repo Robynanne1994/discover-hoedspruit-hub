@@ -60,6 +60,59 @@ const AdminListings = () => {
   const [showNewSub, setShowNewSub] = useState(false);
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
+  const [newServiceInput, setNewServiceInput] = useState("");
+
+  // Custom (admin-added) Home & Garden services, persisted in site_content
+  const { data: customHGServices } = useQuery({
+    queryKey: ["hg-custom-services"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", HG_SERVICES_SECTION)
+        .maybeSingle();
+      const items = (data?.content as any)?.items;
+      return Array.isArray(items) ? (items as string[]) : [];
+    },
+  });
+
+  const addHGServiceMutation = useMutation({
+    mutationFn: async (label: string) => {
+      const trimmed = label.trim();
+      if (!trimmed) throw new Error("Empty");
+      const existing = [...SERVICES_OFFERED_OPTIONS, ...(customHGServices ?? [])];
+      if (existing.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
+        throw new Error("This service is already in the list.");
+      }
+      const next = [...(customHGServices ?? []), trimmed];
+      const { data: row } = await supabase
+        .from("site_content")
+        .select("id")
+        .eq("section", HG_SERVICES_SECTION)
+        .maybeSingle();
+      if (row?.id) {
+        const { error } = await supabase
+          .from("site_content")
+          .update({ content: { items: next } })
+          .eq("section", HG_SERVICES_SECTION);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("site_content")
+          .insert({ section: HG_SERVICES_SECTION, content: { items: next } });
+        if (error) throw error;
+      }
+      return trimmed;
+    },
+    onSuccess: (label) => {
+      qc.invalidateQueries({ queryKey: ["hg-custom-services"] });
+      setForm((f) => ({ ...f, services_offered: f.services_offered.includes(label) ? f.services_offered : [...f.services_offered, label] }));
+      setNewServiceInput("");
+      toast.success("Service added");
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Could not add service"),
+  });
+
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
