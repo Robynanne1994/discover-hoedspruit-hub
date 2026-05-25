@@ -239,6 +239,8 @@ const AdminListings = () => {
         email: values.email || null,
         website: values.website || null,
         website_label: values.website_label || null,
+        facebook: values.facebook || null,
+        instagram: values.instagram || null,
         whatsapp: values.whatsapp || null,
         additional_emails: sanitizeContactArray(values.additional_emails),
         additional_phones: sanitizeContactArray(values.additional_phones),
