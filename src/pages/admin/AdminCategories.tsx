@@ -6,11 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical, ArrowDownAZ, ArrowDownUp } from "lucide-react";
+import { Plus, Pencil, Trash2, ChevronDown, ChevronRight, GripVertical, ArrowDownAZ, ArrowDownUp, MoveRight } from "lucide-react";
 import type { Tables, TablesInsert } from "@/integrations/supabase/types";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import ImageUpload from "@/components/admin/ImageUpload";
 import {
   DndContext,
@@ -710,6 +713,14 @@ const AdminCategories = () => {
                                   onEdit={() => openEditSub(sub)}
                                   onDelete={() => deleteSubMut.mutate(sub.id)}
                                   hideDrag={hideDrag}
+                                  categories={orderedCats}
+                                  subcategories={subcategories ?? []}
+                                  onMoveToCategory={(cid) => moveSubToCategory(sub.id, cid)}
+                                  onDemoteToSubSub={(targetSubId) => {
+                                    if (confirm(`Make "${sub.title}" a sub-subcategory under the chosen subcategory? Its listings and any existing sub-subcategories will be moved.`)) {
+                                      demoteSubToSubSub(sub.id, targetSubId);
+                                    }
+                                  }}
                                 >
                                   <div className="bg-muted/40 px-3 py-2 border-t border-border">
                                     <div className="flex items-center justify-between mb-2">
@@ -719,7 +730,7 @@ const AdminCategories = () => {
                                       </Button>
                                     </div>
                                     {ssList.length === 0 ? (
-                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet. Drag a sub-subcategory onto this subcategory to move it here.</p>
+                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet. Use the Move menu on any subcategory or sub-subcategory to move it here.</p>
                                     ) : (
                                       <SortableContext items={ssList.map((s) => `subsub:${s.id}`)} strategy={verticalListSortingStrategy}>
                                         <div className="space-y-1.5">
@@ -730,6 +741,14 @@ const AdminCategories = () => {
                                               count={subSubCounts?.[ss.id] ?? 0}
                                               onEdit={() => openEditSubSub(ss)}
                                               onDelete={() => deleteSubSubMut.mutate(ss.id)}
+                                              categories={orderedCats}
+                                              subcategories={subcategories ?? []}
+                                              onMoveToSub={(targetSubId) => moveSubSubToSub(ss.id, targetSubId)}
+                                              onPromoteToSub={(targetCategoryId) => {
+                                                if (confirm(`Promote "${ss.title}" to a top-level subcategory under the chosen category?`)) {
+                                                  promoteSubSubToSub(ss.id, targetCategoryId);
+                                                }
+                                              }}
                                             />
                                           ))}
                                         </div>
@@ -831,6 +850,10 @@ const SortableSubRow = ({
   onEdit,
   onDelete,
   hideDrag,
+  categories,
+  subcategories,
+  onMoveToCategory,
+  onDemoteToSubSub,
   children,
 }: {
   sub: Subcategory;
@@ -842,6 +865,10 @@ const SortableSubRow = ({
   onEdit: () => void;
   onDelete: () => void;
   hideDrag?: boolean;
+  categories: Category[];
+  subcategories: Subcategory[];
+  onMoveToCategory: (categoryId: string) => void;
+  onDemoteToSubSub: (targetSubId: string) => void;
   children?: React.ReactNode;
 }) => {
   const sortable = useSortable({ id: `sub:${sub.id}`, disabled: hideDrag });
@@ -875,6 +902,39 @@ const SortableSubRow = ({
           </button>
         </div>
         <div className="flex gap-1">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-7 w-7" title="Move">
+                <MoveRight className="h-3.5 w-3.5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64 bg-popover z-50">
+              <DropdownMenuLabel>Move subcategory to…</DropdownMenuLabel>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Another category</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                  {categories.filter((c) => c.id !== sub.category_id).map((c) => (
+                    <DropdownMenuItem key={c.id} onClick={() => onMoveToCategory(c.id)}>{c.title}</DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel>Demote to sub-subcategory under…</DropdownMenuLabel>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Choose parent subcategory</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                  {subcategories.filter((s) => s.id !== sub.id).map((s) => {
+                    const parent = categories.find((c) => c.id === s.category_id);
+                    return (
+                      <DropdownMenuItem key={s.id} onClick={() => onDemoteToSubSub(s.id)}>
+                        {parent?.title ?? "?"} › {s.title}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onEdit}>
             <Pencil className="h-3 w-3" />
           </Button>
@@ -894,12 +954,20 @@ const SortableSubSubRow = ({
   onEdit,
   onDelete,
   hideDrag,
+  categories,
+  subcategories,
+  onMoveToSub,
+  onPromoteToSub,
 }: {
   ss: SubSubcategory;
   count: number;
   onEdit: () => void;
   onDelete: () => void;
   hideDrag?: boolean;
+  categories: Category[];
+  subcategories: Subcategory[];
+  onMoveToSub: (targetSubId: string) => void;
+  onPromoteToSub: (targetCategoryId: string) => void;
 }) => {
   const sortable = useSortable({ id: `subsub:${ss.id}`, disabled: hideDrag });
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
@@ -921,6 +989,39 @@ const SortableSubSubRow = ({
         {ss.description && <span className="text-muted-foreground text-xs">— {ss.description}</span>}
       </div>
       <div className="flex gap-1">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-6 w-6" title="Move">
+              <MoveRight className="h-3 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-64 bg-popover z-50">
+            <DropdownMenuLabel>Move to subcategory…</DropdownMenuLabel>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Choose subcategory</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                {subcategories.filter((s) => s.id !== ss.subcategory_id).map((s) => {
+                  const parent = categories.find((c) => c.id === s.category_id);
+                  return (
+                    <DropdownMenuItem key={s.id} onClick={() => onMoveToSub(s.id)}>
+                      {parent?.title ?? "?"} › {s.title}
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Promote to subcategory under…</DropdownMenuLabel>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>Choose category</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
+                {categories.map((c) => (
+                  <DropdownMenuItem key={c.id} onClick={() => onPromoteToSub(c.id)}>{c.title}</DropdownMenuItem>
+                ))}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onEdit}>
           <Pencil className="h-3 w-3" />
         </Button>
