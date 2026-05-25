@@ -928,6 +928,7 @@ export type Database = {
           detail_image_url: string | null
           email: string | null
           emergency_24hr: boolean | null
+          facebook: string | null
           gallery_images: string[] | null
           good_for_kids: boolean | null
           google_maps_link: string | null
@@ -954,6 +955,7 @@ export type Database = {
           id: string
           image_url: string | null
           impact: string | null
+          instagram: string | null
           is_featured: boolean
           kids_menu: boolean | null
           kids_playground: boolean | null
@@ -1029,6 +1031,7 @@ export type Database = {
           detail_image_url?: string | null
           email?: string | null
           emergency_24hr?: boolean | null
+          facebook?: string | null
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
@@ -1055,6 +1058,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           impact?: string | null
+          instagram?: string | null
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null
@@ -1130,6 +1134,7 @@ export type Database = {
           detail_image_url?: string | null
           email?: string | null
           emergency_24hr?: boolean | null
+          facebook?: string | null
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
@@ -1156,6 +1161,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           impact?: string | null
+          instagram?: string | null
           is_featured?: boolean
           kids_menu?: boolean | null
           kids_playground?: boolean | null

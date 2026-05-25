@@ -28,6 +28,20 @@ const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: numbe
   </svg>
 );
 
+const FacebookIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+  </svg>
+);
+
+const InstagramIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 2 1 1 12.63 8 4 4 2 1 1 16 11.37z" />
+    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+  </svg>
+);
+
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -642,7 +656,7 @@ const ListingDetail = () => {
       })()}
 
       {/* Contact rows */}
-      {(listing.email || listing.phone || waClean || listing.website || ((listing as any).additional_emails?.length || (listing as any).additional_phones?.length || (listing as any).additional_whatsapps?.length)) && (
+      {(listing.email || listing.phone || waClean || listing.website || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length || (listing as any).additional_phones?.length || (listing as any).additional_whatsapps?.length)) && (
         <div style={{ marginTop: 28 }}>
           <h2 style={headStyle}>Contact</h2>
           <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
@@ -658,6 +672,8 @@ const ListingDetail = () => {
               });
               emails.forEach((e, i) => rows.push({ label: i === 0 ? "Email" : `Email ${i + 1}`, value: e, href: `mailto:${e}`, Icon: Mail }));
               if (listing.website) rows.push({ label: "Website", value: (listing as any).website_label || listing.website, href: listing.website, Icon: Globe });
+              if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
+              if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
               return rows;
             })().map((r: any, i, arr) => (
               <a key={r.label} href={r.href} target="_blank" rel="noopener noreferrer" style={{
