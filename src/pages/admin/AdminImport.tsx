@@ -323,7 +323,6 @@ const AdminImport = () => {
           phone: row.phone || null,
           email: row.email || null,
           website: row.website || null,
-          website_label: row.website_label || null,
           whatsapp: row.whatsapp || null,
           google_maps_link: row.google_maps_link || null,
           google_rating: row.google_rating && row.google_rating.trim() !== "-" ? parseFloat(row.google_rating) || null : null,
