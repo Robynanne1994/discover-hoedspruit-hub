@@ -1154,9 +1154,9 @@ const AdminListings = () => {
                     <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Home & Garden Fields</p>
 
                     {[
-                      { label: "Services Offered", options: SERVICES_OFFERED_OPTIONS, key: "services_offered" as const },
+                      { label: "Services Offered", options: Array.from(new Set([...SERVICES_OFFERED_OPTIONS, ...(customHGServices ?? []), ...form.services_offered])), key: "services_offered" as const },
                       ...(form.services_offered.includes("Nursery")
-                        ? [{ label: "Plant Types", options: PLANT_TYPES_OPTIONS, key: "plant_types" as const }]
+                        ? [{ label: "Plant Types", options: PLANT_TYPES_OPTIONS as readonly string[], key: "plant_types" as const }]
                         : []),
                     ].map(({ label, options, key }) => (
                       <div key={key}>
@@ -1171,16 +1171,41 @@ const AdminListings = () => {
                                 onClick={() => setForm({ ...form, [key]: selected ? (form[key] as string[]).filter((v) => v !== opt) : [...(form[key] as string[]), opt] })}
                                 className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
                               >
-                                {opt}
+                                {formatServiceLabel(opt)}
                               </button>
                             );
                           })}
                         </div>
+                        {key === "services_offered" && (
+                          <div className="mt-2 flex gap-2">
+                            <Input
+                              value={newServiceInput}
+                              onChange={(e) => setNewServiceInput(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  if (newServiceInput.trim()) addHGServiceMutation.mutate(newServiceInput);
+                                }
+                              }}
+                              placeholder="Add another service (e.g. Paving)"
+                              className="h-9"
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              onClick={() => newServiceInput.trim() && addHGServiceMutation.mutate(newServiceInput)}
+                              disabled={addHGServiceMutation.isPending || !newServiceInput.trim()}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        )}
                         {key === "plant_types" && (
                           <p className="text-[11px] text-muted-foreground mt-1">Only shown because "Nursery" is selected above.</p>
                         )}
                       </div>
                     ))}
+
 
                     <div className="space-y-2">
                       <Label>Tenure</Label>
