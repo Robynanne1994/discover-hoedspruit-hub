@@ -180,6 +180,18 @@ const ListingDetail = () => {
     enabled: !!user && !!id,
   });
 
+  const { data: displayDefaults } = useQuery({
+    queryKey: ["details-display-defaults"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", "details_display_defaults")
+        .maybeSingle();
+      return ((data?.content as any)?.defaults ?? {}) as Record<string, "yes_only" | "all">;
+    },
+  });
+
   const toggleFavourite = useMutation({
     mutationFn: async () => {
       if (!user) return;
