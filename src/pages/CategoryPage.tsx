@@ -2,7 +2,7 @@ import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { SlidersHorizontal, MapPin, Search, Heart, Pill as PillIcon, Stethoscope, Eye, HeartPulse, Smile, LayoutGrid } from "lucide-react";
+import { SlidersHorizontal, MapPin, Search, X, Heart, Pill as PillIcon, Stethoscope, Eye, HeartPulse, Smile, LayoutGrid } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useAuth } from "@/hooks/useAuth";
@@ -611,7 +611,7 @@ const CategoryPage = () => {
         </div>
         <button
           onClick={() => setSearchOpen((v) => !v)}
-          aria-label="Search"
+          aria-label={searchOpen ? "Close search" : "Search"}
           style={{
             width: 40,
             height: 40,
@@ -625,7 +625,11 @@ const CategoryPage = () => {
             flexShrink: 0,
           }}
         >
-          <Search size={18} strokeWidth={1.8} color={INK} />
+          {searchOpen ? (
+            <X size={18} strokeWidth={1.8} color={INK} />
+          ) : (
+            <Search size={18} strokeWidth={1.8} color={INK} />
+          )}
         </button>
         <button
           onClick={() => setRefineOpen(true)}
@@ -642,7 +646,7 @@ const CategoryPage = () => {
             cursor: "pointer",
             flexShrink: 0,
             position: "relative",
-            marginLeft: 8,
+            marginLeft: 4,
           }}
         >
           <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#020202"} />
