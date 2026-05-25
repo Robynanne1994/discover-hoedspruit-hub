@@ -927,6 +927,7 @@ export type Database = {
           description: string | null
           detail_image_url: string | null
           details_display_mode: Json
+          drive_through: boolean | null
           email: string | null
           emergency_24hr: boolean | null
           facebook: string | null
@@ -1043,6 +1044,7 @@ export type Database = {
           description?: string | null
           detail_image_url?: string | null
           details_display_mode?: Json
+          drive_through?: boolean | null
           email?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
@@ -1159,6 +1161,7 @@ export type Database = {
           description?: string | null
           detail_image_url?: string | null
           details_display_mode?: Json
+          drive_through?: boolean | null
           email?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
