@@ -916,10 +916,10 @@ const ListingDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              background: C.primary, color: "#fff",
-              padding: "14px 20px", borderRadius: 999,
-              textDecoration: "none", fontFamily: FONT, fontSize: 14, fontWeight: 400,
-              letterSpacing: "0.02em",
+              background: "#423324", color: "#FFFFFF",
+              height: 48, padding: "12px 20px", borderRadius: 16,
+              textDecoration: "none", fontFamily: FONT, fontSize: 15, fontWeight: 600,
+              textTransform: "capitalize",
             }}
             {...pressScale()}
           >
