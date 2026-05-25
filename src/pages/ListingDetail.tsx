@@ -457,7 +457,7 @@ const ListingDetail = () => {
     const services = (l.services_offered as string[] | null) ?? [];
     const plantTypes = (l.plant_types as string[] | null) ?? [];
     if (services.length) {
-      sections.push({ key: "hg-services", title: "Services", iconComp: Wrench, fields: services.map((label: string) => ({ label, on: true })) });
+      sections.push({ key: "hg-services", title: "Services", iconComp: Wrench, fields: services.map((label: string) => ({ label: formatServiceLabel(label), on: true })) });
     }
     if (services.includes("Nursery") && plantTypes.length) {
       sections.push({ key: "hg-plants", title: "Plant types", iconComp: Leaf, fields: plantTypes.map((label: string) => ({ label, on: true })) });
