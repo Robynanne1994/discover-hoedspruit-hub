@@ -159,6 +159,16 @@ const AdminCategories = () => {
     }
   }, [subcategories]);
 
+  useEffect(() => {
+    if (subSubcategories) {
+      const grouped: Record<string, SubSubcategory[]> = {};
+      subSubcategories.forEach((s) => {
+        (grouped[s.subcategory_id] ??= []).push(s);
+      });
+      setOrderedSubSubs(grouped);
+    }
+  }, [subSubcategories]);
+
   const upsert = useMutation({
     mutationFn: async (values: TablesInsert<"categories">) => {
       if (editing) {
