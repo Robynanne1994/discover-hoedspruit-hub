@@ -401,7 +401,7 @@ const ListingDetail = () => {
       { label: "Nappy changing station", value: l.nappy_changing_station },
       { label: "Kids playground", value: l.kids_playground },
     ]);
-    if (kids.length) sections.push({ key: "kids", title: "Kids & family", iconComp: Baby, fields: kids });
+    if (kids.length) sections.push({ key: "kids", title: "Kids & Family", iconComp: Baby, fields: kids });
 
     const access = filterDefined([
       { label: "Wheelchair friendly", value: l.wheelchair_friendly },

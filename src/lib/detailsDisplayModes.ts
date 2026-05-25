@@ -14,7 +14,7 @@ export interface DisplaySection {
 // Only sections that mix true/false flags (i.e. rendered with ticks/crosses)
 export const DISPLAY_SECTIONS: DisplaySection[] = [
   { key: "service",         title: "Service Options",  group: "restaurant" },
-  { key: "kids",            title: "Kids & family",    group: "restaurant" },
+  { key: "kids",            title: "Kids & Family",    group: "restaurant" },
   { key: "accessibility",   title: "Accessibility",    group: "restaurant" },
   { key: "amenities",       title: "Amenities",        group: "restaurant" },
   { key: "accom-food",      title: "Food & drink",     group: "accommodation" },
