@@ -940,6 +940,10 @@ export type Database = {
           has_airport_shuttle: boolean | null
           has_bar: boolean | null
           has_breakfast: boolean | null
+          has_champagne: boolean | null
+          has_cocktails: boolean | null
+          has_coffee: boolean | null
+          has_craft_beer: boolean | null
           has_fitness_centre: boolean | null
           has_free_parking: boolean | null
           has_free_wifi: boolean | null
@@ -947,11 +951,13 @@ export type Database = {
           has_restaurant: boolean | null
           has_room_service: boolean | null
           has_secure_parking: boolean | null
+          has_smoothies: boolean | null
           has_spa: boolean | null
           has_swimming_pool: boolean | null
           has_toilet: boolean | null
           has_wifi: boolean | null
           has_wifi_accom: boolean | null
+          has_wine_list: boolean | null
           high_chairs: boolean | null
           id: string
           image_url: string | null
@@ -1044,6 +1050,10 @@ export type Database = {
           has_airport_shuttle?: boolean | null
           has_bar?: boolean | null
           has_breakfast?: boolean | null
+          has_champagne?: boolean | null
+          has_cocktails?: boolean | null
+          has_coffee?: boolean | null
+          has_craft_beer?: boolean | null
           has_fitness_centre?: boolean | null
           has_free_parking?: boolean | null
           has_free_wifi?: boolean | null
@@ -1051,11 +1061,13 @@ export type Database = {
           has_restaurant?: boolean | null
           has_room_service?: boolean | null
           has_secure_parking?: boolean | null
+          has_smoothies?: boolean | null
           has_spa?: boolean | null
           has_swimming_pool?: boolean | null
           has_toilet?: boolean | null
           has_wifi?: boolean | null
           has_wifi_accom?: boolean | null
+          has_wine_list?: boolean | null
           high_chairs?: boolean | null
           id?: string
           image_url?: string | null
@@ -1148,6 +1160,10 @@ export type Database = {
           has_airport_shuttle?: boolean | null
           has_bar?: boolean | null
           has_breakfast?: boolean | null
+          has_champagne?: boolean | null
+          has_cocktails?: boolean | null
+          has_coffee?: boolean | null
+          has_craft_beer?: boolean | null
           has_fitness_centre?: boolean | null
           has_free_parking?: boolean | null
           has_free_wifi?: boolean | null
@@ -1155,11 +1171,13 @@ export type Database = {
           has_restaurant?: boolean | null
           has_room_service?: boolean | null
           has_secure_parking?: boolean | null
+          has_smoothies?: boolean | null
           has_spa?: boolean | null
           has_swimming_pool?: boolean | null
           has_toilet?: boolean | null
           has_wifi?: boolean | null
           has_wifi_accom?: boolean | null
+          has_wine_list?: boolean | null
           high_chairs?: boolean | null
           id?: string
           image_url?: string | null
