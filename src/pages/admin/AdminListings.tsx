@@ -928,7 +928,7 @@ const AdminListings = () => {
                       { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
                       { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
                     ].map(({ label, options, key }) => {
-                      const CUISINE_EXCLUDE = new Set(["light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats", "bakery", "artisan bakery"]);
+                      const CUISINE_EXCLUDE = new Set(["light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats", "bakery", "artisan bakery", "gelato", "wraps", "salads", "chicken", "sandwiches", "sandwhiches"]);
                       const extras = (distinctChipValues?.[key] ?? []).filter((v) => !options.includes(v));
                       let merged = [...options, ...extras];
                       if (key === "cuisine") {
