@@ -242,7 +242,7 @@ const AdminListings = () => {
         phone: values.phone || null,
         email: values.email || null,
         website: values.website || null,
-        website_label: values.website_label || null,
+        
         facebook: values.facebook || null,
         instagram: values.instagram || null,
         whatsapp: values.whatsapp || null,
