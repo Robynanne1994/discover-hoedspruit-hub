@@ -982,6 +982,14 @@ const AdminListings = () => {
                         </div>
                       );
                     })}
+
+                    {/* Business Type Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Business Type</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Franchise" value={form.is_franchise} onChange={(v) => setForm({ ...form, is_franchise: v })} />
+                      </div>
+                    </div>
                   </div>
                 )}
 
