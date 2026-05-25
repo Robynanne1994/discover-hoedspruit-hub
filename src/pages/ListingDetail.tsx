@@ -448,7 +448,7 @@ const ListingDetail = () => {
       });
       sections.push({ key: "meals", title: "Meals served", iconComp: Utensils, fields: sortedMeals.map((m: string) => ({ label: toTitleCase(m), on: true })) });
     }
-    const CUISINE_HIDE = new Set(["light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats"]);
+    const CUISINE_HIDE = new Set(["light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats", "bakery", "artisan bakery"]);
     const filteredCuisine = (l.cuisine ?? []).filter((c: string) => !CUISINE_HIDE.has(c.trim().toLowerCase()));
     if (filteredCuisine.length) sections.push({ key: "cuisine", title: "Cuisine", iconComp: Soup, fields: filteredCuisine.map((c: string) => ({ label: toTitleCase(c), on: true })) });
     if (l.vibe?.length) sections.push({ key: "vibe", title: "Vibe", iconComp: Music, fields: l.vibe.map((v: string) => ({ label: toTitleCase(v), on: true })) });
