@@ -159,6 +159,14 @@ const AdminListings = () => {
     },
   });
 
+  const { data: subSubcategories } = useQuery({
+    queryKey: ["admin-sub-subcategories-select"],
+    queryFn: async () => {
+      const { data } = await supabase.from("sub_subcategories").select("id, title, subcategory_id").order("sort_order");
+      return data ?? [];
+    },
+  });
+
   // Distinct values used across listings for free-form chip fields
   const { data: distinctChipValues } = useQuery({
     queryKey: ["admin-distinct-chip-values"],
