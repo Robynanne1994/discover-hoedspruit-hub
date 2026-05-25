@@ -29,7 +29,8 @@ const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "sat
 
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub", "Snacks", "Light Meals"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic", "Romantic", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite"];
-const CUISINE_OPTIONS = ["Seafood", "Sushi", "Burgers", "Pizzas", "Indian", "Grill", "Italian", "Local", "Fast Food", "Tapas", "Vegan", "Vegetarian", "Coffee", "Baked Goods", "Mexican", "Asian", "Desserts", "Healthy Eats", "Pasta"];
+const CUISINE_OPTIONS = ["Italian", "Indian", "Mexican", "Asian", "Local", "Vegan", "Vegetarian", "Healthy Eats"];
+const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Desserts", "Fast Food"];
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit down", "Take away", "Delivery"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
@@ -40,7 +41,7 @@ const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance"
 const HG_SERVICES_SECTION = "home_garden_services";
 const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 
-const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", facebook: "" as string, instagram: "" as string, whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const emptyForm = { title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", website_label: "", facebook: "" as string, instagram: "" as string, whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -158,7 +159,7 @@ const AdminListings = () => {
   const { data: distinctChipValues } = useQuery({
     queryKey: ["admin-distinct-chip-values"],
     queryFn: async () => {
-      const { data } = await supabase.from("listings").select("meal, vibe, cuisine, seating, service_type");
+      const { data } = await supabase.from("listings").select("meal, vibe, cuisine, foods, seating, service_type");
       const collect = (key: string) => {
         const s = new Set<string>();
         (data ?? []).forEach((row: any) => (row[key] ?? []).forEach((v: string) => v && s.add(v)));
@@ -168,6 +169,7 @@ const AdminListings = () => {
         meal: collect("meal"),
         vibe: collect("vibe"),
         cuisine: collect("cuisine"),
+        foods: collect("foods"),
         seating: collect("seating"),
         service_type: collect("service_type"),
       } as Record<string, string[]>;
@@ -264,6 +266,7 @@ const AdminListings = () => {
         meal: values.meal,
         vibe: values.vibe,
         cuisine: values.cuisine,
+        foods: values.foods,
         seating: values.seating,
         kids_playground: values.kids_playground,
         smoking_allowed: values.smoking_allowed,
@@ -282,6 +285,7 @@ const AdminListings = () => {
         has_cocktails: values.has_cocktails,
         has_craft_beer: values.has_craft_beer,
         has_smoothies: values.has_smoothies,
+        has_coffee: values.has_coffee,
         has_champagne: values.has_champagne,
         has_milkshakes: values.has_milkshakes,
         has_mocktails: values.has_mocktails,
@@ -317,6 +321,7 @@ const AdminListings = () => {
         has_wifi_accom: values.has_wifi_accom,
         has_free_parking: values.has_free_parking,
         has_secure_parking: values.has_secure_parking,
+        is_franchise: values.is_franchise,
         custom_title_1: values.custom_title_1?.trim() || null,
         custom_text_1: values.custom_text_1?.trim() || null,
         custom_title_2: values.custom_title_2?.trim() || null,
@@ -439,6 +444,7 @@ const AdminListings = () => {
       meal: (l as any).meal ?? [],
       vibe: (l as any).vibe ?? [],
       cuisine: (l as any).cuisine ?? [],
+      foods: (l as any).foods ?? [],
       seating: (l as any).seating ?? [],
       kids_playground: (l as any).kids_playground ?? null,
       smoking_allowed: (l as any).smoking_allowed ?? null,
@@ -457,6 +463,7 @@ const AdminListings = () => {
       has_cocktails: (l as any).has_cocktails ?? null,
       has_craft_beer: (l as any).has_craft_beer ?? null,
       has_smoothies: (l as any).has_smoothies ?? null,
+      has_coffee: (l as any).has_coffee ?? null,
       has_champagne: (l as any).has_champagne ?? null,
       has_milkshakes: (l as any).has_milkshakes ?? null,
       has_mocktails: (l as any).has_mocktails ?? null,
@@ -492,6 +499,7 @@ const AdminListings = () => {
       has_wifi_accom: (l as any).has_wifi_accom ?? null,
       has_free_parking: (l as any).has_free_parking ?? null,
       has_secure_parking: (l as any).has_secure_parking ?? null,
+      is_franchise: (l as any).is_franchise ?? null,
       custom_title_1: (l as any).custom_title_1 ?? "",
       custom_text_1: (l as any).custom_text_1 ?? "",
       custom_title_2: (l as any).custom_title_2 ?? "",
@@ -894,6 +902,7 @@ const AdminListings = () => {
                         <TriStateToggle label="Cocktails" value={form.has_cocktails} onChange={(v) => setForm({ ...form, has_cocktails: v })} />
                         <TriStateToggle label="Craft Beer" value={form.has_craft_beer} onChange={(v) => setForm({ ...form, has_craft_beer: v })} />
                         <TriStateToggle label="Smoothies" value={form.has_smoothies} onChange={(v) => setForm({ ...form, has_smoothies: v })} />
+                        <TriStateToggle label="Coffee" value={form.has_coffee} onChange={(v) => setForm({ ...form, has_coffee: v })} />
                         <TriStateToggle label="Champagne" value={form.has_champagne} onChange={(v) => setForm({ ...form, has_champagne: v })} />
                         <TriStateToggle label="Milkshakes" value={form.has_milkshakes} onChange={(v) => setForm({ ...form, has_milkshakes: v })} />
                         <TriStateToggle label="Mocktails" value={form.has_mocktails} onChange={(v) => setForm({ ...form, has_mocktails: v })} />
@@ -919,6 +928,7 @@ const AdminListings = () => {
                       { label: "Meal", options: MEAL_OPTIONS, key: "meal" as const },
                       { label: "Vibe", options: VIBE_OPTIONS, key: "vibe" as const },
                       { label: "Cuisine", options: CUISINE_OPTIONS, key: "cuisine" as const },
+                      { label: "Foods", options: FOODS_OPTIONS, key: "foods" as const },
                       { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
                       { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
                     ].map(({ label, options, key }) => {
@@ -972,6 +982,14 @@ const AdminListings = () => {
                         </div>
                       );
                     })}
+
+                    {/* Business Type Section */}
+                    <div className="border-t border-border pt-3 mt-2">
+                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Business Type</p>
+                      <div className="space-y-3">
+                        <TriStateToggle label="Franchise" value={form.is_franchise} onChange={(v) => setForm({ ...form, is_franchise: v })} />
+                      </div>
+                    </div>
                   </div>
                 )}
 
