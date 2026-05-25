@@ -295,15 +295,26 @@ const CategoryPage = () => {
       let listingIds = Array.from(idSet);
       if (listingIds.length === 0) return [];
       if (activeSubId) {
-        const { data: subJunction, error: sErr } = await supabase
-          .from("listing_subcategories")
-          .select("listing_id")
-          .eq("subcategory_id", activeSubId);
+        // Include listings assigned directly to this subcategory
+        // OR to any sub-subcategory under it (hierarchical refinement)
+        const [{ data: subJunction, error: sErr }, { data: ssList }] = await Promise.all([
+          supabase.from("listing_subcategories").select("listing_id").eq("subcategory_id", activeSubId),
+          supabase.from("sub_subcategories").select("id").eq("subcategory_id", activeSubId),
+        ]);
         if (sErr) throw sErr;
-        const subListingIds = new Set(subJunction.map((r: any) => r.listing_id as string));
-        listingIds = listingIds.filter((listingId) => subListingIds.has(listingId));
+        const matchingListingIds = new Set<string>((subJunction || []).map((r: any) => r.listing_id as string));
+        const ssIds = (ssList || []).map((s: any) => s.id as string);
+        if (ssIds.length > 0) {
+          const { data: ssJunction } = await supabase
+            .from("listing_sub_subcategories")
+            .select("listing_id")
+            .in("sub_subcategory_id", ssIds);
+          (ssJunction || []).forEach((r: any) => matchingListingIds.add(r.listing_id as string));
+        }
+        listingIds = listingIds.filter((listingId) => matchingListingIds.has(listingId));
         if (listingIds.length === 0) return [];
       }
+
       const { data, error } = await supabase
         .from("listings")
         .select("*")
