@@ -30,8 +30,8 @@ const DAY_LABELS = ["monday", "tuesday", "wednesday", "thursday", "friday", "sat
 const MEAL_OPTIONS = ["Breakfast", "Lunch", "Dinner", "Brunch", "Pub Grub", "Snacks", "Light Meals"];
 const VIBE_OPTIONS = ["Casual", "Social", "Fancy", "Scenic", "Romantic", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite"];
 const CUISINE_OPTIONS = ["Italian", "Indian", "Mexican", "Asian", "Local", "Vegan", "Vegetarian", "Healthy Eats"];
-const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Desserts", "Fast Food"];
-const SEATING_OPTIONS = ["Indoor", "Outdoor", "No Seating", "Bar"];
+const FOODS_OPTIONS = ["Burgers", "Pizzas", "Seafood", "Sushi", "Grill", "Ribs", "Steaks", "Tapas", "Pasta", "Baked Goods", "Desserts", "Fast Food", "Gelato", "Wraps", "Salads", "Chicken", "Sandwiches"];
+const SEATING_OPTIONS = ["Indoor", "Outdoor", "Bar"];
 const SERVICE_TYPE_OPTIONS = ["Sit down", "Take away", "Delivery"];
 const PAYMENT_METHOD_OPTIONS = ["Cash", "Card", "EFT", "Account"];
 const SHOP_TYPE_OPTIONS = ["Shopping Centre", "Curios & Gifts", "General Store", "Boutique", "Hardware", "Grocery", "Clothing", "Electronics", "Pharmacy", "Pet Shop", "Stationery Shop", "Other"];
@@ -928,7 +928,7 @@ const AdminListings = () => {
                       { label: "Seating", options: SEATING_OPTIONS, key: "seating" as const },
                       { label: "Service Type", options: SERVICE_TYPE_OPTIONS, key: "service_type" as const },
                     ].map(({ label, options, key }) => {
-                      const CUISINE_EXCLUDE = new Set(["light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats", "bakery", "artisan bakery"]);
+                      const CUISINE_EXCLUDE = new Set(["light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats", "bakery", "artisan bakery", "gelato", "wraps", "salads", "chicken", "sandwiches", "sandwhiches"]);
                       const extras = (distinctChipValues?.[key] ?? []).filter((v) => !options.includes(v));
                       let merged = [...options, ...extras];
                       if (key === "cuisine") {
