@@ -474,6 +474,29 @@ const AdminCategories = () => {
         </DialogContent>
       </Dialog>
 
+      {/* Sub-subcategory dialog */}
+      <Dialog open={subSubOpen} onOpenChange={(v) => { if (!v) resetSubSubForm(); setSubSubOpen(v); }}>
+        <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingSubSub ? "Edit Sub-subcategory" : "Add Sub-subcategory"}</DialogTitle>
+          </DialogHeader>
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              upsertSubSub.mutate(subSubForm);
+            }}
+          >
+            <div><Label>Title</Label><Input value={subSubForm.title} onChange={(e) => setSubSubForm({ ...subSubForm, title: e.target.value })} required /></div>
+            <div><Label>Description</Label><Input value={subSubForm.description} onChange={(e) => setSubSubForm({ ...subSubForm, description: e.target.value })} /></div>
+            <div><Label>Sort Order</Label><Input type="number" value={subSubForm.sort_order} onChange={(e) => setSubSubForm({ ...subSubForm, sort_order: parseInt(e.target.value) || 0 })} /></div>
+            <Button type="submit" className="w-full" disabled={upsertSubSub.isPending}>
+              {editingSubSub ? "Update" : "Create"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       {/* View subcategory listings dialog */}
       <Dialog open={!!viewSub} onOpenChange={(v) => { if (!v) setViewSub(null); }}>
         <DialogContent className="max-w-[calc(100vw-1rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
