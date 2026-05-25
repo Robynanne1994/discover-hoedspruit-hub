@@ -590,20 +590,56 @@ const AdminCategories = () => {
                             const displaySubs = alphaSort[cat.id]
                               ? [...subs].sort((a, b) => a.title.localeCompare(b.title))
                               : subs;
+                            const renderSub = (sub: Subcategory, hideDrag?: boolean) => {
+                              const ssList = orderedSubSubs[sub.id] ?? [];
+                              const isExpanded = expandedSub === sub.id;
+                              return (
+                                <SortableSubRow
+                                  key={sub.id}
+                                  sub={sub}
+                                  count={subCounts?.[sub.id] ?? 0}
+                                  subSubCount={ssList.length}
+                                  isExpanded={isExpanded}
+                                  onToggle={() => setExpandedSub(isExpanded ? null : sub.id)}
+                                  onView={() => setViewSub(sub)}
+                                  onEdit={() => openEditSub(sub)}
+                                  onDelete={() => deleteSubMut.mutate(sub.id)}
+                                  hideDrag={hideDrag}
+                                >
+                                  <div className="bg-muted/40 px-3 py-2 border-t border-border">
+                                    <div className="flex items-center justify-between mb-2">
+                                      <span className="text-xs font-medium text-muted-foreground">Sub-subcategories</span>
+                                      <Button size="sm" variant="outline" className="h-7 gap-1 text-xs" onClick={() => openAddSubSub(sub.id)}>
+                                        <Plus className="h-3 w-3" /> Add
+                                      </Button>
+                                    </div>
+                                    {ssList.length === 0 ? (
+                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet.</p>
+                                    ) : (
+                                      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubSubDragEnd(sub.id)}>
+                                        <SortableContext items={ssList.map((s) => s.id)} strategy={verticalListSortingStrategy}>
+                                          <div className="space-y-1.5">
+                                            {ssList.map((ss) => (
+                                              <SortableSubSubRow
+                                                key={ss.id}
+                                                ss={ss}
+                                                count={subSubCounts?.[ss.id] ?? 0}
+                                                onEdit={() => openEditSubSub(ss)}
+                                                onDelete={() => deleteSubSubMut.mutate(ss.id)}
+                                              />
+                                            ))}
+                                          </div>
+                                        </SortableContext>
+                                      </DndContext>
+                                    )}
+                                  </div>
+                                </SortableSubRow>
+                              );
+                            };
                             if (alphaSort[cat.id]) {
                               return (
                                 <div className="space-y-2">
-                                  {displaySubs.map((sub) => (
-                                    <SortableSubRow
-                                      key={sub.id}
-                                      sub={sub}
-                                      count={subCounts?.[sub.id] ?? 0}
-                                      onView={() => setViewSub(sub)}
-                                      onEdit={() => openEditSub(sub)}
-                                      onDelete={() => deleteSubMut.mutate(sub.id)}
-                                      hideDrag
-                                    />
-                                  ))}
+                                  {displaySubs.map((sub) => renderSub(sub, true))}
                                 </div>
                               );
                             }
@@ -611,16 +647,7 @@ const AdminCategories = () => {
                               <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleSubDragEnd(cat.id)}>
                                 <SortableContext items={displaySubs.map((s) => s.id)} strategy={verticalListSortingStrategy}>
                                   <div className="space-y-2">
-                                    {displaySubs.map((sub) => (
-                                      <SortableSubRow
-                                        key={sub.id}
-                                        sub={sub}
-                                        count={subCounts?.[sub.id] ?? 0}
-                                        onView={() => setViewSub(sub)}
-                                        onEdit={() => openEditSub(sub)}
-                                        onDelete={() => deleteSubMut.mutate(sub.id)}
-                                      />
-                                    ))}
+                                    {displaySubs.map((sub) => renderSub(sub))}
                                   </div>
                                 </SortableContext>
                               </DndContext>
