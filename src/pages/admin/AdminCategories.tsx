@@ -64,12 +64,29 @@ const AdminCategories = () => {
     queryKey: ["admin-subcategory-listings", viewSub?.id],
     enabled: !!viewSub,
     queryFn: async () => {
+      // Direct subcategory links
       const { data: links, error: linkErr } = await supabase
         .from("listing_subcategories")
         .select("listing_id")
         .eq("subcategory_id", viewSub!.id);
       if (linkErr) throw linkErr;
-      const ids = (links ?? []).map((l: any) => l.listing_id);
+      const idSet = new Set<string>((links ?? []).map((l: any) => l.listing_id as string));
+
+      // Plus listings from any sub-subcategories under this subcategory
+      const { data: ssList } = await supabase
+        .from("sub_subcategories")
+        .select("id")
+        .eq("subcategory_id", viewSub!.id);
+      const ssIds = (ssList ?? []).map((s: any) => s.id as string);
+      if (ssIds.length > 0) {
+        const { data: ssLinks } = await supabase
+          .from("listing_sub_subcategories")
+          .select("listing_id")
+          .in("sub_subcategory_id", ssIds);
+        (ssLinks ?? []).forEach((l: any) => idSet.add(l.listing_id as string));
+      }
+
+      const ids = Array.from(idSet);
       if (ids.length === 0) return [];
       const { data, error } = await supabase
         .from("listings")
@@ -80,6 +97,7 @@ const AdminCategories = () => {
       return data ?? [];
     },
   });
+
 
   const { data: categories, isLoading } = useQuery({
     queryKey: ["admin-categories"],
