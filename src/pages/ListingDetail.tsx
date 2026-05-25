@@ -70,6 +70,21 @@ const pressScale = (s = "0.98") => ({
 const toTitleCase = (s: string) =>
   s.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
+const SMALL_WORDS_DETAILS = new Set(["of", "for", "from", "to", "by", "a", "an"]);
+const formatDetailLabel = (s: string): string => {
+  if (!s) return s;
+  const parts = s.split(/(\s+)/);
+  let firstIdx = -1;
+  for (let i = 0; i < parts.length; i++) { if (parts[i].trim()) { firstIdx = i; break; } }
+  return parts.map((p, i) => {
+    if (!p.trim()) return p;
+    const lower = p.toLowerCase();
+    const cleaned = lower.replace(/[^a-z']/g, "");
+    if (i !== firstIdx && SMALL_WORDS_DETAILS.has(cleaned)) return lower;
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  }).join("");
+};
+
 type TabKey = "about" | "details" | "specials" | "events" | "gallery" | "location";
 
 const ListingDetail = () => {
