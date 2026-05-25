@@ -767,7 +767,7 @@ const ListingDetail = () => {
                 rows.push({ label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
               });
               emails.forEach((e, i) => rows.push({ label: i === 0 ? "Email" : `Email ${i + 1}`, value: e, href: `mailto:${e}`, Icon: Mail }));
-              if (listing.website) rows.push({ label: "Website", value: (listing as any).website_label || listing.website, href: listing.website, Icon: Globe });
+              if (listing.website) rows.push({ label: "Website", value: "Website", href: listing.website, Icon: Globe });
               if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
               if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
               return rows;
