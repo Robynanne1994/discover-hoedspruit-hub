@@ -913,7 +913,7 @@ const SortableSubRow = ({
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Another category</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
-                  {categories.filter((c) => c.id !== sub.category_id).map((c) => (
+                  {(categories ?? []).filter((c) => c.id !== sub.category_id).map((c) => (
                     <DropdownMenuItem key={c.id} onClick={() => onMoveToCategory(c.id)}>{c.title}</DropdownMenuItem>
                   ))}
                 </DropdownMenuSubContent>
