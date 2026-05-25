@@ -374,7 +374,7 @@ const ListingDetail = () => {
 
   if (isListingAccommodation) {
     if (l.km_from_town) {
-      sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${l.km_from_town} km from town`, on: true }] });
+      sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${l.km_from_town}km from town`, on: true }] });
     }
     const food = filterDefined([
       { label: "Restaurant", value: l.has_restaurant }, { label: "Bar", value: l.has_bar },
@@ -708,7 +708,7 @@ const ListingDetail = () => {
                         {on
                           ? <Check size={16} strokeWidth={2} color={C.primary} style={{ flexShrink: 0 }} />
                           : <XIcon size={16} strokeWidth={2} color={C.muted} style={{ flexShrink: 0 }} />}
-                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4, textTransform: "capitalize" }}>
+                        <span style={{ fontSize: 13.5, color: on ? C.text : C.muted, lineHeight: 1.4, textTransform: s.key === "accom-distance" ? "none" : "capitalize" }}>
                           {f.label}
                         </span>
                       </div>
