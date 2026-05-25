@@ -452,7 +452,9 @@ const ListingDetail = () => {
     const CUISINE_HIDE = new Set(["light meals", "pub grub", "breakfast", "farm to fork", "farm food", "bak contemporary", "health bowls", "health food", "fried chicken", "farm-to-fork", "contemporary", "smoked meats", "bakery", "artisan bakery"]);
     const filteredCuisine = (l.cuisine ?? []).filter((c: string) => !CUISINE_HIDE.has(c.trim().toLowerCase()));
     if (filteredCuisine.length) sections.push({ key: "cuisine", title: "Cuisine", iconComp: Soup, fields: filteredCuisine.map((c: string) => ({ label: toTitleCase(c), on: true })) });
+    if ((l as any).foods?.length) sections.push({ key: "foods", title: "Foods", iconComp: Utensils, fields: (l as any).foods.map((f: string) => ({ label: toTitleCase(f), on: true })) });
     if (l.vibe?.length) sections.push({ key: "vibe", title: "Vibe", iconComp: Music, fields: l.vibe.map((v: string) => ({ label: toTitleCase(v), on: true })) });
+    if ((l as any).is_franchise === true) sections.push({ key: "business-type", title: "Business Type", iconComp: Home, fields: [{ label: "Franchise", on: true }] });
   }
 
   if (isListingAccommodation) {
