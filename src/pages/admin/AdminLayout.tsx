@@ -33,7 +33,7 @@ const navItems = [
   { label: "Events", path: "/admin/events", icon: Calendar },
   { label: "Specials", path: "/admin/specials", icon: Tag },
   
-  { label: "Local Channels", path: "/admin/bush-telegraph", icon: Radio },
+  { label: "Local Channels", path: "/admin/local-channels", icon: Radio },
   { label: "Notifications", path: "/admin/notifications", icon: Bell },
   { label: "Submissions", path: "/admin/submissions", icon: Inbox },
   { label: "Reports", path: "/admin/reports", icon: FileBarChart },
