@@ -948,6 +948,7 @@ export type Database = {
           has_fitness_centre: boolean | null
           has_free_parking: boolean | null
           has_free_wifi: boolean | null
+          has_iced_coffee: boolean | null
           has_laundry: boolean | null
           has_milkshakes: boolean | null
           has_mocktails: boolean | null
@@ -1061,6 +1062,7 @@ export type Database = {
           has_fitness_centre?: boolean | null
           has_free_parking?: boolean | null
           has_free_wifi?: boolean | null
+          has_iced_coffee?: boolean | null
           has_laundry?: boolean | null
           has_milkshakes?: boolean | null
           has_mocktails?: boolean | null
@@ -1174,6 +1176,7 @@ export type Database = {
           has_fitness_centre?: boolean | null
           has_free_parking?: boolean | null
           has_free_wifi?: boolean | null
+          has_iced_coffee?: boolean | null
           has_laundry?: boolean | null
           has_milkshakes?: boolean | null
           has_mocktails?: boolean | null
