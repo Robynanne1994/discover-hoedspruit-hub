@@ -285,6 +285,7 @@ const AdminListings = () => {
         has_cocktails: values.has_cocktails,
         has_craft_beer: values.has_craft_beer,
         has_smoothies: values.has_smoothies,
+        has_coffee: values.has_coffee,
         has_champagne: values.has_champagne,
         has_milkshakes: values.has_milkshakes,
         has_mocktails: values.has_mocktails,
