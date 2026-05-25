@@ -851,18 +851,11 @@ const AdminListings = () => {
 
                 {isRestaurantType && (
                   <div className="border-t border-border pt-4 mt-2 space-y-4">
-                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Restaurant Attributes</p>
-                    <div className="space-y-3">
-                      <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
-                      <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
-                      <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
-                      <TriStateToggle label="Smoking Allowed" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
-                    </div>
-
                     {/* Kids Section */}
-                    <div className="border-t border-border pt-3 mt-2">
+                    <div>
                       <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Kids</p>
                       <div className="space-y-3">
+                        <TriStateToggle label="Good for Kids" value={form.good_for_kids} onChange={(v) => setForm({ ...form, good_for_kids: v })} />
                         <TriStateToggle label="Kids Playground" value={form.kids_playground} onChange={(v) => setForm({ ...form, kids_playground: v })} />
                         <TriStateToggle label="Kids Menu" value={form.kids_menu} onChange={(v) => setForm({ ...form, kids_menu: v })} />
                         <TriStateToggle label="High Chairs" value={form.high_chairs} onChange={(v) => setForm({ ...form, high_chairs: v })} />
@@ -874,6 +867,7 @@ const AdminListings = () => {
                     <div className="border-t border-border pt-3 mt-2">
                       <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Accessibility</p>
                       <div className="space-y-3">
+                        <TriStateToggle label="Wheelchair Friendly" value={form.wheelchair_friendly} onChange={(v) => setForm({ ...form, wheelchair_friendly: v })} />
                         <TriStateToggle label="Wheelchair-accessible Car Park" value={form.wheelchair_car_park} onChange={(v) => setForm({ ...form, wheelchair_car_park: v })} />
                         <TriStateToggle label="Wheelchair-accessible Entrance" value={form.wheelchair_entrance} onChange={(v) => setForm({ ...form, wheelchair_entrance: v })} />
                         <TriStateToggle label="Wheelchair-accessible Seating" value={form.wheelchair_seating} onChange={(v) => setForm({ ...form, wheelchair_seating: v })} />
@@ -888,8 +882,11 @@ const AdminListings = () => {
                         <TriStateToggle label="Toilet" value={form.has_toilet} onChange={(v) => setForm({ ...form, has_toilet: v })} />
                         <TriStateToggle label="WiFi" value={form.has_wifi} onChange={(v) => setForm({ ...form, has_wifi: v })} />
                         <TriStateToggle label="Free WiFi" value={form.has_free_wifi} onChange={(v) => setForm({ ...form, has_free_wifi: v })} />
+                        <TriStateToggle label="Pets Allowed" value={form.pets_allowed} onChange={(v) => setForm({ ...form, pets_allowed: v })} />
+                        <TriStateToggle label="Smoking Section" value={form.smoking_allowed} onChange={(v) => setForm({ ...form, smoking_allowed: v })} />
                       </div>
                     </div>
+
 
                     {/* Drinks Section */}
                     <div className="border-t border-border pt-3 mt-2">
