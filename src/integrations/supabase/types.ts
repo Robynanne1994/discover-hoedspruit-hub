@@ -930,6 +930,7 @@ export type Database = {
           email: string | null
           emergency_24hr: boolean | null
           facebook: string | null
+          foods: string[]
           gallery_images: string[] | null
           good_for_kids: boolean | null
           google_maps_link: string | null
@@ -968,6 +969,7 @@ export type Database = {
           impact: string | null
           instagram: string | null
           is_featured: boolean
+          is_franchise: boolean | null
           kids_menu: boolean | null
           kids_playground: boolean | null
           km_from_town: string | null
@@ -1044,6 +1046,7 @@ export type Database = {
           email?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
+          foods?: string[]
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
@@ -1082,6 +1085,7 @@ export type Database = {
           impact?: string | null
           instagram?: string | null
           is_featured?: boolean
+          is_franchise?: boolean | null
           kids_menu?: boolean | null
           kids_playground?: boolean | null
           km_from_town?: string | null
@@ -1158,6 +1162,7 @@ export type Database = {
           email?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
+          foods?: string[]
           gallery_images?: string[] | null
           good_for_kids?: boolean | null
           google_maps_link?: string | null
@@ -1196,6 +1201,7 @@ export type Database = {
           impact?: string | null
           instagram?: string | null
           is_featured?: boolean
+          is_franchise?: boolean | null
           kids_menu?: boolean | null
           kids_playground?: boolean | null
           km_from_town?: string | null
