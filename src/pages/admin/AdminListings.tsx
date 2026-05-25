@@ -401,10 +401,17 @@ const AdminListings = () => {
         if (catErr) throw catErr;
       }
 
+      // Auto-include parent subcategories for any selected sub-subcategories
+      // (sub-subcategories are refinements of their parent subcategory)
+      const ssParentSubIds = (subSubcategories ?? [])
+        .filter((ss: any) => selectedSubSubIds.includes(ss.id))
+        .map((ss: any) => ss.subcategory_id as string);
+      const effectiveSubIds = Array.from(new Set([...selectedSubIds, ...ssParentSubIds]));
+
       // Sync subcategories
       await supabase.from("listing_subcategories").delete().eq("listing_id", listingId);
-      if (selectedSubIds.length > 0) {
-        const rows = selectedSubIds.map((subId) => ({ listing_id: listingId, subcategory_id: subId }));
+      if (effectiveSubIds.length > 0) {
+        const rows = effectiveSubIds.map((subId) => ({ listing_id: listingId, subcategory_id: subId }));
         const { error: subErr } = await supabase.from("listing_subcategories").insert(rows);
         if (subErr) throw subErr;
       }
@@ -416,6 +423,7 @@ const AdminListings = () => {
         const { error: ssErr } = await supabase.from("listing_sub_subcategories").insert(rows);
         if (ssErr) throw ssErr;
       }
+
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
