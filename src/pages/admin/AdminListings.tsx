@@ -463,6 +463,7 @@ const AdminListings = () => {
       has_milkshakes: (l as any).has_milkshakes ?? null,
       has_mocktails: (l as any).has_mocktails ?? null,
       has_beers_ciders: (l as any).has_beers_ciders ?? null,
+      has_iced_coffee: (l as any).has_iced_coffee ?? null,
       air_conditioned: (l as any).air_conditioned ?? null,
       payment_methods: (l as any).payment_methods ?? [],
       delivery_available: (l as any).delivery_available ?? null,
