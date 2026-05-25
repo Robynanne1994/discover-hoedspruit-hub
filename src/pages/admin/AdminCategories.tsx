@@ -352,6 +352,29 @@ const AdminCategories = () => {
     setSubOpen(true);
   };
 
+  const resetSubSubForm = () => {
+    setSubSubForm({ title: "", description: "", sort_order: 0, subcategory_id: "" });
+    setEditingSubSub(null);
+    setSubSubOpen(false);
+  };
+
+  const openAddSubSub = (subcategoryId: string) => {
+    setEditingSubSub(null);
+    setSubSubForm({ title: "", description: "", sort_order: 0, subcategory_id: subcategoryId });
+    setSubSubOpen(true);
+  };
+
+  const openEditSubSub = (ss: any) => {
+    setEditingSubSub(ss);
+    setSubSubForm({
+      title: ss.title,
+      description: ss.description ?? "",
+      sort_order: ss.sort_order,
+      subcategory_id: ss.subcategory_id,
+    });
+    setSubSubOpen(true);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
