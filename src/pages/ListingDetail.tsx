@@ -430,6 +430,7 @@ const ListingDetail = () => {
       { label: "Milkshakes", value: l.has_milkshakes },
       { label: "Mocktails", value: l.has_mocktails },
       { label: "Beers / Ciders", value: l.has_beers_ciders },
+      { label: "Iced coffee", value: l.has_iced_coffee },
     ]);
     if (drinks.length) sections.push({ key: "drinks", title: "Drinks", iconComp: Wine, fields: drinks });
 
