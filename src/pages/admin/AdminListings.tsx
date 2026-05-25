@@ -444,7 +444,7 @@ const AdminListings = () => {
     onError: (e) => toast.error(e.message),
   });
 
-  const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setSelectedSubIds([]); setCustomRowsVisible(0); setOpen(false); };
+  const resetForm = () => { setForm(emptyForm); setEditing(null); setSelectedCatIds([]); setSelectedSubIds([]); setSelectedSubSubIds([]); setCustomRowsVisible(0); setOpen(false); };
 
   const openEdit = (l: Listing) => {
     setEditing(l);
