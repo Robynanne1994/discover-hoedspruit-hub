@@ -425,6 +425,7 @@ const ListingDetail = () => {
       { label: "Cocktails", value: l.has_cocktails },
       { label: "Craft beer", value: l.has_craft_beer },
       { label: "Smoothies", value: l.has_smoothies },
+      { label: "Coffee", value: l.has_coffee },
       { label: "Champagne", value: l.has_champagne },
       { label: "Milkshakes", value: l.has_milkshakes },
       { label: "Mocktails", value: l.has_mocktails },
