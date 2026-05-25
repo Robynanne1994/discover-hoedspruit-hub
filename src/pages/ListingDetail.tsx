@@ -7,7 +7,7 @@ import {
   Mail, Globe, ArrowUpRight, MapPin, Navigation,
   Sparkles, Coffee, Car, HeartPulse, BedDouble, PawPrint,
   ShoppingBag, CreditCard, Package, MessageCircleMore, Calendar, Wrench, Leaf,
-  Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music,
+  Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory } from "@/lib/categoryFields";
