@@ -701,6 +701,8 @@ const AdminListings = () => {
                   <Label>Website Display Text</Label>
                   <Input value={form.website_label} onChange={(e) => setForm({ ...form, website_label: e.target.value })} placeholder="e.g. Visit our Facebook page" />
                 </div>
+                <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
+                <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
                 <MultiContactField
                   label="WhatsApp Number"
                   type="tel"
