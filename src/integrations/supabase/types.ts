@@ -864,6 +864,24 @@ export type Database = {
         }
         Relationships: []
       }
+      listing_sub_subcategories: {
+        Row: {
+          id: string
+          listing_id: string
+          sub_subcategory_id: string
+        }
+        Insert: {
+          id?: string
+          listing_id: string
+          sub_subcategory_id: string
+        }
+        Update: {
+          id?: string
+          listing_id?: string
+          sub_subcategory_id?: string
+        }
+        Relationships: []
+      }
       listing_subcategories: {
         Row: {
           id: string
@@ -1711,6 +1729,36 @@ export type Database = {
           resolved_at?: string | null
           special_id?: string | null
           status?: string
+        }
+        Relationships: []
+      }
+      sub_subcategories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          sort_order: number
+          subcategory_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          subcategory_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          sort_order?: number
+          subcategory_id?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
