@@ -570,7 +570,13 @@ const ListingDetail = () => {
       href: l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`,
       Icon: Send, ext: true,
     },
-    listing.website && { key: "website", label: "Website", href: listing.website, Icon: Globe, ext: true },
+    (listing.website
+      ? { key: "website", label: "Website", href: listing.website, Icon: Globe, ext: true }
+      : (listing as any).facebook
+        ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
+        : (listing as any).instagram
+          ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
+          : null),
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
 
   // ----- Sub-components -----
