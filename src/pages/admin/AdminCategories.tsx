@@ -48,6 +48,7 @@ const AdminCategories = () => {
   const [orderedSubs, setOrderedSubs] = useState<Record<string, Subcategory[]>>({});
 
   const [viewSub, setViewSub] = useState<Subcategory | null>(null);
+  const [alphaSort, setAlphaSort] = useState<Record<string, boolean>>({});
 
   const { data: subListings, isLoading: subListingsLoading } = useQuery({
     queryKey: ["admin-subcategory-listings", viewSub?.id],
