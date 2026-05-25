@@ -554,14 +554,17 @@ const SortableSubRow = ({
   onView,
   onEdit,
   onDelete,
+  hideDrag,
 }: {
   sub: Subcategory;
   count: number;
   onView: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  hideDrag?: boolean;
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: sub.id });
+  const sortable = useSortable({ id: sub.id, disabled: hideDrag });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = sortable;
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -570,9 +573,11 @@ const SortableSubRow = ({
   return (
     <div ref={setNodeRef} style={style} className="flex items-center justify-between bg-card border border-border rounded-lg px-3 py-2">
       <div className="flex items-center gap-2 min-w-0">
-        <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
-          <GripVertical className="h-4 w-4" />
-        </button>
+        {!hideDrag && (
+          <button {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground">
+            <GripVertical className="h-4 w-4" />
+          </button>
+        )}
         <button type="button" onClick={onView} className="min-w-0 text-left hover:text-primary">
           <span className="font-medium text-foreground text-sm">{sub.title}</span>
           <span className="text-muted-foreground text-xs ml-1">({count})</span>
