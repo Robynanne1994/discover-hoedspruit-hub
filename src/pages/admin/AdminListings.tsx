@@ -325,6 +325,7 @@ const AdminListings = () => {
         specialities: values.specialities?.trim() || null,
         services_offered: values.services_offered ?? [],
         plant_types: (values.services_offered ?? []).includes("Nursery") ? (values.plant_types ?? []) : [],
+        details_display_mode: values.details_display_mode ?? {},
       };
 
       // Treat "-" as empty for any string field on save
