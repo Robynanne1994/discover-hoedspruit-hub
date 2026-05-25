@@ -32,6 +32,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 type Category = Tables<"categories">;
 type Subcategory = Tables<"subcategories">;
+type SubSubcategory = Tables<"sub_subcategories">;
 
 const AdminCategories = () => {
   const qc = useQueryClient();
@@ -39,13 +40,19 @@ const AdminCategories = () => {
   const [editing, setEditing] = useState<Category | null>(null);
   const [form, setForm] = useState({ title: "", description: "", icon: "Folder", image_url: "", sort_order: 0, is_quick_category: false });
   const [expandedCat, setExpandedCat] = useState<string | null>(null);
+  const [expandedSub, setExpandedSub] = useState<string | null>(null);
 
   const [subOpen, setSubOpen] = useState(false);
   const [editingSub, setEditingSub] = useState<any | null>(null);
   const [subForm, setSubForm] = useState({ title: "", description: "", sort_order: 0, category_id: "" });
 
+  const [subSubOpen, setSubSubOpen] = useState(false);
+  const [editingSubSub, setEditingSubSub] = useState<any | null>(null);
+  const [subSubForm, setSubSubForm] = useState({ title: "", description: "", sort_order: 0, subcategory_id: "" });
+
   const [orderedCats, setOrderedCats] = useState<Category[]>([]);
   const [orderedSubs, setOrderedSubs] = useState<Record<string, Subcategory[]>>({});
+  const [orderedSubSubs, setOrderedSubSubs] = useState<Record<string, SubSubcategory[]>>({});
 
   const [viewSub, setViewSub] = useState<Subcategory | null>(null);
   const [alphaSort, setAlphaSort] = useState<Record<string, boolean>>({});
