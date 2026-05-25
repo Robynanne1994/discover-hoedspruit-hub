@@ -217,6 +217,20 @@ const AdminListings = () => {
     enabled: !!editing,
   });
 
+  // Fetch listing_sub_subcategories for the editing listing
+  const { data: editingSubSubIds } = useQuery({
+    queryKey: ["listing-sub-subcategories", editing?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("listing_sub_subcategories")
+        .select("sub_subcategory_id")
+        .eq("listing_id", editing!.id);
+      if (error) throw error;
+      return data.map((r: any) => r.sub_subcategory_id as string);
+    },
+    enabled: !!editing,
+  });
+
   useEffect(() => {
     if (editingCatIds) setSelectedCatIds(editingCatIds);
   }, [editingCatIds]);
@@ -224,6 +238,10 @@ const AdminListings = () => {
   useEffect(() => {
     if (editingSubIds) setSelectedSubIds(editingSubIds);
   }, [editingSubIds]);
+
+  useEffect(() => {
+    if (editingSubSubIds) setSelectedSubSubIds(editingSubSubIds);
+  }, [editingSubSubIds]);
 
   // Auto-open edit dialog from ?edit= query param
   useEffect(() => {
