@@ -602,7 +602,14 @@ const ListingDetail = () => {
         : (listing as any).instagram
           ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
           : null),
+    // If website is shown but no WhatsApp, surface Facebook (or Instagram) as an extra action
+    (listing.website && !waClean && (listing as any).facebook
+      ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
+      : listing.website && !waClean && (listing as any).instagram
+        ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
+        : null),
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
+
 
   // ----- Sub-components -----
   const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => (
