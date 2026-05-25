@@ -21,6 +21,7 @@ import { collectContacts } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
+import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true" {...props}>
