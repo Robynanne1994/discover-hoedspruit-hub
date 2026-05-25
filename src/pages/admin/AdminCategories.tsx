@@ -478,9 +478,8 @@ const AdminCategories = () => {
         setOrderedSubs({ ...orderedSubs, [aSub.category_id]: next });
         persistSubcategoryOrder(next);
       } else {
-        if (confirm(`Make "${aSub.title}" a sub-subcategory of "${oSub.title}"? Its listings and any existing sub-subcategories will be moved.`)) {
-          demoteSubToSubSub(a.id, o.id);
-        }
+        // Drag onto a subcategory in a different category → demote into that subcategory
+        demoteSubToSubSub(a.id, o.id);
       }
       return;
     }
@@ -501,31 +500,34 @@ const AdminCategories = () => {
       return;
     }
 
+    // Cross-level fluid drops (Shopify-style nesting)
     if (a.kind === "sub" && o.kind === "cat") { moveSubToCategory(a.id, o.id); return; }
     if (a.kind === "subsub" && o.kind === "sub") { moveSubSubToSub(a.id, o.id); return; }
-    if (a.kind === "subsub" && o.kind === "cat") {
-      if (confirm("Promote this sub-subcategory to a top-level subcategory of this category?")) {
-        promoteSubSubToSub(a.id, o.id);
-      }
-      return;
-    }
+    if (a.kind === "subsub" && o.kind === "cat") { promoteSubSubToSub(a.id, o.id); return; }
     if (a.kind === "sub" && o.kind === "subsub") {
       const oSS = (subSubcategories ?? []).find((s) => s.id === o.id);
-      const aSub = (subcategories ?? []).find((s) => s.id === a.id);
-      if (!oSS || !aSub) return;
-      if (confirm(`Make "${aSub.title}" a sub-subcategory under the same parent as "${oSS.title}"?`)) {
-        demoteSubToSubSub(a.id, oSS.subcategory_id);
-      }
+      if (!oSS) return;
+      demoteSubToSubSub(a.id, oSS.subcategory_id);
+      return;
+    }
+    if (a.kind === "cat" && o.kind === "sub") {
+      // Dragging a top-level category onto a subcategory → demote category to subcategory under that subcategory's parent
+      const oSub = (subcategories ?? []).find((s) => s.id === o.id);
+      if (!oSub) return;
+      // Move existing subs of dragged cat? Simpler: just convert cat to sub under target's parent category.
+      // For safety here, just move under same category as a sub. We'll create the subcategory and skip recursive content.
+      toast.info("Drag a subcategory or sub-subcategory to nest. Top-level categories can only be reordered.");
       return;
     }
   };
+
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <div>
           <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950">Categories</h1>
-          <p className="text-sm text-muted-foreground mt-1">Drag <GripVertical className="inline h-3 w-3" /> handles to reorder.</p>
+          <p className="text-sm text-muted-foreground mt-1">Drag <GripVertical className="inline h-3 w-3" /> handles to reorder, or drag onto a parent row to nest one level deeper (like Shopify menus).</p>
         </div>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
