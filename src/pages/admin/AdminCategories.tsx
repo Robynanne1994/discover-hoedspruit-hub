@@ -923,8 +923,9 @@ const SortableSubRow = ({
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger>Choose parent subcategory</DropdownMenuSubTrigger>
                 <DropdownMenuSubContent className="max-h-72 overflow-y-auto bg-popover z-50">
-                  {subcategories.filter((s) => s.id !== sub.id).map((s) => {
-                    const parent = categories.find((c) => c.id === s.category_id);
+                  {(subcategories ?? []).filter((s) => s.id !== sub.id).map((s) => {
+                    const parent = (categories ?? []).find((c) => c.id === s.category_id);
+
                     return (
                       <DropdownMenuItem key={s.id} onClick={() => onDemoteToSubSub(s.id)}>
                         {parent?.title ?? "?"} › {s.title}
