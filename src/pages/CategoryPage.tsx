@@ -969,7 +969,17 @@ const CategoryPage = () => {
             const open = hasHours ? isOpenNow(l.opening_hours as Record<string, string>) : null;
 
             const allCats: string[] = (l as any)._allCategories || [];
-            const subTitles: string[] = (l as any)._subTitles || [];
+            let subTitles: string[] = (l as any)._subTitles || [];
+            // Hide a generic subcategory (e.g. "Lodges") when a more specific one
+            // ending in the same word (e.g. "Luxury Lodges", "Safari Lodges") is also present.
+            subTitles = subTitles.filter((s) => {
+              const sLower = s.trim().toLowerCase();
+              return !subTitles.some((other) => {
+                if (other === s) return false;
+                const oLower = other.trim().toLowerCase();
+                return oLower !== sLower && oLower.endsWith(" " + sLower);
+              });
+            });
             const otherCats = allCats.filter((c) => c && c !== categoryTitle);
             const orderedCats = subTitles.length > 0 ? subTitles : [categoryTitle, ...otherCats];
 
