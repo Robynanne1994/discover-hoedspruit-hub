@@ -18,6 +18,7 @@ import { isSAPublicHoliday, getSADate } from "@/lib/southAfricaHolidays";
 import { sanitizeDashes } from "@/lib/sanitizeListing";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
+import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 
