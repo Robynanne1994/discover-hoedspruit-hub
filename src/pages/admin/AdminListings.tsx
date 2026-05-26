@@ -476,6 +476,14 @@ const AdminListings = () => {
       email: l.email ?? "",
       email_label: (l as any).email_label ?? "",
       website: l.website ?? "",
+      website_label: (l as any).website_label ?? "",
+      additional_websites: ((l as any).additional_websites ?? []) as string[],
+      additional_website_labels: ((l as any).additional_website_labels ?? []) as string[],
+      action_phone_index: (l as any).action_phone_index ?? 0,
+      action_email_index: (l as any).action_email_index ?? 0,
+      action_whatsapp_index: (l as any).action_whatsapp_index ?? 0,
+      action_website_index: (l as any).action_website_index ?? 0,
+
       
       facebook: (l as any).facebook ?? "",
       instagram: (l as any).instagram ?? "",
