@@ -879,9 +879,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
         style={{
           position: "fixed",
           inset: 0,
-          background: "rgba(20,20,18,0.4)",
-          backdropFilter: "blur(2px)",
-          WebkitBackdropFilter: "blur(2px)",
+          background: "rgba(20,20,18,0.5)",
           opacity: mounted ? 1 : 0,
           transition: "opacity 200ms ease-out",
           zIndex: 60,

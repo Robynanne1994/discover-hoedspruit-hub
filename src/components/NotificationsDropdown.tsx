@@ -137,9 +137,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
             onClick={() => setOpen(false)}
             style={{
               position: "fixed", inset: 0,
-              background: "rgba(20, 20, 18, 0.35)",
-              backdropFilter: "blur(2px)",
-              WebkitBackdropFilter: "blur(2px)",
+              background: "rgba(20, 20, 18, 0.45)",
               zIndex: 90,
               animation: "nb-fade 200ms ease-out",
             }}
