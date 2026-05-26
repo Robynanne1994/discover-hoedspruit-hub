@@ -1018,7 +1018,6 @@ const SortableSubRow = ({
           </Button>
         </div>
       </div>
-      <NestDropZone subId={sub.id} subTitle={sub.title} />
       {isExpanded && children}
     </div>
   );
