@@ -347,7 +347,7 @@ const ListingDetail = () => {
       return null;
     };
     if (!todayVal || todayVal.toLowerCase() === "closed") return { state: "closed", ...(findNext(1) || {}) };
-    if (/always\s*open|24\s*\/?\s*7|24\s*hours?/i.test(todayVal)) return { state: "open" };
+    if (/always\s*open|24\s*\/?\s*7|24\s*hours?/i.test(todayVal)) return { state: "open", alwaysOpen: true };
     const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
     if (!m) return { state: "open" };
     const now = new Date();
