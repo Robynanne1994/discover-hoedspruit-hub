@@ -41,7 +41,7 @@ const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance"
 const HG_SERVICES_SECTION = "home_garden_services";
 const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 
-const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", email: "", website: "", facebook: "" as string, instagram: "" as string, whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -270,15 +270,21 @@ const AdminListings = () => {
         detail_image_url: (values.detail_image_url || values.image_url) || null,
         location: values.location || null,
         phone: values.phone || null,
+        phone_label: (values.phone_label || "").trim() || null,
         email: values.email || null,
+        email_label: (values.email_label || "").trim() || null,
         website: values.website || null,
         
         facebook: values.facebook || null,
         instagram: values.instagram || null,
         whatsapp: values.whatsapp || null,
+        whatsapp_label: (values.whatsapp_label || "").trim() || null,
         additional_emails: sanitizeContactArray(values.additional_emails),
+        additional_email_labels: (values.additional_email_labels || []).map((s: string) => (s || "").trim()),
         additional_phones: sanitizeContactArray(values.additional_phones),
+        additional_phone_labels: (values.additional_phone_labels || []).map((s: string) => (s || "").trim()),
         additional_whatsapps: sanitizeContactArray(values.additional_whatsapps),
+        additional_whatsapp_labels: (values.additional_whatsapp_labels || []).map((s: string) => (s || "").trim()),
           google_maps_link: values.google_maps_link || null,
           google_rating: values.google_rating,
           google_reviews_count: values.google_reviews_count,
@@ -466,15 +472,21 @@ const AdminListings = () => {
       detail_image_url: (l as any).detail_image_url ?? "",
       location: l.location ?? "",
       phone: l.phone ?? "",
+      phone_label: (l as any).phone_label ?? "",
       email: l.email ?? "",
+      email_label: (l as any).email_label ?? "",
       website: l.website ?? "",
       
       facebook: (l as any).facebook ?? "",
       instagram: (l as any).instagram ?? "",
       whatsapp: (l as any).whatsapp ?? "",
+      whatsapp_label: (l as any).whatsapp_label ?? "",
       additional_emails: ((l as any).additional_emails ?? []) as string[],
+      additional_email_labels: ((l as any).additional_email_labels ?? []) as string[],
       additional_phones: ((l as any).additional_phones ?? []) as string[],
+      additional_phone_labels: ((l as any).additional_phone_labels ?? []) as string[],
       additional_whatsapps: ((l as any).additional_whatsapps ?? []) as string[],
+      additional_whatsapp_labels: ((l as any).additional_whatsapp_labels ?? []) as string[],
       google_maps_link: (l as any).google_maps_link ?? "",
       google_rating: (l as any).google_rating ?? null,
       google_reviews_count: (l as any).google_reviews_count ?? null,
@@ -836,8 +848,12 @@ const AdminListings = () => {
                   type="tel"
                   primary={form.phone}
                   onPrimaryChange={(v) => setForm({ ...form, phone: v })}
+                  primaryLabel={form.phone_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
                   extras={form.additional_phones}
                   onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                  extraLabels={form.additional_phone_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
                   addLabel="Add phone"
                 />
                 <MultiContactField
@@ -845,8 +861,12 @@ const AdminListings = () => {
                   type="email"
                   primary={form.email}
                   onPrimaryChange={(v) => setForm({ ...form, email: v })}
+                  primaryLabel={form.email_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
                   extras={form.additional_emails}
                   onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                  extraLabels={form.additional_email_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
                   addLabel="Add email"
                 />
                 <div><Label>Website</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." /></div>
@@ -857,8 +877,12 @@ const AdminListings = () => {
                   type="tel"
                   primary={form.whatsapp}
                   onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
+                  primaryLabel={form.whatsapp_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
                   extras={form.additional_whatsapps}
                   onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                  extraLabels={form.additional_whatsapp_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
                   placeholder="e.g. +27791234567"
                   addLabel="Add WhatsApp"
                 />
