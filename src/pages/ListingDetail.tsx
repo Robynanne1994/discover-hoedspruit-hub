@@ -787,7 +787,9 @@ const ListingDetail = () => {
                 rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
               });
               emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
-              if (listing.website) rows.push({ label: "Website", value: "Website", href: listing.website, Icon: Globe });
+              const websites = collectContacts(listing.website, (listing as any).additional_websites);
+              const websiteLabels = [((listing as any).website_label || "").trim(), ...((((listing as any).additional_website_labels) || []) as string[]).map((s) => (s || "").trim())];
+              websites.forEach((w, i) => rows.push({ label: websiteLabels[i] || (i === 0 ? "Website" : `Website ${i + 1}`), custom: !!websiteLabels[i], value: websiteLabels[i] || "Website", href: w, Icon: Globe }));
               if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
               if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
               return rows;
