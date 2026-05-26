@@ -328,7 +328,7 @@ const ListingDetail = () => {
   };
   const formatTime = (s: string) => (s.includes(":") ? s : `${s}:00`);
   type OpenStatus =
-    | { state: "open"; closes?: string }
+    | { state: "open"; closes?: string; alwaysOpen?: boolean }
     | { state: "closed"; opensAt?: string; opensDay?: string }
     | { state: "temporarily_closed" };
   const computeOpenStatus = (): OpenStatus | null => {
