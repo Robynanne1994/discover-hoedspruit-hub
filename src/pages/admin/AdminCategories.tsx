@@ -520,6 +520,15 @@ const AdminCategories = () => {
     const o = parseId(String(over.id));
     if (!a || !o) return;
 
+    // Drop onto a "nest under this subcategory" zone — works even when the
+    // target subcategory has no sub-subcategories yet.
+    if (o.kind === "nest") {
+      if (a.kind === "sub") { demoteSubToSubSub(a.id, o.id); return; }
+      if (a.kind === "subsub") { moveSubSubToSub(a.id, o.id); return; }
+      return;
+    }
+
+
     if (a.kind === "cat" && o.kind === "cat") {
       const oldIdx = orderedCats.findIndex((c) => c.id === a.id);
       const newIdx = orderedCats.findIndex((c) => c.id === o.id);
