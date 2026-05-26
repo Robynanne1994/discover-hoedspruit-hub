@@ -1107,7 +1107,19 @@ const ListingDetail = () => {
             : listing.title}
         </h1>
         {listing.location && (() => {
+          const isSurroundsLoc = listing.location.trim().toLowerCase() === "hoedspruit & surrounds";
           const mapHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
+          if (isSurroundsLoc) {
+            return (
+              <div
+                style={{
+                  marginTop: 6, fontSize: 12, fontWeight: 400, color: C.muted, letterSpacing: "0.01em",
+                }}
+              >
+                {listing.location}
+              </div>
+            );
+          }
           return (
             <a
               href={mapHref}
