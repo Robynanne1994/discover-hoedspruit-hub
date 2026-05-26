@@ -859,49 +859,98 @@ const AdminListings = () => {
                   <ImageUpload bucket="listing-images" value={form.detail_image_url} onChange={(url) => setForm({ ...form, detail_image_url: url })} aspect={4/3} />
                 </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
-                <MultiContactField
-                  label="Phone"
-                  type="tel"
-                  primary={form.phone}
-                  onPrimaryChange={(v) => setForm({ ...form, phone: v })}
-                  primaryLabel={form.phone_label}
-                  onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
-                  extras={form.additional_phones}
-                  onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
-                  extraLabels={form.additional_phone_labels}
-                  onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
-                  addLabel="Add phone"
-                />
-                <MultiContactField
-                  label="Email"
-                  type="email"
-                  primary={form.email}
-                  onPrimaryChange={(v) => setForm({ ...form, email: v })}
-                  primaryLabel={form.email_label}
-                  onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
-                  extras={form.additional_emails}
-                  onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
-                  extraLabels={form.additional_email_labels}
-                  onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
-                  addLabel="Add email"
-                />
-                <div><Label>Website</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." /></div>
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="Phone"
+                    type="tel"
+                    primary={form.phone}
+                    onPrimaryChange={(v) => setForm({ ...form, phone: v })}
+                    primaryLabel={form.phone_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
+                    extras={form.additional_phones}
+                    onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                    extraLabels={form.additional_phone_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
+                    addLabel="Add phone"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.phone, ...form.additional_phones]}
+                    labels={[form.phone_label, ...form.additional_phone_labels]}
+                    selected={form.action_phone_index}
+                    onChange={(i) => setForm({ ...form, action_phone_index: i })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="Email"
+                    type="email"
+                    primary={form.email}
+                    onPrimaryChange={(v) => setForm({ ...form, email: v })}
+                    primaryLabel={form.email_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
+                    extras={form.additional_emails}
+                    onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                    extraLabels={form.additional_email_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
+                    addLabel="Add email"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.email, ...form.additional_emails]}
+                    labels={[form.email_label, ...form.additional_email_labels]}
+                    selected={form.action_email_index}
+                    onChange={(i) => setForm({ ...form, action_email_index: i })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="Website"
+                    type="text"
+                    primary={form.website}
+                    onPrimaryChange={(v) => setForm({ ...form, website: v })}
+                    primaryLabel={form.website_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, website_label: v })}
+                    extras={form.additional_websites}
+                    onExtrasChange={(v) => setForm({ ...form, additional_websites: v })}
+                    extraLabels={form.additional_website_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_website_labels: v })}
+                    placeholder="https://..."
+                    addLabel="Add website"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.website, ...form.additional_websites]}
+                    labels={[form.website_label, ...form.additional_website_labels]}
+                    selected={form.action_website_index}
+                    onChange={(i) => setForm({ ...form, action_website_index: i })}
+                  />
+                </div>
                 <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
                 <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
-                <MultiContactField
-                  label="WhatsApp Number"
-                  type="tel"
-                  primary={form.whatsapp}
-                  onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
-                  primaryLabel={form.whatsapp_label}
-                  onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
-                  extras={form.additional_whatsapps}
-                  onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
-                  extraLabels={form.additional_whatsapp_labels}
-                  onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
-                  placeholder="e.g. +27791234567"
-                  addLabel="Add WhatsApp"
-                />
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="WhatsApp Number"
+                    type="tel"
+                    primary={form.whatsapp}
+                    onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
+                    primaryLabel={form.whatsapp_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
+                    extras={form.additional_whatsapps}
+                    onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                    extraLabels={form.additional_whatsapp_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
+                    placeholder="e.g. +27791234567"
+                    addLabel="Add WhatsApp"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.whatsapp, ...form.additional_whatsapps]}
+                    labels={[form.whatsapp_label, ...form.additional_whatsapp_labels]}
+                    selected={form.action_whatsapp_index}
+                    onChange={(i) => setForm({ ...form, action_whatsapp_index: i })}
+                  />
+                </div>
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
