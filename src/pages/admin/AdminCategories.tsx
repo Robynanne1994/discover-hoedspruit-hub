@@ -824,7 +824,7 @@ const AdminCategories = () => {
                                       </Button>
                                     </div>
                                     {ssList.length === 0 ? (
-                                      <p className="text-xs text-muted-foreground">No sub-subcategories yet. Use the Move menu on any subcategory or sub-subcategory to move it here.</p>
+                                      <NestDropZone subId={sub.id} subTitle={sub.title} />
                                     ) : (
                                       <SortableContext items={ssList.map((s) => `subsub:${s.id}`)} strategy={verticalListSortingStrategy}>
                                         <div className="space-y-1.5">
