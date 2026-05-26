@@ -1049,7 +1049,9 @@ const NestDropZone = ({ subId }: { subId: string; subTitle?: string }) => {
     <div
       ref={setNodeRef}
       aria-hidden
-      className={`h-2 transition-colors ${isOver ? "bg-primary/20" : "bg-transparent"}`}
+      className={`h-10 rounded-md border border-dashed transition-colors ${
+        isOver ? "border-primary bg-primary/10" : "border-border bg-transparent"
+      }`}
     />
   );
 };
