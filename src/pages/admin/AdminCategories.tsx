@@ -434,8 +434,9 @@ const AdminCategories = () => {
   const hierarchicalCollision: CollisionDetection = (args) => {
     const pointerCollisions = pointerWithin(args).filter((c) => c.id !== args.active.id);
     if (pointerCollisions.length > 0) {
-      // Prefer deepest level (subsub > sub > cat)
-      const rank = (id: string) => (id.startsWith("subsub:") ? 3 : id.startsWith("sub:") ? 2 : 1);
+      // Prefer deepest level (nest-zone > subsub > sub > cat)
+      const rank = (id: string) =>
+        id.startsWith("nest:") ? 4 : id.startsWith("subsub:") ? 3 : id.startsWith("sub:") ? 2 : 1;
       pointerCollisions.sort((a, b) => rank(String(b.id)) - rank(String(a.id)));
       return [pointerCollisions[0]];
     }
@@ -445,10 +446,10 @@ const AdminCategories = () => {
   };
 
 
-  const parseId = (raw: string): { kind: "cat" | "sub" | "subsub"; id: string } | null => {
+  const parseId = (raw: string): { kind: "cat" | "sub" | "subsub" | "nest"; id: string } | null => {
     const [kind, id] = raw.split(":");
     if (!id) return null;
-    if (kind === "cat" || kind === "sub" || kind === "subsub") return { kind, id };
+    if (kind === "cat" || kind === "sub" || kind === "subsub" || kind === "nest") return { kind, id };
     return null;
   };
 
