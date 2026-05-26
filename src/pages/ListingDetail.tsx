@@ -328,7 +328,7 @@ const ListingDetail = () => {
   };
   const formatTime = (s: string) => (s.includes(":") ? s : `${s}:00`);
   type OpenStatus =
-    | { state: "open"; closes?: string }
+    | { state: "open"; closes?: string; alwaysOpen?: boolean }
     | { state: "closed"; opensAt?: string; opensDay?: string }
     | { state: "temporarily_closed" };
   const computeOpenStatus = (): OpenStatus | null => {
@@ -347,7 +347,7 @@ const ListingDetail = () => {
       return null;
     };
     if (!todayVal || todayVal.toLowerCase() === "closed") return { state: "closed", ...(findNext(1) || {}) };
-    if (/always\s*open|24\s*\/?\s*7|24\s*hours?/i.test(todayVal)) return { state: "open" };
+    if (/always\s*open|24\s*\/?\s*7|24\s*hours?/i.test(todayVal)) return { state: "open", alwaysOpen: true };
     const m = todayVal.match(/(\d{1,2}[:.]?\d{0,2})\s*[-–]\s*(\d{1,2}[:.]?\d{0,2})/);
     if (!m) return { state: "open" };
     const now = new Date();
@@ -733,14 +733,17 @@ const ListingDetail = () => {
             {openStatus && (
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <span style={{ width: 8, height: 8, borderRadius: "50%", background: openStatus.state === "open" ? "#5C8A4A" : "#B05B3F" }} />
-                <span style={{ fontSize: 14, color: C.heading, fontWeight: 400 }}>
+                <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>
                   {openStatus.state === "open" ? "Open now" : openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}
                 </span>
-                {openStatus.state === "open" && openStatus.closes && (
-                  <span style={{ fontSize: 14, color: C.text }}>· Closes {openStatus.closes}</span>
+                {openStatus.state === "open" && openStatus.alwaysOpen && (
+                  <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>· Never Closes</span>
+                )}
+                {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
+                  <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Closes {openStatus.closes}</span>
                 )}
                 {openStatus.state === "closed" && openStatus.opensAt && (
-                  <span style={{ fontSize: 14, color: C.text }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
+                  <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
                 )}
               </div>
             )}
