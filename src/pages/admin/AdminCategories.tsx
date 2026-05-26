@@ -26,6 +26,7 @@ import {
   useSensors,
   DragEndEvent,
   CollisionDetection,
+  useDroppable,
 } from "@dnd-kit/core";
 
 import {
