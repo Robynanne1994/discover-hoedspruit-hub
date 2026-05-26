@@ -848,8 +848,12 @@ const AdminListings = () => {
                   type="tel"
                   primary={form.phone}
                   onPrimaryChange={(v) => setForm({ ...form, phone: v })}
+                  primaryLabel={form.phone_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
                   extras={form.additional_phones}
                   onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                  extraLabels={form.additional_phone_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
                   addLabel="Add phone"
                 />
                 <MultiContactField
@@ -857,8 +861,12 @@ const AdminListings = () => {
                   type="email"
                   primary={form.email}
                   onPrimaryChange={(v) => setForm({ ...form, email: v })}
+                  primaryLabel={form.email_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
                   extras={form.additional_emails}
                   onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                  extraLabels={form.additional_email_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
                   addLabel="Add email"
                 />
                 <div><Label>Website</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." /></div>
@@ -869,8 +877,12 @@ const AdminListings = () => {
                   type="tel"
                   primary={form.whatsapp}
                   onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
+                  primaryLabel={form.whatsapp_label}
+                  onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
                   extras={form.additional_whatsapps}
                   onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                  extraLabels={form.additional_whatsapp_labels}
+                  onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
                   placeholder="e.g. +27791234567"
                   addLabel="Add WhatsApp"
                 />
