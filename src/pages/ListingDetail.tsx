@@ -299,7 +299,23 @@ const ListingDetail = () => {
   const hasGallery = galleryImages.length > 0;
   const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
   const hasEvents = (relatedEvents?.length ?? 0) > 0;
-  const hasContact = !!(listing.email || listing.phone || waClean || listing.website);
+
+  // Pick the chosen contact for the top action buttons.
+  // Index 0 = primary (listing.phone / .email / .whatsapp / .website),
+  // index 1+ = corresponding additional_* entry.
+  const pickAction = (primary: string | null | undefined, extras: string[] | null | undefined, index: number) => {
+    const arr = [primary || "", ...((extras || []) as string[])];
+    const safe = Math.max(0, Math.min(index || 0, arr.length - 1));
+    const v = (arr[safe] || "").trim();
+    return v || (primary || "").trim() || (arr.find((x) => (x || "").trim()) || "");
+  };
+  const actionPhone = pickAction(listing.phone, l.additional_phones, l.action_phone_index ?? 0);
+  const actionEmail = pickAction(listing.email, l.additional_emails, l.action_email_index ?? 0);
+  const actionWhatsappRaw = pickAction(whatsappNum, l.additional_whatsapps, l.action_whatsapp_index ?? 0);
+  const actionWhatsappClean = actionWhatsappRaw ? actionWhatsappRaw.replace(/[^0-9]/g, "") : "";
+  const actionWebsite = pickAction(listing.website, l.additional_websites, l.action_website_index ?? 0);
+
+  const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length));
   const hasAbout = !!descriptionText || !!hasHours || hasContact;
   const hasLocation = !!(listing.location || mapCoords);
 
@@ -600,9 +616,9 @@ const ListingDetail = () => {
 
   // ----- Action pills -----
   const actions = [
-    listing.phone && { key: "call", label: "Call", href: `tel:${listing.phone}`, Icon: Phone, ext: false },
-    waClean && {
-      key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${waClean}`, ext: true,
+    actionPhone && { key: "call", label: "Call", href: `tel:${actionPhone}`, Icon: Phone, ext: false },
+    actionWhatsappClean && {
+      key: "whatsapp", label: "WhatsApp", href: `https://wa.me/${actionWhatsappClean}`, ext: true,
       Icon: ({ size = 18, color = C.primary }: { size?: number; color?: string }) => (
         <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.693.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.83 9.83 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.82 11.82 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.88 11.88 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.82 11.82 0 0 0-3.48-8.413Z" />
@@ -614,17 +630,17 @@ const ListingDetail = () => {
       href: l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`,
       Icon: Send, ext: true,
     },
-    (listing.website
-      ? { key: "website", label: "Website", href: listing.website, Icon: Globe, ext: true }
+    (actionWebsite
+      ? { key: "website", label: "Website", href: actionWebsite, Icon: Globe, ext: true }
       : (listing as any).facebook
         ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
         : (listing as any).instagram
           ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
           : null),
     // If website is shown but no WhatsApp, surface Facebook (or Instagram) as an extra action
-    (listing.website && !waClean && (listing as any).facebook
+    (actionWebsite && !actionWhatsappClean && (listing as any).facebook
       ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
-      : listing.website && !waClean && (listing as any).instagram
+      : actionWebsite && !actionWhatsappClean && (listing as any).instagram
         ? { key: "instagram", label: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon, ext: true }
         : null),
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean }>;
@@ -771,7 +787,9 @@ const ListingDetail = () => {
                 rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
               });
               emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
-              if (listing.website) rows.push({ label: "Website", value: "Website", href: listing.website, Icon: Globe });
+              const websites = collectContacts(listing.website, (listing as any).additional_websites);
+              const websiteLabels = [((listing as any).website_label || "").trim(), ...((((listing as any).additional_website_labels) || []) as string[]).map((s) => (s || "").trim())];
+              websites.forEach((w, i) => rows.push({ label: websiteLabels[i] || (i === 0 ? "Website" : `Website ${i + 1}`), custom: !!websiteLabels[i], value: websiteLabels[i] || "Website", href: w, Icon: Globe }));
               if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
               if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
               return rows;
@@ -1085,24 +1103,56 @@ const ListingDetail = () => {
             ? <span data-no-title-case="true">{(listing as any).title_override}</span>
             : listing.title}
         </h1>
-        {listing.location && (
-          <div style={{
-            marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-            display: "flex", alignItems: "center", gap: 4,
-          }}>
-            <MapPin size={12} color={C.muted} strokeWidth={1.6} />
-            <span>{listing.location}</span>
-          </div>
-        )}
-        {l.google_rating != null && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
-            <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
-            <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
-            {l.google_reviews_count != null && (
-              <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
-            )}
-          </div>
-        )}
+        {listing.location && (() => {
+          const mapHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
+          return (
+            <a
+              href={mapHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+                display: "inline-flex", alignItems: "center", gap: 4,
+                textDecoration: "none",
+              }}
+            >
+              <MapPin size={12} color={C.muted} strokeWidth={1.6} />
+              <span style={{ textDecoration: "underline", textDecorationColor: "rgba(0,0,0,0.15)", textUnderlineOffset: 2 }}>
+                {listing.location}
+              </span>
+            </a>
+          );
+        })()}
+        {l.google_rating != null && (() => {
+          const reviewsHref: string | null = l.google_reviews_url || null;
+          const inner = (
+            <>
+              <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
+              <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
+              {l.google_reviews_count != null && (
+                <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
+              )}
+            </>
+          );
+          return reviewsHref ? (
+            <a
+              href={reviewsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4,
+                fontSize: 13, color: C.heading, textDecoration: "none",
+              }}
+            >
+              {inner}
+              <ArrowUpRight size={12} color={C.muted} strokeWidth={1.6} style={{ marginLeft: 2 }} />
+            </a>
+          ) : (
+            <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
+              {inner}
+            </div>
+          );
+        })()}
 
         {actions.length > 0 && (
           actions.length === 4 ? (

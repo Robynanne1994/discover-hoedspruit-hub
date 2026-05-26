@@ -18,6 +18,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
+import ActionPicker from "@/components/admin/ActionPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { DISPLAY_SECTIONS, sectionsForGroup, type DisplayMode, type SectionGroup, DISPLAY_DEFAULTS_SECTION } from "@/lib/detailsDisplayModes";
@@ -41,7 +42,7 @@ const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance"
 const HG_SERVICES_SECTION = "home_garden_services";
 const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 
-const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -274,6 +275,14 @@ const AdminListings = () => {
         email: values.email || null,
         email_label: (values.email_label || "").trim() || null,
         website: values.website || null,
+        website_label: (values.website_label || "").trim() || null,
+        additional_websites: sanitizeContactArray(values.additional_websites),
+        additional_website_labels: (values.additional_website_labels || []).map((s: string) => (s || "").trim()),
+        action_phone_index: Math.max(0, Math.min(values.action_phone_index ?? 0, sanitizeContactArray(values.additional_phones).length)),
+        action_email_index: Math.max(0, Math.min(values.action_email_index ?? 0, sanitizeContactArray(values.additional_emails).length)),
+        action_whatsapp_index: Math.max(0, Math.min(values.action_whatsapp_index ?? 0, sanitizeContactArray(values.additional_whatsapps).length)),
+        action_website_index: Math.max(0, Math.min(values.action_website_index ?? 0, sanitizeContactArray(values.additional_websites).length)),
+        
         
         facebook: values.facebook || null,
         instagram: values.instagram || null,
@@ -476,6 +485,14 @@ const AdminListings = () => {
       email: l.email ?? "",
       email_label: (l as any).email_label ?? "",
       website: l.website ?? "",
+      website_label: (l as any).website_label ?? "",
+      additional_websites: ((l as any).additional_websites ?? []) as string[],
+      additional_website_labels: ((l as any).additional_website_labels ?? []) as string[],
+      action_phone_index: (l as any).action_phone_index ?? 0,
+      action_email_index: (l as any).action_email_index ?? 0,
+      action_whatsapp_index: (l as any).action_whatsapp_index ?? 0,
+      action_website_index: (l as any).action_website_index ?? 0,
+
       
       facebook: (l as any).facebook ?? "",
       instagram: (l as any).instagram ?? "",
@@ -843,49 +860,98 @@ const AdminListings = () => {
                   <ImageUpload bucket="listing-images" value={form.detail_image_url} onChange={(url) => setForm({ ...form, detail_image_url: url })} aspect={4/3} />
                 </div>
                 <div><Label>Location</Label><Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} /></div>
-                <MultiContactField
-                  label="Phone"
-                  type="tel"
-                  primary={form.phone}
-                  onPrimaryChange={(v) => setForm({ ...form, phone: v })}
-                  primaryLabel={form.phone_label}
-                  onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
-                  extras={form.additional_phones}
-                  onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
-                  extraLabels={form.additional_phone_labels}
-                  onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
-                  addLabel="Add phone"
-                />
-                <MultiContactField
-                  label="Email"
-                  type="email"
-                  primary={form.email}
-                  onPrimaryChange={(v) => setForm({ ...form, email: v })}
-                  primaryLabel={form.email_label}
-                  onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
-                  extras={form.additional_emails}
-                  onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
-                  extraLabels={form.additional_email_labels}
-                  onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
-                  addLabel="Add email"
-                />
-                <div><Label>Website</Label><Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://..." /></div>
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="Phone"
+                    type="tel"
+                    primary={form.phone}
+                    onPrimaryChange={(v) => setForm({ ...form, phone: v })}
+                    primaryLabel={form.phone_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, phone_label: v })}
+                    extras={form.additional_phones}
+                    onExtrasChange={(v) => setForm({ ...form, additional_phones: v })}
+                    extraLabels={form.additional_phone_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
+                    addLabel="Add phone"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.phone, ...form.additional_phones]}
+                    labels={[form.phone_label, ...form.additional_phone_labels]}
+                    selected={form.action_phone_index}
+                    onChange={(i) => setForm({ ...form, action_phone_index: i })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="Email"
+                    type="email"
+                    primary={form.email}
+                    onPrimaryChange={(v) => setForm({ ...form, email: v })}
+                    primaryLabel={form.email_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, email_label: v })}
+                    extras={form.additional_emails}
+                    onExtrasChange={(v) => setForm({ ...form, additional_emails: v })}
+                    extraLabels={form.additional_email_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
+                    addLabel="Add email"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.email, ...form.additional_emails]}
+                    labels={[form.email_label, ...form.additional_email_labels]}
+                    selected={form.action_email_index}
+                    onChange={(i) => setForm({ ...form, action_email_index: i })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="Website"
+                    type="text"
+                    primary={form.website}
+                    onPrimaryChange={(v) => setForm({ ...form, website: v })}
+                    primaryLabel={form.website_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, website_label: v })}
+                    extras={form.additional_websites}
+                    onExtrasChange={(v) => setForm({ ...form, additional_websites: v })}
+                    extraLabels={form.additional_website_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_website_labels: v })}
+                    placeholder="https://..."
+                    addLabel="Add website"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.website, ...form.additional_websites]}
+                    labels={[form.website_label, ...form.additional_website_labels]}
+                    selected={form.action_website_index}
+                    onChange={(i) => setForm({ ...form, action_website_index: i })}
+                  />
+                </div>
                 <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
                 <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
-                <MultiContactField
-                  label="WhatsApp Number"
-                  type="tel"
-                  primary={form.whatsapp}
-                  onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
-                  primaryLabel={form.whatsapp_label}
-                  onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
-                  extras={form.additional_whatsapps}
-                  onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
-                  extraLabels={form.additional_whatsapp_labels}
-                  onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
-                  placeholder="e.g. +27791234567"
-                  addLabel="Add WhatsApp"
-                />
+                <div className="space-y-2">
+                  <MultiContactField
+                    label="WhatsApp Number"
+                    type="tel"
+                    primary={form.whatsapp}
+                    onPrimaryChange={(v) => setForm({ ...form, whatsapp: v })}
+                    primaryLabel={form.whatsapp_label}
+                    onPrimaryLabelChange={(v) => setForm({ ...form, whatsapp_label: v })}
+                    extras={form.additional_whatsapps}
+                    onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
+                    extraLabels={form.additional_whatsapp_labels}
+                    onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
+                    placeholder="e.g. +27791234567"
+                    addLabel="Add WhatsApp"
+                  />
+                  <ActionPicker
+                    label="Top action button uses"
+                    values={[form.whatsapp, ...form.additional_whatsapps]}
+                    labels={[form.whatsapp_label, ...form.additional_whatsapp_labels]}
+                    selected={form.action_whatsapp_index}
+                    onChange={(i) => setForm({ ...form, action_whatsapp_index: i })}
+                  />
+                </div>
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div className="grid grid-cols-2 gap-4">
                   <div><Label>Google Rating</Label><Input type="number" step="0.1" min="0" max="5" value={form.google_rating ?? ""} onChange={(e) => setForm({ ...form, google_rating: e.target.value ? parseFloat(e.target.value) : null })} placeholder="e.g. 4.5" /></div>
