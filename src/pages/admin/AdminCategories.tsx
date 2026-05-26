@@ -823,11 +823,9 @@ const AdminCategories = () => {
                                         <Plus className="h-3 w-3" /> Add
                                       </Button>
                                     </div>
-                                    {ssList.length === 0 ? (
-                                      <NestDropZone subId={sub.id} subTitle={sub.title} />
-                                    ) : (
+                                    {ssList.length > 0 && (
                                       <SortableContext items={ssList.map((s) => `subsub:${s.id}`)} strategy={verticalListSortingStrategy}>
-                                        <div className="space-y-1.5">
+                                        <div className="space-y-1.5 mb-2">
                                           {ssList.map((ss) => (
                                             <SortableSubSubRow
                                               key={ss.id}
@@ -848,6 +846,7 @@ const AdminCategories = () => {
                                         </div>
                                       </SortableContext>
                                     )}
+                                    <NestDropZone subId={sub.id} subTitle={sub.title} />
                                   </div>
                                 </SortableSubRow>
                               );
