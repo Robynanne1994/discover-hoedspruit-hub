@@ -599,7 +599,7 @@ const AdminCategories = () => {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 lg:mb-8">
         <div>
           <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950">Categories</h1>
-          <p className="text-sm text-muted-foreground mt-1">Drag <GripVertical className="inline h-3 w-3" /> handles to reorder, or drag onto a parent row to nest one level deeper (like Shopify menus).</p>
+          <p className="text-sm text-muted-foreground mt-1">Drag to reorder or nest between levels.</p>
         </div>
         <Dialog open={open} onOpenChange={(v) => { if (!v) resetForm(); setOpen(v); }}>
           <DialogTrigger asChild>
@@ -1024,19 +1024,14 @@ const SortableSubRow = ({
   );
 };
 
-const NestDropZone = ({ subId, subTitle }: { subId: string; subTitle: string }) => {
+const NestDropZone = ({ subId }: { subId: string; subTitle?: string }) => {
   const { setNodeRef, isOver } = useDroppable({ id: `nest:${subId}` });
   return (
     <div
       ref={setNodeRef}
-      className={`px-3 py-1 text-[11px] border-t border-dashed transition-colors ${
-        isOver
-          ? "bg-primary/10 border-primary text-primary"
-          : "border-border/60 text-muted-foreground/70"
-      }`}
-    >
-      ↳ Drop here to nest under “{subTitle}” as a sub-subcategory
-    </div>
+      aria-hidden
+      className={`h-2 transition-colors ${isOver ? "bg-primary/20" : "bg-transparent"}`}
+    />
   );
 };
 
