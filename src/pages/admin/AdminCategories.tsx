@@ -26,6 +26,7 @@ import {
   useSensors,
   DragEndEvent,
   CollisionDetection,
+  useDroppable,
 } from "@dnd-kit/core";
 
 import {
@@ -433,8 +434,9 @@ const AdminCategories = () => {
   const hierarchicalCollision: CollisionDetection = (args) => {
     const pointerCollisions = pointerWithin(args).filter((c) => c.id !== args.active.id);
     if (pointerCollisions.length > 0) {
-      // Prefer deepest level (subsub > sub > cat)
-      const rank = (id: string) => (id.startsWith("subsub:") ? 3 : id.startsWith("sub:") ? 2 : 1);
+      // Prefer deepest level (nest-zone > subsub > sub > cat)
+      const rank = (id: string) =>
+        id.startsWith("nest:") ? 4 : id.startsWith("subsub:") ? 3 : id.startsWith("sub:") ? 2 : 1;
       pointerCollisions.sort((a, b) => rank(String(b.id)) - rank(String(a.id)));
       return [pointerCollisions[0]];
     }
@@ -444,10 +446,10 @@ const AdminCategories = () => {
   };
 
 
-  const parseId = (raw: string): { kind: "cat" | "sub" | "subsub"; id: string } | null => {
+  const parseId = (raw: string): { kind: "cat" | "sub" | "subsub" | "nest"; id: string } | null => {
     const [kind, id] = raw.split(":");
     if (!id) return null;
-    if (kind === "cat" || kind === "sub" || kind === "subsub") return { kind, id };
+    if (kind === "cat" || kind === "sub" || kind === "subsub" || kind === "nest") return { kind, id };
     return null;
   };
 
@@ -517,6 +519,15 @@ const AdminCategories = () => {
     const a = parseId(String(active.id));
     const o = parseId(String(over.id));
     if (!a || !o) return;
+
+    // Drop onto a "nest under this subcategory" zone — works even when the
+    // target subcategory has no sub-subcategories yet.
+    if (o.kind === "nest") {
+      if (a.kind === "sub") { demoteSubToSubSub(a.id, o.id); return; }
+      if (a.kind === "subsub") { moveSubSubToSub(a.id, o.id); return; }
+      return;
+    }
+
 
     if (a.kind === "cat" && o.kind === "cat") {
       const oldIdx = orderedCats.findIndex((c) => c.id === a.id);
@@ -1007,7 +1018,24 @@ const SortableSubRow = ({
           </Button>
         </div>
       </div>
+      <NestDropZone subId={sub.id} subTitle={sub.title} />
       {isExpanded && children}
+    </div>
+  );
+};
+
+const NestDropZone = ({ subId, subTitle }: { subId: string; subTitle: string }) => {
+  const { setNodeRef, isOver } = useDroppable({ id: `nest:${subId}` });
+  return (
+    <div
+      ref={setNodeRef}
+      className={`px-3 py-1 text-[11px] border-t border-dashed transition-colors ${
+        isOver
+          ? "bg-primary/10 border-primary text-primary"
+          : "border-border/60 text-muted-foreground/70"
+      }`}
+    >
+      ↳ Drop here to nest under “{subTitle}” as a sub-subcategory
     </div>
   );
 };
