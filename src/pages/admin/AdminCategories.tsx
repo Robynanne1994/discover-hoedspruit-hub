@@ -1024,19 +1024,14 @@ const SortableSubRow = ({
   );
 };
 
-const NestDropZone = ({ subId, subTitle }: { subId: string; subTitle: string }) => {
+const NestDropZone = ({ subId }: { subId: string; subTitle?: string }) => {
   const { setNodeRef, isOver } = useDroppable({ id: `nest:${subId}` });
   return (
     <div
       ref={setNodeRef}
-      className={`px-3 py-1 text-[11px] border-t border-dashed transition-colors ${
-        isOver
-          ? "bg-primary/10 border-primary text-primary"
-          : "border-border/60 text-muted-foreground/70"
-      }`}
-    >
-      ↳ Drop here to nest under “{subTitle}” as a sub-subcategory
-    </div>
+      aria-hidden
+      className={`h-2 transition-colors ${isOver ? "bg-primary/20" : "bg-transparent"}`}
+    />
   );
 };
 
