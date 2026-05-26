@@ -728,7 +728,27 @@ const AdminCategories = () => {
             <div className="text-right">Actions</div>
           </div>
 
-          <DndContext sensors={sensors} collisionDetection={hierarchicalCollision} onDragEnd={handleDragEnd}>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={hierarchicalCollision}
+            onDragOver={(e) => {
+              const over = e.over;
+              if (!over) return;
+              const o = parseId(String(over.id));
+              const a = parseId(String(e.active.id));
+              // Auto-expand the subcategory the user is dragging over so the
+              // "nest under this subcategory" drop zone becomes visible — even
+              // when the target has no sub-subcategories yet.
+              if (o?.kind === "sub" && (a?.kind === "sub" || a?.kind === "subsub") && a.id !== o.id) {
+                setExpandedCat((prev) => prev);
+                setExpandedSub(o.id);
+              }
+              if (o?.kind === "nest" && (a?.kind === "sub" || a?.kind === "subsub")) {
+                setExpandedSub(o.id);
+              }
+            }}
+            onDragEnd={handleDragEnd}
+          >
             <SortableContext items={orderedCats.map((c) => `cat:${c.id}`)} strategy={verticalListSortingStrategy}>
               {orderedCats.map((cat) => {
                 const subs = orderedSubs[cat.id] ?? [];
