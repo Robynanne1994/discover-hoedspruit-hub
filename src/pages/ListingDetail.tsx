@@ -761,13 +761,16 @@ const ListingDetail = () => {
               const phones = collectContacts(listing.phone, (listing as any).additional_phones);
               const whatsapps = collectContacts(whatsappNum, (listing as any).additional_whatsapps);
               const emails = collectContacts(listing.email, (listing as any).additional_emails);
+              const phoneLabels = [((listing as any).phone_label || "").trim(), ...((((listing as any).additional_phone_labels) || []) as string[]).map((s) => (s || "").trim())];
+              const waLabels = [((listing as any).whatsapp_label || "").trim(), ...((((listing as any).additional_whatsapp_labels) || []) as string[]).map((s) => (s || "").trim())];
+              const emailLabels = [((listing as any).email_label || "").trim(), ...((((listing as any).additional_email_labels) || []) as string[]).map((s) => (s || "").trim())];
               const rows: any[] = [];
-              phones.forEach((p, i) => rows.push({ label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
+              phones.forEach((p, i) => rows.push({ label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
               whatsapps.forEach((w, i) => {
                 const clean = w.replace(/[^0-9]/g, "");
-                rows.push({ label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
+                rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
               });
-              emails.forEach((e, i) => rows.push({ label: i === 0 ? "Email" : `Email ${i + 1}`, value: e, href: `mailto:${e}`, Icon: Mail }));
+              emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), value: e, href: `mailto:${e}`, Icon: Mail }));
               if (listing.website) rows.push({ label: "Website", value: "Website", href: listing.website, Icon: Globe });
               if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
               if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
