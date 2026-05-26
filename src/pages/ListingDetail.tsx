@@ -1103,24 +1103,56 @@ const ListingDetail = () => {
             ? <span data-no-title-case="true">{(listing as any).title_override}</span>
             : listing.title}
         </h1>
-        {listing.location && (
-          <div style={{
-            marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-            display: "flex", alignItems: "center", gap: 4,
-          }}>
-            <MapPin size={12} color={C.muted} strokeWidth={1.6} />
-            <span>{listing.location}</span>
-          </div>
-        )}
-        {l.google_rating != null && (
-          <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
-            <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
-            <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
-            {l.google_reviews_count != null && (
-              <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
-            )}
-          </div>
-        )}
+        {listing.location && (() => {
+          const mapHref = l.google_maps_link || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(listing.location || listing.title)}`;
+          return (
+            <a
+              href={mapHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+                display: "inline-flex", alignItems: "center", gap: 4,
+                textDecoration: "none",
+              }}
+            >
+              <MapPin size={12} color={C.muted} strokeWidth={1.6} />
+              <span style={{ textDecoration: "underline", textDecorationColor: "rgba(0,0,0,0.15)", textUnderlineOffset: 2 }}>
+                {listing.location}
+              </span>
+            </a>
+          );
+        })()}
+        {l.google_rating != null && (() => {
+          const reviewsHref: string | null = l.google_reviews_url || null;
+          const inner = (
+            <>
+              <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
+              <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
+              {l.google_reviews_count != null && (
+                <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
+              )}
+            </>
+          );
+          return reviewsHref ? (
+            <a
+              href={reviewsHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4,
+                fontSize: 13, color: C.heading, textDecoration: "none",
+              }}
+            >
+              {inner}
+              <ArrowUpRight size={12} color={C.muted} strokeWidth={1.6} style={{ marginLeft: 2 }} />
+            </a>
+          ) : (
+            <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
+              {inner}
+            </div>
+          );
+        })()}
 
         {actions.length > 0 && (
           actions.length === 4 ? (
