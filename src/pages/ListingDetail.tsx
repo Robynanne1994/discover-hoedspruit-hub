@@ -299,7 +299,23 @@ const ListingDetail = () => {
   const hasGallery = galleryImages.length > 0;
   const hasSpecials = (relatedSpecials?.length ?? 0) > 0;
   const hasEvents = (relatedEvents?.length ?? 0) > 0;
-  const hasContact = !!(listing.email || listing.phone || waClean || listing.website);
+
+  // Pick the chosen contact for the top action buttons.
+  // Index 0 = primary (listing.phone / .email / .whatsapp / .website),
+  // index 1+ = corresponding additional_* entry.
+  const pickAction = (primary: string | null | undefined, extras: string[] | null | undefined, index: number) => {
+    const arr = [primary || "", ...((extras || []) as string[])];
+    const safe = Math.max(0, Math.min(index || 0, arr.length - 1));
+    const v = (arr[safe] || "").trim();
+    return v || (primary || "").trim() || (arr.find((x) => (x || "").trim()) || "");
+  };
+  const actionPhone = pickAction(listing.phone, l.additional_phones, l.action_phone_index ?? 0);
+  const actionEmail = pickAction(listing.email, l.additional_emails, l.action_email_index ?? 0);
+  const actionWhatsappRaw = pickAction(whatsappNum, l.additional_whatsapps, l.action_whatsapp_index ?? 0);
+  const actionWhatsappClean = actionWhatsappRaw ? actionWhatsappRaw.replace(/[^0-9]/g, "") : "";
+  const actionWebsite = pickAction(listing.website, l.additional_websites, l.action_website_index ?? 0);
+
+  const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length));
   const hasAbout = !!descriptionText || !!hasHours || hasContact;
   const hasLocation = !!(listing.location || mapCoords);
 
