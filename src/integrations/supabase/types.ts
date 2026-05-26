@@ -917,10 +917,16 @@ export type Database = {
       }
       listings: {
         Row: {
+          action_email_index: number
+          action_phone_index: number
+          action_website_index: number
+          action_whatsapp_index: number
           additional_email_labels: string[]
           additional_emails: string[]
           additional_phone_labels: string[]
           additional_phones: string[]
+          additional_website_labels: string[]
+          additional_websites: string[]
           additional_whatsapp_labels: string[]
           additional_whatsapps: string[]
           after_hours_available: boolean | null
@@ -1040,10 +1046,16 @@ export type Database = {
           years_in_business: number | null
         }
         Insert: {
+          action_email_index?: number
+          action_phone_index?: number
+          action_website_index?: number
+          action_whatsapp_index?: number
           additional_email_labels?: string[]
           additional_emails?: string[]
           additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_website_labels?: string[]
+          additional_websites?: string[]
           additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           after_hours_available?: boolean | null
@@ -1163,10 +1175,16 @@ export type Database = {
           years_in_business?: number | null
         }
         Update: {
+          action_email_index?: number
+          action_phone_index?: number
+          action_website_index?: number
+          action_whatsapp_index?: number
           additional_email_labels?: string[]
           additional_emails?: string[]
           additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_website_labels?: string[]
+          additional_websites?: string[]
           additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           after_hours_available?: boolean | null
