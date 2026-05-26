@@ -917,8 +917,11 @@ export type Database = {
       }
       listings: {
         Row: {
+          additional_email_labels: string[]
           additional_emails: string[]
+          additional_phone_labels: string[]
           additional_phones: string[]
+          additional_whatsapp_labels: string[]
           additional_whatsapps: string[]
           after_hours_available: boolean | null
           air_conditioned: boolean | null
@@ -947,6 +950,7 @@ export type Database = {
           details_display_mode: Json
           drive_through: boolean | null
           email: string | null
+          email_label: string | null
           emergency_24hr: boolean | null
           facebook: string | null
           foods: string[]
@@ -1003,6 +1007,7 @@ export type Database = {
           payment_methods: string[] | null
           pets_allowed: boolean | null
           phone: string | null
+          phone_label: string | null
           plant_types: string[] | null
           practitioners: string[] | null
           price_level: number | null
@@ -1026,6 +1031,7 @@ export type Database = {
           website: string | null
           website_label: string | null
           whatsapp: string | null
+          whatsapp_label: string | null
           wheelchair_car_park: boolean | null
           wheelchair_entrance: boolean | null
           wheelchair_friendly: boolean | null
@@ -1034,8 +1040,11 @@ export type Database = {
           years_in_business: number | null
         }
         Insert: {
+          additional_email_labels?: string[]
           additional_emails?: string[]
+          additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           after_hours_available?: boolean | null
           air_conditioned?: boolean | null
@@ -1064,6 +1073,7 @@ export type Database = {
           details_display_mode?: Json
           drive_through?: boolean | null
           email?: string | null
+          email_label?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
           foods?: string[]
@@ -1120,6 +1130,7 @@ export type Database = {
           payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
+          phone_label?: string | null
           plant_types?: string[] | null
           practitioners?: string[] | null
           price_level?: number | null
@@ -1143,6 +1154,7 @@ export type Database = {
           website?: string | null
           website_label?: string | null
           whatsapp?: string | null
+          whatsapp_label?: string | null
           wheelchair_car_park?: boolean | null
           wheelchair_entrance?: boolean | null
           wheelchair_friendly?: boolean | null
@@ -1151,8 +1163,11 @@ export type Database = {
           years_in_business?: number | null
         }
         Update: {
+          additional_email_labels?: string[]
           additional_emails?: string[]
+          additional_phone_labels?: string[]
           additional_phones?: string[]
+          additional_whatsapp_labels?: string[]
           additional_whatsapps?: string[]
           after_hours_available?: boolean | null
           air_conditioned?: boolean | null
@@ -1181,6 +1196,7 @@ export type Database = {
           details_display_mode?: Json
           drive_through?: boolean | null
           email?: string | null
+          email_label?: string | null
           emergency_24hr?: boolean | null
           facebook?: string | null
           foods?: string[]
@@ -1237,6 +1253,7 @@ export type Database = {
           payment_methods?: string[] | null
           pets_allowed?: boolean | null
           phone?: string | null
+          phone_label?: string | null
           plant_types?: string[] | null
           practitioners?: string[] | null
           price_level?: number | null
@@ -1260,6 +1277,7 @@ export type Database = {
           website?: string | null
           website_label?: string | null
           whatsapp?: string | null
+          whatsapp_label?: string | null
           wheelchair_car_park?: boolean | null
           wheelchair_entrance?: boolean | null
           wheelchair_friendly?: boolean | null
