@@ -1114,15 +1114,11 @@ const ListingDetail = () => {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-                display: "inline-flex", alignItems: "center", gap: 4,
-                textDecoration: "none",
+                marginTop: 6, fontSize: 12, fontWeight: 400, color: C.muted, letterSpacing: "0.01em",
+                display: "block", textDecoration: "none",
               }}
             >
-              <MapPin size={12} color={C.muted} strokeWidth={1.6} />
-              <span style={{ textDecoration: "underline", textDecorationColor: "rgba(0,0,0,0.15)", textUnderlineOffset: 2 }}>
-                {listing.location}
-              </span>
+              {listing.location}
             </a>
           );
         })()}
@@ -1130,30 +1126,23 @@ const ListingDetail = () => {
           const reviewsHref: string | null = l.google_reviews_url || null;
           const inner = (
             <>
-              <Star size={14} fill={C.accent} color={C.accent} strokeWidth={0} />
+              <Star size={12} fill={C.accent} color={C.accent} strokeWidth={0} />
               <span style={{ fontWeight: 400 }}>{Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>
               {l.google_reviews_count != null && (
                 <span style={{ color: C.muted }}>({l.google_reviews_count})</span>
               )}
             </>
           );
+          const baseStyle = {
+            marginTop: 6, display: "flex", alignItems: "center", gap: 4,
+            fontSize: 12, fontWeight: 400, color: C.heading, textDecoration: "none",
+          } as const;
           return reviewsHref ? (
-            <a
-              href={reviewsHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                marginTop: 8, display: "inline-flex", alignItems: "center", gap: 4,
-                fontSize: 13, color: C.heading, textDecoration: "none",
-              }}
-            >
+            <a href={reviewsHref} target="_blank" rel="noopener noreferrer" style={baseStyle}>
               {inner}
-              <ArrowUpRight size={12} color={C.muted} strokeWidth={1.6} style={{ marginLeft: 2 }} />
             </a>
           ) : (
-            <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: C.heading }}>
-              {inner}
-            </div>
+            <div style={baseStyle}>{inner}</div>
           );
         })()}
 
