@@ -93,7 +93,7 @@ const WeatherSection = () => {
           </h2>
         </div>
 
-        <div className="bg-background/80 backdrop-blur rounded-2xl border border-border overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
           <div className="flex flex-col sm:flex-row">
             {/* Hero temperature */}
             <div className="flex items-center gap-3 p-5 sm:p-6 sm:border-r border-border sm:min-w-[200px]">
