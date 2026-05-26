@@ -21,15 +21,13 @@ const BottomNav = () => {
       className="fixed left-3 right-3 z-50 md:hidden"
       style={{
         bottom: 12,
-        background: "rgba(40, 36, 32, 0.20)",
-        backdropFilter: "blur(28px) saturate(180%)",
-        WebkitBackdropFilter: "blur(28px) saturate(180%)",
+        background: "#48484a",
         borderRadius: 28,
         height: 74,
         padding: "0 10px",
-        border: "1px solid rgba(255,255,255,0.18)",
+        border: "1px solid rgba(255,255,255,0.10)",
         boxShadow:
-          "0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -1px 0 rgba(0,0,0,0.2)",
+          "0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12)",
       }}
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 6 }}>
