@@ -166,6 +166,7 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["favourite", "listing", listingId] });
       qc.invalidateQueries({ queryKey: ["favourites"] });
+      qc.invalidateQueries({ queryKey: ["user-saved-listings"] });
     },
   });
 
