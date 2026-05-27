@@ -148,15 +148,15 @@ const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen
             </div>
           )}
           {tags.length > 0 && (
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
               {tags.map((t, i) => (
-                <span key={i} style={{
-                  display: "inline-flex", alignItems: "center", justifyContent: "center",
-                  fontFamily: HN, fontWeight: 600, fontSize: 8.5, lineHeight: 1,
-                  letterSpacing: "0.1em", textTransform: "uppercase",
-                  background: "rgba(113,90,61,0.10)", color: "#715a3d",
-                  padding: "3px 8px", borderRadius: 999,
-                }}>{t}</span>
+                <span
+                  key={i}
+                  className="inline-block text-[8px] font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-1.5 py-0.5"
+                  style={{ fontFamily: HN }}
+                >
+                  {t}
+                </span>
               ))}
             </div>
           )}
