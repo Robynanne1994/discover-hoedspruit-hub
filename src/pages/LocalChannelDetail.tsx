@@ -148,12 +148,15 @@ const LocalChannelDetail = () => {
           const tags = [resource.tag_1, resource.tag_2].filter((t: string | null) => t && t.trim());
           if (!tags.length) return null;
           return (
-            <div style={{ fontFamily: HN, fontSize: 11, letterSpacing: "0.18em", textTransform: "uppercase", color: MUTED, marginBottom: 8, display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
               {tags.map((t: string, i: number) => (
-                <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                  {i > 0 && <span style={{ width: 4, height: 4, borderRadius: 999, background: MUTED, display: "inline-block" }} />}
-                  <span>{t}</span>
-                </span>
+                <span key={i} style={{
+                  display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  fontFamily: HN, fontWeight: 600, fontSize: 8.5, lineHeight: 1,
+                  letterSpacing: "0.1em", textTransform: "uppercase",
+                  background: "rgba(113,90,61,0.10)", color: "#715a3d",
+                  padding: "3px 8px", borderRadius: 999,
+                }}>{t}</span>
               ))}
             </div>
           );
