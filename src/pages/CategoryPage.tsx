@@ -618,71 +618,72 @@ const CategoryPage = () => {
             {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
           </div>
         </div>
-        <button
-          onClick={() => setSearchOpen((v) => !v)}
-          aria-label={searchOpen ? "Close search" : "Search"}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: "#FFFFFF",
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          {searchOpen ? (
-            <X size={18} strokeWidth={1.8} color={INK} />
-          ) : (
-            <Search size={18} strokeWidth={1.8} color={INK} />
-          )}
-        </button>
-        <button
-          onClick={() => setRefineOpen(true)}
-          aria-label="Filters"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: activeFilterCount > 0 ? "#2A2A24" : "#FFFFFF",
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-            position: "relative",
-            marginLeft: 4,
-          }}
-        >
-          <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#020202"} />
-          {activeFilterCount > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: -3,
-                right: -3,
-                minWidth: 16,
-                height: 16,
-                borderRadius: 999,
-                background: "#C0392B",
-                color: "#FFFFFF",
-                fontFamily: sans,
-                fontSize: 9,
-                fontWeight: 700,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                padding: "0 3px",
-              }}
-            >
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
+          <button
+            onClick={() => setSearchOpen((v) => !v)}
+            aria-label={searchOpen ? "Close search" : "Search"}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "#FFFFFF",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            {searchOpen ? (
+              <X size={18} strokeWidth={1.8} color={INK} />
+            ) : (
+              <Search size={18} strokeWidth={1.8} color={INK} />
+            )}
+          </button>
+          <button
+            onClick={() => setRefineOpen(true)}
+            aria-label="Filters"
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: activeFilterCount > 0 ? "#2A2A24" : "#FFFFFF",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+              position: "relative",
+            }}
+          >
+            <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#020202"} />
+            {activeFilterCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -3,
+                  right: -3,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 999,
+                  background: "#C0392B",
+                  color: "#FFFFFF",
+                  fontFamily: sans,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 3px",
+                }}
+              >
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
       <div style={{ height: 1, background: "rgba(2,2,2,0.08)", marginTop: 16 }} />
