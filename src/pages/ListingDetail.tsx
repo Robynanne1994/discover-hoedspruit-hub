@@ -1058,7 +1058,7 @@ const ListingDetail = () => {
             gap: 8,
           }}>
             <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-              <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
+              <Heart size={20} strokeWidth={2} color={isFavourited ? "#A62C2C" : C.primary} fill={isFavourited ? "#A62C2C" : "none"} />
             </button>
             <button onClick={handleShare} aria-label="Share" style={floatBtn}>
               <Share2 size={20} strokeWidth={1.6} color={C.heading} />
