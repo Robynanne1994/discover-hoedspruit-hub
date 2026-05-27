@@ -1021,48 +1021,56 @@ const ListingDetail = () => {
     boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
   };
 
+  const heroImgUrl = (listing as any).detail_image_url || listing.image_url;
+  const showHero = !!heroImgUrl && !heroImgError;
+
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
       {/* Hero (4:3) with floating action buttons */}
-      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
-        {((listing as any).detail_image_url || listing.image_url) && (
-          <img src={(listing as any).detail_image_url || listing.image_url} alt={listing.title} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-        )}
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            ...floatBtn,
+      {showHero && (
+        <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
+          <img
+            src={heroImgUrl}
+            alt={listing.title}
+            onError={() => setHeroImgError(true)}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            style={{
+              ...floatBtn,
+              position: "absolute",
+              top: "calc(env(safe-area-inset-top) + 16px)",
+              left: 16,
+              zIndex: 2,
+            }}
+          >
+            <BackArrowIcon size={20} color={C.heading} />
+          </button>
+          <div style={{
             position: "absolute",
             top: "calc(env(safe-area-inset-top) + 16px)",
-            left: 16,
+            right: 16,
             zIndex: 2,
-          }}
-        >
-          <BackArrowIcon size={20} color={C.heading} />
-        </button>
-        <div style={{
-          position: "absolute",
-          top: "calc(env(safe-area-inset-top) + 16px)",
-          right: 16,
-          zIndex: 2,
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-        }}>
-          <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
-            <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
-          </button>
-          <button onClick={handleShare} aria-label="Share" style={floatBtn}>
-            <Share2 size={20} strokeWidth={1.6} color={C.heading} />
-          </button>
-          {isAdmin && (
-            <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={floatBtn}>
-              <Pencil size={18} strokeWidth={1.6} color={C.heading} />
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}>
+            <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+              <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
             </button>
-          )}
+            <button onClick={handleShare} aria-label="Share" style={floatBtn}>
+              <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+            </button>
+            {isAdmin && (
+              <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={floatBtn}>
+                <Pencil size={18} strokeWidth={1.6} color={C.heading} />
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Title block */}
       <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
