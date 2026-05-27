@@ -76,40 +76,51 @@ export const RefineDrawer = ({
           fontFamily: SANS,
         }}
       >
-        {/* Top row */}
+        {/* Header */}
         <div
           style={{
-            padding: "20px 22px 6px 22px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
+            background: "rgba(113,90,61,0.08)",
+            borderBottom: "1px solid rgba(113,90,61,0.15)",
+            padding: "20px 22px 18px 22px",
           }}
         >
-          <Bookmark size={22} strokeWidth={1.6} color="#1a1a1a" />
-          <button
-            onClick={onClear}
+          {/* Top row */}
+          <div
             style={{
-              background: "transparent",
-              border: "none",
-              padding: 4,
-              fontFamily: SANS,
-              fontSize: 16,
-              fontWeight: 500,
-              color: "#715a3d",
-              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: 14,
             }}
           >
-            Clear
-          </button>
-        </div>
+            <Bookmark size={24} strokeWidth={1.8} color="#715a3d" />
+            <button
+              onClick={onClear}
+              style={{
+                background: "#ffffff",
+                border: "1px solid rgba(113,90,61,0.35)",
+                borderRadius: 999,
+                padding: "6px 16px",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#715a3d",
+                letterSpacing: "0.04em",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+              }}
+            >
+              Clear
+            </button>
+          </div>
 
-        {/* Title */}
-        <div style={{ padding: "12px 22px 18px 22px" }}>
+          {/* Title */}
           <h2
             style={{
               margin: 0,
               fontFamily: SANS,
-              fontSize: 22,
+              fontSize: 26,
               fontWeight: 700,
               color: "#020202",
               letterSpacing: "0.01em",
