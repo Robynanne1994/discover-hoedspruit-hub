@@ -209,24 +209,61 @@ const CategoryPage = () => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
+
+  // Persist filter/sort/search state per category so navigating into a listing
+  // and back preserves the filtered view.
+  const stateKey = `categoryPageState:${id ?? "_"}`;
+  const persisted = (() => {
+    if (typeof window === "undefined") return null;
+    try {
+      const raw = sessionStorage.getItem(stateKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  })();
+
   const [refineOpen, setRefineOpen] = useState(false);
-  const [sortBy, setSortBy] = useState<SortKey>("default");
-  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
+  const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
     "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | null
   >("sort");
 
-  const [filterCuisine, setFilterCuisine] = useState<string[]>([]);
-  const [filterVibe, setFilterVibe] = useState<string[]>([]);
-  const [filterMeal, setFilterMeal] = useState<string[]>([]);
-  const [filterSeating, setFilterSeating] = useState<string[]>([]);
-  const [filterChildFriendly, setFilterChildFriendly] = useState(false);
-  const [filterPetFriendly, setFilterPetFriendly] = useState(false);
-  const [filterWheelchair, setFilterWheelchair] = useState(false);
-  const [filterWifi, setFilterWifi] = useState(false);
-  const [filterOpenNow, setFilterOpenNow] = useState(false);
-  const [filterSaved, setFilterSaved] = useState(false);
-  const [filterBeenTo, setFilterBeenTo] = useState(false);
+  const [filterCuisine, setFilterCuisine] = useState<string[]>(persisted?.filterCuisine ?? []);
+  const [filterVibe, setFilterVibe] = useState<string[]>(persisted?.filterVibe ?? []);
+  const [filterMeal, setFilterMeal] = useState<string[]>(persisted?.filterMeal ?? []);
+  const [filterSeating, setFilterSeating] = useState<string[]>(persisted?.filterSeating ?? []);
+  const [filterChildFriendly, setFilterChildFriendly] = useState<boolean>(persisted?.filterChildFriendly ?? false);
+  const [filterPetFriendly, setFilterPetFriendly] = useState<boolean>(persisted?.filterPetFriendly ?? false);
+  const [filterWheelchair, setFilterWheelchair] = useState<boolean>(persisted?.filterWheelchair ?? false);
+  const [filterWifi, setFilterWifi] = useState<boolean>(persisted?.filterWifi ?? false);
+  const [filterOpenNow, setFilterOpenNow] = useState<boolean>(persisted?.filterOpenNow ?? false);
+  const [filterSaved, setFilterSaved] = useState<boolean>(persisted?.filterSaved ?? false);
+  const [filterBeenTo, setFilterBeenTo] = useState<boolean>(persisted?.filterBeenTo ?? false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      sessionStorage.setItem(
+        stateKey,
+        JSON.stringify({
+          sortBy, search,
+          filterCuisine, filterVibe, filterMeal, filterSeating,
+          filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
+          filterOpenNow, filterSaved, filterBeenTo,
+        }),
+      );
+    } catch {
+      // ignore quota / serialization errors
+    }
+  }, [
+    stateKey, sortBy, search,
+    filterCuisine, filterVibe, filterMeal, filterSeating,
+    filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
+    filterOpenNow, filterSaved, filterBeenTo,
+  ]);
+
 
   const { data: savedIds } = useQuery({
     queryKey: ["user-saved-listings", user?.id],
