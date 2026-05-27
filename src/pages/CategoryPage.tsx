@@ -837,22 +837,57 @@ const CategoryPage = () => {
         resultsCount={filteredListings.length}
         resultsLabel="listings"
       >
-        <RefineSection
-          isFirst
-          label="Sort by"
-          summary={sortLabel}
-          open={openSection === "sort"}
-          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+        {/* Sort by — visually separated as it only changes ordering */}
+        <div
+          style={{
+            background: "rgba(113,90,61,0.06)",
+            borderRadius: 14,
+            padding: "14px 16px",
+            marginBottom: 20,
+          }}
         >
-          {(["default", "name", "rating"] as SortKey[]).map((key) => (
-            <RefineOption
-              key={key}
-              label={key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
-              active={sortBy === key}
-              onClick={() => setSortBy(key)}
-            />
-          ))}
-        </RefineSection>
+          <RefineSection
+            isFirst
+            label="Sort by"
+            summary={sortLabel}
+            open={openSection === "sort"}
+            onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+          >
+            {(["default", "name", "rating"] as SortKey[]).map((key) => (
+              <RefineOption
+                key={key}
+                label={key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
+                active={sortBy === key}
+                onClick={() => setSortBy(key)}
+              />
+            ))}
+          </RefineSection>
+        </div>
+
+        {/* Filters divider */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            marginBottom: 8,
+          }}
+        >
+          <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.08)" }} />
+          <span
+            style={{
+              fontFamily: sans,
+              fontSize: 11,
+              fontWeight: 600,
+              color: "#715a3d",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+            }}
+          >
+            Filters
+          </span>
+          <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.08)" }} />
+        </div>
 
         {subcategories && subcategories.length > 0 && (
           <RefineSection
