@@ -1027,7 +1027,7 @@ const ListingDetail = () => {
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
       {/* Hero (4:3) with floating action buttons */}
-      {showHero && (
+      {showHero ? (
         <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
           <img
             src={heroImgUrl}
@@ -1068,6 +1068,27 @@ const ListingDetail = () => {
                 <Pencil size={18} strokeWidth={1.6} color={C.heading} />
               </button>
             )}
+          </div>
+        </div>
+      ) : (
+        <div style={{ position: "relative", paddingTop: "env(safe-area-inset-top)", background: C.surface }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 16px" }}>
+            <button onClick={() => navigate(-1)} aria-label="Back" style={{ ...floatBtn, position: "relative" }}>
+              <BackArrowIcon size={20} color={C.heading} />
+            </button>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+                <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
+              </button>
+              <button onClick={handleShare} aria-label="Share" style={floatBtn}>
+                <Share2 size={20} strokeWidth={1.6} color={C.heading} />
+              </button>
+              {isAdmin && (
+                <button onClick={() => navigate(`/admin/listings?edit=${listing.id}&returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`, { replace: true })} aria-label="Edit" style={floatBtn}>
+                  <Pencil size={18} strokeWidth={1.6} color={C.heading} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       )}
