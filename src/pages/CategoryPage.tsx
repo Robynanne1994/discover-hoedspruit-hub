@@ -186,7 +186,7 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
         height: 36,
         borderRadius: 9999,
         background: "rgba(238, 232, 218, 0.85)",
-        border: "none",
+        border: `1.5px solid ${saved ? C.rust : C.ink}`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -196,7 +196,7 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
       <Heart
         size={16}
         strokeWidth={2}
-        color={saved ? C.rust : C.cream}
+        color={saved ? C.rust : C.ink}
         fill={saved ? C.rust : "none"}
       />
     </button>
