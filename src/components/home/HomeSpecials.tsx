@@ -51,38 +51,21 @@ const HomeSpecials = () => {
                 flexShrink: 0,
                 background: "#ffffff",
                 borderRadius: 16,
-                padding: 10,
                 display: "flex",
-                alignItems: "center",
+                alignItems: "stretch",
                 gap: 12,
                 textDecoration: "none",
                 transition: "transform 150ms ease-out",
+                overflow: "hidden",
+                paddingRight: 10,
               }}
             >
-              <div style={{ position: "relative", width: 80, height: 80, borderRadius: 12, overflow: "hidden", background: "#F4EFE3", flexShrink: 0 }}>
+              <div style={{ position: "relative", width: 100, height: 100, background: "#F4EFE3", flexShrink: 0 }}>
                 {s.image_url && (
                   <img src={s.image_url} alt={s.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 )}
-                <div
-                  style={{
-                    position: "absolute",
-                    bottom: 6,
-                    left: 6,
-                    background: "#020202",
-                    color: "#ffffff",
-                    fontFamily: HN,
-                    fontSize: 9,
-                    letterSpacing: "0.04em",
-                    padding: "3px 6px",
-                    borderRadius: 6,
-                    textTransform: "uppercase",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {s.deal_label}
-                </div>
               </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ flex: 1, minWidth: 0, alignSelf: "center", paddingTop: 10, paddingBottom: 10 }}>
                 <div
                   {...noTitleCaseProps(s)}
                   style={{
