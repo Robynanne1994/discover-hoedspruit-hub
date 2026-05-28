@@ -36,7 +36,6 @@ interface PageHeaderProps {
 }
 
 const INK = "#020202";
-const PAGE_BG = "#ebebeb";
 const DIVIDER = "rgba(2, 2, 2, 0.1)";
 
 export default function PageHeader({
@@ -57,9 +56,9 @@ export default function PageHeader({
     <header
       style={{
         width: "100%",
-        background: PAGE_BG,
-        // 60px total above the title on standard iPhone; safe-area inset adds on iOS
-        paddingTop: "calc(env(safe-area-inset-top, 0px) + 20px)",
+        background: "transparent",
+        // 60px of empty space between safe-area / screen top and the title/icons row
+        paddingTop: "calc(env(safe-area-inset-top, 0px) + 60px)",
         paddingBottom: 16,
         paddingLeft: 20,
         paddingRight: 20,
@@ -69,42 +68,50 @@ export default function PageHeader({
     >
       <div
         style={{
-          position: "relative",
-          minHeight: 44,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "space-between",
+          gap: 12,
         }}
       >
-        {/* Back arrow */}
-        {showBack && (
-          <button
-            type="button"
-            onClick={handleBack}
-            aria-label="Back"
-            style={{
-              position: "absolute",
-              left: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: 44,
-              height: 44,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "flex-start",
-              background: "transparent",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-              color: INK,
-            }}
-          >
-            <ChevronLeft size={24} strokeWidth={1.8} />
-          </button>
-        )}
+        {/* Left slot — back arrow */}
+        <div style={{ display: "flex", alignItems: "center", flex: "0 0 auto", minWidth: 28 }}>
+          {showBack && (
+            <button
+              type="button"
+              onClick={handleBack}
+              aria-label="Back"
+              style={{
+                width: 28,
+                height: 28,
+                marginLeft: -4,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                color: INK,
+              }}
+            >
+              <ChevronLeft size={24} strokeWidth={1.8} />
+            </button>
+          )}
+        </div>
 
         {/* Title + subtitle */}
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+        <div
+          style={{
+            flex: "1 1 auto",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 4,
+            minWidth: 0,
+          }}
+        >
           <h1
             style={{
               margin: 0,
@@ -112,7 +119,7 @@ export default function PageHeader({
               fontSize: 22,
               fontWeight: 600,
               letterSpacing: "-0.2px",
-              lineHeight: 1.2,
+              lineHeight: 1,
               color: INK,
               textAlign: "center",
               textTransform: "none",
@@ -137,43 +144,41 @@ export default function PageHeader({
           )}
         </div>
 
-        {/* Right icons */}
-        {rightIcons.length > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              display: "flex",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            {rightIcons.map((ic) => (
-              <button
-                key={ic.key}
-                type="button"
-                onClick={ic.onClick}
-                aria-label={ic.label}
-                style={{
-                  width: 44,
-                  height: 44,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  background: "transparent",
-                  border: "none",
-                  padding: 0,
-                  cursor: "pointer",
-                  color: ic.active ? "hsl(var(--primary))" : INK,
-                }}
-              >
-                {ic.icon}
-              </button>
-            ))}
-          </div>
-        )}
+        {/* Right slot — icons */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: 16,
+            flex: "0 0 auto",
+            minWidth: 28,
+            marginRight: -2,
+          }}
+        >
+          {rightIcons.map((ic) => (
+            <button
+              key={ic.key}
+              type="button"
+              onClick={ic.onClick}
+              aria-label={ic.label}
+              style={{
+                width: 28,
+                height: 28,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                background: "transparent",
+                border: "none",
+                padding: 0,
+                cursor: "pointer",
+                color: ic.active ? "hsl(var(--primary))" : INK,
+              }}
+            >
+              {ic.icon}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Full-width divider */}
