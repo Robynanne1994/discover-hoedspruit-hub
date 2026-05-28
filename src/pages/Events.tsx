@@ -21,6 +21,7 @@ import {
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, getEventOccurrences } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import PageHeader from "@/components/PageHeader";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
