@@ -134,13 +134,13 @@ const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen
           {metaParts.length > 0 && (
             <div style={{
               display: "flex", alignItems: "center", gap: 8,
-              fontFamily: HN, fontWeight: 500, fontSize: 12.5, color: RUST,
+              fontFamily: HN, fontWeight: 500, fontSize: 12.5, color: MUTED,
               margin: "4px 0 10px", flexWrap: "wrap",
             }}>
               {metaParts.map((m, i) => (
                 <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {i > 0 && (
-                    <span style={{ width: 3, height: 3, borderRadius: 999, background: RUST, display: "inline-block" }} />
+                    <span style={{ width: 3, height: 3, borderRadius: 999, background: MUTED, display: "inline-block" }} />
                   )}
                   <span>{m}</span>
                 </span>
