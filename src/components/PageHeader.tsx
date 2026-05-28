@@ -179,7 +179,6 @@ export default function PageHeader({
             </button>
           ))}
         </div>
-        )}
       </div>
 
       {/* Full-width divider */}
