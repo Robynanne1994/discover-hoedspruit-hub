@@ -1,4 +1,3 @@
-import PageHeader from "@/components/PageHeader";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { useNavigate, useParams, Navigate } from "react-router-dom";
 import { useState, useEffect, useCallback, useMemo } from "react";
@@ -168,7 +167,54 @@ const NotificationCategories = () => {
 
   return (
     <div style={{ background: COLORS.bg, minHeight: "100vh", paddingBottom: 120, fontFamily: SANS }}>
-      <PageHeader title={pageTitle} showBack />
+      {/* Top bar */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          padding: "calc(env(safe-area-inset-top) + 60px) 24px 0",
+          minHeight: 44,
+        }}
+      >
+        <button
+          type="button"
+          aria-label="Go back"
+          onClick={() => navigate(-1)}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#fff",
+            border: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            lineHeight: 1,
+            flexShrink: 1,
+            boxShadow: "0 1px 2px rgba(0,0,1,0.05)",
+          }}
+        >
+          <BackArrowIcon size={18} color={COLORS.ink} />
+        </button>
+        <div
+          style={{
+            flex: 1,
+            textAlign: "center",
+            marginRight: 22,
+            fontFamily: SANS,
+            fontSize: 20,
+            fontWeight: 600,
+            color: COLORS.ink,
+            lineHeight: 1,
+          }}
+        >
+          {pageTitle}
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: "rgba(26,26,26,0.12)", marginTop: 20 }} />
 
       {/* Subline */}
       <div style={{ padding: "24px 24px 0" }}>

@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
-import PageHeader from "@/components/PageHeader";
 import {
   ArrowLeft,
   FileText,
@@ -98,7 +97,26 @@ export const LegalPage = ({ title, footer, children }: LegalPageProps) => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 120 }}>
-      <PageHeader title={displayTitle} showBack />
+      {/* Top bar */}
+      <div style={{ padding: "56px 20px 0", display: "flex", alignItems: "center", minHeight: 44 }}>
+        <button
+          onClick={() => navigate(-1)}
+          {...tap}
+          aria-label="Back"
+          style={{
+            width: 40, height: 40, borderRadius: "50%", background: CARD, border: "none",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", flexShrink: 0, transition: "transform 150ms ease-out",
+          }}
+        >
+          <ArrowLeft size={18} strokeWidth={2} color={INK} />
+        </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontWeight: 700, fontSize: 17, color: INK, letterSpacing: 0.1 }}>
+          {displayTitle}
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: LINE, marginTop: 22 }} />
 
       {/* Sections */}
       <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 14 }}>

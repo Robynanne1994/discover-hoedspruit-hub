@@ -12,7 +12,6 @@ import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
-import PageHeader from "@/components/PageHeader";
 import { bayesianScore } from "@/lib/ratingScore";
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
@@ -602,26 +601,130 @@ const CategoryPage = () => {
         color: INK,
       }}
     >
-      <PageHeader
-        title={displayTitle}
-        subtitle={`${totalCount} ${totalCount === 1 ? "Listing" : "Listings"}`}
-        showBack
-        rightIcons={[
-          {
-            key: "search",
-            label: searchOpen ? "Close search" : "Search",
-            onClick: () => setSearchOpen((v) => !v),
-            icon: searchOpen ? <X size={22} strokeWidth={1.8} /> : <Search size={22} strokeWidth={1.8} />,
-          },
-          {
-            key: "filter",
-            label: "Filters",
-            onClick: () => setRefineOpen(true),
-            icon: <SlidersHorizontal size={22} strokeWidth={1.8} />,
-            active: activeFilterCount > 0,
-          },
-        ]}
-      />
+      {/* Top bar */}
+      <div
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
+          paddingLeft: 20,
+          paddingRight: 20,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+        }}
+      >
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: "#FFFFFF",
+            border: "none",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            flexShrink: 0,
+          }}
+        >
+          <BackArrowIcon size={18} color={INK} />
+        </button>
+        <div style={{ flex: 1, textAlign: "center" }}>
+          <div
+            style={{
+              fontFamily: sans,
+              fontSize: 18,
+              fontWeight: 700,
+              color: INK,
+              lineHeight: 1.15,
+            }}
+          >
+            {displayTitle}
+          </div>
+          <div
+            style={{
+              fontFamily: sans,
+              fontSize: 11,
+              fontWeight: 500,
+              color: MUTED,
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              marginTop: 4,
+            }}
+          >
+            {totalCount} {totalCount === 1 ? "Listing" : "Listings"}
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
+          <button
+            onClick={() => setSearchOpen((v) => !v)}
+            aria-label={searchOpen ? "Close search" : "Search"}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "#FFFFFF",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            {searchOpen ? (
+              <X size={18} strokeWidth={1.8} color={INK} />
+            ) : (
+              <Search size={18} strokeWidth={1.8} color={INK} />
+            )}
+          </button>
+          <button
+            onClick={() => setRefineOpen(true)}
+            aria-label="Filters"
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: activeFilterCount > 0 ? "#2A2A24" : "#FFFFFF",
+              border: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              flexShrink: 0,
+              position: "relative",
+            }}
+          >
+            <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#020202"} />
+            {activeFilterCount > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: -3,
+                  right: -3,
+                  minWidth: 16,
+                  height: 16,
+                  borderRadius: 999,
+                  background: "#C0392B",
+                  color: "#FFFFFF",
+                  fontFamily: sans,
+                  fontSize: 9,
+                  fontWeight: 700,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "0 3px",
+                }}
+              >
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: "rgba(2,2,2,0.08)", marginTop: 16 }} />
 
       {searchOpen && (
         <div style={{ padding: "16px 20px 0 20px" }}>

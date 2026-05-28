@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { toast } from "sonner";
-import PageHeader from "@/components/PageHeader";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FEEDBACK_TYPES = ["General", "Suggestion", "Bug", "Compliment", "Other"] as const;
 
@@ -95,7 +95,38 @@ const Feedback = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: FF, overflowX: "hidden" }}>
-      <PageHeader title="Feedback" showBack />
+      {/* Top bar */}
+      <div
+        style={{
+          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
+          paddingLeft: 24,
+          paddingRight: 24,
+          display: "flex",
+          alignItems: "center",
+          gap: 12,
+          minHeight: 44,
+        }}
+      >
+        <button
+          onClick={() => navigate(-1)}
+          aria-label="Back"
+          {...tap}
+          style={{
+            width: 40, height: 40, borderRadius: "50%",
+            background: "#fff", border: "none",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", lineHeight: 0, flexShrink: 0,
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+          }}
+        >
+          <BackArrowIcon size={18} color={INK} />
+        </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontFamily: FF, fontSize: 20, fontWeight: 700, color: INK, lineHeight: 1 }}>
+          Feedback
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 20 }} />
 
       {/* Heading */}
       <h1 style={{

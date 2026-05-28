@@ -10,7 +10,6 @@ import { format } from "date-fns";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
-import PageHeader from "@/components/PageHeader";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -152,39 +151,108 @@ const Specials = () => {
     <div
       style={{
         minHeight: "100vh",
+        paddingTop: 60,
         paddingBottom: 120,
         background: COLOR.pageBg,
         fontFamily: SANS,
         color: COLOR.ink,
       }}
     >
-      <PageHeader
-        title="Specials"
-        showBack={fromSearch}
-        onBack={fromSearch ? () => navigate("/search") : undefined}
-        rightIcons={[
-          {
-            key: "search",
-            label: searchOpen ? "Close search" : "Search",
-            onClick: () => {
+      {/* Header — centered title, icons inline on right */}
+      <div
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20,
+          display: "grid",
+          gridTemplateColumns: "1fr auto 1fr",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
+        <div>
+          {fromSearch && (
+            <button
+              onClick={() => navigate("/search")}
+              aria-label="Back to search"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid rgba(0,0,0,0.06)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "#020202",
+              }}
+            >
+              <ArrowLeft size={18} strokeWidth={1.8} />
+            </button>
+          )}
+        </div>
+        <h1
+          style={{
+            fontFamily: SANS,
+            fontSize: 22,
+            fontWeight: 700,
+            color: COLOR.ink,
+            margin: 0,
+            letterSpacing: "-0.3px",
+            textAlign: "center",
+          }}
+        >
+          Specials
+        </h1>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
+          <button
+            aria-label={searchOpen ? "Close search" : "Search"}
+            onClick={() => {
               if (searchOpen) {
                 setSearch("");
                 setSearchOpen(false);
               } else {
                 setSearchOpen(true);
               }
-            },
-            icon: searchOpen ? <X size={22} strokeWidth={1.8} /> : <Search size={22} strokeWidth={1.8} />,
-          },
-          {
-            key: "filter",
-            label: "Filters",
-            onClick: () => setShowFilters(true),
-            icon: <SlidersHorizontal size={22} strokeWidth={1.8} />,
-            active: filterType.length > 0,
-          },
-        ]}
-      />
+            }}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.06)",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#020202",
+            }}
+          >
+            {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
+          </button>
+          <button
+            aria-label="Filters"
+            onClick={() => setShowFilters(true)}
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 999,
+              background: filterType.length > 0 ? COLOR.ink : "#FFFFFF",
+              border: "1px solid rgba(0,0,0,0.06)",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: filterType.length > 0 ? COLOR.cardBg : "#020202",
+            }}
+          >
+            <SlidersHorizontal size={18} strokeWidth={1.8} />
+          </button>
+        </div>
+      </div>
+
+      {/* Divider under title */}
+      <div style={{ height: 1, background: "rgba(2,2,2,0.10)", marginTop: 18, marginLeft: 20, marginRight: 20 }} />
 
 
       {/* Inline search input */}

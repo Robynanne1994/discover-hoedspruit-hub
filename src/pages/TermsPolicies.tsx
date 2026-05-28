@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { ShieldCheck } from "lucide-react";
+import { ArrowLeft, ShieldCheck } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
-import PageHeader from "@/components/PageHeader";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -32,7 +31,26 @@ const TermsPolicies = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 140 }}>
-      <PageHeader title="Terms & Policies" showBack />
+      {/* Top bar */}
+      <div style={{ padding: "56px 20px 0", display: "flex", alignItems: "center", minHeight: 44 }}>
+        <button
+          onClick={() => navigate(-1)}
+          {...tap}
+          aria-label="Back"
+          style={{
+            width: 40, height: 40, borderRadius: "50%", background: CARD, border: "none",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", flexShrink: 0, transition: "transform 150ms ease-out",
+          }}
+        >
+          <ArrowLeft size={18} strokeWidth={2} color={INK} />
+        </button>
+        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontWeight: 600, fontSize: 17, color: INK, letterSpacing: 0.1 }}>
+          Terms &amp; Policies
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: LINE, marginTop: 22 }} />
 
       {/* Section label */}
       <div style={{ padding: "24px 20px 10px" }}>
