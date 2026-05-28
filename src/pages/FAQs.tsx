@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
 import SearchBar from "@/components/ui/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
@@ -153,57 +154,7 @@ const FAQs = () => {
         .faq-answer p:last-child { margin-bottom: 0; }
         .faq-answer ul, .faq-answer ol { margin: 4px 0 8px 18px; padding: 0; }
       `}</style>
-      {/* Top bar */}
-      <div
-        style={{
-          paddingTop: 60,
-          paddingLeft: 20,
-          paddingRight: 20,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          minHeight: 44,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: CARD,
-            border: "none",
-            padding: 0,
-            margin: 0,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
-          }}
-        >
-          <ArrowLeft size={18} strokeWidth={2} color={INK} />
-        </button>
-        <div
-          style={{
-            flex: 1,
-            textAlign: "center",
-            marginRight: 40,
-            fontFamily: FF,
-            fontSize: 22,
-            fontWeight: 700,
-            color: INK,
-            lineHeight: 1,
-            letterSpacing: "-0.2px",
-          }}
-        >
-          FAQs
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: LINE, marginTop: 18, marginLeft: 20, marginRight: 20 }} />
+      <PageHeader title="FAQs" showBack />
 
       {/* Search */}
       <div style={{ padding: "20px 20px 0" }}>
