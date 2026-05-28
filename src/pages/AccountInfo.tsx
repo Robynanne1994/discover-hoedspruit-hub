@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ArrowLeft, Pencil, Eye, EyeOff, X, Check, Camera, Loader2 } from "lucide-react";
+import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -327,56 +328,7 @@ const AccountInfo = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
-      {/* Top bar */}
-      <div
-        style={{
-          paddingTop: 60,
-          paddingLeft: 20,
-          paddingRight: 20,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          minHeight: 44,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: "#FFFFFF",
-            border: "none",
-            padding: 0,
-            margin: 0,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
-          }}
-        >
-          <ArrowLeft size={18} strokeWidth={2} color={INK} />
-        </button>
-        <div
-          style={{
-            flex: 1,
-            textAlign: "center",
-            marginRight: 40,
-            fontFamily: FF,
-            fontSize: 20,
-            fontWeight: 700,
-            color: INK,
-            lineHeight: 1,
-          }}
-        >
-          Account Info
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: LINE, marginTop: 18, marginLeft: 20, marginRight: 20 }} />
+      <PageHeader title="Account Info" showBack />
 
       {/* Profile Photo */}
       <div
