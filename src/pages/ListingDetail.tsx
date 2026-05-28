@@ -334,7 +334,8 @@ const ListingDetail = () => {
     | { state: "temporarily_closed" };
   const computeOpenStatus = (): OpenStatus | null => {
     if (!openingHours) return null;
-    const todayVal = openingHours[todayLabel.toLowerCase()] || "";
+    const rawTodayVal = openingHours[todayLabel.toLowerCase()];
+    const todayVal = typeof rawTodayVal === "string" ? rawTodayVal : "";
     if (todayVal && /temporarily\s*closed/i.test(todayVal)) return { state: "temporarily_closed" };
     const findNext = (start: number) => {
       for (let i = start; i < start + 7; i++) {
