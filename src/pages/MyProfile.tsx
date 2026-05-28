@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
 import { Pencil, Heart, Settings, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import PageHeader from "@/components/PageHeader";
 
 const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
@@ -338,48 +339,12 @@ const MyProfile = () => {
         color: INK,
       }}
     >
-      {/* Top header bar */}
-      <div
-        style={{
-          padding: "60px 20px 0",
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          alignItems: "center",
-        }}
-      >
-        <div />
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 19,
-            letterSpacing: "0.01em",
-            color: INK,
-            justifySelf: "center",
-          }}
-        >
-          Profile
-        </h1>
-        <Link
-          to="/my-account"
-          aria-label="Settings"
-          style={{
-            justifySelf: "end",
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: CARD,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Settings size={18} strokeWidth={1.8} color={INK} />
-        </Link>
-      </div>
-
-      <div style={{ height: 1, background: LINE, marginTop: 18 }} />
+      <PageHeader
+        title="Profile"
+        rightIcons={[
+          { key: "settings", label: "Settings", onClick: () => navigate("/my-account"), icon: <Settings size={22} strokeWidth={1.8} /> },
+        ]}
+      />
 
       {/* Profile card */}
       <div style={{ padding: "16px 20px 0" }}>

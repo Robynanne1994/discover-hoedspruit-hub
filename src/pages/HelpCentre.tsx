@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { MessageCircle, LifeBuoy, Mail } from "lucide-react";
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import PageHeader from "@/components/PageHeader";
 
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
@@ -31,39 +31,7 @@ const HelpCentre = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: SANS, overflowX: "hidden" }}>
-      {/* Top bar */}
-      <div
-        style={{
-          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
-          paddingLeft: 24,
-          paddingRight: 24,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          minHeight: 44,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          {...tap}
-          style={{
-            width: 40, height: 40, borderRadius: "50%",
-            background: "#fff", border: "none",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", lineHeight: 0, flexShrink: 0,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-            transition: "transform 0.15s ease",
-          }}
-        >
-          <BackArrowIcon size={18} color={INK} />
-        </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontFamily: SANS, fontSize: 20, fontWeight: 700, color: INK, lineHeight: 1 }}>
-          Help Centre
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: LINE, marginTop: 20 }} />
+      <PageHeader title="Help Centre" showBack />
 
       {/* Section eyebrow */}
       <div style={{ padding: "24px 24px 0" }}>
