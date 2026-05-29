@@ -98,11 +98,11 @@ export const RefineDrawer = ({
                 style={{
                   fontFamily: SANS,
                   fontWeight: 400,
-                  fontSize: 11,
+                  fontSize: 13,
                   color: "rgba(2,2,2,0.55)",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  marginBottom: 6,
+                  letterSpacing: "0.01em",
+                  textTransform: "capitalize",
+                  marginBottom: 4,
                 }}
               >
                 Refine
@@ -111,12 +111,12 @@ export const RefineDrawer = ({
                 style={{
                   margin: 0,
                   fontFamily: SANS,
-                  fontSize: 22,
-                  lineHeight: 1.1,
-                  fontWeight: 400,
+                  fontSize: 34,
+                  lineHeight: 1,
+                  fontWeight: 700,
                   color: "#020202",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
+                  letterSpacing: "-0.01em",
+                  textTransform: "capitalize",
                 }}
               >
                 Filters
@@ -125,18 +125,18 @@ export const RefineDrawer = ({
             <button
               onClick={onClear}
               style={{
-                background: "transparent",
+                background: "#715a3d",
                 border: "none",
-                padding: "4px 0",
+                padding: "10px 18px",
+                borderRadius: 999,
                 fontFamily: SANS,
-                fontSize: 12,
-                fontWeight: 400,
-                color: "#715a3d",
-                textDecoration: "underline",
-                textUnderlineOffset: 4,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
+                fontSize: 13,
+                fontWeight: 700,
+                color: "#ffffff",
+                letterSpacing: "0.01em",
+                textTransform: "capitalize",
                 cursor: "pointer",
+                boxShadow: "0 2px 6px rgba(113,90,61,0.25)",
               }}
             >
               Clear All
