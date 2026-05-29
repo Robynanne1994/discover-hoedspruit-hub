@@ -1117,45 +1117,22 @@ const CategoryPage = () => {
                 </div>
 
                 <div style={{ padding: "16px 18px 18px" }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 6 }}>
-                    <h3
-                      {...noTitleCaseProps(l)}
-                      style={{
-                        fontFamily: sans,
-                        fontSize: 20,
-                        fontWeight: 700,
-                        color: INK,
-                        lineHeight: 1.2,
-                        margin: 0,
-                        flex: 1,
-                        minWidth: 0,
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {getDisplayTitle(l)}
-                    </h3>
-                    {open !== null && (
-                      <span
-                        style={{
-                          flexShrink: 0,
-                          border: `1.5px solid ${open ? "#BFE5C8" : "#F4C9C9"}`,
-                          color: open ? OPEN_COLOR : CLOSED_COLOR,
-                          background: open ? "#F1FAF3" : "#FBEFEF",
-                          fontFamily: sans,
-                          fontSize: 12,
-                          fontWeight: 700,
-                          letterSpacing: "0.08em",
-                          textTransform: "uppercase",
-                          padding: "5px 14px",
-                          borderRadius: 9999,
-                        }}
-                      >
-                        {open ? "Open" : "Closed"}
-                      </span>
-                    )}
-                  </div>
+                  <h3
+                    {...noTitleCaseProps(l)}
+                    style={{
+                      fontFamily: sans,
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: INK,
+                      lineHeight: 1.2,
+                      margin: "0 0 6px 0",
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {getDisplayTitle(l)}
+                  </h3>
 
-                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED, marginBottom: l.location ? 10 : 0 }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED }}>
                     {orderedCats.map((c, i) => (
                       <span key={`${c}-${i}`} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                         {i > 0 && (
@@ -1175,11 +1152,39 @@ const CategoryPage = () => {
                     ))}
                   </div>
 
-                  {l.location && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED }}>
-                      <MapPin size={13} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
-                      <span>{l.location}</span>
-                    </div>
+                  {(l.location || open !== null) && (
+                    <>
+                      <div style={{ height: 1, background: "rgba(0,0,0,0.08)", margin: "14px 0 12px" }} />
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+                        {l.location ? (
+                          <div style={{ display: "flex", alignItems: "center", gap: 6, fontFamily: sans, fontSize: 13, color: MUTED, flex: 1, minWidth: 0 }}>
+                            <MapPin size={13} strokeWidth={1.6} color={MUTED} style={{ flexShrink: 0 }} />
+                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l.location}</span>
+                          </div>
+                        ) : (
+                          <span />
+                        )}
+                        {open !== null && (
+                          <span
+                            style={{
+                              flexShrink: 0,
+                              border: `1.5px solid ${open ? "#BFE5C8" : "#F4C9C9"}`,
+                              color: open ? OPEN_COLOR : CLOSED_COLOR,
+                              background: open ? "#F1FAF3" : "#FBEFEF",
+                              fontFamily: sans,
+                              fontSize: 12,
+                              fontWeight: 700,
+                              letterSpacing: "0.08em",
+                              textTransform: "uppercase",
+                              padding: "5px 14px",
+                              borderRadius: 9999,
+                            }}
+                          >
+                            {open ? "Open" : "Closed"}
+                          </span>
+                        )}
+                      </div>
+                    </>
                   )}
                 </div>
               </article>
