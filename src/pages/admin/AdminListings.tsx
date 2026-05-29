@@ -767,6 +767,7 @@ const AdminListings = () => {
   const isTradesType = categories?.some((c) => selectedCatIds.includes(c.id) && isTradesCategory(c.title));
   const isHomeGardenType = categories?.some((c) => selectedCatIds.includes(c.id) && isHomeGardenCategory(c.title));
   const isWeddingsEventsType = categories?.some((c) => selectedCatIds.includes(c.id) && isWeddingsEventsCategory(c.title));
+  const isEventVenueSub = subcategories?.some((s) => selectedSubIds.includes(s.id) && /event\s*venue/i.test(s.title)) ?? false;
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
