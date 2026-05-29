@@ -198,16 +198,16 @@ export const RefineDrawer = ({
             onClick={onClose}
             style={{
               width: "100%",
-              height: 52,
+              height: 56,
               borderRadius: 999,
               background: "#020202",
               color: "#ffffff",
               border: "none",
               fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: 400,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
+              fontSize: 15,
+              fontWeight: 600,
+              letterSpacing: "0.01em",
+              textTransform: "capitalize",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -221,7 +221,7 @@ export const RefineDrawer = ({
             <ArrowRight
               size={18}
               strokeWidth={1.8}
-              style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)" }}
+              style={{ position: "absolute", right: 22, top: "50%", transform: "translateY(-50%)" }}
             />
           </button>
         </div>
