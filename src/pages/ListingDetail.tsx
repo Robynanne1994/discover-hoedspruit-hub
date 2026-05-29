@@ -603,7 +603,38 @@ const ListingDetail = () => {
     if (eventTypes.length) {
       sections.push({ key: "we-event-types", title: "Event types supported", iconComp: Sparkles, fields: eventTypes.map((label: string) => ({ label, on: true })) });
     }
+
+    const isEventVenue = listingSubcategories?.some((s) => /event\s*venue/i.test(s.title)) ?? false;
+    if (isEventVenue) {
+      const venueFields: Array<{ label: string; on: any }> = [];
+      if (typeof l.venue_onsite_accommodation === "boolean") {
+        if (l.venue_onsite_accommodation === true) {
+          const sleeps = l.venue_accommodation_sleeps;
+          venueFields.push({ label: sleeps ? `On-site accommodation (sleeps ${sleeps})` : "On-site accommodation", on: true });
+        } else {
+          venueFields.push({ label: "On-site accommodation", on: false });
+        }
+      }
+      if (l.venue_guest_capacity) {
+        venueFields.push({ label: `Guest capacity: ${l.venue_guest_capacity}`, on: true });
+      }
+      if (l.venue_indoor_outdoor && String(l.venue_indoor_outdoor).trim()) {
+        venueFields.push({ label: `${l.venue_indoor_outdoor}`, on: true });
+      }
+      if (venueFields.length) {
+        sections.push({ key: "we-venue-info", title: "Venue", iconComp: Sparkles, fields: venueFields });
+      }
+      const styleTags = (l.venue_style_tags as string[] | null) ?? [];
+      if (styleTags.length) {
+        sections.push({ key: "we-venue-style", title: "Style", iconComp: Sparkles, fields: styleTags.map((label: string) => ({ label, on: true })) });
+      }
+      const settingTypes = (l.venue_setting_types as string[] | null) ?? [];
+      if (settingTypes.length) {
+        sections.push({ key: "we-venue-setting", title: "Setting", iconComp: Sparkles, fields: settingTypes.map((label: string) => ({ label, on: true })) });
+      }
+    }
   }
+
 
 
   // Apply per-listing / global "yes only" vs "all" display mode for yes-no cards
