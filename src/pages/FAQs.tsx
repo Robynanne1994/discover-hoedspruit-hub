@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const PAGE_BG = "#ebebeb";
+const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const BODY = "#5C544A";

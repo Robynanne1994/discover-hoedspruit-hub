@@ -14,7 +14,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const COLOR = {
-  pageBg: "#ebebeb",
+  pageBg: "#E6E0CC",
   cardBg: "#FFFFFF",
   ink: "#1A1A1A",
   mutedInk: "#7A6E5C",

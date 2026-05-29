@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const PAGE_BG = "#ebebeb";
+const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const MUTED = "#7A6E5C";

@@ -121,7 +121,7 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 92%;
+    --background: 45 33% 85%;
     --foreground: 0 0% 1%;
 
     --card: 37 39% 94%;
@@ -239,7 +239,7 @@ body {
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #ebebeb;
+    background-color: #E6E0CC;
   }
 
   h1,

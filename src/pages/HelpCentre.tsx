@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { MessageCircle, LifeBuoy, Mail } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
-const BG = "#ebebeb";
+const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const LABEL = "#9A8E7A";

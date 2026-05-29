@@ -9,7 +9,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const COLORS = {
-  bg: "#ebebeb",
+  bg: "#E6E0CC",
   card: "#FFFFFF",
   ink: "#020202",
   muted: "#9A9A92",

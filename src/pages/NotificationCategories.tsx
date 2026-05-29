@@ -14,7 +14,7 @@ import {
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const COLORS = {
-  bg: "#ebebeb",
+  bg: "#E6E0CC",
   card: "#FFFFFF",
   ink: "#1A1A1A",
   muted: "#7A6E5C",

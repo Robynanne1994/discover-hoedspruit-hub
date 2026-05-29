@@ -46,7 +46,7 @@ const ImageLightbox = ({ images, initialIndex, open, onOpenChange, alt = "" }: I
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="p-0 border-0 max-w-none w-screen h-screen sm:rounded-none flex items-center justify-center [&>button]:hidden"
-        style={{ background: "#ebebeb" }}
+        style={{ background: "#E6E0CC" }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
         onClick={(e) => {

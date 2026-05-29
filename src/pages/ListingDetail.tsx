@@ -48,7 +48,7 @@ const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Sat
 
 // Design tokens
 const C = {
-  bg: "#ebebeb",
+  bg: "#E6E0CC",
   surface: "#ffffff",
   ivory: "#f5f0e8",
   border: "#E8E4DF",
