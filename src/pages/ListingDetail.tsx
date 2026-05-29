@@ -582,8 +582,15 @@ const ListingDetail = () => {
       if (items.length) {
         sections.push({ key: "hg-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
       }
+  }
+
+  if (isListingWeddingsEvents) {
+    const eventTypes = (l.event_types as string[] | null) ?? [];
+    if (eventTypes.length) {
+      sections.push({ key: "we-event-types", title: "Event types supported", iconComp: Sparkles, fields: eventTypes.map((label: string) => ({ label, on: true })) });
     }
   }
+
 
   // Apply per-listing / global "yes only" vs "all" display mode for yes-no cards
   {
