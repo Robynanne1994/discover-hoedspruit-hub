@@ -659,6 +659,12 @@ const AdminListings = () => {
       services_offered: (l as any).services_offered ?? [],
       plant_types: (l as any).plant_types ?? [],
       event_types: (l as any).event_types ?? [],
+      venue_onsite_accommodation: (l as any).venue_onsite_accommodation ?? null,
+      venue_accommodation_sleeps: (l as any).venue_accommodation_sleeps ?? null,
+      venue_guest_capacity: (l as any).venue_guest_capacity ?? null,
+      venue_indoor_outdoor: (l as any).venue_indoor_outdoor ?? "",
+      venue_style_tags: (l as any).venue_style_tags ?? [],
+      venue_setting_types: (l as any).venue_setting_types ?? [],
       details_display_mode: ((l as any).details_display_mode ?? {}) as Record<string, DisplayMode | "default">,
     });
     const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
