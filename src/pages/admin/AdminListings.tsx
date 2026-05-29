@@ -1599,6 +1599,58 @@ const AdminListings = () => {
                   </div>
                 )}
 
+                {isWeddingsEventsType && (() => {
+                  const allEventTypes = Array.from(new Set([...EVENT_TYPES_OPTIONS, ...(customEventTypes ?? []), ...form.event_types]));
+                  return (
+                    <div className="border-t border-border pt-4 mt-2 space-y-4">
+                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Weddings & Events Fields</p>
+                      <div>
+                        <Label>Event types supported</Label>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {allEventTypes.map((opt) => {
+                            const selected = form.event_types.includes(opt);
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setForm({ ...form, event_types: selected ? form.event_types.filter((v) => v !== opt) : [...form.event_types, opt] })}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <div className="mt-2 flex gap-2">
+                          <Input
+                            value={newEventTypeInput}
+                            onChange={(e) => setNewEventTypeInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                if (newEventTypeInput.trim()) addEventTypeMutation.mutate(newEventTypeInput);
+                              }
+                            }}
+                            placeholder="Add another event type (e.g. Anniversaries)"
+                            className="h-9"
+                          />
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => newEventTypeInput.trim() && addEventTypeMutation.mutate(newEventTypeInput)}
+                            disabled={addEventTypeMutation.isPending || !newEventTypeInput.trim()}
+                          >
+                            Add
+                          </Button>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-1">Custom types you add here are saved and available for all future Weddings & Events listings.</p>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+
+
 
 
 
