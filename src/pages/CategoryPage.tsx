@@ -879,9 +879,9 @@ const CategoryPage = () => {
         <div
           style={{
             background: "rgba(113,90,61,0.06)",
-            borderRadius: 14,
-            padding: "14px 16px",
-            marginBottom: 20,
+            borderRadius: 12,
+            padding: "10px 0",
+            marginBottom: 16,
           }}
         >
           <RefineSection
