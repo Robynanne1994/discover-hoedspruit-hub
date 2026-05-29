@@ -448,6 +448,12 @@ const AdminListings = () => {
         services_offered: values.services_offered ?? [],
         plant_types: (values.services_offered ?? []).includes("Nursery") ? (values.plant_types ?? []) : [],
         event_types: values.event_types ?? [],
+        venue_onsite_accommodation: values.venue_onsite_accommodation,
+        venue_accommodation_sleeps: values.venue_onsite_accommodation === true ? values.venue_accommodation_sleeps : null,
+        venue_guest_capacity: values.venue_guest_capacity,
+        venue_indoor_outdoor: values.venue_indoor_outdoor?.trim() || null,
+        venue_style_tags: values.venue_style_tags ?? [],
+        venue_setting_types: values.venue_setting_types ?? [],
         details_display_mode: values.details_display_mode ?? {},
       };
 
