@@ -144,7 +144,7 @@ export const RefineDrawer = ({
           </div>
 
           {activeChips && activeChips.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 14 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
               {activeChips.map((chip, i) => (
                 <button
                   key={i}
@@ -152,21 +152,23 @@ export const RefineDrawer = ({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 6,
-                    padding: "6px 10px",
+                    gap: 8,
+                    padding: "8px 14px",
                     borderRadius: 999,
                     background: "#020202",
                     color: "#ffffff",
                     border: "none",
                     fontFamily: SANS,
-                    fontSize: 12,
-                    fontWeight: 400,
-                    letterSpacing: "0.04em",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: "0.01em",
+                    textTransform: "capitalize",
                     cursor: "pointer",
                   }}
+                  aria-label={`Remove ${chip.label}`}
                 >
                   {chip.label}
-                  <X size={12} strokeWidth={2} />
+                  <X size={14} strokeWidth={2.2} />
                 </button>
               ))}
             </div>
