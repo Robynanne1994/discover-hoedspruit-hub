@@ -72,6 +72,7 @@ const AdminListings = () => {
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
   const [newServiceInput, setNewServiceInput] = useState("");
+  const [newEventTypeInput, setNewEventTypeInput] = useState("");
 
   // Custom (admin-added) Home & Garden services, persisted in site_content
   const { data: customHGServices } = useQuery({
