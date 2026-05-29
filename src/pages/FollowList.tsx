@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dialog";
 
 const COLOR = {
-  page: "#E6E0CC",
+  page: "#ebebeb",
   card: "#FFFFFF",
   cream: "#F5F0E4",
   ink: "#1A1A1A",

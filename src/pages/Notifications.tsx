@@ -48,7 +48,7 @@ const DEFAULT_BOOLS: Record<BoolKey, boolean> = {
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const C = {
-  bg: "#ECE3CF",
+  bg: "#ebebeb",
   card: "#FFFFFF",
   ink: "#1A1A1A",
   dark: "#2E2418",

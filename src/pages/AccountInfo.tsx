@@ -20,7 +20,7 @@ import { toast } from "sonner";
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PF = "'Playfair Display', Georgia, serif";
 
-const PAGE_BG = "#ECE3CF";
+const PAGE_BG = "#ebebeb";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const MUTED = "#9C9387";
