@@ -289,6 +289,7 @@ const ListingDetail = () => {
   const isListingNGO = listingCategories?.some((c) => isNGOCategory(c.title)) ?? false;
   const isListingTrades = listingCategories?.some((c) => isTradesCategory(c.title)) ?? false;
   const isListingHomeGarden = listingCategories?.some((c) => isHomeGardenCategory(c.title)) ?? false;
+  const isListingWeddingsEvents = listingCategories?.some((c) => isWeddingsEventsCategory(c.title)) ?? false;
   const l = listing as any;
   const galleryImages = (l.gallery_images as string[] | null) || [];
   const openingHours = l.opening_hours as Record<string, string> | null;
