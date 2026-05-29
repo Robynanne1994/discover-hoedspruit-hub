@@ -25,7 +25,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const C = {
-  page: "#E6E0CC",
+  page: "#ebebeb",
   ivory: "#f5f0e8",
   white: "#ffffff",
   ink: "#020202",
