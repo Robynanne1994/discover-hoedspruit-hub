@@ -1031,6 +1031,12 @@ export type Database = {
           title: string
           title_override: string | null
           updated_at: string
+          venue_accommodation_sleeps: number | null
+          venue_guest_capacity: number | null
+          venue_indoor_outdoor: string | null
+          venue_onsite_accommodation: boolean | null
+          venue_setting_types: string[]
+          venue_style_tags: string[]
           vibe: string[] | null
           visiting: string | null
           volunteering: string | null
@@ -1161,6 +1167,12 @@ export type Database = {
           title: string
           title_override?: string | null
           updated_at?: string
+          venue_accommodation_sleeps?: number | null
+          venue_guest_capacity?: number | null
+          venue_indoor_outdoor?: string | null
+          venue_onsite_accommodation?: boolean | null
+          venue_setting_types?: string[]
+          venue_style_tags?: string[]
           vibe?: string[] | null
           visiting?: string | null
           volunteering?: string | null
@@ -1291,6 +1303,12 @@ export type Database = {
           title?: string
           title_override?: string | null
           updated_at?: string
+          venue_accommodation_sleeps?: number | null
+          venue_guest_capacity?: number | null
+          venue_indoor_outdoor?: string | null
+          venue_onsite_accommodation?: boolean | null
+          venue_setting_types?: string[]
+          venue_style_tags?: string[]
           vibe?: string[] | null
           visiting?: string | null
           volunteering?: string | null
