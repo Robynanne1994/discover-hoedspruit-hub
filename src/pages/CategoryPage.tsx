@@ -875,32 +875,22 @@ const CategoryPage = () => {
         resultsCount={filteredListings.length}
         resultsLabel="listings"
       >
-        {/* Sort by — visually separated as it only changes ordering */}
-        <div
-          style={{
-            background: "rgba(113,90,61,0.06)",
-            borderRadius: 12,
-            padding: "4px 0",
-            marginBottom: 16,
-          }}
+        <RefineSection
+          isFirst
+          label="Sort By"
+          summary={sortLabel}
+          open={openSection === "sort"}
+          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
         >
-          <RefineSection
-            isFirst
-            label="Sort by"
-            summary={sortLabel}
-            open={openSection === "sort"}
-            onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
-          >
-            {(["default", "name", "rating"] as SortKey[]).map((key) => (
-              <RefineOption
-                key={key}
-                label={key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
-                active={sortBy === key}
-                onClick={() => setSortBy(key)}
-              />
-            ))}
-          </RefineSection>
-        </div>
+          {(["default", "name", "rating"] as SortKey[]).map((key) => (
+            <RefineOption
+              key={key}
+              label={key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
+              active={sortBy === key}
+              onClick={() => setSortBy(key)}
+            />
+          ))}
+        </RefineSection>
 
         {/* Filters divider */}
         <div
