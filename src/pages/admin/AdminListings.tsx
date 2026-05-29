@@ -1666,6 +1666,101 @@ const AdminListings = () => {
                   );
                 })()}
 
+                {isWeddingsEventsType && isEventVenueSub && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Event Venue Fields</p>
+
+                    <TriStateToggle
+                      label="On-site Accommodation"
+                      value={form.venue_onsite_accommodation}
+                      onChange={(v) => setForm({ ...form, venue_onsite_accommodation: v })}
+                    />
+
+                    {form.venue_onsite_accommodation === true && (
+                      <div>
+                        <Label>How many can be accommodated</Label>
+                        <Input
+                          type="number"
+                          min={0}
+                          value={form.venue_accommodation_sleeps ?? ""}
+                          onChange={(e) => setForm({ ...form, venue_accommodation_sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 24"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <Label>Guest Capacity</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={form.venue_guest_capacity ?? ""}
+                        onChange={(e) => setForm({ ...form, venue_guest_capacity: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 150"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Indoor / Outdoor</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {VENUE_INDOOR_OUTDOOR_OPTIONS.map((opt) => {
+                          const selected = form.venue_indoor_outdoor === opt;
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, venue_indoor_outdoor: selected ? "" : opt })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Style Tags</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {VENUE_STYLE_TAG_OPTIONS.map((opt) => {
+                          const selected = form.venue_style_tags.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, venue_style_tags: selected ? form.venue_style_tags.filter((v) => v !== opt) : [...form.venue_style_tags, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Setting Type</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {VENUE_SETTING_OPTIONS.map((opt) => {
+                          const selected = form.venue_setting_types.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, venue_setting_types: selected ? form.venue_setting_types.filter((v) => v !== opt) : [...form.venue_setting_types, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+
+
 
 
 
