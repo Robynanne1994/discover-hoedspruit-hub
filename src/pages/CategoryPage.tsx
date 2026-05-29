@@ -880,7 +880,7 @@ const CategoryPage = () => {
           style={{
             background: "rgba(113,90,61,0.06)",
             borderRadius: 12,
-            padding: "10px 0",
+            padding: "4px 0",
             marginBottom: 16,
           }}
         >
