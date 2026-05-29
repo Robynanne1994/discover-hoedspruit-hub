@@ -125,6 +125,59 @@ const AdminListings = () => {
     onError: (e: any) => toast.error(e?.message ?? "Could not add service"),
   });
 
+  // Custom (admin-added) Weddings & Events event types, persisted in site_content
+  const { data: customEventTypes } = useQuery({
+    queryKey: ["weddings-custom-event-types"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", WEDDINGS_EVENT_TYPES_SECTION)
+        .maybeSingle();
+      const items = (data?.content as any)?.items;
+      return Array.isArray(items) ? (items as string[]) : [];
+    },
+  });
+
+  const addEventTypeMutation = useMutation({
+    mutationFn: async (label: string) => {
+      const trimmed = label.trim();
+      if (!trimmed) throw new Error("Empty");
+      const existing = [...EVENT_TYPES_OPTIONS, ...(customEventTypes ?? [])];
+      if (existing.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
+        throw new Error("This event type is already in the list.");
+      }
+      const next = [...(customEventTypes ?? []), trimmed];
+      const { data: row } = await supabase
+        .from("site_content")
+        .select("id")
+        .eq("section", WEDDINGS_EVENT_TYPES_SECTION)
+        .maybeSingle();
+      if (row?.id) {
+        const { error } = await supabase
+          .from("site_content")
+          .update({ content: { items: next } })
+          .eq("section", WEDDINGS_EVENT_TYPES_SECTION);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("site_content")
+          .insert({ section: WEDDINGS_EVENT_TYPES_SECTION, content: { items: next } });
+        if (error) throw error;
+      }
+      return trimmed;
+    },
+    onSuccess: (label) => {
+      qc.invalidateQueries({ queryKey: ["weddings-custom-event-types"] });
+      setForm((f) => ({ ...f, event_types: f.event_types.includes(label) ? f.event_types : [...f.event_types, label] }));
+      setNewEventTypeInput("");
+      toast.success("Event type added");
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Could not add event type"),
+  });
+
+
+
 
   const { data: listings, isLoading } = useQuery({
     queryKey: ["admin-listings"],
