@@ -98,11 +98,11 @@ export const RefineDrawer = ({
                 style={{
                   fontFamily: SANS,
                   fontWeight: 400,
-                  fontSize: 11,
+                  fontSize: 13,
                   color: "rgba(2,2,2,0.55)",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  marginBottom: 6,
+                  letterSpacing: "0.01em",
+                  textTransform: "capitalize",
+                  marginBottom: 4,
                 }}
               >
                 Refine
@@ -111,12 +111,12 @@ export const RefineDrawer = ({
                 style={{
                   margin: 0,
                   fontFamily: SANS,
-                  fontSize: 22,
-                  lineHeight: 1.1,
-                  fontWeight: 400,
+                  fontSize: 34,
+                  lineHeight: 1,
+                  fontWeight: 700,
                   color: "#020202",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
+                  letterSpacing: "-0.01em",
+                  textTransform: "capitalize",
                 }}
               >
                 Filters
@@ -125,18 +125,18 @@ export const RefineDrawer = ({
             <button
               onClick={onClear}
               style={{
-                background: "transparent",
+                background: "#715a3d",
                 border: "none",
-                padding: "4px 0",
+                padding: "10px 18px",
+                borderRadius: 999,
                 fontFamily: SANS,
-                fontSize: 12,
-                fontWeight: 400,
-                color: "#715a3d",
-                textDecoration: "underline",
-                textUnderlineOffset: 4,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
+                fontSize: 13,
+                fontWeight: 700,
+                color: "#ffffff",
+                letterSpacing: "0.01em",
+                textTransform: "capitalize",
                 cursor: "pointer",
+                boxShadow: "0 2px 6px rgba(113,90,61,0.25)",
               }}
             >
               Clear All
@@ -144,7 +144,7 @@ export const RefineDrawer = ({
           </div>
 
           {activeChips && activeChips.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 14 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
               {activeChips.map((chip, i) => (
                 <button
                   key={i}
@@ -152,21 +152,23 @@ export const RefineDrawer = ({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 6,
-                    padding: "6px 10px",
+                    gap: 8,
+                    padding: "8px 14px",
                     borderRadius: 999,
                     background: "#020202",
                     color: "#ffffff",
                     border: "none",
                     fontFamily: SANS,
-                    fontSize: 12,
-                    fontWeight: 400,
-                    letterSpacing: "0.04em",
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: "0.01em",
+                    textTransform: "capitalize",
                     cursor: "pointer",
                   }}
+                  aria-label={`Remove ${chip.label}`}
                 >
                   {chip.label}
-                  <X size={12} strokeWidth={2} />
+                  <X size={14} strokeWidth={2.2} />
                 </button>
               ))}
             </div>
@@ -196,16 +198,16 @@ export const RefineDrawer = ({
             onClick={onClose}
             style={{
               width: "100%",
-              height: 52,
+              height: 56,
               borderRadius: 999,
               background: "#020202",
               color: "#ffffff",
               border: "none",
               fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: 400,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
+              fontSize: 15,
+              fontWeight: 600,
+              letterSpacing: "0.01em",
+              textTransform: "capitalize",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -219,7 +221,7 @@ export const RefineDrawer = ({
             <ArrowRight
               size={18}
               strokeWidth={1.8}
-              style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)" }}
+              style={{ position: "absolute", right: 22, top: "50%", transform: "translateY(-50%)" }}
             />
           </button>
         </div>
@@ -228,17 +230,17 @@ export const RefineDrawer = ({
   );
 };
 
-// Eyebrow group label (e.g. "SORT", "FILTER BY") — visually differentiates sort vs filter
+// Eyebrow group label (e.g. "Sort", "Filter By") — visually differentiates sort vs filter
 export const RefineGroupLabel = ({ label }: { label: string }) => (
   <div
     style={{
       fontFamily: SANS,
-      fontWeight: 400,
-      fontSize: 11,
+      fontWeight: 600,
+      fontSize: 13,
       color: "#715a3d",
-      letterSpacing: "0.14em",
-      textTransform: "uppercase",
-      padding: "18px 0 4px 0",
+      letterSpacing: "0.01em",
+      textTransform: "capitalize",
+      padding: "20px 0 6px 0",
     }}
   >
     {label}
@@ -286,11 +288,11 @@ export const RefineSection = ({
           <span
             style={{
               fontFamily: SANS,
-              fontSize: 15,
-              fontWeight: 400,
+              fontSize: 20,
+              fontWeight: 700,
               color: "#020202",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
+              letterSpacing: "-0.005em",
+              textTransform: "capitalize",
               lineHeight: 1.15,
             }}
           >
@@ -300,7 +302,7 @@ export const RefineSection = ({
             <span
               style={{
                 fontFamily: SANS,
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: 400,
                 color: "rgba(43,36,32,0.55)",
                 letterSpacing: "0.01em",
