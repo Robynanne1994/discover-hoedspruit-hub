@@ -230,17 +230,17 @@ export const RefineDrawer = ({
   );
 };
 
-// Eyebrow group label (e.g. "SORT", "FILTER BY") — visually differentiates sort vs filter
+// Eyebrow group label (e.g. "Sort", "Filter By") — visually differentiates sort vs filter
 export const RefineGroupLabel = ({ label }: { label: string }) => (
   <div
     style={{
       fontFamily: SANS,
-      fontWeight: 400,
-      fontSize: 11,
+      fontWeight: 600,
+      fontSize: 13,
       color: "#715a3d",
-      letterSpacing: "0.14em",
-      textTransform: "uppercase",
-      padding: "18px 0 4px 0",
+      letterSpacing: "0.01em",
+      textTransform: "capitalize",
+      padding: "20px 0 6px 0",
     }}
   >
     {label}
