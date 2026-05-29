@@ -582,6 +582,7 @@ const ListingDetail = () => {
       if (items.length) {
         sections.push({ key: "hg-specialities", title: "Specialities", iconComp: Sparkles, fields: items.map((label: string) => ({ label, on: true })) });
       }
+    }
   }
 
   if (isListingWeddingsEvents) {
