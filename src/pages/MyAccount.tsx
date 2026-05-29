@@ -466,7 +466,7 @@ const MyAccount = () => {
 
   // === Editorial design tokens ===
   const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-  const BG = "#ebebeb";
+  const BG = "#E6E0CC";
   const CARD = "#FFFFFF";
   const INK = "#1A1A1A";
   const MUTED_INK = "#6B6A5E";

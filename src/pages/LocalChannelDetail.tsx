@@ -9,7 +9,7 @@ import FavouriteButton from "@/components/FavouriteButton";
 import { useAuth } from "@/hooks/useAuth";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const PAGE_BG = "#ebebeb";
+const PAGE_BG = "#E6E0CC";
 const CARD = "#ffffff";
 const IVORY = "#f5f0e8";
 const INK = "#020202";

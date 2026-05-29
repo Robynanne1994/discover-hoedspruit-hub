@@ -25,7 +25,7 @@ import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const C = {
-  page: "#ebebeb",
+  page: "#E6E0CC",
   ivory: "#f5f0e8",
   white: "#ffffff",
   ink: "#020202",
@@ -226,7 +226,7 @@ const WeekStrip = ({
                   fontFamily: SANS,
                   fontSize: 11,
                   letterSpacing: "0.08em",
-                  color: selected ? "#ebebeb" : C.muted,
+                  color: selected ? "#E6E0CC" : C.muted,
                 }}
               >
                 {WEEKDAY_LABELS[i]}
