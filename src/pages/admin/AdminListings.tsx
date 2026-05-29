@@ -45,7 +45,11 @@ const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Suc
 const EVENT_TYPES_OPTIONS = ["Weddings", "Corporate", "Birthdays", "Private functions", "Conferences", "Baby showers", "Kids parties", "Fundraisers", "Festivals"];
 const WEDDINGS_EVENT_TYPES_SECTION = "weddings_event_types";
 
-const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const VENUE_STYLE_TAG_OPTIONS = ["Rustic", "Modern", "Classic", "Boho", "Safari", "Minimalist", "Vintage", "Romantic"];
+const VENUE_SETTING_OPTIONS = ["Bush", "Garden", "Riverside", "Farm", "Town", "Lodge"];
+const VENUE_INDOOR_OUTDOOR_OPTIONS = ["Indoor", "Outdoor", "Both"];
+
+const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], venue_onsite_accommodation: null as boolean | null, venue_accommodation_sleeps: null as number | null, venue_guest_capacity: null as number | null, venue_indoor_outdoor: "" as string, venue_style_tags: [] as string[], venue_setting_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -444,6 +448,12 @@ const AdminListings = () => {
         services_offered: values.services_offered ?? [],
         plant_types: (values.services_offered ?? []).includes("Nursery") ? (values.plant_types ?? []) : [],
         event_types: values.event_types ?? [],
+        venue_onsite_accommodation: values.venue_onsite_accommodation,
+        venue_accommodation_sleeps: values.venue_onsite_accommodation === true ? values.venue_accommodation_sleeps : null,
+        venue_guest_capacity: values.venue_guest_capacity,
+        venue_indoor_outdoor: values.venue_indoor_outdoor?.trim() || null,
+        venue_style_tags: values.venue_style_tags ?? [],
+        venue_setting_types: values.venue_setting_types ?? [],
         details_display_mode: values.details_display_mode ?? {},
       };
 
@@ -655,6 +665,12 @@ const AdminListings = () => {
       services_offered: (l as any).services_offered ?? [],
       plant_types: (l as any).plant_types ?? [],
       event_types: (l as any).event_types ?? [],
+      venue_onsite_accommodation: (l as any).venue_onsite_accommodation ?? null,
+      venue_accommodation_sleeps: (l as any).venue_accommodation_sleeps ?? null,
+      venue_guest_capacity: (l as any).venue_guest_capacity ?? null,
+      venue_indoor_outdoor: (l as any).venue_indoor_outdoor ?? "",
+      venue_style_tags: (l as any).venue_style_tags ?? [],
+      venue_setting_types: (l as any).venue_setting_types ?? [],
       details_display_mode: ((l as any).details_display_mode ?? {}) as Record<string, DisplayMode | "default">,
     });
     const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
@@ -751,6 +767,7 @@ const AdminListings = () => {
   const isTradesType = categories?.some((c) => selectedCatIds.includes(c.id) && isTradesCategory(c.title));
   const isHomeGardenType = categories?.some((c) => selectedCatIds.includes(c.id) && isHomeGardenCategory(c.title));
   const isWeddingsEventsType = categories?.some((c) => selectedCatIds.includes(c.id) && isWeddingsEventsCategory(c.title));
+  const isEventVenueSub = subcategories?.some((s) => selectedSubIds.includes(s.id) && /event\s*venue/i.test(s.title)) ?? false;
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
@@ -1648,6 +1665,101 @@ const AdminListings = () => {
                     </div>
                   );
                 })()}
+
+                {isWeddingsEventsType && isEventVenueSub && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Event Venue Fields</p>
+
+                    <TriStateToggle
+                      label="On-site Accommodation"
+                      value={form.venue_onsite_accommodation}
+                      onChange={(v) => setForm({ ...form, venue_onsite_accommodation: v })}
+                    />
+
+                    {form.venue_onsite_accommodation === true && (
+                      <div>
+                        <Label>How many can be accommodated</Label>
+                        <Input
+                          type="number"
+                          min={0}
+                          value={form.venue_accommodation_sleeps ?? ""}
+                          onChange={(e) => setForm({ ...form, venue_accommodation_sleeps: e.target.value ? parseInt(e.target.value, 10) : null })}
+                          placeholder="e.g. 24"
+                        />
+                      </div>
+                    )}
+
+                    <div>
+                      <Label>Guest Capacity</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        value={form.venue_guest_capacity ?? ""}
+                        onChange={(e) => setForm({ ...form, venue_guest_capacity: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 150"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Indoor / Outdoor</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {VENUE_INDOOR_OUTDOOR_OPTIONS.map((opt) => {
+                          const selected = form.venue_indoor_outdoor === opt;
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, venue_indoor_outdoor: selected ? "" : opt })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Style Tags</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {VENUE_STYLE_TAG_OPTIONS.map((opt) => {
+                          const selected = form.venue_style_tags.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, venue_style_tags: selected ? form.venue_style_tags.filter((v) => v !== opt) : [...form.venue_style_tags, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label>Setting Type</Label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {VENUE_SETTING_OPTIONS.map((opt) => {
+                          const selected = form.venue_setting_types.includes(opt);
+                          return (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setForm({ ...form, venue_setting_types: selected ? form.venue_setting_types.filter((v) => v !== opt) : [...form.venue_setting_types, opt] })}
+                              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+
 
 
 
