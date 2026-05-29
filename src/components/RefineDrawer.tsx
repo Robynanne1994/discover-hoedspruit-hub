@@ -58,37 +58,33 @@ export const RefineDrawer = ({
         }}
       />
 
-      {/* Bottom Sheet */}
+      {/* Side Drawer (full height, slides from right) */}
       <aside
         role="dialog"
         aria-modal="true"
         aria-label="Filters"
         style={{
           position: "fixed",
-          left: 0,
+          top: 0,
           right: 0,
-          bottom: 0,
-          maxHeight: "92dvh",
+          height: "100dvh",
+          width: "88%",
+          maxWidth: 420,
           background: "#ffffff",
           color: "#020202",
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          boxShadow: "0 -12px 36px rgba(0,0,0,0.25)",
-          transform: open ? "translateY(0)" : "translateY(100%)",
-          transition: "transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1)",
+          borderTopLeftRadius: 20,
+          borderBottomLeftRadius: 20,
+          boxShadow: "-12px 0 36px rgba(0,0,0,0.25)",
+          transform: open ? "translateX(0)" : "translateX(100%)",
+          transition: "transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1)",
           zIndex: 90,
           display: "flex",
           flexDirection: "column",
           fontFamily: SANS,
         }}
       >
-        {/* Drag handle */}
-        <div style={{ display: "flex", justifyContent: "center", paddingTop: 10, paddingBottom: 6 }}>
-          <div style={{ width: 44, height: 5, borderRadius: 999, background: "rgba(0,0,0,0.18)" }} />
-        </div>
-
         {/* Header */}
-        <div style={{ padding: "10px 24px 8px 24px" }}>
+        <div style={{ padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px 20px" }}>
           <div
             style={{
               display: "flex",
@@ -101,10 +97,12 @@ export const RefineDrawer = ({
               <div
                 style={{
                   fontFamily: SANS,
-                  fontSize: 13,
+                  fontWeight: 400,
+                  fontSize: 11,
                   color: "rgba(2,2,2,0.55)",
-                  letterSpacing: "0.02em",
-                  marginBottom: 4,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  marginBottom: 6,
                 }}
               >
                 Refine
@@ -113,11 +111,12 @@ export const RefineDrawer = ({
                 style={{
                   margin: 0,
                   fontFamily: SANS,
-                  fontSize: 38,
-                  lineHeight: 1,
-                  fontWeight: 700,
+                  fontSize: 22,
+                  lineHeight: 1.1,
+                  fontWeight: 400,
                   color: "#020202",
-                  letterSpacing: "-0.01em",
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
                 }}
               >
                 Filters
@@ -130,11 +129,13 @@ export const RefineDrawer = ({
                 border: "none",
                 padding: "4px 0",
                 fontFamily: SANS,
-                fontSize: 15,
+                fontSize: 12,
                 fontWeight: 400,
-                color: "#020202",
+                color: "#715a3d",
                 textDecoration: "underline",
                 textUnderlineOffset: 4,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
                 cursor: "pointer",
               }}
             >
@@ -143,7 +144,7 @@ export const RefineDrawer = ({
           </div>
 
           {activeChips && activeChips.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 18 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 14 }}>
               {activeChips.map((chip, i) => (
                 <button
                   key={i}
@@ -151,20 +152,21 @@ export const RefineDrawer = ({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 8,
-                    padding: "8px 14px",
+                    gap: 6,
+                    padding: "6px 10px",
                     borderRadius: 999,
                     background: "#020202",
                     color: "#ffffff",
                     border: "none",
                     fontFamily: SANS,
-                    fontSize: 14,
-                    fontWeight: 500,
+                    fontSize: 12,
+                    fontWeight: 400,
+                    letterSpacing: "0.04em",
                     cursor: "pointer",
                   }}
                 >
                   {chip.label}
-                  <X size={14} strokeWidth={2} />
+                  <X size={12} strokeWidth={2} />
                 </button>
               ))}
             </div>
@@ -176,7 +178,7 @@ export const RefineDrawer = ({
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "8px 24px 24px 24px",
+            padding: "0 20px 24px 20px",
           }}
         >
           {children}
@@ -185,23 +187,25 @@ export const RefineDrawer = ({
         {/* Sticky CTA */}
         <div
           style={{
-            padding: "12px 24px calc(env(safe-area-inset-bottom) + 18px)",
+            padding: "12px 20px calc(env(safe-area-inset-bottom) + 16px)",
             background: "#ffffff",
+            borderTop: "1px solid rgba(0,0,0,0.06)",
           }}
         >
           <button
             onClick={onClose}
             style={{
               width: "100%",
-              height: 60,
+              height: 52,
               borderRadius: 999,
               background: "#020202",
               color: "#ffffff",
               border: "none",
               fontFamily: SANS,
-              fontSize: 16,
-              fontWeight: 500,
-              letterSpacing: "0.01em",
+              fontSize: 13,
+              fontWeight: 400,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
@@ -210,12 +214,12 @@ export const RefineDrawer = ({
             }}
           >
             <span>
-              Show {resultsCount} {resultsLabel.charAt(0).toUpperCase() + resultsLabel.slice(1)}
+              Show {resultsCount} {resultsLabel}
             </span>
             <ArrowRight
-              size={20}
+              size={18}
               strokeWidth={1.8}
-              style={{ position: "absolute", right: 24, top: "50%", transform: "translateY(-50%)" }}
+              style={{ position: "absolute", right: 20, top: "50%", transform: "translateY(-50%)" }}
             />
           </button>
         </div>
@@ -223,6 +227,23 @@ export const RefineDrawer = ({
     </>
   );
 };
+
+// Eyebrow group label (e.g. "SORT", "FILTER BY") — visually differentiates sort vs filter
+export const RefineGroupLabel = ({ label }: { label: string }) => (
+  <div
+    style={{
+      fontFamily: SANS,
+      fontWeight: 400,
+      fontSize: 11,
+      color: "#715a3d",
+      letterSpacing: "0.14em",
+      textTransform: "uppercase",
+      padding: "18px 0 4px 0",
+    }}
+  >
+    {label}
+  </div>
+);
 
 interface RefineSectionProps {
   label: string;
@@ -244,7 +265,7 @@ export const RefineSection = ({
   return (
     <div
       style={{
-        borderTop: isFirst ? "none" : "1px solid rgba(0,0,0,0.10)",
+        borderTop: isFirst ? "none" : "1px solid rgba(0,0,0,0.08)",
       }}
     >
       <button
@@ -253,7 +274,7 @@ export const RefineSection = ({
           width: "100%",
           background: "transparent",
           border: "none",
-          padding: "20px 0",
+          padding: "16px 0",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -261,15 +282,16 @@ export const RefineSection = ({
           textAlign: "left",
         }}
       >
-        <span style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+        <span style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <span
             style={{
               fontFamily: SANS,
-              fontSize: 22,
-              fontWeight: 700,
+              fontSize: 15,
+              fontWeight: 400,
               color: "#020202",
-              letterSpacing: "-0.005em",
-              lineHeight: 1.1,
+              letterSpacing: "0.08em",
+              textTransform: "uppercase",
+              lineHeight: 1.15,
             }}
           >
             {label}
@@ -278,8 +300,10 @@ export const RefineSection = ({
             <span
               style={{
                 fontFamily: SANS,
-                fontSize: 14,
-                color: "rgba(2,2,2,0.5)",
+                fontSize: 12,
+                fontWeight: 400,
+                color: "rgba(43,36,32,0.55)",
+                letterSpacing: "0.01em",
               }}
             >
               {summary}
@@ -287,12 +311,12 @@ export const RefineSection = ({
           )}
         </span>
         {open ? (
-          <ChevronDown size={20} strokeWidth={1.8} color="#020202" />
+          <ChevronDown size={18} strokeWidth={1.6} color="#020202" />
         ) : (
-          <ChevronRight size={20} strokeWidth={1.8} color="#020202" />
+          <ChevronRight size={18} strokeWidth={1.6} color="#020202" />
         )}
       </button>
-      {open && <div style={{ padding: "2px 0 18px 0" }}>{children}</div>}
+      {open && <div style={{ padding: "2px 0 16px 0" }}>{children}</div>}
     </div>
   );
 };
@@ -320,7 +344,9 @@ export const RefineOption = ({
       background: active ? "#020202" : "#ffffff",
       color: active ? "#ffffff" : "#020202",
       fontFamily: SANS,
-      fontSize: 14,
+      fontWeight: 400,
+      fontSize: 13,
+      letterSpacing: "0.01em",
       cursor: "pointer",
     }}
   >
@@ -347,7 +373,9 @@ export const RefineChip = ({
       background: active ? "#020202" : "#ffffff",
       color: active ? "#ffffff" : "#020202",
       fontFamily: SANS,
-      fontSize: 13,
+      fontWeight: 400,
+      fontSize: 12,
+      letterSpacing: "0.02em",
       cursor: "pointer",
     }}
   >
