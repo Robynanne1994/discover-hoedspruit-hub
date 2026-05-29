@@ -874,6 +874,37 @@ const CategoryPage = () => {
         onClear={clearAllFilters}
         resultsCount={filteredListings.length}
         resultsLabel="listings"
+        activeChips={[
+          ...(activeSubId && subcategories
+            ? [{
+                label: subcategories.find((s) => s.id === activeSubId)?.title || "Category",
+                onRemove: () => handleSubFilter(null),
+              }]
+            : []),
+          ...filterCuisine.map((c) => ({
+            label: c,
+            onRemove: () => setFilterCuisine(filterCuisine.filter((x) => x !== c)),
+          })),
+          ...filterVibe.map((v) => ({
+            label: v,
+            onRemove: () => setFilterVibe(filterVibe.filter((x) => x !== v)),
+          })),
+          ...filterMeal.map((m) => ({
+            label: m,
+            onRemove: () => setFilterMeal(filterMeal.filter((x) => x !== m)),
+          })),
+          ...filterSeating.map((s) => ({
+            label: s,
+            onRemove: () => setFilterSeating(filterSeating.filter((x) => x !== s)),
+          })),
+          ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
+          ...(filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
+          ...(filterBeenTo ? [{ label: "Been To", onRemove: () => setFilterBeenTo(false) }] : []),
+          ...(filterChildFriendly ? [{ label: "Child Friendly", onRemove: () => setFilterChildFriendly(false) }] : []),
+          ...(filterPetFriendly ? [{ label: "Pet Friendly", onRemove: () => setFilterPetFriendly(false) }] : []),
+          ...(filterWheelchair ? [{ label: "Wheelchair Accessible", onRemove: () => setFilterWheelchair(false) }] : []),
+          ...(filterWifi ? [{ label: "WiFi", onRemove: () => setFilterWifi(false) }] : []),
+        ]}
       >
         <RefineGroupLabel label="Sort" />
         <RefineSection
