@@ -875,6 +875,7 @@ const CategoryPage = () => {
         resultsCount={filteredListings.length}
         resultsLabel="listings"
       >
+        <RefineGroupLabel label="Sort" />
         <RefineSection
           isFirst
           label="Sort By"
@@ -892,30 +893,7 @@ const CategoryPage = () => {
           ))}
         </RefineSection>
 
-        {/* Filters divider */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-            marginBottom: 8,
-          }}
-        >
-          <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.08)" }} />
-          <span
-            style={{
-              fontFamily: sans,
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#715a3d",
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-            }}
-          >
-            Filters
-          </span>
-          <div style={{ flex: 1, height: 1, background: "rgba(0,0,0,0.08)" }} />
-        </div>
+        <RefineGroupLabel label="Filter By" />
 
         {subcategories && subcategories.length > 0 && (
           <RefineSection
