@@ -82,6 +82,10 @@ export function isHomeGardenCategory(categoryTitle: string): boolean {
   return HOME_GARDEN_CATEGORY_PATTERN.test(categoryTitle);
 }
 
+export function isWeddingsEventsCategory(categoryTitle: string): boolean {
+  return WEDDINGS_EVENTS_CATEGORY_PATTERN.test(categoryTitle);
+}
+
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
