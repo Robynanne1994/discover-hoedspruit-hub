@@ -11,7 +11,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const BG = "#ECE3CF";
+const BG = "#ebebeb";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const MUTED = "#7A6E5C";

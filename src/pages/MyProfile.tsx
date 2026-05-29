@@ -7,7 +7,7 @@ import { useFollowCounts } from "@/hooks/useFollows";
 import { Pencil, Heart, Settings, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const PAGE_BG = "#E6E0CC";
+const PAGE_BG = "#ebebeb";
 const CARD = "#FFFFFF";
 const INNER = "#EFE7D3";
 const INK = "#1A1A1A";

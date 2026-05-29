@@ -544,7 +544,7 @@ const CategoryPage = () => {
 
   const isSearchEmpty = (search.trim().length > 0 || activeFilterCount > 0) && filteredListings.length === 0 && totalCount > 0;
 
-  const PAGE_BG = "#E6E0CC";
+  const PAGE_BG = "#ebebeb";
   const CARD_BG = "#FFFFFF";
   const INK = "#020202";
   const MUTED = "#6B6A5E";

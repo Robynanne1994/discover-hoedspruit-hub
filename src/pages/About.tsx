@@ -4,7 +4,7 @@ import BottomNav from "@/components/BottomNav";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const BG = "#E6E0CC";
+const BG = "#ebebeb";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const BODY = "#3A342B";
