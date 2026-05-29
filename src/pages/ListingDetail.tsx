@@ -168,6 +168,19 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
+  const { data: listingSubcategories } = useQuery({
+    queryKey: ["listing-detail-subcategories", id],
+    queryFn: async () => {
+      const { data: junctions } = await supabase.from("listing_subcategories").select("subcategory_id").eq("listing_id", id!);
+      if (!junctions || junctions.length === 0) return [];
+      const subIds = junctions.map((j: any) => j.subcategory_id);
+      const { data: subs } = await supabase.from("subcategories").select("id, title").in("id", subIds);
+      return subs ?? [];
+    },
+    enabled: !!id,
+  });
+
+
   const { data: relatedSpecials } = useQuery({
     queryKey: ["listing-detail-specials", id],
     queryFn: async () => {
