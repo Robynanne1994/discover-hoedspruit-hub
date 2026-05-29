@@ -288,11 +288,11 @@ export const RefineSection = ({
           <span
             style={{
               fontFamily: SANS,
-              fontSize: 15,
-              fontWeight: 400,
+              fontSize: 20,
+              fontWeight: 700,
               color: "#020202",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
+              letterSpacing: "-0.005em",
+              textTransform: "capitalize",
               lineHeight: 1.15,
             }}
           >
@@ -302,7 +302,7 @@ export const RefineSection = ({
             <span
               style={{
                 fontFamily: SANS,
-                fontSize: 12,
+                fontSize: 13,
                 fontWeight: 400,
                 color: "rgba(43,36,32,0.55)",
                 letterSpacing: "0.01em",
