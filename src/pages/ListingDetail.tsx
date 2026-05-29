@@ -10,7 +10,7 @@ import {
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -289,6 +289,7 @@ const ListingDetail = () => {
   const isListingNGO = listingCategories?.some((c) => isNGOCategory(c.title)) ?? false;
   const isListingTrades = listingCategories?.some((c) => isTradesCategory(c.title)) ?? false;
   const isListingHomeGarden = listingCategories?.some((c) => isHomeGardenCategory(c.title)) ?? false;
+  const isListingWeddingsEvents = listingCategories?.some((c) => isWeddingsEventsCategory(c.title)) ?? false;
   const l = listing as any;
   const galleryImages = (l.gallery_images as string[] | null) || [];
   const openingHours = l.opening_hours as Record<string, string> | null;
@@ -583,6 +584,14 @@ const ListingDetail = () => {
       }
     }
   }
+
+  if (isListingWeddingsEvents) {
+    const eventTypes = (l.event_types as string[] | null) ?? [];
+    if (eventTypes.length) {
+      sections.push({ key: "we-event-types", title: "Event types supported", iconComp: Sparkles, fields: eventTypes.map((label: string) => ({ label, on: true })) });
+    }
+  }
+
 
   // Apply per-listing / global "yes only" vs "all" display mode for yes-no cards
   {

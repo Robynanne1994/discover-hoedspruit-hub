@@ -1,0 +1,1 @@
+ALTER TABLE public.listings ADD COLUMN IF NOT EXISTS event_types text[] NOT NULL DEFAULT '{}'::text[];

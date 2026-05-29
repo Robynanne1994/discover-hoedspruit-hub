@@ -45,10 +45,15 @@ export const HOME_GARDEN_ONLY_FIELDS = [
   "services_offered", "plant_types", "business_started_year", "years_in_business", "specialities"
 ] as const;
 
+export const WEDDINGS_EVENTS_ONLY_FIELDS = [
+  "event_types"
+] as const;
+
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
 export const SHOPPING_CATEGORY_PATTERN = /^shopping$/i;
 export const ACCOMMODATION_CATEGORY_PATTERN = /^accommodation$/i;
 export const NGO_CATEGORY_PATTERN = /ngo|volunteer/i;
+export const WEDDINGS_EVENTS_CATEGORY_PATTERN = /weddings?\s*(&|and)?\s*events?/i;
 export const TRADES_CATEGORY_PATTERN = /trades?\s*(&|and)?\s*services?/i;
 export const HOME_GARDEN_CATEGORY_PATTERN = /home\s*(&|and)?\s*garden/i;
 
@@ -77,6 +82,10 @@ export function isHomeGardenCategory(categoryTitle: string): boolean {
   return HOME_GARDEN_CATEGORY_PATTERN.test(categoryTitle);
 }
 
+export function isWeddingsEventsCategory(categoryTitle: string): boolean {
+  return WEDDINGS_EVENTS_CATEGORY_PATTERN.test(categoryTitle);
+}
+
 export function getCSVHeadersForCategory(categoryTitle: string | null): string[] {
   const headers: string[] = [...UNIVERSAL_FIELDS];
   if (categoryTitle && isRestaurantCategory(categoryTitle)) {
@@ -96,6 +105,9 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   }
   if (categoryTitle && isHomeGardenCategory(categoryTitle)) {
     headers.push(...HOME_GARDEN_ONLY_FIELDS);
+  }
+  if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) {
+    headers.push(...WEDDINGS_EVENTS_ONLY_FIELDS);
   }
   return headers;
 }

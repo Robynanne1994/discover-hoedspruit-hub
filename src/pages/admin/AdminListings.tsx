@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory } from "@/lib/categoryFields";
+import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory } from "@/lib/categoryFields";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
@@ -42,7 +42,10 @@ const SERVICES_OFFERED_OPTIONS = ["Nursery", "Landscaping", "Garden maintenance"
 const HG_SERVICES_SECTION = "home_garden_services";
 const PLANT_TYPES_OPTIONS = ["Indigenous", "Water-wise", "Exotic", "Trees", "Succulents", "Veggies & Herbs", "Pot plants"];
 
-const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const EVENT_TYPES_OPTIONS = ["Weddings", "Corporate", "Birthdays", "Private functions", "Conferences", "Baby showers", "Kids parties", "Fundraisers", "Festivals"];
+const WEDDINGS_EVENT_TYPES_SECTION = "weddings_event_types";
+
+const emptyForm = { drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const AdminListings = () => {
   const qc = useQueryClient();
@@ -69,6 +72,7 @@ const AdminListings = () => {
   const [customChipOption, setCustomChipOption] = useState<Record<string, string>>({});
   const [customShopTypes, setCustomShopTypes] = useState<string[]>([]);
   const [newServiceInput, setNewServiceInput] = useState("");
+  const [newEventTypeInput, setNewEventTypeInput] = useState("");
 
   // Custom (admin-added) Home & Garden services, persisted in site_content
   const { data: customHGServices } = useQuery({
@@ -120,6 +124,59 @@ const AdminListings = () => {
     },
     onError: (e: any) => toast.error(e?.message ?? "Could not add service"),
   });
+
+  // Custom (admin-added) Weddings & Events event types, persisted in site_content
+  const { data: customEventTypes } = useQuery({
+    queryKey: ["weddings-custom-event-types"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("site_content")
+        .select("content")
+        .eq("section", WEDDINGS_EVENT_TYPES_SECTION)
+        .maybeSingle();
+      const items = (data?.content as any)?.items;
+      return Array.isArray(items) ? (items as string[]) : [];
+    },
+  });
+
+  const addEventTypeMutation = useMutation({
+    mutationFn: async (label: string) => {
+      const trimmed = label.trim();
+      if (!trimmed) throw new Error("Empty");
+      const existing = [...EVENT_TYPES_OPTIONS, ...(customEventTypes ?? [])];
+      if (existing.some((s) => s.toLowerCase() === trimmed.toLowerCase())) {
+        throw new Error("This event type is already in the list.");
+      }
+      const next = [...(customEventTypes ?? []), trimmed];
+      const { data: row } = await supabase
+        .from("site_content")
+        .select("id")
+        .eq("section", WEDDINGS_EVENT_TYPES_SECTION)
+        .maybeSingle();
+      if (row?.id) {
+        const { error } = await supabase
+          .from("site_content")
+          .update({ content: { items: next } })
+          .eq("section", WEDDINGS_EVENT_TYPES_SECTION);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from("site_content")
+          .insert({ section: WEDDINGS_EVENT_TYPES_SECTION, content: { items: next } });
+        if (error) throw error;
+      }
+      return trimmed;
+    },
+    onSuccess: (label) => {
+      qc.invalidateQueries({ queryKey: ["weddings-custom-event-types"] });
+      setForm((f) => ({ ...f, event_types: f.event_types.includes(label) ? f.event_types : [...f.event_types, label] }));
+      setNewEventTypeInput("");
+      toast.success("Event type added");
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Could not add event type"),
+  });
+
+
 
 
   const { data: listings, isLoading } = useQuery({
@@ -386,6 +443,7 @@ const AdminListings = () => {
         specialities: values.specialities?.trim() || null,
         services_offered: values.services_offered ?? [],
         plant_types: (values.services_offered ?? []).includes("Nursery") ? (values.plant_types ?? []) : [],
+        event_types: values.event_types ?? [],
         details_display_mode: values.details_display_mode ?? {},
       };
 
@@ -596,6 +654,7 @@ const AdminListings = () => {
       tenure_mode: ((l as any).years_in_business != null && (l as any).business_started_year == null) ? "years" : "started",
       services_offered: (l as any).services_offered ?? [],
       plant_types: (l as any).plant_types ?? [],
+      event_types: (l as any).event_types ?? [],
       details_display_mode: ((l as any).details_display_mode ?? {}) as Record<string, DisplayMode | "default">,
     });
     const populatedCustom = [1, 2, 3].filter((n) => ((l as any)[`custom_title_${n}`] || (l as any)[`custom_text_${n}`])).length;
@@ -691,6 +750,7 @@ const AdminListings = () => {
   const isNGOType = categories?.some((c) => selectedCatIds.includes(c.id) && isNGOCategory(c.title));
   const isTradesType = categories?.some((c) => selectedCatIds.includes(c.id) && isTradesCategory(c.title));
   const isHomeGardenType = categories?.some((c) => selectedCatIds.includes(c.id) && isHomeGardenCategory(c.title));
+  const isWeddingsEventsType = categories?.some((c) => selectedCatIds.includes(c.id) && isWeddingsEventsCategory(c.title));
 
   const filteredListings = (listings ?? []).filter((l) => {
     if (!searchQuery.trim()) return true;
@@ -1538,6 +1598,58 @@ const AdminListings = () => {
                     </div>
                   </div>
                 )}
+
+                {isWeddingsEventsType && (() => {
+                  const allEventTypes = Array.from(new Set([...EVENT_TYPES_OPTIONS, ...(customEventTypes ?? []), ...form.event_types]));
+                  return (
+                    <div className="border-t border-border pt-4 mt-2 space-y-4">
+                      <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Weddings & Events Fields</p>
+                      <div>
+                        <Label>Event types supported</Label>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {allEventTypes.map((opt) => {
+                            const selected = form.event_types.includes(opt);
+                            return (
+                              <button
+                                key={opt}
+                                type="button"
+                                onClick={() => setForm({ ...form, event_types: selected ? form.event_types.filter((v) => v !== opt) : [...form.event_types, opt] })}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${selected ? "bg-primary text-primary-foreground border-primary" : "bg-background text-foreground border-border hover:border-primary/50"}`}
+                              >
+                                {opt}
+                              </button>
+                            );
+                          })}
+                        </div>
+                        <div className="mt-2 flex gap-2">
+                          <Input
+                            value={newEventTypeInput}
+                            onChange={(e) => setNewEventTypeInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                if (newEventTypeInput.trim()) addEventTypeMutation.mutate(newEventTypeInput);
+                              }
+                            }}
+                            placeholder="Add another event type (e.g. Anniversaries)"
+                            className="h-9"
+                          />
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => newEventTypeInput.trim() && addEventTypeMutation.mutate(newEventTypeInput)}
+                            disabled={addEventTypeMutation.isPending || !newEventTypeInput.trim()}
+                          >
+                            Add
+                          </Button>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground mt-1">Custom types you add here are saved and available for all future Weddings & Events listings.</p>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+
 
 
 

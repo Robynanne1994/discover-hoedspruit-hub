@@ -958,6 +958,7 @@ export type Database = {
           email: string | null
           email_label: string | null
           emergency_24hr: boolean | null
+          event_types: string[]
           facebook: string | null
           foods: string[]
           gallery_images: string[] | null
@@ -1087,6 +1088,7 @@ export type Database = {
           email?: string | null
           email_label?: string | null
           emergency_24hr?: boolean | null
+          event_types?: string[]
           facebook?: string | null
           foods?: string[]
           gallery_images?: string[] | null
@@ -1216,6 +1218,7 @@ export type Database = {
           email?: string | null
           email_label?: string | null
           emergency_24hr?: boolean | null
+          event_types?: string[]
           facebook?: string | null
           foods?: string[]
           gallery_images?: string[] | null
