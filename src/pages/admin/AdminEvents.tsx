@@ -363,6 +363,11 @@ const AdminEvents = () => {
               <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
               <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
+              <div className="space-y-2">
+                <Label>What's Included</Label>
+                <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
+                <IncludedChipsInput value={form.included} onChange={(v) => setForm({ ...form, included: v })} />
+              </div>
               <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} placeholder="Additional info shown under price on event page" /></div>
               <ListingContactPicker
                 listings={listings || []}
