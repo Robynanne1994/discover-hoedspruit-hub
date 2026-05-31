@@ -198,7 +198,7 @@ const AdminEventsImport = () => {
       e.tag ?? "", e.sub_tag_1 ?? "", e.sub_tag_2 ?? "",
       e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", e.recurrence ?? "", e.google_maps_link ?? "",
       e.social_media_link ?? "", e.social_media_label ?? "", e.contact_email ?? "", e.contact_phone ?? "", e.contact_whatsapp ?? "",
-      (e.gallery_images ?? []).join("|"), e.booking_link ?? "", e.booking_link_label ?? "", e.price ?? "", e.notes ?? "",
+      (e.gallery_images ?? []).join("|"), e.booking_link ?? "", e.booking_link_label ?? "", e.price ?? "", (e.included ?? []).join("|"), e.notes ?? "",
       e.business_id ? (idToTitle.get(e.business_id) ?? "") : "",
       e.is_featured ? "true" : "false",
     ].map(escapeCSV).join(","));
