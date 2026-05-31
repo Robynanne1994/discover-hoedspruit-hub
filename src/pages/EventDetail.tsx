@@ -588,38 +588,70 @@ const EventDetail = () => {
   });
   allEmails.forEach((em, i) => detailRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
 
+  const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
+
   const renderDetails = () => (
     <div style={{ padding: 20 }}>
-      {detailRows.length === 0 ? (
+      {detailRows.length === 0 && includedItems.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
       ) : (
-        <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-          {detailRows.map((r, i) => {
-            const inner = (
-              <>
-                <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
-                </div>
-                {r.href && <ArrowUpRight size={16} color={C.muted} />}
-              </>
-            );
-            const style: React.CSSProperties = {
-              display: "flex", alignItems: "center", gap: 14,
-              padding: "14px 0", textDecoration: "none",
-              borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-            };
-            if (r.href) {
-              return (
-                <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
-                  {inner}
-                </a>
-              );
-            }
-            return <div key={i} style={style}>{inner}</div>;
-          })}
-        </div>
+        <>
+          {detailRows.length > 0 && (
+            <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+              {detailRows.map((r, i) => {
+                const inner = (
+                  <>
+                    <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                    </div>
+                    {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                  </>
+                );
+                const style: React.CSSProperties = {
+                  display: "flex", alignItems: "center", gap: 14,
+                  padding: "14px 0", textDecoration: "none",
+                  borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+                };
+                if (r.href) {
+                  return (
+                    <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+                      {inner}
+                    </a>
+                  );
+                }
+                return <div key={i} style={style}>{inner}</div>;
+              })}
+            </div>
+          )}
+          {includedItems.length > 0 && (
+            <div style={{ marginTop: detailRows.length > 0 ? 20 : 0 }}>
+              <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, margin: "0 0 10px 4px" }}>
+                What's Included
+              </div>
+              <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+                {includedItems.map((item, i) => (
+                  <div key={i} style={{
+                    display: "flex", alignItems: "center", gap: 12,
+                    padding: "12px 0",
+                    borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+                  }}>
+                    <span style={{
+                      flexShrink: 0, width: 24, height: 24, borderRadius: 999,
+                      background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <Check size={14} strokeWidth={2} color={C.primary} />
+                    </span>
+                    <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                      {item}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
