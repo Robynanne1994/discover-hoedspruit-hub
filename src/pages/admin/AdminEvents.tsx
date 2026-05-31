@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
+import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
 
 type Event = Tables<"events">;
