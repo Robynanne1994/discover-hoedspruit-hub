@@ -176,6 +176,7 @@ const AdminEvents = () => {
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
         price: values.price || null,
+        included: Array.isArray((values as any).included) ? (values as any).included.map((s: string) => s.trim()).filter(Boolean) : [],
         notes: values.notes || null,
         business_id: ((values as any).business_ids?.[0]) || values.business_id || null,
         business_ids: Array.isArray((values as any).business_ids) ? (values as any).business_ids.filter(Boolean) : [],
