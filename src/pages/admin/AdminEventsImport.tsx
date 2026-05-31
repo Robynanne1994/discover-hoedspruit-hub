@@ -130,6 +130,7 @@ const AdminEventsImport = () => {
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           price: row.price || null,
+          included: row.included ? String(row.included).split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           notes: row.notes || null,
           business_id: businessId,
           is_featured: parseBool(row.is_featured),
