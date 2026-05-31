@@ -6,7 +6,7 @@ import ImageLightbox from "@/components/ImageLightbox";
 import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
-  Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, StickyNote,
+  Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, StickyNote, Check,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
