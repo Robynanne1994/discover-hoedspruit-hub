@@ -14,11 +14,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
+import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", included: [] as string[], notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -176,6 +177,7 @@ const AdminEvents = () => {
         gallery_images: galleryArr,
         booking_link: values.booking_link || null,
         price: values.price || null,
+        included: Array.isArray((values as any).included) ? (values as any).included.map((s: string) => s.trim()).filter(Boolean) : [],
         notes: values.notes || null,
         business_id: ((values as any).business_ids?.[0]) || values.business_id || null,
         business_ids: Array.isArray((values as any).business_ids) ? (values as any).business_ids.filter(Boolean) : [],
@@ -249,6 +251,7 @@ const AdminEvents = () => {
       gallery_images: ((ev as any).gallery_images ?? []).join("\n"),
       booking_link: (ev as any).booking_link ?? "",
       price: (ev as any).price ?? "",
+      included: Array.isArray((ev as any).included) ? (ev as any).included : [],
       notes: (ev as any).notes ?? "",
       business_id: (ev as any).business_id ?? "",
       business_ids: Array.isArray((ev as any).business_ids) && (ev as any).business_ids.length > 0
@@ -361,6 +364,11 @@ const AdminEvents = () => {
               <div><Label>Social Media Label</Label><Input value={form.social_media_label} onChange={(e) => setForm({ ...form, social_media_label: e.target.value })} placeholder="e.g. Instagram, Facebook (display text)" /></div>
               <div><Label>Booking Link</Label><Input value={form.booking_link} onChange={(e) => setForm({ ...form, booking_link: e.target.value })} placeholder="https://booking-site.com/..." /></div>
               <div><Label>Price</Label><Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="e.g. R150, Free, R50–R100" /></div>
+              <div className="space-y-2">
+                <Label>What's Included</Label>
+                <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
+                <IncludedChipsInput value={form.included} onChange={(v) => setForm({ ...form, included: v })} />
+              </div>
               <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} placeholder="Additional info shown under price on event page" /></div>
               <ListingContactPicker
                 listings={listings || []}

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const EXPECTED_HEADERS = ["title", "description", "date", "start_date", "end_date", "location", "tag", "sub_tag_1", "sub_tag_2", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "gallery_images", "booking_link", "booking_link_label", "price", "notes", "business_name", "is_featured"];
+const EXPECTED_HEADERS = ["title", "description", "date", "start_date", "end_date", "location", "tag", "sub_tag_1", "sub_tag_2", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "gallery_images", "booking_link", "booking_link_label", "price", "included", "notes", "business_name", "is_featured"];
 
 const parseBool = (v: string | undefined): boolean => {
   if (!v) return false;
@@ -130,6 +130,7 @@ const AdminEventsImport = () => {
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           price: row.price || null,
+          included: row.included ? String(row.included).split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           notes: row.notes || null,
           business_id: businessId,
           is_featured: parseBool(row.is_featured),
@@ -175,7 +176,7 @@ const AdminEventsImport = () => {
   };
 
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","","","Hoedspruit Town","Market","Family-friendly","Outdoor","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example","https://instagram.com/example","Instagram","info@example.com","+27 123 456 789","+27 123 456 789","https://img1.jpg|https://img2.jpg","https://bookme.com/example","Book on Quicket","R150","Bring cash for stalls","Some Business Name","true"\n';
+    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","","","Hoedspruit Town","Market","Family-friendly","Outdoor","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example","https://instagram.com/example","Instagram","info@example.com","+27 123 456 789","+27 123 456 789","https://img1.jpg|https://img2.jpg","https://bookme.com/example","Book on Quicket","R150","Welcome drink|Live music|Parking","Bring cash for stalls","Some Business Name","true"\n';
     downloadCSV(csv, "events_template.csv");
   };
 
@@ -197,7 +198,7 @@ const AdminEventsImport = () => {
       e.tag ?? "", e.sub_tag_1 ?? "", e.sub_tag_2 ?? "",
       e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", e.recurrence ?? "", e.google_maps_link ?? "",
       e.social_media_link ?? "", e.social_media_label ?? "", e.contact_email ?? "", e.contact_phone ?? "", e.contact_whatsapp ?? "",
-      (e.gallery_images ?? []).join("|"), e.booking_link ?? "", e.booking_link_label ?? "", e.price ?? "", e.notes ?? "",
+      (e.gallery_images ?? []).join("|"), e.booking_link ?? "", e.booking_link_label ?? "", e.price ?? "", (e.included ?? []).join("|"), e.notes ?? "",
       e.business_id ? (idToTitle.get(e.business_id) ?? "") : "",
       e.is_featured ? "true" : "false",
     ].map(escapeCSV).join(","));

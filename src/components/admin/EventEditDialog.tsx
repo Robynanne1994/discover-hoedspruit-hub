@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
+import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
 
 interface Props {
@@ -21,7 +22,7 @@ interface Props {
 
 const FIELDS = [
   "title", "title_override", "description", "date", "start_date", "end_date", "start_time", "end_time", "location",
-  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "homepage_image_url", "recurrence", "performances", "price", "notes", "booking_link", "booking_link_label",
+  "tag", "sub_tag_1", "sub_tag_2", "image_url", "detail_image_url", "homepage_image_url", "recurrence", "performances", "price", "included", "notes", "booking_link", "booking_link_label",
   "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "additional_emails", "additional_phones", "additional_whatsapps",
   "business_id", "business_ids", "is_featured",
   "hosted_by_name", "hosted_by_subtitle", "hosted_by_image_url", "hosted_by_link",
@@ -219,6 +220,11 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
           <div><Label>Location</Label><Input value={form.location || ""} onChange={(e) => set("location", e.target.value)} /></div>
           <div><Label>Recurrence</Label><Input value={form.recurrence || ""} onChange={(e) => set("recurrence", e.target.value)} placeholder="None / Weekly / Monthly..." /></div>
           <div><Label>Price</Label><Input value={form.price || ""} onChange={(e) => set("price", e.target.value)} /></div>
+          <div className="space-y-2">
+            <Label>What's Included</Label>
+            <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
+            <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
+          </div>
           <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => set("notes", e.target.value)} placeholder="Additional info shown under price" /></div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>

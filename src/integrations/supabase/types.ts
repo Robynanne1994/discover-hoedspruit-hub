@@ -450,6 +450,7 @@ export type Database = {
           hosted_by_subtitle_3: string | null
           id: string
           image_url: string | null
+          included: string[]
           is_featured: boolean
           location: string | null
           notes: string | null
@@ -501,6 +502,7 @@ export type Database = {
           hosted_by_subtitle_3?: string | null
           id?: string
           image_url?: string | null
+          included?: string[]
           is_featured?: boolean
           location?: string | null
           notes?: string | null
@@ -552,6 +554,7 @@ export type Database = {
           hosted_by_subtitle_3?: string | null
           id?: string
           image_url?: string | null
+          included?: string[]
           is_featured?: boolean
           location?: string | null
           notes?: string | null
