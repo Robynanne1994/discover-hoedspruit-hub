@@ -913,13 +913,20 @@ const EventDetail = () => {
           </div>
         )}
         {event.location && (
-          <div style={{
-            marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
-            display: "flex", alignItems: "center", gap: 4,
-          }}>
+          <a
+            href={directionsHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+              display: "flex", alignItems: "center", gap: 4,
+              textDecoration: "none",
+            }}
+          >
             <MapPin size={12} color={C.muted} strokeWidth={1.6} />
             <span>{event.location}</span>
-          </div>
+            <ArrowUpRight size={12} color={C.muted} />
+          </a>
         )}
 
         {isPast ? (
