@@ -345,7 +345,9 @@ const EventDetail = () => {
   const priceNotes: string[] = Array.isArray((e as any).price_notes)
     ? (e as any).price_notes.filter((s: string) => s && String(s).trim())
     : [];
-  const notes = e.notes || null;
+  const notes: string[] = Array.isArray((e as any).notes)
+    ? (e as any).notes.filter((s: string) => s && String(s).trim())
+    : (typeof (e as any).notes === "string" && (e as any).notes.trim() ? [(e as any).notes] : []);
   const subTag1 = e.sub_tag_1 || null;
   const subTag2 = e.sub_tag_2 || null;
   const eyebrowText = [e.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "")[0] || null;
