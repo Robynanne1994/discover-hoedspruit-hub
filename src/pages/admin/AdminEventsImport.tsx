@@ -360,7 +360,7 @@ const AdminEventsImport = () => {
         booking_link_label: e.booking_link_label ?? "",
         price: e.price ?? "",
         included: (e.included ?? []).join("|"),
-        notes: e.notes ?? "",
+        notes: (Array.isArray((e as any).notes) ? (e as any).notes : ((e as any).notes ? [(e as any).notes] : [])).join("|"),
         price_notes: (e.price_notes ?? []).join("|"),
         business_name: allNames[0] ?? "",
         business_names: allNames.join("|"),
