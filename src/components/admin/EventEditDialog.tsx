@@ -65,6 +65,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       payload.price_notes = Array.isArray(form.price_notes)
         ? form.price_notes.map((s: string) => (s ?? "").toString().trim()).filter(Boolean)
         : [];
+      payload.notes = Array.isArray(form.notes)
+        ? form.notes.map((s: string) => (s ?? "").toString().trim()).filter(Boolean)
+        : (typeof form.notes === "string" && form.notes.trim() ? [form.notes.trim()] : []);
       // Normalize performances: keep only rows with a valid date, sort by date+time,
       // and auto-derive start_date/end_date so existing queries/calendar still work.
       const rawPerfs = Array.isArray(form.performances) ? form.performances : [];
