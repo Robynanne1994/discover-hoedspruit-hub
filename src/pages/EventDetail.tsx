@@ -919,6 +919,7 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 6, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+              fontWeight: 400,
               display: "flex", alignItems: "center", gap: 4,
               textDecoration: "none",
             }}
