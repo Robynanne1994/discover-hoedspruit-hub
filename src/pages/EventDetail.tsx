@@ -62,7 +62,7 @@ const floatBtn: React.CSSProperties = {
   boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
 };
 
-type TabKey = "about" | "details" | "gallery" | "location";
+type TabKey = "about" | "details" | "contact" | "gallery" | "location";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const toIcsDate = (d: Date) =>
@@ -342,6 +342,9 @@ const EventDetail = () => {
   const bookingLink = e.booking_link || null;
   const bookingLinkLabel = e.booking_link_label?.trim() || null;
   const price = e.price || null;
+  const priceNotes: string[] = Array.isArray((e as any).price_notes)
+    ? (e as any).price_notes.filter((s: string) => s && String(s).trim())
+    : [];
   const notes = e.notes || null;
   const subTag1 = e.sub_tag_1 || null;
   const subTag2 = e.sub_tag_2 || null;
@@ -576,81 +579,139 @@ const EventDetail = () => {
   if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
     detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
   }
-  if (price) detailRows.push({ Icon: Banknote, label: "Price", value: price });
   if (notes) detailRows.push({ Icon: StickyNote, label: "Notes", value: <span style={{ whiteSpace: "pre-line" }}>{notes}</span> });
+
   const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
   const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
-  allPhones.forEach((p, i) => detailRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
+
+  const contactRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {
     const clean = w.replace(/[^0-9]/g, "");
-    detailRows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
+    contactRows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
   });
-  allEmails.forEach((em, i) => detailRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
+  allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
+  if (socialLink) contactRows.push({ Icon: Globe, label: socialLabel || "Website", value: socialLink.replace(/^https?:\/\//, "").replace(/\/$/, ""), href: socialLink, external: true });
+  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLink.replace(/^https?:\/\//, "").replace(/\/$/, ""), href: bookingLink, external: true });
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
+  const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
+
+  const renderRowsCard = (rows: typeof detailRows) => (
+    <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+      {rows.map((r, i) => {
+        const inner = (
+          <>
+            <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+              <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+            </div>
+            {r.href && <ArrowUpRight size={16} color={C.muted} />}
+          </>
+        );
+        const style: React.CSSProperties = {
+          display: "flex", alignItems: "center", gap: 14,
+          padding: "14px 0", textDecoration: "none",
+          borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+        };
+        if (r.href) {
+          return (
+            <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+              {inner}
+            </a>
+          );
+        }
+        return <div key={i} style={style}>{inner}</div>;
+      })}
+    </div>
+  );
+
+  const cardSubtitle = (label: string) => (
+    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, margin: "0 0 10px 4px" }}>
+      {label}
+    </div>
+  );
 
   const renderDetails = () => (
     <div style={{ padding: 20 }}>
-      {detailRows.length === 0 && includedItems.length === 0 ? (
+      {detailRows.length === 0 && !hasPricingCard ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
       ) : (
         <>
-          {detailRows.length > 0 && (
-            <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-              {detailRows.map((r, i) => {
-                const inner = (
-                  <>
-                    <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
-                    </div>
-                    {r.href && <ArrowUpRight size={16} color={C.muted} />}
-                  </>
-                );
-                const style: React.CSSProperties = {
-                  display: "flex", alignItems: "center", gap: 14,
-                  padding: "14px 0", textDecoration: "none",
-                  borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-                };
-                if (r.href) {
-                  return (
-                    <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
-                      {inner}
-                    </a>
-                  );
-                }
-                return <div key={i} style={style}>{inner}</div>;
-              })}
-            </div>
-          )}
-          {includedItems.length > 0 && (
+          {detailRows.length > 0 && renderRowsCard(detailRows)}
+          {hasPricingCard && (
             <div style={{ marginTop: detailRows.length > 0 ? 20 : 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, margin: "0 0 10px 4px" }}>
-                What's Included
-              </div>
-              <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-                {includedItems.map((item, i) => (
-                  <div key={i} style={{
-                    display: "flex", alignItems: "center", gap: 12,
-                    padding: "12px 0",
-                    borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-                  }}>
-                    <span style={{
-                      flexShrink: 0, width: 24, height: 24, borderRadius: 999,
-                      background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      <Check size={14} strokeWidth={2} color={C.primary} />
-                    </span>
-                    <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-                      {item}
+              {cardSubtitle("Pricing")}
+              <div style={{ background: C.surface, borderRadius: 16, padding: "16px 16px", border: `1px solid ${C.border}` }}>
+                {price && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "4px 0 12px" }}>
+                    <Banknote size={18} strokeWidth={1.5} color={C.primary} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>Price</div>
+                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{price}</div>
                     </div>
                   </div>
-                ))}
+                )}
+                {priceNotes.length > 0 && (
+                  <div style={{
+                    paddingTop: price ? 12 : 4,
+                    paddingBottom: includedItems.length > 0 ? 12 : 4,
+                    borderTop: price ? `1px solid ${C.divider}` : "none",
+                  }}>
+                    {priceNotes.map((note, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
+                        <span style={{
+                          flexShrink: 0, width: 6, height: 6, borderRadius: 999,
+                          background: C.primary, marginTop: 8,
+                        }} />
+                        <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>
+                          {note}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {includedItems.length > 0 && (
+                  <div style={{
+                    paddingTop: (price || priceNotes.length > 0) ? 12 : 4,
+                    borderTop: (price || priceNotes.length > 0) ? `1px solid ${C.divider}` : "none",
+                  }}>
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, marginBottom: 8 }}>
+                      What's Included
+                    </div>
+                    {includedItems.map((item, i) => (
+                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 0" }}>
+                        <span style={{
+                          flexShrink: 0, width: 24, height: 24, borderRadius: 999,
+                          background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                          <Check size={14} strokeWidth={2} color={C.primary} />
+                        </span>
+                        <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                          {item}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
+        </>
+      )}
+    </div>
+  );
+
+  const renderContact = () => (
+    <div style={{ padding: 20 }}>
+      {contactRows.length === 0 ? (
+        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact details yet.</p>
+      ) : (
+        <>
+          {cardSubtitle("Get in touch")}
+          {renderRowsCard(contactRows)}
         </>
       )}
     </div>
@@ -856,6 +917,7 @@ const EventDetail = () => {
 
       {(() => {
         const hasAboutContent = !!(e.description?.trim() || e.hosted_by_name || e.hosted_by_name_2 || e.hosted_by_name_3);
+        const hasContactContent = contactRows.length > 0;
         return (
           <>
             <nav style={{
@@ -865,6 +927,7 @@ const EventDetail = () => {
             }}>
               {hasAboutContent && <TabBtn k="about" label="About" />}
               <TabBtn k="details" label="Details" />
+              {hasContactContent && <TabBtn k="contact" label="Contact" />}
               {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
               <TabBtn k="location" label="Location" />
             </nav>
@@ -872,6 +935,7 @@ const EventDetail = () => {
             <main>
               {tab === "about" && hasAboutContent && renderAbout()}
               {tab === "details" && renderDetails()}
+              {tab === "contact" && hasContactContent && renderContact()}
               {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
               {tab === "location" && renderLocation()}
             </main>

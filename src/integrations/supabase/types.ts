@@ -456,6 +456,7 @@ export type Database = {
           notes: string | null
           performances: Json | null
           price: string | null
+          price_notes: string[]
           recurrence: string | null
           social_media_label: string | null
           social_media_link: string | null
@@ -508,6 +509,7 @@ export type Database = {
           notes?: string | null
           performances?: Json | null
           price?: string | null
+          price_notes?: string[]
           recurrence?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
@@ -560,6 +562,7 @@ export type Database = {
           notes?: string | null
           performances?: Json | null
           price?: string | null
+          price_notes?: string[]
           recurrence?: string | null
           social_media_label?: string | null
           social_media_link?: string | null
