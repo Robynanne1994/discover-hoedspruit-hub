@@ -62,7 +62,7 @@ const floatBtn: React.CSSProperties = {
   boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
 };
 
-type TabKey = "about" | "details" | "gallery" | "location";
+type TabKey = "about" | "details" | "contact" | "gallery" | "location";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const toIcsDate = (d: Date) =>
