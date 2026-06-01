@@ -925,7 +925,6 @@ const EventDetail = () => {
           >
             <MapPin size={12} color={C.muted} strokeWidth={1.6} />
             <span>{event.location}</span>
-            <ArrowUpRight size={12} color={C.muted} />
           </a>
         )}
 
