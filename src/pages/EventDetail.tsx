@@ -345,7 +345,9 @@ const EventDetail = () => {
   const priceNotes: string[] = Array.isArray((e as any).price_notes)
     ? (e as any).price_notes.filter((s: string) => s && String(s).trim())
     : [];
-  const notes = e.notes || null;
+  const notes: string[] = Array.isArray((e as any).notes)
+    ? (e as any).notes.filter((s: string) => s && String(s).trim())
+    : (typeof (e as any).notes === "string" && (e as any).notes.trim() ? [(e as any).notes] : []);
   const subTag1 = e.sub_tag_1 || null;
   const subTag2 = e.sub_tag_2 || null;
   const eyebrowText = [e.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "")[0] || null;
@@ -564,7 +566,7 @@ const EventDetail = () => {
   if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
     detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
   }
-  if (notes) detailRows.push({ Icon: StickyNote, label: "Notes", value: <span style={{ whiteSpace: "pre-line" }}>{notes}</span> });
+  notes.forEach((n, i) => detailRows.push({ Icon: StickyNote, label: i === 0 ? (notes.length > 1 ? "Notes" : "Note") : "", value: <span style={{ whiteSpace: "pre-line" }}>{n}</span> }));
 
   const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);

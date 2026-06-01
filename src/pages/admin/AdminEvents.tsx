@@ -19,7 +19,7 @@ import { sanitizeContactArray } from "@/lib/contacts";
 
 type Event = Tables<"events">;
 const RECURRENCE_OPTIONS = ["", "Daily", "Weekly", "Biweekly", "Monthly", "Bimonthly", "Quarterly", "Annually"];
-const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", included: [] as string[], price_notes: [] as string[], notes: "", business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
+const emptyForm = { title: "", title_override: "", description: "", date: "", start_date: "", end_date: "", location: "", tag: "", sub_tag_1: "", sub_tag_2: "", image_url: "", detail_image_url: "", start_time: "", end_time: "", recurrence: "", google_maps_link: "", social_media_link: "", social_media_label: "", contact_email: "", contact_phone: "", contact_whatsapp: "", additional_emails: [] as string[], additional_phones: [] as string[], additional_whatsapps: [] as string[], gallery_images: "", booking_link: "", price: "", included: [] as string[], price_notes: [] as string[], notes: [] as string[], business_id: "", business_ids: [] as string[], is_featured: false, hosted_by_name: "", hosted_by_subtitle: "", hosted_by_image_url: "", hosted_by_name_2: "", hosted_by_subtitle_2: "", hosted_by_image_url_2: "", hosted_by_name_3: "", hosted_by_subtitle_3: "", hosted_by_image_url_3: "" };
 
 const EventGalleryUpload = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [uploading, setUploading] = useState(false);
@@ -178,7 +178,7 @@ const AdminEvents = () => {
         booking_link: values.booking_link || null,
         price: values.price || null,
         included: Array.isArray((values as any).included) ? (values as any).included.map((s: string) => s.trim()).filter(Boolean) : [],
-        notes: values.notes || null,
+        notes: Array.isArray((values as any).notes) ? (values as any).notes.map((s: string) => s.trim()).filter(Boolean) : (typeof (values as any).notes === "string" && (values as any).notes.trim() ? [(values as any).notes.trim()] : []),
         price_notes: Array.isArray((values as any).price_notes) ? (values as any).price_notes.map((s: string) => s.trim()).filter(Boolean) : [],
         business_id: ((values as any).business_ids?.[0]) || values.business_id || null,
         business_ids: Array.isArray((values as any).business_ids) ? (values as any).business_ids.filter(Boolean) : [],
@@ -253,7 +253,7 @@ const AdminEvents = () => {
       booking_link: (ev as any).booking_link ?? "",
       price: (ev as any).price ?? "",
       included: Array.isArray((ev as any).included) ? (ev as any).included : [],
-      notes: (ev as any).notes ?? "",
+      notes: Array.isArray((ev as any).notes) ? (ev as any).notes : ((ev as any).notes ? [(ev as any).notes] : []),
       price_notes: Array.isArray((ev as any).price_notes) ? (ev as any).price_notes : [],
       business_id: (ev as any).business_id ?? "",
       business_ids: Array.isArray((ev as any).business_ids) && (ev as any).business_ids.length > 0
@@ -376,7 +376,11 @@ const AdminEvents = () => {
                 <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines under the price (e.g. "Per person", "Includes wine"). In CSV, separate notes with the <code>|</code> symbol.</p>
                 <IncludedChipsInput value={(form as any).price_notes || []} onChange={(v) => setForm({ ...form, price_notes: v } as any)} placeholder="e.g. Per person, then press Enter" />
               </div>
-              <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} placeholder="General notes about the event (shown in the main details card)" /></div>
+              <div className="space-y-2">
+                <Label>Notes</Label>
+                <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
+                <IncludedChipsInput value={(form as any).notes || []} onChange={(v) => setForm({ ...form, notes: v } as any)} placeholder="e.g. Bring your own chair, then press Enter" />
+              </div>
               <ListingContactPicker
                 listings={listings || []}
                 onApply={(c) => setForm({ ...form, ...c })}

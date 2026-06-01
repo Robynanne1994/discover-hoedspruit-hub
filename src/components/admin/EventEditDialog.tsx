@@ -65,6 +65,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       payload.price_notes = Array.isArray(form.price_notes)
         ? form.price_notes.map((s: string) => (s ?? "").toString().trim()).filter(Boolean)
         : [];
+      payload.notes = Array.isArray(form.notes)
+        ? form.notes.map((s: string) => (s ?? "").toString().trim()).filter(Boolean)
+        : (typeof form.notes === "string" && form.notes.trim() ? [form.notes.trim()] : []);
       // Normalize performances: keep only rows with a valid date, sort by date+time,
       // and auto-derive start_date/end_date so existing queries/calendar still work.
       const rawPerfs = Array.isArray(form.performances) ? form.performances : [];
@@ -233,7 +236,11 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line under the price. In CSV, separate notes with the <code>|</code> symbol.</p>
             <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
           </div>
-          <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => set("notes", e.target.value)} placeholder="General notes about the event (shown in the main details card)" /></div>
+          <div className="space-y-2">
+            <Label>Notes</Label>
+            <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line in the details card. In CSV, separate notes with the <code>|</code> symbol.</p>
+            <IncludedChipsInput value={Array.isArray(form.notes) ? form.notes : (typeof form.notes === "string" && form.notes.trim() ? [form.notes] : [])} onChange={(v) => set("notes", v)} placeholder="e.g. Bring your own chair, then press Enter" />
+          </div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
