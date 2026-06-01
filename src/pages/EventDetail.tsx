@@ -644,11 +644,11 @@ const EventDetail = () => {
               {sectionHeading("Pricing")}
               <div style={{ background: C.surface, borderRadius: 16, padding: "16px 16px", border: `1px solid ${C.border}` }}>
                 {price && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "4px 0 12px" }}>
-                    <Banknote size={18} strokeWidth={1.5} color={C.primary} />
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>Price</div>
-                      <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{price}</div>
+                  <div style={{ padding: "4px 0 12px" }}>
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, marginBottom: 8 }}>Price</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                      <Banknote size={18} strokeWidth={1.5} color={C.primary} />
+                      <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{price}</div>
                     </div>
                   </div>
                 )}
