@@ -348,22 +348,37 @@ const EventCard = ({ event }: { event: any }) => {
         >
           {getDisplayTitle(event)}
         </h3>
-        <p
-          style={{
-            fontFamily: SANS,
-            fontSize: 12.5,
-            lineHeight: 1.35,
-            color: C.body,
-            margin: 0,
-            marginBottom: 4,
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {eventDateLine(event)}
-        </p>
+        <div style={{ marginBottom: 4 }}>
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 12.5,
+              lineHeight: 1.35,
+              color: C.body,
+              margin: 0,
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {eventDateLine(event)}
+          </p>
+          {moreDates && (
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 12,
+                lineHeight: 1.35,
+                color: C.muted,
+                margin: 0,
+                marginTop: 2,
+              }}
+            >
+              {moreDates}
+            </p>
+          )}
+        </div>
         {location && (
           <p
             style={{
