@@ -473,6 +473,15 @@ const Events = () => {
   const selectedDate: Date | null = urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) ? new Date(urlDate + "T00:00:00") : null;
   const search = searchParams.get("q") ?? "";
   const tagFilter = searchParams.get("t");
+  const filterBarRef = useRef<HTMLDivElement | null>(null);
+  const activePillRef = useRef<HTMLButtonElement | null>(null);
+  useEffect(() => {
+    const bar = filterBarRef.current;
+    const pill = activePillRef.current;
+    if (!bar || !pill) return;
+    const target = pill.offsetLeft - (bar.clientWidth - pill.clientWidth) / 2;
+    bar.scrollTo({ left: Math.max(0, target), behavior: "auto" });
+  }, [activeFilter, selectedDate]);
   const updateParams = (patch: Record<string, string | null>) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
