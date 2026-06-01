@@ -628,10 +628,8 @@ const EventDetail = () => {
     </div>
   );
 
-  const cardSubtitle = (label: string) => (
-    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, margin: "0 0 10px 4px" }}>
-      {label}
-    </div>
+  const sectionHeading = (label: string) => (
+    <h2 style={{ ...headStyle, margin: "0 0 14px" }}>{label}</h2>
   );
 
   const renderDetails = () => (
@@ -643,7 +641,7 @@ const EventDetail = () => {
           {detailRows.length > 0 && renderRowsCard(detailRows)}
           {hasPricingCard && (
             <div style={{ marginTop: detailRows.length > 0 ? 20 : 0 }}>
-              {cardSubtitle("Pricing")}
+              {sectionHeading("Pricing")}
               <div style={{ background: C.surface, borderRadius: 16, padding: "16px 16px", border: `1px solid ${C.border}` }}>
                 {price && (
                   <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "4px 0 12px" }}>
@@ -660,6 +658,9 @@ const EventDetail = () => {
                     paddingBottom: includedItems.length > 0 ? 12 : 4,
                     borderTop: price ? `1px solid ${C.divider}` : "none",
                   }}>
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, marginBottom: 8 }}>
+                      Price Notes
+                    </div>
                     {priceNotes.map((note, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
                         <span style={{
@@ -710,7 +711,7 @@ const EventDetail = () => {
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact details yet.</p>
       ) : (
         <>
-          {cardSubtitle("Get in touch")}
+          {sectionHeading("Contact")}
           {renderRowsCard(contactRows)}
         </>
       )}
