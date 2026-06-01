@@ -592,8 +592,8 @@ const EventDetail = () => {
     contactRows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
   });
   allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
-  if (socialLink) contactRows.push({ Icon: Globe, label: socialLabel || "Website", value: socialLink.replace(/^https?:\/\//, "").replace(/\/$/, ""), href: socialLink, external: true });
-  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLink.replace(/^https?:\/\//, "").replace(/\/$/, ""), href: bookingLink, external: true });
+  if (socialLink) contactRows.push({ Icon: Globe, label: socialLabel || "Website", value: socialLabel || socialLink, href: socialLink, external: true });
+  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true });
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
