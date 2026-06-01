@@ -62,6 +62,9 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
       payload.additional_emails = sanitizeContactArray(form.additional_emails);
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
+      payload.price_notes = Array.isArray(form.price_notes)
+        ? form.price_notes.map((s: string) => (s ?? "").toString().trim()).filter(Boolean)
+        : [];
       // Normalize performances: keep only rows with a valid date, sort by date+time,
       // and auto-derive start_date/end_date so existing queries/calendar still work.
       const rawPerfs = Array.isArray(form.performances) ? form.performances : [];
