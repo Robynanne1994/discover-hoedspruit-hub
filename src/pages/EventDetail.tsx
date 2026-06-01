@@ -641,7 +641,7 @@ const EventDetail = () => {
           {detailRows.length > 0 && renderRowsCard(detailRows)}
           {hasPricingCard && (
             <div style={{ marginTop: detailRows.length > 0 ? 20 : 0 }}>
-              {cardSubtitle("Pricing")}
+              {sectionHeading("Pricing")}
               <div style={{ background: C.surface, borderRadius: 16, padding: "16px 16px", border: `1px solid ${C.border}` }}>
                 {price && (
                   <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "4px 0 12px" }}>
