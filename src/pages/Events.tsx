@@ -318,7 +318,7 @@ const EventCard = ({ event }: { event: any }) => {
           />
         )}
       </div>
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "12px 12px 12px 0", overflow: "hidden" }}>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: "12px 12px 12px 0", overflow: "hidden" }}>
         <h3
           {...noTitleCaseProps(event)}
           style={{
