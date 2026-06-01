@@ -352,7 +352,7 @@ const EventCard = ({ event }: { event: any }) => {
           <p
             style={{
               fontFamily: SANS,
-              fontSize: 12.5,
+              fontSize: 13.5,
               lineHeight: 1.35,
               color: C.body,
               margin: 0,
