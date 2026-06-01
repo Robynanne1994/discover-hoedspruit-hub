@@ -101,19 +101,14 @@ function fmtTime(t: string | null | undefined): string {
 }
 
 function eventDateLine(e: any): string {
-  // Multi-performance → show the next upcoming performance + "+N more dates"
   if (hasPerformances(e)) {
     const next = getNextOccurrence(e);
     if (next) {
-      const more = getUpcomingPerformancesCount(e);
       const time = next.startTime ? fmtTime(next.startTime) : "";
       const datePart = format(next.date, "d MMM");
-      const base = time ? `${datePart} • ${time}` : datePart;
-      return more > 0 ? `${base} · +${more} more date${more === 1 ? "" : "s"}` : base;
+      return time ? `${datePart} • ${time}` : datePart;
     }
-    // all in the past — fall through to the last performance label
   }
-  // Recurring (structured rule) → show next occurrence
   if (parseRecurrenceRule(e.recurrence)) {
     const next = getNextOccurrence(e);
     if (next) {
@@ -130,6 +125,19 @@ function eventDateLine(e: any): string {
     : `${format(start, "d")} – ${format(end!, "d MMM")}`;
   const time = sameDay ? fmtTime(e.start_time) : "";
   return time ? `${dPart} • ${time}` : dPart;
+}
+
+function eventMoreDatesLine(e: any): string | null {
+  if (hasPerformances(e)) {
+    const next = getNextOccurrence(e);
+    if (next) {
+      const more = getUpcomingPerformancesCount(e);
+      if (more > 0) {
+        return `+${more} more date${more === 1 ? "" : "s"}`;
+      }
+    }
+  }
+  return null;
 }
 
 function formatPrice(p: string | number | null | undefined): string {
