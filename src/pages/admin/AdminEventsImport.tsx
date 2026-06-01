@@ -215,6 +215,9 @@ const AdminEventsImport = () => {
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           price: row.price || null,
+          image_url: row.image_url || null,
+          detail_image_url: row.detail_image_url || null,
+          homepage_image_url: row.homepage_image_url || null,
           included: splitPipe(row.included),
           notes: splitPipe(row.notes),
           price_notes: splitPipe(row.price_notes),
@@ -223,25 +226,27 @@ const AdminEventsImport = () => {
           hosted_by_name: row.hosted_by_name || null,
           hosted_by_subtitle: row.hosted_by_subtitle || null,
           hosted_by_image_url: row.hosted_by_image_url || null,
+          hosted_by_link: row.hosted_by_link || null,
           hosted_by_name_2: row.hosted_by_name_2 || null,
           hosted_by_subtitle_2: row.hosted_by_subtitle_2 || null,
           hosted_by_image_url_2: row.hosted_by_image_url_2 || null,
+          hosted_by_link_2: row.hosted_by_link_2 || null,
           hosted_by_name_3: row.hosted_by_name_3 || null,
           hosted_by_subtitle_3: row.hosted_by_subtitle_3 || null,
           hosted_by_image_url_3: row.hosted_by_image_url_3 || null,
+          hosted_by_link_3: row.hosted_by_link_3 || null,
+          performances: parsePerformances(row.performances),
           is_featured: parseBool(row.is_featured),
         };
 
-        // CSV imports never touch image fields — images are managed exclusively in the backend editor.
-        const IMAGE_FIELDS = [
-          "image_url",
-          "detail_image_url",
-          "gallery_images",
-          "hosted_by_image_url",
-          "hosted_by_image_url_2",
-          "hosted_by_image_url_3",
-        ];
-        for (const f of IMAGE_FIELDS) delete payload[f];
+        // If performances provided, auto-derive start/end_date to match the editor's behaviour.
+        if (Array.isArray(payload.performances) && payload.performances.length > 0) {
+          const sorted = [...payload.performances].sort((a: any, b: any) =>
+            a.date === b.date ? (a.time || "").localeCompare(b.time || "") : a.date.localeCompare(b.date),
+          );
+          payload.start_date = sorted[0].date;
+          payload.end_date = sorted[sorted.length - 1].date;
+        }
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
@@ -254,6 +259,7 @@ const AdminEventsImport = () => {
           else results.created++;
         }
       }
+
 
       // Delete events not in CSV
       for (const [existingTitle, existingId] of existingMap) {
