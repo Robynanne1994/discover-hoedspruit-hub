@@ -917,6 +917,7 @@ const EventDetail = () => {
 
       {(() => {
         const hasAboutContent = !!(e.description?.trim() || e.hosted_by_name || e.hosted_by_name_2 || e.hosted_by_name_3);
+        const hasContactContent = contactRows.length > 0;
         return (
           <>
             <nav style={{
@@ -926,6 +927,7 @@ const EventDetail = () => {
             }}>
               {hasAboutContent && <TabBtn k="about" label="About" />}
               <TabBtn k="details" label="Details" />
+              {hasContactContent && <TabBtn k="contact" label="Contact" />}
               {galleryImages.length > 0 && <TabBtn k="gallery" label="Gallery" />}
               <TabBtn k="location" label="Location" />
             </nav>
@@ -933,6 +935,7 @@ const EventDetail = () => {
             <main>
               {tab === "about" && hasAboutContent && renderAbout()}
               {tab === "details" && renderDetails()}
+              {tab === "contact" && hasContactContent && renderContact()}
               {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
               {tab === "location" && renderLocation()}
             </main>
