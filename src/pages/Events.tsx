@@ -107,7 +107,7 @@ function eventDateLine(e: any): string {
     if (next) {
       const more = getUpcomingPerformancesCount(e);
       const time = next.startTime ? fmtTime(next.startTime) : "";
-      const datePart = format(next.date, "EEE, d MMM");
+      const datePart = format(next.date, "d MMM");
       const base = time ? `${datePart} • ${time}` : datePart;
       return more > 0 ? `${base} · +${more} more date${more === 1 ? "" : "s"}` : base;
     }
@@ -118,7 +118,7 @@ function eventDateLine(e: any): string {
     const next = getNextOccurrence(e);
     if (next) {
       const time = next.startTime ? fmtTime(next.startTime) : "";
-      const datePart = `Next: ${format(next.date, "EEE, d MMM")}`;
+      const datePart = `Next: ${format(next.date, "d MMM")}`;
       return time ? `${datePart} • ${time}` : datePart;
     }
   }
@@ -126,7 +126,7 @@ function eventDateLine(e: any): string {
   if (!start) return (e.date || "").replace(/<[^>]*>/g, "").trim();
   const sameDay = !end || start.getTime() === end.getTime();
   const dPart = sameDay
-    ? format(start, "EEE, d MMM")
+    ? format(start, "d MMM")
     : `${format(start, "d")} – ${format(end!, "d MMM")}`;
   const time = sameDay ? fmtTime(e.start_time) : "";
   return time ? `${dPart} • ${time}` : dPart;
