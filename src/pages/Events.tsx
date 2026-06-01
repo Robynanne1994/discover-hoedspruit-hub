@@ -348,7 +348,7 @@ const EventCard = ({ event }: { event: any }) => {
         >
           {getDisplayTitle(event)}
         </h3>
-        <div style={{ marginBottom: 4 }}>
+        <div style={{ marginBottom: 12 }}>
           <p
             style={{
               fontFamily: SANS,
