@@ -423,22 +423,25 @@ const EventCard = ({ event }: { event: any }) => {
             {price}
           </span>
         )}
-        {tag && (
-          <span
-            style={{
-              fontFamily: SANS,
-              fontSize: 9,
-              color: C.body,
-              background: C.tag,
-              borderRadius: 999,
-              padding: "3px 8px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {tag}
-          </span>
-        )}
       </div>
+      {tag && (
+        <span
+          style={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            fontFamily: SANS,
+            fontSize: 9,
+            color: C.body,
+            background: C.tag,
+            borderRadius: "10px 0 0 0",
+            padding: "3px 8px",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {tag}
+        </span>
+      )}
     </Link>
   );
 };
