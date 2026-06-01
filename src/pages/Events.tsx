@@ -290,21 +290,20 @@ const EventCard = ({ event }: { event: any }) => {
       to={`/events/${event.id}`}
       style={{
         display: "flex",
-        alignItems: "center",
+        alignItems: "stretch",
         gap: 14,
         background: C.white,
         borderRadius: 16,
         padding:  0,
         textDecoration: "none",
         overflow: "hidden",
+        minHeight: 112,
       }}
     >
       <div
         style={{
-          width: 96,
-          height: 96,
-          borderTopLeftRadius: 16,
-          borderBottomLeftRadius: 16,
+          width: 112,
+          alignSelf: "stretch",
           overflow: "hidden",
           background: C.ivory,
           flexShrink: 0,
