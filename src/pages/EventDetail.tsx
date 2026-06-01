@@ -350,7 +350,12 @@ const EventDetail = () => {
     : (typeof (e as any).notes === "string" && (e as any).notes.trim() ? [(e as any).notes] : []);
   const subTag1 = e.sub_tag_1 || null;
   const subTag2 = e.sub_tag_2 || null;
-  const eyebrowText = [e.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "")[0] || null;
+  const allTags = [
+    { text: e.tag, type: "main" as const },
+    { text: subTag1, type: "sub" as const },
+    { text: subTag2, type: "sub" as const },
+  ].filter((t) => t.text && String(t.text).trim() !== "");
+  const eyebrowText = allTags[0]?.text || null;
 
   const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
   const canAddToCal = !!(e.start_date || e.date || isMultiPerformance) && !!nextOccurrence;
