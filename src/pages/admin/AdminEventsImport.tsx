@@ -384,9 +384,11 @@ const AdminEventsImport = () => {
         sub_tag_2: e.sub_tag_2 ?? "",
         image_url: e.image_url ?? "",
         detail_image_url: e.detail_image_url ?? "",
+        homepage_image_url: e.homepage_image_url ?? "",
         start_time: e.start_time ?? "",
         end_time: e.end_time ?? "",
         recurrence: e.recurrence ?? "",
+        performances: stringifyPerformances(e.performances),
         google_maps_link: e.google_maps_link ?? "",
         social_media_link: e.social_media_link ?? "",
         social_media_label: e.social_media_label ?? "",
@@ -408,12 +410,15 @@ const AdminEventsImport = () => {
         hosted_by_name: e.hosted_by_name ?? "",
         hosted_by_subtitle: e.hosted_by_subtitle ?? "",
         hosted_by_image_url: e.hosted_by_image_url ?? "",
+        hosted_by_link: e.hosted_by_link ?? "",
         hosted_by_name_2: e.hosted_by_name_2 ?? "",
         hosted_by_subtitle_2: e.hosted_by_subtitle_2 ?? "",
         hosted_by_image_url_2: e.hosted_by_image_url_2 ?? "",
+        hosted_by_link_2: e.hosted_by_link_2 ?? "",
         hosted_by_name_3: e.hosted_by_name_3 ?? "",
         hosted_by_subtitle_3: e.hosted_by_subtitle_3 ?? "",
         hosted_by_image_url_3: e.hosted_by_image_url_3 ?? "",
+        hosted_by_link_3: e.hosted_by_link_3 ?? "",
         is_featured: e.is_featured ? "true" : "false",
       };
       return EXPECTED_HEADERS.map((h) => escapeCSV(record[h] ?? "")).join(",");
@@ -421,6 +426,7 @@ const AdminEventsImport = () => {
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
     toast.success(`Exported ${events.length} events`);
   };
+
 
   return (
     <div>
