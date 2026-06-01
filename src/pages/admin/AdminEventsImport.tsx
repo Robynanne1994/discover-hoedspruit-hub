@@ -19,9 +19,11 @@ const EXPECTED_HEADERS = [
   "sub_tag_2",
   "image_url",
   "detail_image_url",
+  "homepage_image_url",
   "start_time",
   "end_time",
   "recurrence",
+  "performances",
   "google_maps_link",
   "social_media_link",
   "social_media_label",
@@ -43,14 +45,43 @@ const EXPECTED_HEADERS = [
   "hosted_by_name",
   "hosted_by_subtitle",
   "hosted_by_image_url",
+  "hosted_by_link",
   "hosted_by_name_2",
   "hosted_by_subtitle_2",
   "hosted_by_image_url_2",
+  "hosted_by_link_2",
   "hosted_by_name_3",
   "hosted_by_subtitle_3",
   "hosted_by_image_url_3",
+  "hosted_by_link_3",
   "is_featured",
 ];
+
+// Performances format in CSV: pipe-separated entries, each entry uses
+// semicolons between fields: "YYYY-MM-DD;HH:MM;HH:MM" (date;start;end).
+// End time is optional. Example: "2026-01-15;19:00;21:00|2026-01-16;19:00;"
+const parsePerformances = (v: string | undefined): { date: string; time: string | null; end_time: string | null }[] | null => {
+  if (!v || !v.trim()) return null;
+  const out: { date: string; time: string | null; end_time: string | null }[] = [];
+  for (const raw of v.split("|")) {
+    const parts = raw.split(";").map((s) => s.trim());
+    const date = parts[0];
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    const time = parts[1] && /^\d{1,2}:\d{2}/.test(parts[1]) ? parts[1].slice(0, 5) : null;
+    const end_time = parts[2] && /^\d{1,2}:\d{2}/.test(parts[2]) ? parts[2].slice(0, 5) : null;
+    out.push({ date, time, end_time });
+  }
+  return out.length ? out : null;
+};
+
+const stringifyPerformances = (perfs: any): string => {
+  if (!Array.isArray(perfs) || perfs.length === 0) return "";
+  return perfs
+    .filter((p) => p && typeof p.date === "string")
+    .map((p) => `${p.date};${p.time ?? ""};${p.end_time ?? ""}`)
+    .join("|");
+};
+
 
 const parseBool = (v: string | undefined): boolean => {
   if (!v) return false;
@@ -184,6 +215,7 @@ const AdminEventsImport = () => {
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           price: row.price || null,
+          homepage_image_url: row.homepage_image_url || null,
           included: splitPipe(row.included),
           notes: splitPipe(row.notes),
           price_notes: splitPipe(row.price_notes),
@@ -192,25 +224,27 @@ const AdminEventsImport = () => {
           hosted_by_name: row.hosted_by_name || null,
           hosted_by_subtitle: row.hosted_by_subtitle || null,
           hosted_by_image_url: row.hosted_by_image_url || null,
+          hosted_by_link: row.hosted_by_link || null,
           hosted_by_name_2: row.hosted_by_name_2 || null,
           hosted_by_subtitle_2: row.hosted_by_subtitle_2 || null,
           hosted_by_image_url_2: row.hosted_by_image_url_2 || null,
+          hosted_by_link_2: row.hosted_by_link_2 || null,
           hosted_by_name_3: row.hosted_by_name_3 || null,
           hosted_by_subtitle_3: row.hosted_by_subtitle_3 || null,
           hosted_by_image_url_3: row.hosted_by_image_url_3 || null,
+          hosted_by_link_3: row.hosted_by_link_3 || null,
+          performances: parsePerformances(row.performances),
           is_featured: parseBool(row.is_featured),
         };
 
-        // CSV imports never touch image fields — images are managed exclusively in the backend editor.
-        const IMAGE_FIELDS = [
-          "image_url",
-          "detail_image_url",
-          "gallery_images",
-          "hosted_by_image_url",
-          "hosted_by_image_url_2",
-          "hosted_by_image_url_3",
-        ];
-        for (const f of IMAGE_FIELDS) delete payload[f];
+        // If performances provided, auto-derive start/end_date to match the editor's behaviour.
+        if (Array.isArray(payload.performances) && payload.performances.length > 0) {
+          const sorted = [...payload.performances].sort((a: any, b: any) =>
+            a.date === b.date ? (a.time || "").localeCompare(b.time || "") : a.date.localeCompare(b.date),
+          );
+          payload.start_date = sorted[0].date;
+          payload.end_date = sorted[sorted.length - 1].date;
+        }
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
@@ -223,6 +257,7 @@ const AdminEventsImport = () => {
           else results.created++;
         }
       }
+
 
       // Delete events not in CSV
       for (const [existingTitle, existingId] of existingMap) {
@@ -268,9 +303,11 @@ const AdminEventsImport = () => {
       sub_tag_2: "Outdoor",
       image_url: "https://example.com/cover.jpg",
       detail_image_url: "https://example.com/detail.jpg",
+      homepage_image_url: "https://example.com/homepage.jpg",
       start_time: "08:00",
       end_time: "13:00",
       recurrence: "Weekly",
+      performances: "2026-01-15;19:00;21:00|2026-01-16;19:00;21:00",
       google_maps_link: "https://maps.google.com/example",
       social_media_link: "https://instagram.com/example",
       social_media_label: "Instagram",
@@ -292,13 +329,17 @@ const AdminEventsImport = () => {
       hosted_by_name: "Kristi & Joëlle",
       hosted_by_subtitle: "Yoga Teachers",
       hosted_by_image_url: "https://example.com/host1.jpg",
+      hosted_by_link: "https://example.com/kristi",
       hosted_by_name_2: "",
       hosted_by_subtitle_2: "",
       hosted_by_image_url_2: "",
+      hosted_by_link_2: "",
       hosted_by_name_3: "",
       hosted_by_subtitle_3: "",
       hosted_by_image_url_3: "",
+      hosted_by_link_3: "",
       is_featured: "true",
+
     };
     const csv =
       EXPECTED_HEADERS.join(",") +
@@ -343,9 +384,11 @@ const AdminEventsImport = () => {
         sub_tag_2: e.sub_tag_2 ?? "",
         image_url: e.image_url ?? "",
         detail_image_url: e.detail_image_url ?? "",
+        homepage_image_url: e.homepage_image_url ?? "",
         start_time: e.start_time ?? "",
         end_time: e.end_time ?? "",
         recurrence: e.recurrence ?? "",
+        performances: stringifyPerformances(e.performances),
         google_maps_link: e.google_maps_link ?? "",
         social_media_link: e.social_media_link ?? "",
         social_media_label: e.social_media_label ?? "",
@@ -367,12 +410,15 @@ const AdminEventsImport = () => {
         hosted_by_name: e.hosted_by_name ?? "",
         hosted_by_subtitle: e.hosted_by_subtitle ?? "",
         hosted_by_image_url: e.hosted_by_image_url ?? "",
+        hosted_by_link: e.hosted_by_link ?? "",
         hosted_by_name_2: e.hosted_by_name_2 ?? "",
         hosted_by_subtitle_2: e.hosted_by_subtitle_2 ?? "",
         hosted_by_image_url_2: e.hosted_by_image_url_2 ?? "",
+        hosted_by_link_2: e.hosted_by_link_2 ?? "",
         hosted_by_name_3: e.hosted_by_name_3 ?? "",
         hosted_by_subtitle_3: e.hosted_by_subtitle_3 ?? "",
         hosted_by_image_url_3: e.hosted_by_image_url_3 ?? "",
+        hosted_by_link_3: e.hosted_by_link_3 ?? "",
         is_featured: e.is_featured ? "true" : "false",
       };
       return EXPECTED_HEADERS.map((h) => escapeCSV(record[h] ?? "")).join(",");
@@ -380,6 +426,7 @@ const AdminEventsImport = () => {
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
     toast.success(`Exported ${events.length} events`);
   };
+
 
   return (
     <div>
