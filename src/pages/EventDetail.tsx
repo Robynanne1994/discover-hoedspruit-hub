@@ -881,12 +881,12 @@ const EventDetail = () => {
                 )}
                 <span style={{
                   fontSize: 11,
-                  letterSpacing: t.type === "main" ? "0.12em" : "0.04em",
-                  textTransform: t.type === "main" ? "uppercase" : undefined,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
                   color: t.type === "main" ? C.primary : C.muted,
                   fontWeight: t.type === "main" ? 700 : 400,
                 }}>
-                  {t.type === "main" ? t.text : String(t.text).toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())}
+                  {t.text}
                 </span>
               </div>
             ))}
