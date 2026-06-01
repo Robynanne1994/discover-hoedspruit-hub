@@ -749,6 +749,7 @@ const Events = () => {
 
       {/* Filter pills */}
       <div
+        ref={filterBarRef}
         style={{
           padding: "16px 20px 32px",
           display: "flex",
@@ -763,6 +764,7 @@ const Events = () => {
           return (
             <button
               key={f.value}
+              ref={active ? activePillRef : undefined}
               onClick={() => handleFilterPill(f.value)}
               style={{
                 fontFamily: SANS,
@@ -783,6 +785,7 @@ const Events = () => {
           );
         })}
       </div>
+
 
       {/* List */}
       <div style={{ padding: "0 20px" }}>
