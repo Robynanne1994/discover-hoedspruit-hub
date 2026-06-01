@@ -387,7 +387,7 @@ const EventCard = ({ event }: { event: any }) => {
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-end",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           flexShrink: 0,
           gap: 8,
           padding: "12px 12px 12px 4px",
