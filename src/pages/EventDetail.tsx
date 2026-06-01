@@ -712,11 +712,37 @@ const EventDetail = () => {
       ) : (
         <>
           {sectionHeading("Contact")}
-          {renderRowsCard(contactRows)}
+          <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+            {contactRows.map((r, i) => {
+              const inner = (
+                <>
+                  <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                    {r.value}
+                  </div>
+                  {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                </>
+              );
+              const style: React.CSSProperties = {
+                display: "flex", alignItems: "center", gap: 14,
+                padding: "14px 0", textDecoration: "none",
+                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+              };
+              if (r.href) {
+                return (
+                  <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+                    {inner}
+                  </a>
+                );
+              }
+              return <div key={i} style={style}>{inner}</div>;
+            })}
+          </div>
         </>
       )}
     </div>
   );
+
 
   const renderGallery = () => (
     <div style={{ padding: 20 }}>
