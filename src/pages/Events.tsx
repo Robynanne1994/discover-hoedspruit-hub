@@ -439,15 +439,15 @@ const EventCard = ({ event }: { event: any }) => {
         <span
           style={{
             position: "absolute",
-            bottom: 0,
-            right: 0,
+            bottom: 10,
+            right: 10,
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 12,
+            fontSize: 13,
             color: C.body,
             background: C.tag,
-            borderRadius: 0,
-            padding: "6px 12px",
+            borderRadius: 999,
+            padding: "8px 14px",
             whiteSpace: "nowrap",
           }}
         >
