@@ -453,7 +453,7 @@ export type Database = {
           included: string[]
           is_featured: boolean
           location: string | null
-          notes: string | null
+          notes: string[]
           performances: Json | null
           price: string | null
           price_notes: string[]
@@ -506,7 +506,7 @@ export type Database = {
           included?: string[]
           is_featured?: boolean
           location?: string | null
-          notes?: string | null
+          notes?: string[]
           performances?: Json | null
           price?: string | null
           price_notes?: string[]
@@ -559,7 +559,7 @@ export type Database = {
           included?: string[]
           is_featured?: boolean
           location?: string | null
-          notes?: string | null
+          notes?: string[]
           performances?: Json | null
           price?: string | null
           price_notes?: string[]
