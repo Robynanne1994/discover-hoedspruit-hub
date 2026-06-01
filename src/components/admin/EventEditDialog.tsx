@@ -181,7 +181,7 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             }}>+ Add Linked Listing</Button>
           </div>
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
-          <div><Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(1:1 square — matches the events list card)</span></Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={1} /></div>
+          <div><Label>Card Cover Image <span className="text-xs text-muted-foreground font-normal">(3:4 portrait — matches the events list card)</span></Label><ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => set("image_url", url)} aspect={140/188} /></div>
           <div><Label>Detail Cover Image</Label><ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} /></div>
           <div><Label>Homepage Upcoming Events Image</Label><ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={23/30} /></div>
           <div className="grid grid-cols-2 gap-3">
