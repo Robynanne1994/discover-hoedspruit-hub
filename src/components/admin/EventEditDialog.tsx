@@ -225,7 +225,12 @@ const EventEditDialog = ({ open, onOpenChange, event }: Props) => {
             <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
             <IncludedChipsInput value={Array.isArray(form.included) ? form.included : []} onChange={(v) => set("included", v)} />
           </div>
-          <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => set("notes", e.target.value)} placeholder="Additional info shown under price" /></div>
+          <div className="space-y-2">
+            <Label>Price Notes</Label>
+            <p className="text-xs text-muted-foreground">Add each note separately — each appears on a new line under the price. In CSV, separate notes with the <code>|</code> symbol.</p>
+            <IncludedChipsInput value={Array.isArray(form.price_notes) ? form.price_notes : []} onChange={(v) => set("price_notes", v)} placeholder="e.g. Per person, then press Enter" />
+          </div>
+          <div><Label>Notes</Label><Textarea rows={3} value={form.notes || ""} onChange={(e) => set("notes", e.target.value)} placeholder="General notes about the event (shown in the main details card)" /></div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text</Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Google Maps Link</Label><Input value={form.google_maps_link || ""} onChange={(e) => set("google_maps_link", e.target.value)} /></div>
