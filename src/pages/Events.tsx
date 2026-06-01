@@ -290,7 +290,7 @@ const EventCard = ({ event }: { event: any }) => {
       to={`/events/${event.id}`}
       style={{
         display: "flex",
-        alignItems: "stretch",
+        alignItems: "center",
         gap: 14,
         background: C.white,
         borderRadius: 16,
@@ -302,7 +302,7 @@ const EventCard = ({ event }: { event: any }) => {
       <div
         style={{
           width: 96,
-          alignSelf: "stretch",
+          height: 96,
           borderTopLeftRadius: 16,
           borderBottomLeftRadius: 16,
           overflow: "hidden",
@@ -315,7 +315,7 @@ const EventCard = ({ event }: { event: any }) => {
             src={event.image_url}
             alt={event.title}
             loading="lazy"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
       </div>
