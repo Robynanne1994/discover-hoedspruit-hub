@@ -289,6 +289,7 @@ const EventCard = ({ event }: { event: any }) => {
     <Link
       to={`/events/${event.id}`}
       style={{
+        position: "relative",
         display: "flex",
         alignItems: "stretch",
         gap: 14,
