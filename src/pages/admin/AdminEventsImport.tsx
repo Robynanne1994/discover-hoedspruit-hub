@@ -199,6 +199,17 @@ const AdminEventsImport = () => {
           is_featured: parseBool(row.is_featured),
         };
 
+        // CSV imports never touch image fields — images are managed exclusively in the backend editor.
+        const IMAGE_FIELDS = [
+          "image_url",
+          "detail_image_url",
+          "gallery_images",
+          "hosted_by_image_url",
+          "hosted_by_image_url_2",
+          "hosted_by_image_url_3",
+        ];
+        for (const f of IMAGE_FIELDS) delete payload[f];
+
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
           const { error } = await supabase.from("events").update(payload as any).eq("id", existingId);
