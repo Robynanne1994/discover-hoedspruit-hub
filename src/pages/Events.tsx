@@ -101,19 +101,14 @@ function fmtTime(t: string | null | undefined): string {
 }
 
 function eventDateLine(e: any): string {
-  // Multi-performance → show the next upcoming performance + "+N more dates"
   if (hasPerformances(e)) {
     const next = getNextOccurrence(e);
     if (next) {
-      const more = getUpcomingPerformancesCount(e);
       const time = next.startTime ? fmtTime(next.startTime) : "";
       const datePart = format(next.date, "d MMM");
-      const base = time ? `${datePart} • ${time}` : datePart;
-      return more > 0 ? `${base} · +${more} more date${more === 1 ? "" : "s"}` : base;
+      return time ? `${datePart} • ${time}` : datePart;
     }
-    // all in the past — fall through to the last performance label
   }
-  // Recurring (structured rule) → show next occurrence
   if (parseRecurrenceRule(e.recurrence)) {
     const next = getNextOccurrence(e);
     if (next) {
@@ -130,6 +125,19 @@ function eventDateLine(e: any): string {
     : `${format(start, "d")} – ${format(end!, "d MMM")}`;
   const time = sameDay ? fmtTime(e.start_time) : "";
   return time ? `${dPart} • ${time}` : dPart;
+}
+
+function eventMoreDatesLine(e: any): string | null {
+  if (hasPerformances(e)) {
+    const next = getNextOccurrence(e);
+    if (next) {
+      const more = getUpcomingPerformancesCount(e);
+      if (more > 0) {
+        return `+${more} more date${more === 1 ? "" : "s"}`;
+      }
+    }
+  }
+  return null;
 }
 
 function formatPrice(p: string | number | null | undefined): string {
@@ -284,7 +292,7 @@ const navBtn: React.CSSProperties = {
 const EventCard = ({ event }: { event: any }) => {
   const location = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
   const price = formatPrice(event.price);
-  const tag = event.tag?.trim();
+  const moreDates = eventMoreDatesLine(event);
   return (
     <Link
       to={`/events/${event.id}`}
@@ -340,22 +348,37 @@ const EventCard = ({ event }: { event: any }) => {
         >
           {getDisplayTitle(event)}
         </h3>
-        <p
-          style={{
-            fontFamily: SANS,
-            fontSize: 12.5,
-            lineHeight: 1.35,
-            color: C.body,
-            margin: 0,
-            marginBottom: 4,
-            display: "-webkit-box",
-            WebkitLineClamp: 3,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {eventDateLine(event)}
-        </p>
+        <div style={{ marginBottom: 4 }}>
+          <p
+            style={{
+              fontFamily: SANS,
+              fontSize: 12.5,
+              lineHeight: 1.35,
+              color: C.body,
+              margin: 0,
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {eventDateLine(event)}
+          </p>
+          {moreDates && (
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 12,
+                lineHeight: 1.35,
+                color: C.muted,
+                margin: 0,
+                marginTop: 2,
+              }}
+            >
+              {moreDates}
+            </p>
+          )}
+        </div>
         {location && (
           <p
             style={{
