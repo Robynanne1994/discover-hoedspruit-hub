@@ -325,11 +325,11 @@ const EventCard = ({ event }: { event: any }) => {
           style={{
             fontFamily: SANS,
             fontWeight: 700,
-            fontSize: 13.5,
+            fontSize: 14.5,
             lineHeight: 1.25,
             color: C.ink,
             margin: 0,
-            marginBottom: 6,
+            marginBottom: 10,
             wordBreak: "break-word",
             overflowWrap: "anywhere",
             display: "-webkit-box",
