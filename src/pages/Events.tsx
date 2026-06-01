@@ -838,12 +838,7 @@ const Events = () => {
             </p>
             {(tagFilter || selectedDate || activeFilter !== "all" || search) && (
               <button
-                onClick={() => {
-                  setTagFilter(null);
-                  setSelectedDate(null);
-                  setActiveFilter("all");
-                  setSearch("");
-                }}
+                onClick={() => updateParams({ t: null, d: null, f: null, q: null })}
                 style={{
                   marginTop: 12,
                   background: "transparent",
