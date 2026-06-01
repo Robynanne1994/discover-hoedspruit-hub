@@ -592,8 +592,8 @@ const EventDetail = () => {
     contactRows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
   });
   allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
-  if (socialLink) contactRows.push({ Icon: Globe, label: socialLabel || "Website", value: socialLink.replace(/^https?:\/\//, "").replace(/\/$/, ""), href: socialLink, external: true });
-  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLink.replace(/^https?:\/\//, "").replace(/\/$/, ""), href: bookingLink, external: true });
+  if (socialLink) contactRows.push({ Icon: Globe, label: socialLabel || "Website", value: socialLabel || socialLink, href: socialLink, external: true });
+  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true });
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
@@ -712,11 +712,37 @@ const EventDetail = () => {
       ) : (
         <>
           {sectionHeading("Contact")}
-          {renderRowsCard(contactRows)}
+          <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+            {contactRows.map((r, i) => {
+              const inner = (
+                <>
+                  <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                    {r.value}
+                  </div>
+                  {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                </>
+              );
+              const style: React.CSSProperties = {
+                display: "flex", alignItems: "center", gap: 14,
+                padding: "14px 0", textDecoration: "none",
+                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+              };
+              if (r.href) {
+                return (
+                  <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
+                    {inner}
+                  </a>
+                );
+              }
+              return <div key={i} style={style}>{inner}</div>;
+            })}
+          </div>
         </>
       )}
     </div>
   );
+
 
   const renderGallery = () => (
     <div style={{ padding: 20 }}>
