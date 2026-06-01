@@ -391,7 +391,7 @@ const EventCard = ({ event }: { event: any }) => {
           justifyContent: "flex-start",
           flexShrink: 0,
           gap: 8,
-          padding: "12px 12px 12px 4px",
+          padding: "12px 4px 12px 0px",
         }}
       >
         {price.startsWith("From ") ? (
