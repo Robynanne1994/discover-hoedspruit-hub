@@ -303,9 +303,11 @@ const AdminEventsImport = () => {
       sub_tag_2: "Outdoor",
       image_url: "https://example.com/cover.jpg",
       detail_image_url: "https://example.com/detail.jpg",
+      homepage_image_url: "https://example.com/homepage.jpg",
       start_time: "08:00",
       end_time: "13:00",
       recurrence: "Weekly",
+      performances: "2026-01-15;19:00;21:00|2026-01-16;19:00;21:00",
       google_maps_link: "https://maps.google.com/example",
       social_media_link: "https://instagram.com/example",
       social_media_label: "Instagram",
@@ -327,13 +329,17 @@ const AdminEventsImport = () => {
       hosted_by_name: "Kristi & Joëlle",
       hosted_by_subtitle: "Yoga Teachers",
       hosted_by_image_url: "https://example.com/host1.jpg",
+      hosted_by_link: "https://example.com/kristi",
       hosted_by_name_2: "",
       hosted_by_subtitle_2: "",
       hosted_by_image_url_2: "",
+      hosted_by_link_2: "",
       hosted_by_name_3: "",
       hosted_by_subtitle_3: "",
       hosted_by_image_url_3: "",
+      hosted_by_link_3: "",
       is_featured: "true",
+
     };
     const csv =
       EXPECTED_HEADERS.join(",") +
