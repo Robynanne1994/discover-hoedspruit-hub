@@ -361,6 +361,7 @@ const AdminEventsImport = () => {
         price: e.price ?? "",
         included: (e.included ?? []).join("|"),
         notes: e.notes ?? "",
+        price_notes: (e.price_notes ?? []).join("|"),
         business_name: allNames[0] ?? "",
         business_names: allNames.join("|"),
         hosted_by_name: e.hosted_by_name ?? "",
