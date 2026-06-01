@@ -903,13 +903,22 @@ const EventDetail = () => {
             ? <span data-no-title-case="true">{(event as any).title_override}</span>
             : event.title}
         </h1>
-        {(dateDisplay || timeDisplay) && (
+        {dateDisplay && (
           <div style={{
             marginTop: 8, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
             display: "flex", alignItems: "center", gap: 4,
           }}>
             <Calendar size={12} color={C.muted} strokeWidth={1.6} />
-            <span>{[dateDisplay, timeDisplay].filter(Boolean).join(" · ")}</span>
+            <span>{dateDisplay}</span>
+          </div>
+        )}
+        {timeDisplay && (
+          <div style={{
+            marginTop: 4, fontSize: 13, color: C.muted, letterSpacing: "0.01em",
+            display: "flex", alignItems: "center", gap: 4,
+          }}>
+            <Clock size={12} color={C.muted} strokeWidth={1.6} />
+            <span>{timeDisplay}</span>
           </div>
         )}
         {event.location && (
