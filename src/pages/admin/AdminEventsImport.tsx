@@ -186,6 +186,7 @@ const AdminEventsImport = () => {
           price: row.price || null,
           included: splitPipe(row.included),
           notes: row.notes || null,
+          price_notes: splitPipe(row.price_notes),
           business_id: businessId,
           business_ids: businessIds,
           hosted_by_name: row.hosted_by_name || null,
