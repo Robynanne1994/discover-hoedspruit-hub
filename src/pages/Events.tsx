@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X, ArrowLeft, Calendar } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import { supabase } from "@/integrations/supabase/client";
