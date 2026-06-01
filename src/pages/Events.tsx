@@ -465,12 +465,30 @@ const Events = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [weekAnchor, setWeekAnchor] = useState<Date>(startOfToday());
-  const [search, setSearch] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const validFilters: FilterType[] = ["all", "today", "this-week", "this-weekend", "this-month", "this-year", "past"];
+  const urlFilter = searchParams.get("f") as FilterType | null;
+  const activeFilter: FilterType = urlFilter && validFilters.includes(urlFilter) ? urlFilter : "all";
+  const urlDate = searchParams.get("d");
+  const selectedDate: Date | null = urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) ? new Date(urlDate + "T00:00:00") : null;
+  const search = searchParams.get("q") ?? "";
+  const tagFilter = searchParams.get("t");
+  const updateParams = (patch: Record<string, string | null>) => {
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      Object.entries(patch).forEach(([k, v]) => {
+        if (v === null || v === "") next.delete(k);
+        else next.set(k, v);
+      });
+      return next;
+    }, { replace: true });
+  };
+  const setActiveFilter = (f: FilterType) => updateParams({ f: f === "all" ? null : f });
+  const setSelectedDate = (d: Date | null) => updateParams({ d: d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : null });
+  const setSearch = (q: string) => updateParams({ q: q || null });
+  const setTagFilter = (t: string | null) => updateParams({ t: t || null });
+  const [weekAnchor, setWeekAnchor] = useState<Date>(selectedDate ?? startOfToday());
+  const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
   const [openSection, setOpenSection] = useState<"tag" | null>("tag");
 
