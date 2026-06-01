@@ -342,6 +342,9 @@ const EventDetail = () => {
   const bookingLink = e.booking_link || null;
   const bookingLinkLabel = e.booking_link_label?.trim() || null;
   const price = e.price || null;
+  const priceNotes: string[] = Array.isArray((e as any).price_notes)
+    ? (e as any).price_notes.filter((s: string) => s && String(s).trim())
+    : [];
   const notes = e.notes || null;
   const subTag1 = e.sub_tag_1 || null;
   const subTag2 = e.sub_tag_2 || null;
