@@ -292,7 +292,7 @@ const navBtn: React.CSSProperties = {
 const EventCard = ({ event }: { event: any }) => {
   const location = event.location ? event.location.replace(/<[^>]*>/g, "").trim() : "";
   const price = formatPrice(event.price);
-  const tag = event.tag?.trim();
+  const moreDates = eventMoreDatesLine(event);
   return (
     <Link
       to={`/events/${event.id}`}
