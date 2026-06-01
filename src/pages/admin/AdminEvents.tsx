@@ -253,7 +253,7 @@ const AdminEvents = () => {
       booking_link: (ev as any).booking_link ?? "",
       price: (ev as any).price ?? "",
       included: Array.isArray((ev as any).included) ? (ev as any).included : [],
-      notes: (ev as any).notes ?? "",
+      notes: Array.isArray((ev as any).notes) ? (ev as any).notes : ((ev as any).notes ? [(ev as any).notes] : []),
       price_notes: Array.isArray((ev as any).price_notes) ? (ev as any).price_notes : [],
       business_id: (ev as any).business_id ?? "",
       business_ids: Array.isArray((ev as any).business_ids) && (ev as any).business_ids.length > 0
