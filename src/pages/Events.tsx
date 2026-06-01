@@ -446,8 +446,8 @@ const EventCard = ({ event }: { event: any }) => {
             fontSize: 12,
             color: C.body,
             background: C.tag,
-            borderRadius: "10px 0 0 0",
-            padding: "4px 10px",
+            borderRadius: 0,
+            padding: "6px 12px",
             whiteSpace: "nowrap",
           }}
         >
