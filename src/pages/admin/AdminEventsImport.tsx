@@ -6,13 +6,59 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const EXPECTED_HEADERS = ["title", "description", "date", "start_date", "end_date", "location", "tag", "sub_tag_1", "sub_tag_2", "image_url", "start_time", "end_time", "recurrence", "google_maps_link", "social_media_link", "social_media_label", "contact_email", "contact_phone", "contact_whatsapp", "gallery_images", "booking_link", "booking_link_label", "price", "included", "notes", "business_name", "is_featured"];
+const EXPECTED_HEADERS = [
+  "title",
+  "title_override",
+  "description",
+  "date",
+  "start_date",
+  "end_date",
+  "location",
+  "tag",
+  "sub_tag_1",
+  "sub_tag_2",
+  "image_url",
+  "detail_image_url",
+  "start_time",
+  "end_time",
+  "recurrence",
+  "google_maps_link",
+  "social_media_link",
+  "social_media_label",
+  "contact_email",
+  "contact_phone",
+  "contact_whatsapp",
+  "additional_emails",
+  "additional_phones",
+  "additional_whatsapps",
+  "gallery_images",
+  "booking_link",
+  "booking_link_label",
+  "price",
+  "included",
+  "notes",
+  "business_name",
+  "business_names",
+  "hosted_by_name",
+  "hosted_by_subtitle",
+  "hosted_by_image_url",
+  "hosted_by_name_2",
+  "hosted_by_subtitle_2",
+  "hosted_by_image_url_2",
+  "hosted_by_name_3",
+  "hosted_by_subtitle_3",
+  "hosted_by_image_url_3",
+  "is_featured",
+];
 
 const parseBool = (v: string | undefined): boolean => {
   if (!v) return false;
   const s = v.trim().toLowerCase();
   return s === "true" || s === "yes" || s === "y" || s === "1" || s === "★";
 };
+
+const splitPipe = (v: string | undefined): string[] =>
+  v ? String(v).split("|").map((s) => s.trim()).filter(Boolean) : [];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
   const normalizedText = text.replace(/^\uFEFF/, "");
@@ -82,9 +128,15 @@ const AdminEventsImport = () => {
       const existingMap = new Map((existing ?? []).map((e) => [e.title.toLowerCase(), e.id]));
       const csvTitles = new Set<string>();
 
-      // Build a lookup of business listings by title (case-insensitive) for linking
       const { data: allListings } = await supabase.from("listings").select("id, title");
       const listingMap = new Map((allListings ?? []).map((l) => [l.title.toLowerCase().trim(), l.id]));
+
+      const resolveListing = (name: string, rowIdx: number): string | null => {
+        const matchId = listingMap.get(name.toLowerCase().trim());
+        if (matchId) return matchId;
+        results.errors.push(`Row ${rowIdx + 2}: Business "${name}" not found in listings, link skipped`);
+        return null;
+      };
 
       for (let i = 0; i < parsed.rows.length; i++) {
         const row = parsed.rows[i];
@@ -92,22 +144,19 @@ const AdminEventsImport = () => {
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
         csvTitles.add(title.toLowerCase());
 
-        const isUpdate = !!existingMap.get(title.toLowerCase());
-        const galleryArr = row.gallery_images ? row.gallery_images.split("|").map((s: string) => s.trim()).filter(Boolean) : [];
-
-        // Resolve business linkage from business_name (case-insensitive title match)
-        let businessId: string | null = null;
-        if (row.business_name && row.business_name.trim()) {
-          const matchId = listingMap.get(row.business_name.trim().toLowerCase());
-          if (matchId) {
-            businessId = matchId;
-          } else {
-            results.errors.push(`Row ${i + 2}: Business "${row.business_name}" not found in listings, link skipped`);
-          }
-        }
+        // Resolve linked businesses — supports single business_name and multi business_names (pipe-separated)
+        const businessNames = [
+          ...(row.business_name && row.business_name.trim() ? [row.business_name.trim()] : []),
+          ...splitPipe(row.business_names),
+        ];
+        const businessIds = businessNames
+          .map((n) => resolveListing(n, i))
+          .filter((v): v is string => !!v);
+        const businessId = businessIds[0] ?? null;
 
         const payload: Record<string, any> = {
           title,
+          title_override: row.title_override?.trim() || null,
           description: row.description || null,
           date: row.date || (row.start_date && row.end_date && row.start_date !== row.end_date ? `${row.start_date} to ${row.end_date}` : (row.start_date || "")),
           start_date: row.start_date || null,
@@ -116,7 +165,8 @@ const AdminEventsImport = () => {
           tag: row.tag || null,
           sub_tag_1: row.sub_tag_1 || null,
           sub_tag_2: row.sub_tag_2 || null,
-          // image_url ignored — managed via Lovable editor only
+          image_url: row.image_url || null,
+          detail_image_url: row.detail_image_url || null,
           start_time: row.start_time || null,
           end_time: row.end_time || null,
           recurrence: row.recurrence || null,
@@ -126,13 +176,26 @@ const AdminEventsImport = () => {
           contact_email: row.contact_email || null,
           contact_phone: row.contact_phone || null,
           contact_whatsapp: row.contact_whatsapp || null,
-          // gallery_images ignored — managed via Lovable editor only
+          additional_emails: splitPipe(row.additional_emails),
+          additional_phones: splitPipe(row.additional_phones),
+          additional_whatsapps: splitPipe(row.additional_whatsapps),
+          gallery_images: splitPipe(row.gallery_images),
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           price: row.price || null,
-          included: row.included ? String(row.included).split("|").map((s: string) => s.trim()).filter(Boolean) : [],
+          included: splitPipe(row.included),
           notes: row.notes || null,
           business_id: businessId,
+          business_ids: businessIds,
+          hosted_by_name: row.hosted_by_name || null,
+          hosted_by_subtitle: row.hosted_by_subtitle || null,
+          hosted_by_image_url: row.hosted_by_image_url || null,
+          hosted_by_name_2: row.hosted_by_name_2 || null,
+          hosted_by_subtitle_2: row.hosted_by_subtitle_2 || null,
+          hosted_by_image_url_2: row.hosted_by_image_url_2 || null,
+          hosted_by_name_3: row.hosted_by_name_3 || null,
+          hosted_by_subtitle_3: row.hosted_by_subtitle_3 || null,
+          hosted_by_image_url_3: row.hosted_by_image_url_3 || null,
           is_featured: parseBool(row.is_featured),
         };
 
@@ -175,8 +238,59 @@ const AdminEventsImport = () => {
     URL.revokeObjectURL(url);
   };
 
+  const escapeCSV = (val: string) =>
+    val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
+
   const downloadTemplate = () => {
-    const csv = EXPECTED_HEADERS.join(",") + "\n" + '"Market Day","Weekly market with local produce","Every Saturday","","","Hoedspruit Town","Market","Family-friendly","Outdoor","https://example.com/img.jpg","08:00","13:00","Weekly","https://maps.google.com/example","https://instagram.com/example","Instagram","info@example.com","+27 123 456 789","+27 123 456 789","https://img1.jpg|https://img2.jpg","https://bookme.com/example","Book on Quicket","R150","Welcome drink|Live music|Parking","Bring cash for stalls","Some Business Name","true"\n';
+    const sample: Record<string, string> = {
+      title: "Market Day",
+      title_override: "",
+      description: "Weekly market with local produce",
+      date: "Every Saturday",
+      start_date: "",
+      end_date: "",
+      location: "Hoedspruit Town",
+      tag: "Market",
+      sub_tag_1: "Family-friendly",
+      sub_tag_2: "Outdoor",
+      image_url: "https://example.com/cover.jpg",
+      detail_image_url: "https://example.com/detail.jpg",
+      start_time: "08:00",
+      end_time: "13:00",
+      recurrence: "Weekly",
+      google_maps_link: "https://maps.google.com/example",
+      social_media_link: "https://instagram.com/example",
+      social_media_label: "Instagram",
+      contact_email: "info@example.com",
+      contact_phone: "+27 123 456 789",
+      contact_whatsapp: "+27 123 456 789",
+      additional_emails: "second@example.com|third@example.com",
+      additional_phones: "+27 987 654 321",
+      additional_whatsapps: "+27 987 654 321",
+      gallery_images: "https://img1.jpg|https://img2.jpg",
+      booking_link: "https://bookme.com/example",
+      booking_link_label: "Book on Quicket",
+      price: "R150",
+      included: "Welcome drink|Live music|Parking",
+      notes: "Bring cash for stalls",
+      business_name: "Some Business Name",
+      business_names: "Some Business Name|Another Linked Listing",
+      hosted_by_name: "Kristi & Joëlle",
+      hosted_by_subtitle: "Yoga Teachers",
+      hosted_by_image_url: "https://example.com/host1.jpg",
+      hosted_by_name_2: "",
+      hosted_by_subtitle_2: "",
+      hosted_by_image_url_2: "",
+      hosted_by_name_3: "",
+      hosted_by_subtitle_3: "",
+      hosted_by_image_url_3: "",
+      is_featured: "true",
+    };
+    const csv =
+      EXPECTED_HEADERS.join(",") +
+      "\n" +
+      EXPECTED_HEADERS.map((h) => escapeCSV(sample[h] ?? "")).join(",") +
+      "\n";
     downloadCSV(csv, "events_template.csv");
   };
 
@@ -185,23 +299,69 @@ const AdminEventsImport = () => {
     if (!events?.length) { toast.error("No events to export"); return; }
 
     // Resolve linked business titles for export
-    const linkedIds = Array.from(new Set(events.map((e: any) => e.business_id).filter(Boolean)));
+    const linkedIds = Array.from(new Set(
+      events.flatMap((e: any) => [
+        ...(e.business_id ? [e.business_id] : []),
+        ...((e.business_ids ?? []) as string[]),
+      ]).filter(Boolean),
+    ));
     const idToTitle = new Map<string, string>();
     if (linkedIds.length) {
       const { data: linked } = await supabase.from("listings").select("id, title").in("id", linkedIds as string[]);
       (linked ?? []).forEach((l: any) => idToTitle.set(l.id, l.title));
     }
 
-    const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
-    const rows = events.map((e: any) => [
-      e.title, e.description ?? "", e.date, e.start_date ?? "", e.end_date ?? "", e.location ?? "",
-      e.tag ?? "", e.sub_tag_1 ?? "", e.sub_tag_2 ?? "",
-      e.image_url ?? "", e.start_time ?? "", e.end_time ?? "", e.recurrence ?? "", e.google_maps_link ?? "",
-      e.social_media_link ?? "", e.social_media_label ?? "", e.contact_email ?? "", e.contact_phone ?? "", e.contact_whatsapp ?? "",
-      (e.gallery_images ?? []).join("|"), e.booking_link ?? "", e.booking_link_label ?? "", e.price ?? "", (e.included ?? []).join("|"), e.notes ?? "",
-      e.business_id ? (idToTitle.get(e.business_id) ?? "") : "",
-      e.is_featured ? "true" : "false",
-    ].map(escapeCSV).join(","));
+    const rows = events.map((e: any) => {
+      const allIds: string[] = Array.isArray(e.business_ids) && e.business_ids.length
+        ? e.business_ids
+        : (e.business_id ? [e.business_id] : []);
+      const allNames = allIds.map((id) => idToTitle.get(id) ?? "").filter(Boolean);
+      const record: Record<string, string> = {
+        title: e.title ?? "",
+        title_override: e.title_override ?? "",
+        description: e.description ?? "",
+        date: e.date ?? "",
+        start_date: e.start_date ?? "",
+        end_date: e.end_date ?? "",
+        location: e.location ?? "",
+        tag: e.tag ?? "",
+        sub_tag_1: e.sub_tag_1 ?? "",
+        sub_tag_2: e.sub_tag_2 ?? "",
+        image_url: e.image_url ?? "",
+        detail_image_url: e.detail_image_url ?? "",
+        start_time: e.start_time ?? "",
+        end_time: e.end_time ?? "",
+        recurrence: e.recurrence ?? "",
+        google_maps_link: e.google_maps_link ?? "",
+        social_media_link: e.social_media_link ?? "",
+        social_media_label: e.social_media_label ?? "",
+        contact_email: e.contact_email ?? "",
+        contact_phone: e.contact_phone ?? "",
+        contact_whatsapp: e.contact_whatsapp ?? "",
+        additional_emails: (e.additional_emails ?? []).join("|"),
+        additional_phones: (e.additional_phones ?? []).join("|"),
+        additional_whatsapps: (e.additional_whatsapps ?? []).join("|"),
+        gallery_images: (e.gallery_images ?? []).join("|"),
+        booking_link: e.booking_link ?? "",
+        booking_link_label: e.booking_link_label ?? "",
+        price: e.price ?? "",
+        included: (e.included ?? []).join("|"),
+        notes: e.notes ?? "",
+        business_name: allNames[0] ?? "",
+        business_names: allNames.join("|"),
+        hosted_by_name: e.hosted_by_name ?? "",
+        hosted_by_subtitle: e.hosted_by_subtitle ?? "",
+        hosted_by_image_url: e.hosted_by_image_url ?? "",
+        hosted_by_name_2: e.hosted_by_name_2 ?? "",
+        hosted_by_subtitle_2: e.hosted_by_subtitle_2 ?? "",
+        hosted_by_image_url_2: e.hosted_by_image_url_2 ?? "",
+        hosted_by_name_3: e.hosted_by_name_3 ?? "",
+        hosted_by_subtitle_3: e.hosted_by_subtitle_3 ?? "",
+        hosted_by_image_url_3: e.hosted_by_image_url_3 ?? "",
+        is_featured: e.is_featured ? "true" : "false",
+      };
+      return EXPECTED_HEADERS.map((h) => escapeCSV(record[h] ?? "")).join(",");
+    });
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "events_export.csv");
     toast.success(`Exported ${events.length} events`);
   };
@@ -234,7 +394,7 @@ const AdminEventsImport = () => {
           <p className="text-foreground font-medium">{fileName || "Click to upload CSV file"}</p>
           <p className="text-sm text-muted-foreground mt-1">Columns: {EXPECTED_HEADERS.join(", ")}</p>
           <p className="text-xs text-muted-foreground mt-1">
-            Events are matched by title (case-insensitive). Missing events will be deleted.
+            Events are matched by title (case-insensitive). Missing events will be deleted. Use <code>|</code> to separate list values (gallery, included, additional contacts, business_names).
           </p>
           <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
         </div>
