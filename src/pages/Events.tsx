@@ -294,15 +294,15 @@ const EventCard = ({ event }: { event: any }) => {
         gap: 14,
         background: C.white,
         borderRadius: 16,
-        padding:  0,
+        padding: 0,
         textDecoration: "none",
         overflow: "hidden",
-        minHeight: 112,
+        height: 188,
       }}
     >
       <div
         style={{
-          width: 112,
+          width: 140,
           alignSelf: "stretch",
           overflow: "hidden",
           background: C.ivory,
@@ -318,7 +318,7 @@ const EventCard = ({ event }: { event: any }) => {
           />
         )}
       </div>
-      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "12px 12px 12px 0" }}>
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "12px 12px 12px 0", overflow: "hidden" }}>
         <h3
           {...noTitleCaseProps(event)}
           style={{
@@ -331,6 +331,10 @@ const EventCard = ({ event }: { event: any }) => {
             marginBottom: 6,
             wordBreak: "break-word",
             overflowWrap: "anywhere",
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {getDisplayTitle(event)}
@@ -339,9 +343,14 @@ const EventCard = ({ event }: { event: any }) => {
           style={{
             fontFamily: SANS,
             fontSize: 12.5,
+            lineHeight: 1.35,
             color: C.body,
             margin: 0,
             marginBottom: 4,
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
           }}
         >
           {eventDateLine(event)}
@@ -351,6 +360,7 @@ const EventCard = ({ event }: { event: any }) => {
             style={{
               fontFamily: SANS,
               fontSize: 12,
+              lineHeight: 1.35,
               color: C.muted,
               margin: 0,
               display: "flex",
@@ -358,10 +368,16 @@ const EventCard = ({ event }: { event: any }) => {
               gap: 4,
               wordBreak: "break-word",
               overflowWrap: "anywhere",
+              overflow: "hidden",
             }}
           >
             <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 3 }} />
-            <span>{location}</span>
+            <span style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 3,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}>{location}</span>
           </p>
         )}
 
