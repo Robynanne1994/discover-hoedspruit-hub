@@ -863,12 +863,33 @@ const EventDetail = () => {
 
       {/* Title block */}
       <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {eyebrowText && (
+        {allTags.length > 0 && (
           <div style={{
-            marginBottom: 8, fontSize: 11, color: C.muted,
-            letterSpacing: "0.12em", textTransform: "uppercase",
+            marginBottom: 8,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            flexWrap: "wrap",
           }}>
-            {eyebrowText}
+            {allTags.map((t, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                {i > 0 && (
+                  <span style={{
+                    width: 4, height: 4, borderRadius: "50%",
+                    background: C.accent, flexShrink: 0,
+                  }} />
+                )}
+                <span style={{
+                  fontSize: 11,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: t.type === "main" ? C.primary : C.muted,
+                  fontWeight: t.type === "main" ? 700 : 400,
+                }}>
+                  {t.text}
+                </span>
+              </div>
+            ))}
           </div>
         )}
         <h1
