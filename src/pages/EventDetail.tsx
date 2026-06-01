@@ -350,7 +350,12 @@ const EventDetail = () => {
     : (typeof (e as any).notes === "string" && (e as any).notes.trim() ? [(e as any).notes] : []);
   const subTag1 = e.sub_tag_1 || null;
   const subTag2 = e.sub_tag_2 || null;
-  const eyebrowText = [e.tag, subTag1, subTag2].filter((t) => t && String(t).trim() !== "")[0] || null;
+  const allTags = [
+    { text: e.tag, type: "main" as const },
+    { text: subTag1, type: "sub" as const },
+    { text: subTag2, type: "sub" as const },
+  ].filter((t) => t.text && String(t.text).trim() !== "");
+  const eyebrowText = allTags[0]?.text || null;
 
   const directionsHref = mapsLink || (e.location ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(e.location)}` : null);
   const canAddToCal = !!(e.start_date || e.date || isMultiPerformance) && !!nextOccurrence;
@@ -858,12 +863,33 @@ const EventDetail = () => {
 
       {/* Title block */}
       <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {eyebrowText && (
+        {allTags.length > 0 && (
           <div style={{
-            marginBottom: 8, fontSize: 11, color: C.muted,
-            letterSpacing: "0.12em", textTransform: "uppercase",
+            marginBottom: 8,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            flexWrap: "wrap",
           }}>
-            {eyebrowText}
+            {allTags.map((t, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                {i > 0 && (
+                  <span style={{
+                    width: 4, height: 4, borderRadius: "50%",
+                    background: C.accent, flexShrink: 0,
+                  }} />
+                )}
+                <span style={{
+                  fontSize: 11,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: t.type === "main" ? C.primary : C.muted,
+                  fontWeight: t.type === "main" ? 700 : 400,
+                }}>
+                  {t.text}
+                </span>
+              </div>
+            ))}
           </div>
         )}
         <h1
