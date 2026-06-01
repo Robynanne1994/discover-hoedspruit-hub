@@ -658,6 +658,9 @@ const EventDetail = () => {
                     paddingBottom: includedItems.length > 0 ? 12 : 4,
                     borderTop: price ? `1px solid ${C.divider}` : "none",
                   }}>
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, marginBottom: 8 }}>
+                      Price Notes
+                    </div>
                     {priceNotes.map((note, i) => (
                       <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
                         <span style={{
