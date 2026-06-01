@@ -383,63 +383,23 @@ const EventCard = ({ event }: { event: any }) => {
         )}
 
       </div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
-          justifyContent: "flex-start",
-          flexShrink: 0,
-          gap: 8,
-          padding: "12px 4px 12px 0px",
-        }}
-      >
-        {price.startsWith("From ") ? (
-          <span
-            style={{
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 14,
-              color: C.ink,
-              textAlign: "right",
-              lineHeight: 1.15,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "flex-end",
-            }}
-          >
-            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.04em" }}>From</span>
-            <span>{price.slice(5)}</span>
-          </span>
-        ) : (
-          <span
-            style={{
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 14,
-              color: C.ink,
-            }}
-          >
-            {price}
-          </span>
-        )}
-      </div>
-      {tag && (
+      {price && (
         <span
           style={{
             position: "absolute",
             bottom: 0,
             right: 0,
             fontFamily: SANS,
-            fontSize: 9,
+            fontWeight: 700,
+            fontSize: 12,
             color: C.body,
             background: C.tag,
             borderRadius: "10px 0 0 0",
-            padding: "3px 8px",
+            padding: "4px 10px",
             whiteSpace: "nowrap",
           }}
         >
-          {tag}
+          {price}
         </span>
       )}
     </Link>
