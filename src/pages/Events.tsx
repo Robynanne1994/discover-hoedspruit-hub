@@ -328,6 +328,29 @@ const EventCard = ({ event }: { event: any }) => {
         )}
       </div>
       <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: "12px 12px 12px 0", overflow: "hidden" }}>
+        {event.tag && (
+          <span
+            style={{
+              alignSelf: "flex-start",
+              fontFamily: SANS,
+              fontWeight: 700,
+              fontSize: 10,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+              color: "#fff",
+              background: C.dark,
+              borderRadius: 999,
+              padding: "5px 11px",
+              marginBottom: 10,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: "100%",
+            }}
+          >
+            {event.tag}
+          </span>
+        )}
         <h3
           {...noTitleCaseProps(event)}
           style={{
@@ -341,28 +364,33 @@ const EventCard = ({ event }: { event: any }) => {
             wordBreak: "break-word",
             overflowWrap: "anywhere",
             display: "-webkit-box",
-            WebkitLineClamp: 3,
+            WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
             overflow: "hidden",
           }}
         >
           {getDisplayTitle(event)}
         </h3>
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: 6 }}>
           <p
             style={{
               fontFamily: SANS,
-              fontSize: 13.5,
+              fontSize: 13,
               lineHeight: 1.35,
               color: C.body,
               margin: 0,
-              display: "-webkit-box",
-              WebkitLineClamp: 3,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
             }}
           >
-            {eventDateLine(event)}
+            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <span style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 1,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}>{eventDateLine(event)}</span>
           </p>
           {moreDates && (
             <p
@@ -373,6 +401,7 @@ const EventCard = ({ event }: { event: any }) => {
                 color: C.muted,
                 margin: 0,
                 marginTop: 2,
+                paddingLeft: 18,
               }}
             >
               {moreDates}
@@ -389,16 +418,16 @@ const EventCard = ({ event }: { event: any }) => {
               margin: 0,
               display: "flex",
               alignItems: "flex-start",
-              gap: 4,
+              gap: 6,
               wordBreak: "break-word",
               overflowWrap: "anywhere",
               overflow: "hidden",
             }}
           >
-            <MapPin size={11} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 3 }} />
+            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 3 }} />
             <span style={{
               display: "-webkit-box",
-              WebkitLineClamp: 3,
+              WebkitLineClamp: 2,
               WebkitBoxOrient: "vertical",
               overflow: "hidden",
             }}>{location}</span>
