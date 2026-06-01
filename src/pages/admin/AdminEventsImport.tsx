@@ -215,8 +215,6 @@ const AdminEventsImport = () => {
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
           price: row.price || null,
-          image_url: row.image_url || null,
-          detail_image_url: row.detail_image_url || null,
           homepage_image_url: row.homepage_image_url || null,
           included: splitPipe(row.included),
           notes: splitPipe(row.notes),
