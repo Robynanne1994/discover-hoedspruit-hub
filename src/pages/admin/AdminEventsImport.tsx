@@ -19,9 +19,11 @@ const EXPECTED_HEADERS = [
   "sub_tag_2",
   "image_url",
   "detail_image_url",
+  "homepage_image_url",
   "start_time",
   "end_time",
   "recurrence",
+  "performances",
   "google_maps_link",
   "social_media_link",
   "social_media_label",
@@ -43,14 +45,43 @@ const EXPECTED_HEADERS = [
   "hosted_by_name",
   "hosted_by_subtitle",
   "hosted_by_image_url",
+  "hosted_by_link",
   "hosted_by_name_2",
   "hosted_by_subtitle_2",
   "hosted_by_image_url_2",
+  "hosted_by_link_2",
   "hosted_by_name_3",
   "hosted_by_subtitle_3",
   "hosted_by_image_url_3",
+  "hosted_by_link_3",
   "is_featured",
 ];
+
+// Performances format in CSV: pipe-separated entries, each entry uses
+// semicolons between fields: "YYYY-MM-DD;HH:MM;HH:MM" (date;start;end).
+// End time is optional. Example: "2026-01-15;19:00;21:00|2026-01-16;19:00;"
+const parsePerformances = (v: string | undefined): { date: string; time: string | null; end_time: string | null }[] | null => {
+  if (!v || !v.trim()) return null;
+  const out: { date: string; time: string | null; end_time: string | null }[] = [];
+  for (const raw of v.split("|")) {
+    const parts = raw.split(";").map((s) => s.trim());
+    const date = parts[0];
+    if (!date || !/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    const time = parts[1] && /^\d{1,2}:\d{2}/.test(parts[1]) ? parts[1].slice(0, 5) : null;
+    const end_time = parts[2] && /^\d{1,2}:\d{2}/.test(parts[2]) ? parts[2].slice(0, 5) : null;
+    out.push({ date, time, end_time });
+  }
+  return out.length ? out : null;
+};
+
+const stringifyPerformances = (perfs: any): string => {
+  if (!Array.isArray(perfs) || perfs.length === 0) return "";
+  return perfs
+    .filter((p) => p && typeof p.date === "string")
+    .map((p) => `${p.date};${p.time ?? ""};${p.end_time ?? ""}`)
+    .join("|");
+};
+
 
 const parseBool = (v: string | undefined): boolean => {
   if (!v) return false;
