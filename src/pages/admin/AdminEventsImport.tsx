@@ -36,6 +36,7 @@ const EXPECTED_HEADERS = [
   "booking_link_label",
   "price",
   "included",
+  "price_notes",
   "notes",
   "business_name",
   "business_names",
