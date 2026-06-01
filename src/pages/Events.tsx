@@ -332,6 +332,8 @@ const EventCard = ({ event }: { event: any }) => {
           <span
             style={{
               alignSelf: "flex-start",
+              display: "inline-flex",
+              alignItems: "center",
               fontFamily: SANS,
               fontWeight: 700,
               fontSize: 10,
