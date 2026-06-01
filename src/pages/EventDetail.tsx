@@ -566,7 +566,7 @@ const EventDetail = () => {
   if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
     detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
   }
-  if (notes) detailRows.push({ Icon: StickyNote, label: "Notes", value: <span style={{ whiteSpace: "pre-line" }}>{notes}</span> });
+  notes.forEach((n, i) => detailRows.push({ Icon: StickyNote, label: i === 0 ? (notes.length > 1 ? "Notes" : "Note") : "", value: <span style={{ whiteSpace: "pre-line" }}>{n}</span> }));
 
   const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
