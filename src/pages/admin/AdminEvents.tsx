@@ -371,7 +371,12 @@ const AdminEvents = () => {
                 <p className="text-xs text-muted-foreground">Press Enter or comma after each item. Only shown on the event page if populated.</p>
                 <IncludedChipsInput value={form.included} onChange={(v) => setForm({ ...form, included: v })} />
               </div>
-              <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} placeholder="Additional info shown under price on event page" /></div>
+              <div className="space-y-2">
+                <Label>Price Notes</Label>
+                <p className="text-xs text-muted-foreground">Add each note separately — they'll appear on new lines under the price (e.g. "Per person", "Includes wine"). In CSV, separate notes with the <code>|</code> symbol.</p>
+                <IncludedChipsInput value={(form as any).price_notes || []} onChange={(v) => setForm({ ...form, price_notes: v } as any)} placeholder="e.g. Per person, then press Enter" />
+              </div>
+              <div><Label>Notes</Label><Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} rows={3} placeholder="General notes about the event (shown in the main details card)" /></div>
               <ListingContactPicker
                 listings={listings || []}
                 onApply={(c) => setForm({ ...form, ...c })}
