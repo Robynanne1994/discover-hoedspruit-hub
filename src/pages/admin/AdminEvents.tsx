@@ -254,6 +254,7 @@ const AdminEvents = () => {
       price: (ev as any).price ?? "",
       included: Array.isArray((ev as any).included) ? (ev as any).included : [],
       notes: (ev as any).notes ?? "",
+      price_notes: Array.isArray((ev as any).price_notes) ? (ev as any).price_notes : [],
       business_id: (ev as any).business_id ?? "",
       business_ids: Array.isArray((ev as any).business_ids) && (ev as any).business_ids.length > 0
         ? (ev as any).business_ids
