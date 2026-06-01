@@ -708,7 +708,7 @@ const EventDetail = () => {
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact details yet.</p>
       ) : (
         <>
-          {cardSubtitle("Get in touch")}
+          {sectionHeading("Contact")}
           {renderRowsCard(contactRows)}
         </>
       )}
