@@ -628,10 +628,8 @@ const EventDetail = () => {
     </div>
   );
 
-  const cardSubtitle = (label: string) => (
-    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, margin: "0 0 10px 4px" }}>
-      {label}
-    </div>
+  const sectionHeading = (label: string) => (
+    <h2 style={{ ...headStyle, margin: "0 0 14px" }}>{label}</h2>
   );
 
   const renderDetails = () => (
