@@ -285,7 +285,7 @@ const AdminEventsImport = () => {
       booking_link_label: "Book on Quicket",
       price: "R150",
       included: "Welcome drink|Live music|Parking",
-      notes: "Doors open 30 minutes before the show",
+      notes: "Doors open 30 minutes before the show|Bring your own chair",
       price_notes: "Per person|Includes welcome drink|Minimum 4 people",
       business_name: "Some Business Name",
       business_names: "Some Business Name|Another Linked Listing",
