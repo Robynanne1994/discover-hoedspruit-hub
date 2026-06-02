@@ -122,7 +122,10 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
   const headers = rows[0].map((h) => h.toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
   const dataRows = rows.slice(1).map((values) => {
     const row: Record<string, string> = {};
-    headers.forEach((h, idx) => { row[h] = values[idx] ?? ""; });
+    headers.forEach((h, idx) => {
+      const v = values[idx] ?? "";
+      row[h] = v.trim() === "-" ? "" : v;
+    });
     return row;
   });
   return { headers, rows: dataRows };
