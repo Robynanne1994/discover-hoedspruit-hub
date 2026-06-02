@@ -60,7 +60,8 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
   const dataRows = rows.slice(1).map((values) => {
     const row: Record<string, string> = {};
     headers.forEach((header, index) => {
-      row[header] = values[index] ?? "";
+      const v = values[index] ?? "";
+      row[header] = v.trim() === "-" ? "" : v;
     });
     return row;
   });
