@@ -214,50 +214,15 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             )}
             
           </div>
-          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(legacy — used only if no categories set)</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
+          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
 
-          {/* Categories — multi-select pills + add new */}
-          <div className="border rounded-md p-3 space-y-3">
-            <div>
-              <Label>Categories <span className="text-xs text-muted-foreground font-normal">(tap to select — appears above title)</span></Label>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {availableCategories.length === 0 && (
-                  <p className="text-xs text-muted-foreground">No categories yet — add one below.</p>
-                )}
-                {availableCategories.map((cat) => {
-                  const isSelected = selectedCategories.map((c) => c.trim()).includes(cat);
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => toggleCategory(cat)}
-                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                        isSelected
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-background text-foreground border-border hover:bg-muted"
-                      }`}
-                    >
-                      {cat}
-                      {isSelected && <X className="inline-block h-3 w-3 ml-1.5 -mt-0.5" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="flex gap-2 pt-1">
-              <Input
-                placeholder="Add new category..."
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") { e.preventDefault(); addNewCategory(); }
-                }}
-              />
-              <Button type="button" variant="outline" onClick={addNewCategory} disabled={!newCategory.trim()}>
-                <Plus className="h-4 w-4 mr-1" /> Add
-              </Button>
-            </div>
+          {/* Tag + sub-tags (same as events) */}
+          <div><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
+            <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
           </div>
+
 
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
 
