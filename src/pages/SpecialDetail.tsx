@@ -165,8 +165,16 @@ const SpecialDetail = () => {
   const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
   const priceFmt = formatPrice(special.price);
   const originalFmt = formatPrice(special.original_price);
-  const cats = (sp.eyebrow_categories as string[] | null)?.filter((c) => c && c.trim()) ?? [];
-  const eyebrowText = cats.length ? cats[0] : special.deal_label;
+  const priceLabel = (sp.price_label || "").trim() || null;
+  const subTag1 = (sp.sub_tag_1 || "").trim() || null;
+  const subTag2 = (sp.sub_tag_2 || "").trim() || null;
+  const mainTag = (sp.tag || "").trim() || null;
+  const allTags = [
+    { text: mainTag, type: "main" as const },
+    { text: subTag1, type: "sub" as const },
+    { text: subTag2, type: "sub" as const },
+  ].filter((t) => t.text && String(t.text).trim() !== "");
+
 
   // Validity status
   const now = new Date();
