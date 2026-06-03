@@ -361,7 +361,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Special Type</Label><Input value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} /></div>
-          <div><Label>Terms</Label><Textarea rows={3} value={form.terms || ""} onChange={(e) => set("terms", e.target.value)} /></div>
+          <div>
+            <Label>Terms <span className="text-xs text-muted-foreground font-normal">(add one per line — each appears as its own bullet)</span></Label>
+            <TermsEditor value={form.terms || ""} onChange={(v) => set("terms", v)} />
+          </div>
         </div>
         <DialogFooter className="gap-2 sm:justify-between">
           <Button
