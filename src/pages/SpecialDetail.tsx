@@ -424,22 +424,38 @@ const SpecialDetail = () => {
     );
   };
 
-  const renderTerms = () => (
-    <div style={{ padding: 20 }}>
-      {special.terms ? (
-        <>
-          <h2 style={headStyle}>Terms & Conditions</h2>
-          <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
-            <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5, color: C.text }}>
-              {special.terms}
-            </p>
-          </div>
-        </>
-      ) : (
-        <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No terms provided.</p>
-      )}
-    </div>
-  );
+  const renderTerms = () => {
+    const termsList: string[] = (special.terms || "")
+      .split("\n")
+      .map((s: string) => s.trim())
+      .filter(Boolean);
+    return (
+      <div style={{ padding: 20 }}>
+        {termsList.length > 0 ? (
+          <>
+            <h2 style={headStyle}>{termsList.length > 1 ? "Terms & Conditions" : "Term"}</h2>
+            <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {termsList.map((t, i) => (
+                  <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
+                    <span style={{
+                      flexShrink: 0, width: 6, height: 6, borderRadius: 999,
+                      background: C.primary, marginTop: 8,
+                    }} />
+                    <span style={{ ...paraStyle, margin: 0, whiteSpace: "pre-line", fontSize: 13.5, color: C.text, flex: 1, minWidth: 0 }}>
+                      {t}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No terms provided.</p>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>

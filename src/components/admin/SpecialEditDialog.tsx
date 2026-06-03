@@ -21,6 +21,50 @@ interface Props {
   special: any;
 }
 
+const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+  const items = value ? value.split("\n").map((s) => s.trim()).filter(Boolean) : [];
+  const [draft, setDraft] = useState("");
+  const commit = (next: string[]) => onChange(next.join("\n"));
+  const add = () => {
+    const t = draft.trim();
+    if (!t) return;
+    commit([...items, t]);
+    setDraft("");
+  };
+  const remove = (i: number) => commit(items.filter((_, idx) => idx !== i));
+  const edit = (i: number, v: string) => commit(items.map((it, idx) => (idx === i ? v : it)));
+  return (
+    <div className="space-y-2 mt-1">
+      {items.length > 0 && (
+        <div className="space-y-2">
+          {items.map((t, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <Textarea rows={2} value={t} onChange={(e) => edit(i, e.target.value)} />
+              <Button type="button" variant="ghost" size="icon" onClick={() => remove(i)} aria-label="Remove term">
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="flex items-start gap-2">
+        <Textarea
+          rows={2}
+          placeholder="Type a term, then click Add"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); add(); }
+          }}
+        />
+        <Button type="button" variant="outline" onClick={add} disabled={!draft.trim()}>
+          <Plus className="h-4 w-4 mr-1" /> Add
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
   "image_url", "detail_image_url", "deal_label",
@@ -361,7 +405,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
           <div><Label>Special Type</Label><Input value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} /></div>
-          <div><Label>Terms</Label><Textarea rows={3} value={form.terms || ""} onChange={(e) => set("terms", e.target.value)} /></div>
+          <div>
+            <Label>Terms <span className="text-xs text-muted-foreground font-normal">(add one per line — each appears as its own bullet)</span></Label>
+            <TermsEditor value={form.terms || ""} onChange={(v) => set("terms", v)} />
+          </div>
         </div>
         <DialogFooter className="gap-2 sm:justify-between">
           <Button
