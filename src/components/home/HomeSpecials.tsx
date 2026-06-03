@@ -27,7 +27,7 @@ const HomeSpecials = () => {
         .select("id, title, title_override, business_name, image_url, deal_label, valid_until")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
-        .order("sort_order", { ascending: true });
+        .order("created_at", { ascending: false });
       return (data || []) as Special[];
     },
   });

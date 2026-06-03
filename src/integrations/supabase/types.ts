@@ -1636,29 +1636,23 @@ export type Database = {
           business_id: string | null
           business_name: string
           card_footer_text: string | null
-          category: string | null
           contact_email: string | null
           contact_phone: string | null
           contact_whatsapp: string | null
           created_at: string
-          day_of_week: string[] | null
           deal_label: string
           description: string | null
           detail_image_url: string | null
-          duration_headline: string | null
-          duration_sublabel: string | null
-          eyebrow_categories: string[] | null
           id: string
           image_url: string | null
           is_active: boolean
-          offer_headline: string | null
-          offer_sublabel: string | null
           original_price: string | null
           price: string | null
           price_label: string | null
           promo_code: string | null
-          sort_order: number
-          special_type: string | null
+          sub_tag_1: string | null
+          sub_tag_2: string | null
+          tag: string | null
           terms: string | null
           title: string
           title_override: string | null
@@ -1676,29 +1670,23 @@ export type Database = {
           business_id?: string | null
           business_name: string
           card_footer_text?: string | null
-          category?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
-          day_of_week?: string[] | null
           deal_label: string
           description?: string | null
           detail_image_url?: string | null
-          duration_headline?: string | null
-          duration_sublabel?: string | null
-          eyebrow_categories?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean
-          offer_headline?: string | null
-          offer_sublabel?: string | null
           original_price?: string | null
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
-          sort_order?: number
-          special_type?: string | null
+          sub_tag_1?: string | null
+          sub_tag_2?: string | null
+          tag?: string | null
           terms?: string | null
           title: string
           title_override?: string | null
@@ -1716,29 +1704,23 @@ export type Database = {
           business_id?: string | null
           business_name?: string
           card_footer_text?: string | null
-          category?: string | null
           contact_email?: string | null
           contact_phone?: string | null
           contact_whatsapp?: string | null
           created_at?: string
-          day_of_week?: string[] | null
           deal_label?: string
           description?: string | null
           detail_image_url?: string | null
-          duration_headline?: string | null
-          duration_sublabel?: string | null
-          eyebrow_categories?: string[] | null
           id?: string
           image_url?: string | null
           is_active?: boolean
-          offer_headline?: string | null
-          offer_sublabel?: string | null
           original_price?: string | null
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
-          sort_order?: number
-          special_type?: string | null
+          sub_tag_1?: string | null
+          sub_tag_2?: string | null
+          tag?: string | null
           terms?: string | null
           title?: string
           title_override?: string | null

@@ -25,23 +25,25 @@ interface Special {
   image_url: string | null;
   deal_label: string;
   valid_until: string | null;
-  is_active: boolean;
-  sort_order: number;
-  special_type: string | null;
-  day_of_week: string[] | null;
   valid_from: string | null;
+  is_active: boolean;
   price: string | null;
+  price_label: string | null;
   original_price: string | null;
   booking_required: boolean;
   booking_link: string | null;
+  booking_link_label: string | null;
   promo_code: string | null;
   contact_phone: string | null;
   contact_whatsapp: string | null;
+  contact_email: string | null;
   additional_emails: string[];
   additional_phones: string[];
   additional_whatsapps: string[];
   terms: string | null;
-  category: string | null;
+  tag: string | null;
+  sub_tag_1: string | null;
+  sub_tag_2: string | null;
 }
 
 const emptyForm: Omit<Special, "id"> = {
@@ -53,34 +55,26 @@ const emptyForm: Omit<Special, "id"> = {
   image_url: null,
   deal_label: "",
   valid_until: null,
-  is_active: true,
-  sort_order: 0,
-  special_type: null,
-  day_of_week: null,
   valid_from: null,
+  is_active: true,
   price: null,
+  price_label: null,
   original_price: null,
   booking_required: false,
   booking_link: null,
+  booking_link_label: null,
   promo_code: null,
   contact_phone: null,
   contact_whatsapp: null,
+  contact_email: null,
   additional_emails: [],
   additional_phones: [],
   additional_whatsapps: [],
   terms: null,
-  category: null,
+  tag: null,
+  sub_tag_1: null,
+  sub_tag_2: null,
 };
-
-const SPECIAL_TYPES = [
-  { value: "daily", label: "Daily Special" },
-  { value: "weekly", label: "Weekly Special" },
-  { value: "monthly", label: "Monthly Special" },
-  { value: "seasonal", label: "Seasonal Special" },
-  { value: "ongoing", label: "Ongoing" },
-];
-
-const DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 const stripTrailingZeros = (val: string | null) => {
   if (!val) return val;
@@ -110,9 +104,9 @@ const AdminSpecials = () => {
       const { data, error } = await supabase
         .from("specials")
         .select("*")
-        .order("sort_order", { ascending: true });
+        .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Special[];
+      return data as unknown as Special[];
     },
   });
 
@@ -178,42 +172,33 @@ const AdminSpecials = () => {
     setCreating(true);
     setForm({
       title: s.title,
-      title_override: (s as any).title_override ?? null,
+      title_override: s.title_override ?? null,
       description: s.description,
       business_name: s.business_name,
       business_id: s.business_id,
       image_url: s.image_url,
       deal_label: s.deal_label,
       valid_until: s.valid_until,
-      is_active: s.is_active,
-      sort_order: s.sort_order,
-      special_type: s.special_type,
-      day_of_week: s.day_of_week,
       valid_from: s.valid_from,
+      is_active: s.is_active,
       price: s.price,
+      price_label: s.price_label ?? null,
       original_price: s.original_price,
       booking_required: s.booking_required,
       booking_link: s.booking_link,
+      booking_link_label: s.booking_link_label ?? null,
       promo_code: s.promo_code,
       contact_phone: s.contact_phone,
       contact_whatsapp: s.contact_whatsapp,
-      additional_emails: ((s as any).additional_emails ?? []) as string[],
-      additional_phones: ((s as any).additional_phones ?? []) as string[],
-      additional_whatsapps: ((s as any).additional_whatsapps ?? []) as string[],
+      contact_email: s.contact_email ?? null,
+      additional_emails: (s.additional_emails ?? []) as string[],
+      additional_phones: (s.additional_phones ?? []) as string[],
+      additional_whatsapps: (s.additional_whatsapps ?? []) as string[],
       terms: s.terms,
-      category: s.category,
+      tag: s.tag ?? null,
+      sub_tag_1: s.sub_tag_1 ?? null,
+      sub_tag_2: s.sub_tag_2 ?? null,
     });
-  };
-
-  const toggleDay = (day: string) => {
-    const current = form.day_of_week || [];
-    if (day === "all") {
-      setForm({ ...form, day_of_week: current.includes("all") ? [] : ["all"] });
-      return;
-    }
-    const without = current.filter((d) => d !== "all");
-    const updated = without.includes(day) ? without.filter((d) => d !== day) : [...without, day];
-    setForm({ ...form, day_of_week: updated.length ? updated : null });
   };
 
   const showForm = creating;
@@ -286,51 +271,20 @@ const AdminSpecials = () => {
             <ImageUpload bucket="listing-images" value={form.image_url || ""} onChange={(url) => setForm({ ...form, image_url: url })} />
           </div>
 
-          <GroupLabel>Type &amp; Timing</GroupLabel>
-          <div>
-            <Label>Special Type</Label>
-            <select
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-              value={form.special_type || ""}
-              onChange={(e) => setForm({ ...form, special_type: e.target.value || null })}
-            >
-              <option value="">— Select —</option>
-              {SPECIAL_TYPES.map((t) => (
-                <option key={t.value} value={t.value}>{t.label}</option>
-              ))}
-            </select>
+          <GroupLabel>Categories</GroupLabel>
+          <div><Label>Tag / Main Category</Label><Input placeholder="e.g. Restaurant" value={form.tag || ""} onChange={(e) => setForm({ ...form, tag: e.target.value || null })} /></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => setForm({ ...form, sub_tag_1: e.target.value || null })} /></div>
+            <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => setForm({ ...form, sub_tag_2: e.target.value || null })} /></div>
           </div>
 
-          {(form.special_type === "daily" || form.special_type === "weekly") && (
-            <div>
-              <Label className="mb-2 block">Day(s) of Week</Label>
-              <div className="flex flex-wrap gap-3">
-                <label className="flex items-center gap-1.5 text-sm">
-                  <Checkbox
-                    checked={(form.day_of_week || []).includes("all")}
-                    onCheckedChange={() => toggleDay("all")}
-                  />
-                  All
-                </label>
-                {DAYS.map((day) => (
-                  <label key={day} className="flex items-center gap-1.5 text-sm capitalize">
-                    <Checkbox
-                      checked={(form.day_of_week || []).includes(day)}
-                      onCheckedChange={() => toggleDay(day)}
-                      disabled={(form.day_of_week || []).includes("all")}
-                    />
-                    {day}
-                  </label>
-                ))}
-              </div>
-            </div>
-          )}
-
+          <GroupLabel>Timing</GroupLabel>
           <div><Label>Valid From (optional)</Label><Input type="date" value={form.valid_from || ""} onChange={(e) => setForm({ ...form, valid_from: e.target.value || null })} /></div>
           <div><Label>Valid Until (leave empty for ongoing)</Label><Input type="date" value={form.valid_until || ""} onChange={(e) => setForm({ ...form, valid_until: e.target.value || null })} /></div>
 
           <GroupLabel>Pricing</GroupLabel>
           <div><Label>Deal Price (e.g. R145, R450pp)</Label><Input placeholder="R" value={form.price || ""} onChange={(e) => setForm({ ...form, price: stripTrailingZeros(e.target.value) || null })} onBlur={(e) => setForm({ ...form, price: stripTrailingZeros(e.target.value) || null })} /></div>
+          <div><Label>Price Notes (shown next to price, optional)</Label><Input placeholder="e.g. per person" value={form.price_label || ""} onChange={(e) => setForm({ ...form, price_label: e.target.value || null })} /></div>
           <div><Label>Original Price (optional, for showing savings)</Label><Input placeholder="R" value={form.original_price || ""} onChange={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} onBlur={(e) => setForm({ ...form, original_price: stripTrailingZeros(e.target.value) || null })} /></div>
 
           <GroupLabel>Booking</GroupLabel>
@@ -339,6 +293,7 @@ const AdminSpecials = () => {
             <Label>Booking required</Label>
           </div>
           <div><Label>Booking Link (optional)</Label><Input placeholder="https://" value={form.booking_link || ""} onChange={(e) => setForm({ ...form, booking_link: e.target.value || null })} /></div>
+          <div><Label>Booking Link Display Text (optional)</Label><Input placeholder="e.g. Book on Quicket" value={form.booking_link_label || ""} onChange={(e) => setForm({ ...form, booking_link_label: e.target.value || null })} /></div>
           <div><Label>Promo Code (optional)</Label><Input placeholder="e.g. WINTER2026" value={form.promo_code || ""} onChange={(e) => setForm({ ...form, promo_code: e.target.value || null })} /></div>
 
           <GroupLabel>Contact</GroupLabel>
@@ -370,22 +325,12 @@ const AdminSpecials = () => {
             onExtrasChange={(v) => setForm({ ...form, additional_whatsapps: v })}
             addLabel="Add WhatsApp"
           />
+          <div><Label>Contact Email (optional)</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => setForm({ ...form, contact_email: e.target.value || null })} /></div>
 
           <GroupLabel>Other</GroupLabel>
           <div><Label>Terms & Conditions (optional)</Label><Textarea placeholder="e.g. T's & C's apply. Sit down only." value={form.terms || ""} onChange={(e) => setForm({ ...form, terms: e.target.value || null })} style={{ minHeight: 80 }} /></div>
-          <div>
-            <Label>Category</Label>
-            <Input
-              placeholder="e.g. Restaurant, Spa Day, Family Stay"
-              value={form.category || ""}
-              onChange={(e) => setForm({ ...form, category: e.target.value || null })}
-            />
-          </div>
 
           <div className="border-t border-border pt-4 mt-4 space-y-4">
-            <div><Label>Sort Order</Label><Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })} /></div>
-
-
             <Button onClick={() => saveMutation.mutate()} disabled={saveMutation.isPending || !form.title || !form.deal_label || !form.business_name}>
               {editing ? "Update Special" : "Create Special"}
             </Button>

@@ -30,7 +30,6 @@ const COLOR = {
 
 const formatValidTill = (s: any): string => {
   if (s.valid_until) return `Valid until ${format(new Date(s.valid_until), "d MMM")}`;
-  if (s.day_of_week && s.day_of_week.length > 0) return s.day_of_week.join(", ");
   return "Ongoing";
 };
 
@@ -93,19 +92,25 @@ const Specials = () => {
         .select("*")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
-        .order("sort_order", { ascending: true });
+        .order("created_at", { ascending: false });
       return data || [];
     },
   });
+
+  const collectTags = (s: any): string[] => {
+    const tags: string[] = [];
+    if (s.tag) tags.push(String(s.tag));
+    if (s.sub_tag_1) tags.push(String(s.sub_tag_1));
+    if (s.sub_tag_2) tags.push(String(s.sub_tag_2));
+    return tags.map((t) => t.trim()).filter(Boolean);
+  };
 
   const categoryTabs = useMemo(() => {
     if (!specials) return ["All Specials"];
     const set = new Set<string>();
     for (const s of specials as any[]) {
-      if (s.category && typeof s.category === "string") set.add(s.category.trim());
-      if (Array.isArray(s.eyebrow_categories)) {
-        for (const c of s.eyebrow_categories) if (c && typeof c === "string") set.add(c.trim());
-      }
+      // Only main tag drives the top-level pills (sub-tags are filters within)
+      if (s.tag && typeof s.tag === "string") set.add(s.tag.trim());
     }
     return ["All Specials", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
   }, [specials]);
@@ -123,25 +128,18 @@ const Specials = () => {
     }
     if (activeTab !== "All Specials") {
       const t = activeTab.toLowerCase();
-      result = result.filter((s: any) => {
-        const cats: string[] = [];
-        if (s.category) cats.push(String(s.category));
-        if (Array.isArray(s.eyebrow_categories)) cats.push(...s.eyebrow_categories.map((c: any) => String(c)));
-        return cats.map((c) => c.toLowerCase()).includes(t);
-      });
+      result = result.filter((s: any) => (s.tag || "").toString().toLowerCase() === t);
     }
     if (filterType.length > 0) {
       const lc = filterType.map((t) => t.toLowerCase());
       result = result.filter((s: any) => {
-        const cats: string[] = [];
-        if (s.category) cats.push(String(s.category));
-        if (Array.isArray(s.eyebrow_categories)) cats.push(...s.eyebrow_categories.map((c: any) => String(c)));
-        const lcCats = cats.map((c) => c.toLowerCase());
+        const lcCats = collectTags(s).map((c) => c.toLowerCase());
         return lc.some((t) => lcCats.includes(t));
       });
     }
     return result;
   }, [specials, activeTab, filterType, search]);
+
 
   const toggleFilter = (val: string) => {
     setFilterType((prev) => (prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]));

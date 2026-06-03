@@ -53,10 +53,9 @@ const BusinessSpecialForm = ({ mode }: Props) => {
         setBookingLink(p.booking_link ?? "");
         setTerms(p.terms ?? "");
         setPrice(p.price ?? "");
-        const tags = Array.isArray(p.eyebrow_categories) ? p.eyebrow_categories : [];
-        setTag1(tags[0] ?? "");
-        setTag2(tags[1] ?? "");
-        setTag3(tags[2] ?? "");
+        setTag1(p.tag ?? "");
+        setTag2(p.sub_tag_1 ?? "");
+        setTag3(p.sub_tag_2 ?? "");
         setFeature(!!data.feature_requested);
         setStatus(data.status);
         setAdminNote(data.admin_note);
@@ -78,7 +77,6 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   const submit = async () => {
     if (!user || !listing) return;
     setBusy(true);
-    const tags = [tag1, tag2, tag3].map((t) => t.trim()).filter(Boolean);
     const titleCased = toTitleCase(title.trim());
     const payload = {
       title: titleCased,
@@ -92,7 +90,9 @@ const BusinessSpecialForm = ({ mode }: Props) => {
       booking_link: bookingLink || null,
       terms: terms || null,
       price: price || null,
-      eyebrow_categories: tags.length ? tags : null,
+      tag: tag1.trim() || null,
+      sub_tag_1: tag2.trim() || null,
+      sub_tag_2: tag3.trim() || null,
     };
     if (mode === "new") {
       const { data, error } = await supabase.from("specials_pending").insert({
@@ -168,11 +168,12 @@ const BusinessSpecialForm = ({ mode }: Props) => {
         <div><Label>Price (optional)</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R250 / from R99" maxLength={40} /></div>
         <div><Label>Booking link (optional)</Label><Input type="url" value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." /></div>
         <div>
-          <Label>Tags (up to 3, optional)</Label>
+          <Label>Main category + 2 sub-categories (optional)</Label>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-            <Input value={tag1} onChange={(e) => setTag1(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 1" />
-            <Input value={tag2} onChange={(e) => setTag2(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 2" />
-            <Input value={tag3} onChange={(e) => setTag3(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 3" />
+            <Input value={tag1} onChange={(e) => setTag1(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Main category" />
+            <Input value={tag2} onChange={(e) => setTag2(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Sub-tag 1" />
+            <Input value={tag3} onChange={(e) => setTag3(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Sub-tag 2" />
+
           </div>
         </div>
         <div>

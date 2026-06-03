@@ -14,14 +14,13 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 const EXPECTED_HEADERS = [
   "title", "title_override", "deal_label", "business_name", "business_id", "description",
   "image_url", "detail_image_url",
-  "special_type", "day_of_week", "valid_from", "valid_until", "card_footer_text",
+  "valid_from", "valid_until", "card_footer_text",
   "price", "price_label", "original_price",
-  "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
   "booking_required", "booking_link", "booking_link_label", "promo_code",
   "contact_phone", "contact_whatsapp", "contact_email",
   "additional_phones", "additional_whatsapps",
-  "terms", "category", "eyebrow_categories",
-  "is_active", "sort_order",
+  "terms", "tag", "sub_tag_1", "sub_tag_2",
+  "is_active",
 ];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
@@ -101,10 +100,6 @@ const AdminSpecialsImport = () => {
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
         csvTitles.add(title.toLowerCase());
 
-        const isUpdate = !!existingMap.get(title.toLowerCase());
-        const eyebrowCats = row.eyebrow_categories
-          ? row.eyebrow_categories.split("|").map((s: string) => s.trim()).filter(Boolean)
-          : null;
         const payload: Record<string, any> = {
           title,
           title_override: row.title_override || null,
@@ -113,18 +108,12 @@ const AdminSpecialsImport = () => {
           business_id: row.business_id || null,
           description: row.description || null,
           // image_url & detail_image_url ignored — managed via Lovable editor only
-          special_type: row.special_type || null,
-          day_of_week: row.day_of_week ? row.day_of_week.split("|").map((s: string) => s.trim().toLowerCase()).filter(Boolean) : null,
           valid_from: row.valid_from || null,
           valid_until: row.valid_until || null,
           card_footer_text: row.card_footer_text || null,
           price: stripTrailingZeros(row.price) || null,
           price_label: row.price_label || null,
           original_price: stripTrailingZeros(row.original_price) || null,
-          offer_headline: row.offer_headline || null,
-          offer_sublabel: row.offer_sublabel || null,
-          duration_headline: row.duration_headline || null,
-          duration_sublabel: row.duration_sublabel || null,
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
@@ -135,11 +124,12 @@ const AdminSpecialsImport = () => {
           additional_phones: row.additional_phones ? row.additional_phones.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           additional_whatsapps: row.additional_whatsapps ? row.additional_whatsapps.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           terms: row.terms ? row.terms.split("|").map((s: string) => s.trim()).filter(Boolean).join("\n") || null : null,
-          category: row.category || (eyebrowCats?.[0] ?? null),
-          eyebrow_categories: eyebrowCats,
+          tag: row.tag || null,
+          sub_tag_1: row.sub_tag_1 || null,
+          sub_tag_2: row.sub_tag_2 || null,
           is_active: row.is_active ? (row.is_active.toLowerCase() !== "false" && row.is_active !== "0") : true,
-          sort_order: row.sort_order ? parseInt(row.sort_order) || 0 : 0,
         };
+
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
@@ -183,14 +173,13 @@ const AdminSpecialsImport = () => {
     const example = [
       "Sunset Dinner Deal", "", "50% OFF", "Bush Lodge", "", "Half-price dinner with wine pairing",
       "", "",
-      "weekly", "friday|saturday", "2026-01-01", "2026-06-30", "Weekends only",
+      "2026-01-01", "2026-06-30", "Weekends only",
       "R450pp", "per person", "R900pp",
-      "", "", "", "",
       "true", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
       "+27 123 456 789", "+27 123 456 789", "info@example.com",
       "", "",
-      "T's & C's apply. Sit down only.", "restaurant", "restaurant|dinner",
-      "true", "1",
+      "T's & C's apply. Sit down only.", "Restaurant", "Dinner", "Wine pairing",
+      "true",
     ];
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const csv = EXPECTED_HEADERS.join(",") + "\n" + example.map(escapeCSV).join(",") + "\n";
@@ -198,25 +187,25 @@ const AdminSpecialsImport = () => {
   };
 
   const downloadSpecials = async () => {
-    const { data: specials } = await supabase.from("specials").select("*").order("sort_order", { ascending: true });
+    const { data: specials } = await supabase.from("specials").select("*").order("created_at", { ascending: false });
     if (!specials?.length) { toast.error("No specials to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
       s.title ?? "", s.title_override ?? "", s.deal_label ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
       s.image_url ?? "", s.detail_image_url ?? "",
-      s.special_type ?? "", (s.day_of_week ?? []).join("|"),
       s.valid_from ?? "", s.valid_until ?? "", s.card_footer_text ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
-      s.offer_headline ?? "", s.offer_sublabel ?? "", s.duration_headline ?? "", s.duration_sublabel ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.contact_email ?? "",
       (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
-      (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"), s.category ?? "", (s.eyebrow_categories ?? []).join("|"),
-      s.is_active ? "true" : "false", String(s.sort_order ?? 0),
+      (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"),
+      s.tag ?? "", s.sub_tag_1 ?? "", s.sub_tag_2 ?? "",
+      s.is_active ? "true" : "false",
     ].map((v: any) => escapeCSV(String(v))).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "specials_export.csv");
     toast.success(`Exported ${specials.length} specials`);
   };
+
 
   return (
     <div>

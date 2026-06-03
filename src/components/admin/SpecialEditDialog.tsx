@@ -68,23 +68,18 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
   "image_url", "detail_image_url", "deal_label",
-  "valid_from", "valid_until", "card_footer_text", "is_active", "special_type",
+  "valid_from", "valid_until", "card_footer_text", "is_active",
   "price", "price_label", "original_price",
-  "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
-  "booking_link", "booking_link_label", "terms", "category", "eyebrow_categories",
+  "booking_link", "booking_link_label", "terms", "tag", "sub_tag_1", "sub_tag_2",
 ];
 
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(special);
-  const [newCategory, setNewCategory] = useState("");
-  const [localExtraCategories, setLocalExtraCategories] = useState<string[]>([]);
 
   useEffect(() => {
     setForm(special);
-    setNewCategory("");
-    setLocalExtraCategories([]);
   }, [special, open]);
 
   // Always-active toggle: no valid_until means ongoing
@@ -96,12 +91,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
-      // Normalise category arrays
-      const cats: string[] = Array.isArray(form.eyebrow_categories)
-        ? form.eyebrow_categories.map((c: any) => String(c || "").trim()).filter(Boolean)
-        : [];
-      payload.eyebrow_categories = cats;
-      payload.category = cats[0] || null;
+      payload.tag = (form.tag || "").trim() || null;
+      payload.sub_tag_1 = (form.sub_tag_1 || "").trim() || null;
+      payload.sub_tag_2 = (form.sub_tag_2 || "").trim() || null;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       payload.is_active = !(form.valid_until && new Date(form.valid_until) < today);
@@ -114,7 +106,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       qc.invalidateQueries({ queryKey: ["home-specials"] });
       qc.invalidateQueries({ queryKey: ["homepage-specials"] });
       qc.invalidateQueries({ queryKey: ["admin-specials"] });
-      qc.invalidateQueries({ queryKey: ["admin-special-categories"] });
+      qc.invalidateQueries({ queryKey: ["all-specials"] });
       onOpenChange(false);
     },
     onError: (e: any) => toast.error(e.message || "Failed to save"),
@@ -146,54 +138,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     },
   });
 
-  // Pull all existing categories from all specials so they're available as pills
-  const { data: allCategoryRows } = useQuery({
-    queryKey: ["admin-special-categories"],
-    queryFn: async () => {
-      const { data } = await supabase.from("specials").select("category, eyebrow_categories").limit(5000);
-      return data || [];
-    },
-  });
-
-  const availableCategories = useMemo(() => {
-    const set = new Set<string>();
-    (allCategoryRows || []).forEach((r: any) => {
-      if (r.category && typeof r.category === "string") set.add(r.category.trim());
-      if (Array.isArray(r.eyebrow_categories)) {
-        r.eyebrow_categories.forEach((c: any) => {
-          if (c && typeof c === "string") set.add(c.trim());
-        });
-      }
-    });
-    localExtraCategories.forEach((c) => set.add(c));
-    (form?.eyebrow_categories || []).forEach((c: string) => { if (c) set.add(c.trim()); });
-    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
-  }, [allCategoryRows, localExtraCategories, form?.eyebrow_categories]);
-
-  const selectedCategories: string[] = useMemo(
-    () => (form?.eyebrow_categories || []).filter((c: any) => c && String(c).trim()),
-    [form?.eyebrow_categories]
-  );
-
-  const toggleCategory = (cat: string) => {
-    const current = new Set(selectedCategories.map((c) => c.trim()));
-    if (current.has(cat)) current.delete(cat);
-    else current.add(cat);
-    set("eyebrow_categories", Array.from(current));
-  };
-
-  const addNewCategory = () => {
-    const name = newCategory.trim();
-    if (!name) return;
-    if (!availableCategories.includes(name)) {
-      setLocalExtraCategories((prev) => [...prev, name]);
-    }
-    if (!selectedCategories.includes(name)) {
-      set("eyebrow_categories", [...selectedCategories, name]);
-    }
-    setNewCategory("");
-  };
-
   const [businessQuery, setBusinessQuery] = useState("");
   useEffect(() => {
     if (open) setBusinessQuery("");
@@ -209,6 +153,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     if (!q) return (listings || []).slice(0, 8);
     return (listings || []).filter((l: any) => l.title.toLowerCase().includes(q)).slice(0, 8);
   }, [listings, businessQuery]);
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -269,50 +214,15 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             )}
             
           </div>
-          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(legacy — used only if no categories set)</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
+          <div><Label>Deal Label <span className="text-xs text-muted-foreground">(card pill text, e.g. "20% OFF")</span></Label><Input value={form.deal_label || ""} onChange={(e) => set("deal_label", e.target.value)} /></div>
 
-          {/* Categories — multi-select pills + add new */}
-          <div className="border rounded-md p-3 space-y-3">
-            <div>
-              <Label>Categories <span className="text-xs text-muted-foreground font-normal">(tap to select — appears above title)</span></Label>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {availableCategories.length === 0 && (
-                  <p className="text-xs text-muted-foreground">No categories yet — add one below.</p>
-                )}
-                {availableCategories.map((cat) => {
-                  const isSelected = selectedCategories.map((c) => c.trim()).includes(cat);
-                  return (
-                    <button
-                      key={cat}
-                      type="button"
-                      onClick={() => toggleCategory(cat)}
-                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                        isSelected
-                          ? "bg-primary text-primary-foreground border-primary"
-                          : "bg-background text-foreground border-border hover:bg-muted"
-                      }`}
-                    >
-                      {cat}
-                      {isSelected && <X className="inline-block h-3 w-3 ml-1.5 -mt-0.5" />}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="flex gap-2 pt-1">
-              <Input
-                placeholder="Add new category..."
-                value={newCategory}
-                onChange={(e) => setNewCategory(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") { e.preventDefault(); addNewCategory(); }
-                }}
-              />
-              <Button type="button" variant="outline" onClick={addNewCategory} disabled={!newCategory.trim()}>
-                <Plus className="h-4 w-4 mr-1" /> Add
-              </Button>
-            </div>
+          {/* Tag + sub-tags (same as events) */}
+          <div><Label>Tag / Main Category</Label><Input value={form.tag || ""} onChange={(e) => set("tag", e.target.value)} placeholder="e.g. Restaurant" /></div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label>Sub-tag 1</Label><Input value={form.sub_tag_1 || ""} onChange={(e) => set("sub_tag_1", e.target.value)} /></div>
+            <div><Label>Sub-tag 2</Label><Input value={form.sub_tag_2 || ""} onChange={(e) => set("sub_tag_2", e.target.value)} /></div>
           </div>
+
 
           <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
 
@@ -404,7 +314,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           <div><Label>Contact Email</Label><Input type="email" value={form.contact_email || ""} onChange={(e) => set("contact_email", e.target.value)} placeholder="e.g. info@example.com" /></div>
           <div><Label>Booking Link</Label><Input value={form.booking_link || ""} onChange={(e) => set("booking_link", e.target.value)} /></div>
           <div><Label>Booking Link Display Text <span className="text-xs text-muted-foreground"></span></Label><Input value={form.booking_link_label || ""} onChange={(e) => set("booking_link_label", e.target.value)} placeholder="e.g. Book on Quicket" /></div>
-          <div><Label>Special Type</Label><Input value={form.special_type || ""} onChange={(e) => set("special_type", e.target.value)} /></div>
+          
           <div>
             <Label>Terms <span className="text-xs text-muted-foreground font-normal">(add one per line — each appears as its own bullet)</span></Label>
             <TermsEditor value={form.terms || ""} onChange={(v) => set("terms", v)} />

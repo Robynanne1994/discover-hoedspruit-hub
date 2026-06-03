@@ -165,8 +165,16 @@ const SpecialDetail = () => {
   const waClean = special.contact_whatsapp?.replace(/[^0-9]/g, "");
   const priceFmt = formatPrice(special.price);
   const originalFmt = formatPrice(special.original_price);
-  const cats = (sp.eyebrow_categories as string[] | null)?.filter((c) => c && c.trim()) ?? [];
-  const eyebrowText = cats.length ? cats[0] : special.deal_label;
+  const priceLabel = (sp.price_label || "").trim() || null;
+  const subTag1 = (sp.sub_tag_1 || "").trim() || null;
+  const subTag2 = (sp.sub_tag_2 || "").trim() || null;
+  const mainTag = (sp.tag || "").trim() || null;
+  const allTags = [
+    { text: mainTag, type: "main" as const },
+    { text: subTag1, type: "sub" as const },
+    { text: subTag2, type: "sub" as const },
+  ].filter((t) => t.text && String(t.text).trim() !== "");
+
 
   // Validity status
   const now = new Date();
@@ -267,18 +275,17 @@ const SpecialDetail = () => {
   if (priceFmt) {
     detailRows.push({
       icon: Banknote, label: "Price",
-      value: originalFmt ? (
-        <span>{priceFmt} <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span></span>
-      ) : priceFmt,
+      value: (
+        <span>
+          {priceFmt}
+          {priceLabel && <span style={{ color: C.muted, marginLeft: 6 }}>{priceLabel}</span>}
+          {originalFmt && <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span>}
+        </span>
+      ),
     });
   }
   if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });
-  if (special.day_of_week?.length) {
-    detailRows.push({
-      icon: Clock, label: "Days",
-      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
-    });
-  }
+
   if (fromDate || untilDate) {
     detailRows.push({
       icon: Calendar, label: "Validity",
@@ -378,7 +385,7 @@ const SpecialDetail = () => {
   };
 
   const renderContact = () => {
-    const rows: { Icon: any; label: string; value: string; href: string; external?: boolean }[] = [];
+    const rows: { Icon: any; label: string; value: string; href: string; external?: boolean; internal?: boolean }[] = [];
     const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
     const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
     phones.forEach((p, i) => {
@@ -389,13 +396,17 @@ const SpecialDetail = () => {
       const clean = w.replace(/[^0-9]/g, "");
       rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
     });
+    const email = (special as any).contact_email?.trim();
+    if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
+    if (special.business_id && special.business_name) rows.push({
+      Icon: Store, label: "Business", value: special.business_name,
+      href: `/listing/${special.business_id}`, internal: true,
+    });
     if (special.booking_link) rows.push({
       Icon: ExternalLink, label: "Booking",
       value: sp.booking_link_label?.trim() || special.booking_link,
       href: special.booking_link, external: true,
     });
-    const email = (special as any).contact_email?.trim();
-    if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
 
     return (
       <div style={{ padding: 20 }}>
@@ -403,26 +414,35 @@ const SpecialDetail = () => {
           <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact info provided.</p>
         ) : (
           <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-            {rows.map((r, i) => (
-              <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                style={{
-                  display: "flex", alignItems: "center", gap: 14,
-                  padding: "14px 0", textDecoration: "none",
-                  borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-                }}>
-                <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
-                </div>
-                <ArrowUpRight size={16} color={C.muted} />
-              </a>
-            ))}
+            {rows.map((r, i) => {
+              const rowStyle: React.CSSProperties = {
+                display: "flex", alignItems: "center", gap: 14,
+                padding: "14px 0", textDecoration: "none",
+                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+              };
+              const inner = (
+                <>
+                  <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                    <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                  </div>
+                  <ArrowUpRight size={16} color={C.muted} />
+                </>
+              );
+              if (r.internal) return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
+              return (
+                <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={rowStyle}>
+                  {inner}
+                </a>
+              );
+            })}
           </div>
         )}
       </div>
     );
   };
+
 
   const renderTerms = () => {
     const termsList: string[] = (special.terms || "")
@@ -502,14 +522,36 @@ const SpecialDetail = () => {
 
       {/* Title block */}
       <div style={{ background: C.surface, padding: "20px 20px 18px" }}>
-        {eyebrowText && (
+        {allTags.length > 0 && (
           <div style={{
-            marginBottom: 8, fontSize: 11, color: C.muted,
-            letterSpacing: "0.12em", textTransform: "uppercase",
+            marginBottom: 8,
+            display: "flex",
+            alignItems: "center",
+            gap: 6,
+            flexWrap: "wrap",
           }}>
-            {eyebrowText}
+            {allTags.map((t, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                {i > 0 && (
+                  <span style={{
+                    width: 4, height: 4, borderRadius: "50%",
+                    background: C.accent, flexShrink: 0,
+                  }} />
+                )}
+                <span style={{
+                  fontSize: 11,
+                  letterSpacing: "0.04em",
+                  textTransform: "uppercase",
+                  color: t.type === "main" ? C.primary : C.muted,
+                  fontWeight: t.type === "main" ? 700 : 400,
+                }}>
+                  {t.text}
+                </span>
+              </div>
+            ))}
           </div>
         )}
+
         <h1
           data-no-title-case={(special as any).title_override?.trim() ? "true" : undefined}
           style={{
@@ -560,7 +602,7 @@ const SpecialDetail = () => {
           !!special.promo_code;
         const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
         const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
-        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email;
+        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email || !!special.business_id;
         const hasTerms = !!special.terms?.trim();
 
         const availableTabs: TabKey[] = [
