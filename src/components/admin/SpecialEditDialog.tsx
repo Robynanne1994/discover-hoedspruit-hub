@@ -77,13 +77,9 @@ const FIELDS: (keyof any)[] = [
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(special);
-  const [newCategory, setNewCategory] = useState("");
-  const [localExtraCategories, setLocalExtraCategories] = useState<string[]>([]);
 
   useEffect(() => {
     setForm(special);
-    setNewCategory("");
-    setLocalExtraCategories([]);
   }, [special, open]);
 
   // Always-active toggle: no valid_until means ongoing
@@ -95,12 +91,9 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       FIELDS.forEach((k) => { payload[k] = form[k] ?? null; });
       payload.additional_phones = sanitizeContactArray(form.additional_phones);
       payload.additional_whatsapps = sanitizeContactArray(form.additional_whatsapps);
-      // Normalise category arrays
-      const cats: string[] = Array.isArray(form.eyebrow_categories)
-        ? form.eyebrow_categories.map((c: any) => String(c || "").trim()).filter(Boolean)
-        : [];
-      payload.eyebrow_categories = cats;
-      payload.category = cats[0] || null;
+      payload.tag = (form.tag || "").trim() || null;
+      payload.sub_tag_1 = (form.sub_tag_1 || "").trim() || null;
+      payload.sub_tag_2 = (form.sub_tag_2 || "").trim() || null;
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       payload.is_active = !(form.valid_until && new Date(form.valid_until) < today);
@@ -113,7 +106,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
       qc.invalidateQueries({ queryKey: ["home-specials"] });
       qc.invalidateQueries({ queryKey: ["homepage-specials"] });
       qc.invalidateQueries({ queryKey: ["admin-specials"] });
-      qc.invalidateQueries({ queryKey: ["admin-special-categories"] });
+      qc.invalidateQueries({ queryKey: ["all-specials"] });
       onOpenChange(false);
     },
     onError: (e: any) => toast.error(e.message || "Failed to save"),
@@ -145,54 +138,6 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     },
   });
 
-  // Pull all existing categories from all specials so they're available as pills
-  const { data: allCategoryRows } = useQuery({
-    queryKey: ["admin-special-categories"],
-    queryFn: async () => {
-      const { data } = await supabase.from("specials").select("category, eyebrow_categories").limit(5000);
-      return data || [];
-    },
-  });
-
-  const availableCategories = useMemo(() => {
-    const set = new Set<string>();
-    (allCategoryRows || []).forEach((r: any) => {
-      if (r.category && typeof r.category === "string") set.add(r.category.trim());
-      if (Array.isArray(r.eyebrow_categories)) {
-        r.eyebrow_categories.forEach((c: any) => {
-          if (c && typeof c === "string") set.add(c.trim());
-        });
-      }
-    });
-    localExtraCategories.forEach((c) => set.add(c));
-    (form?.eyebrow_categories || []).forEach((c: string) => { if (c) set.add(c.trim()); });
-    return Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b));
-  }, [allCategoryRows, localExtraCategories, form?.eyebrow_categories]);
-
-  const selectedCategories: string[] = useMemo(
-    () => (form?.eyebrow_categories || []).filter((c: any) => c && String(c).trim()),
-    [form?.eyebrow_categories]
-  );
-
-  const toggleCategory = (cat: string) => {
-    const current = new Set(selectedCategories.map((c) => c.trim()));
-    if (current.has(cat)) current.delete(cat);
-    else current.add(cat);
-    set("eyebrow_categories", Array.from(current));
-  };
-
-  const addNewCategory = () => {
-    const name = newCategory.trim();
-    if (!name) return;
-    if (!availableCategories.includes(name)) {
-      setLocalExtraCategories((prev) => [...prev, name]);
-    }
-    if (!selectedCategories.includes(name)) {
-      set("eyebrow_categories", [...selectedCategories, name]);
-    }
-    setNewCategory("");
-  };
-
   const [businessQuery, setBusinessQuery] = useState("");
   useEffect(() => {
     if (open) setBusinessQuery("");
@@ -208,6 +153,7 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
     if (!q) return (listings || []).slice(0, 8);
     return (listings || []).filter((l: any) => l.title.toLowerCase().includes(q)).slice(0, 8);
   }, [listings, businessQuery]);
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
