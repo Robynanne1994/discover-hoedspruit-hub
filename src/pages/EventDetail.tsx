@@ -619,7 +619,7 @@ const EventDetail = () => {
       {rows.map((r, i) => {
         const inner = (
           <>
-            <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+            {r.Icon && <r.Icon size={18} strokeWidth={1.5} color={C.primary} />}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
               <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
