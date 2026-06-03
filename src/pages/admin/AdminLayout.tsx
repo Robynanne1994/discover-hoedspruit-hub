@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Navigate, Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -72,8 +72,12 @@ const AdminLayout = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  // Only show the initial loading state. Subsequent auth events
+  // (token refresh, focus) must not flash the layout.
+  const hasResolvedRef = useRef(false);
+  if (!loading) hasResolvedRef.current = true;
 
-  if (loading)
+  if (loading && !hasResolvedRef.current)
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#c5bcaa]">
         Loading...
