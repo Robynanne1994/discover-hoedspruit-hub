@@ -571,7 +571,27 @@ const EventDetail = () => {
   if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
     detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
   }
-  notes.forEach((n, i) => detailRows.push({ Icon: StickyNote, label: i === 0 ? (notes.length > 1 ? "Notes" : "Note") : "", value: <span style={{ whiteSpace: "pre-line" }}>{n}</span> }));
+  if (notes.length > 0) {
+    detailRows.push({
+      Icon: StickyNote,
+      label: notes.length > 1 ? "Notes" : "Note",
+      value: (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {notes.map((n, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+              <span style={{
+                flexShrink: 0, width: 20, height: 20, borderRadius: 999,
+                background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center", marginTop: 1,
+              }}>
+                <StickyNote size={11} strokeWidth={1.75} color={C.primary} />
+              </span>
+              <span style={{ whiteSpace: "pre-line", flex: 1, minWidth: 0 }}>{n}</span>
+            </div>
+          ))}
+        </div>
+      ),
+    });
+  }
 
   const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
