@@ -516,7 +516,7 @@ const EventDetail = () => {
     );
   };
 
-  const detailRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  const detailRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean }[] = [];
   if (isMultiPerformance) {
     const todayMid = new Date();
     todayMid.setHours(0, 0, 0, 0);
@@ -579,8 +579,12 @@ const EventDetail = () => {
   }
   if (notes.length > 0) {
     detailRows.push({
-      Icon: StickyNote,
-      label: notes.length > 1 ? "Notes" : "Note",
+      label: (
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <StickyNote size={14} strokeWidth={1.5} color={C.muted} />
+          {notes.length > 1 ? "Notes" : "Note"}
+        </span>
+      ),
       value: (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {notes.map((n, i) => (
@@ -601,7 +605,7 @@ const EventDetail = () => {
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
   const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
 
-  const contactRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  const contactRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean }[] = [];
   allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {
     const clean = w.replace(/[^0-9]/g, "");
@@ -619,7 +623,7 @@ const EventDetail = () => {
       {rows.map((r, i) => {
         const inner = (
           <>
-            <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+            {r.Icon && <r.Icon size={18} strokeWidth={1.5} color={C.primary} />}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
               <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
