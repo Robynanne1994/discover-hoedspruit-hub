@@ -516,7 +516,7 @@ const EventDetail = () => {
     );
   };
 
-  const detailRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  const detailRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean }[] = [];
   if (isMultiPerformance) {
     const todayMid = new Date();
     todayMid.setHours(0, 0, 0, 0);
