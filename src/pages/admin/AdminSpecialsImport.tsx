@@ -14,14 +14,13 @@ const stripTrailingZeros = (val: string | null | undefined) => {
 const EXPECTED_HEADERS = [
   "title", "title_override", "deal_label", "business_name", "business_id", "description",
   "image_url", "detail_image_url",
-  "special_type", "day_of_week", "valid_from", "valid_until", "card_footer_text",
+  "valid_from", "valid_until", "card_footer_text",
   "price", "price_label", "original_price",
-  "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
   "booking_required", "booking_link", "booking_link_label", "promo_code",
   "contact_phone", "contact_whatsapp", "contact_email",
   "additional_phones", "additional_whatsapps",
-  "terms", "category", "eyebrow_categories",
-  "is_active", "sort_order",
+  "terms", "tag", "sub_tag_1", "sub_tag_2",
+  "is_active",
 ];
 
 function parseCSV(text: string): { headers: string[]; rows: Record<string, string>[] } {
