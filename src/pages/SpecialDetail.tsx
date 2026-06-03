@@ -275,18 +275,17 @@ const SpecialDetail = () => {
   if (priceFmt) {
     detailRows.push({
       icon: Banknote, label: "Price",
-      value: originalFmt ? (
-        <span>{priceFmt} <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span></span>
-      ) : priceFmt,
+      value: (
+        <span>
+          {priceFmt}
+          {priceLabel && <span style={{ color: C.muted, marginLeft: 6 }}>{priceLabel}</span>}
+          {originalFmt && <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span>}
+        </span>
+      ),
     });
   }
   if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });
-  if (special.day_of_week?.length) {
-    detailRows.push({
-      icon: Clock, label: "Days",
-      value: special.day_of_week.map((d) => d.charAt(0).toUpperCase() + d.slice(1).toLowerCase()).join(", "),
-    });
-  }
+
   if (fromDate || untilDate) {
     detailRows.push({
       icon: Calendar, label: "Validity",
