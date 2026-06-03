@@ -77,7 +77,6 @@ const BusinessSpecialForm = ({ mode }: Props) => {
   const submit = async () => {
     if (!user || !listing) return;
     setBusy(true);
-    const tags = [tag1, tag2, tag3].map((t) => t.trim()).filter(Boolean);
     const titleCased = toTitleCase(title.trim());
     const payload = {
       title: titleCased,
@@ -91,7 +90,9 @@ const BusinessSpecialForm = ({ mode }: Props) => {
       booking_link: bookingLink || null,
       terms: terms || null,
       price: price || null,
-      eyebrow_categories: tags.length ? tags : null,
+      tag: tag1.trim() || null,
+      sub_tag_1: tag2.trim() || null,
+      sub_tag_2: tag3.trim() || null,
     };
     if (mode === "new") {
       const { data, error } = await supabase.from("specials_pending").insert({
