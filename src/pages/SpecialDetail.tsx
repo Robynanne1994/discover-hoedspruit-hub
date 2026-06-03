@@ -385,7 +385,7 @@ const SpecialDetail = () => {
   };
 
   const renderContact = () => {
-    const rows: { Icon: any; label: string; value: string; href: string; external?: boolean }[] = [];
+    const rows: { Icon: any; label: string; value: string; href: string; external?: boolean; internal?: boolean }[] = [];
     const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
     const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
     phones.forEach((p, i) => {
@@ -396,13 +396,17 @@ const SpecialDetail = () => {
       const clean = w.replace(/[^0-9]/g, "");
       rows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
     });
+    const email = (special as any).contact_email?.trim();
+    if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
+    if (special.business_id && special.business_name) rows.push({
+      Icon: Store, label: "Business", value: special.business_name,
+      href: `/listing/${special.business_id}`, internal: true,
+    });
     if (special.booking_link) rows.push({
       Icon: ExternalLink, label: "Booking",
       value: sp.booking_link_label?.trim() || special.booking_link,
       href: special.booking_link, external: true,
     });
-    const email = (special as any).contact_email?.trim();
-    if (email) rows.push({ Icon: Mail, label: "Email", value: email, href: `mailto:${email}` });
 
     return (
       <div style={{ padding: 20 }}>
@@ -410,26 +414,35 @@ const SpecialDetail = () => {
           <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact info provided.</p>
         ) : (
           <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-            {rows.map((r, i) => (
-              <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                style={{
-                  display: "flex", alignItems: "center", gap: 14,
-                  padding: "14px 0", textDecoration: "none",
-                  borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-                }}>
-                <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-                  <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
-                </div>
-                <ArrowUpRight size={16} color={C.muted} />
-              </a>
-            ))}
+            {rows.map((r, i) => {
+              const rowStyle: React.CSSProperties = {
+                display: "flex", alignItems: "center", gap: 14,
+                padding: "14px 0", textDecoration: "none",
+                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+              };
+              const inner = (
+                <>
+                  <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                    <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+                  </div>
+                  <ArrowUpRight size={16} color={C.muted} />
+                </>
+              );
+              if (r.internal) return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
+              return (
+                <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={rowStyle}>
+                  {inner}
+                </a>
+              );
+            })}
           </div>
         )}
       </div>
     );
   };
+
 
   const renderTerms = () => {
     const termsList: string[] = (special.terms || "")
