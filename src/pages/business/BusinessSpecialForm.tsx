@@ -168,11 +168,12 @@ const BusinessSpecialForm = ({ mode }: Props) => {
         <div><Label>Price (optional)</Label><Input value={price} onChange={(e) => setPrice(e.target.value)} placeholder="e.g. R250 / from R99" maxLength={40} /></div>
         <div><Label>Booking link (optional)</Label><Input type="url" value={bookingLink} onChange={(e) => setBookingLink(e.target.value)} placeholder="https://..." /></div>
         <div>
-          <Label>Tags (up to 3, optional)</Label>
+          <Label>Main category + 2 sub-categories (optional)</Label>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-            <Input value={tag1} onChange={(e) => setTag1(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 1" />
-            <Input value={tag2} onChange={(e) => setTag2(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 2" />
-            <Input value={tag3} onChange={(e) => setTag3(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Tag 3" />
+            <Input value={tag1} onChange={(e) => setTag1(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Main category" />
+            <Input value={tag2} onChange={(e) => setTag2(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Sub-tag 1" />
+            <Input value={tag3} onChange={(e) => setTag3(e.target.value.slice(0, TAG_MAX))} maxLength={TAG_MAX} placeholder="Sub-tag 2" />
+
           </div>
         </div>
         <div>
