@@ -579,8 +579,12 @@ const EventDetail = () => {
   }
   if (notes.length > 0) {
     detailRows.push({
-      Icon: StickyNote,
-      label: notes.length > 1 ? "Notes" : "Note",
+      label: (
+        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+          <StickyNote size={14} strokeWidth={1.5} color={C.muted} />
+          {notes.length > 1 ? "Notes" : "Note"}
+        </span>
+      ),
       value: (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {notes.map((n, i) => (
