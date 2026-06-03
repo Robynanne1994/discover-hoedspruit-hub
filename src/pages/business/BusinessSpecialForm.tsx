@@ -53,10 +53,9 @@ const BusinessSpecialForm = ({ mode }: Props) => {
         setBookingLink(p.booking_link ?? "");
         setTerms(p.terms ?? "");
         setPrice(p.price ?? "");
-        const tags = Array.isArray(p.eyebrow_categories) ? p.eyebrow_categories : [];
-        setTag1(tags[0] ?? "");
-        setTag2(tags[1] ?? "");
-        setTag3(tags[2] ?? "");
+        setTag1(p.tag ?? "");
+        setTag2(p.sub_tag_1 ?? "");
+        setTag3(p.sub_tag_2 ?? "");
         setFeature(!!data.feature_requested);
         setStatus(data.status);
         setAdminNote(data.admin_note);
