@@ -100,10 +100,6 @@ const AdminSpecialsImport = () => {
         if (!title) { results.errors.push(`Row ${i + 2}: Missing title, skipped`); continue; }
         csvTitles.add(title.toLowerCase());
 
-        const isUpdate = !!existingMap.get(title.toLowerCase());
-        const eyebrowCats = row.eyebrow_categories
-          ? row.eyebrow_categories.split("|").map((s: string) => s.trim()).filter(Boolean)
-          : null;
         const payload: Record<string, any> = {
           title,
           title_override: row.title_override || null,
@@ -112,18 +108,12 @@ const AdminSpecialsImport = () => {
           business_id: row.business_id || null,
           description: row.description || null,
           // image_url & detail_image_url ignored — managed via Lovable editor only
-          special_type: row.special_type || null,
-          day_of_week: row.day_of_week ? row.day_of_week.split("|").map((s: string) => s.trim().toLowerCase()).filter(Boolean) : null,
           valid_from: row.valid_from || null,
           valid_until: row.valid_until || null,
           card_footer_text: row.card_footer_text || null,
           price: stripTrailingZeros(row.price) || null,
           price_label: row.price_label || null,
           original_price: stripTrailingZeros(row.original_price) || null,
-          offer_headline: row.offer_headline || null,
-          offer_sublabel: row.offer_sublabel || null,
-          duration_headline: row.duration_headline || null,
-          duration_sublabel: row.duration_sublabel || null,
           booking_required: row.booking_required?.toLowerCase() === "true" || row.booking_required === "1",
           booking_link: row.booking_link || null,
           booking_link_label: row.booking_link_label || null,
@@ -134,11 +124,12 @@ const AdminSpecialsImport = () => {
           additional_phones: row.additional_phones ? row.additional_phones.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           additional_whatsapps: row.additional_whatsapps ? row.additional_whatsapps.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           terms: row.terms ? row.terms.split("|").map((s: string) => s.trim()).filter(Boolean).join("\n") || null : null,
-          category: row.category || (eyebrowCats?.[0] ?? null),
-          eyebrow_categories: eyebrowCats,
+          tag: row.tag || null,
+          sub_tag_1: row.sub_tag_1 || null,
+          sub_tag_2: row.sub_tag_2 || null,
           is_active: row.is_active ? (row.is_active.toLowerCase() !== "false" && row.is_active !== "0") : true,
-          sort_order: row.sort_order ? parseInt(row.sort_order) || 0 : 0,
         };
+
 
         const existingId = existingMap.get(title.toLowerCase());
         if (existingId) {
