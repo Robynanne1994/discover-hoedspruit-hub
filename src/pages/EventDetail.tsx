@@ -601,7 +601,7 @@ const EventDetail = () => {
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
   const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
 
-  const contactRows: { Icon: any; label: string; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  const contactRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean }[] = [];
   allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {
     const clean = w.replace(/[^0-9]/g, "");
