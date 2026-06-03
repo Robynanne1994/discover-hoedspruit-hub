@@ -30,7 +30,6 @@ const COLOR = {
 
 const formatValidTill = (s: any): string => {
   if (s.valid_until) return `Valid until ${format(new Date(s.valid_until), "d MMM")}`;
-  if (s.day_of_week && s.day_of_week.length > 0) return s.day_of_week.join(", ");
   return "Ongoing";
 };
 
