@@ -544,6 +544,12 @@ const EventDetail = () => {
                   opacity: past ? 0.45 : 1,
                 }}
               >
+                <span style={{
+                  flexShrink: 0, width: 20, height: 20, borderRadius: 999,
+                  background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <Calendar size={11} strokeWidth={1.75} color={C.primary} />
+                </span>
                 <span style={{ fontFamily: FONT, fontSize: 14, color: C.heading, flex: 1 }}>
                   {weekday}, {d.getDate()} {month} {d.getFullYear()}
                   {timeStr ? <span style={{ color: C.muted }}> · {timeStr}</span> : null}
