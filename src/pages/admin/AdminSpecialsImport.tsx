@@ -173,14 +173,13 @@ const AdminSpecialsImport = () => {
     const example = [
       "Sunset Dinner Deal", "", "50% OFF", "Bush Lodge", "", "Half-price dinner with wine pairing",
       "", "",
-      "weekly", "friday|saturday", "2026-01-01", "2026-06-30", "Weekends only",
+      "2026-01-01", "2026-06-30", "Weekends only",
       "R450pp", "per person", "R900pp",
-      "", "", "", "",
       "true", "https://bookme.com/example", "Book on Quicket", "WINTER2026",
       "+27 123 456 789", "+27 123 456 789", "info@example.com",
       "", "",
-      "T's & C's apply. Sit down only.", "restaurant", "restaurant|dinner",
-      "true", "1",
+      "T's & C's apply. Sit down only.", "Restaurant", "Dinner", "Wine pairing",
+      "true",
     ];
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const csv = EXPECTED_HEADERS.join(",") + "\n" + example.map(escapeCSV).join(",") + "\n";
@@ -188,25 +187,25 @@ const AdminSpecialsImport = () => {
   };
 
   const downloadSpecials = async () => {
-    const { data: specials } = await supabase.from("specials").select("*").order("sort_order", { ascending: true });
+    const { data: specials } = await supabase.from("specials").select("*").order("created_at", { ascending: false });
     if (!specials?.length) { toast.error("No specials to export"); return; }
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
     const rows = specials.map((s: any) => [
       s.title ?? "", s.title_override ?? "", s.deal_label ?? "", s.business_name ?? "", s.business_id ?? "", s.description ?? "",
       s.image_url ?? "", s.detail_image_url ?? "",
-      s.special_type ?? "", (s.day_of_week ?? []).join("|"),
       s.valid_from ?? "", s.valid_until ?? "", s.card_footer_text ?? "",
       stripTrailingZeros(s.price) ?? "", s.price_label ?? "", stripTrailingZeros(s.original_price) ?? "",
-      s.offer_headline ?? "", s.offer_sublabel ?? "", s.duration_headline ?? "", s.duration_sublabel ?? "",
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.contact_email ?? "",
       (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
-      (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"), s.category ?? "", (s.eyebrow_categories ?? []).join("|"),
-      s.is_active ? "true" : "false", String(s.sort_order ?? 0),
+      (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"),
+      s.tag ?? "", s.sub_tag_1 ?? "", s.sub_tag_2 ?? "",
+      s.is_active ? "true" : "false",
     ].map((v: any) => escapeCSV(String(v))).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "specials_export.csv");
     toast.success(`Exported ${specials.length} specials`);
   };
+
 
   return (
     <div>
