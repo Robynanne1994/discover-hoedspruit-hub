@@ -1,3 +1,4 @@
+import * as React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -89,10 +90,17 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   const { isGuest } = useGuestAuth();
   const location = useLocation();
+  // Track whether auth has ever resolved. After the first resolution we never
+  // show the splash again, even if onAuthStateChange briefly toggles loading
+  // (e.g. on tab focus / token refresh). This prevents full-page flashes
+  // during navigation.
+  const hasResolvedRef = React.useRef(false);
+  if (!loading) hasResolvedRef.current = true;
+
   // The Business Portal has its own auth flow and must be reachable without
   // signing in to the consumer app first.
   if (location.pathname.startsWith("/business")) return <>{children}</>;
-  if (loading) {
+  if (loading && !hasResolvedRef.current) {
     return <LoadingSplash />;
   }
   // Welcome route is always reachable so guests can return to sign up/in.
