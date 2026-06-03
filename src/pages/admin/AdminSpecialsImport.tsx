@@ -134,7 +134,7 @@ const AdminSpecialsImport = () => {
           contact_email: row.contact_email || null,
           additional_phones: row.additional_phones ? row.additional_phones.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
           additional_whatsapps: row.additional_whatsapps ? row.additional_whatsapps.split("|").map((s: string) => s.trim()).filter(Boolean) : [],
-          terms: row.terms || null,
+          terms: row.terms ? row.terms.split("|").map((s: string) => s.trim()).filter(Boolean).join("\n") || null : null,
           category: row.category || (eyebrowCats?.[0] ?? null),
           eyebrow_categories: eyebrowCats,
           is_active: row.is_active ? (row.is_active.toLowerCase() !== "false" && row.is_active !== "0") : true,
