@@ -602,7 +602,7 @@ const SpecialDetail = () => {
           !!special.promo_code;
         const phones = collectContacts(special.contact_phone, (special as any).additional_phones);
         const whatsapps = collectContacts(special.contact_whatsapp, (special as any).additional_whatsapps);
-        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email;
+        const hasContact = phones.length > 0 || whatsapps.length > 0 || !!special.booking_link || !!(special as any).contact_email || !!special.business_id;
         const hasTerms = !!special.terms?.trim();
 
         const availableTabs: TabKey[] = [
