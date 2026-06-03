@@ -68,11 +68,10 @@ const TermsEditor = ({ value, onChange }: { value: string; onChange: (v: string)
 const FIELDS: (keyof any)[] = [
   "title", "title_override", "description", "business_name", "business_id",
   "image_url", "detail_image_url", "deal_label",
-  "valid_from", "valid_until", "card_footer_text", "is_active", "special_type",
+  "valid_from", "valid_until", "card_footer_text", "is_active",
   "price", "price_label", "original_price",
-  "offer_headline", "offer_sublabel", "duration_headline", "duration_sublabel",
   "promo_code", "contact_phone", "contact_whatsapp", "contact_email", "additional_phones", "additional_whatsapps",
-  "booking_link", "booking_link_label", "terms", "category", "eyebrow_categories",
+  "booking_link", "booking_link_label", "terms", "tag", "sub_tag_1", "sub_tag_2",
 ];
 
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
