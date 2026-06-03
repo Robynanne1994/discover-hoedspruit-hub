@@ -582,15 +582,13 @@ const EventDetail = () => {
       Icon: StickyNote,
       label: notes.length > 1 ? "Notes" : "Note",
       value: (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
           {notes.map((n, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
               <span style={{
-                flexShrink: 0, width: 20, height: 20, borderRadius: 999,
-                background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center", marginTop: 1,
-              }}>
-                <StickyNote size={11} strokeWidth={1.75} color={C.primary} />
-              </span>
+                flexShrink: 0, width: 6, height: 6, borderRadius: 999,
+                background: C.primary, marginTop: 8,
+              }} />
               <span style={{ whiteSpace: "pre-line", flex: 1, minWidth: 0 }}>{n}</span>
             </div>
           ))}
