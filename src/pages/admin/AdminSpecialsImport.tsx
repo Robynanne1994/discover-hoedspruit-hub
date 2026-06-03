@@ -211,7 +211,7 @@ const AdminSpecialsImport = () => {
       s.booking_required ? "true" : "false", s.booking_link ?? "", s.booking_link_label ?? "", s.promo_code ?? "",
       s.contact_phone ?? "", s.contact_whatsapp ?? "", s.contact_email ?? "",
       (s.additional_phones ?? []).join("|"), (s.additional_whatsapps ?? []).join("|"),
-      s.terms ?? "", s.category ?? "", (s.eyebrow_categories ?? []).join("|"),
+      (s.terms ?? "").split("\n").map((t: string) => t.trim()).filter(Boolean).join("|"), s.category ?? "", (s.eyebrow_categories ?? []).join("|"),
       s.is_active ? "true" : "false", String(s.sort_order ?? 0),
     ].map((v: any) => escapeCSV(String(v))).join(","));
     downloadCSV(EXPECTED_HEADERS.join(",") + "\n" + rows.join("\n") + "\n", "specials_export.csv");
