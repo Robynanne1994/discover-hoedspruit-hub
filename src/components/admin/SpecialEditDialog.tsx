@@ -235,6 +235,10 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
             <Label>Detail Cover Image <span className="text-xs text-muted-foreground font-normal">(shown on the individual special page — 4:3)</span></Label>
             <ImageUpload bucket="listing-images" value={form.detail_image_url || ""} onChange={(url) => set("detail_image_url", url)} aspect={4/3} />
           </div>
+          <div>
+            <Label>Homepage Featured Image <span className="text-xs text-muted-foreground font-normal">(shown in the homepage Active Specials section — 1:1. Falls back to card image if empty.)</span></Label>
+            <ImageUpload bucket="listing-images" value={form.homepage_image_url || ""} onChange={(url) => set("homepage_image_url", url)} aspect={1} />
+          </div>
 
           {/* Validity + always active */}
           <div className="space-y-2">
