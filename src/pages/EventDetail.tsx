@@ -629,8 +629,9 @@ const EventDetail = () => {
           </div>
         );
         const body = (
-          <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-            {r.value}
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+            <Check size={16} strokeWidth={1.5} color={C.heading} style={{ flexShrink: 0, marginTop: 2 }} />
+            <div style={{ flex: 1 }}>{r.value}</div>
           </div>
         );
         const rowStyle: React.CSSProperties = {
