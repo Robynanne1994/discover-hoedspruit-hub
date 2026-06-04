@@ -1643,6 +1643,7 @@ export type Database = {
           deal_label: string
           description: string | null
           detail_image_url: string | null
+          homepage_image_url: string | null
           id: string
           image_url: string | null
           is_active: boolean
@@ -1678,6 +1679,7 @@ export type Database = {
           deal_label: string
           description?: string | null
           detail_image_url?: string | null
+          homepage_image_url?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
@@ -1713,6 +1715,7 @@ export type Database = {
           deal_label?: string
           description?: string | null
           detail_image_url?: string | null
+          homepage_image_url?: string | null
           id?: string
           image_url?: string | null
           is_active?: boolean
