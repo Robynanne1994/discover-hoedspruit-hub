@@ -1386,6 +1386,7 @@ const ListingDetail = () => {
         open={suggestEditOpen}
         onClose={() => setSuggestEditOpen(false)}
         listingTitle={listing.title}
+        currentUser={user}
       />
 
       <BottomNav />
@@ -1422,31 +1423,51 @@ const SuggestEditFooter = ({ onClick }: { onClick: () => void }) => (
   </div>
 );
 
-// ----- Suggest edit sheet (unchanged behaviour) -----
+// ----- Suggest edit sheet -----
 const suggestInputStyle: React.CSSProperties = {
-  fontFamily: FONT, fontWeight: 400, fontSize: 14, color: C.heading,
-  background: C.bg, border: `1px solid ${C.border}`, borderRadius: 12,
-  padding: "12px 14px", outline: "none", width: "100%", boxSizing: "border-box",
+  fontFamily: FONT, fontWeight: 400, fontSize: 15, color: C.heading,
+  background: "#fff", border: `1px solid ${C.border}`, borderRadius: 12,
+  padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
+  lineHeight: 1.4,
 };
 
-const SuggestEditSheet = ({ open, onClose, listingTitle }: { open: boolean; onClose: () => void; listingTitle: string }) => {
+const suggestLabelStyle: React.CSSProperties = {
+  fontFamily: FONT, fontSize: 11, fontWeight: 400, letterSpacing: "0.08em",
+  textTransform: "uppercase", color: C.heading, marginBottom: 6, display: "block",
+};
+
+const SuggestEditSheet = ({
+  open, onClose, listingTitle, currentUser,
+}: {
+  open: boolean; onClose: () => void; listingTitle: string;
+  currentUser: { email?: string | null; user_metadata?: Record<string, any> } | null;
+}) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [editType, setEditType] = useState("");
   const [details, setDetails] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const isSignedIn = !!currentUser;
+  const signedInName =
+    (currentUser?.user_metadata?.display_name as string | undefined)?.trim() ||
+    (currentUser?.user_metadata?.first_name as string | undefined)?.trim() ||
+    (currentUser?.email ? currentUser.email.split("@")[0] : "");
+  const signedInEmail = currentUser?.email ?? "";
+
   if (!open) return null;
 
   const submit = async () => {
-    if (!name.trim() || !email.trim() || !editType.trim() || !details.trim()) {
+    const finalName = isSignedIn ? signedInName : name.trim();
+    const finalEmail = isSignedIn ? signedInEmail : email.trim();
+    if (!finalName || !finalEmail || !editType.trim() || !details.trim()) {
       toast.error("Please fill in all the fields.");
       return;
     }
     setSubmitting(true);
     const composed = `[Suggest an edit]\nListing: ${listingTitle}\nWhat needs updating: ${editType.trim()}\n\nDetails:\n${details.trim()}`;
     const { error } = await supabase.from("contact_submissions").insert({
-      name: name.trim(), email: email.trim(), message: composed,
+      name: finalName, email: finalEmail, message: composed,
     });
     setSubmitting(false);
     if (error) { toast.error("Couldn't send right now. Try again shortly."); return; }
@@ -1472,19 +1493,36 @@ const SuggestEditSheet = ({ open, onClose, listingTitle }: { open: boolean; onCl
             <XIcon size={20} color={C.heading} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: FONT, fontWeight: 400, fontSize: 20, color: C.heading, margin: "0 0 8px" }}>Suggest an edit</h2>
-        <p style={{ fontSize: 13.5, lineHeight: 1.5, color: C.muted, margin: "0 0 16px" }}>
+        <h2 style={{ fontFamily: FONT, fontWeight: 400, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an edit</h2>
+        <p style={{ fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
           Spotted something out of date on <strong style={{ color: C.heading, fontWeight: 400 }}>{listingTitle}</strong>? Let us know and we'll update it.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={suggestInputStyle} />
-          <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={suggestInputStyle} />
-          <input value={editType} onChange={(e) => setEditType(e.target.value)} placeholder="What needs updating?" style={suggestInputStyle} />
-          <textarea value={details} onChange={(e) => setDetails(e.target.value)} placeholder="Please share the correct details." rows={5} style={{ ...suggestInputStyle, resize: "none" }} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {!isSignedIn && (
+            <>
+              <div>
+                <label style={suggestLabelStyle}>Your name</label>
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Smith" style={suggestInputStyle} />
+              </div>
+              <div>
+                <label style={suggestLabelStyle}>Your email</label>
+                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="you@example.com" style={suggestInputStyle} />
+              </div>
+            </>
+          )}
+          <div>
+            <label style={suggestLabelStyle}>What needs updating?</label>
+            <input value={editType} onChange={(e) => setEditType(e.target.value)} placeholder="e.g. Opening hours, phone number, address" style={suggestInputStyle} />
+          </div>
+          <div>
+            <label style={suggestLabelStyle}>Details</label>
+            <textarea value={details} onChange={(e) => setDetails(e.target.value)} placeholder="Please share the correct details." rows={5} style={{ ...suggestInputStyle, resize: "none" }} />
+          </div>
         </div>
         <button onClick={submit} disabled={submitting} style={{
-          fontFamily: FONT, marginTop: 14, width: "100%", height: 48, borderRadius: 999,
+          fontFamily: FONT, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
           background: C.primary, color: "#fff", border: "none", fontSize: 14,
+          letterSpacing: "0.04em",
           cursor: submitting ? "default" : "pointer", opacity: submitting ? 0.6 : 1,
         }}>
           {submitting ? "Sending..." : "Send Suggestion"}
