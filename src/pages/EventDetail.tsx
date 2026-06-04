@@ -619,7 +619,7 @@ const EventDetail = () => {
     <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
       {rows.map((r, i) => {
         const header = (
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
             {r.Icon && <r.Icon size={18} strokeWidth={1.5} color={C.primary} />}
             <h3 style={{
               margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
@@ -629,9 +629,8 @@ const EventDetail = () => {
           </div>
         );
         const body = (
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 10, fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-            <Check size={16} strokeWidth={1.5} color={C.heading} style={{ flexShrink: 0, marginTop: 2 }} />
-            <div style={{ flex: 1 }}>{r.value}</div>
+          <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+            {r.value}
           </div>
         );
         const rowStyle: React.CSSProperties = {
