@@ -36,9 +36,9 @@ const formatValidTill = (s: any): string => {
       from.getFullYear() === until.getFullYear() &&
       from.getMonth() === until.getMonth() &&
       from.getDate() === until.getDate();
-    if (sameDay) return `Valid for ${format(until, "d MMM yyyy")}`;
+    if (sameDay) return `Valid for ${format(until, "d MMMM yyyy")}`;
   }
-  if (until) return `Valid until ${format(until, "d MMM")}`;
+  if (until) return `Valid until ${format(until, "d MMMM yyyy")}`;
   return "Ongoing";
 };
 
