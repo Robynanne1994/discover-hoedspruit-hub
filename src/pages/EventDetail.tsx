@@ -621,7 +621,7 @@ const EventDetail = () => {
     <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
       {rows.map((r, i) => {
         const header = (
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 10, borderBottom: `1px solid ${C.divider}`, marginBottom: 10 }}>
             {r.Icon && <r.Icon size={18} strokeWidth={1.5} color={C.primary} />}
             <h3 style={{
               margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
