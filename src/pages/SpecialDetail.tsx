@@ -589,10 +589,10 @@ const SpecialDetail = () => {
           }}>
             <Store size={12} color={C.muted} strokeWidth={1.6} />
             {special.business_id ? (
-              <Link to={`/listing/${special.business_id}`} style={{ color: C.muted, textDecoration: "none" }}>
+              <Link to={`/listing/${special.business_id}`} style={{ color: C.muted, textDecoration: "none", fontWeight: 400 }}>
                 {special.business_name}
               </Link>
-            ) : <span>{special.business_name}</span>}
+            ) : <span style={{ fontWeight: 400 }}>{special.business_name}</span>}
           </div>
         )}
         <div style={{ marginTop: 10, display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
