@@ -17,7 +17,7 @@ const COLOR = {
   pageBg: "#E6E0CC",
   cardBg: "#FFFFFF",
   ink: "#1A1A1A",
-  mutedInk: "#7A6E5C",
+  mutedInk: "#6B6A5E",
   divider: "#EAE4D5",
   pillBorder: "#E2DAC6",
   pillInactiveBg: "#FFFFFF",
