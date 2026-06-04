@@ -581,7 +581,9 @@ const EventDetail = () => {
     detailRows.push({
       Icon: StickyNote,
       label: "Notes",
-      value: (
+      value: notes.length === 1 ? (
+        <span style={{ whiteSpace: "pre-line" }}>{notes[0]}</span>
+      ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {notes.map((n, i) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
@@ -683,7 +685,9 @@ const EventDetail = () => {
                   if (priceNotes.length > 0) {
                     sections.push({
                       Icon: StickyNote, label: "Price Notes",
-                      body: (
+                      body: priceNotes.length === 1 ? (
+                        <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>{priceNotes[0]}</div>
+                      ) : (
                         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                           {priceNotes.map((note, i) => (
                             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
