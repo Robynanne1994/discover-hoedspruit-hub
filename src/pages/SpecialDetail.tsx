@@ -181,7 +181,7 @@ const SpecialDetail = () => {
   const DAY = 24 * 60 * 60 * 1000;
   const fmt = (d: Date) => format(d, "d MMM yyyy");
   let dotColor = "#5C8A4A";
-  let statusLabel = "Live now";
+  let statusLabel = "Live Now";
   let datesText = "Ongoing";
   if (untilDate && now > untilDate) {
     dotColor = C.muted; statusLabel = "Expired"; datesText = `ended ${fmt(untilDate)}`;
