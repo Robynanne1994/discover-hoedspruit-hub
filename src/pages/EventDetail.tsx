@@ -685,7 +685,9 @@ const EventDetail = () => {
                   if (priceNotes.length > 0) {
                     sections.push({
                       Icon: StickyNote, label: "Price Notes",
-                      body: (
+                      body: priceNotes.length === 1 ? (
+                        <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>{priceNotes[0]}</div>
+                      ) : (
                         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                           {priceNotes.map((note, i) => (
                             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
