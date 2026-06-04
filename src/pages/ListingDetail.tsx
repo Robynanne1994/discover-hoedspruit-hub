@@ -765,7 +765,7 @@ const ListingDetail = () => {
       {...(a.ext ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       style={{
         display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-        padding: "14px 18px", borderRadius: 999,
+        padding: "10px 18px", borderRadius: 999,
         background: C.surface, border: `1px solid ${C.border}`,
         color: C.heading, textDecoration: "none",
         fontFamily: FONT, fontWeight: 400, fontSize: 14,
