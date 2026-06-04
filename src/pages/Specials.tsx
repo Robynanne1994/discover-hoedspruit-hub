@@ -447,15 +447,15 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             lineHeight: 1.25,
             color: COLOR.ink,
             margin: 0,
-            marginBottom: 8,
-            letterSpacing: "-0.2px",
+          marginBottom: 4,
+          letterSpacing: "-0.2px",
           }}
         >
           {getDisplayTitle(special)}
         </h3>
 
         {/* Divider */}
-        <div style={{ height: 1, background: COLOR.divider, margin: "16px 0 14px 0" }} />
+        <div style={{ height: 1, background: COLOR.divider, margin: "10px 0 14px 0" }} />
 
         {/* Footer */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
