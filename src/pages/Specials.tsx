@@ -469,46 +469,23 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             <Clock size={14} strokeWidth={2} />
             {validText}
           </div>
-          {(special.price || special.original_price) ? (
-            <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-              {special.original_price && (
-                <span
-                  style={{
-                    fontFamily: SANS,
-                    fontSize: 14,
-                    color: COLOR.priceStrike,
-                    textDecoration: "line-through",
-                    fontWeight: 500,
-                  }}
-                >
-                  {special.original_price}
-                </span>
-              )}
-              {special.price && (
-                <span
-                  style={{
-                    fontFamily: SANS,
-                    fontSize: 20,
-                    fontWeight: 800,
-                    color: COLOR.ink,
-                    letterSpacing: "-0.3px",
-                  }}
-                >
-                  {special.price}
-                </span>
-              )}
-            </div>
-          ) : (special as any).savings ? (
+          {(special.price || (special as any).savings || special.original_price) ? (
             <span
               style={{
+                flexShrink: 0,
+                border: "1.5px solid #BFE5C8",
+                color: "#2E7D4F",
+                background: "#F1FAF3",
                 fontFamily: SANS,
-                fontSize: 18,
-                fontWeight: 800,
-                color: COLOR.ink,
-                letterSpacing: "-0.3px",
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                padding: "5px 14px",
+                borderRadius: 9999,
               }}
             >
-              {(special as any).savings}
+              {special.price || (special as any).savings || special.original_price}
             </span>
           ) : null}
         </div>
