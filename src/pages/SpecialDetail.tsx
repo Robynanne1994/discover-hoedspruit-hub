@@ -180,6 +180,10 @@ const SpecialDetail = () => {
   const now = new Date();
   const DAY = 24 * 60 * 60 * 1000;
   const fmt = (d: Date) => format(d, "d MMM yyyy");
+  const sameDay = fromDate && untilDate &&
+    fromDate.getFullYear() === untilDate.getFullYear() &&
+    fromDate.getMonth() === untilDate.getMonth() &&
+    fromDate.getDate() === untilDate.getDate();
   let dotColor = "#5C8A4A";
   let statusLabel = "Live Now";
   let datesText = "Ongoing";
@@ -187,15 +191,15 @@ const SpecialDetail = () => {
     dotColor = C.muted; statusLabel = "Expired"; datesText = `ended ${fmt(untilDate)}`;
   } else if (fromDate && now < fromDate) {
     statusLabel = `Starts ${fmt(fromDate)}`;
-    datesText = untilDate ? `runs to ${fmt(untilDate)}` : "ongoing";
+    datesText = untilDate ? (sameDay ? `Valid for ${fmt(untilDate)}` : `runs to ${fmt(untilDate)}`) : "ongoing";
   } else if (untilDate) {
     const daysLeft = Math.ceil((untilDate.getTime() - now.getTime()) / DAY);
     if (daysLeft <= 7) {
       dotColor = "#B05B3F";
       statusLabel = daysLeft <= 0 ? "Ends today" : daysLeft === 1 ? "Ends tomorrow" : `Ends in ${daysLeft} days`;
-      datesText = `until ${fmt(untilDate)}`;
+      datesText = sameDay ? `Valid for ${fmt(untilDate)}` : `until ${fmt(untilDate)}`;
     } else {
-      datesText = `Valid until ${fmt(untilDate)}`;
+      datesText = sameDay ? `Valid for ${fmt(untilDate)}` : `Valid until ${fmt(untilDate)}`;
     }
   } else if (fromDate) {
     datesText = `from ${fmt(fromDate)}`;

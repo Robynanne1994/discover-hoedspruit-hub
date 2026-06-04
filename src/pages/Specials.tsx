@@ -29,7 +29,16 @@ const COLOR = {
 };
 
 const formatValidTill = (s: any): string => {
-  if (s.valid_until) return `Valid until ${format(new Date(s.valid_until), "d MMM")}`;
+  const from = s.valid_from ? new Date(s.valid_from) : null;
+  const until = s.valid_until ? new Date(s.valid_until) : null;
+  if (from && until) {
+    const sameDay =
+      from.getFullYear() === until.getFullYear() &&
+      from.getMonth() === until.getMonth() &&
+      from.getDate() === until.getDate();
+    if (sameDay) return `Valid for ${format(until, "d MMM yyyy")}`;
+  }
+  if (until) return `Valid until ${format(until, "d MMM")}`;
   return "Ongoing";
 };
 
