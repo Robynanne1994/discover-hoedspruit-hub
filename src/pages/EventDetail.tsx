@@ -579,12 +579,8 @@ const EventDetail = () => {
   }
   if (notes.length > 0) {
     detailRows.push({
-      label: (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <StickyNote size={14} strokeWidth={1.5} color={C.muted} />
-          Notes
-        </span>
-      ),
+      Icon: StickyNote,
+      label: "Notes",
       value: (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {notes.map((n, i) => (
@@ -600,6 +596,7 @@ const EventDetail = () => {
       ),
     });
   }
+
 
   const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
@@ -619,34 +616,40 @@ const EventDetail = () => {
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
 
   const renderRowsCard = (rows: typeof detailRows) => (
-    <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       {rows.map((r, i) => {
-        const inner = (
-          <>
+        const header = (
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
             {r.Icon && <r.Icon size={18} strokeWidth={1.5} color={C.primary} />}
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-              <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
-            </div>
+            <h3 style={{
+              margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
+              letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1,
+            }}>{r.label}</h3>
             {r.href && <ArrowUpRight size={16} color={C.muted} />}
-          </>
+          </div>
         );
-        const style: React.CSSProperties = {
-          display: "flex", alignItems: "center", gap: 14,
-          padding: "14px 0", textDecoration: "none",
-          borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+        const body = (
+          <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+            {r.value}
+          </div>
+        );
+        const cardStyle: React.CSSProperties = {
+          background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}`,
+          textDecoration: "none", display: "block", color: "inherit",
         };
         if (r.href) {
           return (
-            <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
-              {inner}
+            <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={cardStyle}>
+              {header}
+              {body}
             </a>
           );
         }
-        return <div key={i} style={style}>{inner}</div>;
+        return <div key={i} style={cardStyle}>{header}{body}</div>;
       })}
     </div>
   );
+
 
   const sectionHeading = (label: string) => (
     <h2 style={{ ...headStyle, margin: "0 0 14px" }}>{label}</h2>
