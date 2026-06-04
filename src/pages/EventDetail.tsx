@@ -616,7 +616,7 @@ const EventDetail = () => {
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
 
   const renderRowsCard = (rows: typeof detailRows) => (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+    <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
       {rows.map((r, i) => {
         const header = (
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
@@ -633,19 +633,20 @@ const EventDetail = () => {
             {r.value}
           </div>
         );
-        const cardStyle: React.CSSProperties = {
-          background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}`,
+        const rowStyle: React.CSSProperties = {
+          padding: 18,
+          borderBottom: i < rows.length - 1 ? `1px solid ${C.divider}` : undefined,
           textDecoration: "none", display: "block", color: "inherit",
         };
         if (r.href) {
           return (
-            <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={cardStyle}>
+            <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={rowStyle}>
               {header}
               {body}
             </a>
           );
         }
-        return <div key={i} style={cardStyle}>{header}{body}</div>;
+        return <div key={i} style={rowStyle}>{header}{body}</div>;
       })}
     </div>
   );
