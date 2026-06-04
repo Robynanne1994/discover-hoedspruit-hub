@@ -463,11 +463,12 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
               fontFamily: SANS,
               fontSize: 13,
               color: COLOR.mutedInk,
-              fontWeight: 500,
+              flex: 1,
+              minWidth: 0,
             }}
           >
-            <Clock size={14} strokeWidth={2} />
-            {validText}
+            <Clock size={13} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{validText}</span>
           </div>
           {(special.price || (special as any).savings || special.original_price) ? (
             <span
