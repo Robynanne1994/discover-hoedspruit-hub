@@ -279,6 +279,7 @@ const SpecialDetail = () => {
       internal: true,
     });
   }
+  const savingsText = ((sp.savings || "") as string).trim() || null;
   if (priceFmt) {
     detailRows.push({
       icon: Banknote, label: "Price",
@@ -289,6 +290,11 @@ const SpecialDetail = () => {
           {originalFmt && <span style={{ color: C.muted, textDecoration: "line-through", marginLeft: 6 }}>{originalFmt}</span>}
         </span>
       ),
+    });
+  } else if (savingsText) {
+    detailRows.push({
+      icon: Banknote, label: "Savings",
+      value: <span>{savingsText}</span>,
     });
   }
   if (special.deal_label) detailRows.push({ icon: Tag, label: "Deal", value: special.deal_label });

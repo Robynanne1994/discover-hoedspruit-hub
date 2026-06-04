@@ -464,7 +464,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             <Clock size={14} strokeWidth={2} />
             {validText}
           </div>
-          {(special.price || special.original_price) && (
+          {(special.price || special.original_price) ? (
             <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
               {special.original_price && (
                 <span
@@ -493,7 +493,19 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
                 </span>
               )}
             </div>
-          )}
+          ) : (special as any).savings ? (
+            <span
+              style={{
+                fontFamily: SANS,
+                fontSize: 18,
+                fontWeight: 800,
+                color: COLOR.ink,
+                letterSpacing: "-0.3px",
+              }}
+            >
+              {(special as any).savings}
+            </span>
+          ) : null}
         </div>
       </div>
     </article>
