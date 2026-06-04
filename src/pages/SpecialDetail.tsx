@@ -583,15 +583,16 @@ const SpecialDetail = () => {
         </div>
 
         {actions.length > 0 && (
-          actions.length === 4 ? (
-            <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {actions.map((a) => <PillBtn key={a.key} a={a} full />)}
-            </div>
-          ) : (
-            <div style={{ marginTop: 16, display: "flex", gap: 8, overflowX: "auto", paddingBottom: 2 }} className="scrollbar-hide">
-              {actions.map((a) => <PillBtn key={a.key} a={a} />)}
-            </div>
-          )
+          <div style={{ marginTop: 16, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+            {actions.map((a, i) => {
+              const isLastOdd = actions.length % 2 === 1 && i === actions.length - 1;
+              return (
+                <div key={a.key} style={isLastOdd ? { gridColumn: "1 / -1" } : undefined}>
+                  <PillBtn a={a} full />
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
 
