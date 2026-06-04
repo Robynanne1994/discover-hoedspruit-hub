@@ -440,17 +440,13 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
         {special.business_name && (
           <div
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
               fontFamily: SANS,
               fontSize: 13,
               color: COLOR.mutedInk,
               marginTop: 2,
             }}
           >
-            <Store size={13} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
-            <span>{special.business_name}</span>
+            {special.business_name}
           </div>
         )}
 
