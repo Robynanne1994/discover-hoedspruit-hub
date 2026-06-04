@@ -195,7 +195,7 @@ const SpecialDetail = () => {
       statusLabel = daysLeft <= 0 ? "Ends today" : daysLeft === 1 ? "Ends tomorrow" : `Ends in ${daysLeft} days`;
       datesText = `until ${fmt(untilDate)}`;
     } else {
-      datesText = `valid until ${fmt(untilDate)}`;
+      datesText = `Valid until ${fmt(untilDate)}`;
     }
   } else if (fromDate) {
     datesText = `from ${fmt(fromDate)}`;
