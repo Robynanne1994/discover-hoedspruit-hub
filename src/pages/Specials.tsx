@@ -421,23 +421,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
       </div>
 
       {/* Body */}
-      <div style={{ padding: "16px 18px 18px 18px" }}>
-        {special.business_name && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 6,
-              fontFamily: SANS,
-              fontSize: 13,
-              color: COLOR.mutedInk,
-              marginBottom: 8,
-            }}
-          >
-            <Store size={13} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
-            <span>{special.business_name}</span>
-          </div>
-        )}
+      <div style={{ padding: "14px 18px 18px 18px" }}>
         <h3
           {...noTitleCaseProps(special)}
           style={{
@@ -447,15 +431,31 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             lineHeight: 1.25,
             color: COLOR.ink,
             margin: 0,
-          marginBottom: 4,
-          letterSpacing: "-0.2px",
+            marginBottom: 4,
+            letterSpacing: "-0.2px",
           }}
         >
           {getDisplayTitle(special)}
         </h3>
+        {special.business_name && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              fontFamily: SANS,
+              fontSize: 13,
+              color: COLOR.mutedInk,
+              marginTop: 2,
+            }}
+          >
+            <Store size={13} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
+            <span>{special.business_name}</span>
+          </div>
+        )}
 
         {/* Divider */}
-        <div style={{ height: 1, background: COLOR.divider, margin: "10px 0 14px 0" }} />
+        <div style={{ height: 1, background: COLOR.divider, margin: "8px 0 14px 0" }} />
 
         {/* Footer */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
