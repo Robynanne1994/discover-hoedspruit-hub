@@ -582,7 +582,7 @@ const EventDetail = () => {
       label: (
         <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
           <StickyNote size={14} strokeWidth={1.5} color={C.muted} />
-          {notes.length > 1 ? "Notes" : "Note"}
+          Notes
         </span>
       ),
       value: (
