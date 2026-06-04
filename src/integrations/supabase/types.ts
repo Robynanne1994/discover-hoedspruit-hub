@@ -1650,6 +1650,7 @@ export type Database = {
           price: string | null
           price_label: string | null
           promo_code: string | null
+          savings: string | null
           sub_tag_1: string | null
           sub_tag_2: string | null
           tag: string | null
@@ -1684,6 +1685,7 @@ export type Database = {
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
+          savings?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
           tag?: string | null
@@ -1718,6 +1720,7 @@ export type Database = {
           price?: string | null
           price_label?: string | null
           promo_code?: string | null
+          savings?: string | null
           sub_tag_1?: string | null
           sub_tag_2?: string | null
           tag?: string | null
