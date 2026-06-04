@@ -581,7 +581,9 @@ const EventDetail = () => {
     detailRows.push({
       Icon: StickyNote,
       label: "Notes",
-      value: (
+      value: notes.length === 1 ? (
+        <span style={{ whiteSpace: "pre-line" }}>{notes[0]}</span>
+      ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {notes.map((n, i) => (
             <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
