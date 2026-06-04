@@ -718,7 +718,7 @@ const EventDetail = () => {
                   }
                   return sections.map((s, i) => (
                     <div key={i} style={{ padding: 18, borderBottom: i < sections.length - 1 ? `1px solid ${C.divider}` : undefined }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 10, borderBottom: `1px solid ${C.divider}`, marginBottom: 10 }}>
                         <s.Icon size={18} strokeWidth={1.5} color={C.primary} />
                         <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
                       </div>
