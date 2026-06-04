@@ -202,6 +202,7 @@ const SpecialDetail = () => {
   }
 
   // Action pills
+  const emailClean = (special as any).contact_email?.trim();
   const actions = [
     phoneClean && { key: "call", label: "Call", href: `tel:${phoneClean}`, Icon: Phone, ext: false },
     waClean && {
@@ -217,6 +218,12 @@ const SpecialDetail = () => {
       href: `/listing/${special.business_id}`, Icon: Store, ext: false, internal: true,
     },
   ].filter(Boolean) as Array<{ key: string; label: string; href: string; Icon: any; ext: boolean; internal?: boolean }>;
+
+  // Fill up to 4 pills by adding email when available
+  if (actions.length < 4 && emailClean && !actions.some((a) => a.key === "email")) {
+    actions.push({ key: "email", label: "Email", href: `mailto:${emailClean}`, Icon: Mail, ext: false });
+  }
+
 
   const PillBtn = ({ a, full }: { a: typeof actions[number]; full?: boolean }) => {
     const baseStyle: React.CSSProperties = {
