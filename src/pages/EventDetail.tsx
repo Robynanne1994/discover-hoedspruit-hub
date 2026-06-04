@@ -662,7 +662,12 @@ const EventDetail = () => {
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
       ) : (
         <>
-          {detailRows.length > 0 && renderRowsCard(detailRows)}
+          {detailRows.length > 0 && (
+            <>
+              {sectionHeading("Event Details")}
+              {renderRowsCard(detailRows)}
+            </>
+          )}
           {hasPricingCard && (
             <div style={{ marginTop: detailRows.length > 0 ? 20 : 0 }}>
               {sectionHeading("Pricing")}
