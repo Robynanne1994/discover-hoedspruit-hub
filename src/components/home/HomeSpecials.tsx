@@ -13,6 +13,8 @@ interface Special {
   title_override?: string | null;
   business_name: string;
   image_url: string | null;
+  detail_image_url: string | null;
+  homepage_image_url: string | null;
   deal_label: string;
   valid_until: string | null;
 }
@@ -24,7 +26,7 @@ const HomeSpecials = () => {
       const today = new Date().toISOString().slice(0, 10);
       const { data } = await supabase
         .from("specials")
-        .select("id, title, title_override, business_name, image_url, deal_label, valid_until")
+        .select("id, title, title_override, business_name, image_url, detail_image_url, homepage_image_url, deal_label, valid_until")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
         .order("created_at", { ascending: false });
