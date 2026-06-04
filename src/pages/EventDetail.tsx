@@ -671,61 +671,57 @@ const EventDetail = () => {
           {hasPricingCard && (
             <div style={{ marginTop: detailRows.length > 0 ? 20 : 0 }}>
               {sectionHeading("Pricing")}
-              <div style={{ background: C.surface, borderRadius: 16, padding: "16px 16px", border: `1px solid ${C.border}` }}>
-                {price && (
-                  <div style={{ padding: "4px 0 12px" }}>
-                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, marginBottom: 8 }}>Price</div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-                      <Banknote size={18} strokeWidth={1.5} color={C.primary} />
-                      <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{price}</div>
-                    </div>
-                  </div>
-                )}
-                {priceNotes.length > 0 && (
-                  <div style={{
-                    paddingTop: price ? 12 : 4,
-                    paddingBottom: includedItems.length > 0 ? 12 : 4,
-                    borderTop: price ? `1px solid ${C.divider}` : "none",
-                  }}>
-                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, marginBottom: 8 }}>
-                      Price Notes
-                    </div>
-                    {priceNotes.map((note, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
-                        <span style={{
-                          flexShrink: 0, width: 6, height: 6, borderRadius: 999,
-                          background: C.primary, marginTop: 8,
-                        }} />
-                        <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>
-                          {note}
+              <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
+                {(() => {
+                  const sections: { Icon: any; label: string; body: React.ReactNode }[] = [];
+                  if (price) {
+                    sections.push({
+                      Icon: Banknote, label: "Price",
+                      body: <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{price}</div>,
+                    });
+                  }
+                  if (priceNotes.length > 0) {
+                    sections.push({
+                      Icon: StickyNote, label: "Price Notes",
+                      body: (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                          {priceNotes.map((note, i) => (
+                            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                              <span style={{ flexShrink: 0, width: 6, height: 6, borderRadius: 999, background: C.primary, marginTop: 8 }} />
+                              <div style={{ flex: 1, minWidth: 0, fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>{note}</div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {includedItems.length > 0 && (
-                  <div style={{
-                    paddingTop: (price || priceNotes.length > 0) ? 12 : 4,
-                    borderTop: (price || priceNotes.length > 0) ? `1px solid ${C.divider}` : "none",
-                  }}>
-                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted, marginBottom: 8 }}>
-                      What's Included
-                    </div>
-                    {includedItems.map((item, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, padding: "8px 0" }}>
-                        <span style={{
-                          flexShrink: 0, width: 24, height: 24, borderRadius: 999,
-                          background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center",
-                        }}>
-                          <Check size={14} strokeWidth={2} color={C.primary} />
-                        </span>
-                        <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
-                          {item}
+                      ),
+                    });
+                  }
+                  if (includedItems.length > 0) {
+                    sections.push({
+                      Icon: Check, label: "What's Included",
+                      body: (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          {includedItems.map((item, i) => (
+                            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                              <span style={{ flexShrink: 0, width: 24, height: 24, borderRadius: 999, background: "#f5f0e8", display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
+                                <Check size={14} strokeWidth={2} color={C.primary} />
+                              </span>
+                              <div style={{ flex: 1, minWidth: 0, fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{item}</div>
+                            </div>
+                          ))}
                         </div>
+                      ),
+                    });
+                  }
+                  return sections.map((s, i) => (
+                    <div key={i} style={{ padding: 18, borderBottom: i < sections.length - 1 ? `1px solid ${C.divider}` : undefined }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                        <s.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                        <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      {s.body}
+                    </div>
+                  ));
+                })()}
               </div>
             </div>
           )}
