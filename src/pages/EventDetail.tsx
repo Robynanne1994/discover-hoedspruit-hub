@@ -579,12 +579,8 @@ const EventDetail = () => {
   }
   if (notes.length > 0) {
     detailRows.push({
-      label: (
-        <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-          <StickyNote size={14} strokeWidth={1.5} color={C.muted} />
-          Notes
-        </span>
-      ),
+      Icon: StickyNote,
+      label: "Notes",
       value: (
         <div style={{ display: "flex", flexDirection: "column" }}>
           {notes.map((n, i) => (
@@ -600,6 +596,7 @@ const EventDetail = () => {
       ),
     });
   }
+
 
   const allPhones = collectContacts(contactPhone, (e as any).additional_phones);
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
