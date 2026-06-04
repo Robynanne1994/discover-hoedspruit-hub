@@ -1426,7 +1426,7 @@ const SuggestEditFooter = ({ onClick }: { onClick: () => void }) => (
 // ----- Suggest edit sheet -----
 const suggestInputStyle: React.CSSProperties = {
   fontFamily: FONT, fontWeight: 400, fontSize: 15, color: C.heading,
-  background: "#fff", border: `1px solid ${C.border}`, borderRadius: 12,
+  background: "#fff", border: `2px solid #C5C0BA`, borderRadius: 12,
   padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
   lineHeight: 1.4,
 };
