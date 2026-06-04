@@ -22,38 +22,74 @@ const toTitleCase = (input: string): string => {
       const cleaned = segment.replace(/[^a-zA-Z']/g, "");
       const isSmall = SMALL_WORDS.has(cleaned.toLowerCase());
       if (isSmall && i !== firstWordIdx) return segment;
-      // Capitalise first alpha char
       return segment.replace(/([a-z])/, (m) => m.toUpperCase());
     })
     .join("");
 };
 
+let isApplying = false;
+
 const applyToAll = () => {
-  const h1s = document.querySelectorAll<HTMLElement>("h1");
-  h1s.forEach((el) => {
-    if (el.dataset.titleCased === el.textContent) return;
-    // Honour explicit opt-out (override titles render verbatim)
-    if (el.hasAttribute("data-no-title-case") || el.closest("[data-no-title-case]")) {
-      el.dataset.titleCased = el.textContent || "";
-      return;
-    }
-    // Only transform leaf text (no nested elements with their own meaning)
-    if (el.children.length === 0 && el.textContent) {
-      const next = toTitleCase(el.textContent);
-      if (next !== el.textContent) {
-        el.textContent = next;
+  if (isApplying) return;
+  isApplying = true;
+  try {
+    const h1s = document.querySelectorAll<HTMLElement>("h1");
+    h1s.forEach((el) => {
+      if (el.dataset.titleCased === el.textContent) return;
+      if (el.hasAttribute("data-no-title-case") || el.closest("[data-no-title-case]")) {
+        el.dataset.titleCased = el.textContent || "";
+        return;
       }
-      el.dataset.titleCased = next;
-    }
-  });
+      if (el.children.length === 0 && el.textContent) {
+        const next = toTitleCase(el.textContent);
+        if (next !== el.textContent) {
+          el.textContent = next;
+        }
+        el.dataset.titleCased = next;
+      }
+    });
+  } finally {
+    isApplying = false;
+  }
 };
 
 const TitleCaseH1 = () => {
   const location = useLocation();
   useEffect(() => {
-    // Run after paint
-    const raf = requestAnimationFrame(() => applyToAll());
-    const observer = new MutationObserver(() => applyToAll());
+    let raf = 0;
+    let scheduled = false;
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = true;
+      raf = requestAnimationFrame(() => {
+        scheduled = false;
+        applyToAll();
+      });
+    };
+    schedule();
+    const observer = new MutationObserver((mutations) => {
+      if (isApplying) return;
+      // Only react if an h1 or its text could be affected
+      for (const m of mutations) {
+        const target = m.target as HTMLElement;
+        if (
+          (target && target.nodeType === 1 && (target.tagName === "H1" || target.querySelector?.("h1"))) ||
+          (m.type === "characterData" && (target.parentElement?.tagName === "H1"))
+        ) {
+          schedule();
+          return;
+        }
+        for (const n of Array.from(m.addedNodes)) {
+          if (n.nodeType === 1) {
+            const el = n as HTMLElement;
+            if (el.tagName === "H1" || el.querySelector?.("h1")) {
+              schedule();
+              return;
+            }
+          }
+        }
+      }
+    });
     observer.observe(document.body, { childList: true, subtree: true, characterData: true });
     return () => {
       cancelAnimationFrame(raf);
