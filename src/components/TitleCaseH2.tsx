@@ -1,17 +1,10 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-/**
- * SMALL_WORDS: words that should remain lowercase unless they are the first word.
- * The user specified 'to', 'and', 'by', 'on'.
- */
 const SMALL_WORDS = new Set(["to", "and", "by", "on", "of", "it", "or"]);
 
 const toTitleCase = (input: string): string => {
-  // Split by whitespace but keep the whitespace segments
   const segments = input.toLowerCase().split(/(\s+)/);
-  
-  // Find the index of the first actual word (non-whitespace)
   let firstWordIdx = -1;
   for (let i = 0; i < segments.length; i++) {
     if (segments[i].trim().length > 0) {
@@ -19,65 +12,86 @@ const toTitleCase = (input: string): string => {
       break;
     }
   }
-
   return segments
     .map((segment, i) => {
-      // If it's just whitespace, return as is
       if (!segment.trim()) return segment;
-
-      // Cleaned version to check against SMALL_WORDS (removing punctuation)
       const cleaned = segment.replace(/[^a-z']/g, "");
       const isSmall = SMALL_WORDS.has(cleaned);
-      
-      // If it's a small word and NOT the first word, keep it lowercase
       if (isSmall && i !== firstWordIdx) return segment;
-
-      // Otherwise, capitalize the first letter and keep the rest lowercase
-      // (The rest is already lowercase from .toLowerCase() at the start)
       return segment.replace(/([a-z])/, (m) => m.toUpperCase());
     })
     .join("");
 };
 
+let isApplying = false;
+
 const applyToH2s = () => {
-  const h2s = document.querySelectorAll<HTMLElement>("h2");
-  h2s.forEach((el) => {
-    // Skip if we've already processed this specific text content
-    if (el.dataset.titleCased === el.textContent) return;
-
-    // Honour explicit opt-out (override titles render verbatim)
-    if (el.hasAttribute("data-no-title-case") || el.closest("[data-no-title-case]")) {
-      el.dataset.titleCased = el.textContent || "";
-      return;
-    }
-
-    // Check if the H2 has only text nodes or a very simple structure
-    // We check children.length === 0 to avoid breaking icons or nested interactive elements
-    if (el.children.length === 0 && el.textContent) {
-      const original = el.textContent;
-      const transformed = toTitleCase(original);
-      
-      if (transformed !== original) {
-        el.textContent = transformed;
+  if (isApplying) return;
+  isApplying = true;
+  try {
+    const h2s = document.querySelectorAll<HTMLElement>("h2");
+    h2s.forEach((el) => {
+      if (el.dataset.titleCased === el.textContent) return;
+      if (el.hasAttribute("data-no-title-case") || el.closest("[data-no-title-case]")) {
+        el.dataset.titleCased = el.textContent || "";
+        return;
       }
-      // Store the result so we don't re-process unnecessarily
-      el.dataset.titleCased = transformed;
-    }
-  });
+      if (el.children.length === 0 && el.textContent) {
+        const original = el.textContent;
+        const transformed = toTitleCase(original);
+        if (transformed !== original) {
+          el.textContent = transformed;
+        }
+        el.dataset.titleCased = transformed;
+      }
+    });
+  } finally {
+    isApplying = false;
+  }
 };
 
 const TitleCaseH2 = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Run immediately and also set up an observer for dynamic content
-    const raf = requestAnimationFrame(() => applyToH2s());
-    
-    const observer = new MutationObserver(() => applyToH2s());
-    observer.observe(document.body, { 
-      childList: true, 
-      subtree: true, 
-      characterData: true 
+    let raf = 0;
+    let scheduled = false;
+    const schedule = () => {
+      if (scheduled) return;
+      scheduled = true;
+      raf = requestAnimationFrame(() => {
+        scheduled = false;
+        applyToH2s();
+      });
+    };
+    schedule();
+
+    const observer = new MutationObserver((mutations) => {
+      if (isApplying) return;
+      for (const m of mutations) {
+        const target = m.target as HTMLElement;
+        if (
+          (target && target.nodeType === 1 && (target.tagName === "H2" || target.querySelector?.("h2"))) ||
+          (m.type === "characterData" && (target.parentElement?.tagName === "H2"))
+        ) {
+          schedule();
+          return;
+        }
+        for (const n of Array.from(m.addedNodes)) {
+          if (n.nodeType === 1) {
+            const el = n as HTMLElement;
+            if (el.tagName === "H2" || el.querySelector?.("h2")) {
+              schedule();
+              return;
+            }
+          }
+        }
+      }
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      characterData: true,
     });
 
     return () => {
