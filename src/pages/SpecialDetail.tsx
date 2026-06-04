@@ -202,7 +202,7 @@ const SpecialDetail = () => {
       datesText = sameDay ? `Valid for ${fmt(untilDate)}` : `Valid until ${fmt(untilDate)}`;
     }
   } else if (fromDate) {
-    datesText = `from ${fmt(fromDate)}`;
+    datesText = "Ongoing";
   }
 
   // Action pills
