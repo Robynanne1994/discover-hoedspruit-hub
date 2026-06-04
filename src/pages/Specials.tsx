@@ -366,7 +366,7 @@ const Specials = () => {
 };
 
 const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
-  const validText = (special.card_footer_text && String(special.card_footer_text).trim()) || formatValidTill(special);
+  const validText = formatValidTill(special);
   return (
     <article
       onClick={onClick}
