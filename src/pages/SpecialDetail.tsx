@@ -430,31 +430,33 @@ const SpecialDetail = () => {
         {rows.length === 0 ? (
           <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No contact info provided.</p>
         ) : (
-          <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-            {rows.map((r, i) => {
-              const rowStyle: React.CSSProperties = {
-                display: "flex", alignItems: "center", gap: 14,
-                padding: "14px 0", textDecoration: "none",
-                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-              };
-              const inner = (
-                <>
-                  <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
-                    <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
-                  </div>
-                  <ArrowUpRight size={16} color={C.muted} />
-                </>
-              );
-              if (r.internal) return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
-              return (
-                <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={rowStyle}>
-                  {inner}
-                </a>
-              );
-            })}
-          </div>
+          <>
+            <h2 style={{ ...headStyle, margin: "0 0 14px" }}>Contact</h2>
+            <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+              {rows.map((r, i) => {
+                const rowStyle: React.CSSProperties = {
+                  display: "flex", alignItems: "center", gap: 14,
+                  padding: "14px 0", textDecoration: "none",
+                  borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+                };
+                const inner = (
+                  <>
+                    <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                    <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                      {r.value}
+                    </div>
+                    <ArrowUpRight size={16} color={C.muted} />
+                  </>
+                );
+                if (r.internal) return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
+                return (
+                  <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={rowStyle}>
+                    {inner}
+                  </a>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
     );
