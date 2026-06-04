@@ -63,8 +63,8 @@ const HomeSpecials = () => {
               }}
             >
               <div style={{ position: "relative", width: 100, height: 100, background: "#F4EFE3", flexShrink: 0 }}>
-                {s.image_url && (
-                  <img src={s.image_url} alt={s.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                {(s.homepage_image_url || s.image_url || s.detail_image_url) && (
+                  <img src={s.homepage_image_url || s.image_url || s.detail_image_url || ""} alt={s.title} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0, alignSelf: "center", paddingTop: 10, paddingBottom: 10 }}>
