@@ -461,7 +461,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
               fontWeight: 500,
             }}
           >
-            <Clock size={14} strokeWidth={2} />
+            <Tag size={14} strokeWidth={2} />
             {validText}
           </div>
           {(special.price || special.original_price) ? (
