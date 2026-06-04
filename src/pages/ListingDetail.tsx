@@ -1426,14 +1426,14 @@ const SuggestEditFooter = ({ onClick }: { onClick: () => void }) => (
 // ----- Suggest edit sheet -----
 const suggestInputStyle: React.CSSProperties = {
   fontFamily: FONT, fontWeight: 400, fontSize: 15, color: C.heading,
-  background: "#fff", border: `1px solid ${C.border}`, borderRadius: 12,
+  background: "#fff", border: `2px solid #C5C0BA`, borderRadius: 12,
   padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
   lineHeight: 1.4,
 };
 
 const suggestLabelStyle: React.CSSProperties = {
-  fontFamily: FONT, fontSize: 11, fontWeight: 400, letterSpacing: "0.08em",
-  textTransform: "uppercase", color: C.heading, marginBottom: 6, display: "block",
+  fontFamily: FONT, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
+  textTransform: "uppercase", color: C.primary, marginBottom: 6, display: "block",
 };
 
 const SuggestEditSheet = ({
@@ -1493,7 +1493,7 @@ const SuggestEditSheet = ({
             <XIcon size={20} color={C.heading} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: FONT, fontWeight: 400, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an edit</h2>
+        <h2 style={{ fontFamily: FONT, fontWeight: 400, fontSize: 22, color: C.heading, margin: "0 0 8px" }}>Suggest an Edit</h2>
         <p style={{ fontSize: 14, lineHeight: 1.55, color: C.text, margin: "0 0 20px" }}>
           Spotted something out of date on <strong style={{ color: C.heading, fontWeight: 400 }}>{listingTitle}</strong>? Let us know and we'll update it.
         </p>
