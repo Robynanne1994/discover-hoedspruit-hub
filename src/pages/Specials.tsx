@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Store, Clock, ArrowLeft } from "lucide-react";
+import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
