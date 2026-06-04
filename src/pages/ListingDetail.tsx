@@ -107,6 +107,7 @@ const ListingDetail = () => {
   const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const [tab, setTab] = useState<TabKey>("about");
+  const [detailsCatTab, setDetailsCatTab] = useState<string | null>(null);
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -652,11 +653,67 @@ const ListingDetail = () => {
     }
   }
 
+  // Sort fields within each section so "true" values appear before "false" values.
+  // Strings (text values) keep their relative order before booleans.
+  sections.forEach((s) => {
+    const rank = (on: boolean | string): number => {
+      if (typeof on === "string") return 0;
+      return on === true ? 1 : 2;
+    };
+    s.fields = [...s.fields].sort((a, b) => rank(a.on) - rank(b.on));
+  });
+
   // Move custom rows to the top so they appear above amenity/true-false cards
   const customSections = sections.filter(s => s.key.startsWith("custom-"));
   const otherSections = sections.filter(s => !s.key.startsWith("custom-"));
   sections.length = 0;
   sections.push(...customSections, ...otherSections);
+
+  // Tag each section with its category group so we can build per-category sub-tabs
+  type CatGroup = "restaurant" | "accommodation" | "shopping" | "ngo" | "trades" | "homegarden" | "weddings" | "shared";
+  const sectionGroup = (key: string): CatGroup => {
+    if (key.startsWith("custom-") || key === "pricing") return "shared";
+    if (key.startsWith("accom-")) return "accommodation";
+    if (key.startsWith("shop-")) return "shopping";
+    if (key.startsWith("ngo-")) return "ngo";
+    if (key.startsWith("trades-")) return "trades";
+    if (key.startsWith("hg-")) return "homegarden";
+    if (key.startsWith("we-")) return "weddings";
+    return "restaurant";
+  };
+  const categoryToGroup = (title: string): CatGroup | null => {
+    if (isRestaurantCategory(title)) return "restaurant";
+    if (isAccommodationCategory(title)) return "accommodation";
+    if (isShoppingCategory(title)) return "shopping";
+    if (isNGOCategory(title)) return "ngo";
+    if (isTradesCategory(title)) return "trades";
+    if (isHomeGardenCategory(title)) return "homegarden";
+    if (isWeddingsEventsCategory(title)) return "weddings";
+    return null;
+  };
+  // Build category sub-tabs (in the order the listing has them) — only those
+  // with actual content. Drop duplicates.
+  const seenGroups = new Set<CatGroup>();
+  const categoryDetailTabs: { group: CatGroup; label: string }[] = [];
+  (listingCategories ?? []).forEach((c: { title: string }) => {
+    const g = categoryToGroup(c.title);
+    if (!g || seenGroups.has(g)) return;
+    if (!sections.some((s) => sectionGroup(s.key) === g)) return;
+    seenGroups.add(g);
+    categoryDetailTabs.push({ group: g, label: c.title });
+  });
+
+  const activeDetailsGroup: CatGroup | null =
+    categoryDetailTabs.length > 1
+      ? (categoryDetailTabs.find((t) => t.group === detailsCatTab)?.group ?? categoryDetailTabs[0].group)
+      : null;
+
+  const visibleSections = activeDetailsGroup
+    ? sections.filter((s) => {
+        const g = sectionGroup(s.key);
+        return g === "shared" || g === activeDetailsGroup;
+      })
+    : sections;
 
   const hasDetails = sections.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
@@ -883,11 +940,51 @@ const ListingDetail = () => {
   const renderDetails = () => (
     <div style={{ padding: "20px" }}>
       <h2 style={headStyle}>Details</h2>
-      {sections.length === 0 ? (
+      {categoryDetailTabs.length > 1 && (
+        <div
+          role="tablist"
+          style={{
+            display: "flex",
+            gap: 6,
+            marginBottom: 16,
+            overflowX: "auto",
+            WebkitOverflowScrolling: "touch",
+          }}
+        >
+          {categoryDetailTabs.map((t) => {
+            const active = t.group === activeDetailsGroup;
+            return (
+              <button
+                key={t.group}
+                role="tab"
+                aria-selected={active}
+                onClick={() => setDetailsCatTab(t.group)}
+                style={{
+                  flexShrink: 0,
+                  padding: "8px 14px",
+                  borderRadius: 999,
+                  border: `1px solid ${active ? C.primary : C.border}`,
+                  background: active ? C.primary : "transparent",
+                  color: active ? "#fff" : C.heading,
+                  fontFamily: FONT,
+                  fontSize: 12,
+                  fontWeight: 400,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {visibleSections.length === 0 ? (
         <p style={{ ...paraStyle, color: C.muted, textAlign: "center", marginTop: 40 }}>No additional details yet.</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {sections.map((s) => (
+          {visibleSections.map((s) => (
             <div key={s.key} style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 10, borderBottom: `1px solid ${C.divider}` }}>
                 {s.iconComp && <s.iconComp size={18} strokeWidth={1.5} color={C.primary} />}
