@@ -473,7 +473,7 @@ const SpecialDetail = () => {
         {termsList.length > 0 ? (
           <>
             <h2 style={headStyle}>{termsList.length > 1 ? "Terms & Conditions" : "Term"}</h2>
-            <div style={{ background: C.surface, borderRadius: 16, padding: 18, border: `1px solid ${C.border}` }}>
+            <div style={{ background: C.surface, borderRadius: 16, padding: "12px 18px", border: `1px solid ${C.border}` }}>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 {termsList.map((t, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "6px 0" }}>
