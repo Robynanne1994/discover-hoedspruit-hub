@@ -212,18 +212,18 @@ const AdminImport = () => {
         return;
       }
       if (!isAllCategories) {
-        if (!isRestaurant) {
-          const extraCols = result.headers.filter((h) => restaurantFieldSet.has(h));
-          if (extraCols.length > 0) toast.warning(`Restaurant-only columns found and will be ignored: ${extraCols.join(", ")}`);
-        }
-        if (!isShopping) {
-          const extraCols = result.headers.filter((h) => shoppingFieldSet.has(h));
-          if (extraCols.length > 0) toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
-        }
-        if (!isAccommodation) {
-          const extraCols = result.headers.filter((h) => accommodationFieldSet.has(h));
-          if (extraCols.length > 0) toast.warning(`Accommodation-only columns found and will be ignored: ${extraCols.join(", ")}`);
-        }
+        const warn = (label: string, set: Set<string>, active: boolean) => {
+          if (active) return;
+          const extras = result.headers.filter((h) => set.has(h));
+          if (extras.length > 0) toast.warning(`${label}-only columns found and will be ignored: ${extras.join(", ")}`);
+        };
+        warn("Restaurant", restaurantFieldSet, isRestaurant);
+        warn("Shopping", shoppingFieldSet, isShopping);
+        warn("Accommodation", accommodationFieldSet, isAccommodation);
+        warn("NGO", ngoFieldSet, isNGO);
+        warn("Trades", tradesFieldSet, isTrades);
+        warn("Home & Garden", homeGardenFieldSet, isHomeGarden);
+        warn("Weddings & Events", weddingsEventsFieldSet, isWeddingsEvents);
       }
       setParsed(result);
     };
