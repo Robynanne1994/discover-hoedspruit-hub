@@ -955,6 +955,10 @@ const AdminImport = () => {
                 <span className="text-foreground"><strong>{importResult.updated}</strong> updated</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-4 w-4 text-amber-600" />
+                <span className="text-foreground"><strong>{importResult.removed_from_category}</strong> removed from category</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
                 <CheckCircle className="h-4 w-4 text-destructive" />
                 <span className="text-foreground"><strong>{importResult.deleted}</strong> deleted</span>
               </div>
