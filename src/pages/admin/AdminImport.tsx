@@ -684,95 +684,26 @@ const AdminImport = () => {
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
 
     const rows = listings.map((l) => {
-      const fieldMap: Record<string, string> = {
-        title: l.title ?? "",
-        description: l.description ?? "",
-        image_url: l.image_url ?? "",
-        location: l.location ?? "",
-        phone: l.phone ?? "",
-        email: l.email ?? "",
-        website: l.website ?? "",
-        whatsapp: l.whatsapp ?? "",
-        google_maps_link: l.google_maps_link ?? "",
-        google_rating: l.google_rating == null ? "" : String(l.google_rating),
-        google_reviews_count: l.google_reviews_count == null ? "" : String(l.google_reviews_count),
-        // categories: prefer junction list; fall back to legacy single category_id name so exports never lose data
-        ...(() => {
-          const fromJunction = listingCatMap.get(l.id) ?? [];
-          if (fromJunction.length === 0 && l.category_id) {
-            const legacy = catNameMap.get(l.category_id);
-            if (legacy) return { categories: legacy };
-          }
-          return { categories: fromJunction.join("|") };
-        })(),
-        google_reviews_url: l.google_reviews_url ?? "",
-        subcategories: (listingSubMap.get(l.id) ?? []).join("|"),
-        is_featured: String(l.is_featured),
-        long_description: l.long_description ?? "",
-        gallery_images: l.gallery_images ? JSON.stringify(l.gallery_images) : "",
-        opening_hours: l.opening_hours ? JSON.stringify(l.opening_hours) : "",
-        custom_title_1: l.custom_title_1 ?? "",
-        custom_text_1: l.custom_text_1 ?? "",
-        custom_title_2: l.custom_title_2 ?? "",
-        custom_text_2: l.custom_text_2 ?? "",
-        custom_title_3: l.custom_title_3 ?? "",
-        custom_text_3: l.custom_text_3 ?? "",
-        // Restaurant fields
-        good_for_kids: l.good_for_kids == null ? "" : String(l.good_for_kids),
-        pets_allowed: l.pets_allowed == null ? "" : String(l.pets_allowed),
-        wheelchair_friendly: l.wheelchair_friendly == null ? "" : String(l.wheelchair_friendly),
-        price_level: l.price_level == null ? "" : String(l.price_level),
-        show_attributes: String(l.show_attributes ?? false),
-        meal: (l.meal ?? []).join("|"),
-        vibe: (l.vibe ?? []).join("|"),
-        cuisine: (l.cuisine ?? []).join("|"),
-        seating: (l.seating ?? []).join("|"),
-        kids_playground: l.kids_playground == null ? "" : String(l.kids_playground),
-        smoking_allowed: l.smoking_allowed == null ? "" : String(l.smoking_allowed),
-        service_type: (l.service_type ?? []).join("|"),
-        kids_menu: l.kids_menu == null ? "" : String(l.kids_menu),
-        high_chairs: l.high_chairs == null ? "" : String(l.high_chairs),
-        nappy_changing_station: l.nappy_changing_station == null ? "" : String(l.nappy_changing_station),
-        wheelchair_car_park: l.wheelchair_car_park == null ? "" : String(l.wheelchair_car_park),
-        wheelchair_entrance: l.wheelchair_entrance == null ? "" : String(l.wheelchair_entrance),
-        wheelchair_seating: l.wheelchair_seating == null ? "" : String(l.wheelchair_seating),
-        wheelchair_toilet: l.wheelchair_toilet == null ? "" : String(l.wheelchair_toilet),
-        has_toilet: l.has_toilet == null ? "" : String(l.has_toilet),
-        has_wifi: l.has_wifi == null ? "" : String(l.has_wifi),
-        has_free_wifi: l.has_free_wifi == null ? "" : String(l.has_free_wifi),
-        // Shopping fields
-        air_conditioned: l.air_conditioned == null ? "" : String(l.air_conditioned),
-        payment_methods: (l.payment_methods ?? []).join("|"),
-        delivery_available: l.delivery_available == null ? "" : String(l.delivery_available),
-        click_and_collect: l.click_and_collect == null ? "" : String(l.click_and_collect),
-        order_online: l.order_online == null ? "" : String(l.order_online),
-        parking_available: l.parking_available == null ? "" : String(l.parking_available),
-        local_products: l.local_products == null ? "" : String(l.local_products),
-        shop_type: l.shop_type ?? "",
-        curio_or_gifts: l.curio_or_gifts == null ? "" : String(l.curio_or_gifts),
-        product_categories: (l.product_categories ?? []).join("|"),
-        price_range: l.price_range ?? "",
-        // Accommodation fields
-        amenities: (l.amenities ?? []).join("|"),
-        sleeps: l.sleeps == null ? "" : String(l.sleeps),
-        km_from_town: l.km_from_town ?? "",
-        has_restaurant: l.has_restaurant == null ? "" : String(l.has_restaurant),
-        has_bar: l.has_bar == null ? "" : String(l.has_bar),
-        has_room_service: l.has_room_service == null ? "" : String(l.has_room_service),
-        has_breakfast: l.has_breakfast == null ? "" : String(l.has_breakfast),
-        breakfast_included: l.breakfast_included == null ? "" : String(l.breakfast_included),
-        has_swimming_pool: l.has_swimming_pool == null ? "" : String(l.has_swimming_pool),
-        has_laundry: l.has_laundry == null ? "" : String(l.has_laundry),
-        child_friendly: l.child_friendly == null ? "" : String(l.child_friendly),
-        has_spa: l.has_spa == null ? "" : String(l.has_spa),
-        has_fitness_centre: l.has_fitness_centre == null ? "" : String(l.has_fitness_centre),
-        has_airport_shuttle: l.has_airport_shuttle == null ? "" : String(l.has_airport_shuttle),
-        airport_shuttle_free: l.airport_shuttle_free == null ? "" : String(l.airport_shuttle_free),
-        has_aircon: l.has_aircon == null ? "" : String(l.has_aircon),
-        has_wifi_accom: l.has_wifi_accom == null ? "" : String(l.has_wifi_accom),
-        has_free_parking: l.has_free_parking == null ? "" : String(l.has_free_parking),
-        has_secure_parking: l.has_secure_parking == null ? "" : String(l.has_secure_parking),
-      };
+      const fieldMap: Record<string, string> = {};
+      const lr = l as unknown as Record<string, unknown>;
+
+      // Virtual columns: categories / subcategories pipe-joined
+      const fromJunction = listingCatMap.get(l.id) ?? [];
+      if (fromJunction.length === 0 && l.category_id) {
+        const legacy = catNameMap.get(l.category_id);
+        fieldMap.categories = legacy ?? "";
+      } else {
+        fieldMap.categories = fromJunction.join("|");
+      }
+      fieldMap.subcategories = (listingSubMap.get(l.id) ?? []).join("|");
+
+      // Schema-driven serialization for every other header
+      for (const h of headers) {
+        if (h === "categories" || h === "subcategories") continue;
+        const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
+        if (!spec) { fieldMap[h] = ""; continue; }
+        fieldMap[h] = serializeField(lr[h], spec.type);
+      }
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
     });
