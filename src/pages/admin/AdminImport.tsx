@@ -78,6 +78,79 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
 const restaurantFieldSet = new Set<string>(RESTAURANT_ONLY_FIELDS);
 const shoppingFieldSet = new Set<string>(SHOPPING_ONLY_FIELDS);
 const accommodationFieldSet = new Set<string>(ACCOMMODATION_ONLY_FIELDS);
+const ngoFieldSet = new Set<string>(NGO_ONLY_FIELDS);
+const tradesFieldSet = new Set<string>(TRADES_ONLY_FIELDS);
+const homeGardenFieldSet = new Set<string>(HOME_GARDEN_ONLY_FIELDS);
+const weddingsEventsFieldSet = new Set<string>(WEDDINGS_EVENTS_ONLY_FIELDS);
+
+// ---- Schema-driven CSV (de)serialization ----
+
+function serializeField(value: unknown, type: FieldType): string {
+  if (value === null || value === undefined) return "";
+  switch (type) {
+    case "str": return String(value);
+    case "int":
+    case "float": return String(value);
+    case "bool": return String(value);
+    case "bool_default_false": return String(Boolean(value));
+    case "str_array": return Array.isArray(value) ? (value as unknown[]).map(String).join("|") : "";
+    case "json": {
+      if (typeof value === "object") {
+        try { return JSON.stringify(value); } catch { return ""; }
+      }
+      return String(value);
+    }
+  }
+}
+
+// Parse a CSV cell to a DB value. Returns:
+//   - { skip: true } when the cell is empty AND we're updating (preserve existing value)
+//   - { value: parsed } otherwise (parsed may be null for blank-on-create or "-")
+function parseField(raw: string | undefined, type: FieldType, isUpdate: boolean):
+  { skip: true } | { skip: false; value: unknown } {
+  const cell = typeof raw === "string" ? raw : "";
+  const trimmed = cell.trim();
+  // Empty cell on update → preserve existing value
+  if (trimmed === "" && isUpdate) return { skip: true };
+  // Empty cell on create → null (or default for bool_default_false)
+  // "-" explicitly clears to null
+  if (trimmed === "" || trimmed === "-") {
+    switch (type) {
+      case "bool_default_false": return { skip: false, value: false };
+      case "str_array": return { skip: false, value: [] };
+      default: return { skip: false, value: null };
+    }
+  }
+  switch (type) {
+    case "str": return { skip: false, value: cell };
+    case "int": {
+      const n = parseInt(cell, 10);
+      return { skip: false, value: Number.isFinite(n) ? n : null };
+    }
+    case "float": {
+      const n = parseFloat(cell);
+      return { skip: false, value: Number.isFinite(n) ? n : null };
+    }
+    case "bool": {
+      const v = trimmed.toLowerCase();
+      if (v === "true" || v === "1") return { skip: false, value: true };
+      if (v === "false" || v === "0") return { skip: false, value: false };
+      return { skip: false, value: null };
+    }
+    case "bool_default_false": {
+      const v = trimmed.toLowerCase();
+      return { skip: false, value: v === "true" || v === "1" };
+    }
+    case "str_array": {
+      const parts = cell.split("|").map((s) => s.trim()).filter(Boolean);
+      return { skip: false, value: parts };
+    }
+    case "json": {
+      try { return { skip: false, value: JSON.parse(cell) }; }
+      catch { return { skip: false, value: null }; }
+    }
+  }
+}
 
 const AdminImport = () => {
   const qc = useQueryClient();
