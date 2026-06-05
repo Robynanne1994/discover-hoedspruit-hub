@@ -7,7 +7,13 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
+import {
+  getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory,
+  isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory,
+  UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS,
+  NGO_ONLY_FIELDS, TRADES_ONLY_FIELDS, HOME_GARDEN_ONLY_FIELDS, WEDDINGS_EVENTS_ONLY_FIELDS,
+  LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields, type FieldType,
+} from "@/lib/categoryFields";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
