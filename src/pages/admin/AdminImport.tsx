@@ -881,7 +881,7 @@ const AdminImport = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {isAllCategories
                 ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields are preserved."
-                : "Listings are matched by title (case-insensitive). Missing listings will be deleted."}
+                : "Listings are matched by title (case-insensitive). Listings missing from the CSV are removed from this category only; they're fully deleted only if they don't belong to any other category."}
             </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
