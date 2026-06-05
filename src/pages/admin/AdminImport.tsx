@@ -156,7 +156,7 @@ const AdminImport = () => {
         `${s.category_id}::${s.title.toLowerCase()}`, s.id
       ]));
 
-      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, removed_from_category: 0, errors: [] as string[] };
       const csvTitles = new Set<string>();
 
       // Paginated fetch helper to bypass Supabase's 1000-row default cap
