@@ -413,8 +413,8 @@ const AdminImport = () => {
           const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
           if (!spec) continue;
           const parsed = parseField(row[fieldName], spec.type, isUpdate);
-          if (parsed.skip) continue;
-          payloadRecord[fieldName] = parsed.value;
+          if (parsed.skip === true) continue;
+          if (parsed.skip === false) payloadRecord[fieldName] = parsed.value;
         }
 
         // Remove undefined keys (defensive)
