@@ -184,6 +184,10 @@ const AdminImport = () => {
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
   const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
   const isAccommodation = selectedCategoryTitle ? isAccommodationCategory(selectedCategoryTitle) : false;
+  const isNGO = selectedCategoryTitle ? isNGOCategory(selectedCategoryTitle) : false;
+  const isTrades = selectedCategoryTitle ? isTradesCategory(selectedCategoryTitle) : false;
+  const isHomeGarden = selectedCategoryTitle ? isHomeGardenCategory(selectedCategoryTitle) : false;
+  const isWeddingsEvents = selectedCategoryTitle ? isWeddingsEventsCategory(selectedCategoryTitle) : false;
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
