@@ -283,7 +283,7 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
 
 // Return the set of category-specific DB field names for a category (no virtual cols, no universals).
 export function getCategorySpecificFields(categoryTitle: string | null): string[] {
-  const groups: readonly string[][] = [
+  const groups: readonly (readonly string[])[] = [
     categoryTitle && isRestaurantCategory(categoryTitle) ? RESTAURANT_ONLY_FIELDS : [],
     categoryTitle && isShoppingCategory(categoryTitle) ? SHOPPING_ONLY_FIELDS : [],
     categoryTitle && isAccommodationCategory(categoryTitle) ? ACCOMMODATION_ONLY_FIELDS : [],
