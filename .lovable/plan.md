@@ -1,38 +1,64 @@
-## What's causing the flashing/tweaking
+## Problem
 
-When `backdrop-filter: blur(...)` sits over content that changes (scrolling lists, fading images, route transitions), the browser must re-sample and re-blur every pixel underneath on every frame. That cost compounds and produces the shimmer/wobble you're seeing as you interact.
+When importing a category-scoped CSV (e.g. "Shopping"), data for listings that also belong to other categories (e.g. "Home & Garden") gets wiped. Two real causes inside `src/pages/admin/AdminImport.tsx`:
 
-The biggest offender is the persistent **BottomNav** (`src/components/BottomNav.tsx`), which is on every screen and applies a heavy `blur(28px) saturate(180%)` to the whole bar **plus** a second `blur(12px)` to the active pill **plus** a `transition: flex 200ms` that animates `flex-grow` — that animation forces a layout reflow on every frame, while the parent blur re-samples on every one of those frames. Result: the whole nav (and content behind it) appears to "tweak" whenever you tap a tab or scroll.
+1. **Category links are reset for every imported listing.** Inside the per-listing sync loop (~line 449), the code does `DELETE FROM listing_categories WHERE listing_id = X` then re-inserts only the categories present in the CSV row. Importing the Shopping CSV with "categories = Shopping" drops the listing's Home & Garden junction. Same for `listing_subcategories`.
+2. **Delete step removes whole listing rows.** Any listing in the selected category but absent from the CSV is hard-deleted (~line 480), which destroys its row in `listings` (including all the other category's specific fields) and removes every junction. Even if a listing legitimately should no longer be in the imported category, it shouldn't be deleted outright if it still belongs to other categories.
 
-Secondary blur layers also contribute on specific screens: `CategoryPage` sticky filter bar (`blur(10px)`), and small `blur(2px)` overlays in `AccountInfo`, `NotificationsDropdown`, `GlobalMenu`, plus `bg-background/80 backdrop-blur` on `WeatherSection`.
+A smaller, related issue: category-specific arrays like `cuisine`, `payment_methods`, etc. coerce empty CSV cells to `[]` (`parseArray(...) ?? []`), which overwrites existing values when the column is blank. This is fine within the same category, but combined with #1 and #2 amplifies data loss.
 
-## Fix
+## Fix (scoped to category-aware imports, "All Categories" mode unchanged)
 
-### 1. BottomNav — remove blur, use solid surface (matches the saved design rule of a 74px #48484a bar)
-- Replace the translucent dark background + `backdropFilter: blur(28px) saturate(180%)` with a solid `#48484a` background (no `backdrop-filter`, no `WebkitBackdropFilter`).
-- Drop the active-pill `backdropFilter: blur(12px)` entirely; keep the white pill background and shadow.
-- Remove `flex` from the `transition` shorthand so the active pill no longer animates `flex-grow` (which is what causes the per-frame reflow). Keep `background` and `padding` transitions for a clean tap feedback, or use a fixed pill width so layout doesn't shift at all.
+Change `src/pages/admin/AdminImport.tsx` so a category-scoped import only ever touches its own category's link and its own category's specific fields. Other categories' data stays exactly as it was in the database.
 
-### 2. CategoryPage sticky filter bar
-- In `src/pages/CategoryPage.tsx` (line ~188), drop `backdropFilter: "blur(10px)"` and use a solid `hsl(var(--background))` background instead. The bar is sticky over scrolling content, which is the classic worst case for backdrop-blur.
+### 1. Stop wiping cross-category links during upsert sync
 
-### 3. WeatherSection card
-- In `src/components/WeatherSection.tsx` (line ~96), replace `bg-background/80 backdrop-blur` with a solid `bg-card` (or `bg-background`). It sits over a gradient that re-renders frequently with weather updates.
+Replace the per-listing "delete all junctions then re-insert" with a category-scoped sync:
 
-### 4. Lightweight overlay blurs (low priority but worth removing for consistency)
-- `src/components/NotificationsDropdown.tsx`, `src/components/GlobalMenu.tsx`, `src/pages/AccountInfo.tsx`: replace `backdropFilter: "blur(2px)"` on the dimming overlay with a slightly more opaque solid color (e.g. `rgba(0,0,0,0.35)`). The blur adds no visual value at 2px and still triggers per-frame re-sampling.
+- **Categories junction**: do not delete all junction rows. Instead:
+  - Always ensure `(listing_id, selectedCategoryId)` exists (upsert with `onConflict: "listing_id,category_id"`).
+  - For any extra category names the CSV's `categories` column lists, upsert those junction rows too (do not delete them if missing — same as today's add-only behavior for extras).
+  - Never delete a junction row for a category other than the selected one.
+- **Subcategories junction**: only manage subcategory links whose `subcategory.category_id === selectedCategoryId`.
+  - Fetch existing `listing_subcategories` for this listing, filter to subs belonging to the selected category, delete just those, then insert the resolved subs (which by construction belong to the selected category).
+  - Subcategories tied to other categories are left untouched.
 
-### 5. Leave alone
-- `FavouriteButton`, `ShareButton` small icon chips with `backdrop-blur-sm` — they sit on static image cards and are tiny, so the cost is negligible.
-- shadcn `transition-all` utility classes — these only animate properties on hover/focus of small elements and aren't the source of the global "tweaking".
+For the "All Categories" universal mode, keep current behavior (sync everything from the CSV) since it's the explicit "rewrite everything" path.
 
-## Files to edit
+### 2. Don't hard-delete multi-category listings
 
-- `src/components/BottomNav.tsx` — remove both `backdropFilter` calls, switch background to solid `#48484a`, remove `flex` from the pill transition.
-- `src/pages/CategoryPage.tsx` — remove `backdropFilter: "blur(10px)"` from the sticky bar.
-- `src/components/WeatherSection.tsx` — swap the translucent + blur background for a solid surface.
-- `src/components/NotificationsDropdown.tsx`, `src/components/GlobalMenu.tsx`, `src/pages/AccountInfo.tsx` — remove the `blur(2px)` from the dim overlay.
+In the "delete listings not in CSV" step (~line 480), for category-scoped imports:
 
-## Out of scope
+- For each existing listing in the selected category that's missing from the CSV, check whether it has junction rows in `listing_categories` to any *other* category.
+- If yes → only `DELETE FROM listing_categories WHERE listing_id = X AND category_id = selectedCategoryId` (and only its subcategory links scoped to the selected category). Leave the `listings` row and all other data intact. Count these as "removed from category" rather than "deleted".
+- If no → safe to fully delete the listing (current behavior).
 
-No business logic, data fetching, routing, or layout changes. Visual changes are limited to swapping translucent-blur surfaces for solid ones and removing one layout-animating transition, so behaviour stays identical apart from the wobble going away.
+Update the result counter to distinguish "deleted" vs "removed from this category" so the toast/results panel is honest about what happened. Update the upload-area helper text accordingly ("Listings missing from the CSV will be removed from this category; only listings that don't belong to any other category will be deleted entirely.").
+
+### 3. Don't blank category-specific arrays/booleans when CSV cell is empty for an existing listing
+
+For the selected category's specific fields, when the CSV cell is empty and the row is an update:
+
+- Treat empty as "no change" (do not include the key in the payload) instead of setting `[]` / `null`.
+- Keep the existing explicit-blank rule: `-` continues to mean "clear this field to null".
+
+This applies only to the category-specific field block being processed (e.g. shopping fields during a shopping import). Universal fields keep current behavior (they're part of every category template, so re-downloading the template each time keeps them fresh; user said this is fine).
+
+### 4. Light UI copy refresh
+
+Update the helper text under the category selector and the dashed upload area to spell out the new guarantee: importing a Shopping CSV only edits shopping data + universal fields and never touches a listing's Home & Garden, Accommodation, Restaurant, etc. data or links.
+
+## Files touched
+
+- `src/pages/admin/AdminImport.tsx` — all the above (mutation logic + helper copy).
+
+No DB migrations, no schema changes, no changes to export logic (export already pulls all junctions and category-specific fields correctly).
+
+## Verification
+
+1. Manual test using "Woodlands Garden Centre":
+   - Export Shopping CSV, edit a shopping-only field, import → Home & Garden data + link preserved.
+   - Export Home & Garden CSV, edit a home-and-garden-only field, import → Shopping data + link preserved.
+2. Import a Shopping CSV that omits a listing currently in both Shopping and Home & Garden → listing remains, just removed from Shopping; results panel shows it under "removed from category", not "deleted".
+3. Import a Shopping CSV that omits a Shopping-only listing → fully deleted (current behavior).
+4. `bunx tsc --noEmit` passes.

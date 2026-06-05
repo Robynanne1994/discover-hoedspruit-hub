@@ -78,7 +78,7 @@ const AdminImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; removed_from_category: number; errors: string[] } | null>(null);
   const [importStatus, setImportStatus] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
@@ -156,7 +156,7 @@ const AdminImport = () => {
         `${s.category_id}::${s.title.toLowerCase()}`, s.id
       ]));
 
-      const results = { created: 0, updated: 0, deleted: 0, errors: [] as string[] };
+      const results = { created: 0, updated: 0, deleted: 0, removed_from_category: 0, errors: [] as string[] };
       const csvTitles = new Set<string>();
 
       // Paginated fetch helper to bypass Supabase's 1000-row default cap
@@ -271,22 +271,25 @@ const AdminImport = () => {
           }
         }
 
-        // Resolve subcategories (try every resolved category as parent)
+        // Resolve subcategories. In category-scoped imports, only resolve under the selected category
+        // (so we never touch another category's subcategory links).
         const subNames = row.subcategories ? row.subcategories.split("|").map((s) => s.trim()).filter(Boolean) : [];
         const resolvedSubIds: string[] = [];
+        const subResolutionCatIds = isAllCategories ? resolvedCatIds : [selectedCategoryId];
         for (const subName of subNames) {
           let found = false;
-          for (const cId of resolvedCatIds) {
+          for (const cId of subResolutionCatIds) {
             const key = `${cId}::${subName.toLowerCase()}`;
             const subId = subMap.get(key);
             if (subId) { resolvedSubIds.push(subId); found = true; break; }
           }
-          if (!found && resolvedCatIds.length > 0) {
+          if (!found && subResolutionCatIds.length > 0) {
+            const parentCatId = subResolutionCatIds[0];
             const { data: newSub, error: subErr } = await supabase
-              .from("subcategories").insert({ title: subName, category_id: resolvedCatIds[0] }).select("id").single();
+              .from("subcategories").insert({ title: subName, category_id: parentCatId }).select("id").single();
             if (!subErr && newSub) {
               resolvedSubIds.push(newSub.id);
-              subMap.set(`${resolvedCatIds[0]}::${subName.toLowerCase()}`, newSub.id);
+              subMap.set(`${parentCatId}::${subName.toLowerCase()}`, newSub.id);
             } else {
               results.errors.push(`Row ${i + 2}: Could not match or create subcategory "${subName}"`);
             }
@@ -345,69 +348,95 @@ const AdminImport = () => {
         // Remove undefined keys
         Object.keys(payload).forEach(k => { if (payload[k] === undefined) delete payload[k]; });
 
-        // Only include category-specific fields when NOT in "all categories" mode
+        // Only include category-specific fields when NOT in "all categories" mode.
+        // For an UPDATE, if a CSV cell is empty/missing we PRESERVE the existing value
+        // (don't blank it). This guarantees that importing a Shopping CSV never wipes
+        // Restaurant/Accommodation/etc. data on listings that also belong to those categories.
+        const hasCell = (key: string) => {
+          const v = row[key];
+          return typeof v === "string" && v !== "";
+        };
+        const setBool = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = parseBool(row[key]);
+        };
+        const setArr = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = parseArray(row[key]) ?? [];
+        };
+        const setStr = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = row[key] || null;
+        };
+        const setInt = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = row[key] ? parseInt(row[key], 10) || null : null;
+        };
+
         if (!isAllCategories) {
           if (isRestaurant) {
-            payload.good_for_kids = parseBool(row.good_for_kids);
-            payload.pets_allowed = parseBool(row.pets_allowed);
-            payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
-            payload.price_level = row.price_level ? parseInt(row.price_level, 10) || null : null;
-            payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
-            payload.meal = parseArray(row.meal) ?? [];
-            payload.vibe = parseArray(row.vibe) ?? [];
-            payload.cuisine = parseArray(row.cuisine) ?? [];
-            payload.seating = parseArray(row.seating) ?? [];
-            payload.kids_playground = parseBool(row.kids_playground);
-            payload.smoking_allowed = parseBool(row.smoking_allowed);
-            payload.service_type = parseArray(row.service_type) ?? [];
-            payload.kids_menu = parseBool(row.kids_menu);
-            payload.high_chairs = parseBool(row.high_chairs);
-            payload.nappy_changing_station = parseBool(row.nappy_changing_station);
-            payload.wheelchair_car_park = parseBool(row.wheelchair_car_park);
-            payload.wheelchair_entrance = parseBool(row.wheelchair_entrance);
-            payload.wheelchair_seating = parseBool(row.wheelchair_seating);
-            payload.wheelchair_toilet = parseBool(row.wheelchair_toilet);
-            payload.has_toilet = parseBool(row.has_toilet);
-            payload.has_wifi = parseBool(row.has_wifi);
-            payload.has_free_wifi = parseBool(row.has_free_wifi);
+            setBool("good_for_kids");
+            setBool("pets_allowed");
+            setBool("wheelchair_friendly");
+            setInt("price_level");
+            if (hasCell("show_attributes") || !isUpdate) {
+              payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
+            }
+            setArr("meal");
+            setArr("vibe");
+            setArr("cuisine");
+            setArr("seating");
+            setBool("kids_playground");
+            setBool("smoking_allowed");
+            setArr("service_type");
+            setBool("kids_menu");
+            setBool("high_chairs");
+            setBool("nappy_changing_station");
+            setBool("wheelchair_car_park");
+            setBool("wheelchair_entrance");
+            setBool("wheelchair_seating");
+            setBool("wheelchair_toilet");
+            setBool("has_toilet");
+            setBool("has_wifi");
+            setBool("has_free_wifi");
           }
 
           if (isShopping) {
-            payload.air_conditioned = parseBool(row.air_conditioned);
-            payload.payment_methods = parseArray(row.payment_methods) ?? [];
-            payload.delivery_available = parseBool(row.delivery_available);
-            payload.click_and_collect = parseBool(row.click_and_collect);
-            payload.order_online = parseBool(row.order_online);
-            payload.parking_available = parseBool(row.parking_available);
-            payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
-            payload.local_products = parseBool(row.local_products);
-            payload.shop_type = row.shop_type || null;
-            payload.curio_or_gifts = parseBool(row.curio_or_gifts);
-            payload.product_categories = parseArray(row.product_categories) ?? [];
-            payload.price_range = row.price_range || null;
+            setBool("air_conditioned");
+            setArr("payment_methods");
+            setBool("delivery_available");
+            setBool("click_and_collect");
+            setBool("order_online");
+            setBool("parking_available");
+            setBool("wheelchair_friendly");
+            setBool("local_products");
+            setStr("shop_type");
+            setBool("curio_or_gifts");
+            setArr("product_categories");
+            setStr("price_range");
           }
 
           if (isAccommodation) {
-            payload.pets_allowed = parseBool(row.pets_allowed);
-            payload.sleeps = row.sleeps ? parseInt(row.sleeps, 10) || null : null;
-            payload.price_range = row.price_range || null;
-            payload.km_from_town = row.km_from_town || null;
-            payload.has_restaurant = parseBool(row.has_restaurant);
-            payload.has_bar = parseBool(row.has_bar);
-            payload.has_room_service = parseBool(row.has_room_service);
-            payload.has_breakfast = parseBool(row.has_breakfast);
-            payload.breakfast_included = parseBool(row.breakfast_included);
-            payload.has_swimming_pool = parseBool(row.has_swimming_pool);
-            payload.has_laundry = parseBool(row.has_laundry);
-            payload.child_friendly = parseBool(row.child_friendly);
-            payload.has_spa = parseBool(row.has_spa);
-            payload.has_fitness_centre = parseBool(row.has_fitness_centre);
-            payload.has_airport_shuttle = parseBool(row.has_airport_shuttle);
-            payload.airport_shuttle_free = parseBool(row.airport_shuttle_free);
-            payload.has_aircon = parseBool(row.has_aircon);
-            payload.has_wifi_accom = parseBool(row.has_wifi_accom);
-            payload.has_free_parking = parseBool(row.has_free_parking);
-            payload.has_secure_parking = parseBool(row.has_secure_parking);
+            setBool("pets_allowed");
+            setInt("sleeps");
+            setStr("price_range");
+            setStr("km_from_town");
+            setBool("has_restaurant");
+            setBool("has_bar");
+            setBool("has_room_service");
+            setBool("has_breakfast");
+            setBool("breakfast_included");
+            setBool("has_swimming_pool");
+            setBool("has_laundry");
+            setBool("child_friendly");
+            setBool("has_spa");
+            setBool("has_fitness_centre");
+            setBool("has_airport_shuttle");
+            setBool("airport_shuttle_free");
+            setBool("has_aircon");
+            setBool("has_wifi_accom");
+            setBool("has_free_parking");
+            setBool("has_secure_parking");
           }
         }
 
@@ -442,51 +471,156 @@ const AdminImport = () => {
       const successfulItems = importItems.filter((item) => !results.errors.some((err) => err.startsWith(`Row ${item.rowNumber}: Save failed`)));
       const successfulIds = successfulItems.map((item) => item.listingId);
 
-      // Per-listing safe sync: delete this listing's existing links, then insert
-      // the resolved ones. This way a single failure cannot wipe other listings'
-      // categories, and a partial failure on one listing does not leave the rest blank.
+      // Build map of subcategoryId -> categoryId so we can scope subcategory sync
+      const subParentMap = new Map<string, string>(
+        (subcategories ?? []).map((s) => [s.id, s.category_id]),
+      );
+
+      // Per-listing junction sync.
+      // - In "All Categories" mode we still do a full rewrite (explicit "rewrite everything" path).
+      // - In category-scoped mode we ONLY touch the selected category's link and the
+      //   subcategory links that belong to the selected category. This preserves a listing's
+      //   memberships in other categories (e.g. importing Shopping CSV must not unlink
+      //   "Woodlands Garden Centre" from "Home & Garden").
       setImportStatus(`Syncing categories for ${successfulItems.length} listings...`);
       for (let idx = 0; idx < successfulItems.length; idx++) {
         const item = successfulItems[idx];
         if (idx % 50 === 0) setImportStatus(`Syncing categories ${idx + 1}/${successfulItems.length}...`);
 
-        const { error: catDelErr } = await supabase
-          .from("listing_categories").delete().eq("listing_id", item.listingId);
-        if (catDelErr) {
-          results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
-          continue;
-        }
-        if (item.resolvedCatIds.length > 0) {
+        if (isAllCategories) {
+          // Full rewrite (legacy behavior, intentional for universal mode)
+          const { error: catDelErr } = await supabase
+            .from("listing_categories").delete().eq("listing_id", item.listingId);
+          if (catDelErr) {
+            results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
+            continue;
+          }
+          if (item.resolvedCatIds.length > 0) {
+            const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+            const { error: catInsErr } = await supabase
+              .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
+            if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+          }
+          const { error: subDelErr } = await supabase
+            .from("listing_subcategories").delete().eq("listing_id", item.listingId);
+          if (subDelErr) {
+            results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
+            continue;
+          }
+          if (item.resolvedSubIds.length > 0) {
+            const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+            const { error: subInsErr } = await supabase
+              .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
+            if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+          }
+        } else {
+          // Category-scoped mode: upsert links additively for the selected category +
+          // any extras in the CSV's "categories" column. Never delete links for other categories.
           const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
-          const { error: catInsErr } = await supabase
-            .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
-          if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
-        }
+          if (catRows.length > 0) {
+            const { error: catInsErr } = await supabase
+              .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
+            if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+          }
 
-        const { error: subDelErr } = await supabase
-          .from("listing_subcategories").delete().eq("listing_id", item.listingId);
-        if (subDelErr) {
-          results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
-          continue;
-        }
-        if (item.resolvedSubIds.length > 0) {
-          const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
-          const { error: subInsErr } = await supabase
-            .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
-          if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+          // Subcategories: delete only this listing's existing subcategory links that
+          // belong to the selected category, then insert the resolved subs (which are
+          // already scoped to the selected category — see resolution step above).
+          const { data: existingSubLinks, error: subFetchErr } = await supabase
+            .from("listing_subcategories").select("id, subcategory_id").eq("listing_id", item.listingId);
+          if (subFetchErr) {
+            results.errors.push(`Row ${item.rowNumber}: subcategory lookup failed - ${subFetchErr.message}`);
+          } else {
+            const subLinkIdsToDelete = (existingSubLinks ?? [])
+              .filter((l) => subParentMap.get(l.subcategory_id) === selectedCategoryId)
+              .map((l) => l.id);
+            if (subLinkIdsToDelete.length > 0) {
+              const { error: subDelErr } = await supabase
+                .from("listing_subcategories").delete().in("id", subLinkIdsToDelete);
+              if (subDelErr) results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
+            }
+            if (item.resolvedSubIds.length > 0) {
+              const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+              const { error: subInsErr } = await supabase
+                .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
+              if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+            }
+          }
         }
       }
 
-      // Delete listings not in CSV
-      const deleteItems = Array.from(existingMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
-      const deleteIds = deleteItems.map(([, listing]) => listing.id);
-      setImportStatus(`Removing ${deleteIds.length} listings not in the CSV...`);
-      for (const idBatch of chunkArray(deleteIds, 200)) {
-        await supabase.from("listing_categories").delete().in("listing_id", idBatch);
-        await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
-        const { error } = await supabase.from("listings").delete().in("id", idBatch);
-        if (error) results.errors.push(`Delete failed: ${error.message}`);
-        else results.deleted += idBatch.length;
+      // Handle listings present in the selected category but missing from the CSV.
+      // - In "All Categories" mode: hard-delete (legacy behavior).
+      // - In category-scoped mode: if the listing belongs to OTHER categories, just remove
+      //   it from the selected category (and its subs under that category). Only hard-delete
+      //   when the listing has no other category links.
+      const missingItems = Array.from(existingMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
+      const missingIds = missingItems.map(([, listing]) => listing.id);
+
+      if (isAllCategories) {
+        setImportStatus(`Removing ${missingIds.length} listings not in the CSV...`);
+        for (const idBatch of chunkArray(missingIds, 200)) {
+          await supabase.from("listing_categories").delete().in("listing_id", idBatch);
+          await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
+          const { error } = await supabase.from("listings").delete().in("id", idBatch);
+          if (error) results.errors.push(`Delete failed: ${error.message}`);
+          else results.deleted += idBatch.length;
+        }
+      } else if (missingIds.length > 0) {
+        setImportStatus(`Processing ${missingIds.length} listings not in the CSV...`);
+        // Fetch all category junctions for missing listings to decide per-listing action.
+        const otherCatMap = new Map<string, string[]>(); // listingId -> other category ids
+        for (const idBatch of chunkArray(missingIds, 200)) {
+          const { data: links } = await supabase
+            .from("listing_categories").select("listing_id, category_id").in("listing_id", idBatch);
+          (links ?? []).forEach((l) => {
+            if (l.category_id === selectedCategoryId) return;
+            const arr = otherCatMap.get(l.listing_id) ?? [];
+            arr.push(l.category_id);
+            otherCatMap.set(l.listing_id, arr);
+          });
+        }
+
+        const toHardDelete: string[] = [];
+        const toUnlink: string[] = [];
+        for (const id of missingIds) {
+          if ((otherCatMap.get(id) ?? []).length > 0) toUnlink.push(id);
+          else toHardDelete.push(id);
+        }
+
+        // Unlink from the selected category (and that category's subcategories) only
+        for (const idBatch of chunkArray(toUnlink, 200)) {
+          const { error: unlinkErr } = await supabase
+            .from("listing_categories")
+            .delete()
+            .in("listing_id", idBatch)
+            .eq("category_id", selectedCategoryId);
+          if (unlinkErr) {
+            results.errors.push(`Unlink failed: ${unlinkErr.message}`);
+            continue;
+          }
+          // Remove that category's subs for these listings
+          const subIdsForCat = (subcategories ?? [])
+            .filter((s) => s.category_id === selectedCategoryId)
+            .map((s) => s.id);
+          if (subIdsForCat.length > 0) {
+            await supabase
+              .from("listing_subcategories")
+              .delete()
+              .in("listing_id", idBatch)
+              .in("subcategory_id", subIdsForCat);
+          }
+          results.removed_from_category += idBatch.length;
+        }
+
+        // Hard-delete listings that have no other category memberships
+        for (const idBatch of chunkArray(toHardDelete, 200)) {
+          await supabase.from("listing_categories").delete().in("listing_id", idBatch);
+          await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
+          const { error } = await supabase.from("listings").delete().in("id", idBatch);
+          if (error) results.errors.push(`Delete failed: ${error.message}`);
+          else results.deleted += idBatch.length;
+        }
       }
 
       return results;
@@ -496,7 +630,7 @@ const AdminImport = () => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.removed_from_category} removed from category, ${results.deleted} deleted`);
     },
     onError: (e) => { setImportStatus(""); toast.error(e.message); },
   });
@@ -709,14 +843,14 @@ const AdminImport = () => {
           {selectedCategoryId && (
             <p className="text-xs text-muted-foreground mt-2">
               {isAllCategories
-                ? "This export/import uses universal fields only across ALL listings. Category-specific fields (restaurant, shopping, accommodation) are preserved during updates."
+                ? "Universal fields only across ALL listings. Category-specific fields (restaurant, shopping, accommodation) are preserved during updates."
                 : isRestaurant
-                ? "This export/import will include universal + restaurant-specific fields."
+                ? "Imports universal + restaurant-specific fields. A listing's data and links in other categories (e.g. Shopping, Home & Garden) are never touched."
                 : isShopping
-                ? "This export/import will include universal + shopping-specific fields."
+                ? "Imports universal + shopping-specific fields. A listing's data and links in other categories (e.g. Home & Garden, Restaurants) are never touched."
                 : isAccommodation
-                ? "This export/import will include universal + accommodation-specific fields."
-                : "This export/import will include universal fields only."}
+                ? "Imports universal + accommodation-specific fields. A listing's data and links in other categories are never touched."
+                : "Imports universal fields only. A listing's data and links in other categories are never touched."}
             </p>
           )}
         </div>
@@ -747,7 +881,7 @@ const AdminImport = () => {
             <p className="text-xs text-muted-foreground mt-1">
               {isAllCategories
                 ? "Listings are matched by title. Missing listings will be deleted. Category-specific fields are preserved."
-                : "Listings are matched by title (case-insensitive). Missing listings will be deleted."}
+                : "Listings are matched by title (case-insensitive). Listings missing from the CSV are removed from this category only; they're fully deleted only if they don't belong to any other category."}
             </p>
             <input ref={fileRef} type="file" accept=".csv" className="hidden" onChange={handleFile} />
           </div>
@@ -819,6 +953,10 @@ const AdminImport = () => {
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle className="h-4 w-4 text-blue-600" />
                 <span className="text-foreground"><strong>{importResult.updated}</strong> updated</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <CheckCircle className="h-4 w-4 text-amber-600" />
+                <span className="text-foreground"><strong>{importResult.removed_from_category}</strong> removed from category</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <CheckCircle className="h-4 w-4 text-destructive" />
