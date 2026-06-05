@@ -630,7 +630,7 @@ const AdminImport = () => {
       setImportResult(results);
       qc.invalidateQueries({ queryKey: ["admin-listings"] });
       qc.invalidateQueries({ queryKey: ["admin-categories"] });
-      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.deleted} deleted`);
+      toast.success(`Import complete: ${results.created} created, ${results.updated} updated, ${results.removed_from_category} removed from category, ${results.deleted} deleted`);
     },
     onError: (e) => { setImportStatus(""); toast.error(e.message); },
   });
