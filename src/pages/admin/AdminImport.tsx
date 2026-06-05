@@ -78,7 +78,7 @@ const AdminImport = () => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [parsed, setParsed] = useState<{ headers: string[]; rows: Record<string, string>[] } | null>(null);
   const [fileName, setFileName] = useState("");
-  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; errors: string[] } | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; updated: number; deleted: number; removed_from_category: number; errors: string[] } | null>(null);
   const [importStatus, setImportStatus] = useState("");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
 
