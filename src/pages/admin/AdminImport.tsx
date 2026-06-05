@@ -7,7 +7,13 @@ import { toast } from "sonner";
 import { Upload, FileSpreadsheet, CheckCircle, AlertCircle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory, UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS } from "@/lib/categoryFields";
+import {
+  getCSVHeadersForCategory, isRestaurantCategory, isShoppingCategory, isAccommodationCategory,
+  isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory,
+  UNIVERSAL_FIELDS, RESTAURANT_ONLY_FIELDS, SHOPPING_ONLY_FIELDS, ACCOMMODATION_ONLY_FIELDS,
+  NGO_ONLY_FIELDS, TRADES_ONLY_FIELDS, HOME_GARDEN_ONLY_FIELDS, WEDDINGS_EVENTS_ONLY_FIELDS,
+  LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields, type FieldType,
+} from "@/lib/categoryFields";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
@@ -72,6 +78,79 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
 const restaurantFieldSet = new Set<string>(RESTAURANT_ONLY_FIELDS);
 const shoppingFieldSet = new Set<string>(SHOPPING_ONLY_FIELDS);
 const accommodationFieldSet = new Set<string>(ACCOMMODATION_ONLY_FIELDS);
+const ngoFieldSet = new Set<string>(NGO_ONLY_FIELDS);
+const tradesFieldSet = new Set<string>(TRADES_ONLY_FIELDS);
+const homeGardenFieldSet = new Set<string>(HOME_GARDEN_ONLY_FIELDS);
+const weddingsEventsFieldSet = new Set<string>(WEDDINGS_EVENTS_ONLY_FIELDS);
+
+// ---- Schema-driven CSV (de)serialization ----
+
+function serializeField(value: unknown, type: FieldType): string {
+  if (value === null || value === undefined) return "";
+  switch (type) {
+    case "str": return String(value);
+    case "int":
+    case "float": return String(value);
+    case "bool": return String(value);
+    case "bool_default_false": return String(Boolean(value));
+    case "str_array": return Array.isArray(value) ? (value as unknown[]).map(String).join("|") : "";
+    case "json": {
+      if (typeof value === "object") {
+        try { return JSON.stringify(value); } catch { return ""; }
+      }
+      return String(value);
+    }
+  }
+}
+
+// Parse a CSV cell to a DB value. Returns:
+//   - { skip: true } when the cell is empty AND we're updating (preserve existing value)
+//   - { value: parsed } otherwise (parsed may be null for blank-on-create or "-")
+function parseField(raw: string | undefined, type: FieldType, isUpdate: boolean):
+  { skip: true } | { skip: false; value: unknown } {
+  const cell = typeof raw === "string" ? raw : "";
+  const trimmed = cell.trim();
+  // Empty cell on update → preserve existing value
+  if (trimmed === "" && isUpdate) return { skip: true };
+  // Empty cell on create → null (or default for bool_default_false)
+  // "-" explicitly clears to null
+  if (trimmed === "" || trimmed === "-") {
+    switch (type) {
+      case "bool_default_false": return { skip: false, value: false };
+      case "str_array": return { skip: false, value: [] };
+      default: return { skip: false, value: null };
+    }
+  }
+  switch (type) {
+    case "str": return { skip: false, value: cell };
+    case "int": {
+      const n = parseInt(cell, 10);
+      return { skip: false, value: Number.isFinite(n) ? n : null };
+    }
+    case "float": {
+      const n = parseFloat(cell);
+      return { skip: false, value: Number.isFinite(n) ? n : null };
+    }
+    case "bool": {
+      const v = trimmed.toLowerCase();
+      if (v === "true" || v === "1") return { skip: false, value: true };
+      if (v === "false" || v === "0") return { skip: false, value: false };
+      return { skip: false, value: null };
+    }
+    case "bool_default_false": {
+      const v = trimmed.toLowerCase();
+      return { skip: false, value: v === "true" || v === "1" };
+    }
+    case "str_array": {
+      const parts = cell.split("|").map((s) => s.trim()).filter(Boolean);
+      return { skip: false, value: parts };
+    }
+    case "json": {
+      try { return { skip: false, value: JSON.parse(cell) }; }
+      catch { return { skip: false, value: null }; }
+    }
+  }
+}
 
 const AdminImport = () => {
   const qc = useQueryClient();
@@ -105,6 +184,10 @@ const AdminImport = () => {
   const isRestaurant = selectedCategoryTitle ? isRestaurantCategory(selectedCategoryTitle) : false;
   const isShopping = selectedCategoryTitle ? isShoppingCategory(selectedCategoryTitle) : false;
   const isAccommodation = selectedCategoryTitle ? isAccommodationCategory(selectedCategoryTitle) : false;
+  const isNGO = selectedCategoryTitle ? isNGOCategory(selectedCategoryTitle) : false;
+  const isTrades = selectedCategoryTitle ? isTradesCategory(selectedCategoryTitle) : false;
+  const isHomeGarden = selectedCategoryTitle ? isHomeGardenCategory(selectedCategoryTitle) : false;
+  const isWeddingsEvents = selectedCategoryTitle ? isWeddingsEventsCategory(selectedCategoryTitle) : false;
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -129,18 +212,18 @@ const AdminImport = () => {
         return;
       }
       if (!isAllCategories) {
-        if (!isRestaurant) {
-          const extraCols = result.headers.filter((h) => restaurantFieldSet.has(h));
-          if (extraCols.length > 0) toast.warning(`Restaurant-only columns found and will be ignored: ${extraCols.join(", ")}`);
-        }
-        if (!isShopping) {
-          const extraCols = result.headers.filter((h) => shoppingFieldSet.has(h));
-          if (extraCols.length > 0) toast.warning(`Shopping-only columns found and will be ignored: ${extraCols.join(", ")}`);
-        }
-        if (!isAccommodation) {
-          const extraCols = result.headers.filter((h) => accommodationFieldSet.has(h));
-          if (extraCols.length > 0) toast.warning(`Accommodation-only columns found and will be ignored: ${extraCols.join(", ")}`);
-        }
+        const warn = (label: string, set: Set<string>, active: boolean) => {
+          if (active) return;
+          const extras = result.headers.filter((h) => set.has(h));
+          if (extras.length > 0) toast.warning(`${label}-only columns found and will be ignored: ${extras.join(", ")}`);
+        };
+        warn("Restaurant", restaurantFieldSet, isRestaurant);
+        warn("Shopping", shoppingFieldSet, isShopping);
+        warn("Accommodation", accommodationFieldSet, isAccommodation);
+        warn("NGO", ngoFieldSet, isNGO);
+        warn("Trades", tradesFieldSet, isTrades);
+        warn("Home & Garden", homeGardenFieldSet, isHomeGarden);
+        warn("Weddings & Events", weddingsEventsFieldSet, isWeddingsEvents);
       }
       setParsed(result);
     };
@@ -296,158 +379,48 @@ const AdminImport = () => {
           }
         }
 
-        const parseBool = (val: string | undefined) => {
-          if (!val || val === "") return null;
-          return val.toLowerCase() === "true" || val === "1";
-        };
-
-        const parseArray = (val: string | undefined): string[] | null => {
-          if (!val || val === "") return null;
-          return val.split("|").map(s => s.trim()).filter(Boolean);
-        };
-
-        let openingHours = null;
-        if (row.opening_hours) {
-          try { openingHours = JSON.parse(row.opening_hours); } catch { openingHours = null; }
-        }
-
-        // Images are managed exclusively via the Lovable editor — CSV image_url and gallery_images are ignored.
+        // Images are managed exclusively via the Lovable editor — CSV image_url and
+        // gallery_images cells are honored only when explicitly provided.
 
         const existing = existingMap.get(title.toLowerCase());
         const isUpdate = !!existing;
         const listingId = existing?.id ?? crypto.randomUUID();
 
-        // Build payload - universal fields only for "all categories" mode
-        const payload: ListingPayload = {
-          id: listingId,
-          title,
-          description: row.description || null,
-          image_url: isUpdate ? existing?.image_url ?? null : null,
-          location: row.location || null,
-          phone: row.phone || null,
-          email: row.email || null,
-          website: row.website || null,
-          whatsapp: row.whatsapp || null,
-          google_maps_link: row.google_maps_link || null,
-          google_rating: row.google_rating && row.google_rating.trim() !== "-" ? parseFloat(row.google_rating) || null : null,
-          google_reviews_count: row.google_reviews_count && row.google_reviews_count.trim() !== "-" ? parseInt(row.google_reviews_count, 10) || null : null,
-          google_reviews_url: row.google_reviews_url || null,
-          category_id: resolvedCatIds[0] || null,
-          is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
-          long_description: row.long_description || null,
-          gallery_images: isUpdate ? existing?.gallery_images ?? null : null,
-          opening_hours: row.opening_hours?.trim() === "-" ? null : (isAllCategories && isUpdate && !row.opening_hours ? existing?.opening_hours ?? null : openingHours),
-          custom_title_1: row.custom_title_1 || null,
-          custom_text_1: row.custom_text_1 || null,
-          custom_title_2: row.custom_title_2 || null,
-          custom_text_2: row.custom_text_2 || null,
-          custom_title_3: row.custom_title_3 || null,
-          custom_text_3: row.custom_text_3 || null,
-        };
+        // Schema-driven payload build.
+        // - Universal fields are always written.
+        // - Category-specific fields are written only when the selected category owns them.
+        // - On UPDATE, an empty CSV cell preserves the existing value (skip the key).
+        //   A literal "-" explicitly clears to null.
+        const payload: ListingPayload = { id: listingId, title };
+        const payloadRecord = payload as Record<string, unknown>;
 
-        // Remove undefined keys
-        Object.keys(payload).forEach(k => { if (payload[k] === undefined) delete payload[k]; });
-
-        // Only include category-specific fields when NOT in "all categories" mode.
-        // For an UPDATE, if a CSV cell is empty/missing we PRESERVE the existing value
-        // (don't blank it). This guarantees that importing a Shopping CSV never wipes
-        // Restaurant/Accommodation/etc. data on listings that also belong to those categories.
-        const hasCell = (key: string) => {
-          const v = row[key];
-          return typeof v === "string" && v !== "";
-        };
-        const setBool = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = parseBool(row[key]);
-        };
-        const setArr = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = parseArray(row[key]) ?? [];
-        };
-        const setStr = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = row[key] || null;
-        };
-        const setInt = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = row[key] ? parseInt(row[key], 10) || null : null;
-        };
-
+        // Always link the listing to the (primary) selected category via the legacy column,
+        // unless we're in the "All Categories" universal mode.
         if (!isAllCategories) {
-          if (isRestaurant) {
-            setBool("good_for_kids");
-            setBool("pets_allowed");
-            setBool("wheelchair_friendly");
-            setInt("price_level");
-            if (hasCell("show_attributes") || !isUpdate) {
-              payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
-            }
-            setArr("meal");
-            setArr("vibe");
-            setArr("cuisine");
-            setArr("seating");
-            setBool("kids_playground");
-            setBool("smoking_allowed");
-            setArr("service_type");
-            setBool("kids_menu");
-            setBool("high_chairs");
-            setBool("nappy_changing_station");
-            setBool("wheelchair_car_park");
-            setBool("wheelchair_entrance");
-            setBool("wheelchair_seating");
-            setBool("wheelchair_toilet");
-            setBool("has_toilet");
-            setBool("has_wifi");
-            setBool("has_free_wifi");
-          }
-
-          if (isShopping) {
-            setBool("air_conditioned");
-            setArr("payment_methods");
-            setBool("delivery_available");
-            setBool("click_and_collect");
-            setBool("order_online");
-            setBool("parking_available");
-            setBool("wheelchair_friendly");
-            setBool("local_products");
-            setStr("shop_type");
-            setBool("curio_or_gifts");
-            setArr("product_categories");
-            setStr("price_range");
-          }
-
-          if (isAccommodation) {
-            setBool("pets_allowed");
-            setInt("sleeps");
-            setStr("price_range");
-            setStr("km_from_town");
-            setBool("has_restaurant");
-            setBool("has_bar");
-            setBool("has_room_service");
-            setBool("has_breakfast");
-            setBool("breakfast_included");
-            setBool("has_swimming_pool");
-            setBool("has_laundry");
-            setBool("child_friendly");
-            setBool("has_spa");
-            setBool("has_fitness_centre");
-            setBool("has_airport_shuttle");
-            setBool("airport_shuttle_free");
-            setBool("has_aircon");
-            setBool("has_wifi_accom");
-            setBool("has_free_parking");
-            setBool("has_secure_parking");
-          }
+          payloadRecord.category_id = selectedCategoryId;
+        } else if (resolvedCatIds[0]) {
+          payloadRecord.category_id = resolvedCatIds[0];
         }
 
-        // Treat "-" as empty for any string field on import
-        for (const k of Object.keys(payload)) {
-          const payloadRecord = payload as Record<string, unknown>;
-          const v = payloadRecord[k];
-          if (typeof v === "string" && v.trim() === "-") {
-            payloadRecord[k] = null;
-          }
+        const universalDbFields = getUniversalDbFields();
+        const categoryFields = isAllCategories ? [] : getCategorySpecificFields(selectedCategoryTitle);
+        const allFieldNames: string[] = [
+          ...universalDbFields.filter((f) => f !== "title"),
+          ...categoryFields,
+        ];
+
+        for (const fieldName of allFieldNames) {
+          const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
+          if (!spec) continue;
+          const parsed = parseField(row[fieldName], spec.type, isUpdate);
+          if (parsed.skip === true) continue;
+          if (parsed.skip === false) payloadRecord[fieldName] = parsed.value;
         }
+
+        // Remove undefined keys (defensive)
+        Object.keys(payloadRecord).forEach((k) => { if (payloadRecord[k] === undefined) delete payloadRecord[k]; });
+
+
 
         importItems.push({ rowNumber: i + 2, listingId, payload, resolvedCatIds, resolvedSubIds, isUpdate });
       }
@@ -711,95 +684,26 @@ const AdminImport = () => {
     const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
 
     const rows = listings.map((l) => {
-      const fieldMap: Record<string, string> = {
-        title: l.title ?? "",
-        description: l.description ?? "",
-        image_url: l.image_url ?? "",
-        location: l.location ?? "",
-        phone: l.phone ?? "",
-        email: l.email ?? "",
-        website: l.website ?? "",
-        whatsapp: l.whatsapp ?? "",
-        google_maps_link: l.google_maps_link ?? "",
-        google_rating: l.google_rating == null ? "" : String(l.google_rating),
-        google_reviews_count: l.google_reviews_count == null ? "" : String(l.google_reviews_count),
-        // categories: prefer junction list; fall back to legacy single category_id name so exports never lose data
-        ...(() => {
-          const fromJunction = listingCatMap.get(l.id) ?? [];
-          if (fromJunction.length === 0 && l.category_id) {
-            const legacy = catNameMap.get(l.category_id);
-            if (legacy) return { categories: legacy };
-          }
-          return { categories: fromJunction.join("|") };
-        })(),
-        google_reviews_url: l.google_reviews_url ?? "",
-        subcategories: (listingSubMap.get(l.id) ?? []).join("|"),
-        is_featured: String(l.is_featured),
-        long_description: l.long_description ?? "",
-        gallery_images: l.gallery_images ? JSON.stringify(l.gallery_images) : "",
-        opening_hours: l.opening_hours ? JSON.stringify(l.opening_hours) : "",
-        custom_title_1: l.custom_title_1 ?? "",
-        custom_text_1: l.custom_text_1 ?? "",
-        custom_title_2: l.custom_title_2 ?? "",
-        custom_text_2: l.custom_text_2 ?? "",
-        custom_title_3: l.custom_title_3 ?? "",
-        custom_text_3: l.custom_text_3 ?? "",
-        // Restaurant fields
-        good_for_kids: l.good_for_kids == null ? "" : String(l.good_for_kids),
-        pets_allowed: l.pets_allowed == null ? "" : String(l.pets_allowed),
-        wheelchair_friendly: l.wheelchair_friendly == null ? "" : String(l.wheelchair_friendly),
-        price_level: l.price_level == null ? "" : String(l.price_level),
-        show_attributes: String(l.show_attributes ?? false),
-        meal: (l.meal ?? []).join("|"),
-        vibe: (l.vibe ?? []).join("|"),
-        cuisine: (l.cuisine ?? []).join("|"),
-        seating: (l.seating ?? []).join("|"),
-        kids_playground: l.kids_playground == null ? "" : String(l.kids_playground),
-        smoking_allowed: l.smoking_allowed == null ? "" : String(l.smoking_allowed),
-        service_type: (l.service_type ?? []).join("|"),
-        kids_menu: l.kids_menu == null ? "" : String(l.kids_menu),
-        high_chairs: l.high_chairs == null ? "" : String(l.high_chairs),
-        nappy_changing_station: l.nappy_changing_station == null ? "" : String(l.nappy_changing_station),
-        wheelchair_car_park: l.wheelchair_car_park == null ? "" : String(l.wheelchair_car_park),
-        wheelchair_entrance: l.wheelchair_entrance == null ? "" : String(l.wheelchair_entrance),
-        wheelchair_seating: l.wheelchair_seating == null ? "" : String(l.wheelchair_seating),
-        wheelchair_toilet: l.wheelchair_toilet == null ? "" : String(l.wheelchair_toilet),
-        has_toilet: l.has_toilet == null ? "" : String(l.has_toilet),
-        has_wifi: l.has_wifi == null ? "" : String(l.has_wifi),
-        has_free_wifi: l.has_free_wifi == null ? "" : String(l.has_free_wifi),
-        // Shopping fields
-        air_conditioned: l.air_conditioned == null ? "" : String(l.air_conditioned),
-        payment_methods: (l.payment_methods ?? []).join("|"),
-        delivery_available: l.delivery_available == null ? "" : String(l.delivery_available),
-        click_and_collect: l.click_and_collect == null ? "" : String(l.click_and_collect),
-        order_online: l.order_online == null ? "" : String(l.order_online),
-        parking_available: l.parking_available == null ? "" : String(l.parking_available),
-        local_products: l.local_products == null ? "" : String(l.local_products),
-        shop_type: l.shop_type ?? "",
-        curio_or_gifts: l.curio_or_gifts == null ? "" : String(l.curio_or_gifts),
-        product_categories: (l.product_categories ?? []).join("|"),
-        price_range: l.price_range ?? "",
-        // Accommodation fields
-        amenities: (l.amenities ?? []).join("|"),
-        sleeps: l.sleeps == null ? "" : String(l.sleeps),
-        km_from_town: l.km_from_town ?? "",
-        has_restaurant: l.has_restaurant == null ? "" : String(l.has_restaurant),
-        has_bar: l.has_bar == null ? "" : String(l.has_bar),
-        has_room_service: l.has_room_service == null ? "" : String(l.has_room_service),
-        has_breakfast: l.has_breakfast == null ? "" : String(l.has_breakfast),
-        breakfast_included: l.breakfast_included == null ? "" : String(l.breakfast_included),
-        has_swimming_pool: l.has_swimming_pool == null ? "" : String(l.has_swimming_pool),
-        has_laundry: l.has_laundry == null ? "" : String(l.has_laundry),
-        child_friendly: l.child_friendly == null ? "" : String(l.child_friendly),
-        has_spa: l.has_spa == null ? "" : String(l.has_spa),
-        has_fitness_centre: l.has_fitness_centre == null ? "" : String(l.has_fitness_centre),
-        has_airport_shuttle: l.has_airport_shuttle == null ? "" : String(l.has_airport_shuttle),
-        airport_shuttle_free: l.airport_shuttle_free == null ? "" : String(l.airport_shuttle_free),
-        has_aircon: l.has_aircon == null ? "" : String(l.has_aircon),
-        has_wifi_accom: l.has_wifi_accom == null ? "" : String(l.has_wifi_accom),
-        has_free_parking: l.has_free_parking == null ? "" : String(l.has_free_parking),
-        has_secure_parking: l.has_secure_parking == null ? "" : String(l.has_secure_parking),
-      };
+      const fieldMap: Record<string, string> = {};
+      const lr = l as unknown as Record<string, unknown>;
+
+      // Virtual columns: categories / subcategories pipe-joined
+      const fromJunction = listingCatMap.get(l.id) ?? [];
+      if (fromJunction.length === 0 && l.category_id) {
+        const legacy = catNameMap.get(l.category_id);
+        fieldMap.categories = legacy ?? "";
+      } else {
+        fieldMap.categories = fromJunction.join("|");
+      }
+      fieldMap.subcategories = (listingSubMap.get(l.id) ?? []).join("|");
+
+      // Schema-driven serialization for every other header
+      for (const h of headers) {
+        if (h === "categories" || h === "subcategories") continue;
+        const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType } | undefined>)[h];
+        if (!spec) { fieldMap[h] = ""; continue; }
+        fieldMap[h] = serializeField(lr[h], spec.type);
+      }
 
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
     });
@@ -843,14 +747,8 @@ const AdminImport = () => {
           {selectedCategoryId && (
             <p className="text-xs text-muted-foreground mt-2">
               {isAllCategories
-                ? "Universal fields only across ALL listings. Category-specific fields (restaurant, shopping, accommodation) are preserved during updates."
-                : isRestaurant
-                ? "Imports universal + restaurant-specific fields. A listing's data and links in other categories (e.g. Shopping, Home & Garden) are never touched."
-                : isShopping
-                ? "Imports universal + shopping-specific fields. A listing's data and links in other categories (e.g. Home & Garden, Restaurants) are never touched."
-                : isAccommodation
-                ? "Imports universal + accommodation-specific fields. A listing's data and links in other categories are never touched."
-                : "Imports universal fields only. A listing's data and links in other categories are never touched."}
+                ? "Universal fields only across ALL listings. Category-specific fields are preserved during updates."
+                : `Imports universal + ${selectedCategoryTitle}-specific fields. A listing's data and links in other categories are never touched.`}
             </p>
           )}
         </div>
@@ -907,30 +805,24 @@ const AdminImport = () => {
                 <thead className="bg-muted sticky top-0">
                   <tr>
                     <th className="p-2 text-left text-muted-foreground font-medium">#</th>
-                    {parsed.headers.map((h) => (
-                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${
-                        !isAllCategories && (
-                          (restaurantFieldSet.has(h) && !isRestaurant) ||
-                          (shoppingFieldSet.has(h) && !isShopping) ||
-                          (accommodationFieldSet.has(h) && !isAccommodation)
-                        ) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"
-                      }`}>{h}</th>
-                    ))}
+                    {parsed.headers.map((h) => {
+                      const headerActive = isAllCategories || csvHeaders.includes(h);
+                      return (
+                        <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${headerActive ? "text-muted-foreground" : "text-muted-foreground/40 line-through"}`}>{h}</th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
                   {parsed.rows.slice(0, 50).map((row, i) => (
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
-                      {parsed.headers.map((h) => (
-                        <td key={h} className={`p-2 max-w-[200px] truncate ${
-                          !isAllCategories && (
-                            (restaurantFieldSet.has(h) && !isRestaurant) ||
-                            (shoppingFieldSet.has(h) && !isShopping) ||
-                            (accommodationFieldSet.has(h) && !isAccommodation)
-                          ) ? "text-muted-foreground/40" : "text-foreground"
-                        }`}>{row[h] || "—"}</td>
-                      ))}
+                      {parsed.headers.map((h) => {
+                        const headerActive = isAllCategories || csvHeaders.includes(h);
+                        return (
+                          <td key={h} className={`p-2 max-w-[200px] truncate ${headerActive ? "text-foreground" : "text-muted-foreground/40"}`}>{row[h] || "—"}</td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>
