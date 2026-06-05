@@ -805,30 +805,24 @@ const AdminImport = () => {
                 <thead className="bg-muted sticky top-0">
                   <tr>
                     <th className="p-2 text-left text-muted-foreground font-medium">#</th>
-                    {parsed.headers.map((h) => (
-                      <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${
-                        !isAllCategories && (
-                          (restaurantFieldSet.has(h) && !isRestaurant) ||
-                          (shoppingFieldSet.has(h) && !isShopping) ||
-                          (accommodationFieldSet.has(h) && !isAccommodation)
-                        ) ? "text-muted-foreground/40 line-through" : "text-muted-foreground"
-                      }`}>{h}</th>
-                    ))}
+                    {parsed.headers.map((h) => {
+                      const headerActive = isAllCategories || csvHeaders.includes(h);
+                      return (
+                        <th key={h} className={`p-2 text-left font-medium whitespace-nowrap ${headerActive ? "text-muted-foreground" : "text-muted-foreground/40 line-through"}`}>{h}</th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
                   {parsed.rows.slice(0, 50).map((row, i) => (
                     <tr key={i} className="border-t border-border">
                       <td className="p-2 text-muted-foreground">{i + 1}</td>
-                      {parsed.headers.map((h) => (
-                        <td key={h} className={`p-2 max-w-[200px] truncate ${
-                          !isAllCategories && (
-                            (restaurantFieldSet.has(h) && !isRestaurant) ||
-                            (shoppingFieldSet.has(h) && !isShopping) ||
-                            (accommodationFieldSet.has(h) && !isAccommodation)
-                          ) ? "text-muted-foreground/40" : "text-foreground"
-                        }`}>{row[h] || "—"}</td>
-                      ))}
+                      {parsed.headers.map((h) => {
+                        const headerActive = isAllCategories || csvHeaders.includes(h);
+                        return (
+                          <td key={h} className={`p-2 max-w-[200px] truncate ${headerActive ? "text-foreground" : "text-muted-foreground/40"}`}>{row[h] || "—"}</td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>
