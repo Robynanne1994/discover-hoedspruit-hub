@@ -348,69 +348,95 @@ const AdminImport = () => {
         // Remove undefined keys
         Object.keys(payload).forEach(k => { if (payload[k] === undefined) delete payload[k]; });
 
-        // Only include category-specific fields when NOT in "all categories" mode
+        // Only include category-specific fields when NOT in "all categories" mode.
+        // For an UPDATE, if a CSV cell is empty/missing we PRESERVE the existing value
+        // (don't blank it). This guarantees that importing a Shopping CSV never wipes
+        // Restaurant/Accommodation/etc. data on listings that also belong to those categories.
+        const hasCell = (key: string) => {
+          const v = row[key];
+          return typeof v === "string" && v !== "";
+        };
+        const setBool = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = parseBool(row[key]);
+        };
+        const setArr = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = parseArray(row[key]) ?? [];
+        };
+        const setStr = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = row[key] || null;
+        };
+        const setInt = (key: string) => {
+          if (!hasCell(key) && isUpdate) return;
+          payload[key] = row[key] ? parseInt(row[key], 10) || null : null;
+        };
+
         if (!isAllCategories) {
           if (isRestaurant) {
-            payload.good_for_kids = parseBool(row.good_for_kids);
-            payload.pets_allowed = parseBool(row.pets_allowed);
-            payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
-            payload.price_level = row.price_level ? parseInt(row.price_level, 10) || null : null;
-            payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
-            payload.meal = parseArray(row.meal) ?? [];
-            payload.vibe = parseArray(row.vibe) ?? [];
-            payload.cuisine = parseArray(row.cuisine) ?? [];
-            payload.seating = parseArray(row.seating) ?? [];
-            payload.kids_playground = parseBool(row.kids_playground);
-            payload.smoking_allowed = parseBool(row.smoking_allowed);
-            payload.service_type = parseArray(row.service_type) ?? [];
-            payload.kids_menu = parseBool(row.kids_menu);
-            payload.high_chairs = parseBool(row.high_chairs);
-            payload.nappy_changing_station = parseBool(row.nappy_changing_station);
-            payload.wheelchair_car_park = parseBool(row.wheelchair_car_park);
-            payload.wheelchair_entrance = parseBool(row.wheelchair_entrance);
-            payload.wheelchair_seating = parseBool(row.wheelchair_seating);
-            payload.wheelchair_toilet = parseBool(row.wheelchair_toilet);
-            payload.has_toilet = parseBool(row.has_toilet);
-            payload.has_wifi = parseBool(row.has_wifi);
-            payload.has_free_wifi = parseBool(row.has_free_wifi);
+            setBool("good_for_kids");
+            setBool("pets_allowed");
+            setBool("wheelchair_friendly");
+            setInt("price_level");
+            if (hasCell("show_attributes") || !isUpdate) {
+              payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
+            }
+            setArr("meal");
+            setArr("vibe");
+            setArr("cuisine");
+            setArr("seating");
+            setBool("kids_playground");
+            setBool("smoking_allowed");
+            setArr("service_type");
+            setBool("kids_menu");
+            setBool("high_chairs");
+            setBool("nappy_changing_station");
+            setBool("wheelchair_car_park");
+            setBool("wheelchair_entrance");
+            setBool("wheelchair_seating");
+            setBool("wheelchair_toilet");
+            setBool("has_toilet");
+            setBool("has_wifi");
+            setBool("has_free_wifi");
           }
 
           if (isShopping) {
-            payload.air_conditioned = parseBool(row.air_conditioned);
-            payload.payment_methods = parseArray(row.payment_methods) ?? [];
-            payload.delivery_available = parseBool(row.delivery_available);
-            payload.click_and_collect = parseBool(row.click_and_collect);
-            payload.order_online = parseBool(row.order_online);
-            payload.parking_available = parseBool(row.parking_available);
-            payload.wheelchair_friendly = parseBool(row.wheelchair_friendly);
-            payload.local_products = parseBool(row.local_products);
-            payload.shop_type = row.shop_type || null;
-            payload.curio_or_gifts = parseBool(row.curio_or_gifts);
-            payload.product_categories = parseArray(row.product_categories) ?? [];
-            payload.price_range = row.price_range || null;
+            setBool("air_conditioned");
+            setArr("payment_methods");
+            setBool("delivery_available");
+            setBool("click_and_collect");
+            setBool("order_online");
+            setBool("parking_available");
+            setBool("wheelchair_friendly");
+            setBool("local_products");
+            setStr("shop_type");
+            setBool("curio_or_gifts");
+            setArr("product_categories");
+            setStr("price_range");
           }
 
           if (isAccommodation) {
-            payload.pets_allowed = parseBool(row.pets_allowed);
-            payload.sleeps = row.sleeps ? parseInt(row.sleeps, 10) || null : null;
-            payload.price_range = row.price_range || null;
-            payload.km_from_town = row.km_from_town || null;
-            payload.has_restaurant = parseBool(row.has_restaurant);
-            payload.has_bar = parseBool(row.has_bar);
-            payload.has_room_service = parseBool(row.has_room_service);
-            payload.has_breakfast = parseBool(row.has_breakfast);
-            payload.breakfast_included = parseBool(row.breakfast_included);
-            payload.has_swimming_pool = parseBool(row.has_swimming_pool);
-            payload.has_laundry = parseBool(row.has_laundry);
-            payload.child_friendly = parseBool(row.child_friendly);
-            payload.has_spa = parseBool(row.has_spa);
-            payload.has_fitness_centre = parseBool(row.has_fitness_centre);
-            payload.has_airport_shuttle = parseBool(row.has_airport_shuttle);
-            payload.airport_shuttle_free = parseBool(row.airport_shuttle_free);
-            payload.has_aircon = parseBool(row.has_aircon);
-            payload.has_wifi_accom = parseBool(row.has_wifi_accom);
-            payload.has_free_parking = parseBool(row.has_free_parking);
-            payload.has_secure_parking = parseBool(row.has_secure_parking);
+            setBool("pets_allowed");
+            setInt("sleeps");
+            setStr("price_range");
+            setStr("km_from_town");
+            setBool("has_restaurant");
+            setBool("has_bar");
+            setBool("has_room_service");
+            setBool("has_breakfast");
+            setBool("breakfast_included");
+            setBool("has_swimming_pool");
+            setBool("has_laundry");
+            setBool("child_friendly");
+            setBool("has_spa");
+            setBool("has_fitness_centre");
+            setBool("has_airport_shuttle");
+            setBool("airport_shuttle_free");
+            setBool("has_aircon");
+            setBool("has_wifi_accom");
+            setBool("has_free_parking");
+            setBool("has_secure_parking");
           }
         }
 
