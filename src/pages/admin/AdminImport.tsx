@@ -747,14 +747,8 @@ const AdminImport = () => {
           {selectedCategoryId && (
             <p className="text-xs text-muted-foreground mt-2">
               {isAllCategories
-                ? "Universal fields only across ALL listings. Category-specific fields (restaurant, shopping, accommodation) are preserved during updates."
-                : isRestaurant
-                ? "Imports universal + restaurant-specific fields. A listing's data and links in other categories (e.g. Shopping, Home & Garden) are never touched."
-                : isShopping
-                ? "Imports universal + shopping-specific fields. A listing's data and links in other categories (e.g. Home & Garden, Restaurants) are never touched."
-                : isAccommodation
-                ? "Imports universal + accommodation-specific fields. A listing's data and links in other categories are never touched."
-                : "Imports universal fields only. A listing's data and links in other categories are never touched."}
+                ? "Universal fields only across ALL listings. Category-specific fields are preserved during updates."
+                : `Imports universal + ${selectedCategoryTitle}-specific fields. A listing's data and links in other categories are never touched.`}
             </p>
           )}
         </div>
