@@ -379,158 +379,48 @@ const AdminImport = () => {
           }
         }
 
-        const parseBool = (val: string | undefined) => {
-          if (!val || val === "") return null;
-          return val.toLowerCase() === "true" || val === "1";
-        };
-
-        const parseArray = (val: string | undefined): string[] | null => {
-          if (!val || val === "") return null;
-          return val.split("|").map(s => s.trim()).filter(Boolean);
-        };
-
-        let openingHours = null;
-        if (row.opening_hours) {
-          try { openingHours = JSON.parse(row.opening_hours); } catch { openingHours = null; }
-        }
-
-        // Images are managed exclusively via the Lovable editor — CSV image_url and gallery_images are ignored.
+        // Images are managed exclusively via the Lovable editor — CSV image_url and
+        // gallery_images cells are honored only when explicitly provided.
 
         const existing = existingMap.get(title.toLowerCase());
         const isUpdate = !!existing;
         const listingId = existing?.id ?? crypto.randomUUID();
 
-        // Build payload - universal fields only for "all categories" mode
-        const payload: ListingPayload = {
-          id: listingId,
-          title,
-          description: row.description || null,
-          image_url: isUpdate ? existing?.image_url ?? null : null,
-          location: row.location || null,
-          phone: row.phone || null,
-          email: row.email || null,
-          website: row.website || null,
-          whatsapp: row.whatsapp || null,
-          google_maps_link: row.google_maps_link || null,
-          google_rating: row.google_rating && row.google_rating.trim() !== "-" ? parseFloat(row.google_rating) || null : null,
-          google_reviews_count: row.google_reviews_count && row.google_reviews_count.trim() !== "-" ? parseInt(row.google_reviews_count, 10) || null : null,
-          google_reviews_url: row.google_reviews_url || null,
-          category_id: resolvedCatIds[0] || null,
-          is_featured: row.is_featured?.toLowerCase() === "true" || row.is_featured === "1",
-          long_description: row.long_description || null,
-          gallery_images: isUpdate ? existing?.gallery_images ?? null : null,
-          opening_hours: row.opening_hours?.trim() === "-" ? null : (isAllCategories && isUpdate && !row.opening_hours ? existing?.opening_hours ?? null : openingHours),
-          custom_title_1: row.custom_title_1 || null,
-          custom_text_1: row.custom_text_1 || null,
-          custom_title_2: row.custom_title_2 || null,
-          custom_text_2: row.custom_text_2 || null,
-          custom_title_3: row.custom_title_3 || null,
-          custom_text_3: row.custom_text_3 || null,
-        };
+        // Schema-driven payload build.
+        // - Universal fields are always written.
+        // - Category-specific fields are written only when the selected category owns them.
+        // - On UPDATE, an empty CSV cell preserves the existing value (skip the key).
+        //   A literal "-" explicitly clears to null.
+        const payload: ListingPayload = { id: listingId, title };
+        const payloadRecord = payload as Record<string, unknown>;
 
-        // Remove undefined keys
-        Object.keys(payload).forEach(k => { if (payload[k] === undefined) delete payload[k]; });
-
-        // Only include category-specific fields when NOT in "all categories" mode.
-        // For an UPDATE, if a CSV cell is empty/missing we PRESERVE the existing value
-        // (don't blank it). This guarantees that importing a Shopping CSV never wipes
-        // Restaurant/Accommodation/etc. data on listings that also belong to those categories.
-        const hasCell = (key: string) => {
-          const v = row[key];
-          return typeof v === "string" && v !== "";
-        };
-        const setBool = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = parseBool(row[key]);
-        };
-        const setArr = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = parseArray(row[key]) ?? [];
-        };
-        const setStr = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = row[key] || null;
-        };
-        const setInt = (key: string) => {
-          if (!hasCell(key) && isUpdate) return;
-          payload[key] = row[key] ? parseInt(row[key], 10) || null : null;
-        };
-
+        // Always link the listing to the (primary) selected category via the legacy column,
+        // unless we're in the "All Categories" universal mode.
         if (!isAllCategories) {
-          if (isRestaurant) {
-            setBool("good_for_kids");
-            setBool("pets_allowed");
-            setBool("wheelchair_friendly");
-            setInt("price_level");
-            if (hasCell("show_attributes") || !isUpdate) {
-              payload.show_attributes = row.show_attributes?.toLowerCase() === "true" || row.show_attributes === "1";
-            }
-            setArr("meal");
-            setArr("vibe");
-            setArr("cuisine");
-            setArr("seating");
-            setBool("kids_playground");
-            setBool("smoking_allowed");
-            setArr("service_type");
-            setBool("kids_menu");
-            setBool("high_chairs");
-            setBool("nappy_changing_station");
-            setBool("wheelchair_car_park");
-            setBool("wheelchair_entrance");
-            setBool("wheelchair_seating");
-            setBool("wheelchair_toilet");
-            setBool("has_toilet");
-            setBool("has_wifi");
-            setBool("has_free_wifi");
-          }
-
-          if (isShopping) {
-            setBool("air_conditioned");
-            setArr("payment_methods");
-            setBool("delivery_available");
-            setBool("click_and_collect");
-            setBool("order_online");
-            setBool("parking_available");
-            setBool("wheelchair_friendly");
-            setBool("local_products");
-            setStr("shop_type");
-            setBool("curio_or_gifts");
-            setArr("product_categories");
-            setStr("price_range");
-          }
-
-          if (isAccommodation) {
-            setBool("pets_allowed");
-            setInt("sleeps");
-            setStr("price_range");
-            setStr("km_from_town");
-            setBool("has_restaurant");
-            setBool("has_bar");
-            setBool("has_room_service");
-            setBool("has_breakfast");
-            setBool("breakfast_included");
-            setBool("has_swimming_pool");
-            setBool("has_laundry");
-            setBool("child_friendly");
-            setBool("has_spa");
-            setBool("has_fitness_centre");
-            setBool("has_airport_shuttle");
-            setBool("airport_shuttle_free");
-            setBool("has_aircon");
-            setBool("has_wifi_accom");
-            setBool("has_free_parking");
-            setBool("has_secure_parking");
-          }
+          payloadRecord.category_id = selectedCategoryId;
+        } else if (resolvedCatIds[0]) {
+          payloadRecord.category_id = resolvedCatIds[0];
         }
 
-        // Treat "-" as empty for any string field on import
-        for (const k of Object.keys(payload)) {
-          const payloadRecord = payload as Record<string, unknown>;
-          const v = payloadRecord[k];
-          if (typeof v === "string" && v.trim() === "-") {
-            payloadRecord[k] = null;
-          }
+        const universalDbFields = getUniversalDbFields();
+        const categoryFields = isAllCategories ? [] : getCategorySpecificFields(selectedCategoryTitle);
+        const allFieldNames: string[] = [
+          ...universalDbFields.filter((f) => f !== "title"),
+          ...categoryFields,
+        ];
+
+        for (const fieldName of allFieldNames) {
+          const spec = (LISTING_FIELD_SPECS as Record<string, { type: FieldType }>)[fieldName];
+          if (!spec) continue;
+          const parsed = parseField(row[fieldName], spec.type, isUpdate);
+          if (parsed.skip) continue;
+          payloadRecord[fieldName] = parsed.value;
         }
+
+        // Remove undefined keys (defensive)
+        Object.keys(payloadRecord).forEach((k) => { if (payloadRecord[k] === undefined) delete payloadRecord[k]; });
+
+
 
         importItems.push({ rowNumber: i + 2, listingId, payload, resolvedCatIds, resolvedSubIds, isUpdate });
       }
