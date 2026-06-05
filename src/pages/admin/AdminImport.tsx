@@ -471,51 +471,156 @@ const AdminImport = () => {
       const successfulItems = importItems.filter((item) => !results.errors.some((err) => err.startsWith(`Row ${item.rowNumber}: Save failed`)));
       const successfulIds = successfulItems.map((item) => item.listingId);
 
-      // Per-listing safe sync: delete this listing's existing links, then insert
-      // the resolved ones. This way a single failure cannot wipe other listings'
-      // categories, and a partial failure on one listing does not leave the rest blank.
+      // Build map of subcategoryId -> categoryId so we can scope subcategory sync
+      const subParentMap = new Map<string, string>(
+        (subcategories ?? []).map((s) => [s.id, s.category_id]),
+      );
+
+      // Per-listing junction sync.
+      // - In "All Categories" mode we still do a full rewrite (explicit "rewrite everything" path).
+      // - In category-scoped mode we ONLY touch the selected category's link and the
+      //   subcategory links that belong to the selected category. This preserves a listing's
+      //   memberships in other categories (e.g. importing Shopping CSV must not unlink
+      //   "Woodlands Garden Centre" from "Home & Garden").
       setImportStatus(`Syncing categories for ${successfulItems.length} listings...`);
       for (let idx = 0; idx < successfulItems.length; idx++) {
         const item = successfulItems[idx];
         if (idx % 50 === 0) setImportStatus(`Syncing categories ${idx + 1}/${successfulItems.length}...`);
 
-        const { error: catDelErr } = await supabase
-          .from("listing_categories").delete().eq("listing_id", item.listingId);
-        if (catDelErr) {
-          results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
-          continue;
-        }
-        if (item.resolvedCatIds.length > 0) {
+        if (isAllCategories) {
+          // Full rewrite (legacy behavior, intentional for universal mode)
+          const { error: catDelErr } = await supabase
+            .from("listing_categories").delete().eq("listing_id", item.listingId);
+          if (catDelErr) {
+            results.errors.push(`Row ${item.rowNumber}: category cleanup failed - ${catDelErr.message}`);
+            continue;
+          }
+          if (item.resolvedCatIds.length > 0) {
+            const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
+            const { error: catInsErr } = await supabase
+              .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
+            if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+          }
+          const { error: subDelErr } = await supabase
+            .from("listing_subcategories").delete().eq("listing_id", item.listingId);
+          if (subDelErr) {
+            results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
+            continue;
+          }
+          if (item.resolvedSubIds.length > 0) {
+            const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+            const { error: subInsErr } = await supabase
+              .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
+            if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+          }
+        } else {
+          // Category-scoped mode: upsert links additively for the selected category +
+          // any extras in the CSV's "categories" column. Never delete links for other categories.
           const catRows = item.resolvedCatIds.map((catId) => ({ listing_id: item.listingId, category_id: catId }));
-          const { error: catInsErr } = await supabase
-            .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
-          if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
-        }
+          if (catRows.length > 0) {
+            const { error: catInsErr } = await supabase
+              .from("listing_categories").upsert(catRows, { onConflict: "listing_id,category_id" });
+            if (catInsErr) results.errors.push(`Row ${item.rowNumber}: category link failed - ${catInsErr.message}`);
+          }
 
-        const { error: subDelErr } = await supabase
-          .from("listing_subcategories").delete().eq("listing_id", item.listingId);
-        if (subDelErr) {
-          results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
-          continue;
-        }
-        if (item.resolvedSubIds.length > 0) {
-          const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
-          const { error: subInsErr } = await supabase
-            .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
-          if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+          // Subcategories: delete only this listing's existing subcategory links that
+          // belong to the selected category, then insert the resolved subs (which are
+          // already scoped to the selected category — see resolution step above).
+          const { data: existingSubLinks, error: subFetchErr } = await supabase
+            .from("listing_subcategories").select("id, subcategory_id").eq("listing_id", item.listingId);
+          if (subFetchErr) {
+            results.errors.push(`Row ${item.rowNumber}: subcategory lookup failed - ${subFetchErr.message}`);
+          } else {
+            const subLinkIdsToDelete = (existingSubLinks ?? [])
+              .filter((l) => subParentMap.get(l.subcategory_id) === selectedCategoryId)
+              .map((l) => l.id);
+            if (subLinkIdsToDelete.length > 0) {
+              const { error: subDelErr } = await supabase
+                .from("listing_subcategories").delete().in("id", subLinkIdsToDelete);
+              if (subDelErr) results.errors.push(`Row ${item.rowNumber}: subcategory cleanup failed - ${subDelErr.message}`);
+            }
+            if (item.resolvedSubIds.length > 0) {
+              const subRows = item.resolvedSubIds.map((subId) => ({ listing_id: item.listingId, subcategory_id: subId }));
+              const { error: subInsErr } = await supabase
+                .from("listing_subcategories").upsert(subRows, { onConflict: "listing_id,subcategory_id" });
+              if (subInsErr) results.errors.push(`Row ${item.rowNumber}: subcategory link failed - ${subInsErr.message}`);
+            }
+          }
         }
       }
 
-      // Delete listings not in CSV
-      const deleteItems = Array.from(existingMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
-      const deleteIds = deleteItems.map(([, listing]) => listing.id);
-      setImportStatus(`Removing ${deleteIds.length} listings not in the CSV...`);
-      for (const idBatch of chunkArray(deleteIds, 200)) {
-        await supabase.from("listing_categories").delete().in("listing_id", idBatch);
-        await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
-        const { error } = await supabase.from("listings").delete().in("id", idBatch);
-        if (error) results.errors.push(`Delete failed: ${error.message}`);
-        else results.deleted += idBatch.length;
+      // Handle listings present in the selected category but missing from the CSV.
+      // - In "All Categories" mode: hard-delete (legacy behavior).
+      // - In category-scoped mode: if the listing belongs to OTHER categories, just remove
+      //   it from the selected category (and its subs under that category). Only hard-delete
+      //   when the listing has no other category links.
+      const missingItems = Array.from(existingMap.entries()).filter(([existingTitle]) => !csvTitles.has(existingTitle));
+      const missingIds = missingItems.map(([, listing]) => listing.id);
+
+      if (isAllCategories) {
+        setImportStatus(`Removing ${missingIds.length} listings not in the CSV...`);
+        for (const idBatch of chunkArray(missingIds, 200)) {
+          await supabase.from("listing_categories").delete().in("listing_id", idBatch);
+          await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
+          const { error } = await supabase.from("listings").delete().in("id", idBatch);
+          if (error) results.errors.push(`Delete failed: ${error.message}`);
+          else results.deleted += idBatch.length;
+        }
+      } else if (missingIds.length > 0) {
+        setImportStatus(`Processing ${missingIds.length} listings not in the CSV...`);
+        // Fetch all category junctions for missing listings to decide per-listing action.
+        const otherCatMap = new Map<string, string[]>(); // listingId -> other category ids
+        for (const idBatch of chunkArray(missingIds, 200)) {
+          const { data: links } = await supabase
+            .from("listing_categories").select("listing_id, category_id").in("listing_id", idBatch);
+          (links ?? []).forEach((l) => {
+            if (l.category_id === selectedCategoryId) return;
+            const arr = otherCatMap.get(l.listing_id) ?? [];
+            arr.push(l.category_id);
+            otherCatMap.set(l.listing_id, arr);
+          });
+        }
+
+        const toHardDelete: string[] = [];
+        const toUnlink: string[] = [];
+        for (const id of missingIds) {
+          if ((otherCatMap.get(id) ?? []).length > 0) toUnlink.push(id);
+          else toHardDelete.push(id);
+        }
+
+        // Unlink from the selected category (and that category's subcategories) only
+        for (const idBatch of chunkArray(toUnlink, 200)) {
+          const { error: unlinkErr } = await supabase
+            .from("listing_categories")
+            .delete()
+            .in("listing_id", idBatch)
+            .eq("category_id", selectedCategoryId);
+          if (unlinkErr) {
+            results.errors.push(`Unlink failed: ${unlinkErr.message}`);
+            continue;
+          }
+          // Remove that category's subs for these listings
+          const subIdsForCat = (subcategories ?? [])
+            .filter((s) => s.category_id === selectedCategoryId)
+            .map((s) => s.id);
+          if (subIdsForCat.length > 0) {
+            await supabase
+              .from("listing_subcategories")
+              .delete()
+              .in("listing_id", idBatch)
+              .in("subcategory_id", subIdsForCat);
+          }
+          results.removed_from_category += idBatch.length;
+        }
+
+        // Hard-delete listings that have no other category memberships
+        for (const idBatch of chunkArray(toHardDelete, 200)) {
+          await supabase.from("listing_categories").delete().in("listing_id", idBatch);
+          await supabase.from("listing_subcategories").delete().in("listing_id", idBatch);
+          const { error } = await supabase.from("listings").delete().in("id", idBatch);
+          if (error) results.errors.push(`Delete failed: ${error.message}`);
+          else results.deleted += idBatch.length;
+        }
       }
 
       return results;
