@@ -502,7 +502,7 @@ const MyProfile = () => {
                       fontSize: 10.5,
                       fontWeight: 600,
                       letterSpacing: "0.12em",
-                      color: SUBTLE,
+                      color: "rgba(26,26,26,0.75)",
                       marginTop: 6,
                     }}
                   >
