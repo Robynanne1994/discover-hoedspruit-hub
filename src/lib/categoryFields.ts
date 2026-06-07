@@ -139,6 +139,8 @@ export const LISTING_FIELD_SPECS = {
   has_wifi_accom: { type: "bool" },
   has_free_parking: { type: "bool" },
   has_secure_parking: { type: "bool" },
+  avg_price_per_person_per_night: { type: "str" },
+  rooms_count: { type: "int" },
 
   // ---------- NGO ----------
   cause: { type: "str" },
