@@ -54,50 +54,10 @@ const TitleCaseH2 = () => {
   const location = useLocation();
 
   useEffect(() => {
-    let raf = 0;
-    let scheduled = false;
-    const schedule = () => {
-      if (scheduled) return;
-      scheduled = true;
-      raf = requestAnimationFrame(() => {
-        scheduled = false;
-        applyToH2s();
-      });
-    };
-    schedule();
-
-    const observer = new MutationObserver((mutations) => {
-      if (isApplying) return;
-      for (const m of mutations) {
-        const target = m.target as HTMLElement;
-        if (
-          (target && target.nodeType === 1 && (target.tagName === "H2" || target.querySelector?.("h2"))) ||
-          (m.type === "characterData" && (target.parentElement?.tagName === "H2"))
-        ) {
-          schedule();
-          return;
-        }
-        for (const n of Array.from(m.addedNodes)) {
-          if (n.nodeType === 1) {
-            const el = n as HTMLElement;
-            if (el.tagName === "H2" || el.querySelector?.("h2")) {
-              schedule();
-              return;
-            }
-          }
-        }
-      }
-    });
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-      characterData: true,
-    });
-
-    return () => {
-      cancelAnimationFrame(raf);
-      observer.disconnect();
-    };
+    // Run once per route change. A global MutationObserver on the whole
+    // body subtree caused jitter on every click.
+    const raf = requestAnimationFrame(() => applyToH2s());
+    return () => cancelAnimationFrame(raf);
   }, [location.pathname]);
 
   return null;
