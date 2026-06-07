@@ -238,6 +238,12 @@ body {
     @apply border-border;
   }
 
+  html {
+    /* Prevent a brief white flash during route swaps / scroll resets by
+       painting the html element with the same warm background as body. */
+    background-color: #E6E0CC;
+  }
+
   body {
     @apply text-foreground;
     font-family: var(--font-body);
@@ -245,6 +251,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
     background-color: #E6E0CC;
   }
+
 
   h1,
   h2,
