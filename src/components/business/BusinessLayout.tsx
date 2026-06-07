@@ -37,17 +37,8 @@ const BusinessLayout = ({ businessName, children }: Props) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const id = "playfair-display-font";
-    if (!document.getElementById(id)) {
-      const link = document.createElement("link");
-      link.id = id;
-      link.rel = "stylesheet";
-      link.href =
-        "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-      document.head.appendChild(link);
-    }
-  }, []);
+  // Playfair Display is self-hosted via src/index.css — no runtime <link> injection needed.
+
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
