@@ -630,6 +630,8 @@ const AdminListings = () => {
       amenities: (l as any).amenities ?? [],
       sleeps: (l as any).sleeps ?? null,
       km_from_town: (l as any).km_from_town ?? "",
+      avg_price_per_person_per_night: (l as any).avg_price_per_person_per_night ?? "",
+      rooms_count: (l as any).rooms_count ?? null,
       has_restaurant: (l as any).has_restaurant ?? null,
       has_bar: (l as any).has_bar ?? null,
       has_room_service: (l as any).has_room_service ?? null,
