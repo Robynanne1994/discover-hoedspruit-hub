@@ -139,6 +139,8 @@ export const LISTING_FIELD_SPECS = {
   has_wifi_accom: { type: "bool" },
   has_free_parking: { type: "bool" },
   has_secure_parking: { type: "bool" },
+  avg_price_per_person_per_night: { type: "str" },
+  rooms_count: { type: "int" },
 
   // ---------- NGO ----------
   cause: { type: "str" },
@@ -219,6 +221,7 @@ export const ACCOMMODATION_ONLY_FIELDS = [
   "has_swimming_pool", "has_laundry", "child_friendly", "has_spa", "has_fitness_centre",
   "has_airport_shuttle", "airport_shuttle_free", "has_aircon", "has_wifi_accom",
   "has_free_parking", "has_secure_parking", "wheelchair_friendly",
+  "avg_price_per_person_per_night", "rooms_count",
 ] as const;
 
 export const NGO_ONLY_FIELDS = [

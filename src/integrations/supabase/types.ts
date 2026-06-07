@@ -939,6 +939,7 @@ export type Database = {
           air_conditioned: boolean | null
           airport_shuttle_free: boolean | null
           amenities: string[] | null
+          avg_price_per_person_per_night: string | null
           breakfast_included: boolean | null
           business_owner_id: string | null
           business_started_year: number | null
@@ -1026,6 +1027,7 @@ export type Database = {
           price_level: number | null
           price_range: string | null
           product_categories: string[] | null
+          rooms_count: number | null
           seating: string[] | null
           service_type: string[] | null
           services_offered: string[] | null
@@ -1075,6 +1077,7 @@ export type Database = {
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
+          avg_price_per_person_per_night?: string | null
           breakfast_included?: boolean | null
           business_owner_id?: string | null
           business_started_year?: number | null
@@ -1162,6 +1165,7 @@ export type Database = {
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
+          rooms_count?: number | null
           seating?: string[] | null
           service_type?: string[] | null
           services_offered?: string[] | null
@@ -1211,6 +1215,7 @@ export type Database = {
           air_conditioned?: boolean | null
           airport_shuttle_free?: boolean | null
           amenities?: string[] | null
+          avg_price_per_person_per_night?: string | null
           breakfast_included?: boolean | null
           business_owner_id?: string | null
           business_started_year?: number | null
@@ -1298,6 +1303,7 @@ export type Database = {
           price_level?: number | null
           price_range?: string | null
           product_categories?: string[] | null
+          rooms_count?: number | null
           seating?: string[] | null
           service_type?: string[] | null
           services_offered?: string[] | null
