@@ -1450,6 +1450,25 @@ const AdminListings = () => {
                         placeholder="e.g. 5"
                       />
                     </div>
+
+                    <div>
+                      <Label>Average Price Per Person Per Night</Label>
+                      <Input
+                        value={form.avg_price_per_person_per_night}
+                        onChange={(e) => setForm({ ...form, avg_price_per_person_per_night: e.target.value })}
+                        placeholder="e.g. R 1 250"
+                      />
+                    </div>
+
+                    <div>
+                      <Label>Number of Rooms</Label>
+                      <Input
+                        type="number"
+                        value={form.rooms_count ?? ""}
+                        onChange={(e) => setForm({ ...form, rooms_count: e.target.value ? parseInt(e.target.value, 10) : null })}
+                        placeholder="e.g. 12"
+                      />
+                    </div>
                   </div>
                 )}
 
