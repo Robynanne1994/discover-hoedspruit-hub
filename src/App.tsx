@@ -102,19 +102,13 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   const { isGuest } = useGuestAuth();
   const location = useLocation();
-  // Track whether auth has ever resolved. After the first resolution we never
-  // show the splash again, even if onAuthStateChange briefly toggles loading
-  // (e.g. on tab focus / token refresh). This prevents full-page flashes
-  // during navigation.
-  const hasResolvedRef = React.useRef(false);
-  if (!loading) hasResolvedRef.current = true;
 
   // The Business Portal has its own auth flow and must be reachable without
   // signing in to the consumer app first.
   if (location.pathname.startsWith("/business")) return <>{children}</>;
-  if (loading && !hasResolvedRef.current) {
-    return <LoadingSplash />;
-  }
+  // No splash — render children immediately. While auth is still resolving,
+  // protected pages can show their own inline loading state if needed.
+  if (loading) return <>{children}</>;
   // Welcome route is always reachable so guests can return to sign up/in.
   if (location.pathname === "/welcome") return <>{children}</>;
   if (!user && !isGuest) return <Welcome />;
