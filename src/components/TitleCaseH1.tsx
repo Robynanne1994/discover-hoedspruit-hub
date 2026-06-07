@@ -56,45 +56,12 @@ const applyToAll = () => {
 const TitleCaseH1 = () => {
   const location = useLocation();
   useEffect(() => {
-    let raf = 0;
-    let scheduled = false;
-    const schedule = () => {
-      if (scheduled) return;
-      scheduled = true;
-      raf = requestAnimationFrame(() => {
-        scheduled = false;
-        applyToAll();
-      });
-    };
-    schedule();
-    const observer = new MutationObserver((mutations) => {
-      if (isApplying) return;
-      // Only react if an h1 or its text could be affected
-      for (const m of mutations) {
-        const target = m.target as HTMLElement;
-        if (
-          (target && target.nodeType === 1 && (target.tagName === "H1" || target.querySelector?.("h1"))) ||
-          (m.type === "characterData" && (target.parentElement?.tagName === "H1"))
-        ) {
-          schedule();
-          return;
-        }
-        for (const n of Array.from(m.addedNodes)) {
-          if (n.nodeType === 1) {
-            const el = n as HTMLElement;
-            if (el.tagName === "H1" || el.querySelector?.("h1")) {
-              schedule();
-              return;
-            }
-          }
-        }
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-    return () => {
-      cancelAnimationFrame(raf);
-      observer.disconnect();
-    };
+    // Run once per route change, on the next frame. A global
+    // MutationObserver watching the whole body subtree caused jitter
+    // (and thrash) on every click because almost every interaction
+    // mutates the DOM somewhere.
+    const raf = requestAnimationFrame(() => applyToAll());
+    return () => cancelAnimationFrame(raf);
   }, [location.pathname]);
   return null;
 };

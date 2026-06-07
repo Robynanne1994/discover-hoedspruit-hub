@@ -84,7 +84,19 @@ import AdminUserReports from "./pages/admin/AdminUserReports.tsx";
 import AdminFAQs from "./pages/admin/AdminFAQs.tsx";
 import { useLocation } from "react-router-dom";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Avoid re-running every query (and flashing every list into a
+      // skeleton) when the tab regains focus or React re-mounts.
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 1,
+    },
+  },
+});
 
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
