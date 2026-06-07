@@ -412,6 +412,8 @@ const AdminListings = () => {
         amenities: values.amenities,
         sleeps: values.sleeps,
         km_from_town: values.km_from_town || null,
+        avg_price_per_person_per_night: values.avg_price_per_person_per_night?.trim() || null,
+        rooms_count: values.rooms_count,
         has_restaurant: values.has_restaurant,
         has_bar: values.has_bar,
         has_room_service: values.has_room_service,
