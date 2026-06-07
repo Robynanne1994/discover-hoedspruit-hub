@@ -1,0 +1,1 @@
+ALTER TABLE public.listings ADD COLUMN IF NOT EXISTS avg_price_per_person_per_night text, ADD COLUMN IF NOT EXISTS rooms_count integer;
