@@ -148,22 +148,30 @@ const LocalChannelDetail = () => {
           const tags = [resource.tag_1, resource.tag_2].filter((t: string | null) => t && t.trim());
           if (!tags.length) return null;
           return (
-            <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap", marginBottom: 8 }}>
+            <div style={{ marginBottom: 8, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
               {tags.map((t: string, i: number) => (
-                <span
-                  key={i}
-                  className="inline-block text-[8px] font-semibold uppercase tracking-wider text-primary bg-primary/10 rounded-full px-1.5 py-0.5"
-                  style={{ fontFamily: HN }}
-                >
-                  {t}
-                </span>
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                  {i > 0 && (
+                    <span style={{ width: 4, height: 4, borderRadius: "50%", background: PRIMARY, flexShrink: 0 }} />
+                  )}
+                  <span style={{
+                    fontFamily: HN,
+                    fontSize: 11,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    color: i === 0 ? PRIMARY : MUTED,
+                    fontWeight: i === 0 ? 700 : 400,
+                  }}>
+                    {t}
+                  </span>
+                </div>
               ))}
             </div>
           );
         })()}
         <h1
           data-no-title-case={resource.title_override?.trim() ? "true" : undefined}
-          style={{ fontFamily: HN, fontWeight: 700, fontSize: 28, lineHeight: 1.1, color: INK, margin: 0, textTransform: resource.title_override?.trim() ? "none" : undefined }}
+          style={{ fontFamily: HN, fontWeight: 700, fontSize: 28, lineHeight: 1.15, color: INK, margin: 0, letterSpacing: "0.01em", textTransform: resource.title_override?.trim() ? "none" : undefined }}
         >
           {displayTitle}
         </h1>
@@ -171,13 +179,13 @@ const LocalChannelDetail = () => {
 
         {metaParts.length > 0 && (
           <div style={{
-            marginTop: 12, display: "flex", alignItems: "center", gap: 8,
-            fontFamily: HN, fontSize: 13.5, color: PRIMARY,
+            marginTop: 8, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap",
+            fontFamily: HN, fontSize: 13, color: MUTED, letterSpacing: "0.01em",
           }}>
             {metaParts.map((m: string, i: number) => (
-              <span key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 {i > 0 && (
-                  <span style={{ width: 4, height: 4, borderRadius: 999, background: PRIMARY, display: "inline-block" }} />
+                  <span style={{ width: 4, height: 4, borderRadius: 999, background: MUTED, display: "inline-block" }} />
                 )}
                 <span>{m}</span>
               </span>
