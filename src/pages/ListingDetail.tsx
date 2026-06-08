@@ -673,6 +673,7 @@ const ListingDetail = () => {
   const hasDetails = sections.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
     ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
+    ...(hasContact ? [{ key: "contact" as TabKey, label: "Contact" }] : []),
     ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
     ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
     ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
