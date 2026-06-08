@@ -1,41 +1,59 @@
-## Goal
+## What’s causing the flashing/jumping
 
-Add two new accommodation-only fields:
-- **Average price per person per night** (text, e.g. "R 1 250")
-- **Number of rooms** (integer)
+It is probably **not just the splash screen** anymore. The splash component is no longer rendered, but it is still imported and the bigger remaining causes are:
 
-Editable in the admin listing editor and included as the last two CSV columns for accommodation imports/exports.
+1. **Every card heart button runs its own favourite query**
+   - On category pages I saw dozens of duplicate `favourites?select=id...` requests after one click/navigation.
+   - This makes the page repaint heavily and can look like a flash.
 
-## Changes
+2. **Global title-case components still mutate real DOM text**
+   - `TitleCaseH1` and `TitleCaseH2` scan and rewrite headings after route changes.
+   - Even without the old MutationObserver, direct DOM text rewrites can still cause visible text “tweaks”.
 
-### 1. Database (`listings` table)
-New migration adding two nullable columns:
-- `avg_price_per_person_per_night text`
-- `rooms_count integer`
+3. **Global scroll-to-top fires on every route change**
+   - This is expected for navigation, but if a click changes query params or redirects, it can feel like a jump.
 
-(Text for the price so admins can format with currency/spaces like other price fields; integer for rooms.)
+4. **Large page/layout shifts on initial rendering**
+   - Performance profiling shows poor layout shift and a very large logo image resource, so when data/images arrive the layout can move.
 
-### 2. Field schema — `src/lib/categoryFields.ts`
-- Add both fields to `LISTING_FIELD_SPECS` (`avg_price_per_person_per_night: str`, `rooms_count: int`).
-- Append both to `ACCOMMODATION_ONLY_FIELDS` at the end so they become the **last two CSV columns** for accommodation imports/exports (the CSV header builder uses array order).
+## Fix plan
 
-### 3. Admin editor — `src/pages/admin/AdminListings.tsx`
-- Add both fields to `emptyForm` defaults.
-- Hydrate them in the load-from-listing block (~line 629).
-- Include them in the accommodation submit payload (~line 413).
-- Add two inputs inside the Accommodation Fields section (~line 1381), placed near the existing `sleeps` / `km_from_town` inputs:
-  - "Average price per person per night" — text input
-  - "Number of rooms" — number input
+### 1. Remove the splash screen completely
+- Remove the unused `LoadingSplash` import from `src/App.tsx`.
+- Optionally delete `src/components/LoadingSplash.tsx` if nothing imports it.
+- Keep auth routing instant: never show a full-screen loading splash during normal app clicks.
 
-### 4. CSV import/export — `src/pages/admin/AdminImport.tsx`
-No structural changes needed. The schema-driven serializer/parser already uses `LISTING_FIELD_SPECS` and `ACCOMMODATION_ONLY_FIELDS`, so both new fields will appear automatically as the last two columns on accommodation exports and be parsed on import.
+### 2. Stop global title DOM rewriting
+- Remove `TitleCaseH1` and `TitleCaseH2` from `src/App.tsx`.
+- Stop relying on global DOM mutation for heading text.
+- Keep existing CSS text-transform rules and existing `DisplayTitle`/`getDisplayTitle` logic where titles need controlled casing.
 
-## Files touched
-- New migration (add 2 columns to `listings`)
-- `src/lib/categoryFields.ts`
-- `src/pages/admin/AdminListings.tsx`
+### 3. Replace per-card favourite queries with shared cached favourite IDs
+- Update `FavouriteButton` to read from the existing shared `['favourites', user.id]` cache instead of querying one row per card.
+- Add optimistic updates so heart clicks change instantly without forcing every card to refetch.
+- Keep targeted invalidation, but avoid broad invalidation that causes whole sections to repaint.
 
-## Verification
-- Export accommodation CSV → last two headers are `avg_price_per_person_per_night`, `rooms_count`.
-- Edit a listing in admin → both inputs render under Accommodation Fields, save persists.
-- Import a modified CSV → values round-trip correctly; empty cells leave existing values untouched (per existing import rules).
+### 4. Apply the same favourite-query pattern to category/search/special cards
+- Category page currently has its own local favourite button with one query per listing.
+- Search and Specials also have local favourite logic.
+- Convert them to use shared saved IDs / optimistic updates so clicking hearts doesn’t trigger a cascade of network calls.
+
+### 5. Make scroll-to-top less jumpy
+- Update `ScrollToTop` so it only scrolls on actual pathname changes, not harmless query/search changes.
+- Use `requestAnimationFrame` to avoid fighting route layout during render.
+
+### 6. Verify in preview
+- Test homepage, category pages, specials, search, and profile interactions.
+- Confirm: no splash screen, no white flash, no heading tweak, no mass duplicate favourite requests after one click.
+
+## Technical notes
+
+Main files to change:
+- `src/App.tsx`
+- `src/components/FavouriteButton.tsx`
+- `src/components/ScrollToTop.tsx`
+- `src/pages/CategoryPage.tsx`
+- `src/pages/Search.tsx`
+- `src/pages/Specials.tsx`
+
+Expected result: clicks should feel stable because the app will stop remounting/loading large chunks of UI and stop re-querying favourite state once per visible card.
