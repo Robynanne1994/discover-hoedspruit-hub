@@ -2,9 +2,10 @@ import { useState, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserPlus, UserCheck, Heart, UserCircle } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import BackButton from "@/components/BackButton";
 import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { toast } from "sonner";
@@ -415,51 +416,19 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
 
 const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "listing" | "event" | "special" }) => {
   const { user } = useAuth();
-  const qc = useQueryClient();
-  const { data: isFav } = useQuery({
-    queryKey: ["favourite", itemType, itemId, user?.id],
-    queryFn: async () => {
-      if (!user) return false;
-      const { data } = await supabase
-        .from("favourites")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_id", itemId)
-        .eq("item_type", itemType)
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!user,
-  });
-  const toggle = useMutation({
-    mutationFn: async () => {
-      if (!user) {
-        toast.error("Please sign in to save");
-        return;
-      }
-      if (isFav) {
-        await supabase
-          .from("favourites")
-          .delete()
-          .eq("user_id", user.id)
-          .eq("item_id", itemId)
-          .eq("item_type", itemType);
-      } else {
-        await supabase.from("favourites").insert({ user_id: user.id, item_id: itemId, item_type: itemType });
-      }
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["favourite", itemType, itemId] });
-      qc.invalidateQueries({ queryKey: ["favourites"] });
-    },
-  });
+  const isFav = useIsFavourited(itemId, itemType);
+  const toggle = useToggleFavourite();
   return (
     <button
       type="button"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        toggle.mutate();
+        if (!user) {
+          toast.error("Please sign in to save");
+          return;
+        }
+        toggle.mutate({ itemId, itemType, currentlyFavourited: isFav });
       }}
       style={{
         background: "transparent",

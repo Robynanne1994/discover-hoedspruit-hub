@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
 import EventEditDialog from "@/components/admin/EventEditDialog";
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
@@ -172,7 +173,6 @@ const addToCalendar = (e: any) => {
 const EventDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   
@@ -191,37 +191,18 @@ const EventDetail = () => {
     enabled: !!id,
   });
 
-  const { data: isFavourited } = useQuery({
-    queryKey: ["favourite", "event", id, user?.id],
-    queryFn: async () => {
-      if (!user) return false;
-      const { data } = await supabase
-        .from("favourites" as any)
-        .select("id").eq("user_id", user.id).eq("item_id", id!).eq("item_type", "event").maybeSingle();
-      return !!data;
-    },
-    enabled: !!user && !!id,
-  });
-
-  const toggleFavourite = useMutation({
-    mutationFn: async () => {
-      if (!user) return;
-      if (isFavourited) {
-        await supabase.from("favourites" as any).delete().eq("user_id", user.id).eq("item_id", id!).eq("item_type", "event");
-      } else {
-        await supabase.from("favourites" as any).insert({ user_id: user.id, item_id: id!, item_type: "event" });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favourite", "event", id] });
-      queryClient.invalidateQueries({ queryKey: ["favourites"] });
-      toast.success(isFavourited ? "Removed from saved" : "Saved!");
-    },
-  });
+  const isFavourited = useIsFavourited(id!, "event");
+  const toggleFavourite = useToggleFavourite();
 
   const requireAuth = () => {
     if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
     return false;
+  };
+
+  const handleToggleFavourite = () => {
+    if (requireAuth()) return;
+    toggleFavourite.mutate({ itemId: id!, itemType: "event", currentlyFavourited: isFavourited });
+    toast.success(isFavourited ? "Removed from saved" : "Saved!");
   };
 
   const handleShare = async () => {
@@ -886,7 +867,7 @@ const EventDetail = () => {
           alignItems: "center",
           gap: 8,
         }}>
-          <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
             <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
           </button>
           <button onClick={handleShare} aria-label="Share" style={floatBtn}>

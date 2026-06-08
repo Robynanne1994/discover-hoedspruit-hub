@@ -27,6 +27,14 @@ const fmtCount = (n: number) => n.toLocaleString("en-US");
 
 type Tab = "listings" | "deals" | "events" | "resources";
 
+// Maps a favourite's item_type to the query key of the saved list that renders it.
+const SAVED_LIST_KEY: Record<string, string> = {
+  listing: "my-saved-listings",
+  event: "my-saved-events",
+  special: "my-saved-specials",
+  resource: "my-saved-resources",
+};
+
 function SubTabs<T extends string>({
   value,
   onChange,
@@ -90,17 +98,36 @@ const MyProfile = () => {
         .eq("item_id", item_id)
         .eq("item_type", item_type);
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["my-saved-listings"] });
-      queryClient.invalidateQueries({ queryKey: ["my-saved-events"] });
-      queryClient.invalidateQueries({ queryKey: ["my-saved-specials"] });
-      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
-      queryClient.invalidateQueries({ queryKey: ["my-saved-count"] });
-      queryClient.invalidateQueries({ queryKey: ["favourites"] });
-      queryClient.invalidateQueries({ queryKey: ["favourite"] });
-      queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
-      queryClient.invalidateQueries({ queryKey: ["saved-events-page"] });
-      queryClient.invalidateQueries({ queryKey: ["saved-specials-page"] });
+    // Optimistically drop just the unsaved item from the relevant saved list,
+    // the total count, and the shared favourites cache. This makes the card
+    // disappear instantly without a list-wide refetch — the cascading
+    // invalidations were what made the whole grid flash/reflow on every unsave.
+    onMutate: async ({ item_id, item_type }) => {
+      const listKey = [SAVED_LIST_KEY[item_type] ?? "my-saved-listings", id];
+      const countKey = ["my-saved-count", id];
+      const setKey = ["favourites-set", id];
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: listKey }),
+        queryClient.cancelQueries({ queryKey: countKey }),
+        queryClient.cancelQueries({ queryKey: setKey }),
+      ]);
+      const prevList = queryClient.getQueryData<any[]>(listKey);
+      const prevCount = queryClient.getQueryData<number>(countKey);
+      const prevSet = queryClient.getQueryData<Set<string>>(setKey);
+      if (prevList) queryClient.setQueryData(listKey, prevList.filter((it) => it.id !== item_id));
+      if (typeof prevCount === "number") queryClient.setQueryData(countKey, Math.max(0, prevCount - 1));
+      if (prevSet) {
+        const next = new Set(prevSet);
+        next.delete(`${item_type}:${item_id}`);
+        queryClient.setQueryData(setKey, next);
+      }
+      return { listKey, countKey, setKey, prevList, prevCount, prevSet };
+    },
+    onError: (_e, _v, ctx) => {
+      if (!ctx) return;
+      if (ctx.prevList !== undefined) queryClient.setQueryData(ctx.listKey, ctx.prevList);
+      if (ctx.prevCount !== undefined) queryClient.setQueryData(ctx.countKey, ctx.prevCount);
+      if (ctx.prevSet !== undefined) queryClient.setQueryData(ctx.setKey, ctx.prevSet);
     },
   });
 

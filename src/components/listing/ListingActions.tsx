@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { Heart, MapPinCheck, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,21 +16,8 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
   const requireAuth = useRequireAuth();
   const queryClient = useQueryClient();
 
-  const { data: isFavourited } = useQuery({
-    queryKey: ["favourite", "listing", listingId, user?.id],
-    queryFn: async () => {
-      if (!user) return false;
-      const { data } = await supabase
-        .from("favourites")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_id", listingId)
-        .eq("item_type", "listing")
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!user,
-  });
+  const isFavourited = useIsFavourited(listingId, "listing");
+  const toggleFavourite = useToggleFavourite();
 
   const { data: isVisited } = useQuery({
     queryKey: ["been-here", listingId, user?.id],
@@ -46,29 +34,11 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
     enabled: !!user,
   });
 
-  const toggleFavourite = useMutation({
-    mutationFn: async () => {
-      if (!user) return;
-      if (isFavourited) {
-        await supabase
-          .from("favourites")
-          .delete()
-          .eq("user_id", user.id)
-          .eq("item_id", listingId)
-          .eq("item_type", "listing");
-      } else {
-        await supabase
-          .from("favourites")
-          .insert({ user_id: user.id, item_id: listingId, item_type: "listing" });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favourite", "listing", listingId] });
-      queryClient.invalidateQueries({ queryKey: ["favourites"] });
-      queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
-      toast.success(isFavourited ? "Removed from saved" : "Saved!");
-    },
-  });
+  const handleToggleFavourite = () => {
+    if (!requireAuth("save listings")) return;
+    toggleFavourite.mutate({ itemId: listingId, itemType: "listing", currentlyFavourited: isFavourited });
+    toast.success(isFavourited ? "Removed from saved" : "Saved!");
+  };
 
   const toggleVisited = useMutation({
     mutationFn: async () => {
@@ -113,7 +83,7 @@ const ListingActions = ({ listingId, onWhatToKnow }: ListingActionsProps) => {
   return (
     <div className="flex items-center gap-2">
       <button
-        onClick={() => { if (requireAuth("save listings")) toggleFavourite.mutate(); }}
+        onClick={handleToggleFavourite}
         className={`${btnBase} ${
           isFavourited
             ? "bg-[#5b4632]/10 text-[#5b4632] border-[#5b4632]/20"
