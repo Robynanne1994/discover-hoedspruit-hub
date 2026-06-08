@@ -1831,6 +1831,22 @@ const AdminListings = () => {
                   </div>
                 )}
 
+                {isWellnessBeautyType && (
+                  <div className="border-t border-border pt-4 mt-2 space-y-4">
+                    <p className="text-foreground mb-3 text-xl font-bold border-2 border-zinc-900 text-center bg-zinc-700 text-slate-50">Wellness & Beauty Fields</p>
+                    <div>
+                      <Label>Treatments</Label>
+                      <p className="text-[11px] text-muted-foreground mt-1 mb-2">Add one treatment at a time, then click Add. These appear on the listing's Details tab.</p>
+                      <TreatmentsEditor
+                        value={form.treatments}
+                        onChange={(v) => setForm({ ...form, treatments: v })}
+                      />
+                    </div>
+                  </div>
+                )}
+
+
+
 
 
 
