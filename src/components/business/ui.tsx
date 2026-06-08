@@ -1,4 +1,4 @@
-import { ReactNode, CSSProperties, ButtonHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
+import { ReactNode, CSSProperties, ButtonHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, forwardRef } from "react";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -108,9 +108,12 @@ export const Input = (props: InputHTMLAttributes<HTMLInputElement>) => (
   <input {...props} style={{ ...inputStyle, ...props.style }} />
 );
 
-export const Textarea = (props: TextareaHTMLAttributes<HTMLTextAreaElement>) => (
-  <textarea {...props} style={{ ...inputStyle, minHeight: 96, resize: "vertical", ...props.style }} />
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<HTMLTextAreaElement>>(
+  (props, ref) => (
+    <textarea ref={ref} {...props} style={{ ...inputStyle, minHeight: 96, resize: "vertical", ...props.style }} />
+  )
 );
+Textarea.displayName = "Textarea";
 
 export const FieldError = ({ children }: { children: ReactNode }) =>
   children ? (

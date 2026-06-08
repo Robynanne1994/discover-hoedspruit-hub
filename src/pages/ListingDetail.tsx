@@ -23,6 +23,8 @@ import { formatServiceLabel } from "@/lib/serviceLabels";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
+import { getCustomIcon } from "@/lib/customIcons";
+import { renderListingRichText } from "@/lib/listingRichText";
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true" {...props}>
@@ -356,31 +358,6 @@ const ListingDetail = () => {
   };
   const openStatus = computeOpenStatus();
 
-  // ----- Rich text renderer: parses [label](url) markdown links + bare URLs -----
-  const renderRichText = (text: string): React.ReactNode => {
-    if (!text) return null;
-    const nodes: React.ReactNode[] = [];
-    const regex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s)]+)/g;
-    let lastIndex = 0;
-    let m: RegExpExecArray | null;
-    let i = 0;
-    while ((m = regex.exec(text)) !== null) {
-      if (m.index > lastIndex) nodes.push(text.slice(lastIndex, m.index));
-      const label = m[1] || m[3];
-      const href = m[2] || m[3];
-      nodes.push(
-        <a key={`l-${i++}`} href={href} target="_blank" rel="noopener noreferrer"
-          style={{ color: C.primary, textDecoration: "none", fontWeight: 400, wordBreak: "break-word", display: "inline-flex", alignItems: "center", gap: 4 }}>
-          {label}
-          <ArrowUpRight size={14} strokeWidth={1.75} style={{ flexShrink: 0 }} />
-        </a>
-      );
-      lastIndex = m.index + m[0].length;
-    }
-    if (lastIndex < text.length) nodes.push(text.slice(lastIndex));
-    return nodes;
-  };
-
   // ----- Detail sections (flattened from old accordion logic) -----
   type DField = { label: string; on: boolean | string };
   type DSection = { key: string; title: string; fields: DField[]; iconComp?: any };
@@ -519,7 +496,7 @@ const ListingDetail = () => {
   for (let i = 1; i <= 3; i++) {
     const t = (l[`custom_title_${i}`] || "").toString().trim();
     const v = (l[`custom_text_${i}`] || "").toString().trim();
-    if (t && v) sections.push({ key: `custom-${i}`, title: t, iconComp: MessageCircleMore, fields: [{ label: v, on: "__text__" }] });
+    if (t && v) sections.push({ key: `custom-${i}`, title: t, iconComp: getCustomIcon(l[`custom_icon_${i}`]), fields: [{ label: v, on: "__text__" }] });
   }
 
   if (isListingNGO) {
@@ -781,16 +758,13 @@ const ListingDetail = () => {
 
   // ----- Tab content -----
   const renderAbout = () => {
-    const paragraphs = descriptionText.split("\n").filter(Boolean);
     return (
     <div style={{ padding: "20px" }}>
       {descriptionText && (
         <>
           <h2 style={headStyle}>About</h2>
-          <div>
-            {paragraphs.map((p, i) => (
-              <p key={i} style={paraStyle}>{p}</p>
-            ))}
+          <div className="ld-richtext">
+            {renderListingRichText(descriptionText)}
           </div>
         </>
       )}
@@ -958,7 +932,7 @@ const ListingDetail = () => {
                 }}>{s.title}</h3>
               </div>
               {s.fields.length === 1 && s.fields[0].on === "__text__" ? (
-                <p style={{ ...paraStyle, margin: 0, whiteSpace: "pre-wrap" }}>{renderRichText(s.fields[0].label)}</p>
+                <div className="ld-richtext">{renderListingRichText(s.fields[0].label)}</div>
               ) : (
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 14, rowGap: 10 }}>
                   {s.fields.map((f, i) => {
@@ -1259,9 +1233,11 @@ const ListingDetail = () => {
               <div
                 style={{
                   marginTop: 6, fontSize: 12, fontWeight: 400, color: C.muted, letterSpacing: "0.01em",
+                  display: "flex", alignItems: "center", gap: 5,
                 }}
               >
-                {listing.location}
+                <MapPin size={13} strokeWidth={1.75} color={C.muted} style={{ flexShrink: 0 }} />
+                <span>{listing.location}</span>
               </div>
             );
           }
@@ -1272,10 +1248,11 @@ const ListingDetail = () => {
               rel="noopener noreferrer"
               style={{
                 marginTop: 6, fontSize: 12, fontWeight: 400, color: C.muted, letterSpacing: "0.01em",
-                display: "block", textDecoration: "none",
+                display: "flex", alignItems: "center", gap: 5, textDecoration: "none",
               }}
             >
-              {listing.location}
+              <MapPin size={13} strokeWidth={1.75} color={C.muted} style={{ flexShrink: 0 }} />
+              <span>{listing.location}</span>
             </a>
           );
         })()}
