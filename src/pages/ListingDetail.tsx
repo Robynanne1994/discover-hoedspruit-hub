@@ -417,7 +417,6 @@ const ListingDetail = () => {
     if (kids.length) sections.push({ key: "kids", title: "Kids & Family", iconComp: Baby, fields: kids });
 
     const access = filterDefined([
-      { label: "Wheelchair friendly", value: l.wheelchair_friendly },
       { label: "Accessible entrance", value: l.wheelchair_entrance },
       { label: "Accessible seating", value: l.wheelchair_seating },
       { label: "Accessible toilet", value: l.wheelchair_toilet },
