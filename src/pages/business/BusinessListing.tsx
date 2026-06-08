@@ -6,6 +6,7 @@ import BusinessLayout from "@/components/business/BusinessLayout";
 import { Button, Input, Label, Textarea, Card, Body, Small, StatusPill, COLORS } from "@/components/business/ui";
 import { toast } from "sonner";
 import { Upload, X, Plus } from "lucide-react";
+import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 
 const DAYS: { label: string; key: string }[] = [
   { label: "Mon", key: "monday" },
@@ -40,6 +41,7 @@ const BusinessListing = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
+  const longDescRef = useRef<HTMLTextAreaElement>(null);
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsApp] = useState("");
   const [email, setEmail] = useState("");
@@ -243,13 +245,22 @@ const BusinessListing = () => {
         </div>
         <div>
           <Label>Long description</Label>
+          <MarkdownToolbar
+            textareaRef={longDescRef}
+            value={longDescription}
+            onChange={(val) => setLongDescription(val.slice(0, 1500))}
+          />
           <Textarea
+            ref={longDescRef}
             value={longDescription}
             maxLength={1500}
             rows={8}
             onChange={(e) => setLongDescription(e.target.value.slice(0, 1500))}
             placeholder="1–2 paragraphs about your business, shown on the detail page"
           />
+          <Small soft style={{ marginTop: 4, display: "block" }}>
+            Formatting: **bold**, "## Subtitle" on its own line for a heading, and a blank line between paragraphs.
+          </Small>
           <Small soft style={{ marginTop: 4, display: "block", textAlign: "right" }}>{longDescription.length}/1500</Small>
         </div>
         <div><Label>Location</Label><Input value={location} onChange={(e) => setLocation(e.target.value)} /></div>
