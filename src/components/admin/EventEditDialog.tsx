@@ -13,6 +13,7 @@ import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import IncludedChipsInput from "@/components/admin/IncludedChipsInput";
 import { sanitizeContactArray } from "@/lib/contacts";
+import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 
 interface Props {
   open: boolean;
