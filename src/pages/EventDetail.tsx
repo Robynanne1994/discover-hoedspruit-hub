@@ -822,7 +822,7 @@ const EventDetail = () => {
             rel="noopener noreferrer"
             style={{
               marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              background: C.primary, color: "#fff",
+              background: "#423324", color: "#FFFFFF",
               padding: "10px 20px", borderRadius: 999,
               textDecoration: "none", fontFamily: FONT, fontSize: 14, fontWeight: 400,
               letterSpacing: "0.02em",

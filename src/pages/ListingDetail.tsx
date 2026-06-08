@@ -1118,7 +1118,7 @@ const ListingDetail = () => {
             style={{
               marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
               background: "#423324", color: "#FFFFFF",
-              height: 48, padding: "12px 20px", borderRadius: 16,
+              height: 48, padding: "12px 20px", borderRadius: 9999,
               textDecoration: "none", fontFamily: FONT, fontSize: 15, fontWeight: 600,
               textTransform: "capitalize",
             }}
@@ -1488,7 +1488,7 @@ const SuggestEditSheet = ({
         </div>
         <button onClick={submit} disabled={submitting} style={{
           fontFamily: FONT, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
-          background: C.primary, color: "#fff", border: "none", fontSize: 14,
+          background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
           letterSpacing: "0.04em",
           cursor: submitting ? "default" : "pointer", opacity: submitting ? 0.6 : 1,
         }}>
