@@ -292,7 +292,6 @@ const SpecialDetail = () => {
   // ----- Tab content -----
   const renderAbout = () => {
     const desc = (special.description || "").trim();
-    const isLong = desc.length > 180;
     const paragraphs = desc.split("\n").filter(Boolean);
 
     return (
