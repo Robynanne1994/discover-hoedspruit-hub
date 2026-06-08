@@ -14,6 +14,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
+import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 
 interface Props {
   open: boolean;
