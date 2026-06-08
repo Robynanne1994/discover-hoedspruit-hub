@@ -17,6 +17,7 @@ import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
 import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isEventPastUnified, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
+import { renderListingRichText } from "@/lib/listingRichText";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
