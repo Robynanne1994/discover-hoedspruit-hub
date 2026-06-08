@@ -4,13 +4,10 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import BottomNav from "@/components/BottomNav";
 import ScrollToTop from "@/components/ScrollToTop";
-import TitleCaseH1 from "@/components/TitleCaseH1";
-import TitleCaseH2 from "@/components/TitleCaseH2";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
-import LoadingSplash from "@/components/LoadingSplash";
 import Index from "./pages/Index.tsx";
 import Auth from "./pages/Auth.tsx";
 import Welcome from "./pages/Welcome.tsx";
@@ -216,8 +213,6 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
               </Routes>
               <ScrollToTop />
-              <TitleCaseH1 />
-              <TitleCaseH2 />
               <ConditionalBottomNav />
             </AuthGate>
           </GuestAuthProvider>
