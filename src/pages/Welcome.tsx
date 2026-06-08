@@ -182,7 +182,7 @@ const Welcome = () => {
         >
           {mode === "signup" ? "Create Account" : "Welcome Back"}
         </h1>
-        <p className="text-sm mb-8" style={{ fontFamily: "'Inter', sans-serif", color: "#2b2420" }}>
+        <p className="text-sm mb-8" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
           {mode === "signup"
             ? "Join the Hello Hoedspruit community"
             : "Sign in to your account"}
@@ -192,7 +192,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
+                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   First Name
                 </Label>
                 <Input
@@ -207,7 +207,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
+                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   Username
                 </Label>
                 <Input
@@ -224,7 +224,7 @@ const Welcome = () => {
             </>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
+            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
               Email
             </Label>
             <Input
@@ -239,7 +239,7 @@ const Welcome = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "Inter, sans-serif" }}>
+            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
               Password
             </Label>
             <div className="relative">
@@ -279,12 +279,12 @@ const Welcome = () => {
           </Button>
         </form>
 
-        <p className="text-center text-sm mt-6" style={{ fontFamily: "'Inter', sans-serif", color: "#2b2420" }}>
+        <p className="text-center text-sm mt-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
           <button
             onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
             className="font-medium"
-            style={{ fontFamily: "'Inter', sans-serif", color: "#715a3d" }}
+            style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#715a3d" }}
           >
             {mode === "signup" ? "Sign in" : "Sign Up"}
           </button>

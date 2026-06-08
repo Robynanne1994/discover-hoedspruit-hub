@@ -28,7 +28,6 @@ const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: Bus
 
   return (
     <div style={{ minHeight: "100vh", background: bg, fontFamily: FONT, color: fg }}>
-      {(() => { if (typeof document !== "undefined" && !document.getElementById("playfair-display-font")) { const l = document.createElement("link"); l.id = "playfair-display-font"; l.rel = "stylesheet"; l.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap"; document.head.appendChild(l); } return null; })()}
       <header
         style={{
           position: "sticky",
@@ -62,7 +61,7 @@ const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: Bus
             <BackArrowIcon size={24} />
           </button>
         )}
-        <h1 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", fontSize: 22, fontWeight: 400, letterSpacing: "-0.3px", color: headingColor, margin: 0 }}>
+        <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 22, fontWeight: 400, letterSpacing: "-0.3px", color: headingColor, margin: 0 }}>
           {title.toLowerCase()}
         </h1>
       </header>

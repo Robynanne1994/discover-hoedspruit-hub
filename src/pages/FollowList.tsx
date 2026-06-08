@@ -192,7 +192,7 @@ const UserRow = ({
         <p
           style={{
             margin: 0,
-            fontFamily: "Inter, sans-serif",
+            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontStyle: "normal",
             fontWeight: 400,
             fontSize: 13,

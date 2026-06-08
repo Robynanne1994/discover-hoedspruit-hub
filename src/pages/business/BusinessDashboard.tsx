@@ -7,7 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Tag, Calendar, Pencil, ArrowUpRight, MapPin, Star } from "lucide-react";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const INK = "#020202";
 const BODY = "#2B2420";

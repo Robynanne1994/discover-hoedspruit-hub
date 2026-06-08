@@ -17,7 +17,7 @@ const INK = "#2A2A24";
 const CREAM = "#EEE8DA";
 const MUTED = "#6B6A5E";
 const LINE = "#D9D2C0";
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 type Row = { icon: LucideIcon; label: string; to: string };

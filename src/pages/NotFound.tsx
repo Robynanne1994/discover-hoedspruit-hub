@@ -6,7 +6,7 @@ const OLIVE_DEEP = "#454C36";
 const CREAM = "#EEE8DA";
 const INK = "#2A2A24";
 const HELV = '"Helvetica Neue", Helvetica, Arial, sans-serif';
-const PLAYFAIR = '"Playfair Display", Georgia, serif';
+const PLAYFAIR = '"Helvetica Neue", Helvetica, Arial, sans-serif';
 
 const NotFound = () => {
   const location = useLocation();

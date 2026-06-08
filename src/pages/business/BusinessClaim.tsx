@@ -13,7 +13,7 @@ const MUTED = "#6B6A5E";
 const LINE = "#D9D2C0";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface ListingHit {
   id: string;
@@ -45,18 +45,6 @@ const BusinessClaim = () => {
   const [proof, setProof] = useState("");
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
-
-  // Load Playfair
-  useEffect(() => {
-    const id = "playfair-display-font";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-    document.head.appendChild(link);
-  }, []);
 
   useEffect(() => {
     if (!authLoading && !loading && !user) {

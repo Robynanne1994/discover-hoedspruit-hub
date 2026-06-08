@@ -19,7 +19,7 @@ import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const PF = "'Playfair Display', Georgia, serif";
+const PF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";

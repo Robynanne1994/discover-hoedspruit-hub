@@ -4,7 +4,7 @@ import { Settings, LogOut, CreditCard, ArrowLeftRight, ArrowLeft } from "lucide-
 import { useAuth } from "@/hooks/useAuth";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const BG = "#EBEBEB";
 const INK = "#020202";
@@ -36,8 +36,6 @@ const BusinessLayout = ({ businessName, children }: Props) => {
   const { signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  // Playfair Display is self-hosted via src/index.css — no runtime <link> injection needed.
 
 
   useEffect(() => {

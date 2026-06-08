@@ -49,65 +49,13 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Helvetica World";
-  src: url("/fonts/HelveticaWorldRegular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Playfair Display — self-hosted woff2 */
-@font-face {
-  font-family: "Playfair Display";
-  src: url("/fonts/PlayfairDisplay-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Pragmatica — self-hosted woff2.
-   Only the normal-width "Book" and "Bold" cuts are mapped.
-   The Pragmatica-Ext* files are extended/wider and must NOT be used,
-   otherwise text renders horizontally stretched. */
-@font-face {
-  font-family: "Pragmatica";
-  src: url("/fonts/Pragmatica-Book.woff2") format("woff2");
-  font-weight: 300 500;
-  font-style: normal;
-  font-stretch: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Pragmatica";
-  src: url("/fonts/Pragmatica-BookOblique.woff2") format("woff2");
-  font-weight: 300 500;
-  font-style: italic;
-  font-stretch: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Pragmatica";
-  src: url("/fonts/Pragmatica-Bold.woff2") format("woff2");
-  font-weight: 600 800;
-  font-style: normal;
-  font-stretch: normal;
-  font-display: swap;
-}
-
-/* Playfair Display is already self-hosted above. Avoid a remote @import here
-   because (a) it's placed after @font-face which Vite warns about, and
-   (b) re-fetching webfonts during navigation can cause a brief white flash
-   of unstyled content. */
-
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 html,
 body {
-  font-family: "Helvetica World", Helvetica, Arial, sans-serif;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-stretch: normal;
   font-synthesis: none;
   -webkit-text-size-adjust: 100%;
@@ -165,9 +113,9 @@ body {
 
     --radius: 1rem;
 
-    --font-heading: "Helvetica World", Helvetica, Arial, sans-serif;
-    --font-body: "Helvetica World", Helvetica, Arial, sans-serif;
-    --font-editorial: "Helvetica World", Helvetica, Arial, sans-serif;
+    --font-heading: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-editorial: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
     --hero-overlay: linear-gradient(to bottom, hsla(30, 20%, 20%, 0.05), hsla(30, 20%, 20%, 0.35));
     --warm-glow: 0 4px 20px -6px hsla(27, 30%, 34%, 0.1);

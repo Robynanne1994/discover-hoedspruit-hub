@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, Search } from "lucide-react";
 
@@ -10,21 +9,10 @@ const MUTED = "#6B6A5E";
 const RUST = "#9B5A3C";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const BusinessStart = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const id = "playfair-display-font";
-    if (document.getElementById(id)) return;
-    const link = document.createElement("link");
-    link.id = id;
-    link.rel = "stylesheet";
-    link.href =
-      "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-    document.head.appendChild(link);
-  }, []);
 
   const handleBack = () => {
     // Avoid bouncing back into a protected /business route that redirects here.

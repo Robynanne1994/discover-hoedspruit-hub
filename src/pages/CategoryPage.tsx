@@ -22,7 +22,7 @@ const MEAL_OPTIONS = ["Breakfast", "Brunch", "Lunch", "Dinner", "Pub Grub", "Sna
 const SEATING_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
 const sans = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const serif = "'Playfair Display', Georgia, serif";
+const serif = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 // Editorial palette
 const C = {
