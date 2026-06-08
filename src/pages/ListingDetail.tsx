@@ -737,19 +737,22 @@ const ListingDetail = () => {
     </a>
   );
 
-  const TabBtn = ({ k, label }: { k: TabKey; label: string }) => {
+  const TabBtn = ({ k, label, scrollable }: { k: TabKey; label: string; scrollable?: boolean }) => {
     const active = tab === k;
     return (
       <button
         onClick={() => setTab(k)}
         style={{
-          flex: 1, background: "none", border: "none", cursor: "pointer",
-          padding: "14px 4px",
+          ...(scrollable
+            ? { flex: "0 0 auto", padding: "14px 14px" }
+            : { flex: 1, padding: "14px 4px" }),
+          background: "none", border: "none", cursor: "pointer",
           fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
           letterSpacing: "0.08em", textTransform: "uppercase",
           color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
+          whiteSpace: "nowrap",
         }}
       >
         {label}
