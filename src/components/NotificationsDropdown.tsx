@@ -70,13 +70,23 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     return () => { supabase.removeChannel(ch); };
   }, [user, load]);
 
-  // Close on back
+  // Close on back. Pop the dummy history entry when closed any other way
+  // so the next back press navigates instead of being swallowed.
   useEffect(() => {
     if (!open) return;
-    const onPop = () => setOpen(false);
+    let poppedByBrowser = false;
+    const onPop = () => {
+      poppedByBrowser = true;
+      setOpen(false);
+    };
     window.history.pushState({ notifBell: true }, "");
     window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      if (!poppedByBrowser && window.history.state?.notifBell) {
+        window.history.back();
+      }
+    };
   }, [open]);
 
   const unread = notifs.filter((n) => !n.is_read).length;
