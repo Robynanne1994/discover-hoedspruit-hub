@@ -4,6 +4,7 @@ import { Search, MapPin, AlertTriangle, ChevronRight, X, ArrowUpRight, ArrowLeft
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import PageHeader from "@/components/PageHeader";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -175,30 +176,38 @@ const Categories = () => {
         minHeight: "100dvh",
         backgroundColor: COLORS.bg,
         fontFamily: FONT_BODY,
-        paddingTop: "calc(env(safe-area-inset-top) + 60px)",
         paddingBottom: 140,
       }}
     >
       {/* Top bar: centered title + circular search */}
-      <div
-        style={{
-          position: "relative",
-          padding: "0 20px",
-          height: 44,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {fromSearch && (
+      <PageHeader
+        title="Explore"
+        left={
+          fromSearch ? (
+            <button
+              onClick={() => navigate("/search")}
+              aria-label="Back to search"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid rgba(0,0,0,0.06)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+              }}
+            >
+              <ArrowLeft size={18} strokeWidth={1.8} color="#020202" />
+            </button>
+          ) : null
+        }
+        right={
           <button
-            onClick={() => navigate("/search")}
-            aria-label="Back to search"
+            onClick={() => setSearchOpen((v) => !v)}
+            aria-label={searchOpen ? "Close search" : "Open search"}
             style={{
-              position: "absolute",
-              left: 20,
-              top: "50%",
-              transform: "translateY(-50%)",
               width: 40,
               height: 40,
               borderRadius: 999,
@@ -210,49 +219,14 @@ const Categories = () => {
               cursor: "pointer",
             }}
           >
-            <ArrowLeft size={18} strokeWidth={1.8} color="#020202" />
+            {searchOpen ? (
+              <X size={18} strokeWidth={1.8} color="#020202" />
+            ) : (
+              <Search size={18} strokeWidth={1.8} color="#020202" />
+            )}
           </button>
-        )}
-        <h1
-          style={{
-            fontFamily: FONT_BODY,
-            fontSize: 22,
-            fontWeight: 700,
-            color: COLORS.ink,
-            margin: 0,
-            lineHeight: 1,
-          }}
-        >
-          Explore
-        </h1>
-        <button
-          onClick={() => setSearchOpen((v) => !v)}
-          aria-label={searchOpen ? "Close search" : "Open search"}
-          style={{
-            position: "absolute",
-            right: 20,
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: "#FFFFFF",
-            border: "1px solid rgba(0,0,0,0.06)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          {searchOpen ? (
-            <X size={18} strokeWidth={1.8} color="#020202" />
-          ) : (
-            <Search size={18} strokeWidth={1.8} color="#020202" />
-          )}
-        </button>
-      </div>
-
-      <div style={{ height: 1, background: COLORS.divider, marginTop: 16 }} />
+        }
+      />
 
       {/* Inline search input */}
       {searchOpen && (

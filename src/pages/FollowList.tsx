@@ -10,6 +10,7 @@ import {
 } from "@/hooks/useFollows";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
+import PageHeader from "@/components/PageHeader";
 import {
   Dialog,
   DialogContent,
@@ -360,54 +361,7 @@ const FollowList = () => {
   return (
     <div style={{ minHeight: "100vh", background: COLOR.page, paddingBottom: 100 }}>
       {/* Top bar */}
-      <div
-        style={{
-          paddingTop: 60,
-          paddingLeft: 20,
-          paddingRight: 20,
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: 44,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            position: "absolute",
-            left: 20,
-            top: 56,
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: COLOR.card,
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-          }}
-        >
-          <ArrowLeft size={18} strokeWidth={2} color={COLOR.ink} />
-        </button>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 22,
-            color: COLOR.ink,
-            lineHeight: "24px",
-            letterSpacing: "-0.2px",
-          }}
-        >
-          Connections
-        </h1>
-      </div>
-
-      <div style={{ height: 1, background: COLOR.line, marginTop: 18 }} />
+      <PageHeader title="Connections" />
 
       {/* Tabs */}
       <div style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 18, paddingBottom: 18 }}>

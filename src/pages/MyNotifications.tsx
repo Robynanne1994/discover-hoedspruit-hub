@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -166,52 +167,12 @@ export default function MyNotifications() {
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK }}>
       {/* Top bar */}
-      <div
-        style={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "56px 20px 18px",
-          background: BG,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: CARD,
-            border: `1px solid ${HAIRLINE}`,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          <BackArrowIcon size={20} color={INK} />
-        </button>
-
-        <div style={{ textAlign: "center", flex: 1 }}>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: SANS,
-              fontWeight: 700,
-              fontSize: 20,
-              color: INK,
-              letterSpacing: "-0.1px",
-            }}
-          >
-            Notifications
-          </h1>
-          {hasUnread && (
+      <PageHeader
+        title="Notifications"
+        subtitle={
+          hasUnread ? (
             <div
               style={{
-                marginTop: 4,
                 fontFamily: SANS,
                 fontWeight: 400,
                 fontSize: 11,
@@ -222,20 +183,39 @@ export default function MyNotifications() {
             >
               {unreadCount} Unread
             </div>
-          )}
-        </div>
-
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {hasUnread && (
+          ) : undefined
+        }
+        right={
+          <>
+            {hasUnread && (
+              <button
+                onClick={markAllRead}
+                aria-label="Mark all as read"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 999,
+                  background: CARD,
+                  border: `1px solid ${HAIRLINE}`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  padding: 0,
+                }}
+              >
+                <CheckCheck size={20} strokeWidth={2} color={INK} />
+              </button>
+            )}
             <button
-              onClick={markAllRead}
-              aria-label="Mark all as read"
+              onClick={() => navigate("/notification-preferences")}
+              aria-label="Notification settings"
               style={{
                 width: 40,
                 height: 40,
-                borderRadius: 999,
+                borderRadius: "50%",
                 background: CARD,
-                border: `1px solid ${HAIRLINE}`,
+                border: "none",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -243,31 +223,11 @@ export default function MyNotifications() {
                 padding: 0,
               }}
             >
-              <CheckCheck size={20} strokeWidth={2} color={INK} />
+              <Settings size={18} strokeWidth={1.8} color={INK} />
             </button>
-          )}
-          <button
-            onClick={() => navigate("/notification-preferences")}
-            aria-label="Notification settings"
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              background: CARD,
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: 0,
-            }}
-          >
-            <Settings size={18} strokeWidth={1.8} color={INK} />
-          </button>
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: HAIRLINE, margin: "0 0 8px" }} />
+          </>
+        }
+      />
 
       {/* List */}
       <div style={{ padding: "0 20px 100px" }}>

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import BackButton from "@/components/BackButton";
+import PageHeader from "@/components/PageHeader";
 import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { toast } from "sonner";
 
@@ -42,65 +43,14 @@ const Search = () => {
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100 }}>
       {/* Header */}
-      <div
-        style={{
-          paddingTop: 60,
-          background: PAGE_BG,
-        }}
-      >
-        <div
-          style={{
-            padding: "0 20px 12px",
-            display: "grid",
-            gridTemplateColumns: "1fr auto 1fr",
-            alignItems: "center",
-            minHeight: 32,
+      <div style={{ background: PAGE_BG }}>
+        <PageHeader
+          title="Search"
+          onBack={() => {
+            if (fromProfile && profileId) navigate("/my-profile");
+            else navigate(-1);
           }}
-        >
-          <div style={{ justifySelf: "start", display: "flex", alignItems: "center" }}>
-            <button
-              type="button"
-              onClick={() => {
-                if (fromProfile && profileId) navigate("/my-profile");
-                else navigate(-1);
-              }}
-              aria-label="Go back"
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "#FFFFFF",
-                border: "none",
-                cursor: "pointer",
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#0a0a0a",
-              }}
-            >
-              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <line x1="19" y1="12" x2="5" y2="12" />
-                <polyline points="12 19 5 12 12 5" />
-              </svg>
-            </button>
-          </div>
-          <h1
-            style={{
-              margin: 0,
-              fontFamily: FONT,
-              fontWeight: 700,
-              fontSize: 19,
-              lineHeight: 1,
-              letterSpacing: "0.01em",
-              color: "#0a0a0a",
-              justifySelf: "center",
-            }}
-          >
-            Search
-          </h1>
-          <div />
-        </div>
-        <div style={{ height: 1, width: "100%", background: "rgba(10,10,10,0.1)" }} />
+        />
       </div>
 
       {/* Top tabs: Users / Businesses */}

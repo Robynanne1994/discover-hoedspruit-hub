@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
+import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
@@ -121,7 +122,6 @@ const Specials = () => {
     <div
       style={{
         minHeight: "100vh",
-        paddingTop: 60,
         paddingBottom: 120,
         background: COLOR.pageBg,
         fontFamily: SANS,
@@ -129,18 +129,10 @@ const Specials = () => {
       }}
     >
       {/* Header — centered title, icons inline on right */}
-      <div
-        style={{
-          paddingLeft: 20,
-          paddingRight: 20,
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
-        <div>
-          {fromSearch && (
+      <PageHeader
+        title="Specials"
+        left={
+          fromSearch ? (
             <button
               onClick={() => navigate("/search")}
               aria-label="Back to search"
@@ -159,70 +151,56 @@ const Specials = () => {
             >
               <ArrowLeft size={18} strokeWidth={1.8} />
             </button>
-          )}
-        </div>
-        <h1
-          style={{
-            fontFamily: SANS,
-            fontSize: 22,
-            fontWeight: 700,
-            color: COLOR.ink,
-            margin: 0,
-            letterSpacing: "-0.3px",
-            textAlign: "center",
-          }}
-        >
-          Specials
-        </h1>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
-          <button
-            aria-label={searchOpen ? "Close search" : "Search"}
-            onClick={() => {
-              if (searchOpen) {
-                setSearch("");
-                setSearchOpen(false);
-              } else {
-                setSearchOpen(true);
-              }
-            }}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: "#FFFFFF",
-              border: "1px solid rgba(0,0,0,0.06)",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: "#020202",
-            }}
-          >
-            {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
-          </button>
-          <button
-            aria-label="Filters"
-            onClick={() => setShowFilters(true)}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: filterType.length > 0 ? COLOR.ink : "#FFFFFF",
-              border: "1px solid rgba(0,0,0,0.06)",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              color: filterType.length > 0 ? COLOR.cardBg : "#020202",
-            }}
-          >
-            <SlidersHorizontal size={18} strokeWidth={1.8} />
-          </button>
-        </div>
-      </div>
-
-      {/* Divider under title */}
-      <div style={{ height: 1, background: "rgba(2,2,2,0.10)", marginTop: 18, marginLeft: 20, marginRight: 20 }} />
+          ) : null
+        }
+        right={
+          <>
+            <button
+              aria-label={searchOpen ? "Close search" : "Search"}
+              onClick={() => {
+                if (searchOpen) {
+                  setSearch("");
+                  setSearchOpen(false);
+                } else {
+                  setSearchOpen(true);
+                }
+              }}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid rgba(0,0,0,0.06)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "#020202",
+              }}
+            >
+              {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
+            </button>
+            <button
+              aria-label="Filters"
+              onClick={() => setShowFilters(true)}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: filterType.length > 0 ? COLOR.ink : "#FFFFFF",
+                border: "1px solid rgba(0,0,0,0.06)",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: filterType.length > 0 ? COLOR.cardBg : "#020202",
+              }}
+            >
+              <SlidersHorizontal size={18} strokeWidth={1.8} />
+            </button>
+          </>
+        }
+      />
 
 
       {/* Inline search input */}

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 import {
   FILTER_TYPE_META,
@@ -316,40 +317,7 @@ const Notifications = () => {
   return (
     <div style={{ background: C.bg, minHeight: "100vh", paddingBottom: 120, fontFamily: SANS }}>
       {/* Top bar */}
-      <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "60px 20px 18px" }}>
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 999,
-            background: C.card,
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            flexShrink: 0,
-          }}
-        >
-          <ArrowLeft size={18} strokeWidth={2} color={C.ink} />
-        </button>
-        <h1
-          style={{
-            margin: 0,
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 22,
-            color: C.ink,
-            letterSpacing: "-0.3px",
-          }}
-        >
-          Notification Preferences
-        </h1>
-      </div>
-
-      <div style={{ height: 1, background: C.line, margin: "0 20px 24px" }} />
+      <PageHeader title="Notification Preferences" />
 
       {/* Master card */}
       <div style={{ padding: "0 20px", marginBottom: 28 }}>
