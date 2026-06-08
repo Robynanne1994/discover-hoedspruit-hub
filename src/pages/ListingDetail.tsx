@@ -507,7 +507,6 @@ const ListingDetail = () => {
       { label: "Delivery available", value: l.delivery_available },
       { label: "Order online", value: l.order_online },
       { label: "Parking available", value: l.parking_available },
-      { label: "Wheelchair friendly", value: l.wheelchair_friendly },
       { label: "Local products", value: l.local_products },
       { label: "Curio / gifts", value: l.curio_or_gifts },
     ]);
