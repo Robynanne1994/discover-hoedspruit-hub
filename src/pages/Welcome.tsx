@@ -110,9 +110,9 @@ const Welcome = () => {
             className="w-full"
             style={{
               height: 52,
-              borderRadius: 16,
-              background: "#715a3d",
-              color: "#ffffff",
+              borderRadius: 9999,
+              background: "#423324",
+              color: "#FFFFFF",
               fontSize: 16,
               fontWeight: 500,
               letterSpacing: "0.01em",
@@ -267,8 +267,8 @@ const Welcome = () => {
 
           <Button
             type="submit"
-            className="w-full h-12 font-semibold rounded-xl mt-2"
-            style={{ background: "#715a3d", color: "#ffffff", fontSize: 16 }}
+            className="w-full h-12 font-semibold rounded-full mt-2"
+            style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
             disabled={loading}
           >
             {loading

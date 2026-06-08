@@ -38,7 +38,7 @@ const FollowButton = ({ targetUserId, size = "default" }: FollowButtonProps) => 
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
           isFollowing
             ? "bg-primary/10 text-primary border border-primary/30"
-            : "bg-primary text-primary-foreground"
+            : "bg-[#423324] text-white"
         }`}
       >
         {isFollowing ? (

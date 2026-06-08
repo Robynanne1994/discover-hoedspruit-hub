@@ -88,8 +88,8 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
           <div className="flex flex-col gap-2 mt-2">
             <Button
               onClick={() => goAuth("signup")}
-              className="w-full h-12 rounded-xl"
-              style={{ background: "#715a3d", color: "#fff" }}
+              className="w-full h-12 rounded-full"
+              style={{ background: "#423324", color: "#FFFFFF" }}
             >
               Create account
             </Button>

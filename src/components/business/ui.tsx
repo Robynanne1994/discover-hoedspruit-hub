@@ -51,7 +51,7 @@ export const Button = ({ variant = "primary", full, style, children, ...rest }: 
     fontFamily: FONT,
     fontWeight: 600,
     fontSize: 15,
-    borderRadius: 24,
+    borderRadius: 9999,
     minHeight: 48,
     padding: "12px 24px",
     cursor: "pointer",

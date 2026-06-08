@@ -125,14 +125,14 @@ export const RefineDrawer = ({
             <button
               onClick={onClear}
               style={{
-                background: "#715a3d",
+                background: "#423324",
                 border: "none",
                 padding: "10px 18px",
                 borderRadius: 999,
                 fontFamily: SANS,
                 fontSize: 13,
                 fontWeight: 700,
-                color: "#ffffff",
+                color: "#FFFFFF",
                 letterSpacing: "0.01em",
                 textTransform: "capitalize",
                 cursor: "pointer",

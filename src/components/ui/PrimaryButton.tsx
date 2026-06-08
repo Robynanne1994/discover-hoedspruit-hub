@@ -10,7 +10,7 @@ const baseStyle: CSSProperties = {
   background: "#423324",
   color: "#FFFFFF",
   border: "none",
-  borderRadius: 16,
+  borderRadius: 9999,
   height: 48,
   padding: "12px 20px",
   fontSize: 15,

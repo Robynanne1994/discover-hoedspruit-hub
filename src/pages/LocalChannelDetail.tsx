@@ -196,7 +196,7 @@ const LocalChannelDetail = () => {
           onClick={handlePrimaryAction}
           style={{
             marginTop: 24, width: "100%", height: 54, borderRadius: 999,
-            background: PRIMARY, color: "#ffffff", border: "none", cursor: "pointer",
+            background: "#423324", color: "#FFFFFF", border: "none", cursor: "pointer",
             fontFamily: HN, fontSize: 14, fontWeight: 600, letterSpacing: "0.04em",
             textTransform: "uppercase", display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
           }}
