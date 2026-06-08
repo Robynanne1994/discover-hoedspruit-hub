@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const checkAdmin = async (userId: string) => {
+  const checkAdmin = useCallback(async (userId: string) => {
     try {
       const { data } = await supabase.rpc("has_role", {
         _user_id: userId,
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } catch {
       setIsAdmin(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -69,12 +69,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error: error as Error | null };
-  };
+  }, []);
 
-  const signUp = async (email: string, password: string, displayName?: string, firstName?: string) => {
+  const signUp = useCallback(async (email: string, password: string, displayName?: string, firstName?: string) => {
     const metadata: Record<string, string> = {};
     if (displayName) metadata.display_name = displayName;
     if (firstName) metadata.first_name = firstName;
@@ -87,14 +87,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
     });
     return { error: error as Error | null };
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-  };
+  }, []);
+
+  // Memoise the context value so it only changes when the auth state actually
+  // changes. Without this, every provider render handed consumers a brand-new
+  // object, re-rendering the whole app on unrelated updates.
+  const value = useMemo(
+    () => ({ user, session, isAdmin, loading, signIn, signUp, signOut }),
+    [user, session, isAdmin, loading, signIn, signUp, signOut],
+  );
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
