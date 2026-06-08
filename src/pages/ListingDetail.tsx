@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Star, Pencil, Heart, Share2, Check, X as XIcon, Phone, Send,
@@ -10,6 +10,7 @@ import {
   Tag, ClipboardList, Baby, Accessibility, Home, Sofa, Utensils, Soup, Music, Wine,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
@@ -104,7 +105,6 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const fromCategory = (location.state as { fromCategory?: string } | null)?.fromCategory;
-  const queryClient = useQueryClient();
   const { id } = useParams<{ id: string }>();
   const [tab, setTab] = useState<TabKey>("about");
   const [detailsCatTab, setDetailsCatTab] = useState<string | null>(null);
@@ -213,15 +213,8 @@ const ListingDetail = () => {
     enabled: !!id,
   });
 
-  const { data: isFavourited } = useQuery({
-    queryKey: ["favourite", "listing", id, user?.id],
-    queryFn: async () => {
-      if (!user) return false;
-      const { data } = await supabase.from("favourites").select("id").eq("user_id", user.id).eq("item_id", id!).eq("item_type", "listing").maybeSingle();
-      return !!data;
-    },
-    enabled: !!user && !!id,
-  });
+  const isFavourited = useIsFavourited(id!, "listing");
+  const toggleFavourite = useToggleFavourite();
 
   const { data: displayDefaults } = useQuery({
     queryKey: ["details-display-defaults"],
@@ -235,26 +228,15 @@ const ListingDetail = () => {
     },
   });
 
-  const toggleFavourite = useMutation({
-    mutationFn: async () => {
-      if (!user) return;
-      if (isFavourited) {
-        await supabase.from("favourites").delete().eq("user_id", user.id).eq("item_id", id!).eq("item_type", "listing");
-      } else {
-        await supabase.from("favourites").insert({ user_id: user.id, item_id: id!, item_type: "listing" });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favourite", "listing", id] });
-      queryClient.invalidateQueries({ queryKey: ["favourites"] });
-      queryClient.invalidateQueries({ queryKey: ["saved-listings-page"] });
-      toast.success(isFavourited ? "Removed from saved" : "Saved!");
-    },
-  });
-
   const requireAuth = () => {
     if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
     return false;
+  };
+
+  const handleToggleFavourite = () => {
+    if (requireAuth()) return;
+    toggleFavourite.mutate({ itemId: id!, itemType: "listing", currentlyFavourited: isFavourited });
+    toast.success(isFavourited ? "Removed from saved" : "Saved!");
   };
 
   const handleShare = async () => {
@@ -1193,7 +1175,7 @@ const ListingDetail = () => {
             alignItems: "center",
             gap: 8,
           }}>
-            <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+            <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
               <Heart size={20} strokeWidth={2} color={isFavourited ? "#A62C2C" : C.primary} fill={isFavourited ? "#A62C2C" : "none"} />
             </button>
             <button onClick={handleShare} aria-label="Share" style={floatBtn}>
@@ -1213,7 +1195,7 @@ const ListingDetail = () => {
               <BackArrowIcon size={20} color={C.heading} />
             </button>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+              <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
                 <Heart size={20} strokeWidth={2} color={isFavourited ? "#A62C2C" : C.primary} fill={isFavourited ? "#A62C2C" : "none"} />
               </button>
               <button onClick={handleShare} aria-label="Share" style={floatBtn}>

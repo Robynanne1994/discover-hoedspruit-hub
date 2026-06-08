@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import {
@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { useState } from "react";
 import SpecialEditDialog from "@/components/admin/SpecialEditDialog";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
@@ -77,7 +78,6 @@ type TabKey = "about" | "details" | "contact" | "terms";
 const SpecialDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
   const [aboutExpanded, setAboutExpanded] = useState(false);
@@ -93,40 +93,17 @@ const SpecialDetail = () => {
     enabled: !!id,
   });
 
-  const { data: isFavourited } = useQuery({
-    queryKey: ["favourite", "special", id, user?.id],
-    queryFn: async () => {
-      if (!user) return false;
-      const { data } = await supabase
-        .from("favourites")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_id", id!)
-        .eq("item_type", "special")
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!user && !!id,
-  });
-
-  const toggleFavourite = useMutation({
-    mutationFn: async () => {
-      if (!user) return;
-      if (isFavourited) {
-        await supabase.from("favourites").delete().eq("user_id", user.id).eq("item_id", id!).eq("item_type", "special");
-      } else {
-        await supabase.from("favourites").insert({ user_id: user.id, item_id: id!, item_type: "special" });
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["favourite", "special", id] });
-      queryClient.invalidateQueries({ queryKey: ["favourites"] });
-    },
-  });
+  const isFavourited = useIsFavourited(id!, "special");
+  const toggleFavourite = useToggleFavourite();
 
   const requireAuth = () => {
     if (!user) { toast.info("Sign in to use this feature"); navigate("/auth"); return true; }
     return false;
+  };
+
+  const handleToggleFavourite = () => {
+    if (requireAuth()) return;
+    toggleFavourite.mutate({ itemId: id!, itemType: "special", currentlyFavourited: isFavourited });
   };
 
   const handleShare = async () => {
@@ -525,7 +502,7 @@ const SpecialDetail = () => {
           alignItems: "center",
           gap: 8,
         }}>
-          <button onClick={() => { if (!requireAuth()) toggleFavourite.mutate(); }} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
+          <button onClick={handleToggleFavourite} aria-label={isFavourited ? "Unsave" : "Save"} style={floatBtn}>
             <Heart size={20} strokeWidth={1.6} color={isFavourited ? C.primary : C.heading} fill={isFavourited ? C.primary : "none"} />
           </button>
           <button onClick={handleShare} aria-label="Share" style={floatBtn}>

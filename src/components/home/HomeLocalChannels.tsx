@@ -65,15 +65,42 @@ const HomeLocalChannels = () => {
         if (error) throw error;
       }
     },
+    // Optimistically flip the saved state in the local id-set and the shared
+    // favourites cache so the heart toggles instantly instead of refetching the
+    // list (which caused the section to flash on every save).
+    onMutate: async ({ itemId, isSaved }) => {
+      const idsKey = ["saved-resource-ids", user?.id];
+      const setKey = ["favourites-set", user?.id];
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: idsKey }),
+        queryClient.cancelQueries({ queryKey: setKey }),
+      ]);
+      const prevIds = queryClient.getQueryData<Set<string>>(idsKey);
+      const prevSet = queryClient.getQueryData<Set<string>>(setKey);
+      if (prevIds) {
+        const next = new Set(prevIds);
+        if (isSaved) next.delete(itemId);
+        else next.add(itemId);
+        queryClient.setQueryData(idsKey, next);
+      }
+      if (prevSet) {
+        const next = new Set(prevSet);
+        const k = `resource:${itemId}`;
+        if (isSaved) next.delete(k);
+        else next.add(k);
+        queryClient.setQueryData(setKey, next);
+      }
+      return { idsKey, setKey, prevIds, prevSet };
+    },
     onSuccess: (_d, vars) => {
-      queryClient.invalidateQueries({ queryKey: ["saved-resource-ids"] });
-      queryClient.invalidateQueries({ queryKey: ["favourites"] });
+      // Profile's saved-resources list isn't mounted here, so this only marks
+      // it stale (no refetch, no flicker).
       queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
-      queryClient.invalidateQueries({ queryKey: ["saved-channels"] });
-      queryClient.invalidateQueries({ queryKey: ["favourite", "resource", vars.itemId] });
       toast.success(vars.isSaved ? "Removed from saved" : "Saved to your resources");
     },
-    onError: (err: any) => {
+    onError: (err: any, _v, ctx) => {
+      if (ctx?.prevIds !== undefined) queryClient.setQueryData(ctx.idsKey, ctx.prevIds);
+      if (ctx?.prevSet !== undefined) queryClient.setQueryData(ctx.setKey, ctx.prevSet);
       if (err?.message === "not-signed-in") toast.error("Please sign in to save");
       else toast.error(err?.message || "Could not update saved");
     },

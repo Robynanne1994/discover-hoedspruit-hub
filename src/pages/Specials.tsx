@@ -1,14 +1,12 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
-import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -40,41 +38,6 @@ const formatValidTill = (s: any): string => {
   }
   if (until) return `Valid until ${format(until, "d MMMM yyyy")}`;
   return "Ongoing";
-};
-
-const useSaved = (id: string) => {
-  const { user } = useAuth();
-  const qc = useQueryClient();
-  const { data: saved } = useQuery({
-    queryKey: ["favourite", "special", id, user?.id],
-    queryFn: async () => {
-      if (!user) return false;
-      const { data } = await supabase
-        .from("favourites")
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_id", id)
-        .eq("item_type", "special")
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!user,
-  });
-  const toggle = useMutation({
-    mutationFn: async () => {
-      if (!user) {
-        toast.error("Please sign in to save");
-        return;
-      }
-      if (saved) {
-        await supabase.from("favourites").delete().eq("user_id", user.id).eq("item_id", id).eq("item_type", "special");
-      } else {
-        await supabase.from("favourites").insert({ user_id: user.id, item_id: id, item_type: "special" });
-      }
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["favourite", "special", id] }),
-  });
-  return { saved, toggle };
 };
 
 const Specials = () => {
