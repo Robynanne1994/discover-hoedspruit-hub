@@ -293,14 +293,13 @@ const SpecialDetail = () => {
   // ----- Tab content -----
   const renderAbout = () => {
     const desc = (special.description || "").trim();
-    const paragraphs = desc.split("\n").filter(Boolean);
 
     return (
       <div style={{ padding: 20 }}>
         {desc && (
           <>
             <h2 style={headStyle}>About</h2>
-            {paragraphs.map((p, i) => <p key={i} style={paraStyle}>{p}</p>)}
+            <div>{renderListingRichText(desc)}</div>
           </>
         )}
 
