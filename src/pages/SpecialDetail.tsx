@@ -15,6 +15,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
+import { renderListingRichText } from "@/lib/listingRichText";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -292,14 +293,13 @@ const SpecialDetail = () => {
   // ----- Tab content -----
   const renderAbout = () => {
     const desc = (special.description || "").trim();
-    const paragraphs = desc.split("\n").filter(Boolean);
 
     return (
       <div style={{ padding: 20 }}>
         {desc && (
           <>
             <h2 style={headStyle}>About</h2>
-            {paragraphs.map((p, i) => <p key={i} style={paraStyle}>{p}</p>)}
+            <div>{renderListingRichText(desc)}</div>
           </>
         )}
 

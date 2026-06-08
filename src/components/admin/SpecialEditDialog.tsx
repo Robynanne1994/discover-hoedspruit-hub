@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -14,6 +14,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import MultiContactField from "@/components/admin/MultiContactField";
 import ListingContactPicker from "@/components/admin/ListingContactPicker";
 import { sanitizeContactArray } from "@/lib/contacts";
+import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 
 interface Props {
   open: boolean;
@@ -77,6 +78,7 @@ const FIELDS: (keyof any)[] = [
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(special);
+  const descRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setForm(special);
@@ -224,7 +226,14 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           </div>
 
 
-          <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
+          <div>
+            <Label>Description</Label>
+            <MarkdownToolbar textareaRef={descRef} value={form.description || ""} onChange={(val) => set("description", val)} />
+            <Textarea ref={descRef} rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} />
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Formatting: <code>**bold**</code>, <code>## Subtitle</code> on its own line, <code>[link text](https://link.com)</code>. Leave a blank line between paragraphs.
+            </p>
+          </div>
 
           {/* Dual images with locked default crop */}
           <div>

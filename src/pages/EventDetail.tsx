@@ -17,6 +17,7 @@ import { formatEventDateRange, getEventDates } from "@/lib/eventDates";
 import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isEventPastUnified, parseRecurrenceRule } from "@/lib/eventSchedule";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
+import { renderListingRichText } from "@/lib/listingRichText";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -421,7 +422,6 @@ const EventDetail = () => {
   // ----- Tabs -----
   const renderAbout = () => {
     const desc = (e.description || "").trim();
-    const paragraphs = desc.split("\n").filter(Boolean);
 
     const hosts: { name: string; subtitle?: string; image?: string; link?: string }[] = [];
     if (e.hosted_by_name) hosts.push({ name: e.hosted_by_name, subtitle: e.hosted_by_subtitle, image: e.hosted_by_image_url, link: (e as any).hosted_by_link });
@@ -433,9 +433,7 @@ const EventDetail = () => {
         {desc && (
           <>
             <h2 style={headStyle}>About</h2>
-            <div>
-              {paragraphs.map((p, i) => <p key={i} style={paraStyle}>{p}</p>)}
-            </div>
+            <div>{renderListingRichText(desc)}</div>
           </>
         )}
 
