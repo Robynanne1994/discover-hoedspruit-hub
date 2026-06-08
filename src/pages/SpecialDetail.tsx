@@ -80,7 +80,7 @@ const SpecialDetail = () => {
   const navigate = useNavigate();
   const { user, isAdmin } = useAuth();
   const [editOpen, setEditOpen] = useState(false);
-  const [aboutExpanded, setAboutExpanded] = useState(false);
+  
   const [tab, setTab] = useState<TabKey>("about");
 
   const { data: special, isLoading } = useQuery({
