@@ -417,7 +417,6 @@ const ListingDetail = () => {
     if (kids.length) sections.push({ key: "kids", title: "Kids & Family", iconComp: Baby, fields: kids });
 
     const access = filterDefined([
-      { label: "Wheelchair friendly", value: l.wheelchair_friendly },
       { label: "Accessible entrance", value: l.wheelchair_entrance },
       { label: "Accessible seating", value: l.wheelchair_seating },
       { label: "Accessible toilet", value: l.wheelchair_toilet },
@@ -508,7 +507,6 @@ const ListingDetail = () => {
       { label: "Delivery available", value: l.delivery_available },
       { label: "Order online", value: l.order_online },
       { label: "Parking available", value: l.parking_available },
-      { label: "Wheelchair friendly", value: l.wheelchair_friendly },
       { label: "Local products", value: l.local_products },
       { label: "Curio / gifts", value: l.curio_or_gifts },
     ]);
