@@ -226,7 +226,14 @@ const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
           </div>
 
 
-          <div><Label>Description</Label><Textarea rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} /></div>
+          <div>
+            <Label>Description</Label>
+            <MarkdownToolbar textareaRef={descRef} value={form.description || ""} onChange={(val) => set("description", val)} />
+            <Textarea ref={descRef} rows={4} value={form.description || ""} onChange={(e) => set("description", e.target.value)} />
+            <p className="text-[11px] text-muted-foreground mt-1">
+              Formatting: <code>**bold**</code>, <code>## Subtitle</code> on its own line, <code>[link text](https://link.com)</code>. Leave a blank line between paragraphs.
+            </p>
+          </div>
 
           {/* Dual images with locked default crop */}
           <div>
