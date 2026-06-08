@@ -827,6 +827,57 @@ const ListingDetail = () => {
     );
   };
 
+  const renderContact = () => (
+    <div style={{ padding: "20px" }}>
+      <h2 style={headStyle}>Contact</h2>
+      <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+        {(() => {
+          const phones = collectContacts(listing.phone, (listing as any).additional_phones);
+          const whatsapps = collectContacts(whatsappNum, (listing as any).additional_whatsapps);
+          const emails = collectContacts(listing.email, (listing as any).additional_emails);
+          const phoneLabels = [((listing as any).phone_label || "").trim(), ...((((listing as any).additional_phone_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const waLabels = [((listing as any).whatsapp_label || "").trim(), ...((((listing as any).additional_whatsapp_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const emailLabels = [((listing as any).email_label || "").trim(), ...((((listing as any).additional_email_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const rows: any[] = [];
+          phones.forEach((p, i) => rows.push({ label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!phoneLabels[i], value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
+          whatsapps.forEach((w, i) => {
+            const clean = w.replace(/[^0-9]/g, "");
+            rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
+          });
+          emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
+          const websites = collectContacts(listing.website, (listing as any).additional_websites);
+          const websiteLabels = [((listing as any).website_label || "").trim(), ...((((listing as any).additional_website_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const cleanUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
+          websites.forEach((w, i) => rows.push({ label: "", custom: false, value: websiteLabels[i] || cleanUrl(w), href: w, Icon: Globe }));
+          if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
+          if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
+          return rows;
+        })().map((r: any, i) => (
+          <a key={`${r.label}-${i}`} href={r.href} target="_blank" rel="noopener noreferrer" style={{
+            display: "flex", alignItems: "center", gap: 14,
+            padding: "16px 0", textDecoration: "none",
+            borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+          }}>
+            <r.Icon size={20} strokeWidth={1.5} color={C.primary} />
+            <div style={{ flex: 1, minWidth: 0, wordBreak: "break-word" }}>
+              {r.custom && (
+                <div style={{ fontFamily: FONT, fontSize: 10, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted, marginBottom: 2 }}>
+                  {r.label}
+                </div>
+              )}
+              <div style={{ fontSize: 15, fontWeight: 400, color: C.heading }}>
+                {r.value}
+              </div>
+            </div>
+            <ArrowUpRight size={16} color={C.muted} />
+          </a>
+        ))}
+      </div>
+      <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
+    </div>
+  );
+
+
   const renderDetails = () => (
     <div style={{ padding: "20px" }}>
       <h2 style={headStyle}>Details</h2>
