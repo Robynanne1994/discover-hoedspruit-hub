@@ -609,7 +609,6 @@ const EventDetail = () => {
               letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1,
             }}>{r.label}</h3>
             {r.href && <ArrowUpRight size={16} color={C.muted} />}
-            <div style={{ position: "absolute", bottom: 0, left: "25%", width: "50%", height: 1, backgroundColor: C.divider }} />
           </div>
         );
         const body = (
