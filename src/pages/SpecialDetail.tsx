@@ -15,6 +15,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
+import { renderListingRichText } from "@/lib/listingRichText";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
