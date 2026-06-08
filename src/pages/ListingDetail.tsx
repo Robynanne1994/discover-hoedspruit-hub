@@ -98,7 +98,7 @@ const formatDetailLabel = (s: string): string => {
   }).join("");
 };
 
-type TabKey = "about" | "details" | "specials" | "events" | "gallery" | "location";
+type TabKey = "about" | "contact" | "details" | "specials" | "events" | "gallery" | "location";
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
@@ -256,7 +256,7 @@ const ListingDetail = () => {
     const hasS = (relatedSpecials?.length ?? 0) > 0;
     const hasE = (relatedEvents?.length ?? 0) > 0;
     const hasG = ((listing as any)?.gallery_images?.length ?? 0) > 0;
-    const keys: TabKey[] = ["about", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
+    const keys: TabKey[] = ["about", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
     if (!keys.includes(tab)) setTab("about");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relatedSpecials, relatedEvents, listing, tab]);
@@ -313,8 +313,8 @@ const ListingDetail = () => {
   const actionWhatsappClean = actionWhatsappRaw ? actionWhatsappRaw.replace(/[^0-9]/g, "") : "";
   const actionWebsite = pickAction(listing.website, l.additional_websites, l.action_website_index ?? 0);
 
-  const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length));
-  const hasAbout = !!descriptionText || !!hasHours || hasContact;
+  const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length) || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
+  const hasAbout = !!descriptionText || !!hasHours;
   const hasLocation = !!(listing.location || mapCoords);
 
   // ----- Open status -----
@@ -673,6 +673,7 @@ const ListingDetail = () => {
   const hasDetails = sections.length > 0;
   const visibleTabs: { key: TabKey; label: string }[] = [
     ...(hasAbout ? [{ key: "about" as TabKey, label: "About" }] : []),
+    ...(hasContact ? [{ key: "contact" as TabKey, label: "Contact" }] : []),
     ...(hasDetails ? [{ key: "details" as TabKey, label: "Details" }] : []),
     ...(hasSpecials ? [{ key: "specials" as TabKey, label: "Specials" }] : []),
     ...(hasEvents ? [{ key: "events" as TabKey, label: "Events" }] : []),
@@ -736,19 +737,22 @@ const ListingDetail = () => {
     </a>
   );
 
-  const TabBtn = ({ k, label }: { k: TabKey; label: string }) => {
+  const TabBtn = ({ k, label, scrollable }: { k: TabKey; label: string; scrollable?: boolean }) => {
     const active = tab === k;
     return (
       <button
         onClick={() => setTab(k)}
         style={{
-          flex: 1, background: "none", border: "none", cursor: "pointer",
-          padding: "14px 4px",
+          ...(scrollable
+            ? { flex: "0 0 auto", padding: "14px 14px" }
+            : { flex: 1, padding: "14px 4px" }),
+          background: "none", border: "none", cursor: "pointer",
           fontFamily: FONT, fontWeight: active ? 700 : 400, fontSize: 12,
           letterSpacing: "0.08em", textTransform: "uppercase",
           color: active ? C.heading : C.muted,
           borderBottom: `2px solid ${active ? C.heading : "transparent"}`,
           marginBottom: -1,
+          whiteSpace: "nowrap",
         }}
       >
         {label}
@@ -820,60 +824,62 @@ const ListingDetail = () => {
         );
       })()}
 
-      {/* Contact rows */}
-      {(listing.email || listing.phone || waClean || listing.website || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length || (listing as any).additional_phones?.length || (listing as any).additional_whatsapps?.length)) && (
-        <div style={{ marginTop: 28 }}>
-          <h2 style={headStyle}>Contact</h2>
-          <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-            {(() => {
-              const phones = collectContacts(listing.phone, (listing as any).additional_phones);
-              const whatsapps = collectContacts(whatsappNum, (listing as any).additional_whatsapps);
-              const emails = collectContacts(listing.email, (listing as any).additional_emails);
-              const phoneLabels = [((listing as any).phone_label || "").trim(), ...((((listing as any).additional_phone_labels) || []) as string[]).map((s) => (s || "").trim())];
-              const waLabels = [((listing as any).whatsapp_label || "").trim(), ...((((listing as any).additional_whatsapp_labels) || []) as string[]).map((s) => (s || "").trim())];
-              const emailLabels = [((listing as any).email_label || "").trim(), ...((((listing as any).additional_email_labels) || []) as string[]).map((s) => (s || "").trim())];
-              const rows: any[] = [];
-              phones.forEach((p, i) => rows.push({ label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!phoneLabels[i], value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
-              whatsapps.forEach((w, i) => {
-                const clean = w.replace(/[^0-9]/g, "");
-                rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
-              });
-              emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
-              const websites = collectContacts(listing.website, (listing as any).additional_websites);
-              const websiteLabels = [((listing as any).website_label || "").trim(), ...((((listing as any).additional_website_labels) || []) as string[]).map((s) => (s || "").trim())];
-              const cleanUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
-              websites.forEach((w, i) => rows.push({ label: "", custom: false, value: websiteLabels[i] || cleanUrl(w), href: w, Icon: Globe }));
-              if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
-              if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
-              return rows;
-            })().map((r: any, i, arr) => (
-              <a key={`${r.label}-${i}`} href={r.href} target="_blank" rel="noopener noreferrer" style={{
-                display: "flex", alignItems: "center", gap: 14,
-                padding: "16px 0", textDecoration: "none",
-                borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-              }}>
-                <r.Icon size={20} strokeWidth={1.5} color={C.primary} />
-                <div style={{ flex: 1, minWidth: 0, wordBreak: "break-word" }}>
-                  {r.custom && (
-                    <div style={{ fontFamily: FONT, fontSize: 10, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted, marginBottom: 2 }}>
-                      {r.label}
-                    </div>
-                  )}
-                  <div style={{ fontSize: 15, fontWeight: 400, color: C.heading }}>
-                    {r.value}
-                  </div>
-                </div>
-                <ArrowUpRight size={16} color={C.muted} />
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
 
       <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
     </div>
     );
   };
+
+  const renderContact = () => (
+    <div style={{ padding: "20px" }}>
+      <h2 style={headStyle}>Contact</h2>
+      <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+        {(() => {
+          const phones = collectContacts(listing.phone, (listing as any).additional_phones);
+          const whatsapps = collectContacts(whatsappNum, (listing as any).additional_whatsapps);
+          const emails = collectContacts(listing.email, (listing as any).additional_emails);
+          const phoneLabels = [((listing as any).phone_label || "").trim(), ...((((listing as any).additional_phone_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const waLabels = [((listing as any).whatsapp_label || "").trim(), ...((((listing as any).additional_whatsapp_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const emailLabels = [((listing as any).email_label || "").trim(), ...((((listing as any).additional_email_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const rows: any[] = [];
+          phones.forEach((p, i) => rows.push({ label: phoneLabels[i] || (i === 0 ? "Phone" : `Phone ${i + 1}`), custom: !!phoneLabels[i], value: formatSAPhone(p), href: `tel:${p}`, Icon: Phone }));
+          whatsapps.forEach((w, i) => {
+            const clean = w.replace(/[^0-9]/g, "");
+            rows.push({ label: waLabels[i] || (i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`), custom: !!waLabels[i], value: formatSAPhone(w), href: `https://wa.me/${clean}`, Icon: WhatsAppIcon });
+          });
+          emails.forEach((e, i) => rows.push({ label: emailLabels[i] || (i === 0 ? "Email" : `Email ${i + 1}`), custom: !!emailLabels[i], value: e, href: `mailto:${e}`, Icon: Mail }));
+          const websites = collectContacts(listing.website, (listing as any).additional_websites);
+          const websiteLabels = [((listing as any).website_label || "").trim(), ...((((listing as any).additional_website_labels) || []) as string[]).map((s) => (s || "").trim())];
+          const cleanUrl = (url: string) => url.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "");
+          websites.forEach((w, i) => rows.push({ label: "", custom: false, value: websiteLabels[i] || cleanUrl(w), href: w, Icon: Globe }));
+          if ((listing as any).facebook) rows.push({ label: "Facebook", value: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon });
+          if ((listing as any).instagram) rows.push({ label: "Instagram", value: "Instagram", href: (listing as any).instagram, Icon: InstagramIcon });
+          return rows;
+        })().map((r: any, i) => (
+          <a key={`${r.label}-${i}`} href={r.href} target="_blank" rel="noopener noreferrer" style={{
+            display: "flex", alignItems: "center", gap: 14,
+            padding: "16px 0", textDecoration: "none",
+            borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+          }}>
+            <r.Icon size={20} strokeWidth={1.5} color={C.primary} />
+            <div style={{ flex: 1, minWidth: 0, wordBreak: "break-word" }}>
+              {r.custom && (
+                <div style={{ fontFamily: FONT, fontSize: 10, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", color: C.muted, marginBottom: 2 }}>
+                  {r.label}
+                </div>
+              )}
+              <div style={{ fontSize: 15, fontWeight: 400, color: C.heading }}>
+                {r.value}
+              </div>
+            </div>
+            <ArrowUpRight size={16} color={C.muted} />
+          </a>
+        ))}
+      </div>
+      <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
+    </div>
+  );
+
 
   const renderDetails = () => (
     <div style={{ padding: "20px" }}>
@@ -1301,12 +1307,13 @@ const ListingDetail = () => {
         padding: "0 8px",
         overflowX: "auto",
       }} className="scrollbar-hide">
-        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} />)}
+        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} scrollable={visibleTabs.length > 4} />)}
       </nav>
 
       {/* Tab content */}
       <main style={{ background: C.bg }}>
         {tab === "about" && renderAbout()}
+        {tab === "contact" && renderContact()}
         {tab === "details" && renderDetails()}
         {tab === "specials" && renderSpecials()}
         {tab === "events" && renderEvents()}
