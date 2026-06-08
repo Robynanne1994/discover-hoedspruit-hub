@@ -9,7 +9,7 @@ const CREAM = "#EEE8DA";
 const MUTED = "#6B6A5E";
 const LINE = "#D9D2C0";
 const RUST = "#9B5A3C";
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 type Notif = {

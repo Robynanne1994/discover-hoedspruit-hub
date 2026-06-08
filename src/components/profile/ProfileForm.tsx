@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +15,7 @@ const LINE = "#D9D2C0";
 const RUST = "#9B5A3C";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const SERIF = "'Playfair Display', Georgia, serif";
+const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const AREA_CODES = [
   { code: "+27", country: "ZA", flag: "🇿🇦" },
@@ -93,18 +93,6 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
-
-  // Load Playfair
-  useEffect(() => {
-    const id = "playfair-display-font";
-    if (!document.getElementById(id)) {
-      const link = document.createElement("link");
-      link.id = id;
-      link.rel = "stylesheet";
-      link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;1,300;1,400&display=swap";
-      document.head.appendChild(link);
-    }
-  }, []);
 
   const [displayName, setDisplayName] = useState(profile?.display_name || "");
   const [username, setUsername] = useState((profile as any)?.username || "");
