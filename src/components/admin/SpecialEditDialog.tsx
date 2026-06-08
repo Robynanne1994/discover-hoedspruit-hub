@@ -78,6 +78,7 @@ const FIELDS: (keyof any)[] = [
 const SpecialEditDialog = ({ open, onOpenChange, special }: Props) => {
   const qc = useQueryClient();
   const [form, setForm] = useState<any>(special);
+  const descRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setForm(special);
