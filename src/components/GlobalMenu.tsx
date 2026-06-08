@@ -69,16 +69,24 @@ const GlobalMenu = ({ open, onOpenChange }: Props) => {
   const { signOut } = useAuth();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
-  // Close on back button
+  // Close on back button. We push a history entry on open so the device
+  // back gesture closes the menu; when the menu closes any other way we
+  // pop that entry ourselves so the user doesn't need a second back tap.
   useEffect(() => {
     if (!open) return;
-    const onPop = (e: PopStateEvent) => {
-      e.preventDefault();
+    let poppedByBrowser = false;
+    const onPop = () => {
+      poppedByBrowser = true;
       onOpenChange(false);
     };
     window.history.pushState({ globalMenu: true }, "");
     window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+    return () => {
+      window.removeEventListener("popstate", onPop);
+      if (!poppedByBrowser && window.history.state?.globalMenu) {
+        window.history.back();
+      }
+    };
   }, [open, onOpenChange]);
 
   if (!open && !confirmOpen) {
