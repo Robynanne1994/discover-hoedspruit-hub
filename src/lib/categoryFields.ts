@@ -170,6 +170,9 @@ export const LISTING_FIELD_SPECS = {
   venue_indoor_outdoor: { type: "str" },
   venue_style_tags: { type: "str_array" },
   venue_setting_types: { type: "str_array" },
+
+  // ---------- Wellness & Beauty ----------
+  treatments: { type: "str_array" },
 } as const satisfies Record<string, FieldSpec>;
 
 export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
@@ -245,6 +248,10 @@ export const WEDDINGS_EVENTS_ONLY_FIELDS = [
   "venue_indoor_outdoor", "venue_style_tags", "venue_setting_types",
 ] as const;
 
+export const WELLNESS_BEAUTY_ONLY_FIELDS = [
+  "treatments",
+] as const;
+
 // ----- Category detection -----
 
 export const RESTAURANT_CATEGORY_PATTERN = /restaurant|caf[eé]/i;
@@ -254,6 +261,7 @@ export const NGO_CATEGORY_PATTERN = /ngo|volunteer/i;
 export const WEDDINGS_EVENTS_CATEGORY_PATTERN = /weddings?\s*(&|and)?\s*events?/i;
 export const TRADES_CATEGORY_PATTERN = /trades?\s*(&|and)?\s*services?/i;
 export const HOME_GARDEN_CATEGORY_PATTERN = /home\s*(&|and)?\s*garden/i;
+export const WELLNESS_BEAUTY_CATEGORY_PATTERN = /wellness\s*(&|and)?\s*beauty/i;
 
 export function isRestaurantCategory(t: string): boolean { return RESTAURANT_CATEGORY_PATTERN.test(t); }
 export function isShoppingCategory(t: string): boolean { return SHOPPING_CATEGORY_PATTERN.test(t); }
@@ -262,6 +270,7 @@ export function isNGOCategory(t: string): boolean { return NGO_CATEGORY_PATTERN.
 export function isTradesCategory(t: string): boolean { return TRADES_CATEGORY_PATTERN.test(t); }
 export function isHomeGardenCategory(t: string): boolean { return HOME_GARDEN_CATEGORY_PATTERN.test(t); }
 export function isWeddingsEventsCategory(t: string): boolean { return WEDDINGS_EVENTS_CATEGORY_PATTERN.test(t); }
+export function isWellnessBeautyCategory(t: string): boolean { return WELLNESS_BEAUTY_CATEGORY_PATTERN.test(t); }
 
 // Get all CSV headers (including virtual `categories` / `subcategories`) for a category.
 // De-duplicates because some category groups overlap (e.g. wheelchair_friendly).
@@ -281,6 +290,7 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isTradesCategory(categoryTitle)) push(TRADES_ONLY_FIELDS);
   if (categoryTitle && isHomeGardenCategory(categoryTitle)) push(HOME_GARDEN_ONLY_FIELDS);
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
+  if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
   return out;
 }
 
@@ -294,6 +304,7 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
     categoryTitle && isTradesCategory(categoryTitle) ? TRADES_ONLY_FIELDS : [],
     categoryTitle && isHomeGardenCategory(categoryTitle) ? HOME_GARDEN_ONLY_FIELDS : [],
     categoryTitle && isWeddingsEventsCategory(categoryTitle) ? WEDDINGS_EVENTS_ONLY_FIELDS : [],
+    categoryTitle && isWellnessBeautyCategory(categoryTitle) ? WELLNESS_BEAUTY_ONLY_FIELDS : [],
   ];
   const out = new Set<string>();
   for (const g of groups) for (const f of g) out.add(f);

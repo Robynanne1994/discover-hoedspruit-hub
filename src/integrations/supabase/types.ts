@@ -1038,6 +1038,7 @@ export type Database = {
           specialities: string | null
           title: string
           title_override: string | null
+          treatments: string[] | null
           updated_at: string
           venue_accommodation_sleeps: number | null
           venue_guest_capacity: number | null
@@ -1176,6 +1177,7 @@ export type Database = {
           specialities?: string | null
           title: string
           title_override?: string | null
+          treatments?: string[] | null
           updated_at?: string
           venue_accommodation_sleeps?: number | null
           venue_guest_capacity?: number | null
@@ -1314,6 +1316,7 @@ export type Database = {
           specialities?: string | null
           title?: string
           title_override?: string | null
+          treatments?: string[] | null
           updated_at?: string
           venue_accommodation_sleeps?: number | null
           venue_guest_capacity?: number | null

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
-import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory } from "@/lib/categoryFields";
+import { isRestaurantCategory, isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory, isWellnessBeautyCategory } from "@/lib/categoryFields";
 import BottomNav from "@/components/BottomNav";
 import ImageLightbox from "@/components/ImageLightbox";
 import { toast } from "sonner";
@@ -286,6 +286,7 @@ const ListingDetail = () => {
   const isListingTrades = listingCategories?.some((c) => isTradesCategory(c.title)) ?? false;
   const isListingHomeGarden = listingCategories?.some((c) => isHomeGardenCategory(c.title)) ?? false;
   const isListingWeddingsEvents = listingCategories?.some((c) => isWeddingsEventsCategory(c.title)) ?? false;
+  const isListingWellnessBeauty = listingCategories?.some((c) => isWellnessBeautyCategory(c.title)) ?? false;
   const l = listing as any;
   const galleryImages = (l.gallery_images as string[] | null) || [];
   const openingHours = l.opening_hours as Record<string, string> | null;
@@ -591,6 +592,13 @@ const ListingDetail = () => {
     }
   }
 
+  if (isListingWellnessBeauty) {
+    const treatments = ((l as any).treatments as string[] | null) ?? [];
+    if (treatments.length) {
+      sections.push({ key: "wb-treatments", title: "Treatments", iconComp: Sparkles, fields: treatments.map((label: string) => ({ label, on: true })) });
+    }
+  }
+
 
 
   // Apply per-listing / global "yes only" vs "all" display mode for yes-no cards
@@ -625,7 +633,7 @@ const ListingDetail = () => {
   sections.push(...customSections, ...otherSections);
 
   // Tag each section with its category group so we can build per-category sub-tabs
-  type CatGroup = "restaurant" | "accommodation" | "shopping" | "ngo" | "trades" | "homegarden" | "weddings" | "shared";
+  type CatGroup = "restaurant" | "accommodation" | "shopping" | "ngo" | "trades" | "homegarden" | "weddings" | "wellness" | "shared";
   const sectionGroup = (key: string): CatGroup => {
     if (key.startsWith("custom-") || key === "pricing") return "shared";
     if (key.startsWith("accom-")) return "accommodation";
@@ -634,6 +642,7 @@ const ListingDetail = () => {
     if (key.startsWith("trades-")) return "trades";
     if (key.startsWith("hg-")) return "homegarden";
     if (key.startsWith("we-")) return "weddings";
+    if (key.startsWith("wb-")) return "wellness";
     return "restaurant";
   };
   const categoryToGroup = (title: string): CatGroup | null => {
@@ -644,6 +653,7 @@ const ListingDetail = () => {
     if (isTradesCategory(title)) return "trades";
     if (isHomeGardenCategory(title)) return "homegarden";
     if (isWeddingsEventsCategory(title)) return "weddings";
+    if (isWellnessBeautyCategory(title)) return "wellness";
     return null;
   };
   // Build category sub-tabs (in the order the listing has them) — only those
