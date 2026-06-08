@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
-import { RefineDrawer, RefineSection, RefineChip } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineGroupLabel } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
@@ -25,6 +25,33 @@ const COLOR = {
   badge: "#C0392B",
   badgeFg: "#FFFFFF",
   priceStrike: "#9C9387",
+};
+
+type SortKey = "default" | "alphabetical" | "ending_soon" | "biggest_saving" | "newest";
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "default", label: "Default" },
+  { key: "alphabetical", label: "Alphabetical" },
+  { key: "ending_soon", label: "Ending Soon" },
+  { key: "biggest_saving", label: "Biggest Saving" },
+  { key: "newest", label: "Newest" },
+];
+
+// Extract the first numeric value from a price/savings string (e.g. "Save R200" -> 200)
+const parseNum = (v: any): number | null => {
+  if (v == null) return null;
+  const m = String(v).replace(/[, ]/g, "").match(/-?\d+(\.\d+)?/);
+  return m ? parseFloat(m[0]) : null;
+};
+
+// Best-effort saving amount: explicit savings, else original − discounted price
+const savingValue = (s: any): number => {
+  const sv = parseNum(s.savings);
+  if (sv != null) return sv;
+  const orig = parseNum(s.original_price);
+  const price = parseNum(s.price);
+  if (orig != null && price != null) return orig - price;
+  return -Infinity;
 };
 
 const formatValidTill = (s: any): string => {
@@ -49,6 +76,8 @@ const Specials = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState<string[]>([]);
+  const [sortBy, setSortBy] = useState<SortKey>("default");
+  const [openSection, setOpenSection] = useState<"sort" | "category" | null>("sort");
   const [activeTab, setActiveTab] = useState<string>("All Specials");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -110,8 +139,33 @@ const Specials = () => {
         return lc.some((t) => lcCats.includes(t));
       });
     }
+
+    // Sort
+    if (sortBy === "alphabetical") {
+      result.sort((a: any, b: any) =>
+        getDisplayTitle(a).localeCompare(getDisplayTitle(b), undefined, { sensitivity: "base" })
+      );
+    } else if (sortBy === "ending_soon") {
+      // Soonest expiry first; ongoing specials (no end date) sort to the bottom
+      result.sort((a: any, b: any) => {
+        const ta = a.valid_until ? new Date(a.valid_until).getTime() : Infinity;
+        const tb = b.valid_until ? new Date(b.valid_until).getTime() : Infinity;
+        return ta - tb;
+      });
+    } else if (sortBy === "biggest_saving") {
+      result.sort((a: any, b: any) => savingValue(b) - savingValue(a));
+    } else if (sortBy === "newest") {
+      // Most recently active first
+      result.sort((a: any, b: any) => {
+        const ta = new Date(a.updated_at || a.created_at).getTime();
+        const tb = new Date(b.updated_at || b.created_at).getTime();
+        return tb - ta;
+      });
+    }
+    // "default" keeps the query order (created_at desc)
+
     return result;
-  }, [specials, activeTab, filterType, search]);
+  }, [specials, activeTab, filterType, search, sortBy]);
 
 
   const toggleFilter = (val: string) => {
@@ -187,13 +241,13 @@ const Specials = () => {
                 width: 40,
                 height: 40,
                 borderRadius: 999,
-                background: filterType.length > 0 ? COLOR.ink : "#FFFFFF",
+                background: filterType.length > 0 || sortBy !== "default" ? COLOR.ink : "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: filterType.length > 0 ? COLOR.cardBg : "#020202",
+                color: filterType.length > 0 || sortBy !== "default" ? COLOR.cardBg : "#020202",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />
@@ -295,11 +349,38 @@ const Specials = () => {
       <RefineDrawer
         open={showFilters}
         onClose={() => setShowFilters(false)}
-        onClear={() => setFilterType([])}
+        onClear={() => {
+          setFilterType([]);
+          setSortBy("default");
+        }}
         resultsCount={filteredSpecials.length}
         resultsLabel="specials"
       >
-        <RefineSection isFirst label="Category" summary={filterType.length > 0 ? `${filterType.length} selected` : undefined} open onToggle={() => {}}>
+        <RefineGroupLabel label="Sort" />
+        <RefineSection
+          isFirst
+          label="Sort By"
+          summary={SORT_OPTIONS.find((o) => o.key === sortBy)?.label}
+          open={openSection === "sort"}
+          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+        >
+          {SORT_OPTIONS.map((o) => (
+            <RefineOption
+              key={o.key}
+              label={o.label}
+              active={sortBy === o.key}
+              onClick={() => setSortBy(o.key)}
+            />
+          ))}
+        </RefineSection>
+
+        <RefineGroupLabel label="Filter By" />
+        <RefineSection
+          label="Category"
+          summary={filterType.length > 0 ? `${filterType.length} selected` : undefined}
+          open={openSection === "category"}
+          onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
+        >
           {categoryTabs.filter((c) => c !== "All Specials").length > 0 ? (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
