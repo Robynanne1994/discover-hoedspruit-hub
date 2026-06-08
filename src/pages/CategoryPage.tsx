@@ -1,6 +1,7 @@
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { supabase } from "@/integrations/supabase/client";
 import { SlidersHorizontal, MapPin, Search, X, Heart, Pill as PillIcon, Stethoscope, Eye, HeartPulse, Smile, LayoutGrid } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
@@ -124,58 +125,24 @@ const FilterChip = ({ label, active, onClick }: { label: string; active: boolean
   </button>
 );
 
-// Card-internal save heart (rust on save)
+// Card-internal save heart (rust on save).
+// Reads from the shared favourites cache so a category page with 50 listings
+// only does ONE favourites query instead of 50.
 const CardHeart = ({ listingId }: { listingId: string }) => {
   const { user } = useAuth();
-  const qc = useQueryClient();
-  const { data: saved } = useQuery({
-    queryKey: ["favourite", "listing", listingId, user?.id],
-    queryFn: async () => {
-      if (!user) return false;
-      const { data } = await supabase
-        .from("favourites" as any)
-        .select("id")
-        .eq("user_id", user.id)
-        .eq("item_id", listingId)
-        .eq("item_type", "listing")
-        .maybeSingle();
-      return !!data;
-    },
-    enabled: !!user,
-  });
-
-  const toggle = useMutation({
-    mutationFn: async () => {
-      if (!user) {
-        toast.error("Please sign in to save favourites");
-        return;
-      }
-      if (saved) {
-        await supabase
-          .from("favourites" as any)
-          .delete()
-          .eq("user_id", user.id)
-          .eq("item_id", listingId)
-          .eq("item_type", "listing");
-      } else {
-        await supabase
-          .from("favourites" as any)
-          .insert({ user_id: user.id, item_id: listingId, item_type: "listing" });
-      }
-    },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["favourite", "listing", listingId] });
-      qc.invalidateQueries({ queryKey: ["favourites"] });
-      qc.invalidateQueries({ queryKey: ["user-saved-listings"] });
-    },
-  });
+  const saved = useIsFavourited(listingId, "listing");
+  const toggle = useToggleFavourite();
 
   return (
     <button
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
-        toggle.mutate();
+        if (!user) {
+          toast.error("Please sign in to save favourites");
+          return;
+        }
+        toggle.mutate({ itemId: listingId, itemType: "listing", currentlyFavourited: saved });
       }}
       aria-label={saved ? "Remove from favourites" : "Add to favourites"}
       style={{
@@ -202,6 +169,7 @@ const CardHeart = ({ listingId }: { listingId: string }) => {
     </button>
   );
 };
+
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
