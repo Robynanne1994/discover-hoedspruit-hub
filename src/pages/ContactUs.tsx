@@ -8,6 +8,7 @@ const WhatsAppIcon = ({ size = 18, color = "#1A1A1A" }: { size?: number; color?:
 );
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import PageHeader from "@/components/PageHeader";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -109,54 +110,7 @@ const ContactUs = () => {
       }}
     >
       {/* Top bar */}
-      <div
-        style={{
-          paddingTop: "calc(env(safe-area-inset-top) + 60px)",
-          paddingLeft: 24,
-          paddingRight: 24,
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          minHeight: 44,
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: "#fff",
-            border: "none",
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            lineHeight: 0,
-            flexShrink: 0,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-          }}
-        >
-          <BackArrowIcon size={18} color={INK} />
-        </button>
-        <div
-          style={{
-            flex: 1,
-            textAlign: "center",
-            marginRight: 40,
-            fontFamily: FF,
-            fontSize: 20,
-            fontWeight: 700,
-            color: INK,
-            lineHeight: 1,
-          }}
-        >
-          Contact us
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 20 }} />
+      <PageHeader title="Contact us" />
 
       {/* Intro */}
       <p

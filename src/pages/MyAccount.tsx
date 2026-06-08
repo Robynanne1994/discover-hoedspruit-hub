@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import PageHeader from "@/components/PageHeader";
 import {
   Heart,
   MapPinCheck,
@@ -608,55 +609,7 @@ const MyAccount = () => {
       }}
     >
       {/* Top bar */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 12,
-          padding: "calc(env(safe-area-inset-top) + 60px) 24px 0",
-          minHeight: 44,
-        }}
-      >
-        <button
-          type="button"
-          aria-label="Go back"
-          onClick={() => navigate("/my-profile")}
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: "#fff",
-            border: "none",
-            padding: 0,
-            margin: 0,
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            lineHeight: 0,
-            flexShrink: 0,
-            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-          }}
-        >
-          <BackArrowIcon size={18} color={INK} />
-        </button>
-        <div
-          style={{
-            flex: 1,
-            textAlign: "center",
-            marginRight: 40,
-            fontFamily: SANS,
-            fontSize: 20,
-            fontWeight: 700,
-            color: INK,
-            lineHeight: 1,
-          }}
-        >
-          Account
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 20 }} />
+      <PageHeader title="Account" onBack={() => navigate("/my-profile")} />
 
 
       <div style={{ height: 24 }} />

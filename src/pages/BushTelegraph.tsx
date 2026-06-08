@@ -5,6 +5,7 @@ import { Plus, X, Pencil, ArrowLeft, ArrowUpRight, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import PageHeader from "@/components/PageHeader";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -394,26 +395,26 @@ const BushTelegraph = () => {
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
       {/* Top bar */}
-      <div style={{ paddingTop: 60, paddingLeft: 20, paddingRight: 20, display: "flex", alignItems: "center", gap: 12, minHeight: 40 }}>
-        <CircleBtn onClick={() => navigate(-1)} ariaLabel="Back">
-          <ArrowLeft size={18} color={INK} strokeWidth={2} />
-        </CircleBtn>
-        <div style={{ flex: 1, textAlign: "center", fontFamily: HN, fontWeight: 700, fontSize: 18, color: INK, lineHeight: 1, letterSpacing: "-0.2px" }}>
-          Local Channels
-        </div>
-        <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
-          {isAdmin && (
-            <CircleBtn onClick={() => navigate("/admin/local-channels")} ariaLabel="Edit local channels">
-              <Pencil size={16} color={INK} strokeWidth={2} />
-            </CircleBtn>
-          )}
-          <CircleBtn onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
-            <Plus size={18} color={INK} strokeWidth={2} />
+      <PageHeader
+        title="Local Channels"
+        left={
+          <CircleBtn onClick={() => navigate(-1)} ariaLabel="Back">
+            <ArrowLeft size={18} color={INK} strokeWidth={2} />
           </CircleBtn>
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: LINE, margin: "20px 20px 16px 20px" }} />
+        }
+        right={
+          <>
+            {isAdmin && (
+              <CircleBtn onClick={() => navigate("/admin/local-channels")} ariaLabel="Edit local channels">
+                <Pencil size={16} color={INK} strokeWidth={2} />
+              </CircleBtn>
+            )}
+            <CircleBtn onClick={() => setSheetOpen(true)} ariaLabel="Suggest a resource">
+              <Plus size={18} color={INK} strokeWidth={2} />
+            </CircleBtn>
+          </>
+        }
+      />
 
       {/* Subtitle */}
       <div style={{ padding: "0 20px" }}>
