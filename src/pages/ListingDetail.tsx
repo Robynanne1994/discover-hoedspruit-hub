@@ -1307,12 +1307,13 @@ const ListingDetail = () => {
         padding: "0 8px",
         overflowX: "auto",
       }} className="scrollbar-hide">
-        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} />)}
+        {visibleTabs.map(t => <TabBtn key={t.key} k={t.key} label={t.label} scrollable={visibleTabs.length > 4} />)}
       </nav>
 
       {/* Tab content */}
       <main style={{ background: C.bg }}>
         {tab === "about" && renderAbout()}
+        {tab === "contact" && renderContact()}
         {tab === "details" && renderDetails()}
         {tab === "specials" && renderSpecials()}
         {tab === "events" && renderEvents()}
