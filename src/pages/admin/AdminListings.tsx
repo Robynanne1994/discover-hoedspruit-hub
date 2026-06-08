@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory } from "@/lib/categoryFields";
+import { isShoppingCategory, isAccommodationCategory, isNGOCategory, isTradesCategory, isHomeGardenCategory, isWeddingsEventsCategory, isWellnessBeautyCategory } from "@/lib/categoryFields";
 import { toast } from "sonner";
 import { Plus, Pencil, Trash2, FileSpreadsheet, Search } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
@@ -462,6 +462,7 @@ const AdminListings = () => {
         venue_indoor_outdoor: values.venue_indoor_outdoor?.trim() || null,
         venue_style_tags: values.venue_style_tags ?? [],
         venue_setting_types: values.venue_setting_types ?? [],
+        treatments: values.treatments ?? [],
         details_display_mode: values.details_display_mode ?? {},
       };
 
@@ -780,6 +781,7 @@ const AdminListings = () => {
   const isTradesType = categories?.some((c) => selectedCatIds.includes(c.id) && isTradesCategory(c.title));
   const isHomeGardenType = categories?.some((c) => selectedCatIds.includes(c.id) && isHomeGardenCategory(c.title));
   const isWeddingsEventsType = categories?.some((c) => selectedCatIds.includes(c.id) && isWeddingsEventsCategory(c.title));
+  const isWellnessBeautyType = categories?.some((c) => selectedCatIds.includes(c.id) && isWellnessBeautyCategory(c.title));
   const isEventVenueSub = subcategories?.some((s) => selectedSubIds.includes(s.id) && /event\s*venue/i.test(s.title)) ?? false;
 
   const filteredListings = (listings ?? []).filter((l) => {
