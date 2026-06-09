@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { supabase } from "@/integrations/supabase/client";
-import { SlidersHorizontal, MapPin, Search, X, Heart, Pill as PillIcon, Stethoscope, Eye, HeartPulse, Smile, LayoutGrid } from "lucide-react";
+import { SlidersHorizontal, MapPin, Search, X, Heart, Pill as PillIcon, Stethoscope, Eye, HeartPulse, Smile, LayoutGrid, Plus, Activity, Brain, PawPrint, Ambulance, Syringe, Bone, Baby, Ear, Accessibility, Microscope, TestTubes } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
@@ -63,6 +63,31 @@ const titleSizeFor = (s: string) => {
 };
 
 type SortKey = "default" | "name" | "rating";
+
+// Resolve an icon for a Health & Medical subcategory by matching keywords in
+// its title, falling back to a generic medical icon so EVERY subcategory in the
+// category gets a tile (no hardcoded list to fall out of sync with the DB).
+const healthIconFor = (title: string) => {
+  const t = title.toLowerCase();
+  if (/pharmac|chemist|dispensar|tablet|medication/.test(t)) return PillIcon;
+  if (/dental|dentist|orthodont|tooth|teeth|oral/.test(t)) return Smile;
+  if (/optom|optic|eye|vision|spectacle|glasses|ophthalm/.test(t)) return Eye;
+  if (/vaccin|immunis|immuniz|inject/.test(t)) return Syringe;
+  if (/vet|veterin|animal/.test(t)) return PawPrint;
+  if (/ambulance|emergency|paramedic|rescue|first aid/.test(t)) return Ambulance;
+  if (/lab|patholog|blood|diagnost|pathol|test/.test(t)) return TestTubes;
+  if (/radiolog|x-ray|xray|scan|imaging|ultrasound|sonograph/.test(t)) return Microscope;
+  if (/physio|physiother|rehab|biokinet/.test(t)) return Activity;
+  if (/chiro|spine|spinal|orthopaed|orthoped|bone|podiat|foot/.test(t)) return Bone;
+  if (/psych|mental|counsel|therap|wellbeing|wellness|social work/.test(t)) return Brain;
+  if (/pediatr|paediatr|child|baby|infant|maternity|matern/.test(t)) return Baby;
+  if (/ear|nose|throat|\bent\b|hearing|audiolog/.test(t)) return Ear;
+  if (/disab|accessib|mobility|wheelchair|special needs/.test(t)) return Accessibility;
+  if (/hospital|surger|surgeon|specialist|medical centre|medical center/.test(t)) return Plus;
+  if (/clinic/.test(t)) return HeartPulse;
+  if (/\bgp\b|general practit|family (doctor|practice)|doctor|physician|practitioner|medical practice/.test(t)) return Stethoscope;
+  return HeartPulse; // generic medical fallback
+};
 
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -699,55 +724,28 @@ const CategoryPage = () => {
       </div>
 
       {/* Health & Medical quick subcategory tiles */}
-      {categoryTitle === "Health & Medical" && subcategories && (() => {
-        const QUICK = [
-          { title: "All", icon: LayoutGrid, subId: null as string | null },
-          { title: "Pharmacies", icon: PillIcon, subId: "pharmacies" as string | null },
-          { title: "Dentists", icon: Smile, subId: "dentists" as string | null },
-          { title: "GPs", icon: Stethoscope, subId: "gps" as string | null },
-          { title: "Clinics", icon: HeartPulse, subId: "clinics" as string | null },
-          { title: "Optometrists", icon: Eye, subId: "optometrists" as string | null },
+      {categoryTitle === "Health & Medical" && subcategories && subcategories.length > 0 && (() => {
+        // Build a tile for the "All" option plus EVERY subcategory in this
+        // category, so the icon/text filters always stay in sync with the DB.
+        const tiles: { key: string; title: string; Icon: any; subId: string | null }[] = [
+          { key: "all", title: "All", Icon: LayoutGrid, subId: null },
+          ...subcategories.map((sub) => ({
+            key: sub.id,
+            title: sub.title,
+            Icon: healthIconFor(sub.title),
+            subId: sub.id as string | null,
+          })),
         ];
         const tileWidth = `calc((100vw - 40px - 12px) / 4)`;
         return (
           <div className="scrollbar-hide" style={{ overflowX: "auto", paddingLeft: 20, marginBottom: 18 }}>
             <div style={{ display: "flex", gap: 4, paddingRight: 20 }}>
-              {QUICK.map(({ title, icon: Icon, subId }) => {
-                if (subId) {
-                  const sub = subcategories.find((s) => s.title === title);
-                  if (!sub) return null;
-                  const isActive = activeSubId === sub.id;
-                  return (
-                    <button
-                      key={sub.id}
-                      onClick={() => handleSubFilter(isActive ? null : sub.id)}
-                      style={{
-                        flexShrink: 0,
-                        width: tileWidth,
-                        background: isActive ? PILL_DARK : "#ffffff",
-                        color: isActive ? "#ffffff" : INK,
-                        borderRadius: 16,
-                        padding: "16px 8px 12px",
-                        border: "none",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        gap: 8,
-                        cursor: "pointer",
-                      }}
-                    >
-                      <Icon size={26} color={isActive ? "#ffffff" : INK} strokeWidth={1.4} />
-                      <span style={{ fontFamily: sans, fontSize: 12, letterSpacing: "0.01em" }}>{title}</span>
-                    </button>
-                  );
-                }
-                // "All" tile
-                const isActive = !activeSubId;
+              {tiles.map(({ key, title, Icon, subId }) => {
+                const isActive = subId ? activeSubId === subId : !activeSubId;
                 return (
                   <button
-                    key="all"
-                    onClick={() => handleSubFilter(null)}
+                    key={key}
+                    onClick={() => handleSubFilter(subId && isActive ? null : subId)}
                     style={{
                       flexShrink: 0,
                       width: tileWidth,
@@ -765,7 +763,7 @@ const CategoryPage = () => {
                     }}
                   >
                     <Icon size={26} color={isActive ? "#ffffff" : INK} strokeWidth={1.4} />
-                    <span style={{ fontFamily: sans, fontSize: 12, letterSpacing: "0.01em" }}>{title}</span>
+                    <span style={{ fontFamily: sans, fontSize: 12, letterSpacing: "0.01em", textAlign: "center", lineHeight: 1.2 }}>{title}</span>
                   </button>
                 );
               })}
