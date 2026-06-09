@@ -113,7 +113,7 @@ body {
 
     --radius: 1rem;
 
-    --font-heading: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-heading: "Bricolage Grotesque", "Helvetica Neue", Helvetica, Arial, sans-serif;
     --font-body: "Helvetica Neue", Helvetica, Arial, sans-serif;
     --font-editorial: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
@@ -284,7 +284,7 @@ body {
 }
 
 h2 {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+  font-family: "Bricolage Grotesque", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   font-size: 24px !important;
   font-weight: 700 !important;
   text-transform: none !important;
