@@ -68,13 +68,13 @@ export const RefineDrawer = ({
           top: 0,
           right: 0,
           height: "100dvh",
-          width: "88%",
-          maxWidth: 420,
+          width: "86%",
+          maxWidth: 400,
           background: "#ffffff",
           color: "#020202",
           borderTopLeftRadius: 20,
           borderBottomLeftRadius: 20,
-          boxShadow: "-12px 0 36px rgba(0,0,0,0.25)",
+          boxShadow: "-12px 0 36px rgba(0,0,0,0.18)",
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1)",
           zIndex: 90,
@@ -83,68 +83,72 @@ export const RefineDrawer = ({
           fontFamily: SANS,
         }}
       >
-        {/* Header */}
-        <div style={{ padding: "calc(env(safe-area-inset-top) + 18px) 20px 14px 20px" }}>
+        {/* Header — mirrors the app's PageHeader: 20px/700 title with a full-bleed divider */}
+        <div style={{ padding: "calc(env(safe-area-inset-top) + 18px) 20px 0 20px" }}>
           <div
             style={{
               display: "flex",
-              alignItems: "flex-end",
+              alignItems: "center",
               justifyContent: "space-between",
-              gap: 16,
+              gap: 12,
+              minHeight: 40,
             }}
           >
-            <div>
-              <div
-                style={{
-                  fontFamily: SANS,
-                  fontWeight: 400,
-                  fontSize: 13,
-                  color: "rgba(2,2,2,0.55)",
-                  letterSpacing: "0.01em",
-                  textTransform: "capitalize",
-                  marginBottom: 4,
-                }}
-              >
-                Refine
-              </div>
-              <h2
-                style={{
-                  margin: 0,
-                  fontFamily: SANS,
-                  fontSize: 34,
-                  lineHeight: 1,
-                  fontWeight: 700,
-                  color: "#020202",
-                  letterSpacing: "-0.01em",
-                  textTransform: "capitalize",
-                }}
-              >
-                Filters
-              </h2>
-            </div>
-            <button
-              onClick={onClear}
+            <h2
               style={{
-                background: "#423324",
-                border: "none",
-                padding: "10px 18px",
-                borderRadius: 999,
+                margin: 0,
                 fontFamily: SANS,
-                fontSize: 13,
+                fontSize: 20,
+                lineHeight: 1,
                 fontWeight: 700,
-                color: "#FFFFFF",
-                letterSpacing: "0.01em",
-                textTransform: "capitalize",
-                cursor: "pointer",
-                boxShadow: "0 2px 6px rgba(113,90,61,0.25)",
+                color: "#1A1A1A",
+                letterSpacing: "-0.2px",
               }}
             >
-              Clear All
-            </button>
+              Filters
+            </h2>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <button
+                onClick={onClear}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  padding: "6px 4px",
+                  fontFamily: SANS,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#715a3d",
+                  letterSpacing: "0.01em",
+                  cursor: "pointer",
+                }}
+              >
+                Clear all
+              </button>
+              <button
+                onClick={onClose}
+                aria-label="Close filters"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  background: "#ffffff",
+                  border: "none",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  color: "#1A1A1A",
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                  flexShrink: 0,
+                }}
+              >
+                <X size={18} strokeWidth={1.8} />
+              </button>
+            </div>
           </div>
 
           {activeChips && activeChips.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 16 }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
               {activeChips.map((chip, i) => (
                 <button
                   key={i}
@@ -152,14 +156,14 @@ export const RefineDrawer = ({
                   style={{
                     display: "inline-flex",
                     alignItems: "center",
-                    gap: 8,
-                    padding: "8px 14px",
+                    gap: 6,
+                    padding: "6px 12px",
                     borderRadius: 999,
                     background: "#020202",
                     color: "#ffffff",
                     border: "none",
                     fontFamily: SANS,
-                    fontSize: 13,
+                    fontSize: 12,
                     fontWeight: 600,
                     letterSpacing: "0.01em",
                     textTransform: "capitalize",
@@ -168,12 +172,15 @@ export const RefineDrawer = ({
                   aria-label={`Remove ${chip.label}`}
                 >
                   {chip.label}
-                  <X size={14} strokeWidth={2.2} />
+                  <X size={13} strokeWidth={2.2} />
                 </button>
               ))}
             </div>
           )}
         </div>
+
+        {/* Divider beneath header (full-bleed, matches PageHeader) */}
+        <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 16 }} />
 
         {/* Sections */}
         <div
@@ -186,21 +193,33 @@ export const RefineDrawer = ({
           {children}
         </div>
 
-        {/* Sticky CTA */}
+        {/* Sticky CTA — uses the app's primary button style (brown, 48px) */}
         <div
           style={{
             padding: "12px 20px calc(env(safe-area-inset-bottom) + 16px)",
             background: "#ffffff",
-            borderTop: "1px solid rgba(0,0,0,0.06)",
+            borderTop: "1px solid rgba(26,26,26,0.10)",
           }}
         >
           <button
             onClick={onClose}
+            onPointerDown={(e) => {
+              e.currentTarget.style.transform = "scale(0.97)";
+              e.currentTarget.style.opacity = "0.85";
+            }}
+            onPointerUp={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.opacity = "1";
+            }}
+            onPointerLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.opacity = "1";
+            }}
             style={{
               width: "100%",
-              height: 56,
-              borderRadius: 999,
-              background: "#020202",
+              height: 48,
+              borderRadius: 9999,
+              background: "#423324",
               color: "#ffffff",
               border: "none",
               fontFamily: SANS,
@@ -212,17 +231,14 @@ export const RefineDrawer = ({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              position: "relative",
+              gap: 8,
+              transition: "transform 0.12s ease, opacity 0.12s ease",
             }}
           >
             <span>
               Show {resultsCount} {resultsLabel}
             </span>
-            <ArrowRight
-              size={18}
-              strokeWidth={1.8}
-              style={{ position: "absolute", right: 22, top: "50%", transform: "translateY(-50%)" }}
-            />
+            <ArrowRight size={18} strokeWidth={1.8} />
           </button>
         </div>
       </aside>
@@ -236,11 +252,11 @@ export const RefineGroupLabel = ({ label }: { label: string }) => (
     style={{
       fontFamily: SANS,
       fontWeight: 600,
-      fontSize: 13,
+      fontSize: 11,
       color: "#715a3d",
-      letterSpacing: "0.01em",
-      textTransform: "capitalize",
-      padding: "20px 0 6px 0",
+      letterSpacing: "0.08em",
+      textTransform: "uppercase",
+      padding: "18px 0 2px 0",
     }}
   >
     {label}
@@ -276,7 +292,7 @@ export const RefineSection = ({
           width: "100%",
           background: "transparent",
           border: "none",
-          padding: "16px 0",
+          padding: "14px 0",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -284,16 +300,16 @@ export const RefineSection = ({
           textAlign: "left",
         }}
       >
-        <span style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+        <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           <span
             style={{
               fontFamily: SANS,
-              fontSize: 20,
+              fontSize: 16,
               fontWeight: 700,
-              color: "#020202",
-              letterSpacing: "-0.005em",
+              color: "#1A1A1A",
+              letterSpacing: "-0.01em",
               textTransform: "capitalize",
-              lineHeight: 1.15,
+              lineHeight: 1.2,
             }}
           >
             {label}
@@ -302,7 +318,7 @@ export const RefineSection = ({
             <span
               style={{
                 fontFamily: SANS,
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: 400,
                 color: "rgba(43,36,32,0.55)",
                 letterSpacing: "0.01em",
@@ -313,12 +329,12 @@ export const RefineSection = ({
           )}
         </span>
         {open ? (
-          <ChevronDown size={18} strokeWidth={1.6} color="#020202" />
+          <ChevronDown size={17} strokeWidth={1.6} color="rgba(26,26,26,0.55)" />
         ) : (
-          <ChevronRight size={18} strokeWidth={1.6} color="#020202" />
+          <ChevronRight size={17} strokeWidth={1.6} color="rgba(26,26,26,0.55)" />
         )}
       </button>
-      {open && <div style={{ padding: "2px 0 16px 0" }}>{children}</div>}
+      {open && <div style={{ padding: "0 0 14px 0" }}>{children}</div>}
     </div>
   );
 };
