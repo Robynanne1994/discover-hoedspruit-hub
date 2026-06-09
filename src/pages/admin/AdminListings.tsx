@@ -23,7 +23,6 @@ import { sanitizeContactArray } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { DISPLAY_SECTIONS, sectionsForGroup, type DisplayMode, type SectionGroup, DISPLAY_DEFAULTS_SECTION } from "@/lib/detailsDisplayModes";
 import { DetailsDisplayModeEditor, DetailsDisplayDefaultsEditor } from "@/components/admin/DetailsDisplayModeEditor";
-import { CUSTOM_ICONS } from "@/lib/customIcons";
 import MarkdownToolbar from "@/components/admin/MarkdownToolbar";
 
 type Listing = Tables<"listings">;
@@ -51,7 +50,7 @@ const VENUE_STYLE_TAG_OPTIONS = ["Rustic", "Modern", "Classic", "Boho", "Safari"
 const VENUE_SETTING_OPTIONS = ["Bush", "Garden", "Riverside", "Farm", "Town", "Lodge"];
 const VENUE_INDOOR_OUTDOOR_OPTIONS = ["Indoor", "Outdoor", "Both"];
 
-const emptyForm = { treatments: [] as string[], avg_price_per_person_per_night: "" as string, rooms_count: null as number | null, drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_icon_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_icon_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, custom_icon_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], venue_onsite_accommodation: null as boolean | null, venue_accommodation_sleeps: null as number | null, venue_guest_capacity: null as number | null, venue_indoor_outdoor: "" as string, venue_style_tags: [] as string[], venue_setting_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
+const emptyForm = { treatments: [] as string[], avg_price_per_person_per_night: "" as string, rooms_count: null as number | null, drive_through: null as boolean | null, title: "", title_override: "" as string, description: "", image_url: "", detail_image_url: "", location: "", phone: "", phone_label: "" as string, email: "", email_label: "" as string, website: "", website_label: "" as string, additional_websites: [] as string[], additional_website_labels: [] as string[], action_phone_index: 0 as number, action_email_index: 0 as number, action_whatsapp_index: 0 as number, action_website_index: 0 as number, facebook: "" as string, instagram: "" as string, whatsapp: "", whatsapp_label: "" as string, additional_emails: [] as string[], additional_email_labels: [] as string[], additional_phones: [] as string[], additional_phone_labels: [] as string[], additional_whatsapps: [] as string[], additional_whatsapp_labels: [] as string[], google_maps_link: "", google_rating: null as number | null, google_reviews_count: null as number | null, google_reviews_url: "", is_featured: false, long_description: "", gallery_images: "" as string, opening_hours: Object.fromEntries(DAY_LABELS.map((d) => [d, ""])) as Record<string, string>, good_for_kids: null as boolean | null, pets_allowed: null as boolean | null, wheelchair_friendly: null as boolean | null, price_level: null as number | null, show_attributes: false, meal: [] as string[], vibe: [] as string[], cuisine: [] as string[], foods: [] as string[], seating: [] as string[], kids_playground: null as boolean | null, smoking_allowed: null as boolean | null, service_type: [] as string[], kids_menu: null as boolean | null, high_chairs: null as boolean | null, nappy_changing_station: null as boolean | null, wheelchair_car_park: null as boolean | null, wheelchair_entrance: null as boolean | null, wheelchair_seating: null as boolean | null, wheelchair_toilet: null as boolean | null, has_toilet: null as boolean | null, has_wifi: null as boolean | null, has_free_wifi: null as boolean | null, has_wine_list: null as boolean | null, has_cocktails: null as boolean | null, has_craft_beer: null as boolean | null, has_smoothies: null as boolean | null, has_coffee: null as boolean | null, has_champagne: null as boolean | null, has_milkshakes: null as boolean | null, has_mocktails: null as boolean | null, has_beers_ciders: null as boolean | null, has_iced_coffee: null as boolean | null, air_conditioned: null as boolean | null, payment_methods: [] as string[], delivery_available: null as boolean | null, click_and_collect: null as boolean | null, order_online: null as boolean | null, parking_available: null as boolean | null, local_products: null as boolean | null, shop_type: "" as string, curio_or_gifts: null as boolean | null, product_categories: "" as string, price_range: "" as string, amenities: [] as string[], sleeps: null as number | null, km_from_town: "" as string, has_restaurant: null as boolean | null, has_bar: null as boolean | null, has_room_service: null as boolean | null, has_breakfast: null as boolean | null, breakfast_included: null as boolean | null, has_swimming_pool: null as boolean | null, has_laundry: null as boolean | null, child_friendly: null as boolean | null, has_spa: null as boolean | null, has_fitness_centre: null as boolean | null, has_airport_shuttle: null as boolean | null, airport_shuttle_free: null as boolean | null, has_aircon: null as boolean | null, has_wifi_accom: null as boolean | null, has_free_parking: null as boolean | null, has_secure_parking: null as boolean | null, is_franchise: null as boolean | null, custom_title_1: "" as string, custom_text_1: "" as string, custom_title_2: "" as string, custom_text_2: "" as string, custom_title_3: "" as string, custom_text_3: "" as string, cause: "" as string, impact: "" as string, ways_to_give: "" as string, volunteering: "" as string, visiting: "" as string, business_started_year: null as number | null, years_in_business: null as number | null, after_hours_available: null as boolean | null, callout_fee: null as boolean | null, specialities: "" as string, tenure_mode: "started" as "started" | "years", services_offered: [] as string[], plant_types: [] as string[], event_types: [] as string[], venue_onsite_accommodation: null as boolean | null, venue_accommodation_sleeps: null as number | null, venue_guest_capacity: null as number | null, venue_indoor_outdoor: "" as string, venue_style_tags: [] as string[], venue_setting_types: [] as string[], details_display_mode: {} as Record<string, DisplayMode | "default"> };
 
 const TreatmentsEditor = ({ value, onChange }: { value: string[]; onChange: (v: string[]) => void }) => {
   const items = Array.isArray(value) ? value : [];
@@ -478,13 +477,10 @@ const AdminListings = () => {
         is_franchise: values.is_franchise,
         custom_title_1: values.custom_title_1?.trim() || null,
         custom_text_1: values.custom_text_1?.trim() || null,
-        custom_icon_1: values.custom_icon_1?.trim() || null,
         custom_title_2: values.custom_title_2?.trim() || null,
         custom_text_2: values.custom_text_2?.trim() || null,
-        custom_icon_2: values.custom_icon_2?.trim() || null,
         custom_title_3: values.custom_title_3?.trim() || null,
         custom_text_3: values.custom_text_3?.trim() || null,
-        custom_icon_3: values.custom_icon_3?.trim() || null,
         cause: values.cause?.trim() || null,
         impact: values.impact?.trim() || null,
         ways_to_give: values.ways_to_give?.trim() || null,
@@ -700,13 +696,10 @@ const AdminListings = () => {
       is_franchise: (l as any).is_franchise ?? null,
       custom_title_1: (l as any).custom_title_1 ?? "",
       custom_text_1: (l as any).custom_text_1 ?? "",
-      custom_icon_1: (l as any).custom_icon_1 ?? "",
       custom_title_2: (l as any).custom_title_2 ?? "",
       custom_text_2: (l as any).custom_text_2 ?? "",
-      custom_icon_2: (l as any).custom_icon_2 ?? "",
       custom_title_3: (l as any).custom_title_3 ?? "",
       custom_text_3: (l as any).custom_text_3 ?? "",
-      custom_icon_3: (l as any).custom_icon_3 ?? "",
       cause: (l as any).cause ?? "",
       impact: (l as any).impact ?? "",
       ways_to_give: (l as any).ways_to_give ?? "",
@@ -1133,8 +1126,6 @@ const AdminListings = () => {
                   {[1, 2, 3].slice(0, customRowsVisible).map((n) => {
                     const titleKey = `custom_title_${n}` as keyof typeof form;
                     const textKey = `custom_text_${n}` as keyof typeof form;
-                    const iconKey = `custom_icon_${n}` as keyof typeof form;
-                    const selectedIcon = (form[iconKey] as string) || "";
                     return (
                       <div key={n} className="border border-border rounded-lg p-3 space-y-2">
                         <div className="flex items-center justify-between">
@@ -1145,7 +1136,7 @@ const AdminListings = () => {
                               variant="ghost"
                               size="sm"
                               onClick={() => {
-                                setForm({ ...form, [titleKey]: "", [textKey]: "", [iconKey]: "" } as any);
+                                setForm({ ...form, [titleKey]: "", [textKey]: "" } as any);
                                 setCustomRowsVisible(customRowsVisible - 1);
                               }}
                             >
@@ -1158,31 +1149,6 @@ const AdminListings = () => {
                           value={(form[titleKey] as string) || ""}
                           onChange={(e) => setForm({ ...form, [titleKey]: e.target.value } as any)}
                         />
-                        <div>
-                          <Label className="text-xs text-muted-foreground">Icon</Label>
-                          <div className="flex flex-wrap gap-1.5 mt-1">
-                            {CUSTOM_ICONS.map(({ key, label, Icon }) => {
-                              const active = selectedIcon === key || (!selectedIcon && key === "message");
-                              return (
-                                <button
-                                  key={key}
-                                  type="button"
-                                  title={label}
-                                  aria-label={label}
-                                  aria-pressed={active}
-                                  onClick={() => setForm({ ...form, [iconKey]: key } as any)}
-                                  className={`flex h-8 w-8 items-center justify-center rounded-md border transition-colors ${
-                                    active
-                                      ? "border-zinc-900 bg-zinc-800 text-slate-50"
-                                      : "border-input bg-background text-zinc-600 hover:bg-accent"
-                                  }`}
-                                >
-                                  <Icon className="h-4 w-4" strokeWidth={1.75} />
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
                         <Textarea
                           placeholder="Text (shown when expanded). Add a link with [link text](https://example.com)"
                           rows={3}
