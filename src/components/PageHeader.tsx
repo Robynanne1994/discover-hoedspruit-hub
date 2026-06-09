@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from "react";
+import { CSSProperties, ReactNode, useLayoutEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 
@@ -14,12 +14,25 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
  *
  * The title is centred with a 3-column grid (1fr / auto / 1fr) so it stays
  * perfectly centred regardless of the left (back) or right (actions) content.
+ *
+ * Fitting: the left (back) and right (actions) slots are reserved symmetrically
+ * so the title is always perfectly centred, and the title font auto-scales down
+ * (from 20px to a 15px floor) only when a long title would otherwise collide
+ * with the side buttons. This keeps every header's buttons identical in size
+ * and position while guaranteeing the title always fits on a single line.
  */
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
 const LINE = "rgba(26,26,26,0.10)";
 const CARD = "#FFFFFF";
+
+/** Title font size when there's plenty of room. */
+const MAX_TITLE_FONT = 20;
+/** Smallest the title will ever shrink to before relying on the ellipsis. */
+const MIN_TITLE_FONT = 15;
+/** Breathing room (px) kept between the title and the side button slots. */
+const TITLE_SIDE_GAP = 16;
 
 export type PageHeaderProps = {
   /** Centred page title text. */
@@ -55,6 +68,59 @@ const PageHeader = ({
 }: PageHeaderProps) => {
   const navigate = useNavigate();
 
+  const rowRef = useRef<HTMLDivElement>(null);
+  const leftRef = useRef<HTMLDivElement>(null);
+  const rightRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const [titleFont, setTitleFont] = useState(MAX_TITLE_FONT);
+
+  // Scale the title down only as much as needed so it never wraps or collides
+  // with the back/action buttons. The side slots are reserved symmetrically
+  // (using the wider of the two) so the title stays perfectly centred.
+  useLayoutEffect(() => {
+    const fit = () => {
+      const row = rowRef.current;
+      const titleEl = titleRef.current;
+      if (!row || !titleEl) return;
+
+      const rowStyle = window.getComputedStyle(row);
+      const padL = parseFloat(rowStyle.paddingLeft) || 0;
+      const padR = parseFloat(rowStyle.paddingRight) || 0;
+      const contentWidth = row.clientWidth - padL - padR;
+
+      const reserve = Math.max(
+        leftRef.current?.offsetWidth ?? 0,
+        rightRef.current?.offsetWidth ?? 0,
+      );
+      const available = contentWidth - reserve * 2 - TITLE_SIDE_GAP;
+      if (available <= 0) return;
+
+      // Measure the title's natural width at full size, then scale to fit.
+      const prev = titleEl.style.fontSize;
+      titleEl.style.fontSize = `${MAX_TITLE_FONT}px`;
+      const natural = titleEl.scrollWidth;
+      titleEl.style.fontSize = prev;
+
+      if (natural <= available) {
+        setTitleFont(MAX_TITLE_FONT);
+      } else {
+        const scaled = Math.floor((available / natural) * MAX_TITLE_FONT);
+        setTitleFont(Math.max(MIN_TITLE_FONT, scaled));
+      }
+    };
+
+    fit();
+    // Refit on viewport changes and whenever a side slot (back / action
+    // buttons) appears or changes width, so the reserved gutters stay accurate.
+    const ro = new ResizeObserver(fit);
+    [rowRef, leftRef, rightRef].forEach((r) => r.current && ro.observe(r.current));
+    window.addEventListener("resize", fit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", fit);
+    };
+  }, [title]);
+
   const leftSlot =
     left !== undefined ? (
       left
@@ -85,6 +151,7 @@ const PageHeader = ({
   return (
     <>
       <div
+        ref={rowRef}
         style={{
           padding: `${typeof topPad === "number" ? `${topPad}px` : topPad} 20px 0`,
           display: "grid",
@@ -94,26 +161,30 @@ const PageHeader = ({
           ...style,
         }}
       >
-        <div style={{ justifySelf: "start", display: "flex", alignItems: "center" }}>
+        <div ref={leftRef} style={{ justifySelf: "start", display: "flex", alignItems: "center" }}>
           {leftSlot}
         </div>
-        <div style={{ justifySelf: "center", textAlign: "center", minWidth: 0 }}>
+        <div style={{ justifySelf: "center", textAlign: "center", minWidth: 0, maxWidth: "100%" }}>
           <h1
+            ref={titleRef}
             style={{
               margin: 0,
               fontFamily: SANS,
-              fontSize: 20,
+              fontSize: titleFont,
               fontWeight: 700,
               color: INK,
               letterSpacing: "-0.2px",
               lineHeight: 1,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
             {title}
           </h1>
           {subtitle != null && <div style={{ marginTop: 4 }}>{subtitle}</div>}
         </div>
-        <div style={{ justifySelf: "end", display: "flex", alignItems: "center", gap: 6 }}>
+        <div ref={rightRef} style={{ justifySelf: "end", display: "flex", alignItems: "center", gap: 6 }}>
           {right}
         </div>
       </div>
