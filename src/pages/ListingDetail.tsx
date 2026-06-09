@@ -497,7 +497,7 @@ const ListingDetail = () => {
   for (let i = 1; i <= 3; i++) {
     const t = (l[`custom_title_${i}`] || "").toString().trim();
     const v = (l[`custom_text_${i}`] || "").toString().trim();
-    if (t && v) sections.push({ key: `custom-${i}`, title: t, iconComp: getCustomIcon(l[`custom_icon_${i}`]), fields: [{ label: v, on: "__text__" }] });
+    if (t && v) sections.push({ key: `custom-${i}`, title: t, iconComp: getCustomIcon(null), fields: [{ label: v, on: "__text__" }] });
   }
 
   if (isListingNGO) {
