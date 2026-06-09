@@ -321,7 +321,7 @@ const Categories = () => {
           {/* The essentials */}
           {featuredCategories.length > 0 && (
             <>
-              <SectionHead title="The essentials" />
+              <SectionHead title="The Essentials" />
               <div style={{ padding: "0 20px", marginBottom: 28, display: "flex", flexDirection: "column", gap: 12 }}>
                 {featuredCategories.map((featured) => (
                   <Link
