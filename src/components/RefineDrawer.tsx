@@ -402,6 +402,44 @@ export const RefineOption = ({
   </button>
 );
 
+// Full-width rectangular single-select option (stacked card-style buttons)
+export const RefineRectOption = ({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    role="radio"
+    aria-checked={active}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      padding: "16px 14px",
+      marginBottom: 8,
+      borderRadius: 8,
+      border: active ? "1px solid #1A1A1A" : "1px solid rgba(0,0,0,0.15)",
+      background: active ? "#020202" : "#ffffff",
+      color: active ? "#ffffff" : "#1A1A1A",
+      fontFamily: SANS,
+      fontWeight: 400,
+      fontSize: 15,
+      letterSpacing: "0.01em",
+      lineHeight: 1.2,
+      cursor: "pointer",
+      transition: "background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease",
+    }}
+  >
+    {label}
+  </button>
+);
+
 // Chip for multi-select
 export const RefineChip = ({
   label,
