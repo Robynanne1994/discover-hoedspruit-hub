@@ -475,8 +475,12 @@ const CategoryPage = () => {
   const filteredListings = useMemo(() => {
     if (!listings) return [];
     const q = search.trim().toLowerCase();
+    // When the user is actively searching, bypass the other filters so that
+    // an empty filter-result state doesn't prevent search from finding matches.
     const result = listings.filter((l) => {
-      if (q && !(l.title || "").toLowerCase().includes(q)) return false;
+      if (q) {
+        return (l.title || "").toLowerCase().includes(q);
+      }
       if (filterCuisine.length > 0) {
         const lc = (l.cuisine || []).map((c) => c.toLowerCase());
         if (!filterCuisine.some((c) => lc.includes(c.toLowerCase()))) return false;
