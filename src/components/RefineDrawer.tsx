@@ -94,6 +94,26 @@ export const RefineDrawer = ({
               minHeight: 40,
             }}
           >
+            <button
+              onClick={onClose}
+              aria-label="Close FILTER & SORT"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: "50%",
+                background: "#ffffff",
+                border: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "#1A1A1A",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+                flexShrink: 0,
+              }}
+            >
+              <X size={18} strokeWidth={1.8} />
+            </button>
             <h2
               style={{
                 margin: 0,
@@ -103,48 +123,31 @@ export const RefineDrawer = ({
                 fontWeight: 700,
                 color: "#1A1A1A",
                 letterSpacing: "-0.2px",
+                textAlign: "center",
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
               }}
             >
               FILTER & SORT
             </h2>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <button
-                onClick={onClear}
-                style={{
-                  background: "transparent",
-                  border: "none",
-                  padding: "6px 4px",
-                  fontFamily: SANS,
-                  fontSize: 13,
-                  fontWeight: 600,
-                  color: "#715a3d",
-                  letterSpacing: "0.01em",
-                  cursor: "pointer",
-                }}
-              >
-                Clear All
-              </button>
-              <button
-                onClick={onClose}
-                aria-label="Close FILTER & SORT"
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  background: "#ffffff",
-                  border: "none",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  color: "#1A1A1A",
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
-                  flexShrink: 0,
-                }}
-              >
-                <X size={18} strokeWidth={1.8} />
-              </button>
-            </div>
+            <button
+              onClick={onClear}
+              style={{
+                background: "transparent",
+                border: "none",
+                padding: "6px 4px",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+                color: "#715a3d",
+                letterSpacing: "0.01em",
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Clear All
+            </button>
           </div>
 
           {activeChips && activeChips.length > 0 && (
