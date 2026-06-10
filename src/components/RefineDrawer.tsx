@@ -98,21 +98,17 @@ export const RefineDrawer = ({
               onClick={onClose}
               aria-label="Close FILTER & SORT"
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                background: "#ffffff",
+                background: "transparent",
                 border: "none",
+                padding: 0,
                 display: "inline-flex",
                 alignItems: "center",
-                justifyContent: "center",
                 cursor: "pointer",
                 color: "#1A1A1A",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
                 flexShrink: 0,
               }}
             >
-              <X size={18} strokeWidth={1.8} />
+              <X size={20} strokeWidth={1.8} />
             </button>
             <h2
               style={{
