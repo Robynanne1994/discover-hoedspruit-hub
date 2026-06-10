@@ -380,9 +380,14 @@ const Specials = () => {
           onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
         >
           {categoryTabs.filter((c) => c !== "All Specials").length > 0 ? (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            <div>
               {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
-                <RefineChip key={t} label={t} active={filterType.includes(t)} onClick={() => toggleFilter(t)} />
+                <RefineRectOption
+                  key={t}
+                  label={t}
+                  active={filterType.includes(t)}
+                  onClick={() => toggleFilter(t)}
+                />
               ))}
             </div>
           ) : (
