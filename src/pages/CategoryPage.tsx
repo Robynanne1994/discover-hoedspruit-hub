@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RefineDrawer, RefineSection, RefineOption, RefineChip } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { bayesianScore } from "@/lib/ratingScore";
 
