@@ -841,7 +841,7 @@ const Events = () => {
                   textTransform: "uppercase",
                 }}
               >
-                Clear filters
+                Clear Filters
               </button>
             )}
           </div>
