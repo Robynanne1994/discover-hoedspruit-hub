@@ -496,6 +496,10 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             <span
               style={{
                 flexShrink: 0,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                lineHeight: 1,
                 border: "1.5px solid #BFE5C8",
                 color: "#2E7D4F",
                 background: "#F1FAF3",
@@ -504,7 +508,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
                 fontWeight: 700,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                padding: "5px 14px",
+                padding: "6px 14px",
                 borderRadius: 9999,
               }}
             >
