@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
-import { RefineDrawer, RefineSection, RefineChip, RefineOption } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
@@ -380,9 +380,14 @@ const Specials = () => {
           onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
         >
           {categoryTabs.filter((c) => c !== "All Specials").length > 0 ? (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            <div>
               {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
-                <RefineChip key={t} label={t} active={filterType.includes(t)} onClick={() => toggleFilter(t)} />
+                <RefineRectOption
+                  key={t}
+                  label={t}
+                  active={filterType.includes(t)}
+                  onClick={() => toggleFilter(t)}
+                />
               ))}
             </div>
           ) : (
