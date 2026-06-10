@@ -1097,6 +1097,10 @@ const CategoryPage = () => {
                           <span
                             style={{
                               flexShrink: 0,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              lineHeight: 1,
                               border: `1.5px solid ${open ? "#BFE5C8" : "#F4C9C9"}`,
                               color: open ? OPEN_COLOR : CLOSED_COLOR,
                               background: open ? "#F1FAF3" : "#FBEFEF",
@@ -1105,7 +1109,7 @@ const CategoryPage = () => {
                               fontWeight: 700,
                               letterSpacing: "0.08em",
                               textTransform: "uppercase",
-                              padding: "5px 14px",
+                              padding: "6px 14px",
                               borderRadius: 9999,
                             }}
                           >
