@@ -429,7 +429,7 @@ export const RefineRectOption = ({
       color: active ? "#ffffff" : "#1A1A1A",
       fontFamily: SANS,
       fontWeight: 400,
-      fontSize: 15,
+      fontSize: 13,
       letterSpacing: "0.01em",
       lineHeight: 1.2,
       cursor: "pointer",
