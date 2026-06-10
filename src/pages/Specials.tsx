@@ -235,7 +235,7 @@ const Specials = () => {
               {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
             </button>
             <button
-              aria-label="Filters"
+              aria-label="FILTER & SORT"
               onClick={() => setShowFilters(true)}
               style={{
                 width: 40,
