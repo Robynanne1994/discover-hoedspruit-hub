@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
-import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineGroupLabel } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineChip, RefineOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
@@ -356,7 +356,6 @@ const Specials = () => {
         resultsCount={filteredSpecials.length}
         resultsLabel="specials"
       >
-        <RefineGroupLabel label="Sort" />
         <RefineSection
           isFirst
           label="Sort By"
@@ -374,7 +373,6 @@ const Specials = () => {
           ))}
         </RefineSection>
 
-        <RefineGroupLabel label="Filter By" />
         <RefineSection
           label="Category"
           summary={filterType.length > 0 ? `${filterType.length} selected` : undefined}

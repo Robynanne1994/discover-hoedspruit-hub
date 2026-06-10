@@ -1,5 +1,5 @@
 import { useEffect, ReactNode } from "react";
-import { ChevronRight, ChevronDown, X, ArrowRight } from "lucide-react";
+import { ChevronUp, ChevronDown, X } from "lucide-react";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -217,28 +217,24 @@ export const RefineDrawer = ({
             }}
             style={{
               width: "100%",
-              height: 48,
+              height: 56,
               borderRadius: 9999,
               background: "#423324",
               color: "#ffffff",
               border: "none",
               fontFamily: SANS,
-              fontSize: 15,
-              fontWeight: 600,
-              letterSpacing: "0.01em",
-              textTransform: "capitalize",
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              gap: 8,
               transition: "transform 0.12s ease, opacity 0.12s ease",
             }}
           >
-            <span>
-              Show {resultsCount} {resultsLabel}
-            </span>
-            <ArrowRight size={18} strokeWidth={1.8} />
+            See {resultsLabel} ({resultsCount})
           </button>
         </div>
       </aside>
@@ -292,7 +288,7 @@ export const RefineSection = ({
           width: "100%",
           background: "transparent",
           border: "none",
-          padding: "14px 0",
+          padding: "18px 0",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -300,15 +296,15 @@ export const RefineSection = ({
           textAlign: "left",
         }}
       >
-        <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <span style={{ display: "flex", flexDirection: "column", gap: 3 }}>
           <span
             style={{
               fontFamily: SANS,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: 700,
               color: "#1A1A1A",
-              letterSpacing: "-0.01em",
-              textTransform: "capitalize",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
               lineHeight: 1.2,
             }}
           >
@@ -329,9 +325,9 @@ export const RefineSection = ({
           )}
         </span>
         {open ? (
-          <ChevronDown size={17} strokeWidth={1.6} color="rgba(26,26,26,0.55)" />
+          <ChevronUp size={20} strokeWidth={1.8} color="rgba(26,26,26,0.7)" />
         ) : (
-          <ChevronRight size={17} strokeWidth={1.6} color="rgba(26,26,26,0.55)" />
+          <ChevronDown size={20} strokeWidth={1.8} color="rgba(26,26,26,0.7)" />
         )}
       </button>
       {open && <div style={{ padding: "0 0 14px 0" }}>{children}</div>}
@@ -339,7 +335,7 @@ export const RefineSection = ({
   );
 };
 
-// Reusable option row
+// Reusable single-select option row, rendered as a radio control
 export const RefineOption = ({
   label,
   active,
@@ -351,24 +347,58 @@ export const RefineOption = ({
 }) => (
   <button
     onClick={onClick}
+    role="radio"
+    aria-checked={active}
     style={{
-      display: "block",
+      display: "flex",
+      alignItems: "center",
+      gap: 14,
       width: "100%",
       textAlign: "left",
-      padding: "11px 14px",
-      marginBottom: 6,
-      borderRadius: 12,
-      border: active ? "1px solid #020202" : "1px solid rgba(0,0,0,0.12)",
-      background: active ? "#020202" : "#ffffff",
-      color: active ? "#ffffff" : "#020202",
-      fontFamily: SANS,
-      fontWeight: 400,
-      fontSize: 13,
-      letterSpacing: "0.01em",
+      padding: "13px 2px",
+      background: "transparent",
+      border: "none",
       cursor: "pointer",
     }}
   >
-    {label}
+    {/* Radio control */}
+    <span
+      aria-hidden
+      style={{
+        flexShrink: 0,
+        width: 24,
+        height: 24,
+        borderRadius: "50%",
+        border: active ? "2px solid #1A1A1A" : "2px solid rgba(26,26,26,0.30)",
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        transition: "border-color 0.12s ease",
+      }}
+    >
+      {active && (
+        <span
+          style={{
+            width: 12,
+            height: 12,
+            borderRadius: "50%",
+            background: "#1A1A1A",
+          }}
+        />
+      )}
+    </span>
+    <span
+      style={{
+        fontFamily: SANS,
+        fontWeight: 400,
+        fontSize: 16,
+        color: "#1A1A1A",
+        letterSpacing: "0.01em",
+        lineHeight: 1.2,
+      }}
+    >
+      {label}
+    </span>
   </button>
 );
 
