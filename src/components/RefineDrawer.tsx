@@ -122,7 +122,7 @@ export const RefineDrawer = ({
                   cursor: "pointer",
                 }}
               >
-                Clear all
+                Clear All
               </button>
               <button
                 onClick={onClose}
