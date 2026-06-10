@@ -1163,7 +1163,7 @@ const CategoryPage = () => {
                 cursor: "pointer",
               }}
             >
-              Clear filters
+              Clear Filters
             </button>
           )}
         </div>
