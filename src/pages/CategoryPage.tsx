@@ -638,7 +638,7 @@ const CategoryPage = () => {
             </button>
             <button
               onClick={() => setRefineOpen(true)}
-              aria-label="Filters"
+              aria-label="FILTER & SORT"
               style={{
                 width: 40,
                 height: 40,
