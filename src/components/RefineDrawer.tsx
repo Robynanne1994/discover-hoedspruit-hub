@@ -114,7 +114,7 @@ export const RefineDrawer = ({
               style={{
                 margin: 0,
                 fontFamily: SANS,
-                fontSize: 20,
+                fontSize: 16,
                 lineHeight: 1,
                 fontWeight: 700,
                 color: "#1A1A1A",
