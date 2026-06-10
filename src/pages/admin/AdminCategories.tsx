@@ -778,7 +778,7 @@ const AdminCategories = () => {
                               title={alphaSort[cat.id] ? "Show front-end order" : "Show alphabetical order"}
                             >
                               {alphaSort[cat.id] ? <ArrowDownUp className="h-3 w-3" /> : <ArrowDownAZ className="h-3 w-3" />}
-                              {alphaSort[cat.id] ? "Front-end order" : "Alphabetical"}
+                              {alphaSort[cat.id] ? "Front-end order" : "Alphabetically"}
                             </Button>
                             <Button size="sm" variant="outline" className="gap-1" onClick={() => openAddSub(cat.id)}>
                               <Plus className="h-3 w-3" /> Add

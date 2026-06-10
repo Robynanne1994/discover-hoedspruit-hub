@@ -31,9 +31,9 @@ type SortKey = "default" | "alphabetical" | "ending_soon" | "biggest_saving" | "
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "default", label: "Default" },
-  { key: "alphabetical", label: "Alphabetical" },
+  { key: "alphabetical", label: "Alphabetically" },
   { key: "ending_soon", label: "Ending Soon" },
-  { key: "biggest_saving", label: "Biggest Saving" },
+  { key: "biggest_saving", label: "Biggest Savings" },
   { key: "newest", label: "Newest" },
 ];
 
