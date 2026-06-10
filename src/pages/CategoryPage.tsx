@@ -713,12 +713,6 @@ const CategoryPage = () => {
           <Pill active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)}>
             Open Now
           </Pill>
-          <Pill
-            active={sortBy === "rating"}
-            onClick={() => setSortBy(sortBy === "rating" ? "default" : "rating")}
-          >
-            Top Rated
-          </Pill>
           {user && (
             <Pill active={filterSaved} onClick={() => setFilterSaved(!filterSaved)}>
               Saved
