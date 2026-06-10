@@ -352,10 +352,10 @@ export const RefineOption = ({
     style={{
       display: "flex",
       alignItems: "center",
-      gap: 14,
+      gap: 10,
       width: "100%",
       textAlign: "left",
-      padding: "13px 2px",
+      padding: "6px 2px",
       background: "transparent",
       border: "none",
       cursor: "pointer",
@@ -366,8 +366,8 @@ export const RefineOption = ({
       aria-hidden
       style={{
         flexShrink: 0,
-        width: 24,
-        height: 24,
+        width: 18,
+        height: 18,
         borderRadius: "50%",
         border: active ? "2px solid #1A1A1A" : "2px solid rgba(26,26,26,0.30)",
         display: "inline-flex",
@@ -379,8 +379,8 @@ export const RefineOption = ({
       {active && (
         <span
           style={{
-            width: 12,
-            height: 12,
+            width: 8,
+            height: 8,
             borderRadius: "50%",
             background: "#1A1A1A",
           }}
@@ -391,7 +391,7 @@ export const RefineOption = ({
       style={{
         fontFamily: SANS,
         fontWeight: 400,
-        fontSize: 16,
+        fontSize: 14,
         color: "#1A1A1A",
         letterSpacing: "0.01em",
         lineHeight: 1.2,
