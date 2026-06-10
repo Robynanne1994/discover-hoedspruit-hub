@@ -105,7 +105,7 @@ export const RefineDrawer = ({
                 letterSpacing: "-0.2px",
               }}
             >
-              Filters
+              FILTER & SORT
             </h2>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <button
@@ -126,7 +126,7 @@ export const RefineDrawer = ({
               </button>
               <button
                 onClick={onClose}
-                aria-label="Close filters"
+                aria-label="Close FILTER & SORT"
                 style={{
                   width: 40,
                   height: 40,
