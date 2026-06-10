@@ -863,9 +863,9 @@ const CategoryPage = () => {
             open={openSection === "subcategory"}
             onToggle={() => setOpenSection(openSection === "subcategory" ? null : "subcategory")}
           >
-            <RefineOption label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
+            <RefineRectOption label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
             {subcategories.map((sub) => (
-              <RefineOption
+              <RefineRectOption
                 key={sub.id}
                 label={sub.title}
                 active={activeSubId === sub.id}
