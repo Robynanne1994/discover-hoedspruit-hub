@@ -105,7 +105,7 @@ export const RefineDrawer = ({
                 letterSpacing: "-0.2px",
               }}
             >
-              Filters
+              FILTER & SORT
             </h2>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
               <button
