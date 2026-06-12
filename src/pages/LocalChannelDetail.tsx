@@ -224,11 +224,13 @@ const LocalChannelDetail = () => {
       {(() => {
         const hasAbout = !!resource.description?.trim();
         const tabs: { key: "details" | "about"; label: string }[] = [
-          { key: "details", label: "Details" },
           ...(hasAbout ? [{ key: "about" as const, label: "About" }] : []),
+          { key: "details", label: "Details" },
         ];
-        const activeTab = tabs.some((t) => t.key === tab) ? tab : "details";
+        const defaultTab: "details" | "about" = hasAbout ? "about" : "details";
+        const activeTab = tabs.some((t) => t.key === tab) ? tab : defaultTab;
         if (activeTab !== tab) queueMicrotask(() => setTab(activeTab));
+
 
         const TabBtn = ({ k, label }: { k: "details" | "about"; label: string }) => {
           const active = activeTab === k;
@@ -264,7 +266,15 @@ const LocalChannelDetail = () => {
 
             {activeTab === "details" && (
               <div style={{ padding: "24px 20px 0" }}>
+                <h2 style={{
+                  margin: "0 0 12px",
+                  fontFamily: HN, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+                  letterSpacing: 0, textTransform: "none", color: INK,
+                }}>
+                  Details
+                </h2>
                 {(() => {
+
                   const admins: { name: string; image_url?: string }[] = Array.isArray(resource.admins) && resource.admins.length
                     ? resource.admins.filter((a: any) => a?.name || a?.image_url)
                     : (resource.admin_name ? [{ name: resource.admin_name }] : []);
