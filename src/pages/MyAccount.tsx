@@ -127,7 +127,7 @@ const MyAccount = () => {
     queryFn: async () => {
       const { data } = await supabase
         .from("been_here")
-        .select("*, listings(id, title, image_url))")
+        .select("*, listings(id, title, image_url)")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data;
