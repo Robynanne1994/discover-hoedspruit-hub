@@ -717,7 +717,8 @@ const Events = () => {
       />
 
       {/* Gap before content */}
-      <div style={{ height: 24 }} />
+      <div style={{ height: 10 }} />
+
 
 
       {/* Inline search input */}
