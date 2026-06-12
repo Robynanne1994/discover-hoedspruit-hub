@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil, Calendar, Clock, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
 import ShareButton from "@/components/ShareButton";
@@ -16,7 +16,10 @@ const INK = "#020202";
 const BODY = "#2b2420";
 const MUTED = "#6B6A5E";
 const LINE = "#E2DAC6";
+const BORDER = "#E8E4DF";
+const DIVIDER = "#EDE9E3";
 const PRIMARY = "#715a3d";
+
 
 const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode; onClick: () => void; ariaLabel: string }) => (
   <button
@@ -32,17 +35,20 @@ const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode
   </button>
 );
 
-const InfoRow = ({ label, value }: { label: string; value: React.ReactNode }) => (
+const InfoRow = ({ icon: Icon, label, value, first }: { icon: any; label: string; value: React.ReactNode; first?: boolean }) => (
   <div style={{
-    display: "flex", justifyContent: "space-between", alignItems: "center",
-    padding: "14px 0", borderBottom: `1px solid ${LINE}`, gap: 12,
+    display: "flex", alignItems: "center", gap: 14,
+    padding: "14px 0",
+    borderTop: first ? "none" : `1px solid ${DIVIDER}`,
   }}>
-    <span style={{ fontFamily: HN, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED }}>
-      {label}
-    </span>
-    <span style={{ fontFamily: HN, fontSize: 14, color: BODY, textAlign: "right" }}>{value}</span>
+    <Icon size={18} strokeWidth={1.5} color={PRIMARY} />
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ fontFamily: HN, fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: MUTED }}>{label}</div>
+      <div style={{ fontFamily: HN, fontSize: 14, fontWeight: 400, color: INK, wordBreak: "break-word" }}>{value}</div>
+    </div>
   </div>
 );
+
 
 const LocalChannelDetail = () => {
   const navigate = useNavigate();
