@@ -12,7 +12,7 @@ type EditableRow = Record<string, any> & { id: string; _dirty: boolean };
 
 const COLUMNS = [
   { key: "title", label: "Title", type: "text", width: "200px" },
-  { key: "description", label: "Description", type: "text", width: "200px" },
+  
   { key: "location", label: "Location", type: "text", width: "160px" },
   { key: "phone", label: "Phone", type: "text", width: "130px" },
   { key: "email", label: "Email", type: "text", width: "160px" },

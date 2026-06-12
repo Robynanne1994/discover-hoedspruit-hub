@@ -371,7 +371,7 @@ const AdminListings = () => {
       const payload: any = {
         title: values.title,
         title_override: values.title_override?.trim() || null,
-        description: values.description || null,
+        description: null,
         image_url: (values.image_url || values.detail_image_url) || null,
         detail_image_url: (values.detail_image_url || values.image_url) || null,
         location: values.location || null,
@@ -861,7 +861,7 @@ const AdminListings = () => {
                     />
                   )}
                 </div>
-                <div><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+                
                 <div>
                   <Label>Categories</Label>
                   
