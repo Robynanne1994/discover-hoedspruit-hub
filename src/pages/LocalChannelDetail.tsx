@@ -236,32 +236,54 @@ const LocalChannelDetail = () => {
                 : null);
           const hasAny = admins.length > 0 || yearsValue || resource.post_frequency;
           return (
-            <div className="[&>*:last-child]:!border-b-0" style={{ marginTop: 32, background: CARD, borderRadius: 16, padding: "4px 18px" }}>
-              {yearsValue && <InfoRow label={resource.since_year ? "Running" : "Years Running"} value={yearsValue} />}
-              {resource.post_frequency && <InfoRow label="Avg. Posts" value={resource.post_frequency} />}
+            <div style={{ marginTop: 24, background: CARD, borderRadius: 16, padding: "4px 16px", border: `1px solid ${BORDER}` }}>
+              {yearsValue && (
+                <InfoRow
+                  first
+                  icon={Calendar}
+                  label={resource.since_year ? "Running" : "Years Running"}
+                  value={yearsValue}
+                />
+              )}
+              {resource.post_frequency && (
+                <InfoRow
+                  first={!yearsValue}
+                  icon={Clock}
+                  label="Avg. Posts"
+                  value={resource.post_frequency}
+                />
+              )}
               {admins.length > 0 && (
-                <div style={{ padding: "14px 0", borderBottom: `1px solid ${LINE}` }}>
-                  <div style={{ fontFamily: HN, fontSize: 12, letterSpacing: "0.12em", textTransform: "uppercase", color: MUTED, marginBottom: 10 }}>
-                    {admins.length === 1 ? "Admin" : "Admins"}
-                  </div>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {admins.map((a, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <div style={{
-                          width: 36, height: 36, borderRadius: 999, overflow: "hidden",
-                          background: IVORY, display: "flex", alignItems: "center", justifyContent: "center",
-                          fontFamily: HN, fontSize: 13, fontWeight: 700, color: PRIMARY, flexShrink: 0,
-                        }}>
-                          {a.image_url
-                            ? <img src={a.image_url} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                            : (a.name || "?").trim().charAt(0).toUpperCase()}
+                <div style={{
+                  display: "flex", alignItems: "flex-start", gap: 14,
+                  padding: "14px 0",
+                  borderTop: (yearsValue || resource.post_frequency) ? `1px solid ${DIVIDER}` : "none",
+                }}>
+                  <Users size={18} strokeWidth={1.5} color={PRIMARY} style={{ marginTop: 2, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontFamily: HN, fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: MUTED, marginBottom: 10 }}>
+                      {admins.length === 1 ? "Admin" : "Admins"}
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                      {admins.map((a, i) => (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <div style={{
+                            width: 32, height: 32, borderRadius: 999, overflow: "hidden",
+                            background: IVORY, display: "flex", alignItems: "center", justifyContent: "center",
+                            fontFamily: HN, fontSize: 13, fontWeight: 700, color: PRIMARY, flexShrink: 0,
+                          }}>
+                            {a.image_url
+                              ? <img src={a.image_url} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              : (a.name || "?").trim().charAt(0).toUpperCase()}
+                          </div>
+                          <span style={{ fontFamily: HN, fontSize: 14, color: INK }}>{a.name}</span>
                         </div>
-                        <span style={{ fontFamily: HN, fontSize: 14, color: BODY }}>{a.name}</span>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
+
 
               {!hasAny && (
                 <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
