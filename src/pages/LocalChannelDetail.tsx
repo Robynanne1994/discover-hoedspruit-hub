@@ -56,6 +56,8 @@ const LocalChannelDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const { isAdmin } = useAuth();
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [tab, setTab] = useState<"details" | "about">("details");
+
 
   const { data: resource, isLoading } = useQuery({
     queryKey: ["local-channel", slug],
@@ -200,11 +202,8 @@ const LocalChannelDetail = () => {
           </div>
         )}
 
-        {resource.description && (
-          <p style={{ marginTop: 16, fontFamily: HN, fontSize: 15, lineHeight: 1.6, color: BODY }}>
-            {resource.description}
-          </p>
-        )}
+
+
 
         {/* Primary action */}
         <button
@@ -221,79 +220,138 @@ const LocalChannelDetail = () => {
         </button>
       </div>
 
-      {/* Body */}
-      <div style={{ padding: "24px 20px 0" }}>
-        {/* Details */}
+      {/* Tabs */}
+      {(() => {
+        const hasAbout = !!resource.description?.trim();
+        const tabs: { key: "details" | "about"; label: string }[] = [
+          { key: "details", label: "Details" },
+          ...(hasAbout ? [{ key: "about" as const, label: "About" }] : []),
+        ];
+        const activeTab = tabs.some((t) => t.key === tab) ? tab : "details";
+        if (activeTab !== tab) queueMicrotask(() => setTab(activeTab));
 
-        {(() => {
-          const admins: { name: string; image_url?: string }[] = Array.isArray(resource.admins) && resource.admins.length
-            ? resource.admins.filter((a: any) => a?.name || a?.image_url)
-            : (resource.admin_name ? [{ name: resource.admin_name }] : []);
-          const yearsValue = resource.since_year
-            ? `Since ${resource.since_year}`
-            : (resource.years_running != null
-                ? `${resource.years_running} ${resource.years_running === 1 ? "year" : "years"}`
-                : null);
-          const hasAny = admins.length > 0 || yearsValue || resource.post_frequency;
+        const TabBtn = ({ k, label }: { k: "details" | "about"; label: string }) => {
+          const active = activeTab === k;
           return (
-            <div style={{ marginTop: 24, background: CARD, borderRadius: 16, padding: "4px 16px", border: `1px solid ${BORDER}` }}>
-              {yearsValue && (
-                <InfoRow
-                  first
-                  icon={Calendar}
-                  label={resource.since_year ? "Running" : "Years Running"}
-                  value={yearsValue}
-                />
-              )}
-              {resource.post_frequency && (
-                <InfoRow
-                  first={!yearsValue}
-                  icon={Clock}
-                  label="Avg. Posts"
-                  value={resource.post_frequency}
-                />
-              )}
-              {admins.length > 0 && (
-                <div style={{
-                  display: "flex", alignItems: "flex-start", gap: 14,
-                  padding: "14px 0",
-                  borderTop: (yearsValue || resource.post_frequency) ? `1px solid ${DIVIDER}` : "none",
-                }}>
-                  <Users size={18} strokeWidth={1.5} color={PRIMARY} style={{ marginTop: 2, flexShrink: 0 }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: HN, fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: MUTED, marginBottom: 10 }}>
-                      {admins.length === 1 ? "Admin" : "Admins"}
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                      {admins.map((a, i) => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <div style={{
-                            width: 32, height: 32, borderRadius: 999, overflow: "hidden",
-                            background: IVORY, display: "flex", alignItems: "center", justifyContent: "center",
-                            fontFamily: HN, fontSize: 13, fontWeight: 700, color: PRIMARY, flexShrink: 0,
-                          }}>
-                            {a.image_url
-                              ? <img src={a.image_url} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                              : (a.name || "?").trim().charAt(0).toUpperCase()}
-                          </div>
-                          <span style={{ fontFamily: HN, fontSize: 14, color: INK }}>{a.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-
-              {!hasAny && (
-                <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
-                  No additional details yet.
-                </div>
-              )}
-            </div>
+            <button
+              onClick={() => setTab(k)}
+              style={{
+                flex: 1, background: "none", border: "none", cursor: "pointer",
+                padding: "14px 4px",
+                fontFamily: HN, fontWeight: active ? 700 : 400, fontSize: 12,
+                letterSpacing: "0.08em", textTransform: "uppercase",
+                color: active ? INK : MUTED,
+                borderBottom: `2px solid ${active ? INK : "transparent"}`,
+                marginBottom: -1,
+              }}
+            >
+              {label}
+            </button>
           );
-        })()}
-      </div>
+        };
+
+        return (
+          <>
+            {tabs.length > 1 && (
+              <nav style={{
+                position: "sticky", top: 0, zIndex: 30,
+                background: CARD, borderBottom: `1px solid ${BORDER}`,
+                display: "flex", padding: "0 8px",
+              }}>
+                {tabs.map((t) => <TabBtn key={t.key} k={t.key} label={t.label} />)}
+              </nav>
+            )}
+
+            {activeTab === "details" && (
+              <div style={{ padding: "24px 20px 0" }}>
+                {(() => {
+                  const admins: { name: string; image_url?: string }[] = Array.isArray(resource.admins) && resource.admins.length
+                    ? resource.admins.filter((a: any) => a?.name || a?.image_url)
+                    : (resource.admin_name ? [{ name: resource.admin_name }] : []);
+                  const yearsValue = resource.since_year
+                    ? `Since ${resource.since_year}`
+                    : (resource.years_running != null
+                        ? `${resource.years_running} ${resource.years_running === 1 ? "year" : "years"}`
+                        : null);
+                  const hasAny = admins.length > 0 || yearsValue || resource.post_frequency;
+                  return (
+                    <div style={{ background: CARD, borderRadius: 16, padding: "4px 16px", border: `1px solid ${BORDER}` }}>
+                      {yearsValue && (
+                        <InfoRow
+                          first
+                          icon={Calendar}
+                          label={resource.since_year ? "Running" : "Years Running"}
+                          value={yearsValue}
+                        />
+                      )}
+                      {resource.post_frequency && (
+                        <InfoRow
+                          first={!yearsValue}
+                          icon={Clock}
+                          label="Avg. Posts"
+                          value={resource.post_frequency}
+                        />
+                      )}
+                      {admins.length > 0 && (
+                        <div style={{
+                          display: "flex", alignItems: "flex-start", gap: 14,
+                          padding: "14px 0",
+                          borderTop: (yearsValue || resource.post_frequency) ? `1px solid ${DIVIDER}` : "none",
+                        }}>
+                          <Users size={18} strokeWidth={1.5} color={PRIMARY} style={{ marginTop: 2, flexShrink: 0 }} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontFamily: HN, fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: MUTED, marginBottom: 10 }}>
+                              {admins.length === 1 ? "Admin" : "Admins"}
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                              {admins.map((a, i) => (
+                                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                  <div style={{
+                                    width: 32, height: 32, borderRadius: 999, overflow: "hidden",
+                                    background: IVORY, display: "flex", alignItems: "center", justifyContent: "center",
+                                    fontFamily: HN, fontSize: 13, fontWeight: 700, color: PRIMARY, flexShrink: 0,
+                                  }}>
+                                    {a.image_url
+                                      ? <img src={a.image_url} alt={a.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                      : (a.name || "?").trim().charAt(0).toUpperCase()}
+                                  </div>
+                                  <span style={{ fontFamily: HN, fontSize: 14, color: INK }}>{a.name}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {!hasAny && (
+                        <div style={{ padding: "16px 0", color: MUTED, fontFamily: HN, fontSize: 13 }}>
+                          No additional details yet.
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+
+            {activeTab === "about" && hasAbout && (
+              <div style={{ padding: "24px 20px 0" }}>
+                <h2 style={{
+                  margin: "0 0 12px",
+                  fontFamily: HN, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+                  letterSpacing: 0, textTransform: "none", color: INK,
+                }}>
+                  About
+                </h2>
+                <p style={{ fontFamily: HN, fontSize: 14.5, lineHeight: 1.6, color: BODY, margin: 0, whiteSpace: "pre-wrap" }}>
+                  {resource.description}
+                </p>
+              </div>
+            )}
+          </>
+        );
+      })()}
+
 
       {/* In-app lightbox for QR/image */}
       {isImageType && resource.qr_image_url && (
