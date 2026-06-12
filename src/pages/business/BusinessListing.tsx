@@ -39,7 +39,6 @@ const BusinessListing = () => {
   const { listing, account } = useBusinessOwner();
   const businessName = account?.business_name || listing?.title || null;
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [longDescription, setLongDescription] = useState("");
   const longDescRef = useRef<HTMLTextAreaElement>(null);
   const [phone, setPhone] = useState("");
@@ -63,7 +62,7 @@ const BusinessListing = () => {
       const { data: full } = await supabase.from("listings").select("*").eq("id", listing.id).maybeSingle();
       if (full) {
         setTitle(full.title ?? "");
-        setDescription(full.description ?? "");
+        
         setLongDescription((full as any).long_description ?? "");
         setPhone(full.phone ?? "");
         setWhatsApp(full.whatsapp ?? "");
@@ -140,7 +139,7 @@ const BusinessListing = () => {
   const submit = async () => {
     setBusy(true);
     const payload = {
-      title, description, long_description: longDescription, phone, whatsapp: whatsapp, email, website, location,
+      title, long_description: longDescription, phone, whatsapp: whatsapp, email, website, location,
       image_url: imageUrl, gallery_images: gallery, opening_hours: serializeHours(hours),
     };
     const { error } = await supabase.from("listing_edits_pending").insert({
@@ -232,17 +231,6 @@ const BusinessListing = () => {
         </div>
 
         <div><Label>Business name</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
-        <div>
-          <Label>Short description</Label>
-          <Textarea
-            value={description}
-            maxLength={200}
-            rows={3}
-            onChange={(e) => setDescription(e.target.value.slice(0, 200))}
-            placeholder="A 1–2 sentence intro shown in listing cards"
-          />
-          <Small soft style={{ marginTop: 4, display: "block", textAlign: "right" }}>{description.length}/200</Small>
-        </div>
         <div>
           <Label>Long description</Label>
           <MarkdownToolbar
