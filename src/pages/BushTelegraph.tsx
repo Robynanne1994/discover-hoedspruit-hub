@@ -167,10 +167,16 @@ const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen
   );
 };
 
-const inputStyle: React.CSSProperties = {
-  fontFamily: HN, fontWeight: 400, fontSize: 14, color: INK,
-  background: SOFT_CREAM, border: "none", borderRadius: 14,
-  padding: "14px 16px", outline: "none", width: "100%",
+const suggestInputStyle: React.CSSProperties = {
+  fontFamily: HN, fontWeight: 400, fontSize: 15, color: INK,
+  background: "#fff", border: `2px solid #C5C0BA`, borderRadius: 12,
+  padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
+  lineHeight: 1.4,
+};
+
+const suggestLabelStyle: React.CSSProperties = {
+  fontFamily: HN, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
+  textTransform: "uppercase", color: "#715a3d", marginBottom: 6, display: "block",
 };
 
 const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void }) => {
@@ -206,48 +212,64 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
 
   return (
     <div role="dialog" aria-modal="true"
-      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(26,26,26,0.55)", display: "flex", alignItems: "flex-end" }}
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
       onClick={onClose}>
       <div onClick={(e) => e.stopPropagation()} style={{
-        width: "100%", background: CARD, borderRadius: "24px 24px 0 0",
-        padding: "20px 24px 32px", fontFamily: HN,
+        fontFamily: HN, width: "100%", background: "#ffffff",
+        borderRadius: "20px 20px 0 0", padding: "20px 20px 32px",
         animation: "bt-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+        maxHeight: "90vh", overflowY: "auto",
       }}>
         <style>{`@keyframes bt-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <div style={{ fontFamily: HN, fontWeight: 600, fontSize: 11.5, letterSpacing: "0.18em", color: MUTED, textTransform: "uppercase" }}>Off The App</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div style={{ fontFamily: HN, fontSize: 11, letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase" }}>Help us improve</div>
           <button onClick={onClose} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
             <X size={20} color={INK} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: HN, fontWeight: 800, fontSize: 28, lineHeight: 1.1, letterSpacing: "-0.5px", color: INK, margin: "0 0 10px" }}>
-          Suggest a Channel
-        </h2>
+        <h2 style={{ fontFamily: HN, fontWeight: 400, fontSize: 22, color: INK, margin: "0 0 8px" }}>Suggest a Channel</h2>
         <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
           Know a good local channel, group or feed? Drop the details and we'll have a look.
         </p>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {isGuest && (
             <>
-              <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
-              <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Your email" style={inputStyle} />
+              <div>
+                <label style={suggestLabelStyle}>Your name</label>
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Smith" style={suggestInputStyle} />
+              </div>
+              <div>
+                <label style={suggestLabelStyle}>Your email</label>
+                <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="you@example.com" style={suggestInputStyle} />
+              </div>
             </>
           )}
-          <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="Resource name" style={inputStyle} />
-          <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="Resource link" style={inputStyle} />
-          <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Tell us a little about this resource and why it should be listed" rows={4} style={{ ...inputStyle, resize: "none", paddingTop: 14 }} />
+          <div>
+            <label style={suggestLabelStyle}>Resource name</label>
+            <input value={resourceName} onChange={(e) => setResourceName(e.target.value)} placeholder="e.g. Hoedspruit Community Group" style={suggestInputStyle} />
+          </div>
+          <div>
+            <label style={suggestLabelStyle}>Resource link</label>
+            <input value={resourceLink} onChange={(e) => setResourceLink(e.target.value)} placeholder="https://..." style={suggestInputStyle} />
+          </div>
+          <div>
+            <label style={suggestLabelStyle}>About</label>
+            <textarea value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Tell us a little about this resource and why it should be listed." rows={5} style={{ ...suggestInputStyle, resize: "none" }} />
+          </div>
         </div>
         <button onClick={submit} disabled={submitting} style={{
-          fontFamily: HN, marginTop: 16, width: "100%", height: 52, borderRadius: 999,
-          background: DARK, color: CARD, border: "none", fontSize: 14, fontWeight: 700,
+          fontFamily: HN, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
+          background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
+          letterSpacing: "0.04em",
           cursor: submitting ? "default" : "pointer", opacity: submitting ? 0.6 : 1,
         }}>
-          {submitting ? "Sending..." : "Share Resource"}
+          {submitting ? "Sending..." : "Send Suggestion"}
         </button>
       </div>
     </div>
   );
 };
+
 
 const SectionHeader = ({ title, count }: { title: string; count: number }) => (
   <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", padding: "0 20px", marginBottom: 14 }}>
