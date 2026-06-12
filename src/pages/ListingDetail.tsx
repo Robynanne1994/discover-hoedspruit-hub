@@ -292,7 +292,7 @@ const ListingDetail = () => {
   const openingHours = l.opening_hours as Record<string, string> | null;
   const hasHours = !isListingAccommodation && openingHours && Object.values(openingHours).some((v) => v);
   const longDescription = l.long_description as string | null;
-  const descriptionText = (longDescription || listing.description || "").trim();
+  const descriptionText = (longDescription || "").trim();
   const whatsappNum = l.whatsapp as string | null;
   const waClean = whatsappNum ? whatsappNum.replace(/[^0-9]/g, "") : null;
   const hasGallery = galleryImages.length > 0;

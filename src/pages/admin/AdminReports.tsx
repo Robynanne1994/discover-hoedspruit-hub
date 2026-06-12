@@ -148,19 +148,17 @@ const REPORTS: ReportDef[] = [
   {
     id: "listings-missing-descriptions",
     title: "Listings — missing descriptions",
-    description: "Listings missing the short description OR the long description.",
+    description: "Listings missing the long description.",
     run: async () => {
-      const rows = await fetchAll<any>("listings", "id, title, description, long_description");
+      const rows = await fetchAll<any>("listings", "id, title, long_description");
       const out = rows
-        .filter((r) => isMissing(r.description) || isMissing(r.long_description))
+        .filter((r) => isMissing(r.long_description))
         .map((r) => ({
           id: r.id,
           title: r.title,
-          missing_short: isMissing(r.description),
-          missing_long: isMissing(r.long_description),
           admin_edit_url: editUrl("listing", r.id),
         }));
-      return { rows: out, columns: ["id", "title", "missing_short", "missing_long", "admin_edit_url"], filename: "listings-missing-descriptions.csv" };
+      return { rows: out, columns: ["id", "title", "admin_edit_url"], filename: "listings-missing-descriptions.csv" };
     },
   },
   {
