@@ -1,12 +1,14 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil, Calendar, Clock, Users } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, QrCode, ExternalLink, Image as ImageIcon, Pencil, Calendar, Clock, Users, Heart, Share2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import ImageLightbox from "@/components/ImageLightbox";
-import ShareButton from "@/components/ShareButton";
-import FavouriteButton from "@/components/FavouriteButton";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
+import { useRequireAuth } from "@/hooks/useGuestAuth";
+import { toast } from "sonner";
+
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
@@ -129,15 +131,14 @@ const LocalChannelDetail = () => {
           <CircleBtn onClick={() => navigate(-1)} ariaLabel="Back">
             <ArrowLeft size={18} color={INK} strokeWidth={2} />
           </CircleBtn>
-          <div style={{ display: "flex", gap: 8, position: "relative" }}>
-            <div style={{ position: "relative", width: 40, height: 40 }}>
-              <FavouriteButton itemId={resource.id} itemType="resource" />
-            </div>
-            <ShareButton
-              title={displayTitle}
-              text={resource.description || resource.meta || ""}
-              url={typeof window !== "undefined" ? window.location.href : ""}
-            />
+          <div style={{ display: "flex", gap: 8 }}>
+            <CircleBtn onClick={handleToggleFavourite} ariaLabel={isFavourited ? "Remove from saved" : "Save"}>
+              <Heart size={18} strokeWidth={2} color={isFavourited ? PRIMARY : INK} fill={isFavourited ? PRIMARY : "none"} />
+            </CircleBtn>
+            <CircleBtn onClick={handleShare} ariaLabel="Share">
+              <Share2 size={18} strokeWidth={2} color={INK} />
+            </CircleBtn>
+
             {isAdmin && (
               <CircleBtn
                 onClick={() => navigate(`/admin/local-channels?edit=${resource.id}&returnTo=${encodeURIComponent(location.pathname)}`, { replace: true })}
