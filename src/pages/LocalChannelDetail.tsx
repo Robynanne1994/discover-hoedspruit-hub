@@ -56,9 +56,11 @@ const LocalChannelDetail = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { slug } = useParams<{ slug: string }>();
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
+  const requireAuth = useRequireAuth();
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [tab, setTab] = useState<"details" | "about">("details");
+
 
 
   const { data: resource, isLoading } = useQuery({
@@ -75,7 +77,34 @@ const LocalChannelDetail = () => {
     enabled: !!slug,
   });
 
+  const isFavourited = useIsFavourited(resource?.id ?? "", "resource");
+  const toggleFavourite = useToggleFavourite();
+
+  const handleToggleFavourite = () => {
+    if (!resource) return;
+    if (!requireAuth("save favourites")) return;
+    if (!user) return;
+    toggleFavourite.mutate({ itemId: resource.id, itemType: "resource", currentlyFavourited: isFavourited });
+  };
+
+  const handleShare = async () => {
+    if (!resource) return;
+    const shareUrl = window.location.href;
+    const shareData = { title: displayTitle, text: resource.description || resource.meta || "", url: shareUrl };
+    if (navigator.share) {
+      try { await navigator.share(shareData); }
+      catch (err) {
+        if ((err as Error).name !== "AbortError") {
+          try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
+        }
+      }
+    } else {
+      try { await navigator.clipboard.writeText(shareUrl); toast.success("Link copied!"); } catch { toast.error("Could not copy link"); }
+    }
+  };
+
   const displayTitle = useMemo(() => {
+
     if (!resource) return "";
     return (resource.title_override?.trim()) || resource.title;
   }, [resource]);
