@@ -1446,7 +1446,7 @@ const SuggestEditSheet = ({
       }}>
         <style>{`@keyframes ld-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
-          <div style={{ fontSize: 11, letterSpacing: "0.08em", color: C.muted, textTransform: "uppercase" }}>Help us improve</div>
+          <div style={{ fontSize: 11, letterSpacing: "0.08em", color: C.muted, textTransform: "uppercase" }}>{"\n"}</div>
           <button onClick={onClose} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
             <XIcon size={20} color={C.heading} strokeWidth={1.75} />
           </button>
