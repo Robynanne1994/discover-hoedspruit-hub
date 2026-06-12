@@ -595,9 +595,8 @@ const MyProfile = () => {
                   it,
                   "listing",
                   `/listing/${it.id}`,
-                  <>
-                    {it.location && <span>{it.location}</span>}
-                  </>
+                  null
+
                 ),
               )}
             </div>
