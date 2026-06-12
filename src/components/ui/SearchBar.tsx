@@ -77,6 +77,7 @@ const SearchBar = forwardRef<HTMLDivElement, SearchBarProps>(function SearchBar(
             fontWeight: 400,
             fontSize: 14,
             color: TEXT,
+            textIndent: 4,
           }}
           {...rest}
         />
