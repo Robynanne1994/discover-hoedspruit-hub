@@ -335,7 +335,9 @@ const Categories = () => {
                       borderRadius: 999,
                       padding: "12px 18px 12px 12px",
                       textDecoration: "none",
+                      border: `1px solid ${COLORS.emergencyInk}`,
                     }}
+
                   >
                     <div
                       style={{
