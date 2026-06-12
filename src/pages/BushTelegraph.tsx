@@ -414,15 +414,6 @@ const BushTelegraph = () => {
         }
       />
 
-      {/* Subtitle */}
-      <div style={{ padding: "0 20px" }}>
-        <p style={{
-          fontFamily: HN, fontWeight: 400, fontSize: 14, lineHeight: 1.55,
-          color: MUTED, margin: "0 0 18px", maxWidth: 340,
-        }}>
-          The groups and feeds worth being on. Curated, not crowdsourced.
-        </p>
-      </div>
 
       {/* Filter pills */}
       <div style={{ marginBottom: 22, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
