@@ -938,21 +938,6 @@ const CategoryPage = () => {
           </div>
         </RefineSection>
 
-        <RefineSection
-          label="Amenities"
-          summary={[filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length > 0 ? `${[filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi].filter(Boolean).length} selected` : undefined}
-          open={openSection === "amenities"}
-          onToggle={() => setOpenSection(openSection === "amenities" ? null : "amenities")}
-        >
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {(isRestaurant || isAccom) && (
-              <RefineChip label="Child Friendly" active={filterChildFriendly} onClick={() => setFilterChildFriendly(!filterChildFriendly)} />
-            )}
-            <RefineChip label="Pet Friendly" active={filterPetFriendly} onClick={() => setFilterPetFriendly(!filterPetFriendly)} />
-            <RefineChip label="Wheelchair Accessible" active={filterWheelchair} onClick={() => setFilterWheelchair(!filterWheelchair)} />
-            <RefineChip label="WiFi" active={filterWifi} onClick={() => setFilterWifi(!filterWifi)} />
-          </div>
-        </RefineSection>
       </RefineDrawer>
 
       {/* Listings */}
