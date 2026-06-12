@@ -298,7 +298,7 @@ export default function MyNotifications() {
                 letterSpacing: "-0.3px",
               }}
             >
-              No notifications yet
+              No Notifications Yet
             </p>
             <p
               style={{
@@ -309,7 +309,7 @@ export default function MyNotifications() {
                 margin: 0,
               }}
             >
-              When you receive notifications, they'll appear here.
+              When you receive notifications, they will appear here.
             </p>
           </div>
         )}
