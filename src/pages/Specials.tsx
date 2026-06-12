@@ -381,6 +381,11 @@ const Specials = () => {
         >
           {categoryTabs.filter((c) => c !== "All Specials").length > 0 ? (
             <div>
+              <RefineRectOption
+                label="All"
+                active={filterType.length === 0}
+                onClick={() => setFilterType([])}
+              />
               {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
                 <RefineRectOption
                   key={t}
