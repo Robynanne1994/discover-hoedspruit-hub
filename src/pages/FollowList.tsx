@@ -380,6 +380,8 @@ const FollowList = () => {
               <Link
                 key={tab.key}
                 to={`/profile/${id}/${tab.key}`}
+                replace
+
                 style={{
                   flex: 1,
                   textAlign: "center",
