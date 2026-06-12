@@ -373,24 +373,22 @@ const BushTelegraph = () => {
     },
   });
 
-  const featured = useMemo(() => resources.find((r) => r.is_featured) ?? null, [resources]);
-  const nonFeatured = useMemo(() => resources.filter((r) => !r.is_featured), [resources]);
-
   const sections = useMemo(() => {
     if (active === "All") {
       return PLATFORM_ORDER.map((p) => ({
         platform: p,
-        items: nonFeatured.filter((r) => r.platform === p),
+        items: resources.filter((r) => r.platform === p),
       }));
     }
     return [{
       platform: active as Platform,
       items: resources.filter((r) => r.platform === active),
     }];
-  }, [active, nonFeatured, resources]);
+  }, [active, resources]);
+
 
   const totalShown = sections.reduce((s, x) => s + x.items.length, 0);
-  const featuredChips = featured ? [featured.meta, featured.meta_2].filter((m) => m && m.trim()) : [];
+
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
@@ -452,59 +450,8 @@ const BushTelegraph = () => {
         </div>
       </div>
 
-      {/* Featured */}
-      {featured && active === "All" && (
-        <div style={{ padding: "0 20px", marginBottom: 28 }}>
-          <div
-            onClick={() => openResource(featured)}
-            style={{
-              background: DARK, borderRadius: 22,
-              padding: "22px 22px 22px", position: "relative", overflow: "hidden",
-              cursor: "pointer", transition: "transform 120ms ease",
-            }}
-            {...press}
-          >
-            <div style={{
-              position: "absolute", top: 18, right: 18, zIndex: 3,
-              width: 34, height: 34, borderRadius: 999,
-              background: "rgba(238, 232, 218, 0.18)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: CREAM,
-            }}>
-              <ArrowUpRight size={16} strokeWidth={2} />
-            </div>
-            <div style={{ position: "relative", zIndex: 2 }}>
-              <div style={{
-                fontFamily: HN, fontWeight: 600, fontSize: 11, letterSpacing: "0.18em",
-                textTransform: "uppercase", color: "rgba(238, 232, 218, 0.7)",
-                marginBottom: 14,
-              }}>Featured</div>
-              <h2
-                data-no-title-case={featured.title_override?.trim() ? "true" : undefined}
-                style={{
-                  fontFamily: HN, fontWeight: 800, fontSize: 28,
-                  lineHeight: 1.1, letterSpacing: "-0.5px", color: CREAM, margin: "0 0 12px",
-                  textTransform: featured.title_override?.trim() ? "none" : undefined,
-                }}
-              >{featured.title_override?.trim() || featured.title}</h2>
-              {featured.description && (
-                <p style={{
-                  fontFamily: HN, fontWeight: 400, fontSize: 14, lineHeight: 1.55,
-                  color: "rgba(238, 232, 218, 0.85)", margin: "0 0 20px", maxWidth: 300,
-                }}>{featured.description}</p>
-              )}
-              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                {featuredChips.map((c, i) => (
-                  <span key={i} style={{
-                    fontFamily: HN, fontWeight: 600, fontSize: 12, color: INK,
-                    background: CREAM, padding: "8px 14px", borderRadius: 999,
-                  }}>{c}</span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+
+
 
       {/* Sections */}
       {totalShown === 0 ? (
