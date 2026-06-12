@@ -438,7 +438,7 @@ const BushTelegraph = () => {
 
 
       {/* Filter pills */}
-      <div style={{ marginBottom: 22, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
+      <div style={{ marginBottom: 36, padding: "0 20px", overflowX: "auto", scrollbarWidth: "none" }}>
         <style>{`.bt-scroll::-webkit-scrollbar { display: none; }`}</style>
         <div className="bt-scroll" style={{ display: "flex", gap: 8, width: "max-content" }}>
           {CHIPS.map((c) => {
