@@ -142,8 +142,9 @@ const LocalChannelDetail = () => {
         </div>
       </div>
 
-      {/* Body */}
-      <div style={{ padding: "24px 20px 0" }}>
+      {/* Title block */}
+      <div style={{ background: CARD, padding: "24px 20px 20px" }}>
+
         {(() => {
           const tags = [resource.tag_1, resource.tag_2].filter((t: string | null) => t && t.trim());
           if (!tags.length) return null;
@@ -212,8 +213,12 @@ const LocalChannelDetail = () => {
           <PrimaryIcon size={16} strokeWidth={2} />
           {primaryLabel}
         </button>
+      </div>
 
+      {/* Body */}
+      <div style={{ padding: "24px 20px 0" }}>
         {/* Details */}
+
         {(() => {
           const admins: { name: string; image_url?: string }[] = Array.isArray(resource.admins) && resource.admins.length
             ? resource.admins.filter((a: any) => a?.name || a?.image_url)
