@@ -351,6 +351,7 @@ const Specials = () => {
         onClose={() => setShowFilters(false)}
         onClear={() => {
           setFilterType([]);
+          setActiveTab("All Specials");
           setSortBy("default");
         }}
         resultsCount={filteredSpecials.length}
@@ -375,7 +376,13 @@ const Specials = () => {
 
         <RefineSection
           label="Category"
-          summary={filterType.length > 0 ? `${filterType.length} selected` : undefined}
+          summary={
+            activeTab !== "All Specials"
+              ? activeTab
+              : filterType.length > 0
+              ? `${filterType.length} selected`
+              : undefined
+          }
           open={openSection === "category"}
           onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
         >
@@ -383,15 +390,21 @@ const Specials = () => {
             <div>
               <RefineRectOption
                 label="All"
-                active={filterType.length === 0}
-                onClick={() => setFilterType([])}
+                active={activeTab === "All Specials" && filterType.length === 0}
+                onClick={() => {
+                  setActiveTab("All Specials");
+                  setFilterType([]);
+                }}
               />
               {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
                 <RefineRectOption
                   key={t}
                   label={t}
-                  active={filterType.includes(t)}
-                  onClick={() => toggleFilter(t)}
+                  active={activeTab === t || filterType.includes(t)}
+                  onClick={() => {
+                    setActiveTab(t);
+                    setFilterType([]);
+                  }}
                 />
               ))}
             </div>
