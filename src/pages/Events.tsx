@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal, MapPin, ChevronLeft, ChevronRight, X, ArrowL
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
-import { RefineDrawer, RefineSection, RefineOption } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   isToday,
