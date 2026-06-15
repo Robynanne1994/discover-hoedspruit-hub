@@ -474,6 +474,10 @@ const Events = () => {
   const selectedDate: Date | null = urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) ? new Date(urlDate + "T00:00:00") : null;
   const search = searchParams.get("q") ?? "";
   const tagFilter = searchParams.get("t");
+  const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc"] as const;
+  type SortType = typeof validSorts[number];
+  const urlSort = searchParams.get("s") as SortType | null;
+  const sortBy: SortType = urlSort && (validSorts as readonly string[]).includes(urlSort) ? urlSort : "date-asc";
   const filterBarRef = useRef<HTMLDivElement | null>(null);
   const activePillRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
@@ -497,10 +501,12 @@ const Events = () => {
   const setSelectedDate = (d: Date | null) => updateParams({ d: d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : null });
   const setSearch = (q: string) => updateParams({ q: q || null });
   const setTagFilter = (t: string | null) => updateParams({ t: t || null });
+  const setSortBy = (s: SortType) => updateParams({ s: s === "date-asc" ? null : s });
   const [weekAnchor, setWeekAnchor] = useState<Date>(selectedDate ?? startOfToday());
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | null>("tag");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | null>("tag");
+
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
@@ -566,31 +572,47 @@ const Events = () => {
       const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
       const dayEnd = new Date(dayStart);
       dayEnd.setDate(dayEnd.getDate() + 1);
-      return list.filter((e) => {
+      list = list.filter((e) => {
         const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
         if (occs.length > 0) return true;
         return e._parsed && isSameDay(e._parsed, selectedDate);
       });
+    } else {
+      const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+      const monthEnd = endOfMonth(today);
+      const weekend = getWeekendRange(today);
+      const yearEnd = new Date(today.getFullYear(), 11, 31);
+
+      list = list.filter((e) => {
+        if (!e._parsed) return activeFilter === "all";
+        const d = e._parsed;
+        if (activeFilter === "all") return !isBefore(d, today);
+        if (activeFilter === "today") return isToday(d);
+        if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
+        if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
+        if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
+        if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+        if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
+        return true;
+      });
     }
 
-    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-    const monthEnd = endOfMonth(today);
-    const weekend = getWeekendRange(today);
-    const yearEnd = new Date(today.getFullYear(), 11, 31);
+    const sorted = [...list];
+    if (sortBy === "date-desc") {
+      sorted.sort((a, b) => {
+        const at = a._parsed ? a._parsed.getTime() : 0;
+        const bt = b._parsed ? b._parsed.getTime() : 0;
+        return bt - at;
+      });
+    } else if (sortBy === "title-asc") {
+      sorted.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+    } else if (sortBy === "title-desc") {
+      sorted.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+    }
+    // date-asc is already the default order from sortedEvents
+    return sorted;
+  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy]);
 
-    return list.filter((e) => {
-      if (!e._parsed) return activeFilter === "all";
-      const d = e._parsed;
-      if (activeFilter === "all") return !isBefore(d, today);
-      if (activeFilter === "today") return isToday(d);
-      if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
-      if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
-      if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
-      if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
-      if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
-      return true;
-    });
-  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate]);
 
   const sectionTitle = useMemo(() => {
     if (selectedDate) return format(selectedDate, "d MMM yyyy");
@@ -858,7 +880,7 @@ const Events = () => {
       <RefineDrawer
         open={refineOpen}
         onClose={() => setRefineOpen(false)}
-        onClear={() => setTagFilter(null)}
+        onClear={() => { setTagFilter(null); setSortBy("date-asc"); }}
         resultsCount={filtered.length}
         resultsLabel="events"
       >
@@ -888,7 +910,24 @@ const Events = () => {
             </p>
           )}
         </RefineSection>
+        <RefineSection
+          label="Sort by"
+          summary={
+            sortBy === "date-asc" ? "Date (soonest first)" :
+            sortBy === "date-desc" ? "Date (latest first)" :
+            sortBy === "title-asc" ? "Title (A–Z)" :
+            "Title (Z–A)"
+          }
+          open={openSection === "sort"}
+          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+        >
+          <RefineOption label="Date (soonest first)" active={sortBy === "date-asc"} onClick={() => setSortBy("date-asc")} />
+          <RefineOption label="Date (latest first)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
+          <RefineOption label="Title (A–Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
+          <RefineOption label="Title (Z–A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
+        </RefineSection>
       </RefineDrawer>
+
     </div>
   );
 };
