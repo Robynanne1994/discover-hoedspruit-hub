@@ -5,6 +5,7 @@ const EMAIL = "admin@hellohoedspruit.co";
 const CookiePolicy = () => (
   <LegalPage
     title="Cookie Policy"
+    lastUpdated="15 June 2026"
     footer="We use cookies, but only the polite ones. Tap below if you'd like to know more."
   >
     <Section heading="What Are Cookies">

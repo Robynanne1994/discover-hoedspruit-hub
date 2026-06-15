@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { useNavigate } from "react-router-dom";
+import PageHeader from "@/components/PageHeader";
 import {
-  ArrowLeft,
+  CalendarClock,
   FileText,
   Heart,
   ShieldCheck,
@@ -36,7 +36,6 @@ const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
 const BODY = "#2b2420";
-const LINE = "rgba(26,26,26,0.08)";
 const ICON_BG = "rgba(26,26,26,0.06)";
 const RUST = "#9B5A3C";
 
@@ -79,47 +78,60 @@ const ICON_MAP: Record<string, any> = {
   contact: Mail,
 };
 
-const tap = {
-  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(0.96)"; },
-  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
-  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { e.currentTarget.style.transform = "scale(1)"; },
-};
-
 interface LegalPageProps {
   title: string;
   footer: string;
+  /** Human-readable date this page was last updated (e.g. "15 June 2026"). */
+  lastUpdated?: string;
   children: ReactNode;
 }
 
-export const LegalPage = ({ title, footer, children }: LegalPageProps) => {
-  const navigate = useNavigate();
+export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPageProps) => {
   const displayTitle = title.replace(/\.$/, "");
 
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 120 }}>
-      {/* Top bar */}
-      <div style={{ padding: "56px 20px 0", display: "flex", alignItems: "center", minHeight: 44 }}>
-        <button
-          onClick={() => navigate(-1)}
-          {...tap}
-          aria-label="Back"
-          style={{
-            width: 40, height: 40, borderRadius: "50%", background: CARD, border: "none",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            cursor: "pointer", flexShrink: 0, transition: "transform 150ms ease-out",
-          }}
-        >
-          <ArrowLeft size={18} strokeWidth={2} color={INK} />
-        </button>
-        <div style={{ flex: 1, textAlign: "center", marginRight: 40, fontWeight: 700, fontSize: 17, color: INK, letterSpacing: 0.1 }}>
-          {displayTitle}
-        </div>
-      </div>
-
-      <div style={{ height: 1, background: LINE, marginTop: 22 }} />
+      {/* Top bar — shared header so the page title matches the rest of the app */}
+      <PageHeader title={displayTitle} />
 
       {/* Sections */}
       <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 14 }}>
+        {lastUpdated && (
+          <section
+            style={{
+              background: CARD,
+              borderRadius: 18,
+              padding: "22px 22px 24px",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+              <div
+                aria-hidden
+                style={{
+                  width: 36, height: 36, borderRadius: "50%", background: ICON_BG,
+                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                }}
+              >
+                <CalendarClock size={17} color={INK} strokeWidth={1.8} />
+              </div>
+              <h2
+                style={{
+                  fontFamily: SANS,
+                  fontWeight: 700,
+                  fontSize: 17,
+                  lineHeight: 1.2,
+                  letterSpacing: -0.1,
+                  color: INK,
+                  margin: 0,
+                  textTransform: "none",
+                }}
+              >
+                Last Updated
+              </h2>
+            </div>
+            <P last>{lastUpdated}</P>
+          </section>
+        )}
         {children}
       </div>
 

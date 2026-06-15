@@ -5,6 +5,7 @@ const EMAIL = "admin@hellohoedspruit.co";
 const PrivacyPolicyPage = () => (
   <LegalPage
     title="Privacy Policy"
+    lastUpdated="15 June 2026"
     footer="Your data is yours. We treat it the way we'd want ours treated. Questions welcome."
   >
     <Section heading="Information We Collect">
