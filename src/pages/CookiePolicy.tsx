@@ -34,19 +34,19 @@ const CookiePolicy = () => (
 
     <Section heading="Managing Your Preferences">
       <P>
-        Most browsers and devices let you control cookies through their settings. You can block them, delete them, or be warned before one is set. Keep in mind that turning off cookies may break parts of the app, like staying signed in.
+        Most browsers and devices let you control cookies through their settings. You can block them, delete them or be warned before one is set. Keep in mind that turning off cookies may break parts of the app, like staying signed in.
       </P>
     </Section>
 
     <Section heading="Changes to This Policy">
       <P>
-        We may update this policy from time to time. When we do, we'll change the date at the top of this page. Continued use of the app after changes are posted means you accept the updated policy.
+        We may update this policy from time to time. When we do, we will change the date at the top of this page. Continued use of the app after changes are posted means you accept the updated policy.
       </P>
     </Section>
 
     <Section heading="Contact">
       <P last>
-        Questions about cookies or anything else on this page, write to us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+        Questions about cookies or anything else on this page, email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
     </Section>
   </LegalPage>
