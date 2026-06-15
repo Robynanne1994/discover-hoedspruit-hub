@@ -1153,6 +1153,20 @@ const ListingDetail = () => {
         path={`/listing/${listing.id}`}
         image={listing.image_url || undefined}
         type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          name: listing.title,
+          description: listing.description
+            ? String(listing.description).replace(/<[^>]*>/g, "").trim().slice(0, 500)
+            : undefined,
+          image: listing.image_url || undefined,
+          url: `https://hello-hoedspruit-hub.lovable.app/listing/${listing.id}`,
+          telephone: (listing as any).phone || undefined,
+          address: (listing as any).address
+            ? { "@type": "PostalAddress", streetAddress: (listing as any).address, addressLocality: "Hoedspruit", addressCountry: "ZA" }
+            : { "@type": "PostalAddress", addressLocality: "Hoedspruit", addressCountry: "ZA" },
+        }}
       />
       {/* Hero (4:3) with floating action buttons */}
       {showHero ? (
