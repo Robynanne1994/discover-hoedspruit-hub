@@ -1111,7 +1111,7 @@ const ListingDetail = () => {
             style={{
               marginTop: 14,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "8px 16px", borderRadius: 999, height: 40,
+              padding: "8px 16px", borderRadius: 9999, height: 40,
               background: "#423324", border: "1px solid #423324",
               color: "#FFFFFF", textDecoration: "none",
               fontFamily: FONT, fontWeight: 500, fontSize: 14, lineHeight: "20px",
