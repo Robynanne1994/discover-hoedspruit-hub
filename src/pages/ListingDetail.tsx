@@ -1351,7 +1351,7 @@ const ListingDetail = () => {
       </nav>
 
       {/* Tab content */}
-      <main style={{ background: C.bg }}>
+      <section style={{ background: C.bg }}>
         {tab === "about" && renderAbout()}
         {tab === "hours" && renderHours()}
         {tab === "contact" && renderContact()}
@@ -1360,7 +1360,7 @@ const ListingDetail = () => {
         {tab === "events" && renderEvents()}
         {tab === "gallery" && renderGallery()}
         {tab === "location" && renderLocation()}
-      </main>
+      </section>
 
 
       <ImageLightbox

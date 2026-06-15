@@ -1041,13 +1041,13 @@ const EventDetail = () => {
               <TabBtn k="location" label="Location" />
             </nav>
 
-            <main>
+            <section>
               {tab === "about" && hasAboutContent && renderAbout()}
               {tab === "details" && renderDetails()}
               {tab === "contact" && hasContactContent && renderContact()}
               {tab === "gallery" && galleryImages.length > 0 && renderGallery()}
               {tab === "location" && renderLocation()}
-            </main>
+            </section>
           </>
         );
       })()}

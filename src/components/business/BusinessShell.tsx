@@ -65,7 +65,7 @@ const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: Bus
           {title.toLowerCase()}
         </h1>
       </header>
-      <main style={{ padding: "0 24px 120px", maxWidth: 720, margin: "0 auto" }}>{children}</main>
+      <div style={{ padding: "0 24px 120px", maxWidth: 720, margin: "0 auto" }}>{children}</div>
     </div>
   );
 };

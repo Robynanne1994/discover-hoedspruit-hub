@@ -130,6 +130,7 @@ const App = () => (
         <BrowserRouter>
           <GuestAuthProvider>
             <AuthGate>
+              <main>
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/welcome" element={<Welcome />} />
@@ -212,6 +213,7 @@ const App = () => (
               </Route>
               <Route path="*" element={<NotFound />} />
               </Routes>
+              </main>
               <ScrollToTop />
               <ConditionalBottomNav />
             </AuthGate>

@@ -621,11 +621,11 @@ const SpecialDetail = () => {
               {hasTerms && <TabBtn k="terms" label="Terms" />}
             </nav>
 
-            <main>
+            <section>
               {activeTab === "about" && renderAbout()}
               {activeTab === "contact" && renderContact()}
               {activeTab === "terms" && renderTerms()}
-            </main>
+            </section>
           </>
         );
       })()}
