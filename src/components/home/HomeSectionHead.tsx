@@ -43,12 +43,13 @@ const HomeSectionHead = ({ primary, serif, actionLabel = "View All", actionHref 
             color: "#2b2420",
             textDecoration: "none",
             display: "inline-flex",
-            alignItems: "center",
+            alignItems: "flex-start",
             gap: 2,
+            lineHeight: 1,
           }}
         >
           {actionLabel}
-          <ArrowUpRight size={15} strokeWidth={1.5} />
+          <ArrowUpRight size={15} strokeWidth={1.5} style={{ display: "block" }} />
         </Link>
       )}
     </div>
