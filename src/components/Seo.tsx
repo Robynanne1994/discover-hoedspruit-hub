@@ -9,6 +9,7 @@ interface SeoProps {
   image?: string;
   noIndex?: boolean;
   type?: "website" | "article";
+  jsonLd?: object | object[];
 }
 
 /**
@@ -22,11 +23,13 @@ export default function Seo({
   image,
   noIndex,
   type = "website",
+  jsonLd,
 }: SeoProps) {
   const url = `${SITE}${path.startsWith("/") ? path : `/${path}`}`;
   const safeTitle = title.length > 60 ? title.slice(0, 57).trimEnd() + "…" : title;
   const safeDesc =
     description.length > 160 ? description.slice(0, 157).trimEnd() + "…" : description;
+  const ldArray = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
 
   return (
     <Helmet>
@@ -42,6 +45,9 @@ export default function Seo({
       <meta name="twitter:description" content={safeDesc} />
       {image ? <meta name="twitter:image" content={image} /> : null}
       {noIndex ? <meta name="robots" content="noindex,nofollow" /> : null}
+      {ldArray.map((obj, i) => (
+        <script key={i} type="application/ld+json">{JSON.stringify(obj)}</script>
+      ))}
     </Helmet>
   );
 }
