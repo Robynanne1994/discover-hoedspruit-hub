@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useHomepageSection, useHomepageSectionTitle } from "@/hooks/useHomepageSection";
 import HomeSectionHead from "./HomeSectionHead";
-import FavouriteButton from "@/components/FavouriteButton";
+
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -62,7 +62,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                     style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
                   />
                 )}
-                <FavouriteButton itemId={l.id} itemType="listing" />
+                
               </div>
               <div
                 {...noTitleCaseProps(l)}
