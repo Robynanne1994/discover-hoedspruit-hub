@@ -617,31 +617,30 @@ const MyAccount = () => {
       )}
 
       {/* Log out */}
-      <div style={{ display: "flex", justifyContent: "center", marginTop: 8, marginBottom: 24 }}>
+      <div style={{ padding: "8px 24px 24px" }}>
         <button
           onClick={() => {
             signOut();
             navigate("/");
           }}
           style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 10,
-            background: "transparent",
-            color: INK,
-            border: `1px solid ${LINE}`,
+            width: "100%",
+            height: 56,
+            background: "#3D2E22",
+            color: "#FFFFFF",
+            border: "none",
             borderRadius: 999,
-            padding: "14px 26px",
             fontFamily: SANS,
-            fontSize: 14,
-            fontWeight: 400,
+            fontSize: 16,
+            fontWeight: 700,
+            letterSpacing: "0.1px",
             cursor: "pointer",
           }}
         >
-          <LogOut size={14} strokeWidth={1.6} color={INK} />
-          <span>Log Out</span>
+          Log Out
         </button>
       </div>
+
 
     </div>
   );
