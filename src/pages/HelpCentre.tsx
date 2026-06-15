@@ -64,13 +64,8 @@ const HelpCentre = () => {
               }}>
                 {row.title}
               </div>
-              <div style={{
-                width: 32, height: 32, borderRadius: 999, background: ICON_BG,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: SANS, fontSize: 14, color: INK, flexShrink: 0,
-              }}>
-                ↗
-              </div>
+              <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+
             </button>
           ))}
         </div>
