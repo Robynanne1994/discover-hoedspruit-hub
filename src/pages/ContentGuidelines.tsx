@@ -13,19 +13,19 @@ const ContentGuidelines = () => (
       </P>
     </Section>
 
-    <Section heading="keep it honest">
+    <Section heading="Keep It Honest">
       <P>
         If you leave a review or share information about a place, make sure it's true and based on your own experience. Don't post fake reviews, don't pretend to be someone you're not, and don't try to game the system to push a business up or knock one down.
       </P>
     </Section>
 
-    <Section heading="stay on topic">
+    <Section heading="Stay on Topic">
       <P>
         This is a guide to Hoedspruit and the surrounding area. Keep your posts, reviews, and submissions relevant to local places, events, and community life. Off-topic or unrelated content may be removed.
       </P>
     </Section>
 
-    <Section heading="no spam or self-promotion">
+    <Section heading="No Spam or Self-Promotion">
       <P last>To keep the app useful for everyone, please don't:</P>
       <List
         items={[
@@ -37,19 +37,19 @@ const ContentGuidelines = () => (
       />
     </Section>
 
-    <Section heading="no illegal content">
+    <Section heading="No Illegal Content">
       <P>
         Don't post anything that's illegal under South African law, infringes someone else's rights, or encourages others to break the law. This includes hate speech, threats, sexual content involving minors, and content that promotes violence.
       </P>
     </Section>
 
-    <Section heading="reporting & enforcement">
+    <Section heading="Reporting & Enforcement">
       <P>
         If you see something that breaks these guidelines, report it through the app or email us. We review reports as quickly as we can and may remove content, warn users, or suspend accounts depending on what we find. Serious or repeated breaches can lead to a permanent ban.
       </P>
     </Section>
 
-    <Section heading="contact">
+    <Section heading="Contact">
       <P last>
         To report content or ask about these guidelines, write to us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
