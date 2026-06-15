@@ -487,7 +487,7 @@ const MyProfile = () => {
           <div
             style={{
               marginTop: 14,
-              background: "#E6E0CC",
+              background: "#F2EFE5",
               borderRadius: 14,
               padding: "12px 6px",
               display: "grid",
