@@ -553,9 +553,9 @@ const Events = () => {
     let list = sortedEvents;
     if (tagFilter) {
       const tf = tagFilter.toLowerCase();
-      list = list.filter((e) =>
-        [e.tag, e.sub_tag_1, e.sub_tag_2].some((t: string | null) => t && t.toLowerCase() === tf)
-      );
+      list = list.filter((e) => e.tag && e.tag.toLowerCase() === tf);
+    }
+
     }
     if (search.trim()) {
       const q = search.toLowerCase();
