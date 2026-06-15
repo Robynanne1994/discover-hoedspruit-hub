@@ -1497,9 +1497,12 @@ const SuggestEditSheet = ({
           </div>
         </div>
         <button onClick={submit} disabled={submitting} style={{
-          fontFamily: FONT, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
-          background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
-          letterSpacing: "0.04em",
+          fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+          marginTop: 20, width: "100%", height: 40, borderRadius: 9999,
+          background: "#423324", color: "#FFFFFF", border: "none",
+          fontSize: 14, fontWeight: 500, lineHeight: "20px",
+          padding: "8px 16px",
+          display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
           cursor: submitting ? "default" : "pointer", opacity: submitting ? 0.6 : 1,
         }}>
           {submitting ? "Sending..." : "Send Suggestion"}
