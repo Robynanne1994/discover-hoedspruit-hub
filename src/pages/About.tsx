@@ -52,7 +52,7 @@ const About = () => {
       {/* Section heading */}
       <div style={{ padding: "28px 22px 14px" }}>
         <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.14em", color: MUTED, marginBottom: 6, textTransform: "uppercase" }}>
-          Our Values
+          {"\n"}
         </div>
         <h2 style={{ fontFamily: SANS, fontSize: 26, fontWeight: 700, lineHeight: 1.15, letterSpacing: -0.3, color: INK, margin: 0 }}>
           What We Stand For
