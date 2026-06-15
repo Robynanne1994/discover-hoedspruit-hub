@@ -605,7 +605,13 @@ const EventDetail = () => {
     contactRows.push({ Icon: WhatsAppIcon, label: i === 0 ? "WhatsApp" : `WhatsApp ${i + 1}`, value: formatSAPhone(w), href: `https://wa.me/${clean}`, external: true });
   });
   allEmails.forEach((em, i) => contactRows.push({ Icon: Mail, label: i === 0 ? "Email" : `Email ${i + 1}`, value: em, href: `mailto:${em}`, external: true }));
-  if (socialLink) contactRows.push({ Icon: Globe, label: socialLabel || "Website", value: socialLabel || socialLink, href: socialLink, external: true });
+  if (socialLink) {
+    const isFb = /facebook\.com|fb\.com/i.test(socialLink);
+    const isIg = /instagram\.com/i.test(socialLink);
+    const SocialIcon = isFb ? FacebookIcon : isIg ? InstagramIcon : Globe;
+    const defaultLabel = isFb ? "Facebook" : isIg ? "Instagram" : "Website";
+    contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
+  }
   if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true });
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
