@@ -1360,7 +1360,7 @@ const ListingDetail = () => {
         {tab === "events" && renderEvents()}
         {tab === "gallery" && renderGallery()}
         {tab === "location" && renderLocation()}
-      </main>
+      </section>
 
 
       <ImageLightbox
