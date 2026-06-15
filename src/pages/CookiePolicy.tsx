@@ -7,13 +7,13 @@ const CookiePolicy = () => (
     title="cookie policy."
     footer="We use cookies, but only the polite ones. Tap below if you'd like to know more."
   >
-    <Section heading="what are cookies">
+    <Section heading="What Are Cookies">
       <P>
         Cookies are small text files placed on your device when you visit a website or app. They help the service remember things about you, like whether you're signed in or what you've looked at, so it doesn't have to ask you the same question every time.
       </P>
     </Section>
 
-    <Section heading="how we use cookies">
+    <Section heading="How We Use Cookies">
       <P last>We use cookies and similar technologies for a few practical reasons:</P>
       <List
         items={[
@@ -25,25 +25,25 @@ const CookiePolicy = () => (
       />
     </Section>
 
-    <Section heading="third-party cookies">
+    <Section heading="Third-Party Cookies">
       <P>
         Some cookies are set by third parties we work with, such as our authentication and analytics providers. These providers have their own privacy policies, and we only use ones we trust to handle your data with the same care we do.
       </P>
     </Section>
 
-    <Section heading="managing your preferences">
+    <Section heading="Managing Your Preferences">
       <P>
         Most browsers and devices let you control cookies through their settings. You can block them, delete them, or be warned before one is set. Keep in mind that turning off cookies may break parts of the app, like staying signed in.
       </P>
     </Section>
 
-    <Section heading="changes to this policy">
+    <Section heading="Changes to This Policy">
       <P>
         We may update this policy from time to time. When we do, we'll change the date at the top of this page. Continued use of the app after changes are posted means you accept the updated policy.
       </P>
     </Section>
 
-    <Section heading="contact">
+    <Section heading="Contact">
       <P last>
         Questions about cookies or anything else on this page, write to us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>

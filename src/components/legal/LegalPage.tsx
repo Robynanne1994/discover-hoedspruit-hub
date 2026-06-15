@@ -177,7 +177,7 @@ export const Section = ({ heading, children }: { heading: string; children: Reac
             textTransform: "none",
           }}
         >
-          {heading.replace(/\b\w/g, (c) => c.toUpperCase())}
+          {heading}
         </h2>
       </div>
       {children}
