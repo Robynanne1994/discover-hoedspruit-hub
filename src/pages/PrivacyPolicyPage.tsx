@@ -22,13 +22,13 @@ const PrivacyPolicyPage = () => (
       />
     </Section>
 
-    <Section heading="how we use your information">
+    <Section heading="How We Use Your Information">
       <P>
         We use your information to run the app, save your favourites across devices, recommend places that fit what you're into, respond to your messages, and improve the service over time. We don't use your data to build profiles for advertising, and we don't sell it to anyone.
       </P>
     </Section>
 
-    <Section heading="data sharing">
+    <Section heading="Data Sharing">
       <P last>We share information only when we genuinely need to:</P>
       <List
         items={[
@@ -39,13 +39,13 @@ const PrivacyPolicyPage = () => (
       />
     </Section>
 
-    <Section heading="cookies & tracking">
+    <Section heading="Cookies & Tracking">
       <P>
         We use a small number of cookies and similar technologies to keep you signed in, remember your preferences, and understand how the app is used. You can read more in our <A href="/cookie-policy">Cookie Policy</A>.
       </P>
     </Section>
 
-    <Section heading="your rights">
+    <Section heading="Your Rights">
       <P last>You have the right to:</P>
       <List
         items={[
@@ -57,25 +57,25 @@ const PrivacyPolicyPage = () => (
       />
     </Section>
 
-    <Section heading="data security">
+    <Section heading="Data Security">
       <P>
         We take reasonable steps to protect your information against loss, misuse, and unauthorised access. No system is perfect, but we treat your data the way we'd want ours treated, and we work with reputable providers who do the same.
       </P>
     </Section>
 
-    <Section heading="children's privacy">
+    <Section heading="Children's Privacy">
       <P>
         The app isn't aimed at children under the age of 13, and we don't knowingly collect personal information from them. If you believe a child has given us information, please contact us and we'll remove it.
       </P>
     </Section>
 
-    <Section heading="changes to this policy">
+    <Section heading="Changes to This Policy">
       <P>
         We may update this policy from time to time. When we do, we'll change the date at the top of this page. If the changes are significant, we'll let you know inside the app.
       </P>
     </Section>
 
-    <Section heading="contact">
+    <Section heading="Contact">
       <P last>
         For privacy questions or to exercise any of your rights, email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
