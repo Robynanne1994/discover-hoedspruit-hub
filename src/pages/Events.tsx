@@ -766,7 +766,8 @@ const Events = () => {
         style={{
           padding: "16px 20px 32px",
           display: "flex",
-          gap: 8,
+          gap: 10,
+          alignItems: "center",
           overflowX: "auto",
           scrollbarWidth: "none",
         }}
@@ -780,17 +781,18 @@ const Events = () => {
               ref={active ? activePillRef : undefined}
               onClick={() => handleFilterPill(f.value)}
               style={{
-                fontFamily: SANS,
-                fontWeight: 700,
-                fontSize: 13,
-                padding: "8px 18px",
+                background: active ? "#2E2418" : "#FFFFFF",
+                border: `1px solid ${active ? "#2E2418" : "#E2DAC6"}`,
                 borderRadius: 999,
-                border: active ? "none" : `1px solid ${C.tag}`,
-                background: active ? C.dark : C.white,
-                color: active ? C.ivory : C.ink,
+                padding: "8px 18px",
                 cursor: "pointer",
-                whiteSpace: "nowrap",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 700,
                 letterSpacing: "0.01em",
+                color: active ? "#FFFFFF" : C.ink,
+                whiteSpace: "nowrap",
+                flexShrink: 0,
               }}
             >
               {f.label} <span style={{ opacity: 1 }}>({count})</span>
@@ -798,6 +800,7 @@ const Events = () => {
           );
         })}
       </div>
+
 
 
       {/* List */}
