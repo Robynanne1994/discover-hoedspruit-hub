@@ -1351,7 +1351,7 @@ const ListingDetail = () => {
       </nav>
 
       {/* Tab content */}
-      <main style={{ background: C.bg }}>
+      <section style={{ background: C.bg }}>
         {tab === "about" && renderAbout()}
         {tab === "hours" && renderHours()}
         {tab === "contact" && renderContact()}
