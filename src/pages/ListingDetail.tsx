@@ -98,7 +98,7 @@ const formatDetailLabel = (s: string): string => {
   }).join("");
 };
 
-type TabKey = "about" | "contact" | "details" | "specials" | "events" | "gallery" | "location";
+type TabKey = "about" | "hours" | "contact" | "details" | "specials" | "events" | "gallery" | "location";
 
 const ListingDetail = () => {
   const { isAdmin, user } = useAuth();
