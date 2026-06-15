@@ -7,7 +7,7 @@ const PrivacyPolicyPage = () => (
     title="privacy policy."
     footer="Your data is yours. We treat it the way we'd want ours treated. Questions welcome."
   >
-    <Section heading="information we collect">
+    <Section heading="Information We Collect">
       <P>
         When you use Hello Hoedspruit, we collect a small amount of information needed to make the app work. This includes the details you give us when you sign up, the actions you take inside the app, and basic technical data sent by your device.
       </P>
