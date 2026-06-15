@@ -572,31 +572,47 @@ const Events = () => {
       const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
       const dayEnd = new Date(dayStart);
       dayEnd.setDate(dayEnd.getDate() + 1);
-      return list.filter((e) => {
+      list = list.filter((e) => {
         const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
         if (occs.length > 0) return true;
         return e._parsed && isSameDay(e._parsed, selectedDate);
       });
+    } else {
+      const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+      const monthEnd = endOfMonth(today);
+      const weekend = getWeekendRange(today);
+      const yearEnd = new Date(today.getFullYear(), 11, 31);
+
+      list = list.filter((e) => {
+        if (!e._parsed) return activeFilter === "all";
+        const d = e._parsed;
+        if (activeFilter === "all") return !isBefore(d, today);
+        if (activeFilter === "today") return isToday(d);
+        if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
+        if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
+        if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
+        if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
+        if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
+        return true;
+      });
     }
 
-    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-    const monthEnd = endOfMonth(today);
-    const weekend = getWeekendRange(today);
-    const yearEnd = new Date(today.getFullYear(), 11, 31);
+    const sorted = [...list];
+    if (sortBy === "date-desc") {
+      sorted.sort((a, b) => {
+        const at = a._parsed ? a._parsed.getTime() : 0;
+        const bt = b._parsed ? b._parsed.getTime() : 0;
+        return bt - at;
+      });
+    } else if (sortBy === "title-asc") {
+      sorted.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+    } else if (sortBy === "title-desc") {
+      sorted.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+    }
+    // date-asc is already the default order from sortedEvents
+    return sorted;
+  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy]);
 
-    return list.filter((e) => {
-      if (!e._parsed) return activeFilter === "all";
-      const d = e._parsed;
-      if (activeFilter === "all") return !isBefore(d, today);
-      if (activeFilter === "today") return isToday(d);
-      if (activeFilter === "this-week") return isWithinInterval(d, { start: today, end: weekEnd });
-      if (activeFilter === "this-weekend") return isWithinInterval(d, { start: weekend.start, end: weekend.end });
-      if (activeFilter === "this-month") return isWithinInterval(d, { start: today, end: monthEnd });
-      if (activeFilter === "this-year") return isWithinInterval(d, { start: today, end: yearEnd });
-      if (activeFilter === "past") return isBefore(d, today) && !isToday(d);
-      return true;
-    });
-  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate]);
 
   const sectionTitle = useMemo(() => {
     if (selectedDate) return format(selectedDate, "d MMM yyyy");
