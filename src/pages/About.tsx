@@ -38,13 +38,13 @@ const About = () => {
       <div style={{ padding: "20px 20px 0" }}>
         <section style={{ background: CARD, borderRadius: 18, padding: "22px 22px 24px" }}>
           <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: BODY, margin: 0, marginBottom: 14 }}>
-            My name is <span style={{ fontStyle: "italic", fontWeight: 500 }}>Robyn Dawes</span>, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the lowveld, and over the years I've watched this little town blossom into something truly special.
+            My name is <span style={{ fontStyle: "italic", fontWeight: 500 }}>Robyn Dawes</span>, and Hoedspruit has been my home for as long as I can remember. I grew up surrounded by the beauty of the lowveld, and over the years I have watched this little town blossom into something truly special.
           </p>
           <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: BODY, margin: 0, marginBottom: 14 }}>
             Having spent my whole life here, I know just how much Hoedspruit has to offer, from incredible wildlife and outdoor adventures to its warm community spirit and the hidden gems that only a local would know.
           </p>
           <p style={{ fontSize: 15, fontWeight: 400, lineHeight: 1.6, color: BODY, margin: 0 }}>
-            The idea behind Hello Hoedspruit came from a simple frustration. There was no single place where visitors and locals alike could find everything our town has to offer. Whether you're planning a trip, new to the area, or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together.
+            The idea behind Hello Hoedspruit came from a simple frustration. There was no single place where visitors and locals alike could find everything our town has to offer. Whether you are planning a trip, new to the area or a fellow lifelong local, Hello Hoedspruit is my way of bringing our community together.
           </p>
         </section>
       </div>
