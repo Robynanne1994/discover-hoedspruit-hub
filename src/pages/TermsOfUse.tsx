@@ -4,7 +4,7 @@ const EMAIL = "admin@hellohoedspruit.co";
 
 const TermsOfUse = () => (
   <LegalPage
-    title="terms of use."
+    title="Terms of Use"
     footer="That's the legal bit. If anything's unclear, drop us a line. We'd rather you ask than guess."
   >
     <Section heading="Agreement to Terms">
