@@ -537,14 +537,19 @@ const Events = () => {
   }, [events]);
 
   const availableTags = useMemo(() => {
+    const today = startOfToday();
     const set = new Set<string>();
+    // Only collect tags from upcoming events so stale tags from past events
+    // don't linger in the filter list.
     sortedEvents.forEach((e) => {
+      if (!e._parsed || isBefore(e._parsed, today)) return;
       [e.tag, e.sub_tag_1, e.sub_tag_2].forEach((t: string | null) => {
         if (t && t.trim()) set.add(t.trim());
       });
     });
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [sortedEvents]);
+
 
   const filtered = useMemo(() => {
     let list = sortedEvents;
