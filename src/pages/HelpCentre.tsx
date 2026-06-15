@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { MessageCircle, LifeBuoy, Mail } from "lucide-react";
+import { MessageCircle, LifeBuoy, Mail, ArrowUpRight } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 
