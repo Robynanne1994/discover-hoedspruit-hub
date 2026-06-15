@@ -300,7 +300,7 @@ const UserProfile = () => {
         background: PAGE_BG,
         paddingBottom: 100,
         fontFamily: SANS,
-        color: CREAM,
+        color: BODY,
       }}
     >
       {/* Cover */}
