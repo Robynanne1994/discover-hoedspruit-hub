@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Mail, Phone, ChevronRight, MapPin } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, MapPin } from "lucide-react";
 
 const WhatsAppIcon = ({ size = 18, color = "#1A1A1A" }: { size?: number; color?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
@@ -98,7 +98,7 @@ const Row = ({ icon, eyebrow, value, href, external, isFirst }: RowProps) => (
         {value}
       </div>
     </div>
-    <ChevronRight size={18} color={MUTED} style={{ flexShrink: 0 }} />
+    <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
   </a>
 );
 
