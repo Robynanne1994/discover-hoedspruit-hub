@@ -949,9 +949,10 @@ const UserProfile = () => {
           <DialogHeader>
             <DialogTitle
               style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
+                fontFamily: SANS,
                 fontWeight: 400,
+                fontSize: 16,
+                letterSpacing: "0.01em",
                 color: INK,
               }}
             >
