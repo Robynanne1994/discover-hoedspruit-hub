@@ -886,6 +886,22 @@ const Events = () => {
       >
         <RefineSection
           isFirst
+          label="Sort by"
+          summary={
+            sortBy === "date-asc" ? "Date (soonest first)" :
+            sortBy === "date-desc" ? "Date (latest first)" :
+            sortBy === "title-asc" ? "Title (A–Z)" :
+            "Title (Z–A)"
+          }
+          open={openSection === "sort"}
+          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+        >
+          <RefineOption label="Date (soonest first)" active={sortBy === "date-asc"} onClick={() => setSortBy("date-asc")} />
+          <RefineOption label="Date (latest first)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
+          <RefineOption label="Title (A–Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
+          <RefineOption label="Title (Z–A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
+        </RefineSection>
+        <RefineSection
           label="Tag"
           summary={tagFilter || undefined}
           open={openSection === "tag"}
@@ -910,22 +926,7 @@ const Events = () => {
             </p>
           )}
         </RefineSection>
-        <RefineSection
-          label="Sort by"
-          summary={
-            sortBy === "date-asc" ? "Date (soonest first)" :
-            sortBy === "date-desc" ? "Date (latest first)" :
-            sortBy === "title-asc" ? "Title (A–Z)" :
-            "Title (Z–A)"
-          }
-          open={openSection === "sort"}
-          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
-        >
-          <RefineOption label="Date (soonest first)" active={sortBy === "date-asc"} onClick={() => setSortBy("date-asc")} />
-          <RefineOption label="Date (latest first)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
-          <RefineOption label="Title (A–Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
-          <RefineOption label="Title (Z–A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
-        </RefineSection>
+
       </RefineDrawer>
 
     </div>
