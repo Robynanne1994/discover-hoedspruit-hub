@@ -59,7 +59,7 @@ const LocalChannelDetail = () => {
   const { isAdmin, user } = useAuth();
   const requireAuth = useRequireAuth();
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [tab, setTab] = useState<"details" | "about">("details");
+  const [tab, setTab] = useState<"details" | "about">("about");
 
 
 
