@@ -102,7 +102,7 @@ const Feedback = () => {
       {/* Heading */}
       <h1 style={{
         fontFamily: FF, fontSize: 26, fontWeight: 700, color: INK,
-        lineHeight: 1.2, margin: 0, padding: "28px 24px 24px",
+        lineHeight: 1.2, margin: 0, padding: "16px 24px 12px",
       }}>
         {"\n"}
       </h1>
