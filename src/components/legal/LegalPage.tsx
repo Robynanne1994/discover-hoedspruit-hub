@@ -80,7 +80,7 @@ const ICON_MAP: Record<string, any> = {
 
 interface LegalPageProps {
   title: string;
-  footer: string;
+  footer?: string;
   /** Human-readable date this page was last updated (e.g. "15 June 2026"). */
   lastUpdated?: string;
   children: ReactNode;
