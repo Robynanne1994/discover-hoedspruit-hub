@@ -9,13 +9,13 @@ const TermsOfUse = () => (
   >
     <Section heading="Agreement to Terms">
       <P>
-        By using the Hello Hoedspruit app, you agree to these terms. If you don't agree with any part of them, please don't use the app. These terms apply to everyone who visits, browses, or uses the service in any way.
+        By using the Hello Hoedspruit app, you agree to these terms. If you don't agree with any part of them, please don't use the app. These terms apply to everyone who visits, browses or uses the service in any way.
       </P>
     </Section>
 
     <Section heading="Who We Are">
       <P>
-        Hello Hoedspruit is a local guide to the town of Hoedspruit and the surrounding area, run by <Em>Sammy</Em> and a small team. We're based in South Africa and we make this app for the community we live in.
+        Hello Hoedspruit is a local guide to the town of Hoedspruit and the surrounding area, run by Robyn Dawes. We are based in Hoedspruit, South Africa and we made this app for the community we live in.
       </P>
     </Section>
 
@@ -33,37 +33,37 @@ const TermsOfUse = () => (
 
     <Section heading="Content & Listings">
       <P>
-        We do our best to keep listings, opening hours, contact details, and event information accurate, but the world changes faster than we can. Always confirm important details directly with the business or organiser before you rely on them.
+        We do our best to keep listings, opening hours, contact details and event information accurate, but the world changes faster than we can. Always confirm important details directly with the business or organiser before you rely on them.
       </P>
     </Section>
 
     <Section heading="User Content">
       <P>
-        If you submit reviews, comments, suggestions, or other content to the app, you grant us a non-exclusive, royalty-free licence to use, display, and adapt that content within the app. You're responsible for what you post, and you agree not to submit anything unlawful, defamatory, or infringing.
+        If you submit reviews, comments, suggestions or other content to the app, you grant us a non-exclusive, royalty-free licence to use, display and adapt that content within the app. You're responsible for what you post, and you agree not to submit anything unlawful, defamatory or infringing.
       </P>
     </Section>
 
     <Section heading="Intellectual Property">
       <P>
-        The app, its design, written content, photography, and the Hello Hoedspruit name and logo belong to us or to the people we've licensed them from. You're welcome to enjoy the app, but please don't copy, reproduce, or republish parts of it without our permission.
+        The app, its design, written content, photography and the Hello Hoedspruit name and logo belong to us or to the people we've licensed them from. You're welcome to enjoy the app, but please don't copy, reproduce or republish parts of it without our permission.
       </P>
     </Section>
 
     <Section heading="Third-Party Links">
       <P>
-        The app links to outside websites, social profiles, and booking platforms. We don't control those sites and we're not responsible for their content, privacy practices, or anything that happens once you leave us.
+        The app links to outside websites, social profiles and booking platforms. We don't control those sites and we're not responsible for their content, privacy practices or anything that happens once you leave us.
       </P>
     </Section>
 
     <Section heading="Limitation of Liability">
       <P>
-        To the fullest extent allowed by law, Hello Hoedspruit, its team, and contributors aren't liable for any indirect, incidental, or consequential damages arising from your use of the app, including lost profits, missed bookings, or anything that goes wrong on a trip planned around our content.
+        To the fullest extent allowed by law, Hello Hoedspruit, its team, and contributors aren't liable for any indirect, incidental or consequential damages arising from your use of the app, including lost profits, missed bookings or anything that goes wrong on a trip planned around our content.
       </P>
     </Section>
 
     <Section heading="Disclaimer">
       <P>
-        The app is provided <Em>"as is"</Em> and <Em>"as available"</Em>. We make no warranties about completeness, accuracy, reliability, or suitability for a particular purpose. Use it as a helpful guide, not as the final word.
+        The app is provided <Em>"as is"</Em> and <Em>"as available"</Em>. We make no warranties about completeness, accuracy, reliability or suitability for a particular purpose. Use it as a helpful guide, not as the final word.
       </P>
     </Section>
 
