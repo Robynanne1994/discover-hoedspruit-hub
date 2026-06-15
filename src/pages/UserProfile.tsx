@@ -28,13 +28,14 @@ import BottomNav from "@/components/BottomNav";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 
-const PAGE_BG = "#5C6446";
-const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
+const PAGE_BG = "#ebebeb";
+const CREAM = "#f5f0e8";
+const SOFT_CREAM = "#ffffff";
+const INK = "#020202";
+const BODY = "#2b2420";
+const MUTED = "#6b5d4a";
+const LINE = "rgba(0,0,0,0.08)";
+const RUST = "#715a3d";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -299,7 +300,7 @@ const UserProfile = () => {
         background: PAGE_BG,
         paddingBottom: 100,
         fontFamily: SANS,
-        color: CREAM,
+        color: BODY,
       }}
     >
       {/* Cover */}
@@ -307,20 +308,11 @@ const UserProfile = () => {
         style={{
           position: "relative",
           width: "100%",
-          height: 240,
+          height: 180,
           overflow: "hidden",
-          background:
-            "linear-gradient(180deg, #C18866 0%, #8B5C3E 50%, #5C6446 100%)",
+          background: CREAM,
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(ellipse at 30% 60%, rgba(0,0,0,0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 60%)",
-          }}
-        />
         <div
           style={{
             position: "absolute",
@@ -402,8 +394,7 @@ const UserProfile = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background:
-                "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
+              background: RUST,
             }}
           >
             {profile?.avatar_url ? (
@@ -419,10 +410,11 @@ const UserProfile = () => {
             ) : (
               <span
                 style={{
-                  fontFamily: SERIF,
-                  fontStyle: "italic",
-                  fontSize: 42,
-                  color: CREAM,
+                  fontFamily: SANS,
+                  fontWeight: 400,
+                  fontSize: 36,
+                  letterSpacing: "0.01em",
+                  color: "#ffffff",
                 }}
               >
                 {getInitials(profile?.display_name || profile?.username)}
@@ -441,12 +433,13 @@ const UserProfile = () => {
             <>
               <h1
                 style={{
-                  fontFamily: SERIF,
+                  fontFamily: SANS,
                   fontWeight: 400,
-                  fontSize: 42,
-                  lineHeight: 1.0,
-                  letterSpacing: "-1px",
-                  color: CREAM,
+                  fontSize: 24,
+                  lineHeight: 1.15,
+                  letterSpacing: "0.01em",
+                  textTransform: "uppercase",
+                  color: INK,
                   margin: 0,
                   marginBottom: 6,
                 }}
@@ -457,12 +450,11 @@ const UserProfile = () => {
               {profile?.username && (
                 <div
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
+                    fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 14,
-                    color: CREAM,
-                    opacity: 0.65,
+                    fontSize: 13,
+                    letterSpacing: "0.01em",
+                    color: MUTED,
                     marginBottom: 14,
                   }}
                 >
@@ -473,14 +465,13 @@ const UserProfile = () => {
               {profile?.bio && (
                 <p
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
+                    fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 16,
+                    fontSize: 14,
                     lineHeight: 1.5,
-                    color: CREAM,
-                    opacity: 0.85,
-                    maxWidth: 280,
+                    letterSpacing: "0.01em",
+                    color: BODY,
+                    maxWidth: 320,
                     margin: "0 auto 24px",
                   }}
                 >
@@ -712,15 +703,14 @@ const UserProfile = () => {
               >
                 <h2
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
+                    fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 28,
-                    lineHeight: 1,
-                    letterSpacing: "-0.5px",
-                    color: CREAM,
+                    fontSize: 16,
+                    lineHeight: 1.2,
+                    letterSpacing: "0.01em",
+                    textTransform: "uppercase",
+                    color: INK,
                     margin: 0,
-                    textTransform: "lowercase",
                   }}
                 >
                   {s.title}
@@ -729,11 +719,9 @@ const UserProfile = () => {
                   style={{
                     fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 11,
-                    letterSpacing: "1.8px",
-                    textTransform: "uppercase",
-                    color: CREAM,
-                    opacity: 0.75,
+                    fontSize: 12,
+                    letterSpacing: "0.01em",
+                    color: MUTED,
                   }}
                 >
                   {s.items.length}
@@ -814,18 +802,17 @@ const UserProfile = () => {
           <div style={{ padding: "0 24px", marginBottom: 14 }}>
             <h2
               style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
+                fontFamily: SANS,
                 fontWeight: 400,
-                fontSize: 28,
-                lineHeight: 1,
-                letterSpacing: "-0.5px",
-                color: CREAM,
+                fontSize: 16,
+                lineHeight: 1.2,
+                letterSpacing: "0.01em",
+                textTransform: "uppercase",
+                color: INK,
                 margin: 0,
-                textTransform: "lowercase",
               }}
             >
-              activity
+              Activity
             </h2>
           </div>
           <div style={{ padding: "0 24px" }}>
@@ -865,13 +852,13 @@ const UserProfile = () => {
                       )}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 13, lineHeight: 1.4, color: INK }}>
+                      <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 13, lineHeight: 1.4, letterSpacing: "0.01em", color: BODY }}>
                         {row.verb}{" "}
-                        <span style={{ fontFamily: SANS, fontStyle: "normal", fontWeight: 400, color: INK }}>
+                        <span style={{ fontFamily: SANS, fontWeight: 400, color: INK }}>
                           {row.name}
                         </span>
                       </div>
-                      <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: "1.8px", textTransform: "uppercase", color: MUTED, marginTop: 3 }}>
+                      <div style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginTop: 3 }}>
                         {timeAgo(row.created_at)}
                       </div>
                     </div>
@@ -900,14 +887,15 @@ const UserProfile = () => {
           <SheetHeader>
             <SheetTitle
               style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
+                fontFamily: SANS,
                 fontWeight: 400,
+                fontSize: 16,
+                letterSpacing: "0.01em",
+                textTransform: "uppercase",
                 color: INK,
-                textTransform: "lowercase",
               }}
             >
-              options
+              Options
             </SheetTitle>
           </SheetHeader>
           <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
@@ -961,9 +949,10 @@ const UserProfile = () => {
           <DialogHeader>
             <DialogTitle
               style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
+                fontFamily: SANS,
                 fontWeight: 400,
+                fontSize: 16,
+                letterSpacing: "0.01em",
                 color: INK,
               }}
             >
