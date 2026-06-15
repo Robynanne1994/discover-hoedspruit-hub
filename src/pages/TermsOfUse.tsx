@@ -10,7 +10,7 @@ const TermsOfUse = () => (
   >
     <Section heading="Agreement to Terms">
       <P>
-        By using the Hello Hoedspruit app, you agree to these terms. If you do not agree with any part of them, please don't use the app. These terms apply to everyone who visits, browses or uses the service in any way.
+        By using the Hello Hoedspruit app, you agree to these terms. If you do not agree with any part of them, please do not use the app. These terms apply to everyone who visits, browses or uses the service in any way.
       </P>
     </Section>
 
@@ -22,13 +22,13 @@ const TermsOfUse = () => (
 
     <Section heading="Use of the App">
       <P>
-        You may use the app for personal, non-commercial purposes. You agree not to misuse the service, attempt to access it in any way other than the interface we provide, or use it to do anything unlawful.
+        You may use the app for personal, non-commercial purposes. You agree not to misuse the service, attempt to access it in any way other than the interface we provide or use it to do anything unlawful.
       </P>
     </Section>
 
     <Section heading="Accounts">
       <P>
-        Some features require an account. You're responsible for keeping your login details safe and for everything that happens under your account. If you think someone else is using your account, let us know.
+        Some features require an account. You are responsible for keeping your login details safe and for everything that happens under your account. If you think someone else is using your account, please let us know as soon as possible.
       </P>
     </Section>
 
@@ -46,19 +46,19 @@ const TermsOfUse = () => (
 
     <Section heading="Intellectual Property">
       <P>
-        The app, its design, written content, photography and the Hello Hoedspruit name and logo belong to us or to the people we've licensed them from. You're welcome to enjoy the app, but please don't copy, reproduce or republish parts of it without our permission.
+        The app, its design, written content, photography and the Hello Hoedspruit name and logo belong to us or to the people we have licensed them from. You are welcome to enjoy the app, but please do not copy, reproduce or republish parts of it without our permission.
       </P>
     </Section>
 
     <Section heading="Third-Party Links">
       <P>
-        The app links to outside websites, social profiles and booking platforms. We do not control those sites and we are not responsible for their content, privacy practices or anything that happens once you leave the app.
+        The app links to outside websites, social profiles and booking platforms. We do not control those sites and we are not responsible for their content, privacy practices or anything that happens once you leave the Hello Hoedspruit app.
       </P>
     </Section>
 
     <Section heading="Limitation of Liability">
       <P>
-        To the fullest extent allowed by law, Hello Hoedspruit, its team and contributors aren't liable for any indirect, incidental or consequential damages arising from your use of the app, including lost profits, missed bookings or anything that goes wrong on a trip planned around our content.
+        To the fullest extent allowed by law, Hello Hoedspruit, its team and contributors are not liable for any indirect, incidental or consequential damages arising from your use of the app, including lost profits, missed bookings or anything that goes wrong on a trip planned around our content.
       </P>
     </Section>
 
@@ -88,7 +88,7 @@ const TermsOfUse = () => (
 
     <Section heading="Contact">
       <P last>
-        Questions, complaints or anything in between, email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+        If you have any questions or concerns around our terms of services, please email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
     </Section>
   </LegalPage>
