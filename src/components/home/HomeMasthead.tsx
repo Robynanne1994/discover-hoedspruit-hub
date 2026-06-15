@@ -22,6 +22,7 @@ const HomeMasthead = () => {
           />
           <div style={{ minWidth: 0 }}>
             <h1
+              aria-label="Hello Hoedspruit — Your Lowveld local guide to restaurants, lodges, events and specials"
               style={{
                 margin: 0,
                 fontFamily: HN,

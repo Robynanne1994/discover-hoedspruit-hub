@@ -46,6 +46,7 @@ const BottomNav = () => {
             <Link
               key={item.label}
               to={item.href}
+              aria-label={item.label}
               style={{
                 flex: isActive ? 2 : 1,
                 display: "flex",
