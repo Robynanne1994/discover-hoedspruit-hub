@@ -6,7 +6,7 @@ const ContentGuidelines = () => (
   <LegalPage
     title="Community Guidelines"
     lastUpdated="15 June 2026"
-    footer="Be kind. Be useful. Be a good local. That's basically the lot."
+    
   >
     <Section heading="Be Respectful">
       <P>
