@@ -14,7 +14,7 @@ const LINE = "rgba(26,26,26,0.08)";
 const NUM_BG = "rgba(26,26,26,0.06)";
 
 const values = [
-  { num: "01", name: "Local Knowledge", sub: "Curated by people who live here" },
+  { num: "01", name: "Local Knowledge", sub: "Curated by & for the Hoedspruit community" },
   { num: "02", name: "Community Driven", sub: "Connecting locals & visitors" },
   { num: "03", name: "Always up to Date", sub: "The latest events, specials & places" },
   { num: "04", name: "Nature at Heart", sub: "Protecting our beautiful lowveld" },
