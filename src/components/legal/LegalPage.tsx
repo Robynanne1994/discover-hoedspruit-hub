@@ -1,5 +1,8 @@
 import { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 import {
   CalendarClock,
   FileText,
@@ -88,11 +91,18 @@ interface LegalPageProps {
 
 export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPageProps) => {
   const displayTitle = title.replace(/\.$/, "");
+  const location = useLocation();
 
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 120 }}>
+      <Seo
+        title={`${displayTitle} — Hello Hoedspruit`}
+        description={`Read the ${displayTitle.toLowerCase()} for the Hello Hoedspruit app — how we operate, your rights and how to get in touch.`}
+        path={location.pathname}
+      />
       {/* Top bar — shared header so the page title matches the rest of the app */}
       <PageHeader title={displayTitle} />
+
 
       {/* Sections */}
       <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 14 }}>
