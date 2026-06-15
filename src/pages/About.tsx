@@ -55,7 +55,7 @@ const About = () => {
           {"\n"}
         </div>
         <h2 style={{ fontFamily: SANS, fontSize: 26, fontWeight: 700, lineHeight: 1.15, letterSpacing: -0.3, color: INK, margin: 0 }}>
-          What We Stand For
+          What We Stand for
         </h2>
       </div>
 
