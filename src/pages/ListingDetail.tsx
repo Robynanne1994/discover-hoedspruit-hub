@@ -709,7 +709,11 @@ const ListingDetail = () => {
       Icon: Send, ext: true,
     },
     (actionWebsite
-      ? { key: "website", label: "Website", href: actionWebsite, Icon: Globe, ext: true }
+      ? (/facebook\.com/i.test(actionWebsite)
+          ? { key: "website", label: "Facebook", href: actionWebsite, Icon: FacebookIcon, ext: true }
+          : /instagram\.com/i.test(actionWebsite)
+            ? { key: "website", label: "Instagram", href: actionWebsite, Icon: InstagramIcon, ext: true }
+            : { key: "website", label: "Website", href: actionWebsite, Icon: Globe, ext: true })
       : (listing as any).facebook
         ? { key: "facebook", label: "Facebook", href: (listing as any).facebook, Icon: FacebookIcon, ext: true }
         : (listing as any).instagram
