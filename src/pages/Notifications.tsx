@@ -157,8 +157,8 @@ const PrefRow = ({
   const allSelected = filterLink && filterLink.selected === filterLink.total;
   const linkText = filterLink
     ? allSelected
-      ? `All ${filterLink.total} categories ›`
-      : `${filterLink.selected} of ${filterLink.total} categories ›`
+      ? `All ${filterLink.total} Categories ›`
+      : `${filterLink.selected} of ${filterLink.total} Categories ›`
     : null;
 
   return (
