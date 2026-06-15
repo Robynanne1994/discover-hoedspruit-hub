@@ -217,7 +217,7 @@ const BusinessLayout = ({ businessName, children }: Props) => {
         </nav>
       </header>
 
-      <main style={{ padding: "20px", maxWidth: 720, margin: "0 auto" }}>{children}</main>
+      <div style={{ padding: "20px", maxWidth: 720, margin: "0 auto" }}>{children}</div>
     </div>
   );
 };
