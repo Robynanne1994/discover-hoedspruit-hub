@@ -394,8 +394,7 @@ const UserProfile = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background:
-                "linear-gradient(135deg, #E8B999 0%, #C18866 50%, #8B5C3E 100%)",
+              background: RUST,
             }}
           >
             {profile?.avatar_url ? (
@@ -411,10 +410,11 @@ const UserProfile = () => {
             ) : (
               <span
                 style={{
-                  fontFamily: SERIF,
-                  fontStyle: "italic",
-                  fontSize: 42,
-                  color: CREAM,
+                  fontFamily: SANS,
+                  fontWeight: 400,
+                  fontSize: 36,
+                  letterSpacing: "0.01em",
+                  color: "#ffffff",
                 }}
               >
                 {getInitials(profile?.display_name || profile?.username)}
