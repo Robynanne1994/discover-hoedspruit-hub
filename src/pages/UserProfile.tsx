@@ -28,13 +28,14 @@ import BottomNav from "@/components/BottomNav";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 
-const PAGE_BG = "#5C6446";
-const CREAM = "#EEE8DA";
-const SOFT_CREAM = "#F4EFE3";
-const INK = "#2A2A24";
-const MUTED = "#6B6A5E";
-const LINE = "#D9D2C0";
-const RUST = "#9B5A3C";
+const PAGE_BG = "#ebebeb";
+const CREAM = "#f5f0e8";
+const SOFT_CREAM = "#ffffff";
+const INK = "#020202";
+const BODY = "#2b2420";
+const MUTED = "#6b5d4a";
+const LINE = "rgba(0,0,0,0.08)";
+const RUST = "#715a3d";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
