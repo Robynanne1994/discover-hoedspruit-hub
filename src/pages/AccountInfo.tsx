@@ -438,16 +438,17 @@ const AccountInfo = () => {
           paddingLeft: 20,
           paddingRight: 20,
           marginBottom: 10,
-          fontFamily: FF,
-          fontSize: 11,
+          fontFamily: '"Bricolage Grotesque", ' + FF,
+          fontSize: 13,
           fontWeight: 600,
-          letterSpacing: "0.18em",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: MUTED,
+          color: INK,
         }}
       >
         Personal Details
       </div>
+
 
       {/* Personal details card */}
       <div style={{ paddingLeft: 20, paddingRight: 20 }}>
