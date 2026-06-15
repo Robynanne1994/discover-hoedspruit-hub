@@ -9,15 +9,15 @@ const PrivacyPolicyPage = () => (
   >
     <Section heading="Information We Collect">
       <P>
-        When you use Hello Hoedspruit, we collect a small amount of information needed to make the app work. This includes the details you give us when you sign up, the actions you take inside the app, and basic technical data sent by your device.
+        When you use Hello Hoedspruit, we collect a small amount of information needed to make the app work. This includes the details you give us when you sign up, the actions you take inside the app and basic technical data sent by your device.
       </P>
       <P last>The kinds of information we collect include:</P>
       <List
         items={[
-          "Account details such as your name, email address, and profile photo if you choose to add one.",
-          "Activity inside the app, including the listings, events, and specials you save or visit.",
-          "Device and usage data such as your device type, operating system, and approximate location.",
-          "Anything you choose to send us through feedback forms, contact forms, or business enquiries.",
+          "Account details such as your name, email address and profile photo if you choose to add one.",
+          "Activity inside the app, including the listings, events and specials you save or visit.",
+          "Device and usage data such as your device type, operating system and approximate location.",
+          "Anything you choose to send us through feedback forms, contact forms or business enquiries.",
         ]}
       />
     </Section>
