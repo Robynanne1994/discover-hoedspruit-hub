@@ -32,9 +32,9 @@ const HomeMasthead = () => {
                 color: "#020202",
               }}
             >
-              Hello
+              Hello Hoedspruit
               <br />
-              Hoedspruit
+              <span style={{ fontSize: 14, color: "#6B6A5E" }}>Your Lowveld local guide</span>
             </h1>
             <p
               style={{
