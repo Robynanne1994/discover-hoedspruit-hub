@@ -22,6 +22,8 @@ import {
 import { getEventSortDate, getEventDates } from "@/lib/eventDates";
 import { getNextOccurrence, getUpcomingPerformancesCount, hasPerformances, parseRecurrenceRule, getEventOccurrences } from "@/lib/eventSchedule";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import Seo from "@/components/Seo";
+
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -668,6 +670,12 @@ const Events = () => {
         color: C.ink,
       }}
     >
+      <Seo
+        title="What's On in Hoedspruit — Events"
+        description="Browse upcoming events, markets, festivals and things to do in Hoedspruit and the surrounding Lowveld."
+        path="/events"
+      />
+
       {/* Header — centered title, icons inline on right */}
       <PageHeader
         title="Events"

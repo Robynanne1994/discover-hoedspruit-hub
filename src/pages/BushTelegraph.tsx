@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 

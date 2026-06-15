@@ -10,6 +10,8 @@ import BackButton from "@/components/BackButton";
 import PageHeader from "@/components/PageHeader";
 import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { toast } from "sonner";
+import Seo from "@/components/Seo";
+
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PRIMARY = "#715a3d";
@@ -42,6 +44,12 @@ const Search = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100 }}>
+      <Seo
+        title="Search — Hello Hoedspruit"
+        description="Search Hello Hoedspruit users, listings, events and specials across the Lowveld."
+        path="/search"
+        noIndex
+      />
       {/* Header */}
       <div style={{ background: PAGE_BG }}>
         <PageHeader
