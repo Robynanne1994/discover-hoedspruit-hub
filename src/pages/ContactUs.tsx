@@ -116,7 +116,7 @@ const ContactUs = () => {
       }}
     >
       {/* Top bar */}
-      <PageHeader title="Contact us" />
+      <PageHeader title="Contact" />
 
       {/* Intro */}
       <p
