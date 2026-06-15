@@ -465,9 +465,9 @@ const MyProfile = () => {
                 height: 32,
                 padding: "0 14px",
                 borderRadius: 999,
-                background: "#E0DDD6",
-                color: "rgba(26,26,26,0.75)",
-                border: "1px solid rgba(26,26,26,0.20)",
+                background: "#F2EFE5",
+                color: INK,
+                border: `1px solid ${INK}`,
                 fontFamily: SANS,
                 fontWeight: 600,
                 fontSize: 13,
@@ -478,7 +478,7 @@ const MyProfile = () => {
                 gap: 6,
               }}
             >
-              <Pencil size={12} strokeWidth={2} color="rgba(26,26,26,0.75)" />
+              <Pencil size={12} strokeWidth={2} color={INK} />
               Edit
             </button>
           </div>
