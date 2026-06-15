@@ -15,6 +15,26 @@ const Index = () => {
       title="Hello Hoedspruit – Your Guide to the Lowveld"
       description="Discover the best restaurants, lodges, safari activities, events and specials in Hoedspruit, South Africa's Lowveld."
       path="/"
+      jsonLd={[
+        {
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Hello Hoedspruit",
+          url: "https://hello-hoedspruit-hub.lovable.app",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://hello-hoedspruit-hub.lovable.app/search?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Hello Hoedspruit",
+          url: "https://hello-hoedspruit-hub.lovable.app",
+          description: "Your Lowveld local guide to Hoedspruit's restaurants, lodges, activities, events and specials.",
+        },
+      ]}
     />
 
     <div
