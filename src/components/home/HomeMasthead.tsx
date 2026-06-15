@@ -22,6 +22,7 @@ const HomeMasthead = () => {
           />
           <div style={{ minWidth: 0 }}>
             <h1
+              aria-label="Hello Hoedspruit — Your Lowveld local guide to restaurants, lodges, events and specials"
               style={{
                 margin: 0,
                 fontFamily: HN,
@@ -32,9 +33,9 @@ const HomeMasthead = () => {
                 color: "#020202",
               }}
             >
-              Hello Hoedspruit
+              Hello
               <br />
-              <span style={{ fontSize: 14, color: "#6B6A5E" }}>Your Lowveld local guide</span>
+              Hoedspruit
             </h1>
             <p
               style={{
