@@ -4,7 +4,7 @@ const EMAIL = "admin@hellohoedspruit.co";
 
 const CookiePolicy = () => (
   <LegalPage
-    title="cookie policy."
+    title="Cookie Policy"
     footer="We use cookies, but only the polite ones. Tap below if you'd like to know more."
   >
     <Section heading="What Are Cookies">
