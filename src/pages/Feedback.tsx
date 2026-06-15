@@ -85,12 +85,12 @@ const Feedback = () => {
 
   const labelStyle: CSSProperties = {
     display: "block",
-    fontFamily: FF,
-    fontSize: 11,
-    fontWeight: 500,
-    letterSpacing: "0.18em",
+    fontFamily: '"Bricolage Grotesque", ' + FF,
+    fontSize: 15,
+    fontWeight: 700,
+    letterSpacing: "0.08em",
     textTransform: "uppercase",
-    color: LABEL,
+    color: INK,
     marginBottom: 8,
   };
 
