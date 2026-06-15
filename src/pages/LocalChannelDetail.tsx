@@ -8,6 +8,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { toast } from "sonner";
+import Seo from "@/components/Seo";
+
 
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -147,6 +149,16 @@ const LocalChannelDetail = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: HN, paddingBottom: 140 }}>
+      <Seo
+        title={`${displayTitle} — Local Channel`}
+        description={
+          (resource.description ? String(resource.description).replace(/<[^>]*>/g, "").trim() : "") ||
+          `${displayTitle} — a local Hoedspruit channel on ${resource.platform}.`
+        }
+        path={`/local-channels/${resource.slug || resource.id}`}
+        image={resource.detail_image_url || resource.image_url || undefined}
+        type="article"
+      />
       {/* Hero */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: IVORY, overflow: "hidden" }}>
         {heroImage ? (

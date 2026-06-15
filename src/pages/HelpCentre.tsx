@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { MessageCircle, LifeBuoy, Mail, ArrowUpRight } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
@@ -32,8 +34,14 @@ const HelpCentre = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: SANS, overflowX: "hidden" }}>
+      <Seo
+        title="Help Centre — Hello Hoedspruit"
+        description="Find help, FAQs, contact details and policy information for the Hello Hoedspruit app."
+        path="/help-centre"
+      />
       {/* Top bar */}
       <PageHeader title="Help Centre" />
+
 
       {/* Section eyebrow */}
       <div style={{ padding: "24px 24px 0" }}>

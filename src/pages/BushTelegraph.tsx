@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -414,6 +416,11 @@ const BushTelegraph = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 140, fontFamily: HN }}>
+      <Seo
+        title="Local Channels — Hello Hoedspruit"
+        description="Discover community WhatsApp groups, newsletters, podcasts and other local channels keeping Hoedspruit connected."
+        path="/local-channels"
+      />
       {/* Top bar */}
       <PageHeader
         title="Local Channels"

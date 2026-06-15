@@ -9,6 +9,8 @@ import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import Seo from "@/components/Seo";
+
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -182,6 +184,11 @@ const Specials = () => {
         color: COLOR.ink,
       }}
     >
+      <Seo
+        title="Specials & Deals in Hoedspruit"
+        description="Save with the latest specials, promotions and discounts from restaurants, lodges, shops and services around Hoedspruit."
+        path="/specials"
+      />
       {/* Header — centered title, icons inline on right */}
       <PageHeader
         title="Specials"

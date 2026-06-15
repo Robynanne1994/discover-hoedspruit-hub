@@ -5,6 +5,8 @@ import SearchBar from "@/components/ui/SearchBar";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
+import Seo from "@/components/Seo";
+
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -148,6 +150,12 @@ const FAQs = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: 120 }}>
+      <Seo
+        title="Hello Hoedspruit — FAQs"
+        description="Answers to common questions about Hello Hoedspruit: accounts, saving places, listing your business, events and more."
+        path="/faqs"
+      />
+
       <style>{`
         .faq-answer a { color: #1A1A1A; text-decoration: underline; }
         .faq-answer p { margin: 0 0 8px; }

@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ShieldCheck, ArrowUpRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -32,8 +34,14 @@ const TermsPolicies = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 140 }}>
+      <Seo
+        title="Terms & Policies — Hello Hoedspruit"
+        description="Read the terms of use, privacy policy, cookie policy and community guidelines for the Hello Hoedspruit app."
+        path="/terms"
+      />
       {/* Top bar */}
       <PageHeader title="Terms & Policies" />
+
 
       {/* Section label */}
       <div style={{ padding: "24px 20px 10px" }}>

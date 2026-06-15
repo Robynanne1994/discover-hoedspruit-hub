@@ -7,6 +7,8 @@ import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { toast } from "sonner";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const FEEDBACK_TYPES = ["General", "Suggestion", "Bug", "Compliment", "Other"] as const;
 
@@ -96,8 +98,15 @@ const Feedback = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: FF, overflowX: "hidden" }}>
+      <Seo
+        title="Send Feedback — Hello Hoedspruit"
+        description="Share feedback, ideas, bug reports or compliments with the Hello Hoedspruit team."
+        path="/feedback"
+        noIndex
+      />
       {/* Top bar */}
       <PageHeader title="Feedback" />
+
 
       {/* Heading */}
       <h1 style={{

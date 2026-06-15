@@ -15,6 +15,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { bayesianScore } from "@/lib/ratingScore";
+import Seo from "@/components/Seo";
+
 
 const CUISINE_OPTIONS = ["African", "Italian", "Indian", "Asian", "Mexican", "Mediterranean", "American", "Steakhouse", "Seafood", "Pizza", "Sushi", "Vegetarian", "Tapas", "Vegan", "Coffee", "Baked Goods", "Desserts", "Healthy Eats", "Pasta"];
 const VIBE_OPTIONS = ["Casual", "Fine Dining", "Family", "Romantic", "Outdoor", "Live Music", "Sports Bar", "Trendy", "Cozy", "Hidden Gem", "Late Nights", "Good for Remote Work", "Cosy", "Rustic", "Lively", "Bushveld Feel", "Local Favourite"];
@@ -599,6 +601,11 @@ const CategoryPage = () => {
         color: INK,
       }}
     >
+      <Seo
+        title={`${displayTitle} in Hoedspruit`}
+        description={`Find ${displayTitle.toLowerCase()} in Hoedspruit and the Lowveld — browse listings, reviews and contact details on Hello Hoedspruit.`}
+        path={`/category/${category?.id ?? ""}`}
+      />
       {/* Top bar */}
       <PageHeader
         title={displayTitle}

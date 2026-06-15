@@ -7,6 +7,8 @@ import { useFollowCounts } from "@/hooks/useFollows";
 import { Pencil, Heart, Settings, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const PAGE_BG = "#E6E0CC";
 const CARD = "#FFFFFF";
@@ -366,7 +368,14 @@ const MyProfile = () => {
         color: INK,
       }}
     >
+      <Seo
+        title="My Profile — Hello Hoedspruit"
+        description="View your Hello Hoedspruit profile, saved listings, events, specials and resources."
+        path="/my-profile"
+        noIndex
+      />
       {/* Top header bar */}
+
       <PageHeader
         title="Profile"
         showBack={false}

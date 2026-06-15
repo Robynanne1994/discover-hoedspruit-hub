@@ -15,6 +15,8 @@ const InstagramIcon = ({ size = 18, color = "#1A1A1A" }: { size?: number; color?
 import BottomNav from "@/components/BottomNav";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -115,8 +117,14 @@ const ContactUs = () => {
         overflowX: "hidden",
       }}
     >
+      <Seo
+        title="Contact Hello Hoedspruit"
+        description="Get in touch with the Hello Hoedspruit team by email, phone, WhatsApp or social — we'd love to hear from you."
+        path="/contact"
+      />
       {/* Top bar */}
       <PageHeader title="Contact" />
+
 
       {/* Intro */}
       <p

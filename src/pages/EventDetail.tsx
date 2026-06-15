@@ -18,6 +18,8 @@ import { getPerformances, hasPerformances, getNextOccurrence, isEventPast as isE
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
+import Seo from "@/components/Seo";
+
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -860,6 +862,16 @@ const EventDetail = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+      <Seo
+        title={`${event.title} — Hello Hoedspruit`}
+        description={
+          ((event as any).description ? String((event as any).description).replace(/<[^>]*>/g, "").trim() : "") ||
+          `${event.title} in Hoedspruit. Event details, dates and how to book on Hello Hoedspruit.`
+        }
+        path={`/events/${event.id}`}
+        image={(event as any).detail_image_url || event.image_url || undefined}
+        type="article"
+      />
       {/* Hero (4:3) with floating action buttons */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
         {((event as any).detail_image_url || event.image_url) && (

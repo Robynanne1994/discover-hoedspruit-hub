@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 import {
   Heart,
   MapPinCheck,
@@ -594,8 +596,15 @@ const MyAccount = () => {
         fontFamily: SANS,
       }}
     >
+      <Seo
+        title="My Account — Hello Hoedspruit"
+        description="Manage your Hello Hoedspruit account, saved places, collections and preferences."
+        path="/my-account"
+        noIndex
+      />
       {/* Top bar */}
       <PageHeader title="Account" onBack={() => navigate("/my-profile")} />
+
 
 
       <div style={{ height: 24 }} />

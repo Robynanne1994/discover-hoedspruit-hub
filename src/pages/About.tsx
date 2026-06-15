@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
+import Seo from "@/components/Seo";
+
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -31,8 +33,14 @@ const About = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 140 }}>
+      <Seo
+        title="About Hello Hoedspruit"
+        description="Meet Robyn Dawes and learn the story behind Hello Hoedspruit — a local-led guide to the people, places and wild spaces of the Lowveld."
+        path="/about"
+      />
       {/* Top bar */}
       <PageHeader title="About" />
+
 
       {/* Story card */}
       <div style={{ padding: "20px 20px 0" }}>

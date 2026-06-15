@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
+import Seo from "@/components/Seo";
+
 
 const Welcome = () => {
   const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
@@ -83,6 +85,11 @@ const Welcome = () => {
   if (mode === "welcome") {
     return (
       <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+        <Seo
+          title="Welcome to Hello Hoedspruit"
+          description="Sign in or create a free account to save your favourite places, events and specials around Hoedspruit."
+          path="/welcome"
+        />
         {/* Logo block */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-6">
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />

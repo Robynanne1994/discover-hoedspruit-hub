@@ -1,5 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import Seo from "@/components/Seo";
+
 
 const OLIVE = "#5C6446";
 const OLIVE_DEEP = "#454C36";
@@ -39,7 +41,14 @@ const NotFound = () => {
         padding: "0 24px",
       }}
     >
+      <Seo
+        title="Page Not Found — Hello Hoedspruit"
+        description="The page you're after has gone walkabout. Head home or search the 'Hoed."
+        path={location.pathname || "/404"}
+        noIndex
+      />
       {/* Decorative blurred blobs */}
+
       <div
         aria-hidden
         style={{

@@ -6,6 +6,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import PageHeader from "@/components/PageHeader";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
+import Seo from "@/components/Seo";
+
 
 const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -179,6 +181,11 @@ const Categories = () => {
         paddingBottom: 140,
       }}
     >
+      <Seo
+        title="Explore Hoedspruit — Categories"
+        description="Browse every category of local listings in Hoedspruit: places to eat, stay, shop, things to do, services and more."
+        path="/categories"
+      />
       {/* Top bar: centered title + circular search */}
       <PageHeader
         title="Explore"
