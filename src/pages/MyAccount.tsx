@@ -558,23 +558,8 @@ const MyAccount = () => {
       >
         {item.label}
       </span>
-      <div
-        style={{
-          width: 30,
-          height: 30,
-          borderRadius: "50%",
-          background: "rgba(106,106,94,0.1)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          fontSize: 12,
-          color: INK,
-          lineHeight: 1,
-        }}
-      >
-        ↗
-      </div>
+      <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+
     </Link>
   );
 
