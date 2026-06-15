@@ -320,7 +320,7 @@ const Notifications = () => {
       <PageHeader title="Notification Preferences" />
 
       {/* Master card */}
-      <div style={{ padding: "0 20px", marginBottom: 28 }}>
+      <div style={{ padding: "20px 20px 0", marginBottom: 28 }}>
         <div
           onClick={() => toggleBool("push_enabled")}
           style={{
