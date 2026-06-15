@@ -612,7 +612,7 @@ const EventDetail = () => {
     const defaultLabel = isFb ? "Facebook" : isIg ? "Instagram" : "Website";
     contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
   }
-  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true });
+  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true, disabled: isPast });
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
