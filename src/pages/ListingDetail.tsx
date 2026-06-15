@@ -315,7 +315,7 @@ const ListingDetail = () => {
   const actionWebsite = pickAction(listing.website, l.additional_websites, l.action_website_index ?? 0);
 
   const hasContact = !!(listing.email || listing.phone || waClean || listing.website || (l.additional_websites?.length) || (listing as any).facebook || (listing as any).instagram || ((listing as any).additional_emails?.length) || ((listing as any).additional_phones?.length) || ((listing as any).additional_whatsapps?.length));
-  const hasAbout = !!descriptionText || !!hasHours;
+  const hasAbout = !!descriptionText;
   const hasLocation = !!(listing.location || mapCoords);
 
   // ----- Open status -----
