@@ -887,14 +887,15 @@ const UserProfile = () => {
           <SheetHeader>
             <SheetTitle
               style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
+                fontFamily: SANS,
                 fontWeight: 400,
+                fontSize: 16,
+                letterSpacing: "0.01em",
+                textTransform: "uppercase",
                 color: INK,
-                textTransform: "lowercase",
               }}
             >
-              options
+              Options
             </SheetTitle>
           </SheetHeader>
           <div style={{ display: "flex", flexDirection: "column", marginTop: 12 }}>
