@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -48,7 +48,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel = "View all", actionHref 
           }}
         >
           {actionLabel}
-          <ChevronRight size={14} strokeWidth={1.6} />
+          <ArrowUpRight size={15} strokeWidth={1.5} />
         </Link>
       )}
     </div>
