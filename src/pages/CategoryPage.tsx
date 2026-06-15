@@ -978,7 +978,7 @@ const CategoryPage = () => {
             return (
               <article
                 key={l.id}
-                onClick={hasDetail ? () => navigate(`/listing/${l.id}`, { state: { fromCategory: categoryTitle } }) : undefined}
+                onClick={hasDetail ? () => navigate(`/listing/${l.id}?from=${encodeURIComponent(categoryTitle)}`, { state: { fromCategory: categoryTitle } }) : undefined}
                 style={{
                   background: CARD_BG,
                   borderRadius: 20,
