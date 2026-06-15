@@ -24,7 +24,7 @@ const PrivacyPolicyPage = () => (
 
     <Section heading="How We Use Your Information">
       <P>
-        We use your information to run the app, save your favourites across devices, recommend places that fit what you're into, respond to your messages, and improve the service over time. We don't use your data to build profiles for advertising, and we don't sell it to anyone.
+        We use your information to run the app, save your favourites across devices, recommend places that fit what you're into, respond to your messages, and improve the service over time. We don't use your data to build profiles for advertising and we don't sell it to anyone.
       </P>
     </Section>
 
@@ -33,15 +33,15 @@ const PrivacyPolicyPage = () => (
       <List
         items={[
           "With trusted service providers who help us run the app, such as hosting and authentication.",
-          "When required by law, a court order, or a legitimate request from a public authority.",
-          "To protect the rights, safety, or property of Hello Hoedspruit, our users, or the public.",
+          "When required by law, a court order or a legitimate request from a public authority.",
+          "To protect the rights, safety or property of Hello Hoedspruit, our users or the public.",
         ]}
       />
     </Section>
 
     <Section heading="Cookies & Tracking">
       <P>
-        We use a small number of cookies and similar technologies to keep you signed in, remember your preferences, and understand how the app is used. You can read more in our <A href="/cookie-policy">Cookie Policy</A>.
+        We use a small number of cookies and similar technologies to keep you signed in, remember your preferences and understand how the app is used. You can read more in our <A href="/cookie-policy">Cookie Policy</A>.
       </P>
     </Section>
 
@@ -59,25 +59,25 @@ const PrivacyPolicyPage = () => (
 
     <Section heading="Data Security">
       <P>
-        We take reasonable steps to protect your information against loss, misuse, and unauthorised access. No system is perfect, but we treat your data the way we'd want ours treated, and we work with reputable providers who do the same.
+        We take reasonable steps to protect your information against loss, misuse, and unauthorised access. No system is perfect, but we treat your data the way we would want ours treated, and we work with reputable providers who do the same.
       </P>
     </Section>
 
     <Section heading="Children's Privacy">
       <P>
-        The app isn't aimed at children under the age of 13, and we don't knowingly collect personal information from them. If you believe a child has given us information, please contact us and we'll remove it.
+        The app is not aimed at children under the age of 13, and we do not knowingly collect personal information from them. If you believe a child has given us information, please contact us and we will remove it.
       </P>
     </Section>
 
     <Section heading="Changes to This Policy">
       <P>
-        We may update this policy from time to time. When we do, we'll change the date at the top of this page. If the changes are significant, we'll let you know inside the app.
+        We may update this policy from time to time. When we do, we will change the date at the top of this page. If the changes are significant, we will let you know inside the app.
       </P>
     </Section>
 
     <Section heading="Contact">
       <P last>
-        For privacy questions or to exercise any of your rights, email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+        For privacy questions or to exercise any of your rights, please email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
     </Section>
   </LegalPage>
