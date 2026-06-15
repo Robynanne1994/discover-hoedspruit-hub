@@ -4,11 +4,19 @@ import HomeSpecials from "@/components/home/HomeSpecials";
 import HomeWhatsOn from "@/components/home/HomeWhatsOn";
 import HomeListings from "@/components/home/HomeListings";
 import HomeLocalChannels from "@/components/home/HomeLocalChannels";
+import Seo from "@/components/Seo";
 
 const SECTION_GAP = 32;
 
 const Index = () => {
   return (
+    <>
+    <Seo
+      title="Hello Hoedspruit – Your Guide to the Lowveld"
+      description="Discover the best restaurants, lodges, safari activities, events and specials in Hoedspruit, South Africa's Lowveld."
+      path="/"
+    />
+
     <div
       className="home-page"
       style={{
