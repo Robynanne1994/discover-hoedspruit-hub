@@ -29,10 +29,10 @@ const ContentGuidelines = () => (
       <P last>To keep the app useful for everyone, please don't:</P>
       <List
         items={[
-          "Post the same content repeatedly across listings, events, or reviews.",
+          "Post the same content repeatedly across listings, events or reviews.",
           "Use reviews or comments to promote your own business or services.",
-          "Share affiliate links, referral codes, or unrelated marketing material.",
-          "Create multiple accounts to influence ratings, follows, or visibility.",
+          "Share affiliate links, referral codes or unrelated marketing material.",
+          "Create multiple accounts to influence ratings, follows or visibility.",
         ]}
       />
     </Section>
