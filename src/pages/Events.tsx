@@ -891,7 +891,7 @@ const Events = () => {
           isFirst
           label="Sort by"
           summary={
-            sortBy === "date-asc" ? "Default (date — soonest first)" :
+            sortBy === "date-asc" ? "Default" :
             sortBy === "date-desc" ? "Date (latest first)" :
             sortBy === "title-asc" ? "Title (A–Z)" :
             "Title (Z–A)"
@@ -899,7 +899,7 @@ const Events = () => {
           open={openSection === "sort"}
           onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
         >
-          <RefineOption label="Default (date — soonest first)" active={sortBy === "date-asc"} onClick={() => setSortBy("date-asc")} />
+          <RefineOption label="Default" active={sortBy === "date-asc"} onClick={() => setSortBy("date-asc")} />
           <RefineOption label="Date (latest first)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
           <RefineOption label="Title (A–Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
           <RefineOption label="Title (Z–A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
@@ -911,25 +911,27 @@ const Events = () => {
           open={openSection === "tag"}
           onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
         >
-          <RefineOption
-            label="All tags"
-            active={!tagFilter}
-            onClick={() => setTagFilter(null)}
-          />
-          {availableTags.map((t) => (
-            <RefineOption
-              key={t}
-              label={t}
-              active={tagFilter === t}
-              onClick={() => setTagFilter(t)}
-            />
-          ))}
-          {availableTags.length === 0 && (
-            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: "4px 0 0 0" }}>
-              No tags yet.
-            </p>
+          {availableTags.length > 0 ? (
+            <div>
+              <RefineRectOption
+                label="All"
+                active={!tagFilter}
+                onClick={() => setTagFilter(null)}
+              />
+              {availableTags.map((t) => (
+                <RefineRectOption
+                  key={t}
+                  label={t}
+                  active={tagFilter === t}
+                  onClick={() => setTagFilter(t)}
+                />
+              ))}
+            </div>
+          ) : (
+            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No tags yet.</p>
           )}
         </RefineSection>
+
 
       </RefineDrawer>
 
