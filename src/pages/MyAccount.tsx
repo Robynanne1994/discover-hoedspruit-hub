@@ -40,6 +40,7 @@ import {
   Phone,
   Shield,
   Briefcase,
+  ArrowUpRight,
 } from "lucide-react";
 import {
   DropdownMenu,
