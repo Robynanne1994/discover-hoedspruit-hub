@@ -368,7 +368,7 @@ const ListingDetail = () => {
       .map(f => ({ label: f.label, on: f.value as boolean | string }));
 
   if (l.price_level) {
-    const labels: Record<number, string> = { 1: "Budget-friendly", 2: "Mid-range", 3: "Upscale", 4: "Fine dining" };
+    const labels: Record<number, string> = { 1: "Budget-friendly", 2: "Mid-Range", 3: "Upscale", 4: "Fine dining" };
     sections.push({ key: "pricing", title: "Pricing", iconComp: Tag,
       fields: [{ label: labels[l.price_level] || "", on: true }] });
   }
