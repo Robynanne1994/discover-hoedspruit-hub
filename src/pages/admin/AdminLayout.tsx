@@ -142,9 +142,9 @@ const AdminLayout = () => {
           </span>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8 overflow-auto min-w-0 text-slate-950 [&_h1]:text-slate-950 [&_h2]:text-slate-950 [&_h3]:text-slate-950 [&_.bg-card]:text-zinc-950 [&_.bg-card_h1]:text-zinc-950 [&_.bg-card_h2]:text-zinc-950 [&_.bg-card_h3]:text-zinc-950 [&_.bg-muted]:text-zinc-950 [&_.bg-background]:text-zinc-950 [&_.text-muted-foreground]:text-slate-950 [&_.bg-card_.text-muted-foreground]:text-muted-foreground [&_.bg-muted_.text-muted-foreground]:text-muted-foreground [&_.bg-background_.text-muted-foreground]:text-muted-foreground bg-[#c5bcaa]" style={{ overscrollBehaviorX: "contain" }}>
+        <div className="flex-1 p-4 lg:p-8 overflow-auto min-w-0 text-slate-950 [&_h1]:text-slate-950 [&_h2]:text-slate-950 [&_h3]:text-slate-950 [&_.bg-card]:text-zinc-950 [&_.bg-card_h1]:text-zinc-950 [&_.bg-card_h2]:text-zinc-950 [&_.bg-card_h3]:text-zinc-950 [&_.bg-muted]:text-zinc-950 [&_.bg-background]:text-zinc-950 [&_.text-muted-foreground]:text-slate-950 [&_.bg-card_.text-muted-foreground]:text-muted-foreground [&_.bg-muted_.text-muted-foreground]:text-muted-foreground [&_.bg-background_.text-muted-foreground]:text-muted-foreground bg-[#c5bcaa]" style={{ overscrollBehaviorX: "contain" }}>
           <Outlet />
-        </main>
+        </div>
       </div>
     </div>
   );
