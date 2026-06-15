@@ -57,7 +57,7 @@ const TermsOfUse = () => (
 
     <Section heading="Limitation of Liability">
       <P>
-        To the fullest extent allowed by law, Hello Hoedspruit, its team, and contributors aren't liable for any indirect, incidental or consequential damages arising from your use of the app, including lost profits, missed bookings or anything that goes wrong on a trip planned around our content.
+        To the fullest extent allowed by law, Hello Hoedspruit, its team and contributors aren't liable for any indirect, incidental or consequential damages arising from your use of the app, including lost profits, missed bookings or anything that goes wrong on a trip planned around our content.
       </P>
     </Section>
 
@@ -69,13 +69,13 @@ const TermsOfUse = () => (
 
     <Section heading="Termination">
       <P>
-        We may suspend or end your access to the app at any time, with or without notice, if we believe you've broken these terms or are using the service in a way that harms other users or the platform.
+        We may suspend or end your access to the app at any time, with or without notice, if we believe you have broken these terms or are using the service in a way that harms other users or the platform.
       </P>
     </Section>
 
     <Section heading="Changes to These Terms">
       <P>
-        We may update these terms from time to time. When we do, we'll change the date at the top of this page. Continued use of the app after changes are posted means you accept the updated terms.
+        We may update these terms from time to time. When we do, we will change the date at the top of this page. Continued use of the app after changes are posted means you accept the updated terms.
       </P>
     </Section>
 
