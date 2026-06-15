@@ -802,18 +802,17 @@ const UserProfile = () => {
           <div style={{ padding: "0 24px", marginBottom: 14 }}>
             <h2
               style={{
-                fontFamily: SERIF,
-                fontStyle: "italic",
+                fontFamily: SANS,
                 fontWeight: 400,
-                fontSize: 28,
-                lineHeight: 1,
-                letterSpacing: "-0.5px",
-                color: CREAM,
+                fontSize: 16,
+                lineHeight: 1.2,
+                letterSpacing: "0.01em",
+                textTransform: "uppercase",
+                color: INK,
                 margin: 0,
-                textTransform: "lowercase",
               }}
             >
-              activity
+              Activity
             </h2>
           </div>
           <div style={{ padding: "0 24px" }}>
