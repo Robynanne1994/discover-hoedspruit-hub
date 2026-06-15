@@ -7,7 +7,7 @@ const TermsOfUse = () => (
     title="terms of use."
     footer="That's the legal bit. If anything's unclear, drop us a line. We'd rather you ask than guess."
   >
-    <Section heading="agreement to terms">
+    <Section heading="Agreement to Terms">
       <P>
         By using the Hello Hoedspruit app, you agree to these terms. If you don't agree with any part of them, please don't use the app. These terms apply to everyone who visits, browses, or uses the service in any way.
       </P>
