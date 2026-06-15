@@ -117,7 +117,7 @@ const HomeLocalChannels = () => {
     <section>
       <HomeSectionHead
         primary="Local Channels"
-        actionLabel="See all"
+        actionLabel="View All"
         actionHref="/local-channels"
       />
       <div style={{ padding: "0 20px", display: "flex", flexDirection: "column", gap: 4 }}>
