@@ -315,7 +315,7 @@ const SpecialDetail = () => {
                       <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
                       <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
                     </div>
-                    {r.href && <ArrowUpRight size={16} color={C.muted} />}
+                    {r.href && <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />}
                   </>
                 );
                 const rowStyle: React.CSSProperties = {
@@ -405,7 +405,7 @@ const SpecialDetail = () => {
                     <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
                       {r.value}
                     </div>
-                    <ArrowUpRight size={16} color={C.muted} />
+                    <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />
                   </>
                 );
                 if (r.internal) return <Link key={i} to={r.href} style={rowStyle}>{inner}</Link>;
