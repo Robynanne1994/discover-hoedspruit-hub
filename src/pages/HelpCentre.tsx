@@ -38,8 +38,8 @@ const HelpCentre = () => {
       {/* Section eyebrow */}
       <div style={{ padding: "24px 24px 0" }}>
         <div style={{
-          fontFamily: SANS, fontWeight: 500, fontSize: 11, letterSpacing: "0.18em",
-          textTransform: "uppercase", color: LABEL, marginBottom: 12,
+          fontFamily: '"Bricolage Grotesque", ' + SANS, fontWeight: 700, fontSize: 15, letterSpacing: "0.06em",
+          textTransform: "uppercase", color: INK, marginBottom: 12,
         }}>
           Find what you need
         </div>
