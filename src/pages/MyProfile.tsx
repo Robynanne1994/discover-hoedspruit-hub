@@ -478,7 +478,7 @@ const MyProfile = () => {
                 gap: 6,
               }}
             >
-              <Pencil size={12} strokeWidth={2} color="rgba(26,26,26,0.75)" />
+              <Pencil size={12} strokeWidth={2} color={INK} />
               Edit
             </button>
           </div>
