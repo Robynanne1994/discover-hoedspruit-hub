@@ -703,15 +703,14 @@ const UserProfile = () => {
               >
                 <h2
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
+                    fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 28,
-                    lineHeight: 1,
-                    letterSpacing: "-0.5px",
-                    color: CREAM,
+                    fontSize: 16,
+                    lineHeight: 1.2,
+                    letterSpacing: "0.01em",
+                    textTransform: "uppercase",
+                    color: INK,
                     margin: 0,
-                    textTransform: "lowercase",
                   }}
                 >
                   {s.title}
@@ -720,11 +719,9 @@ const UserProfile = () => {
                   style={{
                     fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 11,
-                    letterSpacing: "1.8px",
-                    textTransform: "uppercase",
-                    color: CREAM,
-                    opacity: 0.75,
+                    fontSize: 12,
+                    letterSpacing: "0.01em",
+                    color: MUTED,
                   }}
                 >
                   {s.items.length}
