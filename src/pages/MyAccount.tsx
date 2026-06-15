@@ -489,12 +489,12 @@ const MyAccount = () => {
   const Eyebrow = ({ children }: { children: React.ReactNode }) => (
     <p
       style={{
-        fontFamily: SANS,
-        fontSize: 11,
-        fontWeight: 500,
-        letterSpacing: "0.24em",
+        fontFamily: '"Bricolage Grotesque", ' + SANS,
+        fontSize: 15,
+        fontWeight: 700,
+        letterSpacing: "0.08em",
         textTransform: "uppercase",
-        color: LABEL,
+        color: "#1A1A1A",
         margin: "0 0 10px 0",
         padding: "0 24px",
       }}
