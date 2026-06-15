@@ -16,18 +16,18 @@ const ContentGuidelines = () => (
 
     <Section heading="Keep it Honest">
       <P>
-        If you leave a review or share information about a place, make sure it's true and based on your own experience. Don't post fake reviews, don't pretend to be someone you're not and don't try to game the system to push a business up or knock one down.
+        If you leave a review or share information about a place, make sure it is true and based on your own experience. Do not post fake reviews, do not pretend to be someone you are not and do not try to game the system to push a business up or knock one down.
       </P>
     </Section>
 
     <Section heading="Stay on Topic">
       <P>
-        This is a guide to Hoedspruit and the surrounding area. Keep your posts, reviews and submissions relevant to local places, events, and community life. Off-topic or unrelated content may be removed.
+        This is a guide to Hoedspruit and the surrounding area. Keep your posts, reviews and submissions relevant to local places, events and community life. Off-topic or unrelated content may be removed.
       </P>
     </Section>
 
     <Section heading="No Spam or Self-Promotion">
-      <P last>To keep the app useful for everyone, please don't:</P>
+      <P last>To keep the app useful for everyone, please do not:</P>
       <List
         items={[
           "Post the same content repeatedly across listings, events or reviews.",
@@ -40,7 +40,7 @@ const ContentGuidelines = () => (
 
     <Section heading="No Illegal Content">
       <P>
-        Don't post anything that's illegal under South African law, infringes someone else's rights, or encourages others to break the law. This includes hate speech, threats, sexual content involving minors and content that promotes violence.
+        Do not post anything that is illegal under South African law, infringes someone else's rights or encourages others to break the law. This includes hate speech, threats, sexual content involving minors and content that promotes violence.
       </P>
     </Section>
 
@@ -52,7 +52,7 @@ const ContentGuidelines = () => (
 
     <Section heading="Contact">
       <P last>
-        To report content or ask about these guidelines, write to us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+        To report content or ask about these guidelines, email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
     </Section>
   </LegalPage>
