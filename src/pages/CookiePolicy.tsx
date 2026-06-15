@@ -7,7 +7,7 @@ const CookiePolicy = () => (
     title="cookie policy."
     footer="We use cookies, but only the polite ones. Tap below if you'd like to know more."
   >
-    <Section heading="what are cookies">
+    <Section heading="What Are Cookies">
       <P>
         Cookies are small text files placed on your device when you visit a website or app. They help the service remember things about you, like whether you're signed in or what you've looked at, so it doesn't have to ask you the same question every time.
       </P>
