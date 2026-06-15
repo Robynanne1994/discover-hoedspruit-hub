@@ -55,8 +55,8 @@ function SubTabs<T extends string>({
             type="button"
             onClick={() => onChange(opt.id)}
             style={{
-              background: active ? "#423324" : "transparent",
-              color: active ? "#fff" : INK,
+              background: active ? "#423324" : "#FFFFFF",
+              color: active ? "#fff" : "#020202",
               border: `1px solid ${active ? "#423324" : LINE}`,
               borderRadius: 999,
               padding: "6px 14px",
