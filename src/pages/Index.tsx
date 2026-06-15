@@ -79,7 +79,9 @@ const Index = () => {
         <HomeLocalChannels />
       </div>
     </div>
+    </>
   );
+
 };
 
 export default Index;
