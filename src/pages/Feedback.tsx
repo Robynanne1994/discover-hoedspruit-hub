@@ -104,7 +104,7 @@ const Feedback = () => {
         fontFamily: FF, fontSize: 26, fontWeight: 700, color: INK,
         lineHeight: 1.2, margin: 0, padding: "28px 24px 24px",
       }}>
-        Help us Make Hello Hoedspruit Better.
+        {"\n"}
       </h1>
 
       {/* Form */}
