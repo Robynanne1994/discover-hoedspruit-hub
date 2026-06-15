@@ -141,10 +141,11 @@ function eventMoreDatesLine(e: any): string | null {
   return null;
 }
 
-function formatPrice(p: string | number | null | undefined): string {
-  if (p === null || p === undefined) return "Free";
+function formatPrice(p: string | number | null | undefined): string | null {
+  if (p === null || p === undefined) return null;
   const s = String(p).trim();
-  if (!s || /^(free|0|r0)$/i.test(s)) return "Free";
+  if (!s) return null;
+  if (/^(free|0|r0)$/i.test(s)) return "Free";
   // Match numbers including thousands separators (comma/space/dot) e.g. "1,000", "1 000", "1.000"
   const matches = s.match(/\d[\d.,\s]*\d|\d/g);
   const hasRange = /[-–—]|\bto\b/i.test(s);
