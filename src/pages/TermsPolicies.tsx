@@ -68,31 +68,8 @@ const TermsPolicies = () => {
         </div>
       </div>
 
-      {/* Dark privacy card */}
-      <div style={{ padding: "28px 20px 0" }}>
-        <div
-          style={{
-            background: DARK, borderRadius: 18, padding: "26px 24px", color: CARD,
-          }}
-        >
-          <div
-            style={{
-              width: 40, height: 40, borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              marginBottom: 18,
-            }}
-          >
-            <ShieldCheck size={20} color={CARD} strokeWidth={1.8} />
-          </div>
-          <div style={{ fontSize: 17, fontWeight: 600, marginBottom: 10, letterSpacing: -0.1 }}>
-            Your Privacy Matters
-          </div>
-          <p style={{ fontSize: 14, lineHeight: 1.55, color: DARK_MUTED, margin: 0 }}>
-            We are committed to full transparency. Our policies ensure your data is protected and you have a safe experience using Hello Hoedspruit.
-          </p>
-        </div>
-      </div>
+
+
 
       <BottomNav />
     </div>
