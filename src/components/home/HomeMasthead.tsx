@@ -12,6 +12,10 @@ const HomeMasthead = () => {
           <img
             src={hhLogo}
             alt="Hello Hoedspruit"
+            width={62}
+            height={62}
+            fetchPriority="high"
+            decoding="async"
             style={{
               height: 62,
               width: "auto",
