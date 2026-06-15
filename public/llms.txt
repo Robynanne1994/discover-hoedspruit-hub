@@ -1,0 +1,26 @@
+# Hello Hoedspruit
+
+> Your Lowveld local guide to Hoedspruit, South Africa — discover restaurants, lodges, safari activities, shops, events and specials all in one place.
+
+Hello Hoedspruit is a mobile-first community guide for the town of Hoedspruit in Limpopo, South Africa. It curates local businesses (eat, stay, do, shop, medical, emergencies), upcoming events, current specials and deals, and "Local Channels" stories from the Lowveld region.
+
+## Pages
+
+- [Home](/): Featured listings, specials, events and local stories.
+- [Explore Categories](/categories): Browse all categories — eat, stay, do, shop, learn, pamper, medical and more.
+- [Events](/events): Upcoming events, markets, gigs and gatherings in and around Hoedspruit.
+- [Specials](/specials): Current deals, promotions and discounts from local businesses.
+- [Local Channels](/local-channels): Stories, news and features from the Lowveld community.
+- [About](/about): Who we are and the story behind Hello Hoedspruit.
+- [For Business](/for-business): Information for business owners on getting listed and advertising.
+- [Contact](/contact): Get in touch with the Hello Hoedspruit team.
+- [FAQs](/faqs): Common questions about using Hello Hoedspruit.
+- [Help Centre](/help-centre): Support articles and guides.
+
+## Optional
+
+- [Terms & Policies](/terms): Index of all legal policies.
+- [Terms of Use](/terms-of-use): Terms governing use of the platform.
+- [Privacy Policy](/privacy-policy): How user data is collected and handled (POPIA compliant).
+- [Cookie Policy](/cookie-policy): Cookies and tracking technologies used.
+- [Content Guidelines](/content-guidelines): Rules for user submissions and reviews.
