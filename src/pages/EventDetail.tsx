@@ -871,6 +871,30 @@ const EventDetail = () => {
         path={`/events/${event.id}`}
         image={(event as any).detail_image_url || event.image_url || undefined}
         type="article"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Event",
+          name: event.title,
+          description: (event as any).description
+            ? String((event as any).description).replace(/<[^>]*>/g, "").trim().slice(0, 500)
+            : undefined,
+          image: (event as any).detail_image_url || event.image_url || undefined,
+          startDate: (event as any).start_date || (event as any).date || undefined,
+          endDate: (event as any).end_date || undefined,
+          eventStatus: "https://schema.org/EventScheduled",
+          eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+          location: {
+            "@type": "Place",
+            name: (event as any).venue || (event as any).location || "Hoedspruit",
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: (event as any).address || undefined,
+              addressLocality: "Hoedspruit",
+              addressCountry: "ZA",
+            },
+          },
+          url: `https://hello-hoedspruit-hub.lovable.app/events/${event.id}`,
+        }}
       />
       {/* Hero (4:3) with floating action buttons */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>

@@ -148,12 +148,30 @@ const FAQs = () => {
       .filter((s) => s.items.length > 0);
   }, [query, sections]);
 
+  const faqJsonLd = useMemo(() => {
+    const items = sections.flatMap((s) => s.items);
+    if (!items.length) return undefined;
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: items.map((i) => ({
+        "@type": "Question",
+        name: i.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: i.answer.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim(),
+        },
+      })),
+    };
+  }, [sections]);
+
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, fontFamily: FF, color: INK, paddingBottom: 120 }}>
       <Seo
         title="Hello Hoedspruit — FAQs"
         description="Answers to common questions about Hello Hoedspruit: accounts, saving places, listing your business, events and more."
         path="/faqs"
+        jsonLd={faqJsonLd}
       />
 
       <style>{`
