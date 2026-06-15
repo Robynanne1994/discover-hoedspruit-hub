@@ -25,7 +25,7 @@ const PrivacyPolicyPage = () => (
 
     <Section heading="How We Use Your Information">
       <P>
-        We use your information to run the app, save your favourites across devices, recommend places that fit what you're into, respond to your messages, and improve the service over time. We don't use your data to build profiles for advertising and we don't sell it to anyone.
+        We use your information to run the app, save your favourites across devices, recommend places that fit what you are into, respond to your messages, and improve the service over time. We do not use your data to build profiles for advertising and we do not sell it to anyone.
       </P>
     </Section>
 
@@ -78,7 +78,7 @@ const PrivacyPolicyPage = () => (
 
     <Section heading="Contact">
       <P last>
-        For privacy questions or to exercise any of your rights, please email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+        For privacy questions or to exercise any of your rights around privacy, please email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
     </Section>
   </LegalPage>
