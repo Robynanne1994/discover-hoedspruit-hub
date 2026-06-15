@@ -474,6 +474,10 @@ const Events = () => {
   const selectedDate: Date | null = urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) ? new Date(urlDate + "T00:00:00") : null;
   const search = searchParams.get("q") ?? "";
   const tagFilter = searchParams.get("t");
+  const validSorts = ["date-asc", "date-desc", "title-asc", "title-desc"] as const;
+  type SortType = typeof validSorts[number];
+  const urlSort = searchParams.get("s") as SortType | null;
+  const sortBy: SortType = urlSort && (validSorts as readonly string[]).includes(urlSort) ? urlSort : "date-asc";
   const filterBarRef = useRef<HTMLDivElement | null>(null);
   const activePillRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
@@ -497,10 +501,12 @@ const Events = () => {
   const setSelectedDate = (d: Date | null) => updateParams({ d: d ? `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}` : null });
   const setSearch = (q: string) => updateParams({ q: q || null });
   const setTagFilter = (t: string | null) => updateParams({ t: t || null });
+  const setSortBy = (s: SortType) => updateParams({ s: s === "date-asc" ? null : s });
   const [weekAnchor, setWeekAnchor] = useState<Date>(selectedDate ?? startOfToday());
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | null>("tag");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | null>("tag");
+
 
   const { data: events, isLoading } = useQuery({
     queryKey: ["events-page"],
