@@ -606,7 +606,7 @@ const EventDetail = () => {
               margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
               letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1,
             }}>{r.label}</h3>
-            {r.href && <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />}
+            {r.href && <ArrowUpRight size={16} color={C.muted} />}
           </div>
         );
         const body = (
@@ -728,7 +728,7 @@ const EventDetail = () => {
                   <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
                     {r.value}
                   </div>
-                  {r.href && <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />}
+                  {r.href && <ArrowUpRight size={16} color={C.muted} />}
                 </>
               );
               const style: React.CSSProperties = {

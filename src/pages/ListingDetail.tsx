@@ -882,7 +882,7 @@ const ListingDetail = () => {
                 {r.value}
               </div>
             </div>
-            <ArrowUpRight size={18} color={C.primary} style={{ flexShrink: 0 }} />
+            <ArrowUpRight size={16} color={C.muted} />
           </a>
         ))}
       </div>
