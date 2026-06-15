@@ -788,60 +788,61 @@ const ListingDetail = () => {
         </>
       )}
 
-      {hasHours && (() => {
-        const holidayCheck = isSAPublicHoliday(getSADate());
-        return (
-          <div style={{ marginTop: 28 }}>
-            <h2 style={headStyle}>Hours</h2>
-            {holidayCheck.isHoliday && (
-              <div style={{ marginBottom: 10, padding: "8px 12px", background: C.ivory, borderRadius: 10, fontSize: 12.5, color: C.text }}>
-                Public holiday — hours might differ
-              </div>
-            )}
-            {openStatus && (
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: openStatus.state === "open" ? "#5C8A4A" : "#B05B3F" }} />
-                <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>
-                  {openStatus.state === "open" ? "Open now" : openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}
-                </span>
-                {openStatus.state === "open" && openStatus.alwaysOpen && (
-                  <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>· Never Closes</span>
-                )}
-                {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
-                  <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Closes {openStatus.closes}</span>
-                )}
-                {openStatus.state === "closed" && openStatus.opensAt && (
-                  <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
-                )}
-              </div>
-            )}
-            <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
-              {DAY_LABELS.map((day, i) => {
-                const v = openingHours![day.toLowerCase()] || "";
-                const isClosed = !v || v.toLowerCase() === "closed";
-                const isToday = day === todayLabel;
-                return (
-                  <div key={day} style={{
-                    display: "flex", justifyContent: "space-between", alignItems: "center",
-                    padding: "12px 0", borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-                  }}>
-                    <span style={{ fontSize: 14, color: isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
-                      {day}{isToday ? " · Today" : ""}
-                    </span>
-                    <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
-                      {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " - ")}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })()}
-
-
       <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
     </div>
+    );
+  };
+
+  const renderHours = () => {
+    if (!hasHours) return null;
+    const holidayCheck = isSAPublicHoliday(getSADate());
+    return (
+      <div style={{ padding: "20px" }}>
+        <h2 style={headStyle}>Hours</h2>
+        {holidayCheck.isHoliday && (
+          <div style={{ marginBottom: 10, padding: "8px 12px", background: C.ivory, borderRadius: 10, fontSize: 12.5, color: C.text }}>
+            Public holiday — hours might differ
+          </div>
+        )}
+        {openStatus && (
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: openStatus.state === "open" ? "#5C8A4A" : "#B05B3F" }} />
+            <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>
+              {openStatus.state === "open" ? "Open now" : openStatus.state === "temporarily_closed" ? "Temporarily closed" : "Closed"}
+            </span>
+            {openStatus.state === "open" && openStatus.alwaysOpen && (
+              <span style={{ fontSize: 15, color: C.heading, fontWeight: 600, letterSpacing: "0.01em" }}>· Never Closes</span>
+            )}
+            {openStatus.state === "open" && !openStatus.alwaysOpen && openStatus.closes && (
+              <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Closes {openStatus.closes}</span>
+            )}
+            {openStatus.state === "closed" && openStatus.opensAt && (
+              <span style={{ fontSize: 15, color: C.text, fontWeight: 500 }}>· Opens {openStatus.opensAt} {openStatus.opensDay || ""}</span>
+            )}
+          </div>
+        )}
+        <div style={{ background: C.surface, borderRadius: 16, padding: "4px 16px", border: `1px solid ${C.border}` }}>
+          {DAY_LABELS.map((day, i) => {
+            const v = openingHours![day.toLowerCase()] || "";
+            const isClosed = !v || v.toLowerCase() === "closed";
+            const isToday = day === todayLabel;
+            return (
+              <div key={day} style={{
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "12px 0", borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+              }}>
+                <span style={{ fontSize: 14, color: isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
+                  {day}{isToday ? " · Today" : ""}
+                </span>
+                <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
+                  {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " - ")}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+        <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
+      </div>
     );
   };
 
