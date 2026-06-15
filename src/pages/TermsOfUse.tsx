@@ -39,7 +39,7 @@ const TermsOfUse = () => (
 
     <Section heading="User Content">
       <P>
-        If you submit reviews, comments, suggestions or other content to the app, you grant us a non-exclusive, royalty-free licence to use, display and adapt that content within the app. You're responsible for what you post, and you agree not to submit anything unlawful, defamatory or infringing.
+        If you submit reviews, comments, suggestions or other content to the app, you grant us a non-exclusive, royalty-free licence to use, display and adapt that content within the app. You are responsible for what you post, and you agree not to submit anything unlawful, defamatory or infringing.
       </P>
     </Section>
 
@@ -51,7 +51,7 @@ const TermsOfUse = () => (
 
     <Section heading="Third-Party Links">
       <P>
-        The app links to outside websites, social profiles and booking platforms. We don't control those sites and we're not responsible for their content, privacy practices or anything that happens once you leave us.
+        The app links to outside websites, social profiles and booking platforms. We do not control those sites and we are not responsible for their content, privacy practices or anything that happens once you leave the app.
       </P>
     </Section>
 
