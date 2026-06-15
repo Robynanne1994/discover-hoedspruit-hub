@@ -308,20 +308,11 @@ const UserProfile = () => {
         style={{
           position: "relative",
           width: "100%",
-          height: 240,
+          height: 180,
           overflow: "hidden",
-          background:
-            "linear-gradient(180deg, #C18866 0%, #8B5C3E 50%, #5C6446 100%)",
+          background: CREAM,
         }}
       >
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "radial-gradient(ellipse at 30% 60%, rgba(0,0,0,0.15) 0%, transparent 50%), radial-gradient(ellipse at 70% 30%, rgba(255,255,255,0.08) 0%, transparent 60%)",
-          }}
-        />
         <div
           style={{
             position: "absolute",
