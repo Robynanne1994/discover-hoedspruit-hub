@@ -10,7 +10,7 @@ const CookiePolicy = () => (
   >
     <Section heading="What Are Cookies">
       <P>
-        Cookies are small text files placed on your device when you visit a website or app. They help the service remember things about you, like whether you're signed in or what you've looked at, so it doesn't have to ask you the same question every time.
+        Cookies are small text files placed on your device when you visit a website or app. They help the service remember things about you, like whether you are signed in or what you have looked at, so it does not have to ask you the same question every time.
       </P>
     </Section>
 
