@@ -87,7 +87,7 @@ const TermsOfUse = () => (
 
     <Section heading="Contact">
       <P last>
-        Questions, complaints, or anything in between, write to us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
+        Questions, complaints or anything in between, email us at <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.
       </P>
     </Section>
   </LegalPage>
