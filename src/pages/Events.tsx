@@ -556,7 +556,7 @@ const Events = () => {
       list = list.filter((e) => e.tag && e.tag.toLowerCase() === tf);
     }
 
-    }
+
     if (search.trim()) {
       const q = search.toLowerCase();
       list = list.filter(
