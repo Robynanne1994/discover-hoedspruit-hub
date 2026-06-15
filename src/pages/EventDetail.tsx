@@ -598,7 +598,7 @@ const EventDetail = () => {
   const allWhatsapps = collectContacts(contactWhatsApp, (e as any).additional_whatsapps);
   const allEmails = collectContacts(contactEmail, (e as any).additional_emails);
 
-  const contactRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  const contactRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean; disabled?: boolean }[] = [];
   allPhones.forEach((p, i) => contactRows.push({ Icon: Phone, label: i === 0 ? "Phone" : `Phone ${i + 1}`, value: formatSAPhone(p), href: `tel:${p.replace(/\s/g, "")}` }));
   allWhatsapps.forEach((w, i) => {
     const clean = w.replace(/[^0-9]/g, "");
@@ -612,7 +612,7 @@ const EventDetail = () => {
     const defaultLabel = isFb ? "Facebook" : isIg ? "Instagram" : "Website";
     contactRows.push({ Icon: SocialIcon, label: socialLabel || defaultLabel, value: socialLabel || socialLink, href: socialLink, external: true });
   }
-  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true });
+  if (bookingLink) contactRows.push({ Icon: ExternalLink, label: bookingLinkLabel || "Booking link", value: bookingLinkLabel || bookingLink, href: bookingLink, external: true, disabled: isPast });
 
   const includedItems: string[] = Array.isArray((e as any).included) ? (e as any).included.filter((s: string) => s && s.trim()) : [];
   const hasPricingCard = !!price || priceNotes.length > 0 || includedItems.length > 0;
@@ -745,8 +745,8 @@ const EventDetail = () => {
             {contactRows.map((r, i) => {
               const inner = (
                 <>
-                  <r.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>
+                  <r.Icon size={18} strokeWidth={1.5} color={r.disabled ? C.muted : C.primary} />
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 400, color: r.disabled ? C.muted : C.heading, wordBreak: "break-word" }}>
                     {r.value}
                   </div>
                   {r.href && <ArrowUpRight size={16} color={C.muted} />}
@@ -756,15 +756,16 @@ const EventDetail = () => {
                 display: "flex", alignItems: "center", gap: 14,
                 padding: "14px 0", textDecoration: "none",
                 borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
+                opacity: r.disabled ? 0.5 : 1,
               };
-              if (r.href) {
+              if (r.href && !r.disabled) {
                 return (
                   <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={style}>
                     {inner}
                   </a>
                 );
               }
-              return <div key={i} style={style}>{inner}</div>;
+              return <div key={i} style={{ ...style, cursor: r.disabled ? "not-allowed" : "default" }} aria-disabled={r.disabled || undefined}>{inner}</div>;
             })}
           </div>
         </>
