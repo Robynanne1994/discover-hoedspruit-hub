@@ -346,7 +346,7 @@ const AccountInfo = () => {
           color: INK,
         }}
       >
-        Profile Photo
+        {"\n"}
       </div>
 
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
