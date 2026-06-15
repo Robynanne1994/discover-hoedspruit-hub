@@ -13,7 +13,7 @@ const ContentGuidelines = () => (
       </P>
     </Section>
 
-    <Section heading="Keep It Honest">
+    <Section heading="Keep it Honest">
       <P>
         If you leave a review or share information about a place, make sure it's true and based on your own experience. Don't post fake reviews, don't pretend to be someone you're not, and don't try to game the system to push a business up or knock one down.
       </P>
