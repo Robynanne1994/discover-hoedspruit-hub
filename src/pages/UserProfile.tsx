@@ -852,13 +852,13 @@ const UserProfile = () => {
                       )}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: SERIF, fontStyle: "italic", fontSize: 13, lineHeight: 1.4, color: INK }}>
+                      <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 13, lineHeight: 1.4, letterSpacing: "0.01em", color: BODY }}>
                         {row.verb}{" "}
-                        <span style={{ fontFamily: SANS, fontStyle: "normal", fontWeight: 400, color: INK }}>
+                        <span style={{ fontFamily: SANS, fontWeight: 400, color: INK }}>
                           {row.name}
                         </span>
                       </div>
-                      <div style={{ fontFamily: SANS, fontSize: 10.5, letterSpacing: "1.8px", textTransform: "uppercase", color: MUTED, marginTop: 3 }}>
+                      <div style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginTop: 3 }}>
                         {timeAgo(row.created_at)}
                       </div>
                     </div>
