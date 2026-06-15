@@ -351,12 +351,12 @@ const Notifications = () => {
           <div key={section.label}>
             <div
               style={{
-                fontFamily: SANS,
-                fontSize: 11,
+                fontFamily: '"Bricolage Grotesque", ' + SANS,
+                fontSize: 15,
                 fontWeight: 700,
-                color: C.muted,
+                color: C.ink,
                 textTransform: "uppercase",
-                letterSpacing: "0.18em",
+                letterSpacing: "0.06em",
                 padding: "0 24px",
                 marginBottom: 10,
               }}

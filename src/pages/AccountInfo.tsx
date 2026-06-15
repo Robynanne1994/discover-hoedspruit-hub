@@ -339,9 +339,9 @@ const AccountInfo = () => {
           marginTop: 24,
           marginBottom: 10,
           fontFamily: '"Bricolage Grotesque", ' + FF,
-          fontSize: 13,
-          fontWeight: 600,
-          letterSpacing: "0.08em",
+          fontSize: 15,
+          fontWeight: 700,
+          letterSpacing: "0.06em",
           textTransform: "uppercase",
           color: INK,
         }}
@@ -441,7 +441,7 @@ const AccountInfo = () => {
           fontFamily: '"Bricolage Grotesque", ' + FF,
           fontSize: 15,
           fontWeight: 700,
-          letterSpacing: "0.08em",
+          letterSpacing: "0.06em",
           textTransform: "uppercase",
           color: INK,
         }}

@@ -224,12 +224,12 @@ const NotificationCategories = () => {
             <div
               style={{
                 ...baseText,
-                fontFamily: SANS,
-                fontSize: 11,
-                fontWeight: 500,
-                color: COLORS.muted,
+                fontFamily: '"Bricolage Grotesque", ' + SANS,
+                fontSize: 15,
+                fontWeight: 700,
+                color: COLORS.ink,
                 textTransform: "uppercase",
-                letterSpacing: "0.22em",
+                letterSpacing: "0.06em",
                 padding: "0 24px",
                 marginBottom: 10,
               }}
