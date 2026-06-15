@@ -338,16 +338,17 @@ const AccountInfo = () => {
           paddingRight: 20,
           marginTop: 24,
           marginBottom: 10,
-          fontFamily: FF,
-          fontSize: 11,
+          fontFamily: '"Bricolage Grotesque", ' + FF,
+          fontSize: 13,
           fontWeight: 600,
-          letterSpacing: "0.18em",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: MUTED,
+          color: INK,
         }}
       >
         Profile Photo
       </div>
+
       <div style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 24 }}>
         <div
           style={{
@@ -437,16 +438,17 @@ const AccountInfo = () => {
           paddingLeft: 20,
           paddingRight: 20,
           marginBottom: 10,
-          fontFamily: FF,
-          fontSize: 11,
+          fontFamily: '"Bricolage Grotesque", ' + FF,
+          fontSize: 13,
           fontWeight: 600,
-          letterSpacing: "0.18em",
+          letterSpacing: "0.08em",
           textTransform: "uppercase",
-          color: MUTED,
+          color: INK,
         }}
       >
         Personal Details
       </div>
+
 
       {/* Personal details card */}
       <div style={{ paddingLeft: 20, paddingRight: 20 }}>
