@@ -16,6 +16,8 @@ import BottomNav from "@/components/BottomNav";
 import { formatSAPhone } from "@/lib/formatPhone";
 import { collectContacts } from "@/lib/contacts";
 import { renderListingRichText } from "@/lib/listingRichText";
+import Seo from "@/components/Seo";
+
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -458,6 +460,16 @@ const SpecialDetail = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+      <Seo
+        title={`${special.title} — Hoedspruit Special`}
+        description={
+          ((special as any).description ? String((special as any).description).replace(/<[^>]*>/g, "").trim() : "") ||
+          `${special.title} — a current special in Hoedspruit. See the deal and how to redeem on Hello Hoedspruit.`
+        }
+        path={`/specials/${special.id}`}
+        image={special.detail_image_url || special.image_url || undefined}
+        type="article"
+      />
       {/* Hero (4:3) with floating action buttons */}
       <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
         {(special.detail_image_url || special.image_url) && (

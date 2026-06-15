@@ -25,6 +25,8 @@ import { formatEventDateRange, getEventSortDate } from "@/lib/eventDates";
 import { DISPLAY_SECTIONS, resolveSectionMode, type DisplayMode } from "@/lib/detailsDisplayModes";
 import { getCustomIcon } from "@/lib/customIcons";
 import { renderListingRichText } from "@/lib/listingRichText";
+import Seo from "@/components/Seo";
+
 
 const WhatsAppIcon = ({ size = 20, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true" {...props}>
@@ -1142,6 +1144,16 @@ const ListingDetail = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: FONT, color: C.text }}>
+      <Seo
+        title={`${listing.title} — Hello Hoedspruit`}
+        description={
+          (listing.description ? String(listing.description).replace(/<[^>]*>/g, "").trim() : "") ||
+          `${listing.title} in Hoedspruit. Find contact details, hours, location and more on Hello Hoedspruit.`
+        }
+        path={`/listing/${listing.id}`}
+        image={listing.image_url || undefined}
+        type="article"
+      />
       {/* Hero (4:3) with floating action buttons */}
       {showHero ? (
         <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#DDD6C0", overflow: "hidden" }}>
