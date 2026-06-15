@@ -10,7 +10,7 @@ interface Props {
   actionHref?: string;
 }
 
-const HomeSectionHead = ({ primary, serif, actionLabel = "View all", actionHref }: Props) => {
+const HomeSectionHead = ({ primary, serif, actionLabel = "View All", actionHref }: Props) => {
   const title = serif ? `${primary} ${serif}` : primary;
   return (
     <div
