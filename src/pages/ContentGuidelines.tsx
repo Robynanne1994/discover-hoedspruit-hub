@@ -7,7 +7,7 @@ const ContentGuidelines = () => (
     title="community guidelines."
     footer="Be kind. Be useful. Be a good local. That's basically the lot."
   >
-    <Section heading="be respectful">
+    <Section heading="Be Respectful">
       <P>
         Hello Hoedspruit is a small town's app, and small towns work because people treat each other well. Disagreements are fine. Personal attacks, harassment, slurs, and discrimination of any kind are not.
       </P>
