@@ -93,7 +93,7 @@ interface LegalPageProps {
 
 export const LegalPage = ({ title, footer, children }: LegalPageProps) => {
   const navigate = useNavigate();
-  const displayTitle = title.replace(/\.$/, "").replace(/\b\w/g, (c) => c.toUpperCase());
+  const displayTitle = title.replace(/\.$/, "");
 
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: SANS, color: INK, paddingBottom: 120 }}>
