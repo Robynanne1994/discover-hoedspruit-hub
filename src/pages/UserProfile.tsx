@@ -433,12 +433,13 @@ const UserProfile = () => {
             <>
               <h1
                 style={{
-                  fontFamily: SERIF,
+                  fontFamily: SANS,
                   fontWeight: 400,
-                  fontSize: 42,
-                  lineHeight: 1.0,
-                  letterSpacing: "-1px",
-                  color: CREAM,
+                  fontSize: 24,
+                  lineHeight: 1.15,
+                  letterSpacing: "0.01em",
+                  textTransform: "uppercase",
+                  color: INK,
                   margin: 0,
                   marginBottom: 6,
                 }}
@@ -449,12 +450,11 @@ const UserProfile = () => {
               {profile?.username && (
                 <div
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
+                    fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 14,
-                    color: CREAM,
-                    opacity: 0.65,
+                    fontSize: 13,
+                    letterSpacing: "0.01em",
+                    color: MUTED,
                     marginBottom: 14,
                   }}
                 >
@@ -465,14 +465,13 @@ const UserProfile = () => {
               {profile?.bio && (
                 <p
                   style={{
-                    fontFamily: SERIF,
-                    fontStyle: "italic",
+                    fontFamily: SANS,
                     fontWeight: 400,
-                    fontSize: 16,
+                    fontSize: 14,
                     lineHeight: 1.5,
-                    color: CREAM,
-                    opacity: 0.85,
-                    maxWidth: 280,
+                    letterSpacing: "0.01em",
+                    color: BODY,
+                    maxWidth: 320,
                     margin: "0 auto 24px",
                   }}
                 >
