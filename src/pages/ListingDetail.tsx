@@ -1219,24 +1219,31 @@ const ListingDetail = () => {
           return (
             <div style={{
               marginBottom: 8,
-              fontSize: 11, color: C.muted,
-              letterSpacing: "0.12em", textTransform: "uppercase",
-              display: "flex", alignItems: "center", flexWrap: "wrap", gap: 8,
+              display: "flex", alignItems: "center", flexWrap: "wrap", gap: 6,
             }}>
               {titles.map((t, i) => (
-                <span key={t} style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                <div key={t} style={{ display: "flex", alignItems: "center", gap: 6 }}>
                   {i > 0 && (
                     <span aria-hidden style={{
-                      width: 3, height: 3, borderRadius: "50%",
-                      background: C.muted, display: "inline-block", opacity: 0.6,
+                      width: 4, height: 4, borderRadius: "50%",
+                      background: C.accent, flexShrink: 0,
                     }} />
                   )}
-                  <span>{t}</span>
-                </span>
+                  <span style={{
+                    fontSize: 11,
+                    letterSpacing: "0.04em",
+                    textTransform: "uppercase",
+                    color: i === 0 ? C.primary : C.muted,
+                    fontWeight: i === 0 ? 700 : 400,
+                  }}>
+                    {t}
+                  </span>
+                </div>
               ))}
             </div>
           );
         })()}
+
         <h1
           data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
           style={{
