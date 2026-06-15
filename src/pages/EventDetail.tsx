@@ -41,6 +41,18 @@ const WhatsAppIcon = ({ size = 18, color = C.primary, ...props }: { size?: numbe
   </svg>
 );
 
+const FacebookIcon = ({ size = 18, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" {...props}>
+    <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+  </svg>
+);
+
+const InstagramIcon = ({ size = 18, color = C.primary, ...props }: { size?: number; color?: string } & React.SVGProps<SVGSVGElement>) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} aria-hidden="true" {...props}>
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.633.336 3.608 1.311.975.975 1.249 2.242 1.311 3.608.058 1.266.069 1.646.069 4.85s-.012 3.584-.07 4.85c-.062 1.366-.336 2.633-1.311 3.608-.975.975-2.242 1.249-3.608 1.311-1.266.058-1.645.07-4.85.07-3.204 0-3.584-.012-4.85-.07-1.366-.062-2.633-.336-3.608-1.311-.975-.975-1.249-2.242-1.311-3.608C2.175 15.747 2.163 15.368 2.163 12s.012-3.584.07-4.85c.062-1.366.336-2.633 1.311-3.608.975-.975 2.242-1.249 3.608-1.311C8.416 2.175 8.796 2.163 12 2.163zm0 1.838c-3.141 0-3.51.012-4.747.068-1.018.046-1.572.215-1.94.358-.488.19-.836.416-1.202.782-.366.366-.592.714-.782 1.202-.143.368-.312.922-.358 1.94-.056 1.237-.068 1.606-.068 4.747s.012 3.51.068 4.747c.046 1.018.215 1.572.358 1.94.19.488.416.836.782 1.202.366.366.714.592 1.202.782.368.143.922.312 1.94.358 1.237.056 1.606.068 4.747.068s3.51-.012 4.747-.068c1.018-.046 1.572-.215 1.94-.358.488-.19.836-.416 1.202-.782.366-.366.592-.714.782-1.202.143-.368.312-.922.358-1.94.056-1.237.068-1.606.068-4.747s-.012-3.51-.068-4.747c-.046-1.018-.215-1.572-.358-1.94-.19-.488-.416-.836-.782-1.202-.366-.366-.714-.592-1.202-.782-.368-.143-.922-.312-1.94-.358C15.51 4.013 15.141 4.001 12 4.001zm0 3.063A4.937 4.937 0 1116.937 12 4.943 4.943 0 0112 7.064zm0 8.137A3.2 3.2 0 1015.2 12 3.204 3.204 0 0012 15.201zm6.406-8.343a1.153 1.153 0 11-1.153-1.153 1.154 1.154 0 011.153 1.153z" />
+  </svg>
+);
+
 
 const pressScale = (s = "0.98") => ({
   onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${s})`),
@@ -353,8 +365,11 @@ const EventDetail = () => {
       disabled: isPast,
     },
     socialLink && {
-      key: "social", label: socialLabel || "Website",
-      href: socialLink, Icon: Globe, ext: true,
+      key: "social",
+      label: socialLabel || (/facebook\.com/i.test(socialLink) ? "Facebook" : /instagram\.com/i.test(socialLink) ? "Instagram" : "Website"),
+      href: socialLink,
+      Icon: /facebook\.com/i.test(socialLink) ? FacebookIcon : /instagram\.com/i.test(socialLink) ? InstagramIcon : Globe,
+      ext: true,
     },
     directionsHref && {
       key: "directions", label: "Directions",
