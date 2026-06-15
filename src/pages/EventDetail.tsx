@@ -839,15 +839,18 @@ const EventDetail = () => {
             target="_blank"
             rel="noopener noreferrer"
             style={{
-              marginTop: 14, display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              background: "#423324", color: "#FFFFFF",
-              padding: "10px 20px", borderRadius: 999,
-              textDecoration: "none", fontFamily: FONT, fontSize: 14, fontWeight: 400,
-              letterSpacing: "0.02em",
+              marginTop: 14,
+              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+              padding: "10px 18px", borderRadius: 999,
+              background: C.surface, border: `1px solid ${C.border}`,
+              color: C.heading, textDecoration: "none",
+              fontFamily: FONT, fontWeight: 400, fontSize: 14,
+              letterSpacing: "0.01em",
+              transition: "transform 150ms ease-out",
             }}
             {...pressScale()}
           >
-            <Navigation size={16} />
+            <Navigation size={16} strokeWidth={1.75} color={C.heading} />
             <span>Get Directions</span>
           </a>
         )}
