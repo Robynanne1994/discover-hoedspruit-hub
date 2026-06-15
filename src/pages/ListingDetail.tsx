@@ -1339,6 +1339,7 @@ const ListingDetail = () => {
       {/* Tab content */}
       <main style={{ background: C.bg }}>
         {tab === "about" && renderAbout()}
+        {tab === "hours" && renderHours()}
         {tab === "contact" && renderContact()}
         {tab === "details" && renderDetails()}
         {tab === "specials" && renderSpecials()}
