@@ -256,7 +256,7 @@ const ListingDetail = () => {
     const hasS = (relatedSpecials?.length ?? 0) > 0;
     const hasE = (relatedEvents?.length ?? 0) > 0;
     const hasG = ((listing as any)?.gallery_images?.length ?? 0) > 0;
-    const keys: TabKey[] = ["about", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
+    const keys: TabKey[] = ["about", "hours", "contact", "details", ...(hasS ? ["specials" as TabKey] : []), ...(hasE ? ["events" as TabKey] : []), ...(hasG ? ["gallery" as TabKey] : []), "location"];
     if (!keys.includes(tab)) setTab("about");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [relatedSpecials, relatedEvents, listing, tab]);
