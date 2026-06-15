@@ -1111,16 +1111,16 @@ const ListingDetail = () => {
             style={{
               marginTop: 14,
               display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              padding: "10px 18px", borderRadius: 999,
-              background: C.surface, border: `1px solid ${C.border}`,
-              color: C.heading, textDecoration: "none",
-              fontFamily: FONT, fontWeight: 400, fontSize: 14,
+              padding: "8px 16px", borderRadius: 999,
+              background: "#423324", border: "1px solid #423324",
+              color: "#FFFFFF", textDecoration: "none",
+              fontFamily: FONT, fontWeight: 500, fontSize: 14, lineHeight: "20px",
               letterSpacing: "0.01em",
               transition: "transform 150ms ease-out",
             }}
             {...pressScale()}
           >
-            <Navigation size={16} strokeWidth={1.75} color={C.heading} />
+            <Navigation size={16} strokeWidth={1.75} color="#FFFFFF" />
             <span>Get Directions</span>
           </a>
         )}
