@@ -124,23 +124,25 @@ export const LegalPage = ({ title, footer, children }: LegalPageProps) => {
       </div>
 
       {/* Footer */}
-      <div style={{ padding: "24px 24px 0", display: "flex", gap: 14, alignItems: "flex-start" }}>
-        <span
-          aria-hidden
-          style={{
-            width: 7, height: 7, borderRadius: "50%", background: INK,
-            flexShrink: 0, marginTop: 9,
-          }}
-        />
-        <p
-          style={{
-            fontFamily: SANS, fontStyle: "italic", fontWeight: 400,
-            fontSize: 14, lineHeight: 1.6, color: BODY, margin: 0,
-          }}
-        >
-          {footer}
-        </p>
-      </div>
+      {footer && (
+        <div style={{ padding: "24px 24px 0", display: "flex", gap: 14, alignItems: "flex-start" }}>
+          <span
+            aria-hidden
+            style={{
+              width: 7, height: 7, borderRadius: "50%", background: INK,
+              flexShrink: 0, marginTop: 9,
+            }}
+          />
+          <p
+            style={{
+              fontFamily: SANS, fontStyle: "italic", fontWeight: 400,
+              fontSize: 14, lineHeight: 1.6, color: BODY, margin: 0,
+            }}
+          >
+            {footer}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
