@@ -61,16 +61,8 @@ const TermsPolicies = () => {
               <div style={{ flex: 1, fontSize: 15, fontWeight: 500, color: INK, letterSpacing: -0.1 }}>
                 {p.title}
               </div>
-              <div
-                aria-hidden
-                style={{
-                  width: 30, height: 30, borderRadius: "50%", background: ICON_BG,
-                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                  fontSize: 13, color: INK, lineHeight: 1,
-                }}
-              >
-                ↗
-              </div>
+              <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+
             </button>
           ))}
         </div>
