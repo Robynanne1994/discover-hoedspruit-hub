@@ -523,7 +523,7 @@ const MyProfile = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 textDecoration: "none",
-                borderLeft: i === 0 ? "none" : `1px solid rgba(26,26,26,0.12)`,
+                borderLeft: i === 0 ? "none" : `1px solid #000000`,
               };
               return s.clickable ? (
                 <Link key={s.label} to={s.to} style={sharedStyle}>{inner}</Link>
