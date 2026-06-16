@@ -437,14 +437,11 @@ const MyProfile = () => {
                     style={{
                       fontFamily: SANS,
                       fontWeight: 700,
-                      fontSize: 18,
-                      lineHeight: 1.15,
-                      letterSpacing: "-0.4px",
+                      fontSize: 15,
+                      lineHeight: 1.2,
+                      letterSpacing: "-0.3px",
                       color: INK,
                       margin: 0,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
                     }}
                   >
                     {titleCase(profile?.display_name) || "You"}
