@@ -92,6 +92,23 @@ const UserProfile = () => {
     },
   });
 
+  // Has this profile blocked the signed-in viewer? If so we hide the
+  // viewed user from search/suggestions AND prevent the viewer from
+  // seeing their profile content here.
+  const { data: blockedByThem } = useQuery({
+    queryKey: ["blocked-by", user?.id, id],
+    enabled: !!user?.id && !!id && user!.id !== id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_blocks" as any)
+        .select("id")
+        .eq("blocker_id", id!)
+        .eq("blocked_id", user!.id)
+        .maybeSingle();
+      return !!data;
+    },
+  });
+
   const handleBlock = async () => {
     if (!user || !id) return;
     const { error } = await supabase
