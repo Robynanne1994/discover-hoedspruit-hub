@@ -28,7 +28,7 @@ import BottomNav from "@/components/BottomNav";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 
-const PAGE_BG = "#ebebeb";
+const PAGE_BG = "#E6E0CC";
 const CREAM = "#f5f0e8";
 const SOFT_CREAM = "#ffffff";
 const INK = "#020202";
