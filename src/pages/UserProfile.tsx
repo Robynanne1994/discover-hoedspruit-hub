@@ -75,6 +75,50 @@ const UserProfile = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Is the signed-in user currently blocking this profile?
+  const { data: isBlocked } = useQuery({
+    queryKey: ["user-blocked", user?.id, id],
+    enabled: !!user?.id && !!id && user!.id !== id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_blocks" as any)
+        .select("id")
+        .eq("blocker_id", user!.id)
+        .eq("blocked_id", id!)
+        .maybeSingle();
+      return !!data;
+    },
+  });
+
+  const handleBlock = async () => {
+    if (!user || !id) return;
+    const { error } = await supabase
+      .from("user_blocks" as any)
+      .insert({ blocker_id: user.id, blocked_id: id } as any);
+    if (error) {
+      toast.error("Could not block user. Please try again.");
+      return;
+    }
+    queryClient.setQueryData(["user-blocked", user.id, id], true);
+    toast.success("User blocked");
+  };
+
+  const handleUnblock = async () => {
+    if (!user || !id) return;
+    const { error } = await supabase
+      .from("user_blocks" as any)
+      .delete()
+      .eq("blocker_id", user.id)
+      .eq("blocked_id", id);
+    if (error) {
+      toast.error("Could not unblock user. Please try again.");
+      return;
+    }
+    queryClient.setQueryData(["user-blocked", user.id, id], false);
+    toast.success("User unblocked");
+  };
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["user-profile", id],
