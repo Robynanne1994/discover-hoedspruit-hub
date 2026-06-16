@@ -114,15 +114,16 @@ export const RefineDrawer = ({
               style={{
                 margin: 0,
                 fontFamily: SANS,
-                fontSize: 13,
+                fontSize: 11,
                 lineHeight: 1,
                 fontWeight: 700,
                 color: "#1A1A1A",
-                letterSpacing: "-0.2px",
+                letterSpacing: "0.04em",
                 textAlign: "center",
                 position: "absolute",
                 left: "50%",
                 transform: "translateX(-50%)",
+                whiteSpace: "nowrap",
               }}
             >
               FILTER & SORT
