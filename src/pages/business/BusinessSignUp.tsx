@@ -4,6 +4,7 @@ import { ArrowLeft, Eye, EyeOff, Check, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
+import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 const OLIVE = "#5C6446";
 const CREAM = "#EEE8DA";
@@ -46,6 +47,13 @@ const BusinessSignUp = () => {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!canSubmit) return;
+
+    const pwError = validatePassword(password);
+    if (pwError) {
+      toast.error(`${pwError} ${PASSWORD_REQUIREMENTS_TEXT}`);
+      return;
+    }
+
     setBusy(true);
 
     const { data: signUpData, error: signErr } = await supabase.auth.signUp({
@@ -295,7 +303,7 @@ const BusinessSignUp = () => {
               className="biz-su-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="At least 8 characters"
+              placeholder="Min 8 chars, with a number & symbol"
               minLength={8}
               style={{ ...inputStyle, paddingRight: 52 }}
               required
