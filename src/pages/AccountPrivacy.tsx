@@ -41,9 +41,6 @@ const PrivacyToggleRow = ({
   >
     <div style={{ flex: 1, minWidth: 0 }}>
       <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>{label}</div>
-      <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2, lineHeight: 1.45 }}>
-        {description}
-      </div>
     </div>
     <button
       type="button"
