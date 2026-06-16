@@ -371,6 +371,58 @@ const UserProfile = () => {
     }
   };
 
+  if (blockedByThem) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: PAGE_BG,
+          paddingBottom: 100,
+          fontFamily: SANS,
+          color: BODY,
+        }}
+      >
+        <PageHeader title="Profile" />
+        <div style={{ padding: "40px 20px" }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 18,
+              padding: "32px 20px",
+              textAlign: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: SANS,
+                fontWeight: 400,
+                fontSize: 16,
+                letterSpacing: "0.01em",
+                textTransform: "uppercase",
+                color: INK,
+                margin: "0 0 8px",
+              }}
+            >
+              Account unavailable
+            </h2>
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 13.5,
+                lineHeight: 1.5,
+                color: MUTED,
+                margin: 0,
+              }}
+            >
+              This profile is not available to view.
+            </p>
+          </div>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
+
   return (
     <div
       style={{
