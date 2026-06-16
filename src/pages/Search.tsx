@@ -9,6 +9,7 @@ import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
 import BackButton from "@/components/BackButton";
 import PageHeader from "@/components/PageHeader";
 import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
+import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import { toast } from "sonner";
 import Seo from "@/components/Seo";
 
