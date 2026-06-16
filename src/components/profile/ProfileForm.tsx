@@ -476,40 +476,6 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
             />
             <PencilIcon />
           </Row>
-          <Row>
-            <label style={ROW_LABEL}>Bio</label>
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value.slice(0, 220))}
-              placeholder="A short line about you."
-              style={{
-                ...ROW_VALUE,
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 17,
-                lineHeight: 1.5,
-                minHeight: 48,
-                resize: "none",
-                paddingRight: 50,
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                bottom: 14,
-                right: 0,
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 12,
-                color: bio.length > 200 ? DEEP : MUTED,
-                opacity: bio.length > 200 ? 1 : 0.7,
-              }}
-            >
-              {bio.length} / 200
-            </span>
-          </Row>
         </Card>
 
         <div style={{ height: 24 }} />
