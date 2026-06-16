@@ -149,9 +149,10 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
         trimmedUsername.toLowerCase() !== currentUsername.toLowerCase();
       // Username must be unique. RLS hides other users' rows, so check via RPC.
       if (trimmedUsername && usernameChanged) {
-        const { data: available, error: checkErr } = await supabase.rpc(
-          "is_username_available" as any,
-          { _username: trimmedUsername, _exclude_id: user.id } as any
+        const { isUsernameAvailable } = await import("@/lib/usernameCheck");
+        const { available, error: checkErr } = await isUsernameAvailable(
+          trimmedUsername,
+          user.id
         );
         if (checkErr) throw checkErr;
         if (!available) throw new Error("USERNAME_TAKEN");

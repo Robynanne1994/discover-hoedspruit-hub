@@ -71,10 +71,8 @@ const Welcome = () => {
       // is used because RLS blocks reading other users' profile rows directly.
       const trimmedUsername = username.trim();
       const { supabase } = await import("@/integrations/supabase/client");
-      const { data: available, error: checkError } = await supabase.rpc(
-        "is_username_available" as any,
-        { _username: trimmedUsername } as any
-      );
+      const { isUsernameAvailable } = await import("@/lib/usernameCheck");
+      const { available, error: checkError } = await isUsernameAvailable(trimmedUsername);
       if (checkError) {
         toast.error(checkError.message);
         setLoading(false);

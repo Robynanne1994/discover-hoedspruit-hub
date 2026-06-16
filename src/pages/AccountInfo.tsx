@@ -358,9 +358,10 @@ const AccountInfo = () => {
       // Username uniqueness via SECURITY DEFINER RPC. RLS blocks reading other
       // users' profile rows, so a direct query here would never see a clash.
       if (trimmedUsername && usernameChanged) {
-        const { data: available, error: unameErr } = await supabase.rpc(
-          "is_username_available" as any,
-          { _username: trimmedUsername, _exclude_id: user.id } as any
+        const { isUsernameAvailable } = await import("@/lib/usernameCheck");
+        const { available, error: unameErr } = await isUsernameAvailable(
+          trimmedUsername,
+          user.id
         );
         if (unameErr) throw unameErr;
         if (!available) {
