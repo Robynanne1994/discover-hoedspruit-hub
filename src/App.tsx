@@ -175,6 +175,7 @@ const App = () => (
              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />
               <Route path="/profile/:id/saved" element={<UserSaved />} />
+              <Route path="/follow-requests" element={<FollowRequests />} />
               <Route path="/profile/:id/:type" element={<FollowList />} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />
