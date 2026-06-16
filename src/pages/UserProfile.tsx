@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -75,6 +75,50 @@ const UserProfile = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const queryClient = useQueryClient();
+
+  // Is the signed-in user currently blocking this profile?
+  const { data: isBlocked } = useQuery({
+    queryKey: ["user-blocked", user?.id, id],
+    enabled: !!user?.id && !!id && user!.id !== id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_blocks" as any)
+        .select("id")
+        .eq("blocker_id", user!.id)
+        .eq("blocked_id", id!)
+        .maybeSingle();
+      return !!data;
+    },
+  });
+
+  const handleBlock = async () => {
+    if (!user || !id) return;
+    const { error } = await supabase
+      .from("user_blocks" as any)
+      .insert({ blocker_id: user.id, blocked_id: id } as any);
+    if (error) {
+      toast.error("Could not block user. Please try again.");
+      return;
+    }
+    queryClient.setQueryData(["user-blocked", user.id, id], true);
+    toast.success("User blocked");
+  };
+
+  const handleUnblock = async () => {
+    if (!user || !id) return;
+    const { error } = await supabase
+      .from("user_blocks" as any)
+      .delete()
+      .eq("blocker_id", user.id)
+      .eq("blocked_id", id);
+    if (error) {
+      toast.error("Could not unblock user. Please try again.");
+      return;
+    }
+    queryClient.setQueryData(["user-blocked", user.id, id], false);
+    toast.success("User unblocked");
+  };
 
   const { data: profile, isLoading } = useQuery({
     queryKey: ["user-profile", id],
@@ -329,6 +373,58 @@ const UserProfile = () => {
         }
       />
 
+      {/* Blocked banner */}
+      {isBlocked && (
+        <div style={{ padding: "12px 20px 0" }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: `1px solid ${LINE}`,
+              borderRadius: 14,
+              padding: "14px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: SANS,
+                fontSize: 13.5,
+                color: INK,
+                lineHeight: 1.4,
+              }}
+            >
+              You have blocked{" "}
+              <strong style={{ fontWeight: 600 }}>
+                {titleCase(profile?.display_name) ||
+                  (profile?.username ? `@${profile.username}` : "this user")}
+              </strong>
+              .
+            </span>
+            <button
+              onClick={handleUnblock}
+              style={{
+                flexShrink: 0,
+                height: 32,
+                padding: "0 14px",
+                borderRadius: 999,
+                background: INK,
+                color: "#fff",
+                border: "none",
+                fontFamily: SANS,
+                fontSize: 12.5,
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                cursor: "pointer",
+              }}
+            >
+              Unblock
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Profile card — matches MyProfile */}
       <div style={{ padding: "16px 20px 0" }}>
@@ -793,11 +889,15 @@ const UserProfile = () => {
                 },
               },
               {
-                label: "Block User",
+                label: isBlocked ? "Unblock User" : "Block User",
                 onClick: () => {
                   setMenuOpen(false);
-                  if (!requireAuth("block users")) return;
-                  toast("User blocked");
+                  if (!requireAuth(isBlocked ? "unblock users" : "block users")) return;
+                  if (isBlocked) {
+                    handleUnblock();
+                  } else {
+                    handleBlock();
+                  }
                 },
               },
             ].map((o) => (
