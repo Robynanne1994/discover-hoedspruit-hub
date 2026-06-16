@@ -107,6 +107,7 @@ const UserProfile = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
+  const [blockOpen, setBlockOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("listings");
   const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
