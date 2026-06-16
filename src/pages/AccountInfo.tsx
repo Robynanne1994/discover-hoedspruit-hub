@@ -350,9 +350,14 @@ const AccountInfo = () => {
 
     setSavingProfile(true);
     try {
+      // Only check availability when the handle actually changed. Re-saving your
+      // own existing username must never be flagged as "taken" — you already own it.
+      const currentUsername = ((profile as any)?.username || "").trim();
+      const usernameChanged =
+        trimmedUsername.toLowerCase() !== currentUsername.toLowerCase();
       // Username uniqueness via SECURITY DEFINER RPC. RLS blocks reading other
       // users' profile rows, so a direct query here would never see a clash.
-      if (trimmedUsername) {
+      if (trimmedUsername && usernameChanged) {
         const { data: available, error: unameErr } = await supabase.rpc(
           "is_username_available" as any,
           { _username: trimmedUsername, _exclude_id: user.id } as any
