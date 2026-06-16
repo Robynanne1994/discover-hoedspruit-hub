@@ -55,9 +55,10 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   reportedUserId: string;
   reportedUserName?: string | null;
+  reportedUserHandle?: string | null;
 };
 
-const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName }: Props) => {
+const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName, reportedUserHandle }: Props) => {
   const { user } = useAuth();
   const isGuest = !user;
   const [reason, setReason] = useState("");
