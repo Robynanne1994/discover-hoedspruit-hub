@@ -131,6 +131,8 @@ const UserProfile = () => {
       return;
     }
     queryClient.setQueryData(["user-blocked", user.id, id], false);
+    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
+    queryClient.invalidateQueries({ queryKey: ["search-users"] });
     toast.success("User unblocked");
   };
 
