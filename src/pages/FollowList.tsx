@@ -210,17 +210,19 @@ const UserRow = ({
         </p>
       </div>
 
-      <div onClick={(e) => e.stopPropagation()}>
-        <ActionButton
-          variant={isFollowed ? "outlined" : "solid"}
-          label={isFollowed ? "Following" : "Follow"}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggle();
-          }}
-          disabled={pending}
-        />
-      </div>
+      {!isSelf && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <ActionButton
+            variant={isFollowed ? "outlined" : "solid"}
+            label={isFollowed ? "Following" : "Follow"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            disabled={pending}
+          />
+        </div>
+      )}
     </div>
   );
 };
