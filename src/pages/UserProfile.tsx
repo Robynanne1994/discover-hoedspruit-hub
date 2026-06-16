@@ -226,7 +226,7 @@ const UserProfile = () => {
         _item_type: "listing",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
         .select("id, title, image_url, location, google_rating")
@@ -235,8 +235,8 @@ const UserProfile = () => {
         (listings || []).map((l: any) => [l.id, l]),
       );
       return favs
-        .map((f) => ({ ...map[f.item_id], created_at: f.created_at }))
-        .filter((l) => l.id);
+        .map((f: any) => ({ ...map[f.item_id], created_at: f.created_at }))
+        .filter((l: any) => l.id);
     },
     enabled: !!id,
   });
@@ -260,13 +260,13 @@ const UserProfile = () => {
         _item_type: "event",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: events } = await supabase
         .from("events")
         .select("id, title, image_url, location, start_date, end_date")
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e: any) => e.id);
     },
     enabled: !!id,
   });
@@ -280,13 +280,13 @@ const UserProfile = () => {
         _item_type: "special",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
         .select("id, title, image_url, business_name, valid_until")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s: any) => s.id);
     },
     enabled: !!id,
   });
@@ -300,13 +300,13 @@ const UserProfile = () => {
         _item_type: "resource",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: resources } = await supabase
         .from("bush_telegraph_resources")
         .select("id, title, title_override, image_url, platform, meta, meta_2, slug")
         .in("id", ids);
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r: any) => r.id);
     },
     enabled: !!id,
   });
