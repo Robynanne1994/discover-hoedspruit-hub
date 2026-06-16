@@ -23,8 +23,14 @@ const Welcome = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
+  const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
+
+  const RESIDENCY_OPTIONS = [
+    "I live in Hoedspruit",
+    "I am a visitor in Hoedspruit",
+  ];
 
   useEffect(() => {
     if (location.state?.mode) setMode(location.state.mode);
@@ -46,6 +52,11 @@ const Welcome = () => {
       }
       if (!username.trim()) {
         toast.error("Please choose a username");
+        setLoading(false);
+        return;
+      }
+      if (!residency) {
+        toast.error("Please let us know if you live in or are visiting Hoedspruit");
         setLoading(false);
         return;
       }
@@ -82,7 +93,7 @@ const Welcome = () => {
         if (user) {
           const { error: upErr } = await supabase
             .from("profiles")
-            .update({ username: trimmedUsername })
+            .update({ username: trimmedUsername, location: residency })
             .eq("id", user.id);
           if (upErr) {
             if ((upErr as any).code === "23505" || /duplicate|unique/i.test(upErr.message)) {
@@ -262,6 +273,32 @@ const Welcome = () => {
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
                   style={{ background: "#ffffff", color: "#020202" }}
                 />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  Are you a local or a visitor?
+                </Label>
+                <div className="flex flex-col gap-2">
+                  {RESIDENCY_OPTIONS.map((opt) => {
+                    const active = residency === opt;
+                    return (
+                      <button
+                        key={opt}
+                        type="button"
+                        onClick={() => setResidency(opt)}
+                        className="h-12 rounded-xl text-left px-4 text-[15px] transition-colors"
+                        style={{
+                          background: active ? "#423324" : "#ffffff",
+                          color: active ? "#FFFFFF" : "#020202",
+                          border: active ? "1.5px solid #423324" : "1.5px solid #d9d2c0",
+                          fontWeight: active ? 600 : 400,
+                        }}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </>
           )}
