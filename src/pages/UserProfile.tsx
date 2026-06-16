@@ -440,6 +440,7 @@ const UserProfile = () => {
         </div>
       )}
 
+      {!isBlocked && (<>
       {/* Profile card — matches MyProfile */}
       <div style={{ padding: "16px 20px 0" }}>
         <section style={{ background: "#FFFFFF", borderRadius: 18, padding: "16px 16px 14px" }}>
