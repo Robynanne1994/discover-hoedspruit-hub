@@ -425,9 +425,39 @@ const UsersResults = ({
 }) => {
   const term = query.trim();
 
+  const { data: blocks } = useBlockedUsers();
+  const iBlocked = blocks?.iBlocked;
+  const blockedMe = blocks?.blockedMe;
+
   const { data: rows, isLoading } = useQuery({
-    queryKey: ["search-users", sub, term, currentUserId],
+    queryKey: [
+      "search-users",
+      sub,
+      term,
+      currentUserId,
+      Array.from(iBlocked ?? []).sort().join(","),
+      Array.from(blockedMe ?? []).sort().join(","),
+    ],
     queryFn: async () => {
+      // Helper: keep a profile if (a) they did not block me, and
+      // (b) for passive discovery, I did not block them. When the user
+      // types a search term we still hide users who blocked me, but we
+      // allow users I blocked through so I can still look them up by
+      // name/username.
+      const applyBlocks = (list: any[], { allowIBlockedOnTermMatch }: { allowIBlockedOnTermMatch: boolean }) => {
+        const t = term.toLowerCase();
+        return list.filter((p: any) => {
+          if (blockedMe?.has(p.id)) return false;
+          if (iBlocked?.has(p.id)) {
+            if (!allowIBlockedOnTermMatch || !t) return false;
+            const name = (p.display_name || "").toLowerCase();
+            const handle = (p.username || "").toLowerCase();
+            return name.includes(t) || handle.includes(t);
+          }
+          return true;
+        });
+      };
+
       if (sub === "suggested") {
         let followingIds: string[] = [];
         if (currentUserId) {
@@ -443,7 +473,8 @@ const UsersResults = ({
         });
         const excluded = new Set<string>(followingIds);
         if (currentUserId) excluded.add(currentUserId);
-        return (data || []).filter((p: any) => !excluded.has(p.id));
+        const base = (data || []).filter((p: any) => !excluded.has(p.id));
+        return applyBlocks(base, { allowIBlockedOnTermMatch: true });
       }
       if (!currentUserId) return [];
       const col = sub === "followers" ? "follower_id" : "following_id";
@@ -458,10 +489,11 @@ const UsersResults = ({
             (p.username || "").toLowerCase().includes(term.toLowerCase()),
           )
         : data || [];
-      return filtered;
+      return applyBlocks(filtered, { allowIBlockedOnTermMatch: false });
     },
-    enabled: !!currentUserId || sub === "suggested",
+    enabled: (!!currentUserId || sub === "suggested") && blocks !== undefined,
   });
+
 
   const headerLabel = sub === "suggested" ? "Discover" : sub === "followers" ? "Followers" : "Following";
 
