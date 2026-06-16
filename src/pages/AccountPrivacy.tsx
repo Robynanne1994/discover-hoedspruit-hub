@@ -151,27 +151,29 @@ const AccountPrivacy = () => {
             onChange={togglePrivacy}
             isFirst
           />
-          <div
-            onClick={() => navigate("/follow-requests")}
-            style={{
-              borderTop: `1px solid ${LINE}`,
-              padding: "16px 0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              cursor: "pointer",
-            }}
-          >
-            <div>
-              <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow Requests</div>
-              <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2 }}>
-                {pendingRequestCount
-                  ? `${pendingRequestCount} pending`
-                  : "No pending requests"}
+          {isPrivate && (
+            <div
+              onClick={() => navigate("/follow-requests")}
+              style={{
+                borderTop: `1px solid ${LINE}`,
+                padding: "16px 0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                cursor: "pointer",
+              }}
+            >
+              <div>
+                <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow Requests</div>
+                <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2 }}>
+                  {pendingRequestCount
+                    ? `${pendingRequestCount} pending`
+                    : "No pending requests"}
+                </div>
               </div>
+              <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
             </div>
-            <span style={{ fontFamily: FF, fontSize: 18, color: MUTED }}>›</span>
-          </div>
+          )}
         </div>
       </div>
     </div>
