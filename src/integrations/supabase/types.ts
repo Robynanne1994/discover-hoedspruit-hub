@@ -1891,6 +1891,7 @@ export type Database = {
           reason: string
           reported_user_id: string
           reporter_email: string | null
+          reporter_feedback: string | null
           reporter_name: string | null
           reporter_user_id: string | null
           resolved_at: string | null
@@ -1905,6 +1906,7 @@ export type Database = {
           reason: string
           reported_user_id: string
           reporter_email?: string | null
+          reporter_feedback?: string | null
           reporter_name?: string | null
           reporter_user_id?: string | null
           resolved_at?: string | null
@@ -1919,6 +1921,7 @@ export type Database = {
           reason?: string
           reported_user_id?: string
           reporter_email?: string | null
+          reporter_feedback?: string | null
           reporter_name?: string | null
           reporter_user_id?: string | null
           resolved_at?: string | null

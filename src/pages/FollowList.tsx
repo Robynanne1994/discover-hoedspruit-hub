@@ -142,7 +142,7 @@ const UserRow = ({
 
   return (
     <div
-      onClick={() => navigate(`/profile/${user.id}`)}
+      onClick={() => navigate(isSelf ? "/my-profile" : `/profile/${user.id}`)}
       style={{
         display: "flex",
         alignItems: "center",

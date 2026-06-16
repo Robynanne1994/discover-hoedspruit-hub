@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { Link } from "react-router-dom";
 import { Loader2, Check, Trash2, ExternalLink } from "lucide-react";
 
@@ -18,6 +19,7 @@ type UserReport = {
   status: string;
   is_read: boolean;
   admin_note: string | null;
+  reporter_feedback: string | null;
   created_at: string;
   resolved_at: string | null;
 };
@@ -29,6 +31,8 @@ type ProfileLite = {
   email: string | null;
   avatar_url: string | null;
 };
+
+type ReportStatus = "pending" | "reviewed" | "dismissed";
 
 const FILTERS = ["unread", "pending", "all", "resolved"] as const;
 type Filter = (typeof FILTERS)[number];
@@ -56,6 +60,121 @@ const ProfileLine = ({ profile, fallback }: { profile?: ProfileLite; fallback?: 
       {fallback?.name || "Guest"}
       {fallback?.email ? ` · ${fallback.email}` : ""}
     </span>
+  );
+};
+
+const ReportCard = ({
+  r,
+  reportedProfile,
+  reporterProfile,
+  onMarkRead,
+  onSetStatus,
+  onSaveFeedback,
+  onDelete,
+  busy,
+}: {
+  r: UserReport;
+  reportedProfile?: ProfileLite;
+  reporterProfile?: ProfileLite;
+  onMarkRead: (id: string) => void;
+  onSetStatus: (id: string, status: ReportStatus) => void;
+  onSaveFeedback: (id: string, feedback: string) => void;
+  onDelete: (id: string) => void;
+  busy: boolean;
+}) => {
+  const [feedback, setFeedback] = useState(r.reporter_feedback ?? "");
+  const canFeedback = !!r.reporter_user_id; // guests have no account to see it
+  const dirty = (feedback.trim() || "") !== (r.reporter_feedback ?? "");
+
+  return (
+    <div className="bg-card border border-border rounded-xl p-4 lg:p-5 space-y-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <Badge variant={r.status === "pending" ? "default" : "secondary"}>{r.status}</Badge>
+        {!r.is_read && <Badge variant="destructive">new</Badge>}
+        <span className="text-xs text-muted-foreground ml-auto">{fmtDate(r.created_at)}</span>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Reported user</p>
+          <ProfileLine profile={reportedProfile} />
+        </div>
+        <div>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Reported by</p>
+          <ProfileLine profile={reporterProfile} fallback={{ name: r.reporter_name, email: r.reporter_email }} />
+        </div>
+      </div>
+
+      <div>
+        <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Reason</p>
+        <p className="text-sm font-medium">{r.reason}</p>
+      </div>
+
+      <div>
+        <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Detail</p>
+        <p className="text-sm whitespace-pre-wrap">{r.detail}</p>
+      </div>
+
+      {/* Feedback to the reporter — shown to them on their Blocked & Reported page */}
+      <div>
+        <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
+          Feedback to reporter {canFeedback ? "(visible to them)" : "(reporter was a guest — not visible)"}
+        </p>
+        <Textarea
+          value={feedback}
+          onChange={(e) => setFeedback(e.target.value)}
+          placeholder="Write a short update the reporter will see, e.g. what action you took."
+          rows={3}
+          disabled={!canFeedback}
+        />
+        <div className="flex justify-end mt-2">
+          <Button
+            size="sm"
+            variant="outline"
+            disabled={!canFeedback || !dirty || busy}
+            onClick={() => onSaveFeedback(r.id, feedback.trim())}
+          >
+            Save feedback
+          </Button>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
+        {!r.is_read && (
+          <Button size="sm" variant="outline" onClick={() => onMarkRead(r.id)} disabled={busy}>
+            <Check className="h-4 w-4 mr-1" />
+            Mark read
+          </Button>
+        )}
+        {r.status !== "reviewed" && (
+          <Button size="sm" onClick={() => onSetStatus(r.id, "reviewed")} disabled={busy}>
+            Mark reviewed
+          </Button>
+        )}
+        {r.status !== "dismissed" && (
+          <Button size="sm" variant="outline" onClick={() => onSetStatus(r.id, "dismissed")} disabled={busy}>
+            Dismiss
+          </Button>
+        )}
+        {r.status !== "pending" && (
+          <Button size="sm" variant="outline" onClick={() => onSetStatus(r.id, "pending")} disabled={busy}>
+            Reopen
+          </Button>
+        )}
+        <Button
+          size="sm"
+          variant="ghost"
+          className="text-destructive ml-auto"
+          onClick={() => {
+            if (confirm("Delete this report?")) onDelete(r.id);
+          }}
+          disabled={busy}
+        >
+          <Trash2 className="h-4 w-4 mr-1" />
+          Delete
+        </Button>
+      </div>
+    </div>
   );
 };
 
@@ -101,24 +220,44 @@ const AdminUserReports = () => {
 
   const markRead = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("user_reports")
-        .update({ is_read: true })
-        .eq("id", id);
+      const { error } = await supabase.from("user_reports").update({ is_read: true }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-user-reports"] }),
   });
 
-  const resolve = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: "reviewed" | "dismissed" }) => {
+  const setStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: ReportStatus }) => {
       const { error } = await supabase
         .from("user_reports")
-        .update({ status, is_read: true, resolved_at: new Date().toISOString() })
+        .update({
+          status,
+          is_read: true,
+          resolved_at: status === "pending" ? null : new Date().toISOString(),
+        })
         .eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-user-reports"] }),
+    onSuccess: () => {
+      toast.success("Status updated");
+      qc.invalidateQueries({ queryKey: ["admin-user-reports"] });
+    },
+    onError: () => toast.error("Could not update status"),
+  });
+
+  const saveFeedback = useMutation({
+    mutationFn: async ({ id, feedback }: { id: string; feedback: string }) => {
+      const { error } = await supabase
+        .from("user_reports")
+        .update({ reporter_feedback: feedback || null, is_read: true })
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Feedback saved");
+      qc.invalidateQueries({ queryKey: ["admin-user-reports"] });
+    },
+    onError: () => toast.error("Could not save feedback"),
   });
 
   const remove = useMutation({
@@ -132,11 +271,14 @@ const AdminUserReports = () => {
     },
   });
 
+  const busy = setStatus.isPending || saveFeedback.isPending || markRead.isPending || remove.isPending;
+
   return (
     <div>
       <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950 mb-2">Reported Users</h1>
       <p className="text-sm text-muted-foreground mb-6 text-slate-950">
-        Reports submitted by users (or guests) about other users.
+        Reports submitted by users (or guests) about other users. Status changes and feedback are shown to the
+        reporter on their account.
       </p>
 
       <div className="flex gap-2 mb-6 flex-wrap">
@@ -165,97 +307,19 @@ const AdminUserReports = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {reports.map((r) => {
-            const reportedProfile = profilesQuery.data?.get(r.reported_user_id);
-            const reporterProfile = r.reporter_user_id
-              ? profilesQuery.data?.get(r.reporter_user_id)
-              : undefined;
-            return (
-              <div
-                key={r.id}
-                className="bg-card border border-border rounded-xl p-4 lg:p-5 space-y-3"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant={r.status === "pending" ? "default" : "secondary"}>
-                    {r.status}
-                  </Badge>
-                  {!r.is_read && <Badge variant="destructive">new</Badge>}
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    {fmtDate(r.created_at)}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                      Reported user
-                    </p>
-                    <ProfileLine profile={reportedProfile} />
-                  </div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                      Reported by
-                    </p>
-                    <ProfileLine
-                      profile={reporterProfile}
-                      fallback={{ name: r.reporter_name, email: r.reporter_email }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Reason</p>
-                  <p className="text-sm font-medium">{r.reason}</p>
-                </div>
-
-                <div>
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Detail</p>
-                  <p className="text-sm whitespace-pre-wrap">{r.detail}</p>
-                </div>
-
-                <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
-                  {!r.is_read && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => markRead.mutate(r.id)}
-                    >
-                      <Check className="h-4 w-4 mr-1" />
-                      Mark read
-                    </Button>
-                  )}
-                  {r.status === "pending" && (
-                    <>
-                      <Button
-                        size="sm"
-                        onClick={() => resolve.mutate({ id: r.id, status: "reviewed" })}
-                      >
-                        Mark reviewed
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => resolve.mutate({ id: r.id, status: "dismissed" })}
-                      >
-                        Dismiss
-                      </Button>
-                    </>
-                  )}
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-destructive ml-auto"
-                    onClick={() => {
-                      if (confirm("Delete this report?")) remove.mutate(r.id);
-                    }}
-                  >
-                    <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+          {reports.map((r) => (
+            <ReportCard
+              key={r.id}
+              r={r}
+              reportedProfile={profilesQuery.data?.get(r.reported_user_id)}
+              reporterProfile={r.reporter_user_id ? profilesQuery.data?.get(r.reporter_user_id) : undefined}
+              onMarkRead={(id) => markRead.mutate(id)}
+              onSetStatus={(id, status) => setStatus.mutate({ id, status })}
+              onSaveFeedback={(id, feedback) => saveFeedback.mutate({ id, feedback })}
+              onDelete={(id) => remove.mutate(id)}
+              busy={busy}
+            />
+          ))}
         </div>
       )}
     </div>

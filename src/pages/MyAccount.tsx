@@ -480,6 +480,7 @@ const MyAccount = () => {
   const accountItems = [
     { label: "Account Info", href: "/account-settings/info", icon: UserCircle },
     { label: "Notification Preferences", href: "/notification-preferences", icon: Bell },
+    { label: "Blocked & Reported Users", href: "/blocked-reported", icon: Shield },
   ];
   const helpInfoItems = [
     { label: "Local Channels", href: "/local-channels", icon: Users },

@@ -44,6 +44,7 @@ import FollowList from "./pages/FollowList.tsx";
 import UserSaved from "./pages/UserSaved.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import AccountInfo from "./pages/AccountInfo.tsx";
+import BlockedReported from "./pages/BlockedReported.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 
 import TermsOfUse from "./pages/TermsOfUse.tsx";
@@ -157,6 +158,7 @@ const App = () => (
               
               <Route path="/account-settings" element={<Navigate to="/my-account" replace />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
+              <Route path="/blocked-reported" element={<BlockedReported />} />
               <Route path="/terms" element={<TermsPolicies />} />
               
               <Route path="/terms-of-use" element={<TermsOfUse />} />
