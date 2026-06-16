@@ -104,6 +104,74 @@ const rowInputStyle: React.CSSProperties = {
 
 type FieldKey = "name" | "username" | "email" | "phone" | "location";
 
+const PrivacyToggleRow = ({
+  label,
+  description,
+  checked,
+  disabled,
+  onChange,
+  isFirst,
+}: {
+  label: string;
+  description: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (v: boolean) => void;
+  isFirst?: boolean;
+}) => (
+  <div
+    style={{
+      borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+      padding: "16px 0",
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+    }}
+  >
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>{label}</div>
+      <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2, lineHeight: 1.45 }}>
+        {description}
+      </div>
+    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      style={{
+        width: 44,
+        height: 26,
+        borderRadius: 999,
+        background: checked ? DARK : "#D8D2C2",
+        border: "none",
+        position: "relative",
+        cursor: disabled ? "not-allowed" : "pointer",
+        flexShrink: 0,
+        transition: "background 120ms ease",
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 3,
+          left: checked ? 21 : 3,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          background: "#fff",
+          transition: "left 120ms ease",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+        }}
+      />
+    </button>
+  </div>
+);
+
+
+
 const AccountInfo = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
@@ -132,6 +200,45 @@ const AccountInfo = () => {
   const [pwOpen, setPwOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [activityPrivate, setActivityPrivate] = useState(false);
+  const [savingPrivacy, setSavingPrivacy] = useState(false);
+
+  const { data: pendingRequestCount } = useQuery({
+    queryKey: ["follow-request-count", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("follows")
+        .select("id", { count: "exact", head: true })
+        .eq("following_id", user!.id)
+        .eq("status", "pending");
+      return count ?? 0;
+    },
+  });
+
+  const togglePrivacy = async (field: "is_private" | "activity_private", value: boolean) => {
+    if (!user) return;
+    setSavingPrivacy(true);
+    const prevIs = isPrivate;
+    const prevAct = activityPrivate;
+    if (field === "is_private") setIsPrivate(value);
+    else setActivityPrivate(value);
+    const { error } = await supabase
+      .from("profiles")
+      .upsert({ id: user.id, [field]: value } as any);
+    setSavingPrivacy(false);
+    if (error) {
+      if (field === "is_private") setIsPrivate(prevIs);
+      else setActivityPrivate(prevAct);
+      toast.error("Could not update privacy. Please try again.");
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
+    queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+    toast.success("Privacy updated.");
+  };
+
 
   const handleDeleteAccount = async () => {
     setDeleting(true);
@@ -167,6 +274,8 @@ const AccountInfo = () => {
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
       setAvatarUrl((profile as any).avatar_url || "");
+      setIsPrivate(!!(profile as any).is_private);
+      setActivityPrivate(!!(profile as any).activity_private);
       initialized.current = true;
     } else if (!profile && user && !initialized.current) {
       setEmail(user.email || "");
@@ -587,6 +696,60 @@ const AccountInfo = () => {
         >
           Save Changes
         </button>
+
+        {/* Privacy section */}
+        <div
+          style={{
+            marginTop: 28,
+            marginBottom: 10,
+            fontFamily: '"Bricolage Grotesque", ' + FF,
+            fontSize: 15,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: INK,
+          }}
+        >
+          Privacy
+        </div>
+        <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
+          <PrivacyToggleRow
+            label="Private account"
+            description="New followers will need your approval before they can see your activity."
+            checked={isPrivate}
+            disabled={savingPrivacy}
+            onChange={(v) => togglePrivacy("is_private", v)}
+            isFirst
+          />
+          <PrivacyToggleRow
+            label="Hide my activity"
+            description="Keep your saves and visited places visible only to you."
+            checked={activityPrivate}
+            disabled={savingPrivacy}
+            onChange={(v) => togglePrivacy("activity_private", v)}
+          />
+          <div
+            onClick={() => navigate("/follow-requests")}
+            style={{
+              borderTop: `1px solid ${LINE}`,
+              padding: "16px 0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              cursor: "pointer",
+            }}
+          >
+            <div>
+              <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow requests</div>
+              <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2 }}>
+                {pendingRequestCount
+                  ? `${pendingRequestCount} pending`
+                  : "No pending requests"}
+              </div>
+            </div>
+            <span style={{ fontFamily: FF, fontSize: 18, color: MUTED }}>›</span>
+          </div>
+        </div>
 
         <button
           type="button"

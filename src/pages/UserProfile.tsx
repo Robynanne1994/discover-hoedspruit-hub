@@ -376,8 +376,12 @@ const UserProfile = () => {
     enabled: activityEnabled,
   });
   const isOwnProfile = user?.id === id;
-  const following = !!isFollowing;
+  const followStatus = isFollowing ?? null; // 'accepted' | 'pending' | null
+  const following = followStatus === "accepted";
+  const requested = followStatus === "pending";
   const isPending = follow.isPending || unfollow.isPending;
+  const isPrivateLocked =
+    !isOwnProfile && !!(profile as any)?.is_private && !following;
 
   const handleFollowClick = () => {
     if (!user) {
@@ -386,6 +390,9 @@ const UserProfile = () => {
     }
     if (following) {
       setUnfollowOpen(true);
+    } else if (requested) {
+      // Cancel pending request — no confirmation needed
+      unfollow.mutate();
     } else {
       follow.mutate();
     }
@@ -713,14 +720,14 @@ const UserProfile = () => {
               <button
                 onClick={handleFollowClick}
                 disabled={isPending}
-                aria-label={following ? "Unfollow" : "Follow"}
+                aria-label={following ? "Unfollow" : requested ? "Cancel follow request" : "Follow"}
                 style={{
                   flexShrink: 0,
                   height: 32,
                   padding: "0 14px",
                   borderRadius: 999,
-                  background: following ? "#F2EFE5" : "#1A1A1A",
-                  color: following ? "#1A1A1A" : "#FFFFFF",
+                  background: following || requested ? "#F2EFE5" : "#1A1A1A",
+                  color: following || requested ? "#1A1A1A" : "#FFFFFF",
                   border: `1px solid ${"#1A1A1A"}`,
                   fontFamily: SANS,
                   fontWeight: 600,
@@ -729,7 +736,7 @@ const UserProfile = () => {
                   cursor: "pointer",
                 }}
               >
-                {following ? "Following" : "Follow"}
+                {following ? "Following" : requested ? "Requested" : "Follow"}
               </button>
             )}
           </div>
@@ -827,6 +834,45 @@ const UserProfile = () => {
         </section>
       </div>
 
+      {isPrivateLocked ? (
+        <div style={{ padding: "20px 20px 0" }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 18,
+              padding: "28px 20px",
+              textAlign: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: SANS,
+                fontWeight: 600,
+                fontSize: 15,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: INK,
+                margin: "0 0 8px",
+              }}
+            >
+              This account is private
+            </h2>
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 13.5,
+                lineHeight: 1.5,
+                color: MUTED,
+                margin: 0,
+              }}
+            >
+              {requested
+                ? "Your follow request is awaiting approval."
+                : "Follow this account to see their saved places and activity."}
+            </p>
+          </div>
+        </div>
+      ) : (<>
       {/* Saved items — tabbed, identical to MyProfile */}
       <div id="user-saved-section" style={{ scrollMarginTop: 16 }}>
         {/* Top tabs */}
@@ -1070,6 +1116,8 @@ const UserProfile = () => {
           </div>
         </section>
       )}
+
+      </>)}
 
       </>)}
 

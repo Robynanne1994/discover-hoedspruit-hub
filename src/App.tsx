@@ -41,6 +41,7 @@ import Categories from "./pages/Categories.tsx";
 
 import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
+import FollowRequests from "./pages/FollowRequests.tsx";
 import UserSaved from "./pages/UserSaved.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import AccountInfo from "./pages/AccountInfo.tsx";
@@ -174,6 +175,7 @@ const App = () => (
              <Route path="/notifications/categories/:type" element={<NotificationCategories />} />
               <Route path="/profile/:id" element={<UserProfile />} />
               <Route path="/profile/:id/saved" element={<UserSaved />} />
+              <Route path="/follow-requests" element={<FollowRequests />} />
               <Route path="/profile/:id/:type" element={<FollowList />} />
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminDashboard />} />

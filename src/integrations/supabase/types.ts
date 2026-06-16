@@ -765,18 +765,24 @@ export type Database = {
           follower_id: string
           following_id: string
           id: string
+          responded_at: string | null
+          status: Database["public"]["Enums"]["follow_status"]
         }
         Insert: {
           created_at?: string
           follower_id: string
           following_id: string
           id?: string
+          responded_at?: string | null
+          status?: Database["public"]["Enums"]["follow_status"]
         }
         Update: {
           created_at?: string
           follower_id?: string
           following_id?: string
           id?: string
+          responded_at?: string | null
+          status?: Database["public"]["Enums"]["follow_status"]
         }
         Relationships: []
       }
@@ -1542,6 +1548,7 @@ export type Database = {
           display_name: string | null
           email: string | null
           id: string
+          is_private: boolean
           location: string | null
           phone: string | null
           updated_at: string
@@ -1555,6 +1562,7 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id: string
+          is_private?: boolean
           location?: string | null
           phone?: string | null
           updated_at?: string
@@ -1568,6 +1576,7 @@ export type Database = {
           display_name?: string | null
           email?: string | null
           id?: string
+          is_private?: boolean
           location?: string | null
           phone?: string | null
           updated_at?: string
@@ -1980,6 +1989,37 @@ export type Database = {
     Functions: {
       claim_business_owner_role: { Args: never; Returns: undefined }
       get_been_here_count: { Args: { _listing_id: string }; Returns: number }
+      get_follow_counts: {
+        Args: { _user_id: string }
+        Returns: {
+          followers: number
+          following: number
+        }[]
+      }
+      get_followers: {
+        Args: { _user_id: string }
+        Returns: {
+          activity_private: boolean
+          avatar_url: string
+          bio: string
+          display_name: string
+          id: string
+          location: string
+          username: string
+        }[]
+      }
+      get_following: {
+        Args: { _user_id: string }
+        Returns: {
+          activity_private: boolean
+          avatar_url: string
+          bio: string
+          display_name: string
+          id: string
+          location: string
+          username: string
+        }[]
+      }
       get_public_profiles: {
         Args: { _ids: string[] }
         Returns: {
@@ -1988,6 +2028,7 @@ export type Database = {
           bio: string
           display_name: string
           id: string
+          is_private: boolean
           location: string
           username: string
         }[]
@@ -2015,6 +2056,7 @@ export type Database = {
           bio: string
           display_name: string
           id: string
+          is_private: boolean
           location: string
           username: string
         }[]
@@ -2022,6 +2064,7 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user" | "business_owner"
+      follow_status: "pending" | "accepted"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2150,6 +2193,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user", "business_owner"],
+      follow_status: ["pending", "accepted"],
     },
   },
 } as const
