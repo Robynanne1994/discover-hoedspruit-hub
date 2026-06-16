@@ -1012,8 +1012,8 @@ const CategoryPage = () => {
           onToggle={() => setOpenSection(openSection === "list" ? null : "list")}
         >
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            <RefineChip label="Open Now" active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
-            <RefineChip label="Saved" active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
+            <RefineChip label={withCount("Open Now", facetCounts?.openNow)} active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
+            <RefineChip label={withCount("Saved", facetCounts?.saved)} active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
           </div>
         </RefineSection>
 
