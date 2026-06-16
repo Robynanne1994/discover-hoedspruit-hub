@@ -934,7 +934,7 @@ const CategoryPage = () => {
         )}
 
         <RefineSection
-          label="My List"
+          label="ESSENTAIL"
           summary={[filterOpenNow, filterSaved].filter(Boolean).length > 0 ? `${[filterOpenNow, filterSaved].filter(Boolean).length} selected` : undefined}
           open={openSection === "list"}
           onToggle={() => setOpenSection(openSection === "list" ? null : "list")}
