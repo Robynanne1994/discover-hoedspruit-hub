@@ -132,6 +132,45 @@ const AccountInfo = () => {
   const [pwOpen, setPwOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(false);
+  const [activityPrivate, setActivityPrivate] = useState(false);
+  const [savingPrivacy, setSavingPrivacy] = useState(false);
+
+  const { data: pendingRequestCount } = useQuery({
+    queryKey: ["follow-request-count", user?.id],
+    enabled: !!user?.id,
+    queryFn: async () => {
+      const { count } = await supabase
+        .from("follows")
+        .select("id", { count: "exact", head: true })
+        .eq("following_id", user!.id)
+        .eq("status", "pending");
+      return count ?? 0;
+    },
+  });
+
+  const togglePrivacy = async (field: "is_private" | "activity_private", value: boolean) => {
+    if (!user) return;
+    setSavingPrivacy(true);
+    const prevIs = isPrivate;
+    const prevAct = activityPrivate;
+    if (field === "is_private") setIsPrivate(value);
+    else setActivityPrivate(value);
+    const { error } = await supabase
+      .from("profiles")
+      .upsert({ id: user.id, [field]: value } as any);
+    setSavingPrivacy(false);
+    if (error) {
+      if (field === "is_private") setIsPrivate(prevIs);
+      else setActivityPrivate(prevAct);
+      toast.error("Could not update privacy. Please try again.");
+      return;
+    }
+    queryClient.invalidateQueries({ queryKey: ["profile"] });
+    queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+    toast.success("Privacy updated.");
+  };
+
 
   const handleDeleteAccount = async () => {
     setDeleting(true);
