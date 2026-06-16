@@ -128,6 +128,7 @@ const App = () => (
       <AuthProvider>
         <Toaster />
         <Sonner />
+        <OfflineScreen />
         <BrowserRouter>
           <GuestAuthProvider>
             <AuthGate>
