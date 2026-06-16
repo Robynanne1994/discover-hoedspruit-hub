@@ -126,22 +126,42 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const saveProfile = useMutation({
     mutationFn: async () => {
       if (!user) return;
+      const trimmedUsername = username.trim();
+      // Username must be unique. RLS hides other users' rows, so check via RPC.
+      if (trimmedUsername) {
+        const { data: available, error: checkErr } = await supabase.rpc(
+          "is_username_available" as any,
+          { _username: trimmedUsername, _exclude_id: user.id } as any
+        );
+        if (checkErr) throw checkErr;
+        if (!available) throw new Error("USERNAME_TAKEN");
+      }
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
         display_name: displayName.trim() || null,
-        username: username.trim() || null,
+        username: trimmedUsername || null,
         phone: phone.trim() || null,
         email: email.trim() || null,
         bio: bio.trim() || null,
       } as any);
-      if (error) throw error;
+      if (error) {
+        // DB unique index is the final guard against a race condition.
+        if ((error as any).code === "23505") throw new Error("USERNAME_TAKEN");
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       toast.success("Saved.");
       navigate(-1);
     },
-    onError: () => toast.error("We couldn't save your changes right now."),
+    onError: (err: any) => {
+      if (err?.message === "USERNAME_TAKEN") {
+        toast.error("That username is already taken. Please choose a different one.");
+      } else {
+        toast.error("We couldn't save your changes right now.");
+      }
+    },
   });
 
   const initial = (displayName || user?.email || "?")[0].toUpperCase();
