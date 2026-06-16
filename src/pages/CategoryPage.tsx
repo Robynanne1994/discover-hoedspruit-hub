@@ -940,11 +940,11 @@ const CategoryPage = () => {
             open={openSection === "subcategory"}
             onToggle={() => setOpenSection(openSection === "subcategory" ? null : "subcategory")}
           >
-            <RefineRectOption label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
+            <RefineRectOption label={withCount("All", totalCount)} active={!activeSubId} onClick={() => handleSubFilter(null)} />
             {subcategories.map((sub) => (
               <RefineRectOption
                 key={sub.id}
-                label={sub.title}
+                label={withCount(sub.title, facetCounts?.subCounts.get(sub.id))}
                 active={activeSubId === sub.id}
                 onClick={() => handleSubFilter(sub.id)}
               />
