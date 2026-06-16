@@ -467,23 +467,31 @@ const FollowList = () => {
                 color: COLOR.ink,
               }}
             >
-              {isFollowers ? "No followers yet." : "No one to follow yet."}
+              {isOwnPage
+                ? isFollowers
+                  ? "No followers yet."
+                  : "No one to follow yet."
+                : isFollowers
+                ? `${viewedName} does not have any followers yet.`
+                : `${viewedName} is not following anyone yet.`}
             </p>
-            <p
-              style={{
-                margin: "0 auto",
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 14,
-                lineHeight: 1.55,
-                color: COLOR.muted,
-                maxWidth: 260,
-              }}
-            >
-              {isFollowers
-                ? "Share your profile to grow your circle."
-                : "Find people whose taste you trust."}
-            </p>
+            {isOwnPage && (
+              <p
+                style={{
+                  margin: "0 auto",
+                  fontFamily: SANS,
+                  fontWeight: 400,
+                  fontSize: 14,
+                  lineHeight: 1.55,
+                  color: COLOR.muted,
+                  maxWidth: 260,
+                }}
+              >
+                {isFollowers
+                  ? "Share your profile to grow your circle."
+                  : "Find people whose taste you trust."}
+              </p>
+            )}
           </div>
         ) : (
           <div
