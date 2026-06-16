@@ -125,12 +125,14 @@ const UserRow = ({
   isFollowed,
   onToggle,
   pending,
+  isSelf,
 }: {
   user: RowUser;
   index: number;
   isFollowed: boolean;
   onToggle: () => void;
   pending: boolean;
+  isSelf?: boolean;
 }) => {
   const navigate = useNavigate();
   const handle = user.username
@@ -208,17 +210,19 @@ const UserRow = ({
         </p>
       </div>
 
-      <div onClick={(e) => e.stopPropagation()}>
-        <ActionButton
-          variant={isFollowed ? "outlined" : "solid"}
-          label={isFollowed ? "Following" : "Follow"}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggle();
-          }}
-          disabled={pending}
-        />
-      </div>
+      {!isSelf && (
+        <div onClick={(e) => e.stopPropagation()}>
+          <ActionButton
+            variant={isFollowed ? "outlined" : "solid"}
+            label={isFollowed ? "Following" : "Follow"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggle();
+            }}
+            disabled={pending}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -228,11 +232,13 @@ const RowWithMutation = ({
   index,
   isFollowedInitially,
   isOwnFollowingPage,
+  isSelf,
 }: {
   user: RowUser;
   index: number;
   isFollowedInitially: boolean;
   isOwnFollowingPage: boolean;
+  isSelf?: boolean;
 }) => {
   const { follow, unfollow } = useFollowMutation(user.id);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -255,6 +261,7 @@ const RowWithMutation = ({
         isFollowed={isFollowed}
         onToggle={handleToggle}
         pending={follow.isPending || unfollow.isPending}
+        isSelf={isSelf}
       />
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
@@ -509,6 +516,7 @@ const FollowList = () => {
                 index={i}
                 isFollowedInitially={myFollowingIds?.has(u.id) ?? false}
                 isOwnFollowingPage={!isFollowers && isOwnPage}
+                isSelf={!!authUser && authUser.id === u.id}
               />
             ))}
           </div>
