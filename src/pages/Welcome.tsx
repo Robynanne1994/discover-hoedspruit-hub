@@ -21,6 +21,7 @@ const Welcome = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
@@ -35,6 +36,11 @@ const Welcome = () => {
     if (mode === "signup") {
       if (!firstName.trim()) {
         toast.error("Please enter your first name");
+        setLoading(false);
+        return;
+      }
+      if (!lastName.trim()) {
+        toast.error("Please enter your surname");
         setLoading(false);
         return;
       }
@@ -60,7 +66,8 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      const { error } = await signUp(email, password, username.trim(), firstName);
+      const fullName = `${firstName.trim()} ${lastName.trim()}`;
+      const { error } = await signUp(email, password, username.trim(), fullName);
       if (error) {
         if (/duplicate|unique/i.test(error.message)) {
           toast.error("That username is already taken. Please try a different one.");
@@ -209,6 +216,21 @@ const Welcome = () => {
                   onChange={(e) => setFirstName(e.target.value)}
                   required
                   placeholder="Your first name"
+                  className="h-12 rounded-xl bg-card border-border text-[15px]"
+                  style={{ background: "#ffffff", color: "#020202" }}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="lastName" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  Surname
+                </Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  placeholder="Your surname"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
                   style={{ background: "#ffffff", color: "#020202" }}
                 />
