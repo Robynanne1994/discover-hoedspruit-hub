@@ -142,8 +142,13 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
       if (!trimmedFirstName) throw new Error("FIRST_NAME_REQUIRED");
       if (!trimmedSurname) throw new Error("SURNAME_REQUIRED");
       const trimmedUsername = username.trim();
+      // Only check availability when the handle actually changed. Re-saving your
+      // own existing username must never be flagged as "taken" — you already own it.
+      const currentUsername = ((profile as any)?.username || "").trim();
+      const usernameChanged =
+        trimmedUsername.toLowerCase() !== currentUsername.toLowerCase();
       // Username must be unique. RLS hides other users' rows, so check via RPC.
-      if (trimmedUsername) {
+      if (trimmedUsername && usernameChanged) {
         const { data: available, error: checkErr } = await supabase.rpc(
           "is_username_available" as any,
           { _username: trimmedUsername, _exclude_id: user.id } as any
