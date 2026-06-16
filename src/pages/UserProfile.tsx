@@ -708,8 +708,12 @@ const UserProfile = () => {
 
         return sections
           .filter((s) => s.items.length > 0)
-          .map((s) => (
-            <section key={s.title} style={{ marginBottom: 32 }}>
+          .map((s, idx) => (
+            <section
+              key={s.title}
+              id={idx === 0 ? "user-saved-section" : undefined}
+              style={{ marginBottom: 32, scrollMarginTop: 16 }}
+            >
               <div
                 style={{
                   padding: "0 24px",
