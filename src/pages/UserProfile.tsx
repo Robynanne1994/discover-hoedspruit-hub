@@ -834,6 +834,45 @@ const UserProfile = () => {
         </section>
       </div>
 
+      {isPrivateLocked ? (
+        <div style={{ padding: "20px 20px 0" }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 18,
+              padding: "28px 20px",
+              textAlign: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: SANS,
+                fontWeight: 600,
+                fontSize: 15,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                color: INK,
+                margin: "0 0 8px",
+              }}
+            >
+              This account is private
+            </h2>
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 13.5,
+                lineHeight: 1.5,
+                color: MUTED,
+                margin: 0,
+              }}
+            >
+              {requested
+                ? "Your follow request is awaiting approval."
+                : "Follow this account to see their saved places and activity."}
+            </p>
+          </div>
+        </div>
+      ) : (<>
       {/* Saved items — tabbed, identical to MyProfile */}
       <div id="user-saved-section" style={{ scrollMarginTop: 16 }}>
         {/* Top tabs */}
