@@ -1119,6 +1119,8 @@ const UserProfile = () => {
 
       </>)}
 
+      </>)}
+
       {/* Three-dots action sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
         <SheetContent
