@@ -714,7 +714,7 @@ const AccountInfo = () => {
         </div>
         <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
           <PrivacyToggleRow
-            label="Private account"
+            label="Private Account"
             description="New followers will need your approval before they can see your activity."
             checked={isPrivate}
             disabled={savingPrivacy}
@@ -740,7 +740,7 @@ const AccountInfo = () => {
             }}
           >
             <div>
-              <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow requests</div>
+              <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow Requests</div>
               <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2 }}>
                 {pendingRequestCount
                   ? `${pendingRequestCount} pending`
