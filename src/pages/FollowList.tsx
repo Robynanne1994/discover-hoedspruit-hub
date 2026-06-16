@@ -232,11 +232,13 @@ const RowWithMutation = ({
   index,
   isFollowedInitially,
   isOwnFollowingPage,
+  isSelf,
 }: {
   user: RowUser;
   index: number;
   isFollowedInitially: boolean;
   isOwnFollowingPage: boolean;
+  isSelf?: boolean;
 }) => {
   const { follow, unfollow } = useFollowMutation(user.id);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -259,6 +261,7 @@ const RowWithMutation = ({
         isFollowed={isFollowed}
         onToggle={handleToggle}
         pending={follow.isPending || unfollow.isPending}
+        isSelf={isSelf}
       />
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent>
