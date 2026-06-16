@@ -113,6 +113,8 @@ const UserProfile = () => {
     queryClient.invalidateQueries({ queryKey: ["following"] });
     queryClient.invalidateQueries({ queryKey: ["my-following-ids", user.id] });
     queryClient.invalidateQueries({ queryKey: ["is-following", id, user.id] });
+    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
+    queryClient.invalidateQueries({ queryKey: ["search-users"] });
     toast.success("User blocked");
   };
 
