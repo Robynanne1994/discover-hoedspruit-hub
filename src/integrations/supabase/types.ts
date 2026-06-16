@@ -2040,14 +2040,6 @@ export type Database = {
           listing_id: string
         }[]
       }
-      get_user_favourites: {
-        Args: { _user_id: string; _item_type?: string }
-        Returns: {
-          item_id: string
-          item_type: string
-          created_at: string
-        }[]
-      }
       get_user_saved_count: { Args: { _user_id: string }; Returns: number }
       has_role: {
         Args: {
