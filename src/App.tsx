@@ -41,6 +41,7 @@ import Categories from "./pages/Categories.tsx";
 
 import UserProfile from "./pages/UserProfile.tsx";
 import FollowList from "./pages/FollowList.tsx";
+import UserSaved from "./pages/UserSaved.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import AccountInfo from "./pages/AccountInfo.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
