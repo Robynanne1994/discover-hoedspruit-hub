@@ -323,12 +323,12 @@ const UserProfile = () => {
       const listingIds = new Set<string>();
       const eventIds = new Set<string>();
       const specialIds = new Set<string>();
-      (favs || []).forEach((f) => {
+      (favs || []).forEach((f: any) => {
         if (f.item_type === "listing") listingIds.add(f.item_id);
         if (f.item_type === "event") eventIds.add(f.item_id);
         if (f.item_type === "special") specialIds.add(f.item_id);
       });
-      (visits || []).forEach((v) => listingIds.add(v.listing_id));
+      (visits || []).forEach((v: any) => listingIds.add(v.listing_id));
       const [lr, er, sr] = await Promise.all([
         listingIds.size ? supabase.from("listings").select("id, title").in("id", Array.from(listingIds)) : Promise.resolve({ data: [] as any[] }),
         eventIds.size ? supabase.from("events").select("id, title").in("id", Array.from(eventIds)) : Promise.resolve({ data: [] as any[] }),
@@ -339,7 +339,7 @@ const UserProfile = () => {
       const sMap = Object.fromEntries((sr.data || []).map((x: any) => [x.id, x]));
       type Row = { kind: "save" | "visit"; verb: string; name: string; href: string; created_at: string };
       const rows: Row[] = [];
-      (favs || []).forEach((f) => {
+      (favs || []).forEach((f: any) => {
         if (f.item_type === "listing" && lMap[f.item_id]) {
           rows.push({ kind: "save", verb: "saved", name: titleCase(lMap[f.item_id].title), href: `/listing/${f.item_id}`, created_at: f.created_at });
         } else if (f.item_type === "event" && eMap[f.item_id]) {
@@ -348,7 +348,7 @@ const UserProfile = () => {
           rows.push({ kind: "save", verb: "saved", name: titleCase(sMap[f.item_id].title), href: `/special/${f.item_id}`, created_at: f.created_at });
         }
       });
-      (visits || []).forEach((v) => {
+      (visits || []).forEach((v: any) => {
         if (lMap[v.listing_id]) {
           rows.push({ kind: "visit", verb: "has been to", name: titleCase(lMap[v.listing_id].title), href: `/listing/${v.listing_id}`, created_at: v.created_at });
         }
