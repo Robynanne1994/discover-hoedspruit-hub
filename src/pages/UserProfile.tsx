@@ -102,12 +102,10 @@ const UserProfile = () => {
       return;
     }
     // Blocking implies unfollowing in both directions
-    await supabase
-      .from("follows")
-      .delete()
-      .or(
-        `and(follower_id.eq.${user.id},following_id.eq.${id}),and(follower_id.eq.${id},following_id.eq.${user.id})`
-      );
+    await Promise.all([
+      supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", id),
+      supabase.from("follows").delete().eq("follower_id", id).eq("following_id", user.id),
+    ]);
     queryClient.setQueryData(["user-blocked", user.id, id], true);
     queryClient.setQueryData(["is-following", user.id, id], false);
     queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
