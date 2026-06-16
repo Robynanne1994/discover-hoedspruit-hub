@@ -803,11 +803,6 @@ const ListingDetail = () => {
     return (
       <div style={{ padding: "20px" }}>
         <h2 style={headStyle}>Hours</h2>
-        {holidayCheck.isHoliday && (
-          <div style={{ marginBottom: 10, padding: "8px 12px", background: C.ivory, borderRadius: 10, fontSize: 12.5, color: C.text }}>
-            Public holiday — hours might differ
-          </div>
-        )}
         {openStatus && (
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <span style={{ width: 8, height: 8, borderRadius: "50%", background: openStatus.state === "open" ? "#5C8A4A" : "#B05B3F" }} />
@@ -831,20 +826,28 @@ const ListingDetail = () => {
             const isClosed = !v || v.toLowerCase() === "closed";
             const isToday = day === todayLabel;
             return (
-              <div key={day} style={{
-                display: "flex", justifyContent: "space-between", alignItems: "center",
-                padding: "12px 0", borderTop: i === 0 ? "none" : `1px solid ${C.divider}`,
-              }}>
-                <span style={{ fontSize: 14, color: isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
-                  {day}{isToday ? " · Today" : ""}
-                </span>
-                <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
-                  {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " - ")}
-                </span>
+              <div key={day} style={{ borderTop: i === 0 ? "none" : `1px solid ${C.divider}` }}>
+                <div style={{
+                  display: "flex", justifyContent: "space-between", alignItems: "center",
+                  padding: "12px 0",
+                }}>
+                  <span style={{ fontSize: 14, color: isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
+                    {day}{isToday ? " · Today" : ""}
+                  </span>
+                  <span style={{ fontSize: 14, color: isClosed ? C.muted : isToday ? C.heading : C.text, fontWeight: isToday ? 700 : 400 }}>
+                    {isClosed ? "Closed" : v.replace(/\s*-\s*/g, " - ")}
+                  </span>
+                </div>
+                {isToday && holidayCheck.isHoliday && (
+                  <div style={{ padding: "8px 12px", marginBottom: 12, background: C.ivory, borderRadius: 10, fontSize: 12.5, color: C.text }}>
+                    Public holiday{holidayCheck.name ? ` (${holidayCheck.name})` : ""} — hours might differ
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
+
         <SuggestEditFooter onClick={() => setSuggestEditOpen(true)} />
       </div>
     );
