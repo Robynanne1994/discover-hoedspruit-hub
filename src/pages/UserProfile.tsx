@@ -401,19 +401,25 @@ const UserProfile = () => {
                   >
                     {titleCase(profile?.display_name) || "User"}
                   </h1>
-                  {profile?.username && (
-                    <div
-                      style={{
-                        fontFamily: SANS,
-                        fontWeight: 400,
-                        fontSize: 13,
-                        color: "rgba(26,26,26,0.55)",
-                        marginTop: 2,
-                      }}
-                    >
-                      @{profile.username.toLowerCase()}
-                    </div>
-                  )}
+                  {(() => {
+                    const handle = profile?.username
+                      ? profile.username.toLowerCase()
+                      : (profile?.display_name || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+                    if (!handle) return null;
+                    return (
+                      <div
+                        style={{
+                          fontFamily: SANS,
+                          fontWeight: 400,
+                          fontSize: 13,
+                          color: "rgba(26,26,26,0.55)",
+                          marginTop: 2,
+                        }}
+                      >
+                        @{handle}
+                      </div>
+                    );
+                  })()}
                 </>
               )}
             </div>
