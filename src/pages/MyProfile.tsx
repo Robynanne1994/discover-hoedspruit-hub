@@ -437,7 +437,7 @@ const MyProfile = () => {
                     style={{
                       fontFamily: SANS,
                       fontWeight: 700,
-                      fontSize: 22,
+                      fontSize: 18,
                       lineHeight: 1.15,
                       letterSpacing: "-0.4px",
                       color: INK,
