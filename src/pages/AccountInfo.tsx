@@ -721,13 +721,6 @@ const AccountInfo = () => {
             onChange={(v) => togglePrivacy("is_private", v)}
             isFirst
           />
-          <PrivacyToggleRow
-            label="Hide my activity"
-            description="Keep your saves visible only to you."
-            checked={activityPrivate}
-            disabled={savingPrivacy}
-            onChange={(v) => togglePrivacy("activity_private", v)}
-          />
           <div
             onClick={() => navigate("/follow-requests")}
             style={{
