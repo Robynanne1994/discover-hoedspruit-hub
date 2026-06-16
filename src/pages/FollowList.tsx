@@ -1,6 +1,8 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { ArrowLeft, Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import {
   useFollowersList,
   useFollowingList,
@@ -329,6 +331,23 @@ const FollowList = () => {
   const { data: myFollowingIds } = useMyFollowingIds();
   const { data: counts } = useFollowCounts(id);
 
+  // Fetch viewed user's display name/username so empty states can address them by name
+  const { data: viewedProfile } = useQuery({
+    queryKey: ["follow-list-profile", id],
+    enabled: !!id && !isOwnPage,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, username")
+        .eq("id", id!)
+        .maybeSingle();
+      return data as { display_name: string | null; username: string | null } | null;
+    },
+  });
+  const viewedName =
+    viewedProfile?.display_name?.trim() ||
+    (viewedProfile?.username ? `@${viewedProfile.username}` : "This user");
+
   const users = (isFollowers ? followers : following) as RowUser[] | undefined;
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
   const count = users?.length ?? 0;
@@ -448,23 +467,31 @@ const FollowList = () => {
                 color: COLOR.ink,
               }}
             >
-              {isFollowers ? "No followers yet." : "No one to follow yet."}
+              {isOwnPage
+                ? isFollowers
+                  ? "No followers yet."
+                  : "No one to follow yet."
+                : isFollowers
+                ? `${viewedName} does not have any followers yet.`
+                : `${viewedName} is not following anyone yet.`}
             </p>
-            <p
-              style={{
-                margin: "0 auto",
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 14,
-                lineHeight: 1.55,
-                color: COLOR.muted,
-                maxWidth: 260,
-              }}
-            >
-              {isFollowers
-                ? "Share your profile to grow your circle."
-                : "Find people whose taste you trust."}
-            </p>
+            {isOwnPage && (
+              <p
+                style={{
+                  margin: "0 auto",
+                  fontFamily: SANS,
+                  fontWeight: 400,
+                  fontSize: 14,
+                  lineHeight: 1.55,
+                  color: COLOR.muted,
+                  maxWidth: 260,
+                }}
+              >
+                {isFollowers
+                  ? "Share your profile to grow your circle."
+                  : "Find people whose taste you trust."}
+              </p>
+            )}
           </div>
         ) : (
           <div
@@ -488,38 +515,40 @@ const FollowList = () => {
         )}
       </div>
 
-      {/* Primary CTA */}
-      <div style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
-        <button
-          onClick={handlePrimaryCta}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: COLOR.ink,
-            color: COLOR.cream,
-            border: "none",
-            borderRadius: 999,
-            padding: "14px 24px",
-            fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 14,
-            cursor: "pointer",
-          }}
-        >
-          {isFollowers ? (
-            <>
-              <ShareIcon size={14} />
-              Share Your Profile
-            </>
-          ) : (
-            <>
-              <Plus size={14} strokeWidth={1.8} />
-              Find People
-            </>
-          )}
-        </button>
-      </div>
+      {/* Primary CTA — only on your own profile */}
+      {isOwnPage && (
+        <div style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
+          <button
+            onClick={handlePrimaryCta}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: COLOR.ink,
+              color: COLOR.cream,
+              border: "none",
+              borderRadius: 999,
+              padding: "14px 24px",
+              fontFamily: SANS,
+              fontWeight: 400,
+              fontSize: 14,
+              cursor: "pointer",
+            }}
+          >
+            {isFollowers ? (
+              <>
+                <ShareIcon size={14} />
+                Share Your Profile
+              </>
+            ) : (
+              <>
+                <Plus size={14} strokeWidth={1.8} />
+                Find People
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
     </div>
   );
