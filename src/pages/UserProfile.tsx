@@ -373,6 +373,58 @@ const UserProfile = () => {
         }
       />
 
+      {/* Blocked banner */}
+      {isBlocked && (
+        <div style={{ padding: "12px 20px 0" }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              border: `1px solid ${LINE}`,
+              borderRadius: 14,
+              padding: "14px 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+            }}
+          >
+            <span
+              style={{
+                fontFamily: SANS,
+                fontSize: 13.5,
+                color: INK,
+                lineHeight: 1.4,
+              }}
+            >
+              You have blocked{" "}
+              <strong style={{ fontWeight: 600 }}>
+                {titleCase(profile?.display_name) ||
+                  (profile?.username ? `@${profile.username}` : "this user")}
+              </strong>
+              .
+            </span>
+            <button
+              onClick={handleUnblock}
+              style={{
+                flexShrink: 0,
+                height: 32,
+                padding: "0 14px",
+                borderRadius: 999,
+                background: INK,
+                color: "#fff",
+                border: "none",
+                fontFamily: SANS,
+                fontSize: 12.5,
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                cursor: "pointer",
+              }}
+            >
+              Unblock
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Profile card — matches MyProfile */}
       <div style={{ padding: "16px 20px 0" }}>
