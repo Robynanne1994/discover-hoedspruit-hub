@@ -974,7 +974,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {VIBE_OPTIONS.map((v) => (
-                  <RefineChip key={v} label={v} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
+                  <RefineChip key={v} label={withCount(v, facetCounts?.vibe.get(v.toLowerCase()))} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
                 ))}
               </div>
             </RefineSection>
