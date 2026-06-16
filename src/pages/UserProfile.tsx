@@ -107,6 +107,7 @@ const UserProfile = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
+  const [blockOpen, setBlockOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
   const [tab, setTab] = useState<Tab>("listings");
   const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
@@ -1007,7 +1008,7 @@ const UserProfile = () => {
                   if (isBlocked) {
                     handleUnblock();
                   } else {
-                    handleBlock();
+                    setBlockOpen(true);
                   }
                 },
               },
@@ -1092,6 +1093,63 @@ const UserProfile = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Block confirmation */}
+      <Dialog open={blockOpen} onOpenChange={setBlockOpen}>
+        <DialogContent style={{ background: CREAM, border: "none", borderRadius: 20 }}>
+          <DialogHeader>
+            <DialogTitle
+              style={{
+                fontFamily: SANS,
+                fontWeight: 400,
+                fontSize: 16,
+                letterSpacing: "0.01em",
+                color: INK,
+              }}
+            >
+              Are you sure you want to block {titleCase(profile?.display_name) || (profile?.username ? `@${profile.username}` : "this user")}?
+            </DialogTitle>
+          </DialogHeader>
+          <DialogFooter style={{ display: "flex", gap: 10, marginTop: 12 }}>
+            <button
+              onClick={() => setBlockOpen(false)}
+              style={{
+                flex: 1,
+                height: 44,
+                borderRadius: 999,
+                background: "transparent",
+                border: `1px solid ${LINE}`,
+                color: INK,
+                fontFamily: SANS,
+                fontSize: 14,
+                cursor: "pointer",
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => {
+                handleBlock();
+                setBlockOpen(false);
+              }}
+              style={{
+                flex: 1,
+                height: 44,
+                borderRadius: 999,
+                background: INK,
+                border: "none",
+                color: CREAM,
+                fontFamily: SANS,
+                fontSize: 14,
+                cursor: "pointer",
+              }}
+            >
+              Block
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
 
       {id && (
         <ReportUserDialog
