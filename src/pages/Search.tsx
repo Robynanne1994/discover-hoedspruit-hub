@@ -340,7 +340,26 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
   const { user } = useAuth();
   const { data: isFollowing } = useIsFollowing(targetUserId);
   const { follow, unfollow } = useFollowMutation(targetUserId);
+  const { data: blocks } = useBlockedUsers();
+  const queryClient = useQueryClient();
+  const isBlocked = blocks?.iBlocked.has(targetUserId) ?? false;
   if (!user || user.id === targetUserId) return null;
+
+  const handleUnblock = async () => {
+    const { error } = await supabase
+      .from("user_blocks" as any)
+      .delete()
+      .eq("blocker_id", user.id)
+      .eq("blocked_id", targetUserId);
+    if (error) {
+      toast.error("Could not unblock user. Please try again.");
+      return;
+    }
+    queryClient.setQueryData(["user-blocked", user.id, targetUserId], false);
+    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
+    queryClient.invalidateQueries({ queryKey: ["search-users"] });
+    toast.success("User unblocked");
+  };
 
   return (
     <button
@@ -348,6 +367,10 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
+        if (isBlocked) {
+          handleUnblock();
+          return;
+        }
         if (isFollowing) unfollow.mutate();
         else follow.mutate();
       }}
@@ -367,11 +390,12 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
         letterSpacing: "0.02em",
       }}
     >
-      {isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
-      {isFollowing ? "Following" : "Follow"}
+      {isBlocked ? null : isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
+      {isBlocked ? "Unblock" : isFollowing ? "Following" : "Follow"}
     </button>
   );
 };
+
 
 const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "listing" | "event" | "special" }) => {
   const { user } = useAuth();
