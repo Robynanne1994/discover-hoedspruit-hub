@@ -723,7 +723,7 @@ const AccountInfo = () => {
           />
           <PrivacyToggleRow
             label="Hide my activity"
-            description="Keep your saves and visited places visible only to you."
+            description="Keep your saves visible only to you."
             checked={activityPrivate}
             disabled={savingPrivacy}
             onChange={(v) => togglePrivacy("activity_private", v)}
