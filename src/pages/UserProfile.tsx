@@ -8,7 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import { ArrowLeft, MoreVertical, Heart, MapPin, Star } from "lucide-react";
+import { MoreVertical, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -31,27 +31,12 @@ import { useRequireAuth } from "@/hooks/useGuestAuth";
 
 const PAGE_BG = "#E6E0CC";
 const CREAM = "#f5f0e8";
-const SOFT_CREAM = "#ffffff";
 const INK = "#020202";
 const BODY = "#2b2420";
 const MUTED = "#6b5d4a";
 const LINE = "rgba(0,0,0,0.08)";
-const RUST = "#715a3d";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-
-const timeAgo = (iso: string) => {
-  const d = new Date(iso);
-  const diff = Date.now() - d.getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days < 1) {
-    const hours = Math.floor(diff / 3600000);
-    if (hours < 1) return "JUST NOW";
-    return `${hours} ${hours === 1 ? "HOUR" : "HOURS"} AGO`;
-  }
-  if (days < 30) return `${days} ${days === 1 ? "DAY" : "DAYS"} AGO`;
-  return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" }).toUpperCase();
-};
 
 const titleCase = (s?: string | null) =>
   (s || "")
@@ -311,53 +296,6 @@ const UserProfile = () => {
     enabled: !!id,
   });
 
-  // Activity timeline (only when not private)
-  const activityEnabled = !!id && profile?.activity_private === false;
-  const { data: activity } = useQuery({
-    queryKey: ["user-activity", id],
-    queryFn: async () => {
-      const [{ data: favs }, { data: visits }] = await Promise.all([
-        supabase.rpc("get_user_favourites", { _user_id: id! }),
-        supabase.rpc("get_user_been_here", { _user_id: id! }),
-      ]);
-      const listingIds = new Set<string>();
-      const eventIds = new Set<string>();
-      const specialIds = new Set<string>();
-      (favs || []).forEach((f: any) => {
-        if (f.item_type === "listing") listingIds.add(f.item_id);
-        if (f.item_type === "event") eventIds.add(f.item_id);
-        if (f.item_type === "special") specialIds.add(f.item_id);
-      });
-      (visits || []).forEach((v: any) => listingIds.add(v.listing_id));
-      const [lr, er, sr] = await Promise.all([
-        listingIds.size ? supabase.from("listings").select("id, title").in("id", Array.from(listingIds)) : Promise.resolve({ data: [] as any[] }),
-        eventIds.size ? supabase.from("events").select("id, title").in("id", Array.from(eventIds)) : Promise.resolve({ data: [] as any[] }),
-        specialIds.size ? supabase.from("specials").select("id, title").in("id", Array.from(specialIds)) : Promise.resolve({ data: [] as any[] }),
-      ]);
-      const lMap = Object.fromEntries((lr.data || []).map((x: any) => [x.id, x]));
-      const eMap = Object.fromEntries((er.data || []).map((x: any) => [x.id, x]));
-      const sMap = Object.fromEntries((sr.data || []).map((x: any) => [x.id, x]));
-      type Row = { kind: "save" | "visit"; verb: string; name: string; href: string; created_at: string };
-      const rows: Row[] = [];
-      (favs || []).forEach((f: any) => {
-        if (f.item_type === "listing" && lMap[f.item_id]) {
-          rows.push({ kind: "save", verb: "saved", name: titleCase(lMap[f.item_id].title), href: `/listing/${f.item_id}`, created_at: f.created_at });
-        } else if (f.item_type === "event" && eMap[f.item_id]) {
-          rows.push({ kind: "save", verb: "is going to", name: titleCase(eMap[f.item_id].title), href: `/event/${f.item_id}`, created_at: f.created_at });
-        } else if (f.item_type === "special" && sMap[f.item_id]) {
-          rows.push({ kind: "save", verb: "saved", name: titleCase(sMap[f.item_id].title), href: `/special/${f.item_id}`, created_at: f.created_at });
-        }
-      });
-      (visits || []).forEach((v: any) => {
-        if (lMap[v.listing_id]) {
-          rows.push({ kind: "visit", verb: "has been to", name: titleCase(lMap[v.listing_id].title), href: `/listing/${v.listing_id}`, created_at: v.created_at });
-        }
-      });
-      rows.sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
-      return rows;
-    },
-    enabled: activityEnabled,
-  });
   const isOwnProfile = user?.id === id;
   const followStatus = isFollowing ?? null; // 'accepted' | 'pending' | null
   const following = followStatus === "accepted";
@@ -848,7 +786,7 @@ const UserProfile = () => {
             >
               {requested
                 ? "Your follow request is awaiting approval."
-                : "Follow this account to see their saved places and activity."}
+                : "Follow this account to see their saved places."}
             </p>
           </div>
         </div>
@@ -1021,82 +959,6 @@ const UserProfile = () => {
           )}
         </div>
       </div>
-
-      {/* Activity (only when public) */}
-      {profile?.activity_private === false && activity && activity.length > 0 && (
-        <section style={{ marginBottom: 32 }}>
-          <div style={{ padding: "0 24px", marginBottom: 14 }}>
-            <h2
-              style={{
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 16,
-                lineHeight: 1.2,
-                letterSpacing: "0.01em",
-                textTransform: "uppercase",
-                color: INK,
-                margin: 0,
-              }}
-            >
-              Activity
-            </h2>
-          </div>
-          <div style={{ padding: "0 24px" }}>
-            <div style={{ background: CREAM, borderRadius: 20, padding: "4px 22px" }}>
-              {activity.map((row, i) => {
-                const isSave = row.kind === "save";
-                return (
-                  <Link
-                    key={i}
-                    to={row.href}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 14,
-                      padding: "14px 0",
-                      borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
-                      textDecoration: "none",
-                      color: "inherit",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: 32,
-                        height: 32,
-                        borderRadius: "50%",
-                        background: isSave ? RUST : SOFT_CREAM,
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {isSave ? (
-                        <Heart size={14} strokeWidth={1.6} color={CREAM} fill={CREAM} />
-                      ) : (
-                        <MapPin size={14} strokeWidth={1.6} color={MUTED} />
-                      )}
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontFamily: SANS, fontWeight: 400, fontSize: 13, lineHeight: 1.4, letterSpacing: "0.01em", color: BODY }}>
-                        {row.verb}{" "}
-                        <span style={{ fontFamily: SANS, fontWeight: 400, color: INK }}>
-                          {row.name}
-                        </span>
-                      </div>
-                      <div style={{ fontFamily: SANS, fontSize: 11, letterSpacing: "0.08em", textTransform: "uppercase", color: MUTED, marginTop: 3 }}>
-                        {timeAgo(row.created_at)}
-                      </div>
-                    </div>
-                    <span style={{ fontSize: 13, color: MUTED, fontFamily: SANS }}>↗</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
-
       </>)}
 
       </>)}
