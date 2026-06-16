@@ -92,6 +92,23 @@ const UserProfile = () => {
     },
   });
 
+  // Has this profile blocked the signed-in viewer? If so we hide the
+  // viewed user from search/suggestions AND prevent the viewer from
+  // seeing their profile content here.
+  const { data: blockedByThem } = useQuery({
+    queryKey: ["blocked-by", user?.id, id],
+    enabled: !!user?.id && !!id && user!.id !== id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_blocks" as any)
+        .select("id")
+        .eq("blocker_id", id!)
+        .eq("blocked_id", user!.id)
+        .maybeSingle();
+      return !!data;
+    },
+  });
+
   const handleBlock = async () => {
     if (!user || !id) return;
     const { error } = await supabase
@@ -113,6 +130,8 @@ const UserProfile = () => {
     queryClient.invalidateQueries({ queryKey: ["following"] });
     queryClient.invalidateQueries({ queryKey: ["my-following-ids", user.id] });
     queryClient.invalidateQueries({ queryKey: ["is-following", id, user.id] });
+    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
+    queryClient.invalidateQueries({ queryKey: ["search-users"] });
     toast.success("User blocked");
   };
 
@@ -129,6 +148,8 @@ const UserProfile = () => {
       return;
     }
     queryClient.setQueryData(["user-blocked", user.id, id], false);
+    queryClient.invalidateQueries({ queryKey: ["blocked-users", user.id] });
+    queryClient.invalidateQueries({ queryKey: ["search-users"] });
     toast.success("User unblocked");
   };
 
@@ -349,6 +370,58 @@ const UserProfile = () => {
       /* cancelled */
     }
   };
+
+  if (blockedByThem) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          background: PAGE_BG,
+          paddingBottom: 100,
+          fontFamily: SANS,
+          color: BODY,
+        }}
+      >
+        <PageHeader title="Profile" />
+        <div style={{ padding: "40px 20px" }}>
+          <div
+            style={{
+              background: "#FFFFFF",
+              borderRadius: 18,
+              padding: "32px 20px",
+              textAlign: "center",
+            }}
+          >
+            <h2
+              style={{
+                fontFamily: SANS,
+                fontWeight: 400,
+                fontSize: 16,
+                letterSpacing: "0.01em",
+                textTransform: "uppercase",
+                color: INK,
+                margin: "0 0 8px",
+              }}
+            >
+              Account unavailable
+            </h2>
+            <p
+              style={{
+                fontFamily: SANS,
+                fontSize: 13.5,
+                lineHeight: 1.5,
+                color: MUTED,
+                margin: 0,
+              }}
+            >
+              This profile is not available to view.
+            </p>
+          </div>
+        </div>
+        <BottomNav />
+      </div>
+    );
+  }
 
   return (
     <div
