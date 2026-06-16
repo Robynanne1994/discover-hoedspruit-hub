@@ -39,6 +39,11 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
+      if (!lastName.trim()) {
+        toast.error("Please enter your surname");
+        setLoading(false);
+        return;
+      }
       if (!username.trim()) {
         toast.error("Please choose a username");
         setLoading(false);
