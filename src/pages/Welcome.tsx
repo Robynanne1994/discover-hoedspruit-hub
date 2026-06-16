@@ -221,6 +221,21 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
+                <Label htmlFor="lastName" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                  Surname
+                </Label>
+                <Input
+                  id="lastName"
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  required
+                  placeholder="Your surname"
+                  className="h-12 rounded-xl bg-card border-border text-[15px]"
+                  style={{ background: "#ffffff", color: "#020202" }}
+                />
+              </div>
+              <div className="space-y-1.5">
                 <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
                   Username
                 </Label>
