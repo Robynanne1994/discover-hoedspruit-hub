@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
+import { ArrowUpRight } from "lucide-react";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
