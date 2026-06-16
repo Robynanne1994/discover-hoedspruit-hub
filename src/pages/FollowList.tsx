@@ -331,6 +331,23 @@ const FollowList = () => {
   const { data: myFollowingIds } = useMyFollowingIds();
   const { data: counts } = useFollowCounts(id);
 
+  // Fetch viewed user's display name/username so empty states can address them by name
+  const { data: viewedProfile } = useQuery({
+    queryKey: ["follow-list-profile", id],
+    enabled: !!id && !isOwnPage,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, username")
+        .eq("id", id!)
+        .maybeSingle();
+      return data as { display_name: string | null; username: string | null } | null;
+    },
+  });
+  const viewedName =
+    viewedProfile?.display_name?.trim() ||
+    (viewedProfile?.username ? `@${viewedProfile.username}` : "This user");
+
   const users = (isFollowers ? followers : following) as RowUser[] | undefined;
   const isLoading = isFollowers ? loadingFollowers : loadingFollowing;
   const count = users?.length ?? 0;
