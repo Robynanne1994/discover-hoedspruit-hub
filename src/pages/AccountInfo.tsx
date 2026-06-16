@@ -206,6 +206,8 @@ const AccountInfo = () => {
       setPhone(profile.phone || "");
       setLocation(profile.location || "");
       setAvatarUrl((profile as any).avatar_url || "");
+      setIsPrivate(!!(profile as any).is_private);
+      setActivityPrivate(!!(profile as any).activity_private);
       initialized.current = true;
     } else if (!profile && user && !initialized.current) {
       setEmail(user.email || "");
