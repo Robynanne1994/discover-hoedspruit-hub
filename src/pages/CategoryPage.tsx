@@ -962,7 +962,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {CUISINE_OPTIONS.map((c) => (
-                  <RefineChip key={c} label={c} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
+                  <RefineChip key={c} label={withCount(c, facetCounts?.cuisine.get(c.toLowerCase()))} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
                 ))}
               </div>
             </RefineSection>
