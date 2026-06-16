@@ -231,7 +231,7 @@ const SuggestSheet = ({ open, onClose }: { open: boolean; onClose: () => void })
         </div>
         <h2 style={{ fontFamily: HN, fontWeight: 400, fontSize: 22, color: INK, margin: "0 0 8px" }}>Suggest a Channel</h2>
         <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
-          Know a good local channel, group or feed? Drop the details and we'll have a look.
+          Know a good local channel, group or feed? Share the details below and we will review and add it if it meets our criteria.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {isGuest && (
