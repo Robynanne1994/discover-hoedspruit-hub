@@ -66,7 +66,8 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      const { error } = await signUp(email, password, username.trim(), firstName);
+      const fullName = `${firstName.trim()} ${lastName.trim()}`;
+      const { error } = await signUp(email, password, username.trim(), fullName);
       if (error) {
         if (/duplicate|unique/i.test(error.message)) {
           toast.error("That username is already taken. Please try a different one.");
