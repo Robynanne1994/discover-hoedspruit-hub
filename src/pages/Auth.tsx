@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 
 type AccountType = "user" | "business";
@@ -41,6 +42,12 @@ const Auth = () => {
     }
 
     // Sign up
+    const pwError = validatePassword(password);
+    if (pwError) {
+      setLoading(false);
+      return toast.error(`${pwError} ${PASSWORD_REQUIREMENTS_TEXT}`);
+    }
+
     const { error } = await signUp(email, password, displayName || businessName || undefined);
     if (error) {
       setLoading(false);
@@ -186,7 +193,8 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={isSignUp ? 8 : undefined}
+                placeholder={isSignUp ? "Min 8 chars, with a number & symbol" : undefined}
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>

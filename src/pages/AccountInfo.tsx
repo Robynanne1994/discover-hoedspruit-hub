@@ -17,6 +17,7 @@ import {
 import { ArrowLeft, Pencil, Eye, EyeOff, X, Check, Camera, Loader2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
+import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
@@ -938,6 +939,90 @@ const AccountInfo = () => {
   );
 };
 
+// Styling mirrors the "Suggest a Channel" sheet on the Local Channels page.
+const pwInputStyle: React.CSSProperties = {
+  fontFamily: FF, fontWeight: 400, fontSize: 15, color: INK,
+  background: "#fff", border: "2px solid #C5C0BA", borderRadius: 12,
+  padding: "13px 14px", outline: "none", width: "100%", boxSizing: "border-box",
+  lineHeight: 1.4,
+};
+
+const pwLabelStyle: React.CSSProperties = {
+  fontFamily: FF, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em",
+  textTransform: "uppercase", color: "#715a3d", marginBottom: 6, display: "block",
+};
+
+const PwField = ({
+  label,
+  value,
+  onChange,
+  show,
+  setShow,
+  placeholder,
+  autoFocus,
+  error,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  show: boolean;
+  setShow: (v: boolean) => void;
+  placeholder: string;
+  autoFocus?: boolean;
+  error?: string;
+}) => (
+  <div>
+    <label style={pwLabelStyle}>{label}</label>
+    <div style={{ position: "relative" }}>
+      <input
+        autoFocus={autoFocus}
+        type={show ? "text" : "password"}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        autoComplete="new-password"
+        style={{ ...pwInputStyle, paddingRight: 44, border: error ? "2px solid #C0392B" : pwInputStyle.border }}
+      />
+      <button
+        type="button"
+        onClick={() => setShow(!show)}
+        aria-label={show ? "Hide password" : "Show password"}
+        style={{
+          position: "absolute",
+          right: 12,
+          top: "50%",
+          transform: "translateY(-50%)",
+          background: "transparent",
+          border: "none",
+          padding: 0,
+          display: "flex",
+          cursor: "pointer",
+          opacity: 0.7,
+        }}
+      >
+        {show ? (
+          <EyeOff size={18} strokeWidth={1.6} color={MUTED} />
+        ) : (
+          <Eye size={18} strokeWidth={1.6} color={MUTED} />
+        )}
+      </button>
+    </div>
+    {error && (
+      <div
+        style={{
+          fontFamily: FF,
+          fontSize: 13,
+          lineHeight: 1.45,
+          color: "#C0392B",
+          marginTop: 6,
+        }}
+      >
+        {error}
+      </div>
+    )}
+  </div>
+);
+
 const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
@@ -947,32 +1032,44 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorField, setErrorField] = useState<{ field: "current" | "new" | "confirm"; msg: string } | null>(null);
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    requestAnimationFrame(() => setMounted(true));
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleClose();
+      if (e.key === "Escape") onClose();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [onClose]);
 
-  const handleClose = () => {
-    setMounted(false);
-    setTimeout(onClose, 200);
-  };
-
-  const enabled = current && next.length >= 8 && next === confirm && !submitting;
+  const enabled = !!current && !!next && !!confirm && !submitting;
 
   const handleSubmit = async () => {
-    if (!enabled) return;
+    if (submitting) return;
     setErrorField(null);
+
+    if (!current) {
+      setErrorField({ field: "current", msg: "Please enter your current password." });
+      return;
+    }
+
+    // Strength: min 8 chars, at least one letter, one number and one symbol.
+    const strengthError = validatePassword(next);
+    if (strengthError) {
+      setErrorField({ field: "new", msg: `${strengthError} ${PASSWORD_REQUIREMENTS_TEXT}` });
+      return;
+    }
+
     if (next === current) {
       setErrorField({ field: "new", msg: "New password must be different from your current password." });
       return;
     }
+
+    // The two new passwords must match.
+    if (next !== confirm) {
+      setErrorField({ field: "confirm", msg: "The passwords don't match. Please re-enter them." });
+      return;
+    }
+
     setSubmitting(true);
     try {
       const { data: sess } = await supabase.auth.getSession();
@@ -990,7 +1087,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
       toast.success("Password updated.", {
         style: { fontFamily: PF, fontStyle: "italic", fontSize: 16, background: CREAM, color: INK, border: "none" },
       });
-      handleClose();
+      onClose();
     } catch (err: any) {
       setErrorField({ field: "new", msg: err.message || "Could not update password." });
     } finally {
@@ -998,234 +1095,35 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
     }
   };
 
-  // touch-drag dismiss
-  const dragRef = useRef<{ startY: number; current: number } | null>(null);
-  const [dragY, setDragY] = useState(0);
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    dragRef.current = { startY: e.touches[0].clientY, current: 0 };
-  };
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (!dragRef.current) return;
-    const dy = e.touches[0].clientY - dragRef.current.startY;
-    if (dy > 0) {
-      dragRef.current.current = dy;
-      setDragY(dy);
-    }
-  };
-  const onTouchEnd = () => {
-    if (dragRef.current && dragRef.current.current > 100) {
-      handleClose();
-    } else {
-      setDragY(0);
-    }
-    dragRef.current = null;
-  };
-
-  const Field = ({
-    label,
-    value,
-    onChange,
-    show,
-    setShow,
-    placeholder,
-    autoFocus,
-    error,
-  }: {
-    label: string;
-    value: string;
-    onChange: (v: string) => void;
-    show: boolean;
-    setShow: (v: boolean) => void;
-    placeholder: string;
-    autoFocus?: boolean;
-    error?: string;
-  }) => (
-    <div>
-      <div
-        style={{
-          fontFamily: FF,
-          fontSize: 10.5,
-          fontWeight: 400,
-          letterSpacing: "1.8px",
-          textTransform: "uppercase",
-          color: MUTED,
-          marginBottom: 6,
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          height: 48,
-          borderRadius: 14,
-          background: SOFT_CREAM,
-          padding: "0 18px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-        }}
-      >
-        <input
-          autoFocus={autoFocus}
-          type={show ? "text" : "password"}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          autoComplete="new-password"
-          style={{
-            flex: 1,
-            border: "none",
-            outline: "none",
-            background: "transparent",
-            fontFamily: FF,
-            fontSize: 15,
-            fontWeight: 400,
-            color: INK,
-          }}
-        />
-        <button
-          type="button"
-          onClick={() => setShow(!show)}
-          aria-label={show ? "Hide password" : "Show password"}
-          style={{
-            background: "transparent",
-            border: "none",
-            padding: 0,
-            display: "flex",
-            cursor: "pointer",
-            opacity: 0.7,
-          }}
-        >
-          {show ? (
-            <EyeOff size={16} strokeWidth={1.6} color={MUTED} />
-          ) : (
-            <Eye size={16} strokeWidth={1.6} color={MUTED} />
-          )}
-        </button>
-      </div>
-      {error && (
-        <div
-          style={{
-            fontFamily: PF,
-            fontStyle: "italic",
-            fontSize: 13,
-            color: INK,
-            marginTop: 6,
-          }}
-        >
-          {error}
-        </div>
-      )}
-    </div>
-  );
-
   return (
-    <>
-      {/* Scrim */}
+    <div
+      role="dialog"
+      aria-modal="true"
+      onClick={onClose}
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
+    >
       <div
-        onClick={handleClose}
+        onClick={(e) => e.stopPropagation()}
         style={{
-          position: "fixed",
-          inset: 0,
-          background: "rgba(20,20,18,0.5)",
-          opacity: mounted ? 1 : 0,
-          transition: "opacity 200ms ease-out",
-          zIndex: 60,
-        }}
-      />
-
-      {/* Sheet */}
-      <div
-        role="dialog"
-        aria-modal="true"
-        style={{
-          position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: CREAM,
-          borderRadius: "24px 24px 0 0",
-          padding: "14px 24px 28px",
-          boxShadow: "0 -8px 32px rgba(0,0,0,0.18)",
-          transform: mounted ? `translateY(${dragY}px)` : "translateY(100%)",
-          transition: dragRef.current ? "none" : "transform 250ms ease-out",
-          zIndex: 70,
-          fontFamily: FF,
+          fontFamily: FF, width: "100%", background: "#ffffff",
+          borderRadius: "20px 20px 0 0", padding: "20px 20px 32px",
+          animation: "pw-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+          maxHeight: "90vh", overflowY: "auto",
         }}
       >
-        {/* Drag handle */}
-        <div
-          onClick={handleClose}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-          style={{
-            width: 36,
-            height: 4,
-            borderRadius: 2,
-            background: MUTED,
-            opacity: 0.35,
-            margin: "0 auto 16px",
-            cursor: "pointer",
-          }}
-        />
-
-        {/* Header row */}
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 22 }}>
-          <div style={{ flex: 1 }}>
-            <div
-              style={{
-                fontFamily: FF,
-                fontSize: 11,
-                fontWeight: 400,
-                letterSpacing: "2.2px",
-                textTransform: "uppercase",
-                color: MUTED,
-                marginBottom: 6,
-              }}
-            >
-              Your Account
-            </div>
-            <h2
-              style={{
-                fontFamily: PF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 34,
-                lineHeight: 1,
-                letterSpacing: "-0.7px",
-                color: INK,
-                margin: 0,
-              }}
-            >
-              change password.
-            </h2>
-          </div>
-          <button
-            onClick={handleClose}
-            aria-label="Close"
-            style={{
-              flexShrink: 0,
-              width: 32,
-              height: 32,
-              borderRadius: 999,
-              background: "rgba(106,106,94,0.12)",
-              border: "none",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-            }}
-          >
-            <X size={14} strokeWidth={1.8} color={INK} />
+        <style>{`@keyframes pw-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div style={{ fontFamily: FF, fontSize: 11, letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase" }}>{"\n"}</div>
+          <button onClick={onClose} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
+            <X size={20} color={INK} strokeWidth={1.75} />
           </button>
         </div>
-
-        {/* Fields */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 18 }}>
-          <Field
+        <h2 style={{ fontFamily: FF, fontWeight: 400, fontSize: 22, color: INK, margin: "0 0 8px" }}>Change Password</h2>
+        <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
+          Choose a strong new password. {PASSWORD_REQUIREMENTS_TEXT}
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <PwField
             label="Current Password"
             value={current}
             onChange={(v) => {
@@ -1238,7 +1136,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             autoFocus
             error={errorField?.field === "current" ? errorField.msg : undefined}
           />
-          <Field
+          <PwField
             label="New Password"
             value={next}
             onChange={(v) => {
@@ -1250,7 +1148,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             placeholder="At least 8 characters"
             error={errorField?.field === "new" ? errorField.msg : undefined}
           />
-          <Field
+          <PwField
             label="Confirm New Password"
             value={confirm}
             onChange={(v) => {
@@ -1263,63 +1161,22 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             error={errorField?.field === "confirm" ? errorField.msg : undefined}
           />
         </div>
-
-        {/* Update button */}
         <button
           onClick={handleSubmit}
           disabled={!enabled}
           style={{
-            width: "100%",
-            height: 54,
-            background: INK,
-            color: CREAM,
-            border: "none",
-            borderRadius: 999,
-            fontFamily: FF,
-            fontSize: 15,
-            fontWeight: 400,
-            letterSpacing: "0.1px",
-            cursor: enabled ? "pointer" : "not-allowed",
-            opacity: enabled ? 1 : 0.4,
-            marginBottom: 14,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 8,
+            fontFamily: FF, marginTop: 20, width: "100%", height: 48, borderRadius: 999,
+            background: "#423324", color: "#FFFFFF", border: "none", fontSize: 14,
+            letterSpacing: "0.04em",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            cursor: enabled ? "pointer" : "default", opacity: enabled ? 1 : 0.6,
           }}
         >
           {submitting ? "Updating…" : "Update Password"}
-          {!submitting && enabled && <Check size={14} strokeWidth={1.8} />}
+          {!submitting && <Check size={14} strokeWidth={1.8} />}
         </button>
-
-        {/* Helper note */}
-        <div style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "0 4px" }}>
-          <div
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: 999,
-              background: RUST,
-              flexShrink: 0,
-              marginTop: 7,
-            }}
-          />
-          <div
-            style={{
-              fontFamily: PF,
-              fontStyle: "italic",
-              fontWeight: 400,
-              fontSize: 13.5,
-              lineHeight: 1.55,
-              color: INK,
-              opacity: 0.7,
-            }}
-          >
-            At least 8 characters with a mix of letters, numbers, and symbols. We'll never email you asking for it.
-          </div>
-        </div>
       </div>
-    </>
+    </div>
   );
 };
 

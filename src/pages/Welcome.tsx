@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 import Seo from "@/components/Seo";
+import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 
 const Welcome = () => {
@@ -57,6 +58,12 @@ const Welcome = () => {
       }
       if (!residency) {
         toast.error("Please let us know if you live in or are visiting Hoedspruit");
+        setLoading(false);
+        return;
+      }
+      const pwError = validatePassword(password);
+      if (pwError) {
+        toast.error(`${pwError} ${PASSWORD_REQUIREMENTS_TEXT}`);
         setLoading(false);
         return;
       }
@@ -328,8 +335,8 @@ const Welcome = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
-                placeholder="Min 6 characters"
+                minLength={8}
+                placeholder="Min 8 chars, with a number & symbol"
                 className="h-12 rounded-xl bg-card border-border text-[15px] pr-12"
                 style={{ background: "#ffffff", color: "#020202" }}
               />
