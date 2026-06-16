@@ -61,7 +61,6 @@ interface ProfileFormProps {
     phone: string | null;
     email: string | null;
   } | null;
-  } | null;
 }
 
 // Split a combined name on the first space so older accounts (which only have
