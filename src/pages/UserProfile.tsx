@@ -227,16 +227,6 @@ const UserProfile = () => {
     enabled: !!id,
   });
 
-  // Saved count (used for the stat)
-  const { data: savedCount } = useQuery({
-    queryKey: ["user-saved-count", id],
-    queryFn: async () => {
-      const { data } = await supabase.rpc("get_user_saved_count", { _user_id: id! });
-      return (data as number) ?? 0;
-    },
-    enabled: !!id,
-  });
-
   // Saved events
   const { data: savedEvents } = useQuery({
     queryKey: ["user-saved-events", id],
@@ -296,6 +286,16 @@ const UserProfile = () => {
     },
     enabled: !!id,
   });
+
+  // SAVED stat — derived from the same data that renders the cards so the
+  // number always matches the total cards shown across the tabs. Counting the
+  // raw favourites rows drifted out of sync (it included deleted items, types
+  // with no tab, and items hidden by privacy).
+  const savedCount =
+    (saved?.length ?? 0) +
+    (savedEvents?.length ?? 0) +
+    (savedSpecials?.length ?? 0) +
+    (savedResources?.length ?? 0);
 
   const isOwnProfile = user?.id === id;
   const followStatus = isFollowing ?? null; // 'accepted' | 'pending' | null
