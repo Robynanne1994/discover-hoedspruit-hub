@@ -145,7 +145,7 @@ const AccountPrivacy = () => {
         <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
           <PrivacyToggleRow
             label="Private Account"
-            description="New followers will need your approval before they can see your activity."
+            description="New followers will need your approval before they can view your profile."
             checked={isPrivate}
             disabled={savingPrivacy}
             onChange={togglePrivacy}
