@@ -320,9 +320,23 @@ const AccountInfo = () => {
 
     setSavingProfile(true);
     try {
+      // Username uniqueness via SECURITY DEFINER RPC. RLS blocks reading other
+      // users' profile rows, so a direct query here would never see a clash.
+      if (trimmedUsername) {
+        const { data: available, error: unameErr } = await supabase.rpc(
+          "is_username_available" as any,
+          { _username: trimmedUsername, _exclude_id: user.id } as any
+        );
+        if (unameErr) throw unameErr;
+        if (!available) {
+          toast.error("That username is already taken. Please choose a different one.");
+          setSavingProfile(false);
+          return;
+        }
+      }
+
       // Uniqueness checks against other users' profiles
       const checks: Array<{ field: string; value: string; label: string }> = [];
-      if (trimmedUsername) checks.push({ field: "username", value: trimmedUsername, label: "username" });
       if (trimmedEmail) checks.push({ field: "email", value: trimmedEmail, label: "email" });
       if (trimmedPhone) checks.push({ field: "phone", value: trimmedPhone, label: "phone number" });
 
@@ -360,7 +374,14 @@ const AccountInfo = () => {
         phone: trimmedPhone || null,
         location: location.trim() || null,
       } as any);
-      if (error) throw error;
+      if (error) {
+        if ((error as any).code === "23505") {
+          toast.error("That username is already taken. Please choose a different one.");
+          setSavingProfile(false);
+          return;
+        }
+        throw error;
+      }
 
       setEditing(null);
       toast.success("Saved.", {

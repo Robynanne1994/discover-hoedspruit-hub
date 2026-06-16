@@ -49,36 +49,49 @@ const Welcome = () => {
         setLoading(false);
         return;
       }
-      // Check username availability (case-insensitive)
+      // Check username availability (case-insensitive). A SECURITY DEFINER RPC
+      // is used because RLS blocks reading other users' profile rows directly.
+      const trimmedUsername = username.trim();
       const { supabase } = await import("@/integrations/supabase/client");
-      const { data: existing, error: checkError } = await supabase
-        .from("profiles")
-        .select("id")
-        .ilike("username", username.trim())
-        .maybeSingle();
+      const { data: available, error: checkError } = await supabase.rpc(
+        "is_username_available" as any,
+        { _username: trimmedUsername } as any
+      );
       if (checkError) {
         toast.error(checkError.message);
         setLoading(false);
         return;
       }
-      if (existing) {
-        toast.error("That username is already taken. Please try a different one.");
+      if (!available) {
+        toast.error("That username is already taken. Please choose a different one.");
         setLoading(false);
         return;
       }
       const fullName = `${firstName.trim()} ${lastName.trim()}`;
-      const { error } = await signUp(email, password, username.trim(), fullName);
+      const { error } = await signUp(email, password, trimmedUsername, fullName);
       if (error) {
         if (/duplicate|unique/i.test(error.message)) {
-          toast.error("That username is already taken. Please try a different one.");
+          toast.error("That username is already taken. Please choose a different one.");
         } else {
           toast.error(error.message);
         }
       } else {
-        // Persist username on profile
+        // Persist username on profile. The DB unique index is the final guard
+        // against a race between the availability check and this write.
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
-          await supabase.from("profiles").update({ username: username.trim() }).eq("id", user.id);
+          const { error: upErr } = await supabase
+            .from("profiles")
+            .update({ username: trimmedUsername })
+            .eq("id", user.id);
+          if (upErr) {
+            if ((upErr as any).code === "23505" || /duplicate|unique/i.test(upErr.message)) {
+              toast.error("That username is already taken. Please choose a different one.");
+              setLoading(false);
+              return;
+            }
+            // Non-fatal: the account exists; the username can be set later in settings.
+          }
         }
         toast.success("Account created! You're in.");
       }
