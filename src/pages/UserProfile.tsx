@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import PageHeader from "@/components/PageHeader";
 import ReportUserDialog from "@/components/ReportUserDialog";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 
