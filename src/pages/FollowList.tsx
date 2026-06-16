@@ -463,7 +463,7 @@ const FollowList = () => {
                 fontFamily: SANS,
                 fontStyle: "italic",
                 fontWeight: 500,
-                fontSize: 20,
+                fontSize: 15,
                 color: COLOR.ink,
               }}
             >
