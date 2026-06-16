@@ -577,7 +577,7 @@ const AccountInfo = () => {
             </div>
           ) : (
             <>
-              <Row fieldKey="name" label="Name" isFirst>
+              <Row fieldKey="name" label="NAME & SURNAME" isFirst>
                 {editing === "name" ? (
                   <input
                     autoFocus
