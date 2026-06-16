@@ -998,7 +998,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {SEATING_OPTIONS.map((s) => (
-                  <RefineChip key={s} label={s} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
+                  <RefineChip key={s} label={withCount(s, facetCounts?.seating.get(s.toLowerCase()))} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
                 ))}
               </div>
             </RefineSection>
