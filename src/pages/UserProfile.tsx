@@ -567,9 +567,9 @@ const UserProfile = () => {
             }}
           >
             {[
-              { label: (counts?.followers ?? 0) === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: `/profile/${id}/followers`, clickable: true },
-              { label: "FOLLOWING", value: counts?.following ?? 0, to: `/profile/${id}/following`, clickable: true },
-              { label: "SAVED", value: savedCount ?? 0, to: `/profile/${id}/saved`, clickable: true },
+              { label: (counts?.followers ?? 0) === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: `/profile/${id}/followers`, clickable: true, scrollTo: null as string | null },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: `/profile/${id}/following`, clickable: true, scrollTo: null },
+              { label: "SAVED", value: savedCount ?? 0, to: "", clickable: true, scrollTo: "user-saved-section" },
             ].map((s, i) => {
               const inner = (
                 <>
@@ -596,13 +596,38 @@ const UserProfile = () => {
                 alignItems: "center",
                 textDecoration: "none",
                 borderLeft: i === 0 ? "none" : `1px solid #1A1A1A`,
+                background: "transparent",
+                border: i === 0 ? "none" : undefined,
+                borderTop: "none",
+                borderRight: "none",
+                borderBottom: "none",
+                padding: 0,
+                cursor: "pointer",
+                font: "inherit",
+                color: "inherit",
               };
+              if (s.scrollTo) {
+                return (
+                  <button
+                    key={s.label}
+                    type="button"
+                    style={sharedStyle}
+                    onClick={() => {
+                      const el = document.getElementById(s.scrollTo!);
+                      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                  >
+                    {inner}
+                  </button>
+                );
+              }
               return s.clickable ? (
                 <Link key={s.label} to={s.to} style={sharedStyle}>{inner}</Link>
               ) : (
                 <div key={s.label} style={sharedStyle}>{inner}</div>
               );
             })}
+
           </div>
         </section>
       </div>
