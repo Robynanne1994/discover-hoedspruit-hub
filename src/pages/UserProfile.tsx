@@ -1008,7 +1008,7 @@ const UserProfile = () => {
                   if (isBlocked) {
                     handleUnblock();
                   } else {
-                    handleBlock();
+                    setBlockOpen(true);
                   }
                 },
               },
