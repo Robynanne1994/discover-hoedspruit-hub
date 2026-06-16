@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRequireAuth } from "@/hooks/useGuestAuth";
 import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { Button } from "@/components/ui/button";
-import { UserPlus, UserCheck } from "lucide-react";
+import { UserPlus, UserCheck, Clock } from "lucide-react";
 
 interface FollowButtonProps {
   targetUserId: string;
@@ -12,46 +12,43 @@ interface FollowButtonProps {
 const FollowButton = ({ targetUserId, size = "default" }: FollowButtonProps) => {
   const { user } = useAuth();
   const requireAuth = useRequireAuth();
-  const { data: isFollowing, isLoading } = useIsFollowing(targetUserId);
+  const { data: status, isLoading } = useIsFollowing(targetUserId);
   const { follow, unfollow } = useFollowMutation(targetUserId);
 
   if (user && user.id === targetUserId) return null;
+
+  const isAccepted = status === "accepted";
+  const isPending = status === "pending";
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     if (!requireAuth("follow people")) return;
-    if (isFollowing) {
+    if (isAccepted || isPending) {
+      // both unfollow and cancel-request = delete the row
       unfollow.mutate();
     } else {
       follow.mutate();
     }
   };
 
-  const isPending = follow.isPending || unfollow.isPending;
+  const busy = follow.isPending || unfollow.isPending;
+  const label = isAccepted ? "Following" : isPending ? "Requested" : "Follow";
+  const Icon = isAccepted ? UserCheck : isPending ? Clock : UserPlus;
 
   if (size === "sm") {
     return (
       <button
         onClick={handleClick}
-        disabled={isLoading || isPending}
+        disabled={isLoading || busy}
         className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all active:scale-95 ${
-          isFollowing
+          isAccepted || isPending
             ? "bg-primary/10 text-primary border border-primary/30"
             : "bg-[#423324] text-white"
         }`}
       >
-        {isFollowing ? (
-          <>
-            <UserCheck className="h-3 w-3" />
-            Following
-          </>
-        ) : (
-          <>
-            <UserPlus className="h-3 w-3" />
-            Follow
-          </>
-        )}
+        <Icon className="h-3 w-3" />
+        {label}
       </button>
     );
   }
@@ -59,21 +56,12 @@ const FollowButton = ({ targetUserId, size = "default" }: FollowButtonProps) => 
   return (
     <Button
       onClick={handleClick}
-      disabled={isLoading || isPending}
-      variant={isFollowing ? "outline" : "default"}
+      disabled={isLoading || busy}
+      variant={isAccepted || isPending ? "outline" : "default"}
       className="rounded-full gap-2"
     >
-      {isFollowing ? (
-        <>
-          <UserCheck className="h-4 w-4" />
-          Following
-        </>
-      ) : (
-        <>
-          <UserPlus className="h-4 w-4" />
-          Follow
-        </>
-      )}
+      <Icon className="h-4 w-4" />
+      {label}
     </Button>
   );
 };
