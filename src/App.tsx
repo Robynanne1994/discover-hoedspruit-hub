@@ -159,6 +159,7 @@ const App = () => (
               
               <Route path="/account-settings" element={<Navigate to="/my-account" replace />} />
               <Route path="/account-settings/info" element={<AccountInfo />} />
+              <Route path="/account-settings/privacy" element={<AccountPrivacy />} />
               <Route path="/terms" element={<TermsPolicies />} />
               
               <Route path="/terms-of-use" element={<TermsOfUse />} />
