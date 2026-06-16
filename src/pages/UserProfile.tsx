@@ -894,7 +894,7 @@ const UserProfile = () => {
         </section>
       )}
 
-
+      </>)}
 
       {/* Three-dots action sheet */}
       <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
