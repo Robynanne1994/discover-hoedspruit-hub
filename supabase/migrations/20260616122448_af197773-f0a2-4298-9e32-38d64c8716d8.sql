@@ -1,0 +1,1 @@
+CREATE POLICY "Users can remove their own followers" ON public.follows FOR DELETE USING (auth.uid() = following_id);
