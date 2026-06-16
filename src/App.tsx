@@ -151,7 +151,7 @@ const App = () => (
               
               <Route path="/specials" element={<Specials />} />
               <Route path="/specials/:id" element={<SpecialDetail />} />
-              <Route path="/auth" element={<Auth />} />
+              <Route path="/auth" element={<Navigate to="/welcome" replace />} />
               <Route path="/my-account" element={<MyAccount />} />
               <Route path="/my-profile" element={<MyProfile />} />
               <Route path="/local-channels" element={<BushTelegraph />} />
