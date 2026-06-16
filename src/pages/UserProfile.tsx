@@ -376,8 +376,12 @@ const UserProfile = () => {
     enabled: activityEnabled,
   });
   const isOwnProfile = user?.id === id;
-  const following = !!isFollowing;
+  const followStatus = isFollowing ?? null; // 'accepted' | 'pending' | null
+  const following = followStatus === "accepted";
+  const requested = followStatus === "pending";
   const isPending = follow.isPending || unfollow.isPending;
+  const isPrivateLocked =
+    !isOwnProfile && !!(profile as any)?.is_private && !following;
 
   const handleFollowClick = () => {
     if (!user) {
@@ -386,6 +390,9 @@ const UserProfile = () => {
     }
     if (following) {
       setUnfollowOpen(true);
+    } else if (requested) {
+      // Cancel pending request — no confirmation needed
+      unfollow.mutate();
     } else {
       follow.mutate();
     }
