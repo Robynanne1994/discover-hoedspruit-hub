@@ -2041,11 +2041,13 @@ export type Database = {
         }[]
       }
       get_user_favourites: {
-        Args: { _user_id: string; _item_type?: string }
+        Args: { _item_type?: string; _user_id: string }
         Returns: {
+          created_at: string
+          id: string
           item_id: string
           item_type: string
-          created_at: string
+          user_id: string
         }[]
       }
       get_user_saved_count: { Args: { _user_id: string }; Returns: number }

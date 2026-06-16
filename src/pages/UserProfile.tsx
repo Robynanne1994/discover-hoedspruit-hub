@@ -226,7 +226,7 @@ const UserProfile = () => {
         _item_type: "listing",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: listings } = await supabase
         .from("listings")
         .select("id, title, image_url, location, google_rating")
@@ -235,8 +235,8 @@ const UserProfile = () => {
         (listings || []).map((l: any) => [l.id, l]),
       );
       return favs
-        .map((f) => ({ ...map[f.item_id], created_at: f.created_at }))
-        .filter((l) => l.id);
+        .map((f: any) => ({ ...map[f.item_id], created_at: f.created_at }))
+        .filter((l: any) => l.id);
     },
     enabled: !!id,
   });
@@ -260,13 +260,13 @@ const UserProfile = () => {
         _item_type: "event",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: events } = await supabase
         .from("events")
         .select("id, title, image_url, location, start_date, end_date")
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e: any) => e.id);
     },
     enabled: !!id,
   });
@@ -280,13 +280,13 @@ const UserProfile = () => {
         _item_type: "special",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
         .select("id, title, image_url, business_name, valid_until")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s: any) => s.id);
     },
     enabled: !!id,
   });
@@ -300,13 +300,13 @@ const UserProfile = () => {
         _item_type: "resource",
       });
       if (!favs?.length) return [];
-      const ids = favs.map((f) => f.item_id);
+      const ids = favs.map((f: any) => f.item_id);
       const { data: resources } = await supabase
         .from("bush_telegraph_resources")
         .select("id, title, title_override, image_url, platform, meta, meta_2, slug")
         .in("id", ids);
       const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
-      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
+      return favs.map((f: any) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r: any) => r.id);
     },
     enabled: !!id,
   });
@@ -323,12 +323,12 @@ const UserProfile = () => {
       const listingIds = new Set<string>();
       const eventIds = new Set<string>();
       const specialIds = new Set<string>();
-      (favs || []).forEach((f) => {
+      (favs || []).forEach((f: any) => {
         if (f.item_type === "listing") listingIds.add(f.item_id);
         if (f.item_type === "event") eventIds.add(f.item_id);
         if (f.item_type === "special") specialIds.add(f.item_id);
       });
-      (visits || []).forEach((v) => listingIds.add(v.listing_id));
+      (visits || []).forEach((v: any) => listingIds.add(v.listing_id));
       const [lr, er, sr] = await Promise.all([
         listingIds.size ? supabase.from("listings").select("id, title").in("id", Array.from(listingIds)) : Promise.resolve({ data: [] as any[] }),
         eventIds.size ? supabase.from("events").select("id, title").in("id", Array.from(eventIds)) : Promise.resolve({ data: [] as any[] }),
@@ -339,7 +339,7 @@ const UserProfile = () => {
       const sMap = Object.fromEntries((sr.data || []).map((x: any) => [x.id, x]));
       type Row = { kind: "save" | "visit"; verb: string; name: string; href: string; created_at: string };
       const rows: Row[] = [];
-      (favs || []).forEach((f) => {
+      (favs || []).forEach((f: any) => {
         if (f.item_type === "listing" && lMap[f.item_id]) {
           rows.push({ kind: "save", verb: "saved", name: titleCase(lMap[f.item_id].title), href: `/listing/${f.item_id}`, created_at: f.created_at });
         } else if (f.item_type === "event" && eMap[f.item_id]) {
@@ -348,7 +348,7 @@ const UserProfile = () => {
           rows.push({ kind: "save", verb: "saved", name: titleCase(sMap[f.item_id].title), href: `/special/${f.item_id}`, created_at: f.created_at });
         }
       });
-      (visits || []).forEach((v) => {
+      (visits || []).forEach((v: any) => {
         if (lMap[v.listing_id]) {
           rows.push({ kind: "visit", verb: "has been to", name: titleCase(lMap[v.listing_id].title), href: `/listing/${v.listing_id}`, created_at: v.created_at });
         }
