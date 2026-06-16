@@ -1543,7 +1543,6 @@ export type Database = {
         Row: {
           activity_private: boolean
           avatar_url: string | null
-          bio: string | null
           created_at: string
           display_name: string | null
           email: string | null
@@ -1557,7 +1556,6 @@ export type Database = {
         Insert: {
           activity_private?: boolean
           avatar_url?: string | null
-          bio?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
@@ -1571,7 +1569,6 @@ export type Database = {
         Update: {
           activity_private?: boolean
           avatar_url?: string | null
-          bio?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
@@ -1958,7 +1955,6 @@ export type Database = {
       profiles_public: {
         Row: {
           avatar_url: string | null
-          bio: string | null
           created_at: string | null
           display_name: string | null
           id: string | null
@@ -1967,7 +1963,6 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
-          bio?: string | null
           created_at?: string | null
           display_name?: string | null
           id?: string | null
@@ -1976,7 +1971,6 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
-          bio?: string | null
           created_at?: string | null
           display_name?: string | null
           id?: string | null
@@ -2001,7 +1995,6 @@ export type Database = {
         Returns: {
           activity_private: boolean
           avatar_url: string
-          bio: string
           display_name: string
           id: string
           location: string
@@ -2013,7 +2006,6 @@ export type Database = {
         Returns: {
           activity_private: boolean
           avatar_url: string
-          bio: string
           display_name: string
           id: string
           location: string
@@ -2025,7 +2017,6 @@ export type Database = {
         Returns: {
           activity_private: boolean
           avatar_url: string
-          bio: string
           display_name: string
           id: string
           is_private: boolean
@@ -2063,7 +2054,6 @@ export type Database = {
         Returns: {
           activity_private: boolean
           avatar_url: string
-          bio: string
           display_name: string
           id: string
           is_private: boolean

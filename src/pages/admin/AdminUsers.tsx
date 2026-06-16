@@ -26,7 +26,6 @@ interface AdminUser {
     username?: string | null;
     avatar_url?: string | null;
     location?: string | null;
-    bio?: string | null;
     phone?: string | null;
     email?: string | null;
   } | null;

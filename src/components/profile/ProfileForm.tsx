@@ -60,7 +60,6 @@ interface ProfileFormProps {
     location: string | null;
     phone: string | null;
     email: string | null;
-    bio: string | null;
   } | null;
 }
 
@@ -107,7 +106,6 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const [firstName, setFirstName] = useState(profile?.first_name ?? fallbackName.first);
   const [surname, setSurname] = useState(profile?.surname ?? fallbackName.surname);
   const [username, setUsername] = useState((profile as any)?.username || "");
-  const [bio, setBio] = useState(profile?.bio || "");
   const [email, setEmail] = useState(profile?.email || user?.email || "");
   const [phone, setPhone] = useState(profile?.phone || "+27");
   const [uploading, setUploading] = useState(false);
@@ -164,7 +162,6 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
         username: trimmedUsername || null,
         phone: phone.trim() || null,
         email: email.trim() || null,
-        bio: bio.trim() || null,
       } as any);
       if (error) {
         // DB unique index is the final guard against a race condition.
@@ -475,40 +472,6 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
               style={ROW_VALUE}
             />
             <PencilIcon />
-          </Row>
-          <Row>
-            <label style={ROW_LABEL}>Bio</label>
-            <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value.slice(0, 220))}
-              placeholder="A short line about you."
-              style={{
-                ...ROW_VALUE,
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 17,
-                lineHeight: 1.5,
-                minHeight: 48,
-                resize: "none",
-                paddingRight: 50,
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                bottom: 14,
-                right: 0,
-                fontFamily: SERIF,
-                fontStyle: "italic",
-                fontWeight: 400,
-                fontSize: 12,
-                color: bio.length > 200 ? DEEP : MUTED,
-                opacity: bio.length > 200 ? 1 : 0.7,
-              }}
-            >
-              {bio.length} / 200
-            </span>
           </Row>
         </Card>
 

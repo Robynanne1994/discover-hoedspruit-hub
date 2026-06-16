@@ -663,22 +663,6 @@ const UserProfile = () => {
             )}
           </div>
 
-          {profile?.bio && (
-            <p
-              style={{
-                fontFamily: SANS,
-                fontWeight: 400,
-                fontSize: 14,
-                lineHeight: 1.5,
-                letterSpacing: "0.01em",
-                color: "#1A1A1A",
-                margin: "12px 2px 0",
-              }}
-            >
-              {profile.bio}
-            </p>
-          )}
-
           {/* Stats inner card */}
           <div
             style={{
