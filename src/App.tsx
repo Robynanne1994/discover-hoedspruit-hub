@@ -10,7 +10,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
 import Index from "./pages/Index.tsx";
-import Auth from "./pages/Auth.tsx";
+
 import Welcome from "./pages/Welcome.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
