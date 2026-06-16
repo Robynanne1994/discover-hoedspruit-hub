@@ -190,7 +190,7 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
               letterSpacing: "-0.2px",
             }}
           >
-            Report user
+            {reportedUserHandle ? `Report @${reportedUserHandle}` : "Report user"}
           </h2>
           <p
             style={{
@@ -202,9 +202,13 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
               margin: "8px 0 0",
             }}
           >
-            {reportedUserName
-              ? `Tell us what's wrong with ${reportedUserName}'s profile or behaviour.`
-              : "Tell us what's wrong with this profile or behaviour."}{" "}
+            {reportedUserName ? (
+              <>
+                Tell us what's wrong with <strong style={{ fontWeight: 700 }}>{reportedUserName}</strong>'s profile or behaviour.
+              </>
+            ) : (
+              "Tell us what's wrong with this profile or behaviour."
+            )}{" "}
             We will review your report and act accordingly.
           </p>
         </div>
