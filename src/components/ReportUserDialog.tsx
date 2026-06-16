@@ -1,10 +1,9 @@
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useState } from "react";
 import { z } from "zod";
-import { ChevronDown, Loader2 } from "lucide-react";
+import { ChevronDown, Loader2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
 
 const REASONS = [
   "Harassment or bullying",
@@ -30,24 +29,35 @@ const guestSchema = baseSchema.extend({
   reporter_email: z.string().trim().email("Valid email is required").max(255),
 });
 
-// Match Feedback page styling exactly
-const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const BG = "#E6E0CC";
-const CARD = "#FFFFFF";
+// Match the Local Channels "Suggest a Channel" sheet styling exactly
+const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const INK = "#1A1A1A";
 const MUTED = "#7A6E5C";
-const SUBMIT_BG = "#3D2E22";
 
-const tap = {
-  onPointerDown: (e: React.PointerEvent<HTMLElement>) => {
-    (e.currentTarget as HTMLElement).style.transform = "scale(0.98)";
-  },
-  onPointerUp: (e: React.PointerEvent<HTMLElement>) => {
-    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
-  },
-  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => {
-    (e.currentTarget as HTMLElement).style.transform = "scale(1)";
-  },
+const inputStyle: CSSProperties = {
+  fontFamily: HN,
+  fontWeight: 400,
+  fontSize: 15,
+  color: INK,
+  background: "#fff",
+  border: `2px solid #C5C0BA`,
+  borderRadius: 12,
+  padding: "13px 14px",
+  outline: "none",
+  width: "100%",
+  boxSizing: "border-box",
+  lineHeight: 1.4,
+};
+
+const labelStyle: CSSProperties = {
+  fontFamily: HN,
+  fontSize: 12,
+  fontWeight: 700,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color: "#715a3d",
+  marginBottom: 6,
+  display: "block",
 };
 
 type Props = {
@@ -67,23 +77,18 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
   const [email, setEmail] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  // Match the feedback page's placeholder styling
-  useEffect(() => {
-    const id = "report-placeholder-style";
-    if (document.getElementById(id)) return;
-    const style = document.createElement("style");
-    style.id = id;
-    style.textContent = `
-      .ru-input::placeholder { color: ${MUTED}; opacity: 1; font-family: ${FF}; font-size: 15px; font-weight: 400; }
-    `;
-    document.head.appendChild(style);
-  }, []);
+  if (!open) return null;
 
   const reset = () => {
     setReason("");
     setDetail("");
     setName("");
     setEmail("");
+  };
+
+  const close = () => {
+    reset();
+    onOpenChange(false);
   };
 
   const handleSubmit = async () => {
@@ -119,109 +124,47 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
     onOpenChange(false);
   };
 
-  const inputBase: CSSProperties = {
-    width: "100%",
-    background: CARD,
-    border: "none",
-    borderRadius: 999,
-    height: 52,
-    padding: "0 22px",
-    fontFamily: FF,
-    fontSize: 15,
-    fontWeight: 400,
-    color: INK,
-    outline: "none",
-    boxSizing: "border-box",
-  };
-
-  const labelStyle: CSSProperties = {
-    display: "block",
-    fontFamily: FF,
-    fontSize: 15,
-    fontWeight: 700,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    color: INK,
-    marginBottom: 8,
-  };
-
   return (
-    <Sheet
-      open={open}
-      onOpenChange={(o) => {
-        if (!o) reset();
-        onOpenChange(o);
-      }}
+    <div
+      role="dialog"
+      aria-modal="true"
+      style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,10,10,0.4)", display: "flex", alignItems: "flex-end" }}
+      onClick={close}
     >
-      <SheetContent
-        side="bottom"
-        className="p-0 border-0"
+      <div
+        onClick={(e) => e.stopPropagation()}
         style={{
-          background: BG,
-          maxHeight: "92vh",
+          fontFamily: HN,
+          width: "100%",
+          background: "#ffffff",
+          borderRadius: "20px 20px 0 0",
+          padding: "20px 20px 32px",
+          animation: "ru-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+          maxHeight: "90vh",
           overflowY: "auto",
-          borderTopLeftRadius: 24,
-          borderTopRightRadius: 24,
-          fontFamily: FF,
         }}
       >
-        {/* Grabber */}
-        <div style={{ display: "flex", justifyContent: "center", paddingTop: 10 }}>
-          <div
-            style={{
-              width: 42,
-              height: 4,
-              borderRadius: 999,
-              background: "rgba(26,26,26,0.18)",
-            }}
-          />
+        <style>{`@keyframes ru-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} } .ru-input::placeholder { color: ${MUTED}; opacity: 1; }`}</style>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div style={{ fontFamily: HN, fontSize: 11, letterSpacing: "0.08em", color: MUTED, textTransform: "uppercase" }}>{"\n"}</div>
+          <button onClick={close} aria-label="Close" style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}>
+            <X size={20} color={INK} strokeWidth={1.75} />
+          </button>
         </div>
-
-        {/* Header */}
-        <div style={{ padding: "14px 24px 0" }}>
-          <h2
-            style={{
-              fontFamily: FF,
-              fontSize: 22,
-              fontWeight: 700,
-              color: INK,
-              margin: 0,
-              lineHeight: 1.2,
-              letterSpacing: "-0.2px",
-            }}
-          >
-            {reportedUserHandle ? `Report @${reportedUserHandle}` : "Report user"}
-          </h2>
-          <p
-            style={{
-              fontFamily: FF,
-              fontSize: 13.5,
-              fontWeight: 400,
-              color: "#4A3F35",
-              lineHeight: 1.5,
-              margin: "8px 0 0",
-            }}
-          >
-            {reportedUserName ? (
-              <>
-                Tell us what's wrong with <strong style={{ fontWeight: 700 }}>{reportedUserName}</strong>'s profile or behaviour.
-              </>
-            ) : (
-              "Tell us what's wrong with this profile or behaviour."
-            )}{" "}
-            We will review your report and act accordingly.
-          </p>
-        </div>
-
-        {/* Form */}
-        <div
-          style={{
-            padding: "20px 24px 28px",
-            display: "flex",
-            flexDirection: "column",
-            gap: 18,
-          }}
-        >
+        <h2 style={{ fontFamily: HN, fontWeight: 400, fontSize: 22, color: INK, margin: "0 0 8px" }}>
+          {reportedUserHandle ? `Report @${reportedUserHandle}` : "Report user"}
+        </h2>
+        <p style={{ fontFamily: HN, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
+          {reportedUserName ? (
+            <>
+              Tell us what's wrong with <strong style={{ fontWeight: 700 }}>{reportedUserName}</strong>'s profile or behaviour.
+            </>
+          ) : (
+            "Tell us what's wrong with this profile or behaviour."
+          )}{" "}
+          We will review your report and act accordingly.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {/* Reason */}
           <div>
             <label style={labelStyle}>Reason</label>
@@ -231,11 +174,11 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 style={{
-                  ...inputBase,
+                  ...inputStyle,
                   appearance: "none",
                   WebkitAppearance: "none",
                   MozAppearance: "none",
-                  paddingRight: 44,
+                  paddingRight: 40,
                   color: reason ? INK : MUTED,
                   cursor: "pointer",
                 }}
@@ -252,13 +195,7 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
               <ChevronDown
                 size={18}
                 color={MUTED}
-                style={{
-                  position: "absolute",
-                  right: 20,
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  pointerEvents: "none",
-                }}
+                style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
               />
             </div>
           </div>
@@ -272,15 +209,8 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
               maxLength={2000}
-              style={{
-                ...inputBase,
-                borderRadius: 24,
-                height: "auto",
-                minHeight: 140,
-                padding: "18px 22px",
-                resize: "none",
-                lineHeight: 1.5,
-              }}
+              rows={5}
+              style={{ ...inputStyle, resize: "none" }}
             />
           </div>
 
@@ -292,11 +222,11 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
                 <input
                   className="ru-input"
                   type="text"
-                  placeholder="Full name"
+                  placeholder="e.g. Jane Smith"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   maxLength={100}
-                  style={inputBase}
+                  style={inputStyle}
                 />
               </div>
               <div>
@@ -308,48 +238,45 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   maxLength={255}
-                  style={inputBase}
+                  style={inputStyle}
                 />
               </div>
             </>
           )}
-
-          {/* Submit */}
-          <button
-            onClick={handleSubmit}
-            disabled={submitting}
-            {...tap}
-            style={{
-              width: "100%",
-              marginTop: 6,
-              background: SUBMIT_BG,
-              color: "#fff",
-              border: "none",
-              borderRadius: 999,
-              height: 58,
-              fontFamily: FF,
-              fontSize: 16,
-              fontWeight: 600,
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 8,
-              cursor: submitting ? "not-allowed" : "pointer",
-              opacity: submitting ? 0.7 : 1,
-              transition: "transform 0.15s ease, opacity 0.15s ease",
-            }}
-          >
-            {submitting ? (
-              <>
-                <Loader2 size={16} color="#fff" className="animate-spin" /> Sending
-              </>
-            ) : (
-              "Submit Report"
-            )}
-          </button>
         </div>
-      </SheetContent>
-    </Sheet>
+
+        <button
+          onClick={handleSubmit}
+          disabled={submitting}
+          style={{
+            fontFamily: HN,
+            marginTop: 20,
+            width: "100%",
+            height: 48,
+            borderRadius: 999,
+            background: "#423324",
+            color: "#FFFFFF",
+            border: "none",
+            fontSize: 14,
+            letterSpacing: "0.04em",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            cursor: submitting ? "default" : "pointer",
+            opacity: submitting ? 0.6 : 1,
+          }}
+        >
+          {submitting ? (
+            <>
+              <Loader2 size={16} color="#fff" className="animate-spin" /> Sending...
+            </>
+          ) : (
+            "Submit Report"
+          )}
+        </button>
+      </div>
+    </div>
   );
 };
 

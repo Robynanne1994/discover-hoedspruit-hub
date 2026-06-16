@@ -8,7 +8,7 @@ import {
   useFollowMutation,
   useFollowCounts,
 } from "@/hooks/useFollows";
-import { ArrowLeft, MoreVertical, Heart, MapPin } from "lucide-react";
+import { ArrowLeft, MoreVertical, Heart, MapPin, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -66,6 +66,54 @@ const getInitials = (name?: string | null) => {
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 
+// Saved-items tab styling — mirrors MyProfile for an identical look
+const TAB_INK = "#1A1A1A";
+const TAB_MUTED = "#8A8275";
+const TAB_SUBTLE = "rgba(26,26,26,0.55)";
+const TAB_LINE = "rgba(26,26,26,0.10)";
+const TAB_CARD = "#FFFFFF";
+
+type Tab = "listings" | "deals" | "events" | "resources";
+
+function SubTabs<T extends string>({
+  value,
+  onChange,
+  options,
+}: {
+  value: T;
+  onChange: (v: T) => void;
+  options: { id: T; label: string }[];
+}) {
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+      {options.map((opt) => {
+        const active = value === opt.id;
+        return (
+          <button
+            key={opt.id}
+            type="button"
+            onClick={() => onChange(opt.id)}
+            style={{
+              background: active ? "#423324" : "transparent",
+              color: active ? "#fff" : TAB_INK,
+              border: `1px solid ${active ? "#423324" : TAB_LINE}`,
+              borderRadius: 999,
+              padding: "6px 14px",
+              cursor: "pointer",
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: active ? 600 : 400,
+              letterSpacing: "0.02em",
+            }}
+          >
+            {opt.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 const UserProfile = () => {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
@@ -75,6 +123,9 @@ const UserProfile = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [unfollowOpen, setUnfollowOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
+  const [tab, setTab] = useState<Tab>("listings");
+  const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
+  const [dealsSub, setDealsSub] = useState<"active" | "expired">("active");
   const queryClient = useQueryClient();
 
   // Is the signed-in user currently blocking this profile?
@@ -218,19 +269,10 @@ const UserProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: events } = await supabase
         .from("events")
-        .select("id, title, image_url, location, date, start_date, end_date")
+        .select("id, title, image_url, location, start_date, end_date")
         .in("id", ids);
       const map = Object.fromEntries((events || []).map((e: any) => [e.id, e]));
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return favs
-        .map((f) => map[f.item_id])
-        .filter(Boolean)
-        .filter((e) => {
-          if (e.end_date) return new Date(e.end_date) >= today;
-          if (e.start_date) return new Date(e.start_date) >= today;
-          return true; // legacy events with no structured date
-        });
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((e) => e.id);
     },
     enabled: !!id,
   });
@@ -250,37 +292,33 @@ const UserProfile = () => {
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
         .from("specials")
-        .select("id, title, image_url, business_name, deal_label, valid_until, is_active")
+        .select("id, title, image_url, business_name, valid_until")
         .in("id", ids);
       const map = Object.fromEntries((specials || []).map((s: any) => [s.id, s]));
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      return favs
-        .map((f) => map[f.item_id])
-        .filter(Boolean)
-        .filter((s) => {
-          if (s.is_active === false) return false;
-          if (s.valid_until) return new Date(s.valid_until) >= today;
-          return true;
-        });
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((s) => s.id);
     },
     enabled: !!id,
   });
 
-  // Been to (visited places)
-  const { data: beenTo } = useQuery({
-    queryKey: ["user-been-to", id],
+  // Saved resources
+  const { data: savedResources } = useQuery({
+    queryKey: ["user-saved-resources", id],
     queryFn: async () => {
-      const { data: rows } = await supabase.rpc("get_user_been_here", { _user_id: id! });
-      const limited = (rows || []).slice(0, 20);
-      if (!limited.length) return [];
-      const ids = limited.map((r: any) => r.listing_id);
-      const { data: listings } = await supabase
-        .from("listings")
-        .select("id, title, image_url, location, google_rating")
+      const { data: favs } = await supabase
+        .from("favourites")
+        .select("item_id, created_at")
+        .eq("user_id", id!)
+        .eq("item_type", "resource")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (!favs?.length) return [];
+      const ids = favs.map((f) => f.item_id);
+      const { data: resources } = await supabase
+        .from("bush_telegraph_resources")
+        .select("id, title, title_override, image_url, platform, meta, meta_2, slug")
         .in("id", ids);
-      const map = Object.fromEntries((listings || []).map((l: any) => [l.id, l]));
-      return limited.map((r: any) => map[r.listing_id]).filter(Boolean);
+      const map = Object.fromEntries((resources || []).map((r: any) => [r.id, r]));
+      return favs.map((f) => ({ ...map[f.item_id], created_at: f.created_at })).filter((r) => r.id);
     },
     enabled: !!id,
   });
@@ -370,6 +408,91 @@ const UserProfile = () => {
       /* cancelled */
     }
   };
+
+  const renderCard = (
+    it: any,
+    type: "listing" | "event" | "special" | "resource",
+    href: string,
+    subtitle: React.ReactNode,
+  ) => (
+    <Link
+      key={it.id}
+      to={href}
+      style={{
+        background: TAB_CARD,
+        borderRadius: 16,
+        overflow: "hidden",
+        textDecoration: "none",
+        display: "block",
+      }}
+    >
+      <div style={{ position: "relative", width: "100%", aspectRatio: "4 / 3", background: "#d6d6d6" }}>
+        {it.image_url && (
+          <img
+            src={it.image_url}
+            alt=""
+            loading="lazy"
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+        {type === "listing" && it.google_rating && (
+          <div
+            style={{
+              position: "absolute",
+              top: 10,
+              left: 10,
+              background: "rgba(255,255,255,0.92)",
+              borderRadius: 999,
+              padding: "3px 9px 3px 7px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              fontFamily: SANS,
+              fontSize: 12,
+              fontWeight: 600,
+              color: TAB_INK,
+            }}
+          >
+            <Star size={11} strokeWidth={1.8} color={TAB_INK} />
+            {Number(it.google_rating).toFixed(1).replace(/\.0$/, "")}
+          </div>
+        )}
+      </div>
+      <div style={{ padding: "12px 14px 14px" }}>
+        <div
+          style={{
+            fontFamily: SANS,
+            fontWeight: 500,
+            fontSize: 15,
+            lineHeight: 1.25,
+            color: TAB_INK,
+            marginBottom: 4,
+            letterSpacing: "-0.1px",
+          }}
+        >
+          {titleCase(it.title)}
+        </div>
+        <div style={{ fontFamily: SANS, fontSize: 12.5, color: TAB_MUTED, letterSpacing: "0.01em" }}>
+          {subtitle}
+        </div>
+      </div>
+    </Link>
+  );
+
+  const EmptyTab = ({ text }: { text: string }) => (
+    <div
+      style={{
+        padding: "60px 24px",
+        textAlign: "center",
+        fontFamily: SANS,
+        fontSize: 14,
+        color: TAB_SUBTLE,
+        letterSpacing: "0.01em",
+      }}
+    >
+      {text}
+    </div>
+  );
 
   if (blockedByThem) {
     return (
@@ -704,191 +827,174 @@ const UserProfile = () => {
         </section>
       </div>
 
-      <div style={{ height: 24 }} />
-
-
-      {(() => {
-        const sections: Array<{
-          title: string;
-          items: any[];
-          hrefFor: (it: any) => string;
-          subtitleFor: (it: any) => React.ReactNode;
-        }> = [
-          {
-            title: "saved listings",
-            items: saved || [],
-            hrefFor: (l) => `/listing/${l.id}`,
-            subtitleFor: (l) => (
-              <>
-                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>}
-                {l.google_rating && l.location && (
-                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
-                )}
-                {l.location && <span>{l.location}</span>}
-              </>
-            ),
-          },
-          {
-            title: "saved events",
-            items: savedEvents || [],
-            hrefFor: (e) => `/event/${e.id}`,
-            subtitleFor: (e) => {
-              const d = e.start_date || e.date;
-              const dateStr = d
-                ? new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
-                : null;
-              return (
-                <>
-                  {dateStr && <span>{dateStr}</span>}
-                  {dateStr && e.location && (
-                    <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
-                  )}
-                  {e.location && <span>{e.location}</span>}
-                </>
-              );
-            },
-          },
-          {
-            title: "saved specials",
-            items: savedSpecials || [],
-            hrefFor: (s) => `/special/${s.id}`,
-            subtitleFor: (s) => (
-              <>
-                {s.deal_label && <span>{s.deal_label}</span>}
-                {s.deal_label && s.business_name && (
-                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
-                )}
-                {s.business_name && <span>{titleCase(s.business_name)}</span>}
-              </>
-            ),
-          },
-          {
-            title: "been to",
-            items: beenTo || [],
-            hrefFor: (l) => `/listing/${l.id}`,
-            subtitleFor: (l) => (
-              <>
-                {l.google_rating && <span>★ {Number(l.google_rating).toFixed(1).replace(/\.0$/, "")}</span>}
-                {l.google_rating && l.location && (
-                  <span style={{ width: 3, height: 3, borderRadius: "50%", background: MUTED, opacity: 0.6, display: "inline-block" }} />
-                )}
-                {l.location && <span>{l.location}</span>}
-              </>
-            ),
-          },
-        ];
-
-        return sections
-          .filter((s) => s.items.length > 0)
-          .map((s, idx) => (
-            <section
-              key={s.title}
-              id={idx === 0 ? "user-saved-section" : undefined}
-              style={{ marginBottom: 32, scrollMarginTop: 16 }}
-            >
-              <div
+      {/* Saved items — tabbed, identical to MyProfile */}
+      <div id="user-saved-section" style={{ scrollMarginTop: 16 }}>
+        {/* Top tabs */}
+        <div
+          style={{
+            marginTop: 22,
+            display: "flex",
+            padding: "0 20px",
+            gap: 0,
+            borderBottom: `1px solid ${TAB_LINE}`,
+          }}
+        >
+          {(["listings", "deals", "events", "resources"] as Tab[]).map((t) => {
+            const active = tab === t;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setTab(t)}
                 style={{
-                  padding: "0 24px",
-                  display: "flex",
-                  alignItems: "baseline",
-                  justifyContent: "space-between",
-                  marginBottom: 14,
+                  flex: 1,
+                  background: "none",
+                  border: "none",
+                  padding: "14px 0 12px",
+                  cursor: "pointer",
+                  fontFamily: SANS,
+                  fontSize: 16,
+                  fontWeight: active ? 700 : 400,
+                  color: active ? TAB_INK : TAB_SUBTLE,
+                  letterSpacing: "0.02em",
+                  position: "relative",
+                  textTransform: "capitalize",
                 }}
               >
-                <h2
-                  style={{
-                    fontFamily: SANS,
-                    fontWeight: 400,
-                    fontSize: 16,
-                    lineHeight: 1.2,
-                    letterSpacing: "0.01em",
-                    textTransform: "uppercase",
-                    color: INK,
-                    margin: 0,
-                  }}
-                >
-                  {s.title}
-                </h2>
+                {t}
                 <span
                   style={{
-                    fontFamily: SANS,
-                    fontWeight: 400,
-                    fontSize: 12,
-                    letterSpacing: "0.01em",
-                    color: MUTED,
+                    position: "absolute",
+                    left: "20%",
+                    right: "20%",
+                    bottom: -1,
+                    height: 2,
+                    background: active ? TAB_INK : "transparent",
+                    borderRadius: 2,
                   }}
-                >
-                  {s.items.length}
-                </span>
-              </div>
+                />
+              </button>
+            );
+          })}
+        </div>
 
-              <div
-                style={{
-                  display: "flex",
-                  gap: 14,
-                  overflowX: "auto",
-                  paddingLeft: 24,
-                  paddingRight: 24,
-                  scrollbarWidth: "none",
-                }}
-                className="no-scrollbar"
-              >
-                {s.items.map((it: any) => (
-                  <Link
-                    key={it.id}
-                    to={s.hrefFor(it)}
-                    style={{
-                      flex: "0 0 auto",
-                      width: 240,
-                      background: CREAM,
-                      borderRadius: 20,
-                      overflow: "hidden",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <div style={{ width: "100%", height: 180, background: "#d6d6d6" }}>
-                      {it.image_url && (
-                        <img
-                          src={it.image_url}
-                          alt=""
-                          loading="lazy"
-                          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
-                        />
-                      )}
-                    </div>
-                    <div style={{ padding: "16px 18px 18px" }}>
-                      <div
-                        style={{
-                          fontFamily: SANS,
-                          fontWeight: 400,
-                          fontSize: 17,
-                          lineHeight: 1.2,
-                          letterSpacing: "-0.2px",
-                          color: INK,
-                          marginBottom: 6,
-                        }}
-                      >
-                        {titleCase(it.title)}
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          fontFamily: SANS,
-                          fontSize: 12.5,
-                          color: MUTED,
-                        }}
-                      >
-                        {s.subtitleFor(it)}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+        {/* Tab content */}
+        <div style={{ padding: "20px 20px 0" }}>
+          {tab === "listings" && (
+            saved?.length ? (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {saved.map((it: any) => renderCard(it, "listing", `/listing/${it.id}`, null))}
               </div>
-            </section>
-          ));
-      })()}
+            ) : (
+              <EmptyTab text="No saved listings yet." />
+            )
+          )}
+
+          {tab === "deals" && (() => {
+            const now = Date.now();
+            const filtered = (savedSpecials ?? []).filter((it: any) => {
+              const expired = it.valid_until && new Date(it.valid_until).getTime() < now;
+              return dealsSub === "active" ? !expired : expired;
+            });
+            return (
+              <>
+                <SubTabs<"active" | "expired">
+                  value={dealsSub}
+                  onChange={setDealsSub}
+                  options={[
+                    { id: "active", label: "Active" },
+                    { id: "expired", label: "Expired" },
+                  ]}
+                />
+                {filtered.length ? (
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {filtered.map((it: any) =>
+                      renderCard(
+                        it,
+                        "special",
+                        `/special/${it.id}`,
+                        it.business_name ? titleCase(it.business_name) : null,
+                      ),
+                    )}
+                  </div>
+                ) : (
+                  <EmptyTab text={dealsSub === "active" ? "No active deals saved." : "No expired deals."} />
+                )}
+              </>
+            );
+          })()}
+
+          {tab === "events" && (() => {
+            const now = Date.now();
+            const filtered = (savedEvents ?? []).filter((it: any) => {
+              const ref = it.end_date || it.start_date;
+              if (!ref) return eventsSub === "upcoming";
+              const past = new Date(ref).getTime() < now;
+              return eventsSub === "upcoming" ? !past : past;
+            });
+            return (
+              <>
+                <SubTabs<"upcoming" | "past">
+                  value={eventsSub}
+                  onChange={setEventsSub}
+                  options={[
+                    { id: "upcoming", label: "Upcoming" },
+                    { id: "past", label: "Past" },
+                  ]}
+                />
+                {filtered.length ? (
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                    {filtered.map((it: any) =>
+                      renderCard(
+                        it,
+                        "event",
+                        `/event/${it.id}`,
+                        <>
+                          {it.start_date && (
+                            <span>
+                              {new Date(it.start_date).toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "short",
+                              })}
+                            </span>
+                          )}
+                          {it.start_date && it.location && <span> · </span>}
+                          {it.location && <span>{it.location}</span>}
+                        </>,
+                      ),
+                    )}
+                  </div>
+                ) : (
+                  <EmptyTab text={eventsSub === "upcoming" ? "No upcoming saved events." : "No past saved events."} />
+                )}
+              </>
+            );
+          })()}
+
+          {tab === "resources" && (
+            savedResources?.length ? (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                {savedResources.map((it: any) => {
+                  const displayTitle = (it.title_override?.trim()) || it.title;
+                  const metaParts = [it.meta, it.meta_2].filter((m: string | null) => m && m.trim());
+                  const href = it.slug ? `/local-channels/${it.slug}` : `/local-channels`;
+                  return renderCard(
+                    { ...it, title: displayTitle },
+                    "resource",
+                    href,
+                    <>
+                      {metaParts.length > 1 && <span>{metaParts.join(" · ")}</span>}
+                      {metaParts.length === 1 && <span>{metaParts[0]}</span>}
+                    </>,
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyTab text="No saved resources yet." />
+            )
+          )}
+        </div>
+      </div>
 
       {/* Activity (only when public) */}
       {profile?.activity_private === false && activity && activity.length > 0 && (
