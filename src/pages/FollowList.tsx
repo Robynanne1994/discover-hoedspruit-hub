@@ -125,12 +125,14 @@ const UserRow = ({
   isFollowed,
   onToggle,
   pending,
+  isSelf,
 }: {
   user: RowUser;
   index: number;
   isFollowed: boolean;
   onToggle: () => void;
   pending: boolean;
+  isSelf?: boolean;
 }) => {
   const navigate = useNavigate();
   const handle = user.username
