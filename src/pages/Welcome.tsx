@@ -21,6 +21,7 @@ const Welcome = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
