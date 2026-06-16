@@ -60,7 +60,7 @@ interface ProfileFormProps {
     location: string | null;
     phone: string | null;
     email: string | null;
-    email: string | null;
+  } | null;
   } | null;
 }
 
