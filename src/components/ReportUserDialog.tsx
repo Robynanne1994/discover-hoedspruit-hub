@@ -204,7 +204,7 @@ const ReportUserDialog = ({ open, onOpenChange, reportedUserId, reportedUserName
             {reportedUserName
               ? `Tell us what's wrong with ${reportedUserName}'s profile or behaviour.`
               : "Tell us what's wrong with this profile or behaviour."}{" "}
-            Our team will review your report.
+            We will review your report and act accordingly.
           </p>
         </div>
 
