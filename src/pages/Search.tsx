@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserPlus, UserCheck, Heart, UserCircle } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
