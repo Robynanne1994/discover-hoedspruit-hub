@@ -104,6 +104,74 @@ const rowInputStyle: React.CSSProperties = {
 
 type FieldKey = "name" | "username" | "email" | "phone" | "location";
 
+const PrivacyToggleRow = ({
+  label,
+  description,
+  checked,
+  disabled,
+  onChange,
+  isFirst,
+}: {
+  label: string;
+  description: string;
+  checked: boolean;
+  disabled?: boolean;
+  onChange: (v: boolean) => void;
+  isFirst?: boolean;
+}) => (
+  <div
+    style={{
+      borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+      padding: "16px 0",
+      display: "flex",
+      alignItems: "center",
+      gap: 12,
+    }}
+  >
+    <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>{label}</div>
+      <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2, lineHeight: 1.45 }}>
+        {description}
+      </div>
+    </div>
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      disabled={disabled}
+      onClick={() => onChange(!checked)}
+      style={{
+        width: 44,
+        height: 26,
+        borderRadius: 999,
+        background: checked ? DARK : "#D8D2C2",
+        border: "none",
+        position: "relative",
+        cursor: disabled ? "not-allowed" : "pointer",
+        flexShrink: 0,
+        transition: "background 120ms ease",
+        opacity: disabled ? 0.6 : 1,
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 3,
+          left: checked ? 21 : 3,
+          width: 20,
+          height: 20,
+          borderRadius: "50%",
+          background: "#fff",
+          transition: "left 120ms ease",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+        }}
+      />
+    </button>
+  </div>
+);
+
+
+
 const AccountInfo = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
