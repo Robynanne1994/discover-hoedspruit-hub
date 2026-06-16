@@ -303,52 +303,31 @@ const UserProfile = () => {
         color: BODY,
       }}
     >
-      {/* Top bar */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          padding: "16px 20px 0",
-        }}
-      >
-        <button
-          onClick={() => navigate(-1)}
-          aria-label="Back"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: "#FFFFFF",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          <ArrowLeft size={18} strokeWidth={2} color={"#1A1A1A"} />
-        </button>
-        <button
-          onClick={() => setMenuOpen(true)}
-          aria-label="More"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: "50%",
-            background: "#FFFFFF",
-            border: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            padding: 0,
-          }}
-        >
-          <MoreVertical size={16} strokeWidth={1.6} color={"#1A1A1A"} />
-        </button>
-      </div>
+      <PageHeader
+        title="Profile"
+        right={
+          <button
+            onClick={() => setMenuOpen(true)}
+            aria-label="More"
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "#FFFFFF",
+              border: "none",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              padding: 0,
+              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+            }}
+          >
+            <MoreVertical size={16} strokeWidth={1.6} color={"#1A1A1A"} />
+          </button>
+        }
+      />
+
 
       {/* Profile card — matches MyProfile */}
       <div style={{ padding: "16px 20px 0" }}>
