@@ -101,9 +101,23 @@ const UserProfile = () => {
       toast.error("Could not block user. Please try again.");
       return;
     }
+    // Blocking implies unfollowing in both directions
+    await supabase
+      .from("follows")
+      .delete()
+      .or(
+        `and(follower_id.eq.${user.id},following_id.eq.${id}),and(follower_id.eq.${id},following_id.eq.${user.id})`
+      );
     queryClient.setQueryData(["user-blocked", user.id, id], true);
+    queryClient.setQueryData(["is-following", user.id, id], false);
+    queryClient.invalidateQueries({ queryKey: ["follow-counts"] });
+    queryClient.invalidateQueries({ queryKey: ["followers"] });
+    queryClient.invalidateQueries({ queryKey: ["following"] });
+    queryClient.invalidateQueries({ queryKey: ["my-following-ids", user.id] });
+    queryClient.invalidateQueries({ queryKey: ["is-following", id, user.id] });
     toast.success("User blocked");
   };
+
 
   const handleUnblock = async () => {
     if (!user || !id) return;
