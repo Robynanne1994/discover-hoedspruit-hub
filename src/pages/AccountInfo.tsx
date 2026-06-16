@@ -629,6 +629,60 @@ const AccountInfo = () => {
           Save Changes
         </button>
 
+        {/* Privacy section */}
+        <div
+          style={{
+            marginTop: 28,
+            marginBottom: 10,
+            fontFamily: '"Bricolage Grotesque", ' + FF,
+            fontSize: 15,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: INK,
+          }}
+        >
+          Privacy
+        </div>
+        <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
+          <PrivacyToggleRow
+            label="Private account"
+            description="New followers will need your approval before they can see your activity."
+            checked={isPrivate}
+            disabled={savingPrivacy}
+            onChange={(v) => togglePrivacy("is_private", v)}
+            isFirst
+          />
+          <PrivacyToggleRow
+            label="Hide my activity"
+            description="Keep your saves and visited places visible only to you."
+            checked={activityPrivate}
+            disabled={savingPrivacy}
+            onChange={(v) => togglePrivacy("activity_private", v)}
+          />
+          <div
+            onClick={() => navigate("/follow-requests")}
+            style={{
+              borderTop: `1px solid ${LINE}`,
+              padding: "16px 0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              cursor: "pointer",
+            }}
+          >
+            <div>
+              <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow requests</div>
+              <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2 }}>
+                {pendingRequestCount
+                  ? `${pendingRequestCount} pending`
+                  : "No pending requests"}
+              </div>
+            </div>
+            <span style={{ fontFamily: FF, fontSize: 18, color: MUTED }}>›</span>
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={() => setDeleteOpen(true)}
