@@ -53,6 +53,8 @@ function formatLocalNumber(n: string) {
 interface ProfileFormProps {
   profile: {
     display_name: string | null;
+    first_name?: string | null;
+    surname?: string | null;
     username?: string | null;
     avatar_url: string | null;
     location: string | null;
@@ -60,6 +62,13 @@ interface ProfileFormProps {
     email: string | null;
     bio: string | null;
   } | null;
+}
+
+// Split a combined name on the first space so older accounts (which only have
+// a display_name) still populate the separate fields sensibly.
+function splitDisplayName(full: string | null | undefined) {
+  const parts = (full || "").trim().split(/\s+/).filter(Boolean);
+  return { first: parts[0] || "", surname: parts.slice(1).join(" ") };
 }
 
 const ROW_LABEL: React.CSSProperties = {
@@ -94,7 +103,9 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const queryClient = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [displayName, setDisplayName] = useState(profile?.display_name || "");
+  const fallbackName = splitDisplayName(profile?.display_name);
+  const [firstName, setFirstName] = useState(profile?.first_name ?? fallbackName.first);
+  const [surname, setSurname] = useState(profile?.surname ?? fallbackName.surname);
   const [username, setUsername] = useState((profile as any)?.username || "");
   const [bio, setBio] = useState(profile?.bio || "");
   const [email, setEmail] = useState(profile?.email || user?.email || "");
@@ -126,6 +137,10 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const saveProfile = useMutation({
     mutationFn: async () => {
       if (!user) return;
+      const trimmedFirstName = firstName.trim();
+      const trimmedSurname = surname.trim();
+      if (!trimmedFirstName) throw new Error("FIRST_NAME_REQUIRED");
+      if (!trimmedSurname) throw new Error("SURNAME_REQUIRED");
       const trimmedUsername = username.trim();
       // Username must be unique. RLS hides other users' rows, so check via RPC.
       if (trimmedUsername) {
@@ -138,7 +153,9 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
       }
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
-        display_name: displayName.trim() || null,
+        first_name: trimmedFirstName,
+        surname: trimmedSurname,
+        display_name: `${trimmedFirstName} ${trimmedSurname}`,
         username: trimmedUsername || null,
         phone: phone.trim() || null,
         email: email.trim() || null,
@@ -156,7 +173,11 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
       navigate(-1);
     },
     onError: (err: any) => {
-      if (err?.message === "USERNAME_TAKEN") {
+      if (err?.message === "FIRST_NAME_REQUIRED") {
+        toast.error("Please enter your name.");
+      } else if (err?.message === "SURNAME_REQUIRED") {
+        toast.error("Please enter your surname.");
+      } else if (err?.message === "USERNAME_TAKEN") {
         toast.error("That username is already taken. Please choose a different one.");
       } else {
         toast.error("We couldn't save your changes right now.");
@@ -164,7 +185,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
     },
   });
 
-  const initial = (displayName || user?.email || "?")[0].toUpperCase();
+  const initial = (firstName || user?.email || "?")[0].toUpperCase();
   const parsed = parsePhone(phone);
   const flag = (AREA_CODES.find((a) => a.code === parsed.areaCode) || AREA_CODES[0]).flag;
 
@@ -402,11 +423,21 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
         <SectionEyebrow>About You</SectionEyebrow>
         <Card>
           <Row first>
-            <label style={ROW_LABEL}>Name</label>
+            <label style={ROW_LABEL}>First Name</label>
             <input
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Your full name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Your first name"
+              style={ROW_VALUE}
+            />
+            <PencilIcon />
+          </Row>
+          <Row>
+            <label style={ROW_LABEL}>Surname</label>
+            <input
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
+              placeholder="Your surname"
               style={ROW_VALUE}
             />
             <PencilIcon />

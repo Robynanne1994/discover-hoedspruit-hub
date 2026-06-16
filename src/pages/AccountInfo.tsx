@@ -103,7 +103,14 @@ const rowInputStyle: React.CSSProperties = {
   paddingRight: 28,
 };
 
-type FieldKey = "name" | "username" | "email" | "phone" | "location";
+type FieldKey = "firstName" | "surname" | "username" | "email" | "phone" | "location";
+
+// Split a combined name on the first space so older accounts (which only have
+// a display_name) still populate the separate fields sensibly.
+function splitDisplayName(full: string | null | undefined) {
+  const parts = (full || "").trim().split(/\s+/).filter(Boolean);
+  return { first: parts[0] || "", surname: parts.slice(1).join(" ") };
+}
 
 const RESIDENCY_OPTIONS = [
   "I live in Hoedspruit",
@@ -196,7 +203,8 @@ const AccountInfo = () => {
     enabled: !!user,
   });
 
-  const [displayName, setDisplayName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -275,7 +283,9 @@ const AccountInfo = () => {
 
   useEffect(() => {
     if (profile && !initialized.current) {
-      setDisplayName(profile.display_name || "");
+      const fallbackName = splitDisplayName(profile.display_name);
+      setFirstName((profile as any).first_name ?? fallbackName.first);
+      setSurname((profile as any).surname ?? fallbackName.surname);
       setUsername((profile as any).username || "");
       setEmail(profile.email || user?.email || "");
       setPhone(profile.phone || "");
@@ -321,9 +331,22 @@ const AccountInfo = () => {
 
   const handleSaveProfile = async () => {
     if (!user) return;
+    const trimmedFirstName = firstName.trim();
+    const trimmedSurname = surname.trim();
     const trimmedUsername = username.trim();
     const trimmedEmail = email.trim();
     const trimmedPhone = phone.trim();
+
+    if (!trimmedFirstName) {
+      toast.error("Please enter your name.");
+      startEditing("firstName");
+      return;
+    }
+    if (!trimmedSurname) {
+      toast.error("Please enter your surname.");
+      startEditing("surname");
+      return;
+    }
 
     setSavingProfile(true);
     try {
@@ -375,7 +398,9 @@ const AccountInfo = () => {
 
       const { error } = await supabase.from("profiles").upsert({
         id: user.id,
-        display_name: displayName.trim() || null,
+        first_name: trimmedFirstName,
+        surname: trimmedSurname,
+        display_name: `${trimmedFirstName} ${trimmedSurname}`,
         username: trimmedUsername || null,
         email: trimmedEmail || null,
         phone: trimmedPhone || null,
@@ -404,8 +429,10 @@ const AccountInfo = () => {
 
   const getFieldValue = (key: FieldKey): string => {
     switch (key) {
-      case "name":
-        return displayName;
+      case "firstName":
+        return firstName;
+      case "surname":
+        return surname;
       case "username":
         return username;
       case "email":
@@ -419,8 +446,11 @@ const AccountInfo = () => {
 
   const applyFieldValue = (key: FieldKey, value: string) => {
     switch (key) {
-      case "name":
-        setDisplayName(value);
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "surname":
+        setSurname(value);
         break;
       case "username":
         setUsername(value);
@@ -707,19 +737,35 @@ const AccountInfo = () => {
             </div>
           ) : (
             <>
-              <Row fieldKey="name" label="NAME & SURNAME" isFirst>
-                {editing === "name" ? (
+              <Row fieldKey="firstName" label="FIRST NAME" isFirst>
+                {editing === "firstName" ? (
                   <>
                     <input
                       autoFocus
-                      value={displayName}
-                      onChange={(e) => setDisplayName(e.target.value)}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                       style={rowInputStyle}
                     />
                     <EditActions />
                   </>
                 ) : (
-                  <div style={rowValueStyle}>{displayName || "—"}</div>
+                  <div style={rowValueStyle}>{firstName || "—"}</div>
+                )}
+              </Row>
+
+              <Row fieldKey="surname" label="SURNAME">
+                {editing === "surname" ? (
+                  <>
+                    <input
+                      autoFocus
+                      value={surname}
+                      onChange={(e) => setSurname(e.target.value)}
+                      style={rowInputStyle}
+                    />
+                    <EditActions />
+                  </>
+                ) : (
+                  <div style={rowValueStyle}>{surname || "—"}</div>
                 )}
               </Row>
 
