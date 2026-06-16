@@ -889,11 +889,15 @@ const UserProfile = () => {
                 },
               },
               {
-                label: "Block User",
+                label: isBlocked ? "Unblock User" : "Block User",
                 onClick: () => {
                   setMenuOpen(false);
-                  if (!requireAuth("block users")) return;
-                  toast("User blocked");
+                  if (!requireAuth(isBlocked ? "unblock users" : "block users")) return;
+                  if (isBlocked) {
+                    handleUnblock();
+                  } else {
+                    handleBlock();
+                  }
                 },
               },
             ].map((o) => (
