@@ -431,6 +431,78 @@ const CategoryPage = () => {
     },
   });
 
+  // Per-facet counts for the filter drawer (independent of the active sub filter
+  // so the numbers reflect "how many listings exist in this category that match
+  // that option"). Subcategory counts are also calculated against the full
+  // category set so users can see distribution before narrowing.
+  const { data: facetCounts } = useQuery({
+    queryKey: ["category-facet-counts", id, user?.id ?? null],
+    enabled: !!id,
+    queryFn: async () => {
+      const [{ data: junctionData }, { data: legacyData }] = await Promise.all([
+        supabase.from("listing_categories").select("listing_id").eq("category_id", id!),
+        supabase.from("listings").select("id").eq("category_id", id!),
+      ]);
+      const idSet = new Set<string>();
+      (junctionData || []).forEach((r: any) => idSet.add(r.listing_id as string));
+      (legacyData || []).forEach((r: any) => idSet.add(r.id as string));
+      const allIds = Array.from(idSet);
+
+      const empty = {
+        subCounts: new Map<string, number>(),
+        cuisine: new Map<string, number>(),
+        vibe: new Map<string, number>(),
+        meal: new Map<string, number>(),
+        seating: new Map<string, number>(),
+        openNow: 0,
+        saved: 0,
+      };
+      if (allIds.length === 0) return empty;
+
+      const [{ data: rows }, { data: subRows }] = await Promise.all([
+        supabase
+          .from("listings")
+          .select("id, cuisine, vibe, meal, seating, opening_hours")
+          .in("id", allIds),
+        supabase
+          .from("listing_subcategories")
+          .select("listing_id, subcategory_id")
+          .in("listing_id", allIds),
+      ]);
+
+      const subCounts = new Map<string, number>();
+      (subRows || []).forEach((r: any) => {
+        subCounts.set(r.subcategory_id, (subCounts.get(r.subcategory_id) || 0) + 1);
+      });
+
+      const cuisine = new Map<string, number>();
+      const vibe = new Map<string, number>();
+      const meal = new Map<string, number>();
+      const seating = new Map<string, number>();
+      let openNow = 0;
+      const bump = (m: Map<string, number>, v: string) => {
+        const k = v.toLowerCase();
+        m.set(k, (m.get(k) || 0) + 1);
+      };
+      (rows || []).forEach((l: any) => {
+        (l.cuisine || []).forEach((v: string) => bump(cuisine, v));
+        (l.vibe || []).forEach((v: string) => bump(vibe, v));
+        (l.meal || []).forEach((v: string) => bump(meal, v));
+        (l.seating || []).forEach((v: string) => bump(seating, v));
+        if (isOpenNow(l.opening_hours as Record<string, string> | null)) openNow += 1;
+      });
+
+      const savedCount = savedIds
+        ? allIds.filter((lid) => savedIds.has(lid)).length
+        : 0;
+
+      return { subCounts, cuisine, vibe, meal, seating, openNow, saved: savedCount };
+    },
+  });
+
+  const withCount = (label: string, count: number | undefined) =>
+    count && count > 0 ? `${label} (${count})` : label;
+
   const activeFilterCount = [
     activeSubId ? 1 : 0,
     filterCuisine.length > 0 ? 1 : 0,
@@ -868,11 +940,11 @@ const CategoryPage = () => {
             open={openSection === "subcategory"}
             onToggle={() => setOpenSection(openSection === "subcategory" ? null : "subcategory")}
           >
-            <RefineRectOption label="All" active={!activeSubId} onClick={() => handleSubFilter(null)} />
+            <RefineRectOption label={withCount("All", totalCount)} active={!activeSubId} onClick={() => handleSubFilter(null)} />
             {subcategories.map((sub) => (
               <RefineRectOption
                 key={sub.id}
-                label={sub.title}
+                label={withCount(sub.title, facetCounts?.subCounts.get(sub.id))}
                 active={activeSubId === sub.id}
                 onClick={() => handleSubFilter(sub.id)}
               />
@@ -890,7 +962,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {CUISINE_OPTIONS.map((c) => (
-                  <RefineChip key={c} label={c} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
+                  <RefineChip key={c} label={withCount(c, facetCounts?.cuisine.get(c.toLowerCase()))} active={filterCuisine.includes(c)} onClick={() => toggleArrayFilter(filterCuisine, c, setFilterCuisine)} />
                 ))}
               </div>
             </RefineSection>
@@ -902,7 +974,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {VIBE_OPTIONS.map((v) => (
-                  <RefineChip key={v} label={v} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
+                  <RefineChip key={v} label={withCount(v, facetCounts?.vibe.get(v.toLowerCase()))} active={filterVibe.includes(v)} onClick={() => toggleArrayFilter(filterVibe, v, setFilterVibe)} />
                 ))}
               </div>
             </RefineSection>
@@ -914,7 +986,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {MEAL_OPTIONS.map((m) => (
-                  <RefineChip key={m} label={m} active={filterMeal.includes(m)} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} />
+                  <RefineChip key={m} label={withCount(m, facetCounts?.meal.get(m.toLowerCase()))} active={filterMeal.includes(m)} onClick={() => toggleArrayFilter(filterMeal, m, setFilterMeal)} />
                 ))}
               </div>
             </RefineSection>
@@ -926,7 +998,7 @@ const CategoryPage = () => {
             >
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {SEATING_OPTIONS.map((s) => (
-                  <RefineChip key={s} label={s} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
+                  <RefineChip key={s} label={withCount(s, facetCounts?.seating.get(s.toLowerCase()))} active={filterSeating.includes(s)} onClick={() => toggleArrayFilter(filterSeating, s, setFilterSeating)} />
                 ))}
               </div>
             </RefineSection>
@@ -940,8 +1012,8 @@ const CategoryPage = () => {
           onToggle={() => setOpenSection(openSection === "list" ? null : "list")}
         >
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            <RefineChip label="Open Now" active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
-            <RefineChip label="Saved" active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
+            <RefineChip label={withCount("Open Now", facetCounts?.openNow)} active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
+            <RefineChip label={withCount("Saved", facetCounts?.saved)} active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
           </div>
         </RefineSection>
 
