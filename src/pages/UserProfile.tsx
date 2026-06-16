@@ -720,14 +720,14 @@ const UserProfile = () => {
               <button
                 onClick={handleFollowClick}
                 disabled={isPending}
-                aria-label={following ? "Unfollow" : "Follow"}
+                aria-label={following ? "Unfollow" : requested ? "Cancel follow request" : "Follow"}
                 style={{
                   flexShrink: 0,
                   height: 32,
                   padding: "0 14px",
                   borderRadius: 999,
-                  background: following ? "#F2EFE5" : "#1A1A1A",
-                  color: following ? "#1A1A1A" : "#FFFFFF",
+                  background: following || requested ? "#F2EFE5" : "#1A1A1A",
+                  color: following || requested ? "#1A1A1A" : "#FFFFFF",
                   border: `1px solid ${"#1A1A1A"}`,
                   fontFamily: SANS,
                   fontWeight: 600,
@@ -736,7 +736,7 @@ const UserProfile = () => {
                   cursor: "pointer",
                 }}
               >
-                {following ? "Following" : "Follow"}
+                {following ? "Following" : requested ? "Requested" : "Follow"}
               </button>
             )}
           </div>
