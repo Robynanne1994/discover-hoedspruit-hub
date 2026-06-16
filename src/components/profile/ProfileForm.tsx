@@ -163,7 +163,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
         username: trimmedUsername || null,
         phone: phone.trim() || null,
         email: email.trim() || null,
-        bio: bio.trim() || null,
+        
       } as any);
       if (error) {
         // DB unique index is the final guard against a race condition.
