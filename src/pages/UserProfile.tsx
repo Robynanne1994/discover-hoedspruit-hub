@@ -988,6 +988,7 @@ const UserProfile = () => {
           onOpenChange={setReportOpen}
           reportedUserId={id}
           reportedUserName={titleCase(profile?.display_name)}
+          reportedUserHandle={profile?.username ?? null}
         />
       )}
 
