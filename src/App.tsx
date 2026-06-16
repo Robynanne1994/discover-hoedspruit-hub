@@ -45,6 +45,7 @@ import FollowRequests from "./pages/FollowRequests.tsx";
 import UserSaved from "./pages/UserSaved.tsx";
 import EventDetail from "./pages/EventDetail.tsx";
 import AccountInfo from "./pages/AccountInfo.tsx";
+import AccountPrivacy from "./pages/AccountPrivacy.tsx";
 import TermsPolicies from "./pages/TermsPolicies.tsx";
 
 import TermsOfUse from "./pages/TermsOfUse.tsx";
