@@ -10,7 +10,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { GuestAuthProvider, useGuestAuth } from "@/hooks/useGuestAuth";
 import Index from "./pages/Index.tsx";
-import Auth from "./pages/Auth.tsx";
+
 import Welcome from "./pages/Welcome.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
@@ -151,7 +151,7 @@ const App = () => (
               
               <Route path="/specials" element={<Specials />} />
               <Route path="/specials/:id" element={<SpecialDetail />} />
-              <Route path="/auth" element={<Auth />} />
+              <Route path="/auth" element={<Navigate to="/welcome" replace />} />
               <Route path="/my-account" element={<MyAccount />} />
               <Route path="/my-profile" element={<MyProfile />} />
               <Route path="/local-channels" element={<BushTelegraph />} />
