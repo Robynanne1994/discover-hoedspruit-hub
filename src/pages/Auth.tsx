@@ -16,6 +16,8 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [surname, setSurname] = useState("");
   const [accountType, setAccountType] = useState<AccountType>("user");
   const [businessName, setBusinessName] = useState("");
   const [phone, setPhone] = useState("");
@@ -48,7 +50,26 @@ const Auth = () => {
       return toast.error(`${pwError} ${PASSWORD_REQUIREMENTS_TEXT}`);
     }
 
-    const { error } = await signUp(email, password, displayName || businessName || undefined);
+    let error;
+    if (accountType === "business") {
+      ({ error } = await signUp(email, password, {
+        displayName: displayName || businessName || undefined,
+      }));
+    } else {
+      if (!firstName.trim()) {
+        setLoading(false);
+        return toast.error("Please enter your name");
+      }
+      if (!surname.trim()) {
+        setLoading(false);
+        return toast.error("Please enter your surname");
+      }
+      ({ error } = await signUp(email, password, {
+        displayName: `${firstName.trim()} ${surname.trim()}`,
+        firstName: firstName.trim(),
+        surname: surname.trim(),
+      }));
+    }
     if (error) {
       setLoading(false);
       return toast.error(error.message);
@@ -161,19 +182,48 @@ const Auth = () => {
               </>
             )}
 
-            {isSignUp && (
+            {isSignUp && accountType === "business" && (
               <div>
-                <Label htmlFor="displayName">{accountType === "business" ? "Your name (contact)" : "Name"}</Label>
+                <Label htmlFor="displayName">Your name (contact)</Label>
                 <Input
                   id="displayName"
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder={accountType === "business" ? "Contact person" : "Your first name"}
+                  placeholder="Contact person"
                   required
                   maxLength={50}
                 />
               </div>
+            )}
+
+            {isSignUp && accountType === "user" && (
+              <>
+                <div>
+                  <Label htmlFor="firstName">First name</Label>
+                  <Input
+                    id="firstName"
+                    type="text"
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                    placeholder="Your first name"
+                    required
+                    maxLength={50}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="surname">Surname</Label>
+                  <Input
+                    id="surname"
+                    type="text"
+                    value={surname}
+                    onChange={(e) => setSurname(e.target.value)}
+                    placeholder="Your surname"
+                    required
+                    maxLength={50}
+                  />
+                </div>
+              </>
             )}
             <div>
               <Label htmlFor="email">Email</Label>
