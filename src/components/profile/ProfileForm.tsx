@@ -106,7 +106,7 @@ const ProfileForm = ({ profile }: ProfileFormProps) => {
   const [firstName, setFirstName] = useState(profile?.first_name ?? fallbackName.first);
   const [surname, setSurname] = useState(profile?.surname ?? fallbackName.surname);
   const [username, setUsername] = useState((profile as any)?.username || "");
-  const [bio, setBio] = useState(profile?.bio || "");
+  
   const [email, setEmail] = useState(profile?.email || user?.email || "");
   const [phone, setPhone] = useState(profile?.phone || "+27");
   const [uploading, setUploading] = useState(false);
