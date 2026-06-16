@@ -516,6 +516,7 @@ const FollowList = () => {
                 index={i}
                 isFollowedInitially={myFollowingIds?.has(u.id) ?? false}
                 isOwnFollowingPage={!isFollowers && isOwnPage}
+                isSelf={!!authUser && authUser.id === u.id}
               />
             ))}
           </div>
