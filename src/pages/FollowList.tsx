@@ -515,38 +515,40 @@ const FollowList = () => {
         )}
       </div>
 
-      {/* Primary CTA */}
-      <div style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
-        <button
-          onClick={handlePrimaryCta}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: COLOR.ink,
-            color: COLOR.cream,
-            border: "none",
-            borderRadius: 999,
-            padding: "14px 24px",
-            fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 14,
-            cursor: "pointer",
-          }}
-        >
-          {isFollowers ? (
-            <>
-              <ShareIcon size={14} />
-              Share Your Profile
-            </>
-          ) : (
-            <>
-              <Plus size={14} strokeWidth={1.8} />
-              Find People
-            </>
-          )}
-        </button>
-      </div>
+      {/* Primary CTA — only on your own profile */}
+      {isOwnPage && (
+        <div style={{ textAlign: "center", marginTop: 8, marginBottom: 24 }}>
+          <button
+            onClick={handlePrimaryCta}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: COLOR.ink,
+              color: COLOR.cream,
+              border: "none",
+              borderRadius: 999,
+              padding: "14px 24px",
+              fontFamily: SANS,
+              fontWeight: 400,
+              fontSize: 14,
+              cursor: "pointer",
+            }}
+          >
+            {isFollowers ? (
+              <>
+                <ShareIcon size={14} />
+                Share Your Profile
+              </>
+            ) : (
+              <>
+                <Plus size={14} strokeWidth={1.8} />
+                Find People
+              </>
+            )}
+          </button>
+        </div>
+      )}
 
     </div>
   );
