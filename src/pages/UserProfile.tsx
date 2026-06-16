@@ -221,13 +221,10 @@ const UserProfile = () => {
   const { data: saved } = useQuery({
     queryKey: ["user-saved-listings", id],
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "listing")
-        .order("created_at", { ascending: false })
-        .limit(20);
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "listing",
+      });
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: listings } = await supabase
@@ -258,13 +255,10 @@ const UserProfile = () => {
   const { data: savedEvents } = useQuery({
     queryKey: ["user-saved-events", id],
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "event")
-        .order("created_at", { ascending: false })
-        .limit(20);
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "event",
+      });
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: events } = await supabase
@@ -281,13 +275,10 @@ const UserProfile = () => {
   const { data: savedSpecials } = useQuery({
     queryKey: ["user-saved-specials", id],
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "special")
-        .order("created_at", { ascending: false })
-        .limit(20);
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "special",
+      });
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: specials } = await supabase
@@ -304,13 +295,10 @@ const UserProfile = () => {
   const { data: savedResources } = useQuery({
     queryKey: ["user-saved-resources", id],
     queryFn: async () => {
-      const { data: favs } = await supabase
-        .from("favourites")
-        .select("item_id, created_at")
-        .eq("user_id", id!)
-        .eq("item_type", "resource")
-        .order("created_at", { ascending: false })
-        .limit(20);
+      const { data: favs } = await supabase.rpc("get_user_favourites", {
+        _user_id: id!,
+        _item_type: "resource",
+      });
       if (!favs?.length) return [];
       const ids = favs.map((f) => f.item_id);
       const { data: resources } = await supabase
@@ -329,12 +317,7 @@ const UserProfile = () => {
     queryKey: ["user-activity", id],
     queryFn: async () => {
       const [{ data: favs }, { data: visits }] = await Promise.all([
-        supabase
-          .from("favourites")
-          .select("item_id, item_type, created_at")
-          .eq("user_id", id!)
-          .order("created_at", { ascending: false })
-          .limit(200),
+        supabase.rpc("get_user_favourites", { _user_id: id! }),
         supabase.rpc("get_user_been_here", { _user_id: id! }),
       ]);
       const listingIds = new Set<string>();
@@ -790,12 +773,9 @@ const UserProfile = () => {
                 flexDirection: "column",
                 alignItems: "center",
                 textDecoration: "none",
-                borderLeft: i === 0 ? "none" : `1px solid #1A1A1A`,
                 background: "transparent",
-                border: i === 0 ? "none" : undefined,
-                borderTop: "none",
-                borderRight: "none",
-                borderBottom: "none",
+                border: "none",
+                borderLeft: i === 0 ? "none" : `1px solid #1A1A1A`,
                 padding: 0,
                 cursor: "pointer",
                 font: "inherit",
