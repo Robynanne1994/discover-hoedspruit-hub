@@ -255,7 +255,7 @@ const UserSaved = () => {
 
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: SANS, color: INK }}>
-      <Seo title={`${displayName}'s Saved — Hello Hoedspruit`} path={`/profile/${id}/saved`} noIndex />
+      <Seo title={`${displayName}'s Saved — Hello Hoedspruit`} description={`See what ${displayName} has saved on Hello Hoedspruit.`} path={`/profile/${id}/saved`} noIndex />
       <PageHeader title="Saved" />
 
       {/* Whose saved this is */}
