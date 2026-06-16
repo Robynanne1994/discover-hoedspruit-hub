@@ -459,7 +459,7 @@ const UserProfile = () => {
             {[
               { label: (counts?.followers ?? 0) === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: `/profile/${id}/followers`, clickable: true },
               { label: "FOLLOWING", value: counts?.following ?? 0, to: `/profile/${id}/following`, clickable: true },
-              { label: "SAVED", value: savedCount ?? 0, to: "#", clickable: false },
+              { label: "SAVED", value: savedCount ?? 0, to: `/profile/${id}/saved`, clickable: true },
             ].map((s, i) => {
               const inner = (
                 <>
