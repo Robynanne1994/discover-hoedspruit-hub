@@ -333,6 +333,46 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                           {n.body}
                         </p>
                       )}
+                      {n.kind === "follow_request" && n.ref_id && (
+                        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                          <button
+                            onClick={(e) => respondFollowRequest(n, true, e)}
+                            style={{
+                              height: 30,
+                              padding: "0 14px",
+                              borderRadius: 999,
+                              background: INK,
+                              color: CREAM,
+                              border: "none",
+                              cursor: "pointer",
+                              fontFamily: SANS,
+                              fontSize: 12,
+                              fontWeight: 600,
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                            }}
+                          >
+                            <Check size={13} strokeWidth={2.4} /> Accept
+                          </button>
+                          <button
+                            onClick={(e) => respondFollowRequest(n, false, e)}
+                            style={{
+                              height: 30,
+                              padding: "0 14px",
+                              borderRadius: 999,
+                              background: "transparent",
+                              color: INK,
+                              border: `1px solid ${LINE}`,
+                              cursor: "pointer",
+                              fontFamily: SANS,
+                              fontSize: 12,
+                              fontWeight: 600,
+                            }}
+                          >
+                            Decline
+                          </button>
+                        </div>
                     </div>
                   </div>
                 </button>
