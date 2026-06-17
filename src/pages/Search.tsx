@@ -258,10 +258,11 @@ interface RowProps {
   title: string;
   titleOverride?: string | null;
   subtitle?: string | null;
+  subtitle2?: string | null;
   thumb?: "round" | "square";
   action?: React.ReactNode;
 }
-const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square", action }: RowProps) => {
+const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb = "square", action }: RowProps) => {
   const hasOverride = !!(titleOverride && titleOverride.trim());
   const display = hasOverride ? titleOverride!.trim() : title;
   return (
@@ -317,7 +318,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square"
           style={{
             margin: "2px 0 0",
             fontFamily: FONT,
-            fontSize: 13,
+            fontSize: subtitle2 ? 11 : 13,
             color: "rgba(18,18,20,0.5)",
             letterSpacing: "0.01em",
             overflow: "hidden",
@@ -326,6 +327,22 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square"
           }}
         >
           {subtitle}
+        </p>
+      )}
+      {subtitle2 && (
+        <p
+          style={{
+            margin: "1px 0 0",
+            fontFamily: FONT,
+            fontSize: 11,
+            color: "rgba(18,18,20,0.5)",
+            letterSpacing: "0.01em",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {subtitle2}
         </p>
       )}
     </div>
@@ -640,7 +657,8 @@ const EventsResults = ({ query }: { query: string }) => {
           image={e.image_url}
           title={e.title}
           titleOverride={(e as any).title_override}
-          subtitle={[e.date, e.location].filter(Boolean).join(" · ")}
+          subtitle={e.date || null}
+          subtitle2={e.location || null}
           action={<InlineSaveButton itemId={e.id} itemType="event" />}
         />
       ))}
@@ -702,7 +720,8 @@ const SpecialsResults = ({ query }: { query: string }) => {
           image={s.image_url}
           title={s.title}
           titleOverride={(s as any).title_override}
-          subtitle={[s.deal_label, s.business_name].filter(Boolean).join(" · ")}
+          subtitle={s.deal_label || null}
+          subtitle2={s.business_name || null}
           action={<InlineSaveButton itemId={s.id} itemType="special" />}
         />
       ))}
