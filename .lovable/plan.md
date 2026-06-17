@@ -1,59 +1,88 @@
-## What’s causing the flashing/jumping
+# Admin User-Report Moderation Workflow
 
-It is probably **not just the splash screen** anymore. The splash component is no longer rendered, but it is still imported and the bigger remaining causes are:
+Today `AdminUserReports.tsx` lets you mark reports read/reviewed/dismissed or delete them. There is no way to act on the reported user, no audit trail, no warning/suspension/ban mechanism, and reporters never hear back. This plan adds a complete, repeatable moderation workflow.
 
-1. **Every card heart button runs its own favourite query**
-   - On category pages I saw dozens of duplicate `favourites?select=id...` requests after one click/navigation.
-   - This makes the page repaint heavily and can look like a flash.
+## Suggested admin process (the human side)
 
-2. **Global title-case components still mutate real DOM text**
-   - `TitleCaseH1` and `TitleCaseH2` scan and rewrite headings after route changes.
-   - Even without the old MutationObserver, direct DOM text rewrites can still cause visible text “tweaks”.
+When a "new user report" notification arrives, work the report in this order:
 
-3. **Global scroll-to-top fires on every route change**
-   - This is expected for navigation, but if a click changes query params or redirects, it can feel like a jump.
+1. **Triage (≤30 s)** — Open Admin → Reported Users. Read reason + detail. Check if the same reported user has other open or past reports (repeat offender heuristic).
+2. **Gather evidence** — From the report card, jump to:
+   - Reported user's public profile (already linked)
+   - Their recent reviews, listings/events submitted, follow activity
+   - Reporter's profile (to spot retaliatory/bad-faith reports)
+3. **Decide severity**
+   - *No violation* → **Dismiss** with a one-line admin note.
+   - *Minor* (rude tone, low-quality content) → **Warn** the user (in-app notification) + note.
+   - *Moderate* (harassment, repeated spam, misleading listing) → **Suspend** for N days (default 7). User can sign in but cannot post reviews, submit listings/events, follow, or report.
+   - *Severe* (hate speech, threats, impersonation, scam, CSAM-adjacent) → **Ban** permanently. Same restrictions, plus profile hidden from search/discovery.
+   - *Content-specific* (one bad review, one bad listing edit) → leave account alone, **remove the offending content** via existing admin pages, then resolve report.
+4. **Notify the reporter** — One-click "Thanks, we acted" or "Thanks, no action needed" message so users feel heard and keep reporting.
+5. **Resolve** — Set status to `reviewed` / `dismissed`. The action and note are written to an audit log so the next admin can see the history if the user is reported again.
+6. **Escalation rule** — Any user with ≥3 upheld reports in 30 days auto-flags for ban review at the top of the queue.
 
-4. **Large page/layout shifts on initial rendering**
-   - Performance profiling shows poor layout shift and a very large logo image resource, so when data/images arrive the layout can move.
+## What gets built
 
-## Fix plan
+### 1. Schema (one migration)
 
-### 1. Remove the splash screen completely
-- Remove the unused `LoadingSplash` import from `src/App.tsx`.
-- Optionally delete `src/components/LoadingSplash.tsx` if nothing imports it.
-- Keep auth routing instant: never show a full-screen loading splash during normal app clicks.
+- Add to `user_reports`:
+  - `severity text` (`none|minor|moderate|severe`)
+  - `action_taken text` (`none|warned|content_removed|suspended|banned`)
+  - widen `status` allowed values to include `reviewed` and `dismissed` (already used in code)
+- Add columns to `profiles`:
+  - `moderation_status text default 'active'` (`active|warned|suspended|banned`)
+  - `suspended_until timestamptz`
+  - `moderation_reason text`
+- New table `moderation_actions` (audit log): `target_user_id`, `actor_admin_id`, `action` (`warn|suspend|unsuspend|ban|unban|note|content_removed`), `reason`, `duration_days`, `related_report_id`, `created_at`. Admin-only RLS.
+- Trigger / RPC `apply_moderation_action(report_id, action, severity, duration_days, admin_note, notify_reporter_message)` (security definer) that, in one transaction:
+  - updates the profile flags,
+  - updates the report (`status`, `severity`, `action_taken`, `admin_note`, `resolved_at`, `is_read`),
+  - inserts a row in `moderation_actions`,
+  - inserts a `business_notifications` row for the reported user ("Your account has been warned/suspended/banned — reason: …"),
+  - optionally inserts a `business_notifications` row for the reporter ("Thanks — we reviewed your report and …").
+- Helper RPC `get_user_moderation_summary(_user_id)` returning open report count, total reports, current status, last action — for the admin card.
 
-### 2. Stop global title DOM rewriting
-- Remove `TitleCaseH1` and `TitleCaseH2` from `src/App.tsx`.
-- Stop relying on global DOM mutation for heading text.
-- Keep existing CSS text-transform rules and existing `DisplayTitle`/`getDisplayTitle` logic where titles need controlled casing.
+### 2. Enforcement (where the flags actually bite)
 
-### 3. Replace per-card favourite queries with shared cached favourite IDs
-- Update `FavouriteButton` to read from the existing shared `['favourites', user.id]` cache instead of querying one row per card.
-- Add optimistic updates so heart clicks change instantly without forcing every card to refetch.
-- Keep targeted invalidation, but avoid broad invalidation that causes whole sections to repaint.
+A new `useModerationStatus()` hook + a tiny `requireActiveAccount()` guard called inside the existing mutation paths:
 
-### 4. Apply the same favourite-query pattern to category/search/special cards
-- Category page currently has its own local favourite button with one query per listing.
-- Search and Specials also have local favourite logic.
-- Convert them to use shared saved IDs / optimistic updates so clicking hearts doesn’t trigger a cascade of network calls.
+- Posting a review (`reviews` insert)
+- Submitting a listing/event/special (`*_pending` inserts)
+- Following a user (`follows` insert)
+- Submitting a report (`user_reports` insert)
+- Sending feedback / contact
 
-### 5. Make scroll-to-top less jumpy
-- Update `ScrollToTop` so it only scrolls on actual pathname changes, not harmless query/search changes.
-- Use `requestAnimationFrame` to avoid fighting route layout during render.
+If `moderation_status = 'banned'` → block. If `'suspended'` and `suspended_until > now()` → block with a clear toast: "Your account is suspended until <date>." A daily cron-style edge function (or a trigger on read) auto-clears expired suspensions back to `active`.
 
-### 6. Verify in preview
-- Test homepage, category pages, specials, search, and profile interactions.
-- Confirm: no splash screen, no white flash, no heading tweak, no mass duplicate favourite requests after one click.
+Search/discovery RPCs (`search_public_profiles`, `get_followers`, `get_following`, suggested users) get a `WHERE moderation_status <> 'banned'` filter so banned accounts disappear from passive discovery.
+
+### 3. Admin UI changes
+
+`AdminUserReports.tsx`:
+
+- New "Other reports about this user" inline chip showing count, clickable to filter to that user.
+- New **Act on user** dropdown on each report card with: Warn, Suspend 1d / 7d / 30d / custom, Ban, Remove content only, Dismiss. Each opens a small dialog with required admin note + optional reporter message, then calls `apply_moderation_action`.
+- Reported-user line shows a colored pill for current `moderation_status` (`active` / `warned` / `suspended until X` / `banned`).
+- New filter tab: **Repeat offenders** (users with ≥2 pending reports).
+- "Moderation history" expandable section per card showing rows from `moderation_actions` for the reported user.
+
+New admin page `AdminModeratedUsers.tsx` (link from Admin sidebar): list of currently warned/suspended/banned users with an **Unsuspend / Unban** button (also writes to audit log).
+
+### 4. User-facing surfaces
+
+- Banned/suspended users see a small banner on their own profile and on the sign-in success screen explaining status and (for suspensions) the end date — pulled from `profiles.moderation_status` + `suspended_until` + `moderation_reason`.
+- Reporters get a notification in their existing notifications inbox when their report is actioned or dismissed, closing the loop.
 
 ## Technical notes
 
-Main files to change:
-- `src/App.tsx`
-- `src/components/FavouriteButton.tsx`
-- `src/components/ScrollToTop.tsx`
-- `src/pages/CategoryPage.tsx`
-- `src/pages/Search.tsx`
-- `src/pages/Specials.tsx`
+- All RLS additions: `moderation_actions` admin-only select/insert; `profiles.moderation_status` readable by everyone (already public columns); writable only by the RPC (security definer, checks `has_role(auth.uid(),'admin')`).
+- The single `apply_moderation_action` RPC keeps the client simple and the audit trail guaranteed — admin UI never writes profile flags directly.
+- No change to existing `business_notifications` schema; we reuse `kind = 'moderation'` for outgoing messages and `kind = 'report_update'` for reporter feedback.
+- Expired-suspension cleanup: cheap nightly edge function `clear-expired-suspensions` running `UPDATE profiles SET moderation_status='active', suspended_until=NULL WHERE moderation_status='suspended' AND suspended_until < now()`.
 
-Expected result: clicks should feel stable because the app will stop remounting/loading large chunks of UI and stop re-querying favourite state once per visible card.
+## Out of scope (flag for later if you want)
+
+- Appeals flow for banned users
+- Email (not just in-app) notifications to actioned users
+- Shadow-banning (content visible only to the author)
+- IP/device-level blocks

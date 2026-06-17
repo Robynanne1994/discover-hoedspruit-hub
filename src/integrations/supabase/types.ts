@@ -1376,6 +1376,39 @@ export type Database = {
         }
         Relationships: []
       }
+      moderation_actions: {
+        Row: {
+          action: string
+          actor_admin_id: string | null
+          created_at: string
+          duration_days: number | null
+          id: string
+          reason: string | null
+          related_report_id: string | null
+          target_user_id: string
+        }
+        Insert: {
+          action: string
+          actor_admin_id?: string | null
+          created_at?: string
+          duration_days?: number | null
+          id?: string
+          reason?: string | null
+          related_report_id?: string | null
+          target_user_id: string
+        }
+        Update: {
+          action?: string
+          actor_admin_id?: string | null
+          created_at?: string
+          duration_days?: number | null
+          id?: string
+          reason?: string | null
+          related_report_id?: string | null
+          target_user_id?: string
+        }
+        Relationships: []
+      }
       notification_groups: {
         Row: {
           created_at: string
@@ -1550,8 +1583,11 @@ export type Database = {
           id: string
           is_private: boolean
           location: string | null
+          moderation_reason: string | null
+          moderation_status: string
           phone: string | null
           surname: string | null
+          suspended_until: string | null
           updated_at: string
           username: string | null
         }
@@ -1565,8 +1601,11 @@ export type Database = {
           id: string
           is_private?: boolean
           location?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string
           phone?: string | null
           surname?: string | null
+          suspended_until?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -1580,8 +1619,11 @@ export type Database = {
           id?: string
           is_private?: boolean
           location?: string | null
+          moderation_reason?: string | null
+          moderation_status?: string
           phone?: string | null
           surname?: string | null
+          suspended_until?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -1895,6 +1937,7 @@ export type Database = {
       }
       user_reports: {
         Row: {
+          action_taken: string
           admin_note: string | null
           created_at: string
           detail: string
@@ -1906,9 +1949,11 @@ export type Database = {
           reporter_name: string | null
           reporter_user_id: string | null
           resolved_at: string | null
+          severity: string | null
           status: string
         }
         Insert: {
+          action_taken?: string
           admin_note?: string | null
           created_at?: string
           detail: string
@@ -1920,9 +1965,11 @@ export type Database = {
           reporter_name?: string | null
           reporter_user_id?: string | null
           resolved_at?: string | null
+          severity?: string | null
           status?: string
         }
         Update: {
+          action_taken?: string
           admin_note?: string | null
           created_at?: string
           detail?: string
@@ -1934,6 +1981,7 @@ export type Database = {
           reporter_name?: string | null
           reporter_user_id?: string | null
           resolved_at?: string | null
+          severity?: string | null
           status?: string
         }
         Relationships: []
@@ -1961,7 +2009,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_moderation_action: {
+        Args: {
+          _action: string
+          _admin_note?: string
+          _duration_days?: number
+          _notify_reporter_message?: string
+          _report_id: string
+          _severity?: string
+          _target_user_id?: string
+        }
+        Returns: undefined
+      }
+      assert_account_active: { Args: { _user_id: string }; Returns: undefined }
       claim_business_owner_role: { Args: never; Returns: undefined }
+      clear_expired_suspensions: { Args: never; Returns: number }
       get_been_here_count: { Args: { _listing_id: string }; Returns: number }
       get_follow_counts: {
         Args: { _user_id: string }
@@ -2019,6 +2081,18 @@ export type Database = {
           item_id: string
           item_type: string
           user_id: string
+        }[]
+      }
+      get_user_moderation_summary: {
+        Args: { _user_id: string }
+        Returns: {
+          last_action: string
+          last_action_at: string
+          moderation_status: string
+          pending_reports: number
+          recent_upheld: number
+          suspended_until: string
+          total_reports: number
         }[]
       }
       get_user_saved_count: { Args: { _user_id: string }; Returns: number }

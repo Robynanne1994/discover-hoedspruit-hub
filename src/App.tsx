@@ -13,6 +13,7 @@ import Index from "./pages/Index.tsx";
 
 import Welcome from "./pages/Welcome.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
+import ModerationBanner from "./components/ModerationBanner.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminNotifications from "./pages/admin/AdminNotifications.tsx";
@@ -84,6 +85,7 @@ import AdminUsers from "./pages/admin/AdminUsers.tsx";
 import AdminSubmissions from "./pages/admin/AdminSubmissions.tsx";
 import AdminReports from "./pages/admin/AdminReports.tsx";
 import AdminUserReports from "./pages/admin/AdminUserReports.tsx";
+import AdminModeratedUsers from "./pages/admin/AdminModeratedUsers.tsx";
 import AdminFAQs from "./pages/admin/AdminFAQs.tsx";
 import { useLocation } from "react-router-dom";
 
@@ -137,6 +139,7 @@ const App = () => (
         <BrowserRouter>
           <GuestAuthProvider>
             <AuthGate>
+              <ModerationBanner />
               <main>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -202,6 +205,7 @@ const App = () => (
                 <Route path="submissions" element={<AdminSubmissions />} />
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="user-reports" element={<AdminUserReports />} />
+                <Route path="moderated-users" element={<AdminModeratedUsers />} />
                 <Route path="faqs" element={<AdminFAQs />} />
               </Route>
               <Route path="/business/sign-in" element={<BusinessSignIn />} />
