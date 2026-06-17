@@ -63,6 +63,14 @@ const StatusPill = ({ status }: { status: string }) => {
   );
 };
 
+const SHEET_BG = "#f5f0e8";
+const HEADING = "#020202";
+const BODY = "#2b2420";
+const LABEL = "#8a7a63";
+const DIVIDER = "#e2dccb";
+const NOTE_BG = "#ede6d5";
+const NOTE_BORDER = "#d9d0bb";
+
 const ReportDetailSheet = ({
   open,
   onClose,
@@ -79,23 +87,36 @@ const ReportDetailSheet = ({
 
   const labelStyle: CSSProperties = {
     fontFamily: FF,
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 700,
-    letterSpacing: "0.1em",
+    letterSpacing: "0.12em",
     textTransform: "uppercase",
-    color: "#423324",
+    color: LABEL,
     marginBottom: 8,
     display: "block",
   };
   const valueStyle: CSSProperties = {
     fontFamily: FF,
-    fontSize: 14.5,
-    fontWeight: 400,
-    color: INK,
-    lineHeight: 1.55,
-    whiteSpace: "pre-wrap",
+    fontSize: 17,
+    fontWeight: 700,
+    color: HEADING,
+    lineHeight: 1.4,
     margin: 0,
   };
+  const divider = (
+    <div style={{ height: 1, background: DIVIDER, margin: "20px 0" }} />
+  );
+
+  const responseText = report.admin_message
+    ? report.admin_message
+    : report.admin_note && report.status !== "pending"
+    ? report.admin_note
+    : report.status === "pending"
+    ? "Our team hasn't responded yet. You'll see their message here once they review your report."
+    : "Our team reviewed your report but didn't leave a written message.";
+
+  const reasonText =
+    report.reason === "Harassment or bullying" ? "Harassment or Bullying" : report.reason;
 
   return (
     <div
@@ -116,105 +137,190 @@ const ReportDetailSheet = ({
         style={{
           fontFamily: FF,
           width: "100%",
-          background: "#ffffff",
+          background: SHEET_BG,
           borderRadius: "20px 20px 0 0",
-          padding: "20px 20px 32px",
+          padding: "10px 24px 32px",
           animation: "rd-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
-          maxHeight: "90vh",
+          maxHeight: "92vh",
           overflowY: "auto",
+          position: "relative",
         }}
       >
         <style>{`@keyframes rd-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
+
+        {/* Grab handle */}
         <div
           style={{
+            width: 44,
+            height: 5,
+            background: "#cdc4ad",
+            borderRadius: 999,
+            margin: "6px auto 14px",
+          }}
+        />
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          style={{
+            position: "absolute",
+            top: 18,
+            right: 20,
+            border: "none",
+            background: "#e4ddc8",
+            cursor: "pointer",
+            width: 32,
+            height: 32,
+            borderRadius: "50%",
             display: "flex",
-            justifyContent: "flex-end",
             alignItems: "center",
-            marginBottom: 8,
+            justifyContent: "center",
+            padding: 0,
           }}
         >
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}
-          >
-            <X size={20} color={INK} strokeWidth={1.75} />
-          </button>
+          <X size={16} color={HEADING} strokeWidth={2} />
+        </button>
+
+        {/* Header: avatar + name */}
+        <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "8px 0 4px" }}>
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              borderRadius: "50%",
+              background: "#EAE4D5",
+              flexShrink: 0,
+              backgroundImage: report.profile?.avatar_url
+                ? `url(${report.profile.avatar_url})`
+                : undefined,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontFamily: FF, fontSize: 22, fontWeight: 700, color: HEADING, lineHeight: 1.15 }}>
+              {label}
+            </div>
+            {handle && (
+              <div style={{ fontFamily: FF, fontSize: 14, color: LABEL, marginTop: 2 }}>
+                {handle}
+              </div>
+            )}
+          </div>
         </div>
 
-        <h2
-          style={{
-            fontFamily: FF,
-            fontWeight: 400,
-            fontSize: 22,
-            color: INK,
-            margin: "0 0 4px",
-          }}
-        >
-          Report on {label}
-        </h2>
-        {handle && (
-          <p style={{ fontFamily: FF, fontSize: 13, color: MUTED, margin: "0 0 16px" }}>
-            {handle}
-          </p>
+        {divider}
+
+        {/* REPORT STATUS */}
+        <div>
+          <span style={labelStyle}>REPORT STATUS</span>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: BROWN,
+              color: "#f5f0e8",
+              padding: "8px 14px",
+              borderRadius: 999,
+              fontFamily: FF,
+              fontSize: 14,
+              fontWeight: 700,
+            }}
+          >
+            <CheckCircle2 size={16} strokeWidth={2} />
+            {STATUS_META[report.status]?.label ?? "Pending review"}
+          </span>
+        </div>
+
+        {divider}
+
+        {/* REASON */}
+        <div>
+          <span style={labelStyle}>REASON</span>
+          <p style={valueStyle}>{reasonText}</p>
+        </div>
+
+        {/* REASON NOTE */}
+        <div style={{ marginTop: 18 }}>
+          <span style={labelStyle}>REASON NOTE</span>
+          <div
+            style={{
+              background: NOTE_BG,
+              border: `1px solid ${NOTE_BORDER}`,
+              borderRadius: 14,
+              padding: "14px 16px",
+              fontFamily: FF,
+              fontSize: 15,
+              color: BODY,
+              lineHeight: 1.55,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {report.detail?.trim()
+              ? report.detail
+              : "You didn't add any extra details with this report."}
+          </div>
+        </div>
+
+        {divider}
+
+        {/* REPORT OUTCOME */}
+        {report.action_taken && report.action_taken !== "none" && (
+          <div style={{ marginBottom: 18 }}>
+            <span style={labelStyle}>REPORT OUTCOME</span>
+            <p style={valueStyle}>{ACTION_LABEL[report.action_taken] ?? report.action_taken}</p>
+          </div>
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-          <div>
-            <span style={labelStyle}>REPORT STATUS</span>
-            <StatusPill status={report.status} />
+        {/* RESPONSE */}
+        <div>
+          <span style={labelStyle}>HELLO HOEDSPRUIT'S RESPONSE</span>
+          <div
+            style={{
+              background: BROWN,
+              borderRadius: 14,
+              padding: "14px 16px",
+              fontFamily: FF,
+              fontSize: 15,
+              color: "#f5f0e8",
+              lineHeight: 1.55,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {responseText}
           </div>
+        </div>
 
-          <div>
-            <span style={labelStyle}>Reason</span>
-            <p style={valueStyle}>
-              {report.reason === "Harassment or bullying" ? "Harassment or Bullying" : report.reason}
-            </p>
-          </div>
+        {divider}
 
-          <div>
-            <span style={labelStyle}>REASON NOTE</span>
-            <p style={valueStyle}>
-              {report.detail?.trim()
-                ? report.detail
-                : "You didn't add any extra details with this report."}
-            </p>
-          </div>
-
-          {report.action_taken && report.action_taken !== "none" && (
-            <div>
-              <span style={labelStyle}>REPORT OUTCOME</span>
-              <p style={valueStyle}>{ACTION_LABEL[report.action_taken] ?? report.action_taken}</p>
-            </div>
-          )}
-
-          <div>
-            <span style={labelStyle}>HELLO HOEDSPRUIT'S RESPONSE</span>
-            <p style={valueStyle}>
-              {report.admin_message
-                ? report.admin_message
-                : report.admin_note && report.status !== "pending"
-                ? report.admin_note
-                : report.status === "pending"
-                ? "Our team hasn't responded yet. You'll see their message here once they review your report."
-                : "Our team reviewed your report but didn't leave a written message."}
-            </p>
-          </div>
-
-          <div>
-            <span style={labelStyle}>DATE & TIME SUBMITTED</span>
-            <p style={valueStyle}>{fmtDate(report.created_at)}</p>
+        {/* Submitted / Resolved rows */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+              <Calendar size={16} color={LABEL} strokeWidth={2} />
+              <span style={{ ...labelStyle, marginBottom: 0 }}>SUBMITTED</span>
+            </span>
+            <span style={{ fontFamily: FF, fontSize: 14.5, fontWeight: 700, color: HEADING }}>
+              {fmtDate(report.created_at)}
+            </span>
           </div>
 
           {report.resolved_at && (
-            <div>
-              <span style={labelStyle}>DATE & TIME RESOLVED</span>
-              <p style={valueStyle}>{fmtDate(report.resolved_at)}</p>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                <Check size={16} color={LABEL} strokeWidth={2.25} />
+                <span style={{ ...labelStyle, marginBottom: 0 }}>RESOLVED</span>
+              </span>
+              <span style={{ fontFamily: FF, fontSize: 14.5, fontWeight: 700, color: HEADING }}>
+                {fmtDate(report.resolved_at)}
+              </span>
             </div>
           )}
 
           {report.status === "pending" && (
-            <p style={{ fontFamily: FF, fontSize: 13, color: MUTED, margin: 0, lineHeight: 1.55 }}>
+            <p style={{ fontFamily: FF, fontSize: 13, color: LABEL, margin: "4px 0 0", lineHeight: 1.55 }}>
               {report.is_read
                 ? "Our team has seen this report and is reviewing it."
                 : "Our team will review this report shortly."}
