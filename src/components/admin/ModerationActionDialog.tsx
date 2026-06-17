@@ -57,9 +57,10 @@ type Props = {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   reportId?: string | null;
+  targetUserId?: string | null;
   reportedUserLabel?: string;
   action: ModerationAction;
-  reporterIsUser?: boolean; // only show reporter note when there is a registered reporter
+  reporterIsUser?: boolean;
 };
 
 const ModerationActionDialog = ({
