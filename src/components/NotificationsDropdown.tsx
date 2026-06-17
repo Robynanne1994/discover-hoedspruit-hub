@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Bell, X, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useFollowRequestActors } from "@/hooks/useFollowRequestActors";
 
 const INK = "#2A2A24";
 const CREAM = "#EEE8DA";
@@ -93,6 +94,9 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
   }, [open]);
 
   const unread = notifs.filter((n) => !n.is_read).length;
+
+  const followRequestRefIds = notifs.filter((n) => n.kind === "follow_request" && n.ref_id).map((n) => n.ref_id as string);
+  const actorMap = useFollowRequestActors(followRequestRefIds);
 
   const onRowClick = async (n: Notif) => {
     setOpen(false);
