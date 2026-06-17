@@ -772,7 +772,7 @@ const UserProfile = () => {
             >
               {requested
                 ? "Your follow request is awaiting approval."
-                : "Follow this account to see their saved places, events, specials and resources."}
+                : "Follow this account to see their saved places, events, specials and resources. Please note, they will first need to approve your follow request."}
             </p>
           </div>
         </div>
