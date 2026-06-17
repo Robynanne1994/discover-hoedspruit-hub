@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Bell, Search } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import hhLogo from "@/assets/hh-logo.png";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
