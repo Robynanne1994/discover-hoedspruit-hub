@@ -2029,6 +2029,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_username_available: {
+        Args: { _exclude_id?: string; _username: string }
+        Returns: boolean
+      }
       search_public_profiles: {
         Args: { _limit?: number; _term: string }
         Returns: {
