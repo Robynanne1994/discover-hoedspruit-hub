@@ -2021,6 +2021,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      assert_account_active: { Args: { _user_id: string }; Returns: undefined }
       claim_business_owner_role: { Args: never; Returns: undefined }
       clear_expired_suspensions: { Args: never; Returns: number }
       get_been_here_count: { Args: { _listing_id: string }; Returns: number }
