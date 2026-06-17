@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useGuestAuth } from "@/hooks/useGuestAuth";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,6 +68,7 @@ type ActiveSection = null | "profile" | "favourites" | "collections" | "been-her
 
 const MyAccount = () => {
   const { user, signOut, loading, isAdmin } = useAuth();
+  const { isGuest, exitGuest } = useGuestAuth();
   const { isOwner: isBusinessOwner, listing: ownedListing } = useBusinessOwner();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -77,8 +79,8 @@ const MyAccount = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    if (!loading && !user) navigate("/auth");
-  }, [user, loading, navigate]);
+    if (!loading && !user && !isGuest) navigate("/welcome");
+  }, [user, loading, isGuest, navigate]);
 
   useEffect(() => {
     if (!user) { setUnreadCount(0); return; }
