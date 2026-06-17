@@ -138,6 +138,7 @@ const App = () => (
         <BrowserRouter>
           <GuestAuthProvider>
             <AuthGate>
+              <ModerationBanner />
               <main>
               <Routes>
                 <Route path="/" element={<Index />} />
