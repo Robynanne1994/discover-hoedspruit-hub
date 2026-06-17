@@ -33,7 +33,7 @@ const Search = () => {
   const fromProfileState = (location.state as { fromProfile?: boolean; profileId?: string } | null) ?? null;
   const fromProfile = !!fromProfileState?.fromProfile;
   const profileId = fromProfileState?.profileId;
-  const [topTab, setTopTab] = useState<TopTab>("users");
+  const [topTab, setTopTab] = useState<TopTab>("businesses");
   const [userSub, setUserSub] = useState<UserSub>("suggested");
   const [bizSub, setBizSub] = useState<BizSub>("listings");
   const [query, setQuery] = useState("");
@@ -64,7 +64,7 @@ const Search = () => {
 
       {/* Top tabs: Users / Businesses */}
       <div style={{ display: "flex", padding: "4px 20px 0", gap: 0, borderBottom: `1px solid ${DIVIDER}` }}>
-        {(["users", "businesses"] as TopTab[]).map((t) => {
+        {(["businesses", "users"] as TopTab[]).map((t) => {
           const active = topTab === t;
           return (
             <button
