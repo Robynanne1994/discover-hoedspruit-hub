@@ -84,6 +84,7 @@ import AdminUsers from "./pages/admin/AdminUsers.tsx";
 import AdminSubmissions from "./pages/admin/AdminSubmissions.tsx";
 import AdminReports from "./pages/admin/AdminReports.tsx";
 import AdminUserReports from "./pages/admin/AdminUserReports.tsx";
+import AdminModeratedUsers from "./pages/admin/AdminModeratedUsers.tsx";
 import AdminFAQs from "./pages/admin/AdminFAQs.tsx";
 import { useLocation } from "react-router-dom";
 
