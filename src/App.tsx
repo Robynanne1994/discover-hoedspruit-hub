@@ -13,6 +13,7 @@ import Index from "./pages/Index.tsx";
 
 import Welcome from "./pages/Welcome.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
+import ModerationBanner from "./components/ModerationBanner.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
 import AdminNotifications from "./pages/admin/AdminNotifications.tsx";
