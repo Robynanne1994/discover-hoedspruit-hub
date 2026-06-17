@@ -40,13 +40,17 @@ const AccountBlocked = () => {
     },
   });
 
-  const unblock = async (id: string) => {
+  const unblock = async (id: string, blockedId: string) => {
     const { error } = await supabase.from("user_blocks").delete().eq("id", id);
     if (error) {
       toast.error("Could not unblock. Please try again.");
       return;
     }
+    queryClient.setQueryData(["user-blocked", user?.id, blockedId], false);
     queryClient.invalidateQueries({ queryKey: ["user-blocks"] });
+    queryClient.invalidateQueries({ queryKey: ["blocked-users", user?.id] });
+    queryClient.invalidateQueries({ queryKey: ["blocked-by"] });
+    queryClient.invalidateQueries({ queryKey: ["search-users"] });
     toast.success("Unblocked.");
   };
 
