@@ -93,7 +93,7 @@ const AccountBlocked = () => {
                 </div>
                 <button
                   type="button"
-                  onClick={() => unblock(b.id)}
+                  onClick={() => unblock(b.id, b.blocked_id)}
                   style={{
                     fontFamily: FF, fontSize: 13, color: "#715a3d",
                     background: "transparent", border: `1px solid #715a3d`,
