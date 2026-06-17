@@ -364,6 +364,12 @@ const MyProfile = () => {
     </div>
   );
 
+  // Guests (and signed-out users) never see the profile card with its
+  // saved / followers / following stats. The effect above redirects them —
+  // guests to the account settings page, everyone else to Welcome — so we
+  // render nothing here to avoid flashing the card during that transition.
+  if (!user) return null;
+
   return (
     <div
       style={{
