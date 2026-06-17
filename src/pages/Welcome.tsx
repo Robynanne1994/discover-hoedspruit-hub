@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 import Seo from "@/components/Seo";
+import PageHeader from "@/components/PageHeader";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 
@@ -217,29 +218,20 @@ const Welcome = () => {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "#f5f0e8" }}>
-      <div className="px-6 pt-14 pb-4 relative z-10">
-        <button
-          type="button"
-          onClick={() => setMode("welcome")}
-          aria-label="Back"
-          className="text-foreground active:scale-95 transition-transform p-2 -ml-2"
-        >
-          <ArrowLeft className="lucide lucide-arrow-left" style={{ width: 24, height: 24, color: "#020202" }} />
-        </button>
-      </div>
+      <PageHeader
+        title={mode === "signup" ? "Create Account" : "Welcome Back"}
+        onBack={() => setMode("welcome")}
+      />
 
-      <div className="flex-1 px-6 pb-12 flex flex-col justify-center">
-        <h1
-          className="mb-1"
-          style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 700, fontSize: 28, letterSpacing: "0.01em", color: "#020202" }}
-        >
-          {mode === "signup" ? "Create Account" : "Welcome Back"}
-        </h1>
-        <p className="text-sm mb-8" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
-          {mode === "signup"
-            ? "Join the Hello Hoedspruit community"
-            : "Sign in to your account"}
-        </p>
+      <div className="flex-1 px-6 pt-6 pb-12 flex flex-col">
+        {mode === "signup" && (
+          <p className="text-sm mb-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
+            Join the Hello Hoedspruit community
+          </p>
+        )}
+
+
+
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === "signup" && (
