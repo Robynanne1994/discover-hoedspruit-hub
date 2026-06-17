@@ -33,7 +33,7 @@ const Search = () => {
   const fromProfileState = (location.state as { fromProfile?: boolean; profileId?: string } | null) ?? null;
   const fromProfile = !!fromProfileState?.fromProfile;
   const profileId = fromProfileState?.profileId;
-  const [topTab, setTopTab] = useState<TopTab>("businesses");
+  const [topTab, setTopTab] = useState<TopTab>(fromProfile ? "users" : "businesses");
   const [userSub, setUserSub] = useState<UserSub>("suggested");
   const [bizSub, setBizSub] = useState<BizSub>("listings");
   const [query, setQuery] = useState("");
