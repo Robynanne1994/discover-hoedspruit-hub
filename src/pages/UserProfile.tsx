@@ -753,7 +753,7 @@ const UserProfile = () => {
                 fontFamily: SANS,
                 fontWeight: 600,
                 fontSize: 15,
-                letterSpacing: "0.06em",
+                letterSpacing: "0.01em",
                 textTransform: "uppercase",
                 color: INK,
                 margin: "0 0 8px",
