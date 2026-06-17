@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { Bell, Search } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import hhLogo from "@/assets/hh-logo.png";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const HomeMasthead = () => {
+  const { user } = useAuth();
   return (
     <div style={{ paddingTop: 56, padding: "56px 20px 0" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
@@ -73,22 +75,24 @@ const HomeMasthead = () => {
           >
             <Search size={18} color="#020202" strokeWidth={1.8} />
           </Link>
-          <Link
-            to="/my-notifications"
-            aria-label="Notifications"
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: "#ffffff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid rgba(0,0,0,0.06)",
-            }}
-          >
-            <Bell size={18} color="#020202" strokeWidth={1.8} />
-          </Link>
+          {user && (
+            <Link
+              to="/my-notifications"
+              aria-label="Notifications"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(0,0,0,0.06)",
+              }}
+            >
+              <Bell size={18} color="#020202" strokeWidth={1.8} />
+            </Link>
+          )}
         </div>
       </div>
     </div>
