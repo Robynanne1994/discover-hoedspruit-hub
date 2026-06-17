@@ -1038,6 +1038,23 @@ const AccountInfo = () => {
       </AlertDialog>
 
       {pwOpen && <ChangePasswordSheet onClose={() => setPwOpen(false)} />}
+
+      {photoSheetOpen && (
+        <PhotoPickerSheet
+          hasPhoto={!!avatarUrl}
+          onClose={() => setPhotoSheetOpen(false)}
+          onTakePhoto={() => {
+            setPhotoSheetOpen(false);
+            cameraInputRef.current?.click();
+          }}
+          onUpload={() => {
+            setPhotoSheetOpen(false);
+            fileInputRef.current?.click();
+          }}
+          onRemove={handleAvatarRemove}
+          busy={uploadingAvatar}
+        />
+      )}
     </div>
   );
 };
