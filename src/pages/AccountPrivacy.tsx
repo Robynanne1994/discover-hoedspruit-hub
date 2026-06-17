@@ -138,17 +138,19 @@ const AccountPrivacy = () => {
   const SectionTitle = ({ children }: { children: React.ReactNode }) => (
     <div
       style={{
-        fontFamily: FF,
-        fontSize: 12,
-        letterSpacing: "0.08em",
+        fontFamily: '"Bricolage Grotesque", ' + FF,
+        fontWeight: 700,
+        fontSize: 15,
+        letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: MUTED,
-        margin: "4px 4px 8px",
+        color: INK,
+        marginBottom: 12,
       }}
     >
       {children}
     </div>
   );
+
 
   const NavRow = ({
     label,
