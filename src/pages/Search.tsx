@@ -262,7 +262,7 @@ interface RowProps {
   thumb?: "round" | "square";
   action?: React.ReactNode;
 }
-const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square", action }: RowProps) => {
+const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb = "square", action }: RowProps) => {
   const hasOverride = !!(titleOverride && titleOverride.trim());
   const display = hasOverride ? titleOverride!.trim() : title;
   return (
@@ -318,7 +318,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square"
           style={{
             margin: "2px 0 0",
             fontFamily: FONT,
-            fontSize: 13,
+            fontSize: subtitle2 ? 11 : 13,
             color: "rgba(18,18,20,0.5)",
             letterSpacing: "0.01em",
             overflow: "hidden",
@@ -327,6 +327,22 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, thumb = "square"
           }}
         >
           {subtitle}
+        </p>
+      )}
+      {subtitle2 && (
+        <p
+          style={{
+            margin: "1px 0 0",
+            fontFamily: FONT,
+            fontSize: 11,
+            color: "rgba(18,18,20,0.5)",
+            letterSpacing: "0.01em",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {subtitle2}
         </p>
       )}
     </div>
