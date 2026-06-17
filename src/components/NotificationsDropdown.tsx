@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, X } from "lucide-react";
+import { Bell, X, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -19,6 +19,9 @@ type Notif = {
   link: string | null;
   is_read: boolean;
   created_at: string;
+  kind: string;
+  ref_table: string | null;
+  ref_id: string | null;
 };
 
 const timeAgo = (iso: string) => {
@@ -48,7 +51,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     if (!user) { setNotifs([]); setLoaded(true); return; }
     const { data } = await supabase
       .from("business_notifications")
-      .select("id,title,body,link,is_read,created_at")
+      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(20);
