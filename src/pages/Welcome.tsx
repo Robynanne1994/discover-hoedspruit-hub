@@ -123,7 +123,11 @@ const Welcome = () => {
     } else {
       const { error } = await signIn(email, password);
       if (error) {
-        toast.error(error.message);
+        const msg = /invalid login credentials|invalid.*password|invalid.*email/i.test(error.message)
+          ? "Incorrect email or password. Please try again."
+          : error.message;
+        setAuthError(msg);
+        toast.error(msg);
       } else {
         navigate("/", { replace: true });
       }
