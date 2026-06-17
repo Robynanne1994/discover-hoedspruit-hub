@@ -912,27 +912,46 @@ const AccountInfo = () => {
         </div>
 
         {/* Save changes */}
-        <button
-          onClick={handleSaveProfile}
-          disabled={savingProfile || profileLoading}
-          style={{
-            marginTop: 20,
-            width: "100%",
-            height: 56,
-            background: DARK,
-            color: "#FFFFFF",
-            border: "none",
-            borderRadius: 999,
-            fontFamily: FF,
-            fontSize: 16,
-            fontWeight: 700,
-            letterSpacing: "0.1px",
-            cursor: savingProfile ? "not-allowed" : "pointer",
-            opacity: savingProfile ? 0.7 : 1,
-          }}
-        >
-          Save Changes
-        </button>
+        {(() => {
+          const fallbackName = splitDisplayName((profile as any)?.display_name);
+          const origFirst = ((profile as any)?.first_name ?? fallbackName.first ?? "") as string;
+          const origSurname = ((profile as any)?.surname ?? fallbackName.surname ?? "") as string;
+          const origUsername = ((profile as any)?.username || "") as string;
+          const origEmail = ((profile as any)?.email || user?.email || "") as string;
+          const origPhone = ((profile as any)?.phone || "") as string;
+          const origLocation = ((profile as any)?.location || "") as string;
+          const isDirty =
+            firstName.trim() !== origFirst.trim() ||
+            surname.trim() !== origSurname.trim() ||
+            username.trim() !== origUsername.trim() ||
+            email.trim() !== origEmail.trim() ||
+            phone.trim() !== origPhone.trim() ||
+            location.trim() !== origLocation.trim();
+          const disabled = savingProfile || profileLoading || !isDirty;
+          return (
+            <button
+              onClick={handleSaveProfile}
+              disabled={disabled}
+              style={{
+                marginTop: 20,
+                width: "100%",
+                height: 56,
+                background: DARK,
+                color: "#FFFFFF",
+                border: "none",
+                borderRadius: 999,
+                fontFamily: FF,
+                fontSize: 16,
+                fontWeight: 700,
+                letterSpacing: "0.1px",
+                cursor: disabled ? "not-allowed" : "pointer",
+                opacity: disabled ? 0.4 : 1,
+              }}
+            >
+              Save Changes
+            </button>
+          );
+        })()}
 
 
         <button
