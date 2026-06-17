@@ -724,7 +724,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
               letterSpacing: "0.02em",
             }}
           >
-            Discover more deals
+            Discover More Deals
           </Link>
         </div>
       )}
