@@ -417,8 +417,8 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
         background: "transparent",
         border: `1.5px solid ${PRIMARY}`,
         borderRadius: 999,
-        width: 38,
-        height: 38,
+        width: 30,
+        height: 30,
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
@@ -427,7 +427,7 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
       aria-label={isFav ? "Remove from saved" : "Save"}
     >
       <Heart
-        size={16}
+        size={13}
         color={PRIMARY}
         fill={isFav ? PRIMARY : "none"}
         strokeWidth={1.8}
