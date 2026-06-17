@@ -339,10 +339,12 @@ function NotifCard({
   n,
   isUnread,
   onClick,
+  onRespond,
 }: {
   n: Notif;
   isUnread: boolean;
   onClick: () => void;
+  onRespond?: (n: Notif, accept: boolean) => void;
 }) {
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
@@ -419,6 +421,53 @@ function NotifCard({
         >
           {relativeShort(n.created_at)}
         </span>
+        {n.kind === "follow_request" && n.ref_id && onRespond && (
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRespond(n, true);
+              }}
+              style={{
+                height: 34,
+                padding: "0 16px",
+                borderRadius: 999,
+                background: INK,
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <Check size={14} strokeWidth={2.4} /> Accept
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRespond(n, false);
+              }}
+              style={{
+                height: 34,
+                padding: "0 16px",
+                borderRadius: 999,
+                background: "transparent",
+                color: INK,
+                border: `1px solid ${HAIRLINE}`,
+                cursor: "pointer",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              Decline
+            </button>
+          </div>
+        )}
       </div>
       {isUnread && (
         <span
