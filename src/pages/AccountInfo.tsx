@@ -14,7 +14,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ArrowLeft, Pencil, Eye, EyeOff, X, Check, Camera, Loader2 } from "lucide-react";
+import { ArrowLeft, Pencil, Eye, EyeOff, X, Check, Camera, Loader2, Upload, Trash2 } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { toast } from "sonner";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
