@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { CSSProperties, useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
