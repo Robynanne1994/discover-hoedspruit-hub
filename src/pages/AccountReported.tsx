@@ -77,17 +77,18 @@ const ReportDetailSheet = ({
 
   const labelStyle: CSSProperties = {
     fontFamily: FF,
-    fontSize: 11,
+    fontSize: 13,
     fontWeight: 700,
-    letterSpacing: "0.08em",
+    letterSpacing: "0.1em",
     textTransform: "uppercase",
-    color: BROWN,
-    marginBottom: 6,
+    color: "#423324",
+    marginBottom: 8,
     display: "block",
   };
   const valueStyle: CSSProperties = {
     fontFamily: FF,
     fontSize: 14.5,
+    fontWeight: 400,
     color: INK,
     lineHeight: 1.55,
     whiteSpace: "pre-wrap",
