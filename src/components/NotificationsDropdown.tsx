@@ -111,6 +111,21 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
     setNotifs((prev) => prev.map((n) => ({ ...n, is_read: true })));
   };
 
+  const respondFollowRequest = async (n: Notif, accept: boolean, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!n.ref_id) return;
+    if (accept) {
+      await supabase
+        .from("follows")
+        .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
+        .eq("id", n.ref_id);
+    } else {
+      await supabase.from("follows").delete().eq("id", n.ref_id);
+    }
+    // Trigger removes the notification row; refresh local list optimistically.
+    setNotifs((prev) => prev.filter((x) => x.id !== n.id));
+  };
+
   return (
     <>
       <button
