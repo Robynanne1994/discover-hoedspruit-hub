@@ -18,7 +18,7 @@ type Status = "pending" | "reviewed" | "resolved" | "dismissed";
 
 const STATUS_META: Record<string, { label: string; bg: string; ink: string }> = {
   pending: { label: "Pending review", bg: "#FEF3C7", ink: "#7C4A03" },
-  reviewed: { label: "Reviewed — action taken", bg: "#DCFCE7", ink: "#14532D" },
+  reviewed: { label: "Reviewed - Action Taken", bg: "#DCFCE7", ink: "#14532D" },
   resolved: { label: "Resolved", bg: "#DCFCE7", ink: "#14532D" },
   dismissed: { label: "No action needed", bg: "#E5E7EB", ink: "#374151" },
 };
