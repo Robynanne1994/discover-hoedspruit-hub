@@ -389,7 +389,7 @@ const AccountReported = () => {
                       <StatusPill status={r.status} />
                     </div>
                   </div>
-                  <ChevronRight size={18} color={MUTED} strokeWidth={1.75} />
+                  <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
                 </button>
               );
             })}
