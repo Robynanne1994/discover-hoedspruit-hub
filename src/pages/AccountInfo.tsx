@@ -705,8 +705,20 @@ const AccountInfo = () => {
               e.target.value = "";
             }}
           />
+          <input
+            ref={cameraInputRef}
+            type="file"
+            accept="image/*"
+            capture="user"
+            style={{ display: "none" }}
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleAvatarUpload(f);
+              e.target.value = "";
+            }}
+          />
           <button
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => setPhotoSheetOpen(true)}
             disabled={uploadingAvatar}
             style={{
               background: DARK,
