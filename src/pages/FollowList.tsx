@@ -532,7 +532,7 @@ const FollowList = () => {
               display: "inline-flex",
               alignItems: "center",
               gap: 8,
-              background: "#715a3d",
+              background: "#423324",
               color: "#ffffff",
               border: "none",
               borderRadius: 999,
