@@ -6,6 +6,7 @@ import hhLogo from "@/assets/hh-logo.png";
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const HomeMasthead = () => {
+  const { user } = useAuth();
   return (
     <div style={{ paddingTop: 56, padding: "56px 20px 0" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
