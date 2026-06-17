@@ -165,7 +165,9 @@ const ReportDetailSheet = ({
 
           <div>
             <span style={labelStyle}>Reason</span>
-            <p style={valueStyle}>{report.reason}</p>
+            <p style={valueStyle}>
+              {report.reason === "Harassment or bullying" ? "Harassment or Bullying" : report.reason}
+            </p>
           </div>
 
           <div>
