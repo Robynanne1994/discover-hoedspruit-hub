@@ -189,7 +189,14 @@ const ReportDetailSheet = ({
             </div>
           )}
 
-          {report.admin_note && report.status !== "pending" && (
+          {report.admin_message && (
+            <div>
+              <span style={labelStyle}>Message from our team</span>
+              <p style={valueStyle}>{report.admin_message}</p>
+            </div>
+          )}
+
+          {report.admin_note && report.status !== "pending" && !report.admin_message && (
             <div>
               <span style={labelStyle}>Note from our team</span>
               <p style={valueStyle}>{report.admin_note}</p>
