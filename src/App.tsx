@@ -203,6 +203,7 @@ const App = () => (
                 <Route path="submissions" element={<AdminSubmissions />} />
                 <Route path="reports" element={<AdminReports />} />
                 <Route path="user-reports" element={<AdminUserReports />} />
+                <Route path="moderated-users" element={<AdminModeratedUsers />} />
                 <Route path="faqs" element={<AdminFAQs />} />
               </Route>
               <Route path="/business/sign-in" element={<BusinessSignIn />} />
