@@ -167,7 +167,7 @@ const Welcome = () => {
               letterSpacing: "0.01em",
             }}
           >
-            Create account
+            Create Account
           </Button>
 
           <Button
@@ -188,7 +188,7 @@ const Welcome = () => {
               letterSpacing: "0.01em",
             }}
           >
-            Continue as guest
+            Continue as a Guest
           </Button>
 
           <p style={{ textAlign: "center", color: "#2b2420", fontSize: 14, marginTop: 18 }}>
