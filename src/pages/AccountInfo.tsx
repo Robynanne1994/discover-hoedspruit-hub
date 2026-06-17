@@ -1143,6 +1143,161 @@ const PwField = ({
   </div>
 );
 
+const PhotoPickerSheet = ({
+  hasPhoto,
+  busy,
+  onClose,
+  onTakePhoto,
+  onUpload,
+  onRemove,
+}: {
+  hasPhoto: boolean;
+  busy: boolean;
+  onClose: () => void;
+  onTakePhoto: () => void;
+  onUpload: () => void;
+  onRemove: () => void;
+}) => {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  const rowBase: CSSProperties = {
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    gap: 14,
+    padding: "16px 4px",
+    background: "transparent",
+    border: "none",
+    cursor: busy ? "not-allowed" : "pointer",
+    textAlign: "left",
+    fontFamily: FF,
+    fontSize: 16,
+    color: INK,
+    opacity: busy ? 0.5 : 1,
+  };
+
+  const iconWrap: CSSProperties = {
+    width: 40,
+    height: 40,
+    borderRadius: "50%",
+    background: "#F2EBDC",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  };
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 60,
+        background: "rgba(10,10,10,0.4)",
+        display: "flex",
+        alignItems: "flex-end",
+      }}
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          fontFamily: FF,
+          width: "100%",
+          background: "#ffffff",
+          borderRadius: "20px 20px 0 0",
+          padding: "20px 20px 32px",
+          animation: "pp-slide-up 250ms cubic-bezier(0.2, 0.8, 0.2, 1)",
+        }}
+      >
+        <style>{`@keyframes pp-slide-up { from { transform: translateY(100%);} to { transform: translateY(0);} }`}</style>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 8,
+          }}
+        >
+          <div
+            style={{
+              fontSize: 11,
+              letterSpacing: "0.08em",
+              color: "#9C9387",
+              textTransform: "uppercase",
+            }}
+          >
+            Profile photo
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            style={{ border: "none", background: "transparent", cursor: "pointer", padding: 4 }}
+          >
+            <X size={20} color={INK} strokeWidth={1.75} />
+          </button>
+        </div>
+        <h2
+          style={{
+            fontFamily: FF,
+            fontWeight: 400,
+            fontSize: 22,
+            color: INK,
+            margin: "0 0 12px",
+          }}
+        >
+          {hasPhoto ? "Change profile photo" : "Add profile photo"}
+        </h2>
+
+        <button type="button" style={rowBase} disabled={busy} onClick={onTakePhoto}>
+          <span style={iconWrap}>
+            <Camera size={20} color={INK} strokeWidth={1.6} />
+          </span>
+          Take new photo
+        </button>
+
+        <div style={{ height: 1, background: "#EAE4D5" }} />
+
+        <button type="button" style={rowBase} disabled={busy} onClick={onUpload}>
+          <span style={iconWrap}>
+            <Upload size={20} color={INK} strokeWidth={1.6} />
+          </span>
+          Upload from device
+        </button>
+
+        {hasPhoto && (
+          <>
+            <div style={{ height: 1, background: "#EAE4D5" }} />
+            <button
+              type="button"
+              style={{ ...rowBase, color: "#B00020" }}
+              disabled={busy}
+              onClick={onRemove}
+            >
+              <span style={{ ...iconWrap, background: "#FDECEC" }}>
+                {busy ? (
+                  <Loader2 size={18} className="animate-spin" color="#B00020" />
+                ) : (
+                  <Trash2 size={20} color="#B00020" strokeWidth={1.6} />
+                )}
+              </span>
+              Remove profile photo
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
   const [current, setCurrent] = useState("");
   const [next, setNext] = useState("");
