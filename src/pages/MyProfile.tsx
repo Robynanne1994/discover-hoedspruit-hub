@@ -79,14 +79,19 @@ function SubTabs<T extends string>({
 
 const MyProfile = () => {
   const { user, loading: authLoading } = useAuth();
+  const { isGuest } = useGuestAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("listings");
   const [eventsSub, setEventsSub] = useState<"upcoming" | "past">("upcoming");
   const [dealsSub, setDealsSub] = useState<"active" | "expired">("active");
 
   useEffect(() => {
-    if (!authLoading && !user) navigate("/welcome");
-  }, [authLoading, user, navigate]);
+    if (authLoading) return;
+    if (!user) {
+      if (isGuest) navigate("/my-account", { replace: true });
+      else navigate("/welcome");
+    }
+  }, [authLoading, user, isGuest, navigate]);
 
   const id = user?.id;
   const queryClient = useQueryClient();
