@@ -190,7 +190,10 @@ const ReportDetailSheet = ({
 
         {/* Header: avatar + name */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "8px 0 4px" }}>
-          <div
+          <button
+            type="button"
+            onClick={goToProfile}
+            aria-label={`View ${label}'s profile`}
             style={{
               width: 56,
               height: 56,
@@ -202,6 +205,9 @@ const ReportDetailSheet = ({
                 : undefined,
               backgroundSize: "cover",
               backgroundPosition: "center",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
             }}
           />
           <div style={{ minWidth: 0 }}>
