@@ -270,7 +270,7 @@ const ReportDetailSheet = ({
         {report.action_taken && report.action_taken !== "none" && (
           <div style={{ marginBottom: 18 }}>
             <span style={labelStyle}>REPORT OUTCOME</span>
-            <p style={valueStyle}>{ACTION_LABEL[report.action_taken] ?? report.action_taken}</p>
+            <p style={{ fontFamily: FF, fontSize: 15, fontWeight: 400, color: BODY, lineHeight: 1.55, margin: 0 }}>{ACTION_LABEL[report.action_taken] ?? report.action_taken}</p>
           </div>
         )}
 
