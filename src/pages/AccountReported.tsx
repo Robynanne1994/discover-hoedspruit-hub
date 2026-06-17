@@ -80,10 +80,16 @@ const ReportDetailSheet = ({
   onClose: () => void;
   report: any | null;
 }) => {
+  const navigate = useNavigate();
   if (!open || !report) return null;
   const label =
     report.profile?.display_name || report.profile?.username || "User";
   const handle = report.profile?.username ? `@${report.profile.username}` : null;
+  const goToProfile = () => {
+    if (!report.reported_user_id) return;
+    onClose();
+    navigate(`/profile/${report.reported_user_id}`);
+  };
 
   const labelStyle: CSSProperties = {
     fontFamily: FF,
@@ -184,7 +190,10 @@ const ReportDetailSheet = ({
 
         {/* Header: avatar + name */}
         <div style={{ display: "flex", alignItems: "center", gap: 14, padding: "8px 0 4px" }}>
-          <div
+          <button
+            type="button"
+            onClick={goToProfile}
+            aria-label={`View ${label}'s profile`}
             style={{
               width: 56,
               height: 56,
@@ -196,6 +205,9 @@ const ReportDetailSheet = ({
                 : undefined,
               backgroundSize: "cover",
               backgroundPosition: "center",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
             }}
           />
           <div style={{ minWidth: 0 }}>
