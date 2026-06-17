@@ -601,7 +601,7 @@ const ListingsResults = ({ query }: { query: string }) => {
               letterSpacing: "0.02em",
             }}
           >
-            Discover more
+            Discover More
           </Link>
         </div>
       )}
