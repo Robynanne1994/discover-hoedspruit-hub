@@ -620,11 +620,12 @@ const EventsResults = ({ query }: { query: string }) => {
       let q = supabase
         .from("events")
         .select("id, title, title_override, location, image_url, date, start_date")
+        .or(`start_date.is.null,start_date.gte.${today}`)
         .order("start_date", { ascending: true, nullsFirst: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
       const { data } = await q;
-      return (data || []).filter((e) => !e.start_date || e.start_date >= today);
+      return data || [];
     },
   });
   if (isLoading) return <EmptyRow text="Loading…" />;
