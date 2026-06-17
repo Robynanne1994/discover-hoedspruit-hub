@@ -296,6 +296,16 @@ const AccountReported = () => {
         },
         () => refetch(),
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "business_notifications",
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => refetch(),
+      )
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
