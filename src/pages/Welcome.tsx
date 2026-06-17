@@ -374,7 +374,7 @@ const Welcome = () => {
         </form>
 
         <p className="text-center text-sm mt-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
-          {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
+          {mode === "signup" ? "Already have an account?" : "Don't have an account yet?"}{" "}
           <button
             onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
             className="font-medium"
