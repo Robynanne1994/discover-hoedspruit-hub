@@ -80,10 +80,16 @@ const ReportDetailSheet = ({
   onClose: () => void;
   report: any | null;
 }) => {
+  const navigate = useNavigate();
   if (!open || !report) return null;
   const label =
     report.profile?.display_name || report.profile?.username || "User";
   const handle = report.profile?.username ? `@${report.profile.username}` : null;
+  const goToProfile = () => {
+    if (!report.reported_user_id) return;
+    onClose();
+    navigate(`/profile/${report.reported_user_id}`);
+  };
 
   const labelStyle: CSSProperties = {
     fontFamily: FF,
