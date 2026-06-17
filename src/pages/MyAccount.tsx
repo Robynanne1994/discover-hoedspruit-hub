@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useGuestAuth } from "@/hooks/useGuestAuth";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,6 +68,7 @@ type ActiveSection = null | "profile" | "favourites" | "collections" | "been-her
 
 const MyAccount = () => {
   const { user, signOut, loading, isAdmin } = useAuth();
+  const { isGuest, exitGuest } = useGuestAuth();
   const { isOwner: isBusinessOwner, listing: ownedListing } = useBusinessOwner();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -77,8 +79,8 @@ const MyAccount = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
-    if (!loading && !user) navigate("/auth");
-  }, [user, loading, navigate]);
+    if (!loading && !user && !isGuest) navigate("/welcome");
+  }, [user, loading, isGuest, navigate]);
 
   useEffect(() => {
     if (!user) { setUnreadCount(0); return; }
@@ -260,7 +262,7 @@ const MyAccount = () => {
     );
   }
 
-  if (loading || !user) {
+  if (loading || (!user && !isGuest)) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "transparent", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24 }}>
@@ -604,16 +606,19 @@ const MyAccount = () => {
         noIndex
       />
       {/* Top bar */}
-      <PageHeader title="Account" onBack={() => navigate("/my-profile")} />
+      <PageHeader title="Account" onBack={() => navigate(user ? "/my-profile" : "/")} />
 
 
 
       <div style={{ height: 24 }} />
 
-      <Eyebrow>Account</Eyebrow>
-      <Card items={accountItems} />
-
-      <div style={{ height: 28 }} />
+      {user && (
+        <>
+          <Eyebrow>Account</Eyebrow>
+          <Card items={accountItems} />
+          <div style={{ height: 28 }} />
+        </>
+      )}
 
       <Eyebrow>Help & Info</Eyebrow>
       <Card items={helpInfoItems} />
@@ -626,29 +631,53 @@ const MyAccount = () => {
         </>
       )}
 
-      {/* Log out */}
+      {/* Log out / Sign in */}
       <div style={{ padding: "8px 24px 24px" }}>
-        <button
-          onClick={() => {
-            signOut();
-            navigate("/");
-          }}
-          style={{
-            width: "100%",
-            height: 56,
-            background: "#3D2E22",
-            color: "#FFFFFF",
-            border: "none",
-            borderRadius: 999,
-            fontFamily: SANS,
-            fontSize: 16,
-            fontWeight: 700,
-            letterSpacing: "0.1px",
-            cursor: "pointer",
-          }}
-        >
-          Log Out
-        </button>
+        {user ? (
+          <button
+            onClick={() => {
+              signOut();
+              navigate("/");
+            }}
+            style={{
+              width: "100%",
+              height: 56,
+              background: "#3D2E22",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: 999,
+              fontFamily: SANS,
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            Log Out
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              exitGuest();
+              navigate("/welcome");
+            }}
+            style={{
+              width: "100%",
+              height: 56,
+              background: "#3D2E22",
+              color: "#FFFFFF",
+              border: "none",
+              borderRadius: 999,
+              fontFamily: SANS,
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "0.1px",
+              cursor: "pointer",
+            }}
+          >
+            Sign In / Create Account
+          </button>
+        )}
       </div>
 
 
