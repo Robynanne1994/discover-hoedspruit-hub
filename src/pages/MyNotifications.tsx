@@ -164,6 +164,19 @@ export default function MyNotifications() {
     load();
   }, [user, notifs, load]);
 
+  const respondFollowRequest = useCallback(async (n: Notif, accept: boolean) => {
+    if (!n.ref_id) return;
+    if (accept) {
+      await supabase
+        .from("follows")
+        .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
+        .eq("id", n.ref_id);
+    } else {
+      await supabase.from("follows").delete().eq("id", n.ref_id);
+    }
+    setNotifs((prev) => prev.filter((x) => x.id !== n.id));
+  }, []);
+
   const isEmpty = loaded && notifs.length === 0;
   const hasUnread = unreadCount > 0;
 
@@ -260,6 +273,7 @@ export default function MyNotifications() {
                     n={n}
                     isUnread={initialUnreadRef.current?.has(n.id) ?? false}
                     onClick={() => n.link && navigate(n.link)}
+                    onRespond={respondFollowRequest}
                   />
                 ))}
               </div>
