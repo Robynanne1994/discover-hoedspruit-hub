@@ -67,6 +67,7 @@ const ModerationActionDialog = ({
   open,
   onOpenChange,
   reportId,
+  targetUserId,
   reportedUserLabel,
   action,
   reporterIsUser,
@@ -116,6 +117,7 @@ const ModerationActionDialog = ({
         _admin_note: note.trim() || null,
         _notify_reporter_message:
           reporterIsUser && reporterMsg.trim() ? reporterMsg.trim() : null,
+        _target_user_id: targetUserId ?? null,
       });
       if (error) throw error;
     },
