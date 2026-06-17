@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useGuestAuth } from "@/hooks/useGuestAuth";
 import { useFollowCounts } from "@/hooks/useFollows";
 import { Pencil, Heart, Settings, Star } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
