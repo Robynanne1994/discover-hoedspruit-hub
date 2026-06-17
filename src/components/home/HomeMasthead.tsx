@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 import { Bell, Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 import hhLogo from "@/assets/hh-logo.png";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const HomeMasthead = () => {
   const { user } = useAuth();
+  const unread = useUnreadNotifications();
   return (
     <div style={{ paddingTop: 56, padding: "56px 20px 0" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
@@ -80,6 +82,7 @@ const HomeMasthead = () => {
               to="/my-notifications"
               aria-label="Notifications"
               style={{
+                position: "relative",
                 width: 40,
                 height: 40,
                 borderRadius: 999,
@@ -91,6 +94,21 @@ const HomeMasthead = () => {
               }}
             >
               <Bell size={18} color="#020202" strokeWidth={1.8} />
+              {unread > 0 && (
+                <span
+                  aria-hidden
+                  style={{
+                    position: "absolute",
+                    top: 2,
+                    right: 2,
+                    width: 10,
+                    height: 10,
+                    borderRadius: 999,
+                    background: "#E0322B",
+                    border: "2px solid #ffffff",
+                  }}
+                />
+              )}
             </Link>
           )}
         </div>
