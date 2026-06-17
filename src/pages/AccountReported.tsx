@@ -252,10 +252,32 @@ const AccountReported = () => {
         .order("created_at", { ascending: false });
       if (error) throw error;
       const ids = (data ?? []).map((r: any) => r.reported_user_id);
-      if (ids.length === 0) return [];
-      const { data: profs } = await supabase.rpc("get_public_profiles", { _ids: ids });
-      const map = new Map(((profs as any[]) ?? []).map((p: any) => [p.id, p]));
-      return (data ?? []).map((r: any) => ({ ...r, profile: map.get(r.reported_user_id) }));
+      const reportIds = (data ?? []).map((r: any) => r.id);
+      const [profsRes, notesRes] = await Promise.all([
+        ids.length
+          ? supabase.rpc("get_public_profiles", { _ids: ids })
+          : Promise.resolve({ data: [] as any[] } as any),
+        reportIds.length
+          ? supabase
+              .from("business_notifications")
+              .select("ref_id, body, title, created_at")
+              .eq("user_id", user!.id)
+              .eq("kind", "report_update")
+              .eq("ref_table", "user_reports")
+              .in("ref_id", reportIds)
+              .order("created_at", { ascending: false })
+          : Promise.resolve({ data: [] as any[] } as any),
+      ]);
+      const map = new Map((((profsRes as any).data as any[]) ?? []).map((p: any) => [p.id, p]));
+      const msgMap = new Map<string, string>();
+      (((notesRes as any).data as any[]) ?? []).forEach((n: any) => {
+        if (!msgMap.has(n.ref_id)) msgMap.set(n.ref_id, n.body);
+      });
+      return (data ?? []).map((r: any) => ({
+        ...r,
+        profile: map.get(r.reported_user_id),
+        admin_message: msgMap.get(r.id) ?? null,
+      }));
     },
   });
 
