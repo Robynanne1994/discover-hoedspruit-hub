@@ -224,6 +224,12 @@ const Welcome = () => {
       />
 
       <div className="flex-1 px-6 pt-6 pb-12 flex flex-col">
+        {mode === "signup" && (
+          <p className="text-sm mb-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
+            Join the Hello Hoedspruit community
+          </p>
+        )}
+
 
 
 
