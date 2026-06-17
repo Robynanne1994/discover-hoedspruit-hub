@@ -121,7 +121,7 @@ const ConditionalBottomNav = () => {
   const path = location.pathname;
   const businessPublicPaths = ["/business/start", "/for-business", "/plans", "/business/dashboard"];
   const isBusinessPublic = businessPublicPaths.includes(path);
-  if ((path.startsWith("/business") && !isBusinessPublic) || path.startsWith("/admin")) return null;
+  if ((path.startsWith("/business") && !isBusinessPublic) || path.startsWith("/admin") || path === "/welcome") return null;
   return <BottomNav />;
 };
 
