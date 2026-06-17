@@ -662,7 +662,7 @@ const EventsResults = ({ query }: { query: string }) => {
               letterSpacing: "0.02em",
             }}
           >
-            Discover more events
+            Discover More Events
           </Link>
         </div>
       )}
