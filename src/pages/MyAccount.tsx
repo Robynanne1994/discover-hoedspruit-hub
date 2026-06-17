@@ -632,7 +632,7 @@ const MyAccount = () => {
       )}
 
       {/* Log out / Sign in */}
-      <div style={{ padding: "8px 24px 24px" }}>
+      <div style={{ padding: "32px 24px 24px" }}>
         {user ? (
           <button
             onClick={() => {
