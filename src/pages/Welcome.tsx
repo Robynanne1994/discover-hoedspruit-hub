@@ -119,7 +119,11 @@ const Welcome = () => {
       }
     } else {
       const { error } = await signIn(email, password);
-      if (error) toast.error(error.message);
+      if (error) {
+        toast.error(error.message);
+      } else {
+        navigate("/", { replace: true });
+      }
     }
     setLoading(false);
   };
