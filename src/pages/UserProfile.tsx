@@ -601,16 +601,13 @@ const UserProfile = () => {
                 <>
                   <h1
                     style={{
-                      fontFamily: '"Bricolage Grotesque", ' + SANS,
+                      fontFamily: SANS,
                       fontWeight: 700,
-                      fontSize: 22,
-                      lineHeight: 1.15,
-                      letterSpacing: "-0.4px",
+                      fontSize: 15,
+                      lineHeight: 1.2,
+                      letterSpacing: "-0.3px",
                       color: "#1A1A1A",
                       margin: 0,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
                     }}
                   >
                     {titleCase(profile?.display_name) || "User"}
