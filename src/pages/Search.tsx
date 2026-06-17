@@ -657,7 +657,8 @@ const EventsResults = ({ query }: { query: string }) => {
           image={e.image_url}
           title={e.title}
           titleOverride={(e as any).title_override}
-          subtitle={[e.date, e.location].filter(Boolean).join(" · ")}
+          subtitle={e.date || null}
+          subtitle2={e.location || null}
           action={<InlineSaveButton itemId={e.id} itemType="event" />}
         />
       ))}
