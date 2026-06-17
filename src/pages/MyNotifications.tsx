@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings } from "lucide-react";
+import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,10 +24,13 @@ type Notif = {
   is_read: boolean;
   created_at: string;
   kind: string;
+  ref_table: string | null;
+  ref_id: string | null;
 };
 
 const iconFor = (kind: string) => {
   const k = (kind || "").toLowerCase();
+  if (k.includes("follow")) return UserPlus;
   if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return Heart;
   if (k.includes("special") || k.includes("deal") || k.includes("offer")) return Tag;
   if (k.includes("listing") || k.includes("place")) return Store;
@@ -90,7 +93,7 @@ export default function MyNotifications() {
     }
     const { data, error } = await supabase
       .from("business_notifications")
-      .select("id,title,body,link,is_read,created_at,kind")
+      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(100);
