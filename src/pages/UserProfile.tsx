@@ -676,8 +676,8 @@ const UserProfile = () => {
             }}
           >
             {[
-              { label: (counts?.followers ?? 0) === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: `/profile/${id}/followers`, clickable: true, scrollTo: null as string | null },
-              { label: "FOLLOWING", value: counts?.following ?? 0, to: `/profile/${id}/following`, clickable: true, scrollTo: null },
+              { label: (counts?.followers ?? 0) === 1 ? "FOLLOWER" : "FOLLOWERS", value: counts?.followers ?? 0, to: `/profile/${id}/followers`, clickable: !isPrivateLocked, scrollTo: null as string | null },
+              { label: "FOLLOWING", value: counts?.following ?? 0, to: `/profile/${id}/following`, clickable: !isPrivateLocked, scrollTo: null },
               { label: "SAVED", value: savedCount ?? 0, to: "", clickable: true, scrollTo: "user-saved-section" },
             ].map((s, i) => {
               const inner = (
