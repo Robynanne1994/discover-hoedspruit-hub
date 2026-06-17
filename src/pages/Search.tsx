@@ -683,7 +683,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
         .select("id, title, title_override, business_name, image_url, deal_label, valid_until")
         .eq("is_active", true)
         .or(`valid_until.is.null,valid_until.gte.${today}`)
-        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false })
         .limit(term ? 50 : 10);
       if (term) q = q.ilike("title", `%${term}%`);
       const { data } = await q;
