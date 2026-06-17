@@ -373,6 +373,7 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                             Decline
                           </button>
                         </div>
+                      )}
                     </div>
                   </div>
                 </button>
