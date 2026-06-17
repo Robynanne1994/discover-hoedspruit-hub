@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Eye, EyeOff, AlertCircle } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
@@ -27,6 +27,7 @@ const Welcome = () => {
   const [username, setUsername] = useState("");
   const [residency, setResidency] = useState("");
   const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const { signIn, signUp } = useAuth();
 
   const RESIDENCY_OPTIONS = [
@@ -40,6 +41,7 @@ const Welcome = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAuthError(null);
     setLoading(true);
     if (mode === "signup") {
       if (!firstName.trim()) {
@@ -121,7 +123,11 @@ const Welcome = () => {
     } else {
       const { error } = await signIn(email, password);
       if (error) {
-        toast.error(error.message);
+        const msg = /invalid login credentials|invalid.*password|invalid.*email/i.test(error.message)
+          ? "Incorrect email or password. Please try again."
+          : error.message;
+        setAuthError(msg);
+        toast.error(msg);
       } else {
         navigate("/", { replace: true });
       }
@@ -309,6 +315,21 @@ const Welcome = () => {
               </div>
             </>
           )}
+          {authError && mode === "signin" && (
+            <div
+              role="alert"
+              className="flex items-start gap-2 rounded-xl px-3 py-2.5 text-[13px]"
+              style={{
+                background: "#fdecec",
+                border: "1px solid #e5484d",
+                color: "#b42318",
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              }}
+            >
+              <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+              <span>{authError}</span>
+            </div>
+          )}
           <div className="space-y-1.5">
             <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
               Email
@@ -317,11 +338,15 @@ const Welcome = () => {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { setEmail(e.target.value); if (authError) setAuthError(null); }}
               required
               placeholder="you@example.com"
               className="h-12 rounded-xl bg-card border-border text-[15px]"
-              style={{ background: "#ffffff", color: "#020202" }}
+              style={{
+                background: "#ffffff",
+                color: "#020202",
+                ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
+              }}
             />
           </div>
           <div className="space-y-1.5">
@@ -333,12 +358,16 @@ const Welcome = () => {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => { setPassword(e.target.value); if (authError) setAuthError(null); }}
                 required
                 minLength={8}
                 placeholder="Min 8 chars, with a number & symbol"
                 className="h-12 rounded-xl bg-card border-border text-[15px] pr-12"
-                style={{ background: "#ffffff", color: "#020202" }}
+                style={{
+                  background: "#ffffff",
+                  color: "#020202",
+                  ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
+                }}
               />
               <button
                 type="button"
