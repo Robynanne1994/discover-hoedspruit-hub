@@ -2017,6 +2017,7 @@ export type Database = {
           _notify_reporter_message?: string
           _report_id: string
           _severity?: string
+          _target_user_id?: string
         }
         Returns: undefined
       }
