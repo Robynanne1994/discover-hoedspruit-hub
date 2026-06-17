@@ -561,7 +561,7 @@ const UsersResults = ({
           to={`/profile/${u.id}`}
           image={u.avatar_url}
           title={u.display_name || u.username || "User"}
-          subtitle={u.location || (u.username ? `@${u.username}` : null)}
+          subtitle={u.username ? `@${u.username}` : null}
           thumb="round"
           action={<InlineFollowButton targetUserId={u.id} />}
         />
