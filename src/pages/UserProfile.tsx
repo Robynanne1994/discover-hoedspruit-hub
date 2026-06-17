@@ -708,7 +708,7 @@ const UserProfile = () => {
                 border: "none",
                 borderLeft: i === 0 ? "none" : `1px solid #1A1A1A`,
                 padding: 0,
-                cursor: "pointer",
+                cursor: s.clickable ? "pointer" : "default",
                 font: "inherit",
                 color: "inherit",
               };
