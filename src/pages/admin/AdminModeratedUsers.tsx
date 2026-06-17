@@ -136,6 +136,7 @@ const AdminModeratedUsers = () => {
         onOpenChange={(v) => setDialog((d) => ({ ...d, open: v }))}
         action={dialog.action}
         reportId={null}
+        targetUserId={dialog.userId}
         reportedUserLabel={dialog.label}
       />
     </div>
