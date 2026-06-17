@@ -258,6 +258,7 @@ interface RowProps {
   title: string;
   titleOverride?: string | null;
   subtitle?: string | null;
+  subtitle2?: string | null;
   thumb?: "round" | "square";
   action?: React.ReactNode;
 }
