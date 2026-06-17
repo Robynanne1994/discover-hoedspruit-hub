@@ -31,14 +31,16 @@ const ACTION_LABEL: Record<string, string> = {
   content_removed: "Content removed",
 };
 
-const fmtDate = (iso: string) =>
-  new Date(iso).toLocaleString("en-GB", {
+const fmtDate = (iso: string) => {
+  const formatted = new Date(iso).toLocaleString("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
   });
+  return formatted.replace(",", ";");
+};
 
 const StatusPill = ({ status }: { status: string }) => {
   const meta = STATUS_META[status] ?? STATUS_META.pending;
