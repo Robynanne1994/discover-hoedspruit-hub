@@ -355,12 +355,15 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
 
 const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
   const { user } = useAuth();
-  const { data: isFollowing } = useIsFollowing(targetUserId);
+  const { data: followStatus } = useIsFollowing(targetUserId);
   const { follow, unfollow } = useFollowMutation(targetUserId);
   const { data: blocks } = useBlockedUsers();
   const queryClient = useQueryClient();
   const isBlocked = blocks?.iBlocked.has(targetUserId) ?? false;
   if (!user || user.id === targetUserId) return null;
+
+  const isAccepted = followStatus === "accepted";
+  const isPending = followStatus === "pending";
 
   const handleUnblock = async () => {
     const { error } = await supabase
@@ -388,7 +391,7 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
           handleUnblock();
           return;
         }
-        if (isFollowing) unfollow.mutate();
+        if (isAccepted || isPending) unfollow.mutate();
         else follow.mutate();
       }}
       style={{
@@ -407,11 +410,12 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
         letterSpacing: "0.02em",
       }}
     >
-      {isBlocked ? null : isFollowing ? <UserCheck size={14} /> : <UserPlus size={14} />}
-      {isBlocked ? "Unblock" : isFollowing ? "Following" : "Follow"}
+      {isBlocked ? null : isAccepted ? <UserCheck size={14} /> : isPending ? <Clock size={14} /> : <UserPlus size={14} />}
+      {isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow"}
     </button>
   );
 };
+
 
 
 const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "listing" | "event" | "special" }) => {
