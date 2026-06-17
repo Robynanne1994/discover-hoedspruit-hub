@@ -1,11 +1,12 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { Loader2, Check, Trash2, ExternalLink } from "lucide-react";
+import { Loader2, Check, Trash2, ExternalLink, ShieldAlert } from "lucide-react";
+import ModerationActionDialog, { ModerationAction } from "@/components/admin/ModerationActionDialog";
 
 type UserReport = {
   id: string;
@@ -18,6 +19,8 @@ type UserReport = {
   status: string;
   is_read: boolean;
   admin_note: string | null;
+  severity: string | null;
+  action_taken: string | null;
   created_at: string;
   resolved_at: string | null;
 };
@@ -28,9 +31,11 @@ type ProfileLite = {
   username: string | null;
   email: string | null;
   avatar_url: string | null;
+  moderation_status: string | null;
+  suspended_until: string | null;
 };
 
-const FILTERS = ["unread", "pending", "all", "resolved"] as const;
+const FILTERS = ["unread", "pending", "repeat", "all", "resolved"] as const;
 type Filter = (typeof FILTERS)[number];
 
 const fmtDate = (iso: string) =>
@@ -42,13 +47,42 @@ const fmtDate = (iso: string) =>
     minute: "2-digit",
   });
 
-const ProfileLine = ({ profile, fallback }: { profile?: ProfileLite; fallback?: { name?: string | null; email?: string | null } }) => {
+const statusBadgeVariant = (status?: string | null): "default" | "secondary" | "destructive" | "outline" => {
+  switch (status) {
+    case "banned":
+      return "destructive";
+    case "suspended":
+      return "destructive";
+    case "warned":
+      return "default";
+    default:
+      return "outline";
+  }
+};
+
+const ProfileLine = ({
+  profile,
+  fallback,
+}: {
+  profile?: ProfileLite;
+  fallback?: { name?: string | null; email?: string | null };
+}) => {
   if (profile) {
     return (
-      <Link to={`/profile/${profile.id}`} className="inline-flex items-center gap-1 text-primary hover:underline">
-        {profile.display_name || profile.username || profile.email || profile.id.slice(0, 8)}
-        <ExternalLink className="h-3 w-3" />
-      </Link>
+      <div className="flex items-center gap-2 flex-wrap">
+        <Link to={`/profile/${profile.id}`} className="inline-flex items-center gap-1 text-primary hover:underline">
+          {profile.display_name || profile.username || profile.email || profile.id.slice(0, 8)}
+          <ExternalLink className="h-3 w-3" />
+        </Link>
+        {profile.moderation_status && profile.moderation_status !== "active" && (
+          <Badge variant={statusBadgeVariant(profile.moderation_status)} className="capitalize">
+            {profile.moderation_status}
+            {profile.moderation_status === "suspended" && profile.suspended_until
+              ? ` · until ${new Date(profile.suspended_until).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`
+              : ""}
+          </Badge>
+        )}
+      </div>
     );
   }
   return (
@@ -62,13 +96,20 @@ const ProfileLine = ({ profile, fallback }: { profile?: ProfileLite; fallback?: 
 const AdminUserReports = () => {
   const qc = useQueryClient();
   const [filter, setFilter] = useState<Filter>("unread");
+  const [dialog, setDialog] = useState<{
+    open: boolean;
+    action: ModerationAction;
+    reportId?: string | null;
+    label?: string;
+    reporterIsUser?: boolean;
+  }>({ open: false, action: "warn" });
 
   const reportsQuery = useQuery({
     queryKey: ["admin-user-reports", filter],
     queryFn: async () => {
       let q = supabase.from("user_reports").select("*").order("created_at", { ascending: false });
       if (filter === "unread") q = q.eq("is_read", false);
-      else if (filter === "pending") q = q.eq("status", "pending");
+      else if (filter === "pending" || filter === "repeat") q = q.eq("status", "pending");
       else if (filter === "resolved") q = q.neq("status", "pending");
       const { data, error } = await q;
       if (error) throw error;
@@ -76,12 +117,24 @@ const AdminUserReports = () => {
     },
   });
 
-  const reports = reportsQuery.data ?? [];
+  const allReports = reportsQuery.data ?? [];
+
+  // Count pending reports per reported user for the repeat-offender filter and chip
+  const pendingByUser = useMemo(() => {
+    const m = new Map<string, number>();
+    allReports.forEach((r) => {
+      if (r.status === "pending") m.set(r.reported_user_id, (m.get(r.reported_user_id) ?? 0) + 1);
+    });
+    return m;
+  }, [allReports]);
+
+  const reports = useMemo(() => {
+    if (filter !== "repeat") return allReports;
+    return allReports.filter((r) => (pendingByUser.get(r.reported_user_id) ?? 0) >= 2);
+  }, [filter, allReports, pendingByUser]);
 
   const userIds = Array.from(
-    new Set(
-      reports.flatMap((r) => [r.reported_user_id, r.reporter_user_id].filter(Boolean) as string[]),
-    ),
+    new Set(reports.flatMap((r) => [r.reported_user_id, r.reporter_user_id].filter(Boolean) as string[])),
   );
 
   const profilesQuery = useQuery({
@@ -90,32 +143,18 @@ const AdminUserReports = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, display_name, username, email, avatar_url")
+        .select("id, display_name, username, email, avatar_url, moderation_status, suspended_until")
         .in("id", userIds);
       if (error) throw error;
       const map = new Map<string, ProfileLite>();
-      (data ?? []).forEach((p) => map.set(p.id, p as ProfileLite));
+      (data ?? []).forEach((p: any) => map.set(p.id, p as ProfileLite));
       return map;
     },
   });
 
   const markRead = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("user_reports")
-        .update({ is_read: true })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-user-reports"] }),
-  });
-
-  const resolve = useMutation({
-    mutationFn: async ({ id, status }: { id: string; status: "reviewed" | "dismissed" }) => {
-      const { error } = await supabase
-        .from("user_reports")
-        .update({ status, is_read: true, resolved_at: new Date().toISOString() })
-        .eq("id", id);
+      const { error } = await supabase.from("user_reports").update({ is_read: true }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["admin-user-reports"] }),
@@ -132,12 +171,30 @@ const AdminUserReports = () => {
     },
   });
 
+  const openDialog = (
+    action: ModerationAction,
+    report: UserReport,
+    profile?: ProfileLite,
+  ) =>
+    setDialog({
+      open: true,
+      action,
+      reportId: report.id,
+      label: profile?.display_name || profile?.username || profile?.email || "this user",
+      reporterIsUser: !!report.reporter_user_id,
+    });
+
   return (
     <div>
       <h1 className="font-heading text-2xl lg:text-3xl font-bold text-slate-950 mb-2">Reported Users</h1>
-      <p className="text-sm text-muted-foreground mb-6 text-slate-950">
-        Reports submitted by users (or guests) about other users.
+      <p className="text-sm text-muted-foreground mb-4 text-slate-950">
+        Triage reports, then warn, suspend, or ban — actions are logged and the user is notified automatically.
       </p>
+      <div className="mb-6">
+        <Link to="/admin/moderated-users" className="text-sm text-primary hover:underline inline-flex items-center gap-1">
+          <ShieldAlert className="h-4 w-4" /> View currently moderated users
+        </Link>
+      </div>
 
       <div className="flex gap-2 mb-6 flex-wrap">
         {FILTERS.map((f) => (
@@ -150,7 +207,7 @@ const AdminUserReports = () => {
                 : "bg-card text-foreground border-border hover:border-primary"
             }`}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {f === "repeat" ? "Repeat offenders" : f.charAt(0).toUpperCase() + f.slice(1)}
           </button>
         ))}
       </div>
@@ -167,35 +224,32 @@ const AdminUserReports = () => {
         <div className="space-y-3">
           {reports.map((r) => {
             const reportedProfile = profilesQuery.data?.get(r.reported_user_id);
-            const reporterProfile = r.reporter_user_id
-              ? profilesQuery.data?.get(r.reporter_user_id)
-              : undefined;
+            const reporterProfile = r.reporter_user_id ? profilesQuery.data?.get(r.reporter_user_id) : undefined;
+            const otherPending = (pendingByUser.get(r.reported_user_id) ?? 0) - 1;
             return (
-              <div
-                key={r.id}
-                className="bg-card border border-border rounded-xl p-4 lg:p-5 space-y-3"
-              >
+              <div key={r.id} className="bg-card border border-border rounded-xl p-4 lg:p-5 space-y-3">
                 <div className="flex flex-wrap items-center gap-2">
-                  <Badge variant={r.status === "pending" ? "default" : "secondary"}>
-                    {r.status}
-                  </Badge>
+                  <Badge variant={r.status === "pending" ? "default" : "secondary"}>{r.status}</Badge>
                   {!r.is_read && <Badge variant="destructive">new</Badge>}
-                  <span className="text-xs text-muted-foreground ml-auto">
-                    {fmtDate(r.created_at)}
-                  </span>
+                  {r.severity && r.severity !== "none" && (
+                    <Badge variant="outline" className="capitalize">severity: {r.severity}</Badge>
+                  )}
+                  {r.action_taken && r.action_taken !== "none" && (
+                    <Badge variant="outline" className="capitalize">action: {r.action_taken.replace("_", " ")}</Badge>
+                  )}
+                  {otherPending > 0 && (
+                    <Badge variant="destructive">+{otherPending} other open report{otherPending === 1 ? "" : "s"}</Badge>
+                  )}
+                  <span className="text-xs text-muted-foreground ml-auto">{fmtDate(r.created_at)}</span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                      Reported user
-                    </p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Reported user</p>
                     <ProfileLine profile={reportedProfile} />
                   </div>
                   <div>
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                      Reported by
-                    </p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Reported by</p>
                     <ProfileLine
                       profile={reporterProfile}
                       fallback={{ name: r.reporter_name, email: r.reporter_email }}
@@ -213,32 +267,27 @@ const AdminUserReports = () => {
                   <p className="text-sm whitespace-pre-wrap">{r.detail}</p>
                 </div>
 
+                {r.admin_note && (
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Admin note</p>
+                    <p className="text-sm whitespace-pre-wrap">{r.admin_note}</p>
+                  </div>
+                )}
+
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-border">
                   {!r.is_read && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => markRead.mutate(r.id)}
-                    >
+                    <Button size="sm" variant="outline" onClick={() => markRead.mutate(r.id)}>
                       <Check className="h-4 w-4 mr-1" />
                       Mark read
                     </Button>
                   )}
                   {r.status === "pending" && (
                     <>
-                      <Button
-                        size="sm"
-                        onClick={() => resolve.mutate({ id: r.id, status: "reviewed" })}
-                      >
-                        Mark reviewed
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => resolve.mutate({ id: r.id, status: "dismissed" })}
-                      >
-                        Dismiss
-                      </Button>
+                      <Button size="sm" onClick={() => openDialog("warn", r, reportedProfile)}>Warn</Button>
+                      <Button size="sm" variant="outline" onClick={() => openDialog("suspend", r, reportedProfile)}>Suspend</Button>
+                      <Button size="sm" variant="destructive" onClick={() => openDialog("ban", r, reportedProfile)}>Ban</Button>
+                      <Button size="sm" variant="outline" onClick={() => openDialog("content_removed", r, reportedProfile)}>Content removed</Button>
+                      <Button size="sm" variant="ghost" onClick={() => openDialog("dismissed", r, reportedProfile)}>Dismiss</Button>
                     </>
                   )}
                   <Button
@@ -258,6 +307,15 @@ const AdminUserReports = () => {
           })}
         </div>
       )}
+
+      <ModerationActionDialog
+        open={dialog.open}
+        onOpenChange={(v) => setDialog((d) => ({ ...d, open: v }))}
+        action={dialog.action}
+        reportId={dialog.reportId}
+        reportedUserLabel={dialog.label}
+        reporterIsUser={dialog.reporterIsUser}
+      />
     </div>
   );
 };
