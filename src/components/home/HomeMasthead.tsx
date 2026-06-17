@@ -75,22 +75,24 @@ const HomeMasthead = () => {
           >
             <Search size={18} color="#020202" strokeWidth={1.8} />
           </Link>
-          <Link
-            to="/my-notifications"
-            aria-label="Notifications"
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 999,
-              background: "#ffffff",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid rgba(0,0,0,0.06)",
-            }}
-          >
-            <Bell size={18} color="#020202" strokeWidth={1.8} />
-          </Link>
+          {user && (
+            <Link
+              to="/my-notifications"
+              aria-label="Notifications"
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 999,
+                background: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(0,0,0,0.06)",
+              }}
+            >
+              <Bell size={18} color="#020202" strokeWidth={1.8} />
+            </Link>
+          )}
         </div>
       </div>
     </div>
