@@ -1,7 +1,7 @@
 import { CSSProperties, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, X } from "lucide-react";
+import { ArrowUpRight, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
@@ -389,7 +389,7 @@ const AccountReported = () => {
                       <StatusPill status={r.status} />
                     </div>
                   </div>
-                  <ChevronRight size={18} color={MUTED} strokeWidth={1.75} />
+                  <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
                 </button>
               );
             })}
