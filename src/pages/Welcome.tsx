@@ -199,7 +199,7 @@ const Welcome = () => {
               letterSpacing: "0.01em",
             }}
           >
-            Continue as a Guest
+            Continue as Guest
           </Button>
 
           <p style={{ textAlign: "center", color: "#2b2420", fontSize: 14, marginTop: 18 }}>
