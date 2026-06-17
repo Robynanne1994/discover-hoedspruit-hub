@@ -323,7 +323,7 @@ export default function MyNotifications() {
                 letterSpacing: "-0.3px",
               }}
             >
-              No Notifications Yet
+              No Notifications
             </p>
             <p
               style={{
