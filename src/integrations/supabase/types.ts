@@ -1546,10 +1546,12 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string | null
+          first_name: string | null
           id: string
           is_private: boolean
           location: string | null
           phone: string | null
+          surname: string | null
           updated_at: string
           username: string | null
         }
@@ -1559,10 +1561,12 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          first_name?: string | null
           id: string
           is_private?: boolean
           location?: string | null
           phone?: string | null
+          surname?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -1572,10 +1576,12 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          first_name?: string | null
           id?: string
           is_private?: boolean
           location?: string | null
           phone?: string | null
+          surname?: string | null
           updated_at?: string
           username?: string | null
         }
