@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings } from "lucide-react";
+import { Bell, Calendar, Clock, Heart, MapPin, Store, Sun, Tag, CheckCheck, Settings, Check, UserPlus } from "lucide-react";
 import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,10 +24,13 @@ type Notif = {
   is_read: boolean;
   created_at: string;
   kind: string;
+  ref_table: string | null;
+  ref_id: string | null;
 };
 
 const iconFor = (kind: string) => {
   const k = (kind || "").toLowerCase();
+  if (k.includes("follow")) return UserPlus;
   if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return Heart;
   if (k.includes("special") || k.includes("deal") || k.includes("offer")) return Tag;
   if (k.includes("listing") || k.includes("place")) return Store;
@@ -90,7 +93,7 @@ export default function MyNotifications() {
     }
     const { data, error } = await supabase
       .from("business_notifications")
-      .select("id,title,body,link,is_read,created_at,kind")
+      .select("id,title,body,link,is_read,created_at,kind,ref_table,ref_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(100);
@@ -160,6 +163,19 @@ export default function MyNotifications() {
     initialUnreadRef.current = new Set();
     load();
   }, [user, notifs, load]);
+
+  const respondFollowRequest = useCallback(async (n: Notif, accept: boolean) => {
+    if (!n.ref_id) return;
+    if (accept) {
+      await supabase
+        .from("follows")
+        .update({ status: "accepted", responded_at: new Date().toISOString() } as any)
+        .eq("id", n.ref_id);
+    } else {
+      await supabase.from("follows").delete().eq("id", n.ref_id);
+    }
+    setNotifs((prev) => prev.filter((x) => x.id !== n.id));
+  }, []);
 
   const isEmpty = loaded && notifs.length === 0;
   const hasUnread = unreadCount > 0;
@@ -257,6 +273,7 @@ export default function MyNotifications() {
                     n={n}
                     isUnread={initialUnreadRef.current?.has(n.id) ?? false}
                     onClick={() => n.link && navigate(n.link)}
+                    onRespond={respondFollowRequest}
                   />
                 ))}
               </div>
@@ -322,10 +339,12 @@ function NotifCard({
   n,
   isUnread,
   onClick,
+  onRespond,
 }: {
   n: Notif;
   isUnread: boolean;
   onClick: () => void;
+  onRespond?: (n: Notif, accept: boolean) => void;
 }) {
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
@@ -402,6 +421,53 @@ function NotifCard({
         >
           {relativeShort(n.created_at)}
         </span>
+        {n.kind === "follow_request" && n.ref_id && onRespond && (
+          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRespond(n, true);
+              }}
+              style={{
+                height: 34,
+                padding: "0 16px",
+                borderRadius: 999,
+                background: INK,
+                color: "#fff",
+                border: "none",
+                cursor: "pointer",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <Check size={14} strokeWidth={2.4} /> Accept
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onRespond(n, false);
+              }}
+              style={{
+                height: 34,
+                padding: "0 16px",
+                borderRadius: 999,
+                background: "transparent",
+                color: INK,
+                border: `1px solid ${HAIRLINE}`,
+                cursor: "pointer",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              Decline
+            </button>
+          </div>
+        )}
       </div>
       {isUnread && (
         <span
