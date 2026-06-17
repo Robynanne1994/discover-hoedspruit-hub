@@ -41,6 +41,7 @@ const Welcome = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAuthError(null);
     setLoading(true);
     if (mode === "signup") {
       if (!firstName.trim()) {
