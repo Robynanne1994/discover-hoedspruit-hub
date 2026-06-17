@@ -720,7 +720,8 @@ const SpecialsResults = ({ query }: { query: string }) => {
           image={s.image_url}
           title={s.title}
           titleOverride={(s as any).title_override}
-          subtitle={[s.deal_label, s.business_name].filter(Boolean).join(" · ")}
+          subtitle={s.deal_label || null}
+          subtitle2={s.business_name || null}
           action={<InlineSaveButton itemId={s.id} itemType="special" />}
         />
       ))}
