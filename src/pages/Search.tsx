@@ -223,12 +223,12 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
   >
     <span
       style={{
-        fontFamily: FONT,
-        fontSize: 11,
+        fontFamily: '"Bricolage Grotesque", ' + FONT,
+        fontSize: 15,
         fontWeight: 700,
-        letterSpacing: "0.12em",
+        letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: "rgba(18,18,20,0.55)",
+        color: "#1A1A1A",
       }}
     >
       {count !== undefined ? `${label} (${count})` : label}
@@ -417,8 +417,8 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
         background: "transparent",
         border: `1.5px solid ${PRIMARY}`,
         borderRadius: 999,
-        width: 38,
-        height: 38,
+        width: 30,
+        height: 30,
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
@@ -427,7 +427,7 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
       aria-label={isFav ? "Remove from saved" : "Save"}
     >
       <Heart
-        size={16}
+        size={13}
         color={PRIMARY}
         fill={isFav ? PRIMARY : "none"}
         strokeWidth={1.8}
