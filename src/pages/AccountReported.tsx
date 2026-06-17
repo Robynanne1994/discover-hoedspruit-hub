@@ -125,21 +125,11 @@ const ReportDetailSheet = ({
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             alignItems: "center",
             marginBottom: 8,
           }}
         >
-          <div
-            style={{
-              fontSize: 11,
-              letterSpacing: "0.08em",
-              color: MUTED,
-              textTransform: "uppercase",
-            }}
-          >
-            Your report
-          </div>
           <button
             onClick={onClose}
             aria-label="Close"
