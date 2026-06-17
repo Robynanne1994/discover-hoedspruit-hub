@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 import Seo from "@/components/Seo";
+import PageHeader from "@/components/PageHeader";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 
