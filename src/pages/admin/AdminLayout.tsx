@@ -18,6 +18,7 @@ import {
   FileBarChart,
   Bell,
   Flag,
+  ShieldAlert,
   HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
