@@ -178,8 +178,12 @@ const ReportDetailSheet = ({
           </div>
 
           <div>
-            <span style={labelStyle}>What you wrote</span>
-            <p style={valueStyle}>{report.detail || "—"}</p>
+            <span style={labelStyle}>The note you added</span>
+            <p style={valueStyle}>
+              {report.detail?.trim()
+                ? report.detail
+                : "You didn't add any extra details with this report."}
+            </p>
           </div>
 
           {report.action_taken && report.action_taken !== "none" && (
@@ -189,19 +193,18 @@ const ReportDetailSheet = ({
             </div>
           )}
 
-          {report.admin_message && (
-            <div>
-              <span style={labelStyle}>Message from our team</span>
-              <p style={valueStyle}>{report.admin_message}</p>
-            </div>
-          )}
-
-          {report.admin_note && report.status !== "pending" && !report.admin_message && (
-            <div>
-              <span style={labelStyle}>Note from our team</span>
-              <p style={valueStyle}>{report.admin_note}</p>
-            </div>
-          )}
+          <div>
+            <span style={labelStyle}>Response from our team</span>
+            <p style={valueStyle}>
+              {report.admin_message
+                ? report.admin_message
+                : report.admin_note && report.status !== "pending"
+                ? report.admin_note
+                : report.status === "pending"
+                ? "Our team hasn't responded yet. You'll see their message here once they review your report."
+                : "Our team reviewed your report but didn't leave a written message."}
+            </p>
+          </div>
 
           <div>
             <span style={labelStyle}>Submitted</span>
