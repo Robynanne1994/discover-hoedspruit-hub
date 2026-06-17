@@ -64,7 +64,7 @@ const Search = () => {
 
       {/* Top tabs: Users / Businesses */}
       <div style={{ display: "flex", padding: "4px 20px 0", gap: 0, borderBottom: `1px solid ${DIVIDER}` }}>
-        {(["users", "businesses"] as TopTab[]).map((t) => {
+        {(["businesses", "users"] as TopTab[]).map((t) => {
           const active = topTab === t;
           return (
             <button
