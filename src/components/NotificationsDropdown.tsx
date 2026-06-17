@@ -288,7 +288,32 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                         }}
                       />
                     )}
-                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read ? 17 : 0 }}>
+                    {n.kind === "follow_request" && n.ref_id && actorMap[n.ref_id] && (
+                      <div
+                        style={{
+                          width: 32, height: 32, borderRadius: 999, overflow: "hidden", flexShrink: 0,
+                          background: "linear-gradient(135deg, #8a6f4d, #c4a374)",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                          color: "#fff", fontFamily: SANS, fontSize: 12, fontWeight: 600,
+                        }}
+                      >
+                        {actorMap[n.ref_id]?.avatar_url ? (
+                          <img
+                            src={actorMap[n.ref_id]!.avatar_url!}
+                            alt=""
+                            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                          />
+                        ) : (
+                          (actorMap[n.ref_id]?.display_name || "·")
+                            .trim()
+                            .split(/\s+/)
+                            .slice(0, 2)
+                            .map((p) => p[0]?.toUpperCase() ?? "")
+                            .join("")
+                        )}
+                      </div>
+                    )}
+                    <div style={{ flex: 1, minWidth: 0, paddingLeft: n.is_read && !(n.kind === "follow_request" && n.ref_id && actorMap[n.ref_id]) ? 17 : 0 }}>
                       <div
                         style={{
                           display: "flex",
