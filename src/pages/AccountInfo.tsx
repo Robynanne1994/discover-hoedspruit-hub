@@ -331,6 +331,25 @@ const AccountInfo = () => {
     }
   };
 
+  const handleAvatarRemove = async () => {
+    if (!user) return;
+    setUploadingAvatar(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .upsert({ id: user.id, avatar_url: null } as any);
+      if (error) throw error;
+      setAvatarUrl("");
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      toast.success("Profile photo removed");
+    } catch (err: any) {
+      toast.error(err.message || "Could not remove photo");
+    } finally {
+      setUploadingAvatar(false);
+      setPhotoSheetOpen(false);
+    }
+  };
+
   const handleSaveProfile = async () => {
     if (!user) return;
     const trimmedFirstName = firstName.trim();
