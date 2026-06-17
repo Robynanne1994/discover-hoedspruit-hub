@@ -1,0 +1,1 @@
+CREATE POLICY "Users can view their own submitted reports" ON public.user_reports FOR SELECT TO authenticated USING (auth.uid() = reporter_user_id);
