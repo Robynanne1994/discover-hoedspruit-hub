@@ -245,8 +245,10 @@ const MyAccount = () => {
     },
   });
 
-  // Not signed in
-  if (!loading && !user) {
+  // Not signed in and not browsing as a guest. Guests fall through to the
+  // full account page below, where they can still reach Help Centre, Feedback,
+  // Local Channels, etc. — only the personal "Account" section is hidden.
+  if (!loading && !user && !isGuest) {
     return (
       <div className="min-h-screen pb-20" style={{ background: "transparent", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
