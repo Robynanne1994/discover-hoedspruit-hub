@@ -207,7 +207,7 @@ const AccountPrivacy = () => {
                 <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>Follow Requests</div>
                 <div style={{ fontFamily: FF, fontSize: 12.5, color: MUTED, marginTop: 2 }}>
                   {pendingRequestCount
-                    ? `${pendingRequestCount} pending`
+                    ? `${pendingRequestCount} pending ${pendingRequestCount === 1 ? "request" : "requests"}`
                     : "No pending requests"}
                 </div>
               </div>
