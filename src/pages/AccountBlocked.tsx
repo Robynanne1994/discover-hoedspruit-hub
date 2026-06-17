@@ -34,11 +34,8 @@ const AccountBlocked = () => {
       if (error) throw error;
       const ids = (data ?? []).map((b: any) => b.blocked_id);
       if (ids.length === 0) return [];
-      const { data: profs } = await supabase
-        .from("profiles")
-        .select("id, display_name, username, avatar_url")
-        .in("id", ids);
-      const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
+      const { data: profs } = await supabase.rpc("get_public_profiles", { _ids: ids });
+      const map = new Map(((profs as any[]) ?? []).map((p: any) => [p.id, p]));
       return (data ?? []).map((b: any) => ({ ...b, profile: map.get(b.blocked_id) }));
     },
   });
