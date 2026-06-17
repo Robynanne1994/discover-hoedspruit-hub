@@ -223,12 +223,12 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
   >
     <span
       style={{
-        fontFamily: FONT,
-        fontSize: 11,
+        fontFamily: '"Bricolage Grotesque", ' + FONT,
+        fontSize: 15,
         fontWeight: 700,
-        letterSpacing: "0.12em",
+        letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: "rgba(18,18,20,0.55)",
+        color: "#1A1A1A",
       }}
     >
       {count !== undefined ? `${label} (${count})` : label}
