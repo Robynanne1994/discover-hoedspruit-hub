@@ -135,10 +135,51 @@ const AccountPrivacy = () => {
     toast.success("Privacy updated.");
   };
 
+  const SectionTitle = ({ children }: { children: React.ReactNode }) => (
+    <div
+      style={{
+        fontFamily: FF,
+        fontSize: 12,
+        letterSpacing: "0.08em",
+        textTransform: "uppercase",
+        color: MUTED,
+        margin: "4px 4px 8px",
+      }}
+    >
+      {children}
+    </div>
+  );
+
+  const NavRow = ({
+    label,
+    onClick,
+    isFirst,
+  }: {
+    label: string;
+    onClick: () => void;
+    isFirst?: boolean;
+  }) => (
+    <div
+      onClick={onClick}
+      style={{
+        borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+        padding: "16px 0",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        cursor: "pointer",
+      }}
+    >
+      <div style={{ fontFamily: FF, fontSize: 15, color: INK }}>{label}</div>
+      <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+    </div>
+  );
+
   return (
     <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100, fontFamily: FF }}>
       <PageHeader title="Account Privacy" />
       <div style={{ padding: "16px 20px 0" }}>
+        <SectionTitle>Visibility</SectionTitle>
         <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
           <PrivacyToggleRow
             label="Private Account"
@@ -181,9 +222,18 @@ const AccountPrivacy = () => {
             Learn More
           </span>
         </p>
+
+        <div style={{ marginTop: 24 }}>
+          <SectionTitle>Safety</SectionTitle>
+          <div style={{ background: CARD, borderRadius: 16, padding: "4px 20px" }}>
+            <NavRow label="Blocked" onClick={() => navigate("/account-settings/blocked")} isFirst />
+            <NavRow label="Reported" onClick={() => navigate("/account-settings/reported")} />
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default AccountPrivacy;
+
