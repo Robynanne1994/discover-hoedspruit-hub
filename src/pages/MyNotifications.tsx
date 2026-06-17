@@ -5,6 +5,7 @@ import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import PageHeader from "@/components/PageHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useFollowRequestActors, FollowActor } from "@/hooks/useFollowRequestActors";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
@@ -155,6 +156,12 @@ export default function MyNotifications() {
     return groups;
   }, [notifs]);
 
+  const followRequestRefIds = useMemo(
+    () => notifs.filter((n) => n.kind === "follow_request" && n.ref_id).map((n) => n.ref_id as string),
+    [notifs]
+  );
+  const actorMap = useFollowRequestActors(followRequestRefIds);
+
   const markAllRead = useCallback(async () => {
     if (!user) return;
     const unread = notifs.filter((n) => !n.is_read).map((n) => n.id);
@@ -274,6 +281,7 @@ export default function MyNotifications() {
                     isUnread={initialUnreadRef.current?.has(n.id) ?? false}
                     onClick={() => n.link && navigate(n.link)}
                     onRespond={respondFollowRequest}
+                    actor={n.ref_id ? actorMap[n.ref_id] : undefined}
                   />
                 ))}
               </div>
@@ -340,14 +348,23 @@ function NotifCard({
   isUnread,
   onClick,
   onRespond,
+  actor,
 }: {
   n: Notif;
   isUnread: boolean;
   onClick: () => void;
   onRespond?: (n: Notif, accept: boolean) => void;
+  actor?: FollowActor;
 }) {
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
+  const showAvatar = n.kind === "follow_request" && actor;
+  const initials = (actor?.display_name || "·")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((p) => p[0]?.toUpperCase() ?? "")
+    .join("");
   return (
     <div
       onClick={onClick}
@@ -363,20 +380,50 @@ function NotifCard({
         cursor: n.link ? "pointer" : "default",
       }}
     >
-      <div
-        style={{
-          width: 44,
-          height: 44,
-          borderRadius: 12,
-          background: tint.bg,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-        }}
-      >
-        <Icon size={22} strokeWidth={1.8} color={tint.fg} />
-      </div>
+      {showAvatar ? (
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 999,
+            overflow: "hidden",
+            flexShrink: 0,
+            background: "linear-gradient(135deg, #8a6f4d, #c4a374)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            fontFamily: SANS,
+            fontSize: 15,
+            fontWeight: 600,
+          }}
+        >
+          {actor?.avatar_url ? (
+            <img
+              src={actor.avatar_url}
+              alt=""
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          ) : (
+            initials
+          )}
+        </div>
+      ) : (
+        <div
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            background: tint.bg,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          <Icon size={22} strokeWidth={1.8} color={tint.fg} />
+        </div>
+      )}
       <div style={{ flex: 1, minWidth: 0, paddingRight: isUnread ? 14 : 0 }}>
         <p
           style={{
