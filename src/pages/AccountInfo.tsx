@@ -278,7 +278,9 @@ const AccountInfo = () => {
   };
   const [avatarUrl, setAvatarUrl] = useState<string>("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [photoSheetOpen, setPhotoSheetOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
   const initialized = useRef(false);
 
   useEffect(() => {
