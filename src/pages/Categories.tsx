@@ -293,7 +293,7 @@ const Categories = () => {
                 )}
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p {...noTitleCaseProps(listing)} style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                <p {...noTitleCaseProps(listing)} style={{ fontSize: 14, fontWeight: 600, color: COLORS.ink, margin: 0, wordBreak: "break-word", lineHeight: 1.25 }}>
                   {getDisplayTitle(listing)}
                 </p>
                 {listing.location && (
@@ -303,7 +303,7 @@ const Categories = () => {
                   </p>
                 )}
               </div>
-              <ChevronRight size={16} color={COLORS.muted} />
+              <ArrowUpRight size={18} color="#1A1A1A" style={{ flexShrink: 0 }} />
             </Link>
           ))}
         </div>
