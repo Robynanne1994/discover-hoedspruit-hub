@@ -168,7 +168,7 @@ const ReportDetailSheet = ({
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
           <div>
-            <span style={labelStyle}>Status</span>
+            <span style={labelStyle}>REPORT STATUS</span>
             <StatusPill status={report.status} />
           </div>
 
@@ -178,7 +178,7 @@ const ReportDetailSheet = ({
           </div>
 
           <div>
-            <span style={labelStyle}>The note you added</span>
+            <span style={labelStyle}>REASON NOTE</span>
             <p style={valueStyle}>
               {report.detail?.trim()
                 ? report.detail
@@ -188,13 +188,13 @@ const ReportDetailSheet = ({
 
           {report.action_taken && report.action_taken !== "none" && (
             <div>
-              <span style={labelStyle}>Outcome</span>
+              <span style={labelStyle}>REPORT OUTCOME</span>
               <p style={valueStyle}>{ACTION_LABEL[report.action_taken] ?? report.action_taken}</p>
             </div>
           )}
 
           <div>
-            <span style={labelStyle}>Response from our team</span>
+            <span style={labelStyle}>HELLO HOEDSPRUIT'S RESPONSE</span>
             <p style={valueStyle}>
               {report.admin_message
                 ? report.admin_message
@@ -207,13 +207,13 @@ const ReportDetailSheet = ({
           </div>
 
           <div>
-            <span style={labelStyle}>Submitted</span>
+            <span style={labelStyle}>DATE & TIME SUBMITTED</span>
             <p style={valueStyle}>{fmtDate(report.created_at)}</p>
           </div>
 
           {report.resolved_at && (
             <div>
-              <span style={labelStyle}>Resolved</span>
+              <span style={labelStyle}>DATE & TIME RESOLVED</span>
               <p style={valueStyle}>{fmtDate(report.resolved_at)}</p>
             </div>
           )}
