@@ -130,24 +130,11 @@ export const RefineDrawer = ({
               <X size={18} strokeWidth={2} />
             </button>
           </div>
-
-          {/* Match count — plain text under title */}
-          <div
-            style={{
-              marginTop: 8,
-              fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: 600,
-              color: BROWN,
-              letterSpacing: "0.01em",
-            }}
-          >
-            {resultsCount}&nbsp;{resultsLabel.charAt(0).toUpperCase() + resultsLabel.slice(1)}&nbsp;Match
-          </div>
         </div>
 
-        {/* Divider below match count */}
+        {/* Divider below title */}
         <div style={{ height: 1, background: "rgba(0,0,0,0.10)", margin: "0 20px" }} />
+
 
 
 
