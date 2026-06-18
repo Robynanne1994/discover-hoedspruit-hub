@@ -223,7 +223,7 @@ export const RefineDrawer = ({
               transition: "transform 0.12s ease",
             }}
           >
-            Show {resultsCount}&nbsp;Specials
+            Show {resultsCount}&nbsp;{resultsLabel.charAt(0).toUpperCase() + resultsLabel.slice(1)}
           </button>
         </div>
       </aside>
