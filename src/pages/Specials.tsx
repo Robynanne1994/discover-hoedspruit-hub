@@ -380,6 +380,8 @@ const Specials = () => {
           setFilterType([]);
           setActiveTab("All Specials");
           setSortBy("default");
+          setSearch("");
+          setOpenSection(null);
         }}
         resultsCount={filteredSpecials.length}
         resultsLabel="specials"
