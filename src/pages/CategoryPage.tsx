@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle, RefineSlider } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { bayesianScore } from "@/lib/ratingScore";
 import Seo from "@/components/Seo";
@@ -237,6 +237,9 @@ const CategoryPage = () => {
   const [filterOpenNow, setFilterOpenNow] = useState<boolean>(persisted?.filterOpenNow ?? false);
   const [filterSaved, setFilterSaved] = useState<boolean>(persisted?.filterSaved ?? false);
   const [filterBeenTo, setFilterBeenTo] = useState<boolean>(persisted?.filterBeenTo ?? false);
+  const MAX_KM = 25; // "Anywhere"
+  const [filterMaxKm, setFilterMaxKm] = useState<number>(persisted?.filterMaxKm ?? MAX_KM);
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -248,6 +251,7 @@ const CategoryPage = () => {
           filterCuisine, filterVibe, filterMeal, filterSeating,
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
           filterOpenNow, filterSaved, filterBeenTo,
+          filterMaxKm,
         }),
       );
     } catch {
@@ -257,8 +261,9 @@ const CategoryPage = () => {
     stateKey, sortBy, search,
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
-    filterOpenNow, filterSaved, filterBeenTo,
+    filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
   ]);
+
 
 
   const { data: savedIds } = useQuery({
@@ -516,7 +521,9 @@ const CategoryPage = () => {
     filterOpenNow ? 1 : 0,
     filterSaved ? 1 : 0,
     filterBeenTo ? 1 : 0,
+    filterMaxKm < MAX_KM ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
+
 
   const clearAllFilters = () => {
     setSearchParams({});
@@ -532,7 +539,9 @@ const CategoryPage = () => {
     setFilterOpenNow(false);
     setFilterSaved(false);
     setFilterBeenTo(false);
+    setFilterMaxKm(MAX_KM);
   };
+
 
   const toggleArrayFilter = (arr: string[], val: string, setter: (v: string[]) => void) => {
     setter(arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val]);
@@ -578,8 +587,14 @@ const CategoryPage = () => {
       if (filterOpenNow && !isOpenNow(l.opening_hours as Record<string, string> | null)) return false;
       if (filterSaved && !(savedIds && savedIds.has(l.id))) return false;
       if (filterBeenTo && !(beenIds && beenIds.has(l.id))) return false;
+      if (filterMaxKm < MAX_KM) {
+        const raw = (l as any).km_from_town;
+        const km = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(/[^0-9.]/g, ""));
+        if (!Number.isFinite(km) || km > filterMaxKm) return false;
+      }
       return true;
     });
+
 
     if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
     if (sortBy === "rating") {
@@ -597,7 +612,7 @@ const CategoryPage = () => {
       return [...result].sort((a, b) => scoreFor(b) - scoreFor(a));
     }
     return result;
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search, reviewAggregates]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, reviewAggregates]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
@@ -906,6 +921,8 @@ const CategoryPage = () => {
           ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
           ...(filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
           ...(filterBeenTo ? [{ label: "Been To", onRemove: () => setFilterBeenTo(false) }] : []),
+          ...(filterMaxKm < MAX_KM ? [{ label: `Within ${filterMaxKm} km`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
+
           ...(filterChildFriendly ? [{ label: "Child Friendly", onRemove: () => setFilterChildFriendly(false) }] : []),
           ...(filterPetFriendly ? [{ label: "Pet Friendly", onRemove: () => setFilterPetFriendly(false) }] : []),
           ...(filterWheelchair ? [{ label: "Wheelchair Accessible", onRemove: () => setFilterWheelchair(false) }] : []),
@@ -1004,6 +1021,21 @@ const CategoryPage = () => {
             </RefineSection>
           </>
         )}
+
+        <RefineSection label="Distance from Town">
+          <RefineSlider
+            value={filterMaxKm}
+            min={0.5}
+            max={MAX_KM}
+            step={0.5}
+            onChange={setFilterMaxKm}
+            formatValue={(v) => `${v} km`}
+            minLabel="0.5 km"
+            maxLabel="Anywhere"
+          />
+        </RefineSection>
+
+
 
         <RefineSection>
           <RefineToggle

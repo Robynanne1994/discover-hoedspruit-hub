@@ -181,6 +181,7 @@ export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
 export const UNIVERSAL_FIELDS = [
   "title", "title_override", "long_description",
   "image_url", "detail_image_url", "gallery_images", "location",
+  "km_from_town",
   "phone", "phone_label", "email", "email_label",
   "website", "website_label", "whatsapp", "whatsapp_label",
   "additional_phones", "additional_phone_labels",
@@ -197,6 +198,7 @@ export const UNIVERSAL_FIELDS = [
   "custom_title_2", "custom_text_2",
   "custom_title_3", "custom_text_3",
 ] as const;
+
 
 export const RESTAURANT_ONLY_FIELDS = [
   "show_attributes",
@@ -218,7 +220,7 @@ export const SHOPPING_ONLY_FIELDS = [
 ] as const;
 
 export const ACCOMMODATION_ONLY_FIELDS = [
-  "pets_allowed", "sleeps", "price_range", "km_from_town", "amenities",
+  "pets_allowed", "sleeps", "price_range", "amenities",
   "has_restaurant", "has_bar", "has_room_service", "has_breakfast", "breakfast_included",
   "has_swimming_pool", "has_laundry", "child_friendly", "has_spa", "has_fitness_centre",
   "has_airport_shuttle", "airport_shuttle_free", "has_aircon", "has_wifi_accom",
