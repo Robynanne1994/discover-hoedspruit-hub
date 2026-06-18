@@ -153,6 +153,10 @@ export const RefineDrawer = ({
           </div>
         </div>
 
+        {/* Divider below header / above sections */}
+        <div style={{ height: 1, background: "rgba(0,0,0,0.10)", margin: "0 20px" }} />
+
+
         {/* Scroll area with cards */}
         <div
           style={{
