@@ -276,6 +276,7 @@ export const RefineSection = ({ label, open, onToggle, summary, children }: Refi
         borderRadius: 16,
         padding: isAccordion ? "0" : "18px 18px 18px 18px",
         overflow: "hidden",
+        flexShrink: 0,
       }}
     >
       {isAccordion ? (
