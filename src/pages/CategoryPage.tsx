@@ -251,6 +251,7 @@ const CategoryPage = () => {
           filterCuisine, filterVibe, filterMeal, filterSeating,
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
           filterOpenNow, filterSaved, filterBeenTo,
+          filterMaxKm,
         }),
       );
     } catch {
@@ -260,8 +261,9 @@ const CategoryPage = () => {
     stateKey, sortBy, search,
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
-    filterOpenNow, filterSaved, filterBeenTo,
+    filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
   ]);
+
 
 
   const { data: savedIds } = useQuery({
