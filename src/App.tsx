@@ -33,6 +33,7 @@ import Events from "./pages/Events.tsx";
 import About from "./pages/About.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
 import MyProfile from "./pages/MyProfile.tsx";
+import MyProfileGuest from "./pages/MyProfileGuest.tsx";
 import BushTelegraph from "./pages/BushTelegraph.tsx";
 import LocalChannelDetail from "./pages/LocalChannelDetail.tsx";
 
@@ -159,6 +160,7 @@ const App = () => (
               <Route path="/auth" element={<Navigate to="/welcome" replace />} />
               <Route path="/my-account" element={<MyAccount />} />
               <Route path="/my-profile" element={<MyProfile />} />
+              <Route path="/my-profile-guest" element={<MyProfileGuest />} />
               <Route path="/local-channels" element={<BushTelegraph />} />
               <Route path="/local-channels/:slug" element={<LocalChannelDetail />} />
               
