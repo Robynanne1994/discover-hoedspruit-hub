@@ -94,7 +94,7 @@ const Feedback = () => {
     textTransform: "uppercase",
     color: INK,
     marginBottom: 8,
-    paddingLeft: 2,
+    marginLeft: -1,
   };
 
   return (
