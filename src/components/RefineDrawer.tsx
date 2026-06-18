@@ -354,6 +354,94 @@ export const RefineOption = ({
   </button>
 );
 
+// Toggle row — label + optional description on left, switch on right.
+// Designed to sit as the only child inside its own RefineSection card (no inner label).
+export const RefineToggle = ({
+  label,
+  description,
+  active,
+  onClick,
+}: {
+  label: string;
+  description?: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    role="switch"
+    aria-checked={active}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 16,
+      width: "100%",
+      background: "transparent",
+      border: "none",
+      padding: 0,
+      cursor: "pointer",
+      textAlign: "left",
+    }}
+  >
+    <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+      <span
+        style={{
+          fontFamily: SANS,
+          fontWeight: 600,
+          fontSize: 16,
+          color: INK,
+          letterSpacing: "0.01em",
+          lineHeight: 1.2,
+        }}
+      >
+        {label}
+      </span>
+      {description && (
+        <span
+          style={{
+            fontFamily: SANS,
+            fontWeight: 400,
+            fontSize: 13,
+            color: "rgba(26,26,26,0.55)",
+            letterSpacing: "0.01em",
+            lineHeight: 1.3,
+          }}
+        >
+          {description}
+        </span>
+      )}
+    </span>
+    <span
+      aria-hidden
+      style={{
+        flexShrink: 0,
+        width: 48,
+        height: 28,
+        borderRadius: 999,
+        background: active ? DARK_BROWN : "rgba(0,0,0,0.18)",
+        position: "relative",
+        transition: "background-color 0.18s ease",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 2,
+          left: active ? 22 : 2,
+          width: 24,
+          height: 24,
+          borderRadius: "50%",
+          background: "#ffffff",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.25)",
+          transition: "left 0.18s ease",
+        }}
+      />
+    </span>
+  </button>
+);
+
+
 // Pill-style option — used for subcategory lists. Renders inline so siblings wrap.
 export const RefineRectOption = ({
   label,
