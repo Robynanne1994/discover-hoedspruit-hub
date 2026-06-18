@@ -596,7 +596,16 @@ const CategoryPage = () => {
     });
 
 
-    if (sortBy === "name") return [...result].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortBy === "name_asc") return [...result].sort((a, b) => a.title.localeCompare(b.title));
+    if (sortBy === "name_desc") return [...result].sort((a, b) => b.title.localeCompare(a.title));
+    if (sortBy === "distance") {
+      const kmOf = (l: any) => {
+        const raw = l.km_from_town;
+        const n = raw == null || raw === "" ? NaN : parseFloat(String(raw).replace(/[^0-9.]/g, ""));
+        return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
+      };
+      return [...result].sort((a, b) => kmOf(a) - kmOf(b));
+    }
     if (sortBy === "rating") {
       const scoreFor = (l: any) => {
         const agg = reviewAggregates?.get(l.id);
@@ -612,6 +621,7 @@ const CategoryPage = () => {
       return [...result].sort((a, b) => scoreFor(b) - scoreFor(a));
     }
     return result;
+
   }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, reviewAggregates]);
 
   const totalCount = listings?.length ?? 0;
