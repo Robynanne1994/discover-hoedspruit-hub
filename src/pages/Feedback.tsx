@@ -203,25 +203,34 @@ const Feedback = () => {
         </div>
 
         {/* Submit */}
-        <button
-          onClick={handleSubmit}
-          disabled={submitting}
-          {...tap}
-          style={{
-            width: "100%", marginTop: 10,
-            background: SUBMIT_BG, color: "#fff", border: "none",
-            borderRadius: 999, height: 58,
-            fontFamily: FF, fontSize: 16, fontWeight: 600,
-            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
-            cursor: submitting ? "not-allowed" : "pointer",
-            opacity: submitting ? 0.7 : 1,
-            transition: "transform 0.15s ease, opacity 0.15s ease",
-          }}
-        >
-          {submitting ? (
-            <><Loader2 size={16} color="#fff" className="animate-spin" /> Sending</>
-          ) : "Submit Feedback"}
-        </button>
+        {(() => {
+          const isEmpty = !type || !subject.trim() || !message.trim();
+          const isDisabled = submitting || isEmpty;
+          return (
+            <button
+              onClick={handleSubmit}
+              disabled={isDisabled}
+              {...tap}
+              style={{
+                width: "100%", marginTop: 10,
+                background: isEmpty ? "#C9C0AC" : SUBMIT_BG,
+                color: isEmpty ? "#7A6E5C" : "#fff",
+                border: "none",
+                borderRadius: 999, height: 58,
+                fontFamily: FF, fontSize: 16, fontWeight: 600,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                cursor: isDisabled ? "not-allowed" : "pointer",
+                opacity: submitting ? 0.7 : 1,
+                pointerEvents: isDisabled ? "none" : "auto",
+                transition: "transform 0.15s ease, opacity 0.15s ease, background 0.15s ease",
+              }}
+            >
+              {submitting ? (
+                <><Loader2 size={16} color="#fff" className="animate-spin" /> Sending</>
+              ) : "Submit Feedback"}
+            </button>
+          );
+        })()}
 
         {/* Footer note */}
         <p style={{
