@@ -627,7 +627,15 @@ const CategoryPage = () => {
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
   const subline = `${totalCount} ${tagline}`;
-  const sortLabel = sortBy === "default" ? "Default" : sortBy === "name" ? "Alphabetically" : "Highest Rated";
+  const SORT_LABELS: Record<SortKey, string> = {
+    default: "Default",
+    name_asc: "Alphabetically (A-Z)",
+    name_desc: "Alphabetically (Z-A)",
+    rating: "Highest Rated",
+    distance: "Distance from Town",
+  };
+  const sortLabel = SORT_LABELS[sortBy];
+
 
   const sectionEyebrow: React.CSSProperties = {
     fontSize: 11,
