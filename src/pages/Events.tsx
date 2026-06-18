@@ -508,7 +508,10 @@ const Events = () => {
   const [weekAnchor, setWeekAnchor] = useState<Date>(selectedDate ?? startOfToday());
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | "sort" | null>("tag");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | "dates" | "price" | null>("tag");
+  const [dateFrom, setDateFrom] = useState<string>(""); // YYYY-MM-DD
+  const [dateTo, setDateTo] = useState<string>("");
+  const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">("any");
 
 
   const { data: events, isLoading } = useQuery({
@@ -648,6 +651,36 @@ const Events = () => {
       });
     }
 
+    // Date range filter (additive — must also fall inside range if provided)
+    if (dateFrom || dateTo) {
+      const fromD = dateFrom ? new Date(dateFrom + "T00:00:00") : null;
+      const toD = dateTo ? new Date(dateTo + "T23:59:59") : null;
+      list = list.filter((e) => {
+        const rangeFrom = fromD ?? new Date(0);
+        const rangeTo = toD ?? new Date(8640000000000000);
+        const occs = getEventOccurrences(e, { from: rangeFrom, to: rangeTo, now: rangeFrom });
+        if (occs.length > 0) return true;
+        if (e._parsed) {
+          if (fromD && e._parsed < fromD) return false;
+          if (toD && e._parsed > toD) return false;
+          return true;
+        }
+        return false;
+      });
+    }
+
+    // Price filter
+    if (priceFilter !== "any") {
+      list = list.filter((e) => {
+        const raw = e.price == null ? "" : String(e.price).trim();
+        const isFree = /^(free|0|r0|r\s*0)$/i.test(raw);
+        const hasNum = /\d/.test(raw) && !isFree;
+        if (priceFilter === "free") return isFree;
+        if (priceFilter === "paid") return hasNum;
+        return true;
+      });
+    }
+
     const sorted = [...list];
     if (sortBy === "date-desc") {
       sorted.sort((a, b) => {
@@ -662,7 +695,7 @@ const Events = () => {
     }
     // date-asc is already the default order from sortedEvents
     return sorted;
-  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy]);
+  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy, dateFrom, dateTo, priceFilter]);
 
 
   const sectionTitle = useMemo(() => {
@@ -940,7 +973,7 @@ const Events = () => {
       <RefineDrawer
         open={refineOpen}
         onClose={() => setRefineOpen(false)}
-        onClear={() => { setTagFilter(null); setSortBy("date-asc"); }}
+        onClear={() => { setTagFilter(null); setSortBy("date-asc"); setDateFrom(""); setDateTo(""); setPriceFilter("any"); }}
         resultsCount={filtered.length}
         resultsLabel="events"
       >
@@ -995,6 +1028,90 @@ const Events = () => {
 
         </RefineSection>
 
+        <RefineSection
+          label="Date Range"
+          summary={
+            dateFrom || dateTo
+              ? `${dateFrom ? format(new Date(dateFrom + "T00:00:00"), "d MMM") : "Any"} – ${dateTo ? format(new Date(dateTo + "T00:00:00"), "d MMM") : "Any"}`
+              : undefined
+          }
+          open={openSection === "dates"}
+          onToggle={() => setOpenSection(openSection === "dates" ? null : "dates")}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <label style={{ display: "flex", flexDirection: "column", gap: 6, fontFamily: SANS, fontSize: 13, fontWeight: 600, color: "#1a1a1a", letterSpacing: "0.01em" }}>
+              From
+              <input
+                type="date"
+                value={dateFrom}
+                max={dateTo || undefined}
+                onChange={(e) => setDateFrom(e.target.value)}
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(0,0,0,0.15)",
+                  background: "#fff",
+                  color: "#1a1a1a",
+                  width: "100%",
+                }}
+              />
+            </label>
+            <label style={{ display: "flex", flexDirection: "column", gap: 6, fontFamily: SANS, fontSize: 13, fontWeight: 600, color: "#1a1a1a", letterSpacing: "0.01em" }}>
+              To
+              <input
+                type="date"
+                value={dateTo}
+                min={dateFrom || undefined}
+                onChange={(e) => setDateTo(e.target.value)}
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 14,
+                  padding: "10px 12px",
+                  borderRadius: 10,
+                  border: "1px solid rgba(0,0,0,0.15)",
+                  background: "#fff",
+                  color: "#1a1a1a",
+                  width: "100%",
+                }}
+              />
+            </label>
+            {(dateFrom || dateTo) && (
+              <button
+                type="button"
+                onClick={() => { setDateFrom(""); setDateTo(""); }}
+                style={{
+                  alignSelf: "flex-start",
+                  background: "transparent",
+                  border: "none",
+                  padding: 0,
+                  fontFamily: SANS,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#715a3d",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                }}
+              >
+                Clear dates
+              </button>
+            )}
+          </div>
+        </RefineSection>
+
+        <RefineSection
+          label="Price"
+          summary={priceFilter === "any" ? undefined : priceFilter === "free" ? "Free" : "Paid"}
+          open={openSection === "price"}
+          onToggle={() => setOpenSection(openSection === "price" ? null : "price")}
+        >
+          <div>
+            <RefineRectOption label="Any" active={priceFilter === "any"} onClick={() => setPriceFilter("any")} />
+            <RefineRectOption label="Free" active={priceFilter === "free"} onClick={() => setPriceFilter("free")} />
+            <RefineRectOption label="Paid" active={priceFilter === "paid"} onClick={() => setPriceFilter("paid")} />
+          </div>
+        </RefineSection>
 
       </RefineDrawer>
 
