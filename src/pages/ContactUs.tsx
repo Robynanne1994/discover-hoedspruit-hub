@@ -78,19 +78,21 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
         {icon}
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div
-          style={{
-            fontFamily: FF,
-            fontSize: 11,
-            fontWeight: 500,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            color: MUTED,
-            marginBottom: 4,
-          }}
-        >
-          {eyebrow}
-        </div>
+        {eyebrow && (
+          <div
+            style={{
+              fontFamily: FF,
+              fontSize: 11,
+              fontWeight: 500,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: MUTED,
+              marginBottom: 4,
+            }}
+          >
+            {eyebrow}
+          </div>
+        )}
         <div
           style={{
             fontFamily: FF,
