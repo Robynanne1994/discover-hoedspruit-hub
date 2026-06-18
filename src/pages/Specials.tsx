@@ -413,31 +413,39 @@ const Specials = () => {
           open={openSection === "category"}
           onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
         >
-          {categoryTabs.filter((c) => c !== "All Specials").length > 0 ? (
-            <div>
-              <RefineRectOption
-                label="All"
-                active={activeTab === "All Specials" && filterType.length === 0}
-                onClick={() => {
-                  setActiveTab("All Specials");
-                  setFilterType([]);
-                }}
-              />
-              {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
+          {(() => {
+            const visible = categoryTabs
+              .filter((c) => c !== "All Specials")
+              .filter((c) => (categoryCounts.get(c) || 0) > 0);
+            const total = Array.from(categoryCounts.values()).reduce((a, b) => a + b, 0);
+            if (visible.length === 0) {
+              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories available.</p>;
+            }
+            return (
+              <div>
                 <RefineRectOption
-                  key={t}
-                  label={t}
-                  active={activeTab === t || filterType.includes(t)}
+                  label={`All (${total})`}
+                  active={activeTab === "All Specials" && filterType.length === 0}
                   onClick={() => {
-                    setActiveTab(t);
+                    setActiveTab("All Specials");
                     setFilterType([]);
                   }}
                 />
-              ))}
-            </div>
-          ) : (
-            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories available.</p>
-          )}
+                {visible.map((t) => (
+                  <RefineRectOption
+                    key={t}
+                    label={`${t} (${categoryCounts.get(t)})`}
+                    active={activeTab === t || filterType.includes(t)}
+                    onClick={() => {
+                      setActiveTab(t);
+                      setFilterType([]);
+                    }}
+                  />
+                ))}
+              </div>
+            );
+          })()}
+
         </RefineSection>
       </RefineDrawer>
     </div>
