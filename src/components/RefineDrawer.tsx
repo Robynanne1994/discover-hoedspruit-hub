@@ -250,7 +250,7 @@ export const RefineGroupLabel = ({ label }: { label: string }) => (
 );
 
 interface RefineSectionProps {
-  label: string;
+  label?: string;
   open?: boolean;
   onToggle?: () => void;
   summary?: string;
@@ -258,7 +258,7 @@ interface RefineSectionProps {
   isFirst?: boolean;
 }
 
-// Card-style section: always-open white card with uppercase label at top.
+// Card-style section: always-open white card with optional uppercase label at top.
 // `open`/`onToggle`/`summary`/`isFirst` are accepted for API compatibility but no longer used.
 export const RefineSection = ({ label, children }: RefineSectionProps) => {
   return (
@@ -269,23 +269,26 @@ export const RefineSection = ({ label, children }: RefineSectionProps) => {
         padding: "18px 18px 18px 18px",
       }}
     >
-      <div
-        style={{
-          fontFamily: SANS,
-          fontSize: 13,
-          fontWeight: 700,
-          color: INK,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          marginBottom: 14,
-        }}
-      >
-        {label}
-      </div>
+      {label && (
+        <div
+          style={{
+            fontFamily: SANS,
+            fontSize: 13,
+            fontWeight: 700,
+            color: INK,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            marginBottom: 14,
+          }}
+        >
+          {label}
+        </div>
+      )}
       <div>{children}</div>
     </section>
   );
 };
+
 
 // Row with label on left and radio control on right
 export const RefineOption = ({
