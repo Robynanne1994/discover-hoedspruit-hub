@@ -128,7 +128,7 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
                 style={{
                   fontFamily: SANS,
                   fontWeight: 700,
-                  fontSize: 17,
+                  fontSize: 15,
                   lineHeight: 1.2,
                   letterSpacing: -0.1,
                   color: INK,
@@ -191,17 +191,17 @@ export const Section = ({ heading, children }: { heading: string; children: Reac
         </div>
         <h2
           style={{
-            fontFamily: SANS,
-            fontWeight: 700,
-            fontSize: 17,
-            lineHeight: 1.2,
-            letterSpacing: -0.1,
-            color: INK,
-            margin: 0,
-            textTransform: "none",
-          }}
-        >
-          {heading}
+          fontFamily: SANS,
+          fontWeight: 700,
+          fontSize: 15,
+          lineHeight: 1.2,
+          letterSpacing: -0.1,
+          color: INK,
+          margin: 0,
+          textTransform: "none",
+        }}
+      >
+        {heading}
         </h2>
       </div>
       {children}
@@ -213,9 +213,9 @@ export const P = ({ children, last }: { children: ReactNode; last?: boolean }) =
   <p
     style={{
       fontFamily: SANS,
-      fontSize: 15,
+      fontSize: 14,
       fontWeight: 400,
-      lineHeight: 1.6,
+      lineHeight: 1.55,
       color: BODY,
       margin: 0,
       marginBottom: last ? 0 : 12,
@@ -252,9 +252,9 @@ export const List = ({ items }: { items: ReactNode[] }) => (
           position: "relative",
           paddingLeft: 18,
           fontFamily: SANS,
-          fontSize: 15,
+          fontSize: 14,
           fontWeight: 400,
-          lineHeight: 1.6,
+          lineHeight: 1.55,
           color: BODY,
           marginBottom: i === items.length - 1 ? 0 : 8,
         }}
