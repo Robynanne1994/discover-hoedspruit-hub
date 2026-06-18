@@ -968,25 +968,31 @@ const Events = () => {
           open={openSection === "tag"}
           onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
         >
-          {availableTags.length > 0 ? (
-            <div>
-              <RefineRectOption
-                label="All"
-                active={!tagFilter}
-                onClick={() => setTagFilter(null)}
-              />
-              {availableTags.map((t) => (
+          {(() => {
+            const visibleTags = availableTags.filter((t) => (tagCounts.get(t) || 0) > 0);
+            const totalVisible = Array.from(tagCounts.values()).reduce((a, b) => a + b, 0);
+            if (visibleTags.length === 0) {
+              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No tags yet.</p>;
+            }
+            return (
+              <div>
                 <RefineRectOption
-                  key={t}
-                  label={t}
-                  active={tagFilter === t}
-                  onClick={() => setTagFilter(t)}
+                  label={`All (${totalVisible})`}
+                  active={!tagFilter}
+                  onClick={() => setTagFilter(null)}
                 />
-              ))}
-            </div>
-          ) : (
-            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No tags yet.</p>
-          )}
+                {visibleTags.map((t) => (
+                  <RefineRectOption
+                    key={t}
+                    label={`${t} (${tagCounts.get(t)})`}
+                    active={tagFilter === t}
+                    onClick={() => setTagFilter(t)}
+                  />
+                ))}
+              </div>
+            );
+          })()}
+
         </RefineSection>
 
 
