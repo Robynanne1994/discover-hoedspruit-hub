@@ -186,15 +186,16 @@ const HomeLocalChannels = () => {
                 <div
                   style={{
                     fontFamily: HN,
-                    fontSize: 14.5,
-                    color: "#2A2A24",
-                    lineHeight: 1.3,
+                    fontSize: 15,
+                    color: "#020202",
+                    lineHeight: 1.25,
                     marginBottom: 5,
                     overflow: "hidden",
                     textOverflow: "ellipsis",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
+                    wordBreak: "break-word",
                   }}
                 >
                   {r.title_override?.trim() || r.title}
