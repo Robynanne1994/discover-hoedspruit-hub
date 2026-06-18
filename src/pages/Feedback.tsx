@@ -80,7 +80,7 @@ const Feedback = () => {
 
   const inputBase: CSSProperties = {
     width: "100%", background: CARD, border: "none",
-    borderRadius: 999, height: 52, padding: "0 22px",
+    borderRadius: 16, height: 52, padding: "0 22px",
     fontFamily: FF, fontSize: 15, fontWeight: 400, color: INK,
     outline: "none", boxSizing: "border-box",
   };
