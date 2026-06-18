@@ -224,7 +224,8 @@ const CategoryPage = () => {
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
     "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | null
-  >("sort");
+  >(null);
+
 
   const [filterCuisine, setFilterCuisine] = useState<string[]>(persisted?.filterCuisine ?? []);
   const [filterVibe, setFilterVibe] = useState<string[]>(persisted?.filterVibe ?? []);
