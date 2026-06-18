@@ -651,6 +651,36 @@ const Events = () => {
       });
     }
 
+    // Date range filter (additive — must also fall inside range if provided)
+    if (dateFrom || dateTo) {
+      const fromD = dateFrom ? new Date(dateFrom + "T00:00:00") : null;
+      const toD = dateTo ? new Date(dateTo + "T23:59:59") : null;
+      list = list.filter((e) => {
+        const rangeFrom = fromD ?? new Date(0);
+        const rangeTo = toD ?? new Date(8640000000000000);
+        const occs = getEventOccurrences(e, { from: rangeFrom, to: rangeTo, now: rangeFrom });
+        if (occs.length > 0) return true;
+        if (e._parsed) {
+          if (fromD && e._parsed < fromD) return false;
+          if (toD && e._parsed > toD) return false;
+          return true;
+        }
+        return false;
+      });
+    }
+
+    // Price filter
+    if (priceFilter !== "any") {
+      list = list.filter((e) => {
+        const raw = e.price == null ? "" : String(e.price).trim();
+        const isFree = /^(free|0|r0|r\s*0)$/i.test(raw);
+        const hasNum = /\d/.test(raw) && !isFree;
+        if (priceFilter === "free") return isFree;
+        if (priceFilter === "paid") return hasNum;
+        return true;
+      });
+    }
+
     const sorted = [...list];
     if (sortBy === "date-desc") {
       sorted.sort((a, b) => {
@@ -665,7 +695,7 @@ const Events = () => {
     }
     // date-asc is already the default order from sortedEvents
     return sorted;
-  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy]);
+  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy, dateFrom, dateTo, priceFilter]);
 
 
   const sectionTitle = useMemo(() => {
