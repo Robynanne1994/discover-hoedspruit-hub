@@ -612,7 +612,7 @@ const CategoryPage = () => {
       return [...result].sort((a, b) => scoreFor(b) - scoreFor(a));
     }
     return result;
-  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, savedIds, beenIds, sortBy, search, reviewAggregates]);
+  }, [listings, filterCuisine, filterVibe, filterMeal, filterSeating, filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi, filterOpenNow, filterSaved, filterBeenTo, filterMaxKm, savedIds, beenIds, sortBy, search, reviewAggregates]);
 
   const totalCount = listings?.length ?? 0;
   const tagline = TAGLINES[categoryTitle] || "places to discover.";
