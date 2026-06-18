@@ -529,6 +529,7 @@ const CategoryPage = () => {
   const clearAllFilters = () => {
     setSearchParams({});
     setSearch("");
+    setSortBy("default");
     setFilterCuisine([]);
     setFilterVibe([]);
     setFilterMeal([]);
@@ -541,6 +542,7 @@ const CategoryPage = () => {
     setFilterSaved(false);
     setFilterBeenTo(false);
     setFilterMaxKm(MAX_KM);
+    setOpenSection(null);
   };
 
 
