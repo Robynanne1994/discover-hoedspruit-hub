@@ -1005,7 +1005,7 @@ const CategoryPage = () => {
           </>
         )}
 
-        <RefineSection label="Open Now">
+        <RefineSection>
           <RefineToggle
             label="Open Now"
             description="Only places open right now"
@@ -1014,7 +1014,7 @@ const CategoryPage = () => {
           />
         </RefineSection>
 
-        <RefineSection label="Saved">
+        <RefineSection>
           <RefineToggle
             label="Saved"
             description="Only places you've saved"
@@ -1022,6 +1022,7 @@ const CategoryPage = () => {
             onClick={() => setFilterSaved(!filterSaved)}
           />
         </RefineSection>
+
 
 
       </RefineDrawer>
