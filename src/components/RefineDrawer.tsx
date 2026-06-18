@@ -468,16 +468,16 @@ export const RefineRectOption = ({
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "10px 18px",
-      marginRight: 8,
-      marginBottom: 8,
+      padding: "7px 12px",
+      marginRight: 6,
+      marginBottom: 6,
       borderRadius: 999,
       border: active ? `1px solid ${DARK_BROWN}` : `1px solid ${BORDER}`,
       background: active ? DARK_BROWN : "#ffffff",
       color: active ? "#ffffff" : INK,
       fontFamily: SANS,
       fontWeight: 500,
-      fontSize: 14,
+      fontSize: 12,
       letterSpacing: "0.01em",
       lineHeight: 1.2,
       cursor: "pointer",
@@ -501,14 +501,14 @@ export const RefineChip = ({
   <button
     onClick={onClick}
     style={{
-      padding: "10px 16px",
+      padding: "7px 12px",
       borderRadius: 999,
       border: active ? `1px solid ${DARK_BROWN}` : `1px solid ${BORDER}`,
       background: active ? DARK_BROWN : "#ffffff",
       color: active ? "#ffffff" : INK,
       fontFamily: SANS,
       fontWeight: 500,
-      fontSize: 14,
+      fontSize: 12,
       letterSpacing: "0.01em",
       cursor: "pointer",
       transition: "background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease",
@@ -517,6 +517,7 @@ export const RefineChip = ({
     {label}
   </button>
 );
+
 
 // Distance/range slider — value in [min, max]. When value >= max, label shows `maxLabel` (e.g. "Anywhere").
 export const RefineSlider = ({
