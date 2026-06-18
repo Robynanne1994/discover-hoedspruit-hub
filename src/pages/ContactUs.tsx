@@ -222,8 +222,10 @@ const ContactUs = () => {
           eyebrow=""
           value={
             <div>
-              <div>Mon–Fri  08:00–17:00</div>
-              <div style={{ color: MUTED, marginTop: 2 }}>Sat  08:00–12:00 · Sun closed</div>
+              <div style={{ whiteSpace: "pre-line" }}>
+                {"Mon - Fri: 08:00 - 17:00\n"}
+                <span style={{ color: MUTED }}>{"Sat: 08:00 - 12:00\nSun: Closed"}</span>
+              </div>
             </div>
           }
         />
