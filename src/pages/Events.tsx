@@ -973,7 +973,7 @@ const Events = () => {
       <RefineDrawer
         open={refineOpen}
         onClose={() => setRefineOpen(false)}
-        onClear={() => { setTagFilter(null); setSortBy("date-asc"); }}
+        onClear={() => { setTagFilter(null); setSortBy("date-asc"); setDateFrom(""); setDateTo(""); setPriceFilter("any"); }}
         resultsCount={filtered.length}
         resultsLabel="events"
       >
