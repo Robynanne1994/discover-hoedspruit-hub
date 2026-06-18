@@ -129,6 +129,7 @@ export const RefineDrawer = ({
             >
               <X size={18} strokeWidth={2} />
             </button>
+          </div>
         </div>
 
         {/* Divider below title */}
