@@ -21,6 +21,12 @@ const FacebookIcon = ({ size = 22, color = "#1A1A1A" }: { size?: number; color?:
   </svg>
 );
 
+const ThreadsIcon = ({ size = 22, color = "#1A1A1A" }: { size?: number; color?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color} xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.06 11.13c-.09-.04-.18-.08-.27-.12-.16-2.96-1.78-4.66-4.49-4.68h-.04c-1.62 0-2.97.69-3.81 1.95l1.49 1.02c.62-.94 1.6-1.14 2.32-1.14h.03c.9.01 1.57.27 2 .79.31.38.52.9.62 1.56-.77-.13-1.6-.17-2.49-.12-2.5.14-4.11 1.6-4 3.63.05 1.03.57 1.91 1.45 2.49.74.49 1.7.73 2.7.67 1.32-.07 2.36-.58 3.08-1.5.55-.7.9-1.61 1.05-2.76.63.38 1.1.88 1.36 1.48.44 1.02.47 2.7-.9 4.07-1.2 1.2-2.65 1.72-4.83 1.73-2.42-.02-4.25-.79-5.44-2.3C5.78 16.49 5.2 14.5 5.18 12c.02-2.5.6-4.49 1.71-5.92C8.08 4.57 9.9 3.8 12.33 3.78c2.44.02 4.29.79 5.51 2.31.6.74 1.05 1.68 1.34 2.77l1.71-.46c-.36-1.35-.93-2.51-1.7-3.46C17.62 2.99 15.31 2.01 12.34 2h-.01C9.36 2.02 7.08 3 5.57 4.92 4.21 6.64 3.51 9.04 3.49 12v.01c.02 2.96.72 5.36 2.08 7.08 1.51 1.92 3.79 2.9 6.76 2.92h.01c2.64-.02 4.51-.71 6.04-2.25 2.01-2.01 1.95-4.52 1.28-6.07-.47-1.1-1.39-2-2.6-2.56zm-4.66 3.46c-1.11.06-2.26-.44-2.32-1.51-.04-.79.57-1.68 2.39-1.78l.55-.01c.66 0 1.27.06 1.83.18-.21 2.61-1.44 3.06-2.45 3.12z"/>
+  </svg>
+);
+
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const BG = "#E6E0CC";
@@ -36,8 +42,8 @@ const CONTACT_PHONE = "061 332 1709";
 const PHONE_DIGITS = "27613321709";
 const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;
 const INSTAGRAM_URL = "https://instagram.com/hellohoedspruit";
-const FACEBOOK_URL = "https://facebook.com/hellohoedspruit";
-const WEBSITE_URL = "https://hellohoedspruit.co";
+const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61573298922814";
+const THREADS_URL = "https://www.threads.net/@hellohoedspruit";
 const ADDRESS = "Hoedspruit, Limpopo 1380";
 const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent("Hoedspruit, Limpopo")}`;
 
@@ -236,7 +242,7 @@ const ContactUs = () => {
         <div style={{ display: "flex", gap: 8 }}>
           <SocialTile icon={<InstagramIcon size={22} color={INK} />} label="Instagram" href={INSTAGRAM_URL} />
           <SocialTile icon={<FacebookIcon size={22} color={INK} />} label="Facebook" href={FACEBOOK_URL} />
-          <SocialTile icon={<Globe size={22} color={INK} strokeWidth={1.6} />} label="Website" href={WEBSITE_URL} />
+          <SocialTile icon={<ThreadsIcon size={22} color={INK} />} label="Threads" href={THREADS_URL} />
         </div>
       </div>
 
