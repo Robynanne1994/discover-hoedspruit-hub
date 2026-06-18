@@ -181,6 +181,7 @@ export type ListingFieldName = keyof typeof LISTING_FIELD_SPECS;
 export const UNIVERSAL_FIELDS = [
   "title", "title_override", "long_description",
   "image_url", "detail_image_url", "gallery_images", "location",
+  "km_from_town",
   "phone", "phone_label", "email", "email_label",
   "website", "website_label", "whatsapp", "whatsapp_label",
   "additional_phones", "additional_phone_labels",
@@ -197,6 +198,7 @@ export const UNIVERSAL_FIELDS = [
   "custom_title_2", "custom_text_2",
   "custom_title_3", "custom_text_3",
 ] as const;
+
 
 export const RESTAURANT_ONLY_FIELDS = [
   "show_attributes",
