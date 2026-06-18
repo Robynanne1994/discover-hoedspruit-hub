@@ -237,6 +237,9 @@ const CategoryPage = () => {
   const [filterOpenNow, setFilterOpenNow] = useState<boolean>(persisted?.filterOpenNow ?? false);
   const [filterSaved, setFilterSaved] = useState<boolean>(persisted?.filterSaved ?? false);
   const [filterBeenTo, setFilterBeenTo] = useState<boolean>(persisted?.filterBeenTo ?? false);
+  const MAX_KM = 25; // "Anywhere"
+  const [filterMaxKm, setFilterMaxKm] = useState<number>(persisted?.filterMaxKm ?? MAX_KM);
+
 
   useEffect(() => {
     if (typeof window === "undefined") return;
