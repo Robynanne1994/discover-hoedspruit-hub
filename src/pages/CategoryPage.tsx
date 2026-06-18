@@ -539,7 +539,9 @@ const CategoryPage = () => {
     setFilterOpenNow(false);
     setFilterSaved(false);
     setFilterBeenTo(false);
+    setFilterMaxKm(MAX_KM);
   };
+
 
   const toggleArrayFilter = (arr: string[], val: string, setter: (v: string[]) => void) => {
     setter(arr.includes(val) ? arr.filter((v) => v !== val) : [...arr, val]);
