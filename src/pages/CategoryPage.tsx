@@ -954,14 +954,15 @@ const CategoryPage = () => {
           open={openSection === "sort"}
           onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
         >
-          {(["default", "name", "rating"] as SortKey[]).map((key) => (
+          {(["default", "name_asc", "name_desc", "rating", "distance"] as SortKey[]).map((key) => (
             <RefineOption
               key={key}
-              label={key === "default" ? "Default" : key === "name" ? "Alphabetically" : "Highest Rated"}
+              label={SORT_LABELS[key]}
               active={sortBy === key}
               onClick={() => setSortBy(key)}
             />
           ))}
+
         </RefineSection>
 
         {subcategories && subcategories.length > 0 && (
