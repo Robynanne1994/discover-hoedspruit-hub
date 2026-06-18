@@ -1,13 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, Compass, Tag, Calendar, User } from "lucide-react";
-
-const navItems = [
-  { label: "Home", href: "/", icon: Home },
-  { label: "Explore", href: "/categories", icon: Compass },
-  { label: "Specials", href: "/specials", icon: Tag },
-  { label: "Events", href: "/events", icon: Calendar },
-  { label: "Profile", href: "/my-profile", icon: User },
-];
+import { useAuth } from "@/hooks/useAuth";
 
 const PILL_BG = "#f5f0e8";
 const PILL_FG = "#2b2420";
@@ -15,6 +8,17 @@ const INACTIVE = "#f5f0e8";
 
 const BottomNav = () => {
   const location = useLocation();
+  const { user } = useAuth();
+
+  // Guests (no signed-in user) get the lightweight Help & Info page instead of
+  // the personal profile page, which requires an account.
+  const navItems = [
+    { label: "Home", href: "/", icon: Home },
+    { label: "Explore", href: "/categories", icon: Compass },
+    { label: "Specials", href: "/specials", icon: Tag },
+    { label: "Events", href: "/events", icon: Calendar },
+    { label: "Profile", href: user ? "/my-profile" : "/my-profile-guest", icon: User },
+  ];
 
   return (
     <nav
