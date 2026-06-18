@@ -1,7 +1,14 @@
 import { useEffect, ReactNode } from "react";
-import { ChevronUp, ChevronDown, X } from "lucide-react";
+import { X } from "lucide-react";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+
+const IVORY = "#f5f0e8";
+const CARD = "#ffffff";
+const BROWN = "#715a3d";
+const DARK_BROWN = "#423324";
+const INK = "#1a1a1a";
+const BORDER = "rgba(0,0,0,0.12)";
 
 export interface ActiveChip {
   label: string;
@@ -24,7 +31,6 @@ export const RefineDrawer = ({
   onClear,
   resultsCount,
   resultsLabel = "results",
-  activeChips,
   children,
 }: RefineDrawerProps) => {
   useEffect(() => {
@@ -58,11 +64,11 @@ export const RefineDrawer = ({
         }}
       />
 
-      {/* Side Drawer (full height, slides from right) */}
+      {/* Side Drawer */}
       <aside
         role="dialog"
         aria-modal="true"
-        aria-label="Filters"
+        aria-label="Filter & Sort"
         style={{
           position: "fixed",
           top: 0,
@@ -70,10 +76,8 @@ export const RefineDrawer = ({
           height: "100dvh",
           width: "86%",
           maxWidth: 400,
-          background: "#ffffff",
-          color: "#020202",
-          borderTopLeftRadius: 20,
-          borderBottomLeftRadius: 20,
+          background: IVORY,
+          color: INK,
           boxShadow: "-12px 0 36px rgba(0,0,0,0.18)",
           transform: open ? "translateX(0)" : "translateX(100%)",
           transition: "transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1)",
@@ -83,158 +87,144 @@ export const RefineDrawer = ({
           fontFamily: SANS,
         }}
       >
-        {/* Header — mirrors the app's PageHeader: 20px/700 title with a full-bleed divider */}
-        <div style={{ padding: "calc(env(safe-area-inset-top) + 18px) 20px 0 20px" }}>
+        {/* Header */}
+        <div style={{ padding: "calc(env(safe-area-inset-top) + 20px) 20px 14px 20px" }}>
           <div
             style={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
               gap: 12,
-              minHeight: 40,
             }}
           >
-            <button
-              onClick={onClose}
-              aria-label="Close FILTER & SORT"
-              style={{
-                background: "transparent",
-                border: "none",
-                padding: 0,
-                display: "inline-flex",
-                alignItems: "center",
-                cursor: "pointer",
-                color: "#1A1A1A",
-                flexShrink: 0,
-              }}
-            >
-              <X size={20} strokeWidth={1.8} />
-            </button>
             <h2
               style={{
                 margin: 0,
                 fontFamily: SANS,
-                fontSize: 9,
-                lineHeight: 1,
+                fontSize: 22,
+                lineHeight: 1.1,
                 fontWeight: 700,
-                color: "#1A1A1A",
-                letterSpacing: "0.04em",
-                textAlign: "center",
-                position: "absolute",
-                left: "50%",
-                transform: "translateX(-50%)",
-                whiteSpace: "nowrap",
+                color: INK,
+                letterSpacing: "-0.01em",
               }}
             >
-              FILTER & SORT
+              Filter & Sort
             </h2>
             <button
-              onClick={onClear}
+              onClick={onClose}
+              aria-label="Close Filter & Sort"
               style={{
-                background: "transparent",
+                width: 38,
+                height: 38,
+                borderRadius: "50%",
+                background: DARK_BROWN,
                 border: "none",
-                padding: "6px 4px",
-                fontFamily: SANS,
-                fontSize: 13,
-                fontWeight: 600,
-                color: "#715a3d",
-                letterSpacing: "0.01em",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
                 cursor: "pointer",
-                whiteSpace: "nowrap",
+                color: "#ffffff",
+                flexShrink: 0,
               }}
             >
-              Clear All
+              <X size={18} strokeWidth={2} />
             </button>
           </div>
 
-          {activeChips && activeChips.length > 0 && (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
-              {activeChips.map((chip, i) => (
-                <button
-                  key={i}
-                  onClick={chip.onRemove}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: 6,
-                    padding: "6px 12px",
-                    borderRadius: 999,
-                    background: "#020202",
-                    color: "#ffffff",
-                    border: "none",
-                    fontFamily: SANS,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    letterSpacing: "0.01em",
-                    textTransform: "capitalize",
-                    cursor: "pointer",
-                  }}
-                  aria-label={`Remove ${chip.label}`}
-                >
-                  {chip.label}
-                  <X size={13} strokeWidth={2.2} />
-                </button>
-              ))}
-            </div>
-          )}
+          {/* Results count pill */}
+          <div style={{ marginTop: 14 }}>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                background: "#ffffff",
+                borderRadius: 999,
+                padding: "8px 14px",
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 600,
+                color: BROWN,
+                letterSpacing: "0.01em",
+              }}
+            >
+              {resultsCount} {resultsLabel} match
+            </span>
+          </div>
         </div>
 
-        {/* Divider beneath header (full-bleed, matches PageHeader) */}
-        <div style={{ height: 1, background: "rgba(26,26,26,0.10)", marginTop: 16 }} />
-
-        {/* Sections */}
+        {/* Scroll area with cards */}
         <div
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "0 20px 24px 20px",
+            padding: "4px 20px 24px 20px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 14,
           }}
         >
           {children}
         </div>
 
-        {/* Sticky CTA — uses the app's primary button style (brown, 48px) */}
+        {/* Sticky footer */}
         <div
           style={{
-            padding: "12px 20px calc(env(safe-area-inset-bottom) + 16px)",
+            padding: "14px 20px calc(env(safe-area-inset-bottom) + 16px)",
             background: "#ffffff",
-            borderTop: "1px solid rgba(26,26,26,0.10)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
           }}
         >
+          <button
+            onClick={onClear}
+            style={{
+              background: "transparent",
+              border: "none",
+              padding: "10px 6px",
+              fontFamily: SANS,
+              fontSize: 15,
+              fontWeight: 500,
+              color: INK,
+              letterSpacing: "0.01em",
+              cursor: "pointer",
+            }}
+          >
+            Clear All
+          </button>
           <button
             onClick={onClose}
             onPointerDown={(e) => {
               e.currentTarget.style.transform = "scale(0.97)";
-              e.currentTarget.style.opacity = "0.85";
             }}
             onPointerUp={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.opacity = "1";
             }}
             onPointerLeave={(e) => {
               e.currentTarget.style.transform = "scale(1)";
-              e.currentTarget.style.opacity = "1";
             }}
             style={{
-              width: "100%",
-              height: 56,
+              flex: 1,
+              maxWidth: 240,
+              height: 52,
               borderRadius: 9999,
-              background: "#423324",
+              background: DARK_BROWN,
               color: "#ffffff",
               border: "none",
               fontFamily: SANS,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: 700,
-              letterSpacing: "0.04em",
-              textTransform: "uppercase",
+              letterSpacing: "0.01em",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              transition: "transform 0.12s ease, opacity 0.12s ease",
+              transition: "transform 0.12s ease",
             }}
           >
-            See {resultsLabel} ({resultsCount})
+            Show {resultsCount} {resultsLabel}
           </button>
         </div>
       </aside>
@@ -242,17 +232,17 @@ export const RefineDrawer = ({
   );
 };
 
-// Eyebrow group label (e.g. "Sort", "Filter By") — visually differentiates sort vs filter
+// Group label kept for backwards compat
 export const RefineGroupLabel = ({ label }: { label: string }) => (
   <div
     style={{
       fontFamily: SANS,
-      fontWeight: 600,
+      fontWeight: 700,
       fontSize: 11,
-      color: "#715a3d",
+      color: BROWN,
       letterSpacing: "0.08em",
       textTransform: "uppercase",
-      padding: "18px 0 2px 0",
+      padding: "4px 0 0 0",
     }}
   >
     {label}
@@ -261,81 +251,43 @@ export const RefineGroupLabel = ({ label }: { label: string }) => (
 
 interface RefineSectionProps {
   label: string;
-  open: boolean;
-  onToggle: () => void;
+  open?: boolean;
+  onToggle?: () => void;
   summary?: string;
   children: ReactNode;
   isFirst?: boolean;
 }
 
-export const RefineSection = ({
-  label,
-  open,
-  onToggle,
-  summary,
-  children,
-  isFirst,
-}: RefineSectionProps) => {
+// Card-style section: always-open white card with uppercase label at top.
+// `open`/`onToggle`/`summary`/`isFirst` are accepted for API compatibility but no longer used.
+export const RefineSection = ({ label, children }: RefineSectionProps) => {
   return (
-    <div
+    <section
       style={{
-        borderTop: isFirst ? "none" : "1px solid rgba(0,0,0,0.08)",
+        background: CARD,
+        borderRadius: 16,
+        padding: "18px 18px 18px 18px",
       }}
     >
-      <button
-        onClick={onToggle}
+      <div
         style={{
-          width: "100%",
-          background: "transparent",
-          border: "none",
-          padding: "18px 0",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          cursor: "pointer",
-          textAlign: "left",
+          fontFamily: SANS,
+          fontSize: 13,
+          fontWeight: 700,
+          color: INK,
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          marginBottom: 14,
         }}
       >
-        <span style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-          <span
-            style={{
-              fontFamily: SANS,
-              fontSize: 15,
-              fontWeight: 700,
-              color: "#1A1A1A",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              lineHeight: 1.2,
-            }}
-          >
-            {label}
-          </span>
-          {summary && (
-            <span
-              style={{
-                fontFamily: SANS,
-                fontSize: 12,
-                fontWeight: 400,
-                color: "rgba(43,36,32,0.55)",
-                letterSpacing: "0.01em",
-              }}
-            >
-              {summary}
-            </span>
-          )}
-        </span>
-        {open ? (
-          <ChevronUp size={20} strokeWidth={1.8} color="rgba(26,26,26,0.7)" />
-        ) : (
-          <ChevronDown size={20} strokeWidth={1.8} color="rgba(26,26,26,0.7)" />
-        )}
-      </button>
-      {open && <div style={{ padding: "0 0 14px 0" }}>{children}</div>}
-    </div>
+        {label}
+      </div>
+      <div>{children}</div>
+    </section>
   );
 };
 
-// Reusable single-select option row, rendered as a radio control
+// Row with label on left and radio control on right
 export const RefineOption = ({
   label,
   active,
@@ -352,24 +304,36 @@ export const RefineOption = ({
     style={{
       display: "flex",
       alignItems: "center",
-      gap: 10,
+      justifyContent: "space-between",
+      gap: 12,
       width: "100%",
       textAlign: "left",
-      padding: "6px 2px",
+      padding: "12px 0",
       background: "transparent",
       border: "none",
       cursor: "pointer",
     }}
   >
-    {/* Radio control */}
+    <span
+      style={{
+        fontFamily: SANS,
+        fontWeight: 500,
+        fontSize: 16,
+        color: INK,
+        letterSpacing: "0.01em",
+        lineHeight: 1.2,
+      }}
+    >
+      {label}
+    </span>
     <span
       aria-hidden
       style={{
         flexShrink: 0,
-        width: 18,
-        height: 18,
+        width: 22,
+        height: 22,
         borderRadius: "50%",
-        border: active ? "2px solid #1A1A1A" : "2px solid rgba(26,26,26,0.30)",
+        border: active ? `2px solid ${DARK_BROWN}` : `1.5px solid rgba(26,26,26,0.30)`,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -379,30 +343,18 @@ export const RefineOption = ({
       {active && (
         <span
           style={{
-            width: 8,
-            height: 8,
+            width: 12,
+            height: 12,
             borderRadius: "50%",
-            background: "#1A1A1A",
+            background: DARK_BROWN,
           }}
         />
       )}
     </span>
-    <span
-      style={{
-        fontFamily: SANS,
-        fontWeight: 400,
-        fontSize: 14,
-        color: "#1A1A1A",
-        letterSpacing: "0.01em",
-        lineHeight: 1.2,
-      }}
-    >
-      {label}
-    </span>
   </button>
 );
 
-// Full-width rectangular single-select option (stacked card-style buttons)
+// Pill-style option — used for subcategory lists. Renders inline so siblings wrap.
 export const RefineRectOption = ({
   label,
   active,
@@ -417,19 +369,19 @@ export const RefineRectOption = ({
     role="radio"
     aria-checked={active}
     style={{
-      display: "flex",
+      display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      width: "100%",
-      padding: "10px 12px",
-      marginBottom: 6,
-      borderRadius: 6,
-      border: active ? "1px solid #1A1A1A" : "1px solid rgba(0,0,0,0.15)",
-      background: active ? "#020202" : "#ffffff",
-      color: active ? "#ffffff" : "#1A1A1A",
+      padding: "10px 18px",
+      marginRight: 8,
+      marginBottom: 8,
+      borderRadius: 999,
+      border: active ? `1px solid ${DARK_BROWN}` : `1px solid ${BORDER}`,
+      background: active ? DARK_BROWN : "#ffffff",
+      color: active ? "#ffffff" : INK,
       fontFamily: SANS,
-      fontWeight: 400,
-      fontSize: 13,
+      fontWeight: 500,
+      fontSize: 14,
       letterSpacing: "0.01em",
       lineHeight: 1.2,
       cursor: "pointer",
@@ -440,7 +392,7 @@ export const RefineRectOption = ({
   </button>
 );
 
-// Chip for multi-select
+// Pill chip — used for multi-select filter chips
 export const RefineChip = ({
   label,
   active,
@@ -453,16 +405,17 @@ export const RefineChip = ({
   <button
     onClick={onClick}
     style={{
-      padding: "9px 14px",
+      padding: "10px 16px",
       borderRadius: 999,
-      border: active ? "1px solid #020202" : "1px solid rgba(0,0,0,0.15)",
-      background: active ? "#020202" : "#ffffff",
-      color: active ? "#ffffff" : "#020202",
+      border: active ? `1px solid ${DARK_BROWN}` : `1px solid ${BORDER}`,
+      background: active ? DARK_BROWN : "#ffffff",
+      color: active ? "#ffffff" : INK,
       fontFamily: SANS,
-      fontWeight: 400,
-      fontSize: 12,
-      letterSpacing: "0.02em",
+      fontWeight: 500,
+      fontSize: 14,
+      letterSpacing: "0.01em",
       cursor: "pointer",
+      transition: "background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease",
     }}
   >
     {label}
