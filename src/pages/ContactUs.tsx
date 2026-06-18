@@ -23,7 +23,7 @@ const FacebookIcon = ({ size = 22, color = "#1A1A1A" }: { size?: number; color?:
 
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const BG = "#ebebeb";
+const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#020202";
 const BODY = "#2b2420";
