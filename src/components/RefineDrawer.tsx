@@ -512,3 +512,120 @@ export const RefineChip = ({
     {label}
   </button>
 );
+
+// Distance/range slider — value in [min, max]. When value >= max, label shows `maxLabel` (e.g. "Anywhere").
+export const RefineSlider = ({
+  value,
+  min,
+  max,
+  step = 0.5,
+  onChange,
+  formatValue,
+  maxLabel,
+  minLabel,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  step?: number;
+  onChange: (v: number) => void;
+  formatValue?: (v: number) => string;
+  maxLabel?: string;
+  minLabel?: string;
+}) => {
+  const pct = ((value - min) / (max - min)) * 100;
+  const fmt = formatValue || ((v: number) => `${v}`);
+  const minDisplay = minLabel ?? fmt(min);
+  const maxDisplay = maxLabel ?? fmt(max);
+
+  return (
+    <div style={{ padding: "4px 4px 0 4px" }}>
+      <div style={{ position: "relative", height: 28, display: "flex", alignItems: "center" }}>
+        {/* Track */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            height: 3,
+            borderRadius: 999,
+            background: "rgba(0,0,0,0.12)",
+          }}
+        />
+        {/* Fill */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            width: `${pct}%`,
+            height: 3,
+            borderRadius: 999,
+            background: DARK_BROWN,
+          }}
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          onChange={(e) => onChange(parseFloat(e.target.value))}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            width: "100%",
+            height: 28,
+            margin: 0,
+            padding: 0,
+            background: "transparent",
+            appearance: "none",
+            WebkitAppearance: "none",
+            cursor: "pointer",
+            zIndex: 2,
+          }}
+          aria-label="Distance from town"
+        />
+        <style>{`
+          input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: ${DARK_BROWN};
+            border: 3px solid #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+            cursor: pointer;
+          }
+          input[type=range]::-moz-range-thumb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: ${DARK_BROWN};
+            border: 3px solid #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+            cursor: pointer;
+          }
+          input[type=range]::-moz-range-track { background: transparent; }
+        `}</style>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: 8,
+          fontFamily: SANS,
+          fontSize: 12,
+          color: "rgba(26,26,26,0.55)",
+          letterSpacing: "0.01em",
+        }}
+      >
+        <span>{minDisplay}</span>
+        <span style={{ color: INK, fontWeight: 600 }}>
+          {value >= max ? maxDisplay : fmt(value)}
+        </span>
+      </div>
+    </div>
+  );
+};
