@@ -948,7 +948,12 @@ const CategoryPage = () => {
           ...(filterWifi ? [{ label: "WiFi", onRemove: () => setFilterWifi(false) }] : []),
         ]}
       >
-        <RefineSection label="Sort By">
+        <RefineSection
+          label="Sort By"
+          summary={SORT_LABELS[sortBy]}
+          open={openSection === "sort"}
+          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
+        >
 
           {(["default", "name_asc", "name_desc", "rating", "distance"] as SortKey[]).map((key) => (
             <RefineOption
