@@ -123,20 +123,20 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
 };
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-  <div
+  <p
     style={{
-      fontFamily: FF,
-      fontSize: 11,
-      fontWeight: 500,
-      letterSpacing: "0.18em",
+      fontFamily: `"Bricolage Grotesque", ${FF}`,
+      fontSize: 15,
+      fontWeight: 700,
+      letterSpacing: "0.06em",
       textTransform: "uppercase",
-      color: MUTED,
+      color: "#1A1A1A",
+      margin: "0 0 10px 0",
       padding: "0 4px",
-      marginBottom: 10,
     }}
   >
     {children}
-  </div>
+  </p>
 );
 
 const SocialTile = ({
