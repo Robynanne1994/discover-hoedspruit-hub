@@ -224,7 +224,8 @@ const CategoryPage = () => {
   const [search, setSearch] = useState<string>(persisted?.search ?? "");
   const [openSection, setOpenSection] = useState<
     "sort" | "subcategory" | "cuisine" | "vibe" | "meal" | "seating" | "list" | "amenities" | null
-  >("sort");
+  >(null);
+
 
   const [filterCuisine, setFilterCuisine] = useState<string[]>(persisted?.filterCuisine ?? []);
   const [filterVibe, setFilterVibe] = useState<string[]>(persisted?.filterVibe ?? []);
@@ -947,13 +948,8 @@ const CategoryPage = () => {
           ...(filterWifi ? [{ label: "WiFi", onRemove: () => setFilterWifi(false) }] : []),
         ]}
       >
-        <RefineSection
-          isFirst
-          label="Sort By"
-          summary={sortLabel}
-          open={openSection === "sort"}
-          onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
-        >
+        <RefineSection label="Sort By">
+
           {(["default", "name_asc", "name_desc", "rating", "distance"] as SortKey[]).map((key) => (
             <RefineOption
               key={key}
