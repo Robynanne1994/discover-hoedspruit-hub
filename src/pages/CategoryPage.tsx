@@ -521,7 +521,9 @@ const CategoryPage = () => {
     filterOpenNow ? 1 : 0,
     filterSaved ? 1 : 0,
     filterBeenTo ? 1 : 0,
+    filterMaxKm < MAX_KM ? 1 : 0,
   ].reduce((a, b) => a + b, 0);
+
 
   const clearAllFilters = () => {
     setSearchParams({});
