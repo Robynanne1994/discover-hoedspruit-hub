@@ -153,7 +153,7 @@ export const RefineDrawer = ({
               letterSpacing: "0.01em",
             }}
           >
-            {resultsCount} {resultsLabel} match
+            {resultsCount}&nbsp;Listings&nbsp;Match
           </span>
         </div>
 
