@@ -144,7 +144,7 @@ export const RefineDrawer = ({
           style={{
             flex: 1,
             overflowY: "auto",
-            padding: "4px 20px 24px 20px",
+            padding: "16px 20px 24px 20px",
             display: "flex",
             flexDirection: "column",
             gap: 14,
