@@ -1,5 +1,5 @@
 import { useEffect, ReactNode } from "react";
-import { X } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
