@@ -131,30 +131,32 @@ export const RefineDrawer = ({
             </button>
           </div>
 
-          {/* Results count pill */}
-          <div style={{ marginTop: 14 }}>
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 4,
-                background: "#ffffff",
-                borderRadius: 999,
-                padding: "8px 14px",
-                fontFamily: SANS,
-                fontSize: 13,
-                fontWeight: 600,
-                color: BROWN,
-                letterSpacing: "0.01em",
-              }}
-            >
-              {resultsCount} {resultsLabel} match
-            </span>
-          </div>
         </div>
 
-        {/* Divider below header / above sections */}
+        {/* Divider above match count */}
         <div style={{ height: 1, background: "rgba(0,0,0,0.10)", margin: "0 20px" }} />
+
+        {/* Results count pill */}
+        <div style={{ padding: "14px 20px 4px" }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 4,
+              background: "#ffffff",
+              borderRadius: 999,
+              padding: "8px 14px",
+              fontFamily: SANS,
+              fontSize: 13,
+              fontWeight: 600,
+              color: BROWN,
+              letterSpacing: "0.01em",
+            }}
+          >
+            {resultsCount} {resultsLabel} match
+          </span>
+        </div>
+
 
 
         {/* Scroll area with cards */}
