@@ -262,36 +262,104 @@ interface RefineSectionProps {
   isFirst?: boolean;
 }
 
-// Card-style section: always-open white card with optional uppercase label at top.
-// `open`/`onToggle`/`summary`/`isFirst` are accepted for API compatibility but no longer used.
-export const RefineSection = ({ label, children }: RefineSectionProps) => {
+// Card-style section. If `onToggle` is provided the section becomes a
+// collapsible accordion (closed by default unless `open` is true). Otherwise
+// the card is always open with an optional uppercase label.
+export const RefineSection = ({ label, open, onToggle, summary, children }: RefineSectionProps) => {
+  const isAccordion = typeof onToggle === "function";
   return (
     <section
       style={{
         background: CARD,
         borderRadius: 16,
-        padding: "18px 18px 18px 18px",
+        padding: isAccordion ? "0" : "18px 18px 18px 18px",
+        overflow: "hidden",
       }}
     >
-      {label && (
-        <div
-          style={{
-            fontFamily: SANS,
-            fontSize: 13,
-            fontWeight: 700,
-            color: INK,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            marginBottom: 14,
-          }}
-        >
-          {label}
-        </div>
+      {isAccordion ? (
+        <>
+          <button
+            onClick={onToggle}
+            aria-expanded={!!open}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              width: "100%",
+              padding: "16px 18px",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              textAlign: "left",
+            }}
+          >
+            <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+              {label && (
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    color: INK,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {label}
+                </span>
+              )}
+              {summary && (
+                <span
+                  style={{
+                    fontFamily: SANS,
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "rgba(26,26,26,0.55)",
+                    letterSpacing: "0.01em",
+                  }}
+                >
+                  {summary}
+                </span>
+              )}
+            </span>
+            <ChevronDown
+              size={18}
+              strokeWidth={2}
+              color={INK}
+              style={{
+                flexShrink: 0,
+                transition: "transform 0.18s ease",
+                transform: open ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            />
+          </button>
+          {open && <div style={{ padding: "0 18px 18px" }}>{children}</div>}
+        </>
+      ) : (
+        <>
+          {label && (
+            <div
+              style={{
+                fontFamily: SANS,
+                fontSize: 13,
+                fontWeight: 700,
+                color: INK,
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                marginBottom: 14,
+              }}
+            >
+              {label}
+            </div>
+          )}
+          <div>{children}</div>
+        </>
       )}
-      <div>{children}</div>
     </section>
   );
 };
+
 
 
 // Row with label on left and radio control on right
