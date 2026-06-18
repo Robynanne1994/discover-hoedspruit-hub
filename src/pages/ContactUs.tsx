@@ -241,11 +241,10 @@ const ContactUs = () => {
             icon={<Clock size={20} color={BROWN} strokeWidth={1.6} />}
             eyebrow=""
             value={
-              <div>
-                <div style={{ whiteSpace: "pre-line" }}>
-                  {"Mon - Fri: 08:00 - 17:00\n"}
-                  <span style={{ color: MUTED }}>{"Sat: 08:00 - 12:00\nSun: Closed"}</span>
-                </div>
+              <div style={{ whiteSpace: "pre-line" }}>
+                {"Monday - Friday\n08:00 - 17:00\n\n"}
+                {"Saturday\n08:00 - 12:00\n\n"}
+                {"Sunday\nClosed"}
               </div>
             }
           />
