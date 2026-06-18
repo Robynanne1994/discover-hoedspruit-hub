@@ -64,7 +64,7 @@ const titleSizeFor = (s: string) => {
   return 42;
 };
 
-type SortKey = "default" | "name" | "rating";
+type SortKey = "default" | "name_asc" | "name_desc" | "rating" | "distance";
 
 // Resolve an icon for a Health & Medical subcategory by matching keywords in
 // its title, falling back to a generic medical icon so EVERY subcategory in the
