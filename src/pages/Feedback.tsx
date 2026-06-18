@@ -189,7 +189,7 @@ const Feedback = () => {
             }}
             style={{
               ...inputBase,
-              borderRadius: 24,
+              borderRadius: 16,
               height: "auto", minHeight: 160,
               padding: "18px 22px",
               resize: "none", lineHeight: 1.5,
