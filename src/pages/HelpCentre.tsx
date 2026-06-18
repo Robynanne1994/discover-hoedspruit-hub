@@ -1,37 +1,61 @@
-import { useNavigate } from "react-router-dom";
-import { MessageCircle, LifeBuoy, Mail, ArrowUpRight } from "lucide-react";
-import BackArrowIcon from "@/components/ui/BackArrowIcon";
+import { Link } from "react-router-dom";
+import { HelpCircle, Info, FileText, Mail, ArrowUpRight } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
 
-
+const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
 const INK = "#1A1A1A";
-const LABEL = "#9A8E7A";
-const LINE = "rgba(26,26,26,0.08)";
-const DARK = "#3D2E22";
-const DARK_MUTED = "rgba(255,255,255,0.72)";
-const ICON_BG = "rgba(26,26,26,0.06)";
-
-const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const MUTED_INK = "#6B6A5E";
+const LINE = "#E2DAC6";
 
 const ROWS = [
-  { title: "FAQs", to: "/faqs" },
-  { title: "About", to: "/about" },
-  { title: "Terms & Policies", to: "/terms" },
-  { title: "Contact Us", to: "/contact" },
+  { label: "FAQs", href: "/faqs", icon: HelpCircle },
+  { label: "About", href: "/about", icon: Info },
+  { label: "Terms & Policies", href: "/terms", icon: FileText },
+  { label: "Contact Us", href: "/contact", icon: Mail },
 ];
 
-const tap = {
-  onPointerDown: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(0.98)"; },
-  onPointerUp: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; },
-  onPointerLeave: (e: React.PointerEvent<HTMLElement>) => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; },
-};
+const Row = ({
+  item,
+  isFirst,
+}: {
+  item: { label: string; href: string; icon: any };
+  isFirst: boolean;
+}) => (
+  <Link
+    to={item.href}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: 16,
+      padding: "18px 0",
+      textDecoration: "none",
+      borderTop: isFirst ? "none" : `1px solid ${LINE}`,
+    }}
+  >
+    <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <item.icon size={20} strokeWidth={1.5} color={MUTED_INK} />
+    </div>
+    <span
+      style={{
+        flex: 1,
+        fontFamily: SANS,
+        fontSize: 16,
+        fontWeight: 400,
+        letterSpacing: "-0.1px",
+        color: INK,
+        lineHeight: 1.25,
+      }}
+    >
+      {item.label}
+    </span>
+    <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+  </Link>
+);
 
 const HelpCentre = () => {
-  const navigate = useNavigate();
-
   return (
     <div style={{ minHeight: "100vh", background: BG, paddingBottom: 140, fontFamily: SANS, overflowX: "hidden" }}>
       <Seo
@@ -39,46 +63,29 @@ const HelpCentre = () => {
         description="Find help, FAQs, contact details and policy information for the Hello Hoedspruit app."
         path="/help-centre"
       />
-      {/* Top bar */}
       <PageHeader title="Help Centre" />
 
-
-      {/* Section eyebrow */}
-      <div style={{ padding: "24px 24px 0" }}>
-        <div style={{
-          fontFamily: '"Bricolage Grotesque", ' + SANS, fontWeight: 700, fontSize: 15, letterSpacing: "0.06em",
-          textTransform: "uppercase", color: INK, marginBottom: 12,
-        }}>
+      <div style={{ padding: "24px 0 0" }}>
+        <p
+          style={{
+            fontFamily: '"Bricolage Grotesque", ' + SANS,
+            fontSize: 15,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            textTransform: "uppercase",
+            color: INK,
+            margin: "0 0 10px 0",
+            padding: "0 24px",
+          }}
+        >
           Find what you need
-        </div>
+        </p>
 
-        {/* List card */}
-        <div style={{ background: CARD, borderRadius: 20, padding: "4px 22px" }}>
-          {ROWS.map((row, i) => (
-            <button
-              key={row.title}
-              onClick={() => navigate(row.to)}
-              style={{
-                display: "flex", alignItems: "center", gap: 14, width: "100%",
-                padding: "22px 0", background: "transparent", border: "none",
-                borderTop: i === 0 ? "none" : `1px solid ${LINE}`,
-                cursor: "pointer", textAlign: "left",
-              }}
-            >
-              <div style={{
-                flex: 1,
-                fontFamily: SANS, fontWeight: 500, fontSize: 16, lineHeight: 1.2,
-                color: INK,
-              }}>
-                {row.title}
-              </div>
-              <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-
-            </button>
+        <div style={{ background: CARD, borderRadius: 20, margin: "0 24px", padding: "4px 22px" }}>
+          {ROWS.map((item, i) => (
+            <Row key={item.label} item={item} isFirst={i === 0} />
           ))}
         </div>
-
-
       </div>
     </div>
   );
