@@ -250,7 +250,7 @@ export const RefineGroupLabel = ({ label }: { label: string }) => (
 );
 
 interface RefineSectionProps {
-  label: string;
+  label?: string;
   open?: boolean;
   onToggle?: () => void;
   summary?: string;
@@ -258,7 +258,7 @@ interface RefineSectionProps {
   isFirst?: boolean;
 }
 
-// Card-style section: always-open white card with uppercase label at top.
+// Card-style section: always-open white card with optional uppercase label at top.
 // `open`/`onToggle`/`summary`/`isFirst` are accepted for API compatibility but no longer used.
 export const RefineSection = ({ label, children }: RefineSectionProps) => {
   return (
@@ -269,23 +269,26 @@ export const RefineSection = ({ label, children }: RefineSectionProps) => {
         padding: "18px 18px 18px 18px",
       }}
     >
-      <div
-        style={{
-          fontFamily: SANS,
-          fontSize: 13,
-          fontWeight: 700,
-          color: INK,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          marginBottom: 14,
-        }}
-      >
-        {label}
-      </div>
+      {label && (
+        <div
+          style={{
+            fontFamily: SANS,
+            fontSize: 13,
+            fontWeight: 700,
+            color: INK,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            marginBottom: 14,
+          }}
+        >
+          {label}
+        </div>
+      )}
       <div>{children}</div>
     </section>
   );
 };
+
 
 // Row with label on left and radio control on right
 export const RefineOption = ({
@@ -353,6 +356,94 @@ export const RefineOption = ({
     </span>
   </button>
 );
+
+// Toggle row — label + optional description on left, switch on right.
+// Designed to sit as the only child inside its own RefineSection card (no inner label).
+export const RefineToggle = ({
+  label,
+  description,
+  active,
+  onClick,
+}: {
+  label: string;
+  description?: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <button
+    onClick={onClick}
+    role="switch"
+    aria-checked={active}
+    style={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 16,
+      width: "100%",
+      background: "transparent",
+      border: "none",
+      padding: 0,
+      cursor: "pointer",
+      textAlign: "left",
+    }}
+  >
+    <span style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0 }}>
+      <span
+        style={{
+          fontFamily: SANS,
+          fontWeight: 600,
+          fontSize: 16,
+          color: INK,
+          letterSpacing: "0.01em",
+          lineHeight: 1.2,
+        }}
+      >
+        {label}
+      </span>
+      {description && (
+        <span
+          style={{
+            fontFamily: SANS,
+            fontWeight: 400,
+            fontSize: 13,
+            color: "rgba(26,26,26,0.55)",
+            letterSpacing: "0.01em",
+            lineHeight: 1.3,
+          }}
+        >
+          {description}
+        </span>
+      )}
+    </span>
+    <span
+      aria-hidden
+      style={{
+        flexShrink: 0,
+        width: 48,
+        height: 28,
+        borderRadius: 999,
+        background: active ? DARK_BROWN : "rgba(0,0,0,0.18)",
+        position: "relative",
+        transition: "background-color 0.18s ease",
+      }}
+    >
+      <span
+        style={{
+          position: "absolute",
+          top: 2,
+          left: active ? 22 : 2,
+          width: 24,
+          height: 24,
+          borderRadius: "50%",
+          background: "#ffffff",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.25)",
+          transition: "left 0.18s ease",
+        }}
+      />
+    </span>
+  </button>
+);
+
 
 // Pill-style option — used for subcategory lists. Renders inline so siblings wrap.
 export const RefineRectOption = ({

@@ -12,7 +12,7 @@ import { toast } from "sonner";
 import { isRestaurantCategory, isAccommodationCategory } from "@/lib/categoryFields";
 import { sanitizeDashesList } from "@/lib/sanitizeListing";
 import { Skeleton } from "@/components/ui/skeleton";
-import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption } from "@/components/RefineDrawer";
+import { RefineDrawer, RefineSection, RefineOption, RefineChip, RefineRectOption, RefineToggle } from "@/components/RefineDrawer";
 import { getDisplayTitle, noTitleCaseProps } from "@/lib/displayTitle";
 import { bayesianScore } from "@/lib/ratingScore";
 import Seo from "@/components/Seo";
@@ -1005,17 +1005,25 @@ const CategoryPage = () => {
           </>
         )}
 
-        <RefineSection
-          label="ESSENTIAL"
-          summary={[filterOpenNow, filterSaved].filter(Boolean).length > 0 ? `${[filterOpenNow, filterSaved].filter(Boolean).length} selected` : undefined}
-          open={openSection === "list"}
-          onToggle={() => setOpenSection(openSection === "list" ? null : "list")}
-        >
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            <RefineChip label={withCount("Open Now", facetCounts?.openNow)} active={filterOpenNow} onClick={() => setFilterOpenNow(!filterOpenNow)} />
-            <RefineChip label={withCount("Saved", facetCounts?.saved)} active={filterSaved} onClick={() => setFilterSaved(!filterSaved)} />
-          </div>
+        <RefineSection>
+          <RefineToggle
+            label="Open Now"
+            description="Only places open right now"
+            active={filterOpenNow}
+            onClick={() => setFilterOpenNow(!filterOpenNow)}
+          />
         </RefineSection>
+
+        <RefineSection>
+          <RefineToggle
+            label="Saved"
+            description="Only places you've saved"
+            active={filterSaved}
+            onClick={() => setFilterSaved(!filterSaved)}
+          />
+        </RefineSection>
+
+
 
       </RefineDrawer>
 
