@@ -230,7 +230,7 @@ export const RefineDrawer = ({
               transition: "transform 0.12s ease",
             }}
           >
-            Show {resultsCount} {resultsLabel}
+            Show {resultsCount}&nbsp;Specials
           </button>
         </div>
       </aside>
