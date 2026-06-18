@@ -1513,14 +1513,8 @@ const AdminListings = () => {
                       </Select>
                     </div>
 
-                    <div>
-                      <Label>KM from Town</Label>
-                      <Input
-                        value={form.km_from_town}
-                        onChange={(e) => setForm({ ...form, km_from_town: e.target.value })}
-                        placeholder="e.g. 5"
-                      />
-                    </div>
+
+
 
                     <div>
                       <Label>Average Price Per Person Per Night</Label>
