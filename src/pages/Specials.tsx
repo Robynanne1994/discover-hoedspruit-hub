@@ -119,6 +119,26 @@ const Specials = () => {
     return ["All Specials", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
   }, [specials]);
 
+  // Counts per category tag, respecting search but not active category/filterType
+  const categoryCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    if (!specials) return map;
+    const q = search.trim().toLowerCase();
+    for (const s of specials as any[]) {
+      if (q) {
+        const hit =
+          (s.title && s.title.toLowerCase().includes(q)) ||
+          (s.business_name && s.business_name.toLowerCase().includes(q)) ||
+          (s.description && s.description.toLowerCase().includes(q));
+        if (!hit) continue;
+      }
+      const t = (s.tag || "").toString().trim();
+      if (t) map.set(t, (map.get(t) || 0) + 1);
+    }
+    return map;
+  }, [specials, search]);
+
+
   const filteredSpecials = useMemo(() => {
     if (!specials) return [];
     let result = [...specials];
