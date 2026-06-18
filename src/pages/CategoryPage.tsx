@@ -1022,6 +1022,21 @@ const CategoryPage = () => {
           </>
         )}
 
+        <RefineSection label="Distance from Town">
+          <RefineSlider
+            value={filterMaxKm}
+            min={0.5}
+            max={MAX_KM}
+            step={0.5}
+            onChange={setFilterMaxKm}
+            formatValue={(v) => `${v} km`}
+            minLabel="0.5 km"
+            maxLabel="Anywhere"
+          />
+        </RefineSection>
+
+
+
         <RefineSection>
           <RefineToggle
             label="Open Now"
