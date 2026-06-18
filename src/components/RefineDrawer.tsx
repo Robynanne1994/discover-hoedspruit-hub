@@ -131,21 +131,10 @@ export const RefineDrawer = ({
             </button>
           </div>
 
-        </div>
-
-        {/* Divider above match count */}
-        <div style={{ height: 1, background: "rgba(0,0,0,0.10)", margin: "0 20px" }} />
-
-        {/* Results count pill */}
-        <div style={{ padding: "14px 20px 4px" }}>
-          <span
+          {/* Match count — plain text under title */}
+          <div
             style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 4,
-              background: "#ffffff",
-              borderRadius: 999,
-              padding: "8px 14px",
+              marginTop: 8,
               fontFamily: SANS,
               fontSize: 13,
               fontWeight: 600,
@@ -153,9 +142,13 @@ export const RefineDrawer = ({
               letterSpacing: "0.01em",
             }}
           >
-            {resultsCount}&nbsp;Listings&nbsp;Match
-          </span>
+            {resultsCount}&nbsp;{resultsLabel.charAt(0).toUpperCase() + resultsLabel.slice(1)}&nbsp;Match
+          </div>
         </div>
+
+        {/* Divider below match count */}
+        <div style={{ height: 1, background: "rgba(0,0,0,0.10)", margin: "0 20px" }} />
+
 
 
 
