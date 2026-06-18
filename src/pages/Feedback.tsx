@@ -80,7 +80,7 @@ const Feedback = () => {
 
   const inputBase: CSSProperties = {
     width: "100%", background: CARD, border: "none",
-    borderRadius: 999, height: 52, padding: "0 22px",
+    borderRadius: 16, height: 52, padding: "0 22px",
     fontFamily: FF, fontSize: 15, fontWeight: 400, color: INK,
     outline: "none", boxSizing: "border-box",
   };
@@ -189,7 +189,7 @@ const Feedback = () => {
             }}
             style={{
               ...inputBase,
-              borderRadius: 24,
+              borderRadius: 16,
               height: "auto", minHeight: 160,
               padding: "18px 22px",
               resize: "none", lineHeight: 1.5,
