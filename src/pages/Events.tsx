@@ -550,6 +550,51 @@ const Events = () => {
     return Array.from(set).sort((a, b) => a.localeCompare(b));
   }, [sortedEvents]);
 
+  // Counts per tag respecting all other active filters (not the tag filter itself).
+  const tagCounts = useMemo(() => {
+    const today = startOfToday();
+    const map = new Map<string, number>();
+    const q = search.trim().toLowerCase();
+    const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
+    const monthEnd = endOfMonth(today);
+    const weekend = getWeekendRange(today);
+    const yearEnd = new Date(today.getFullYear(), 11, 31);
+
+    sortedEvents.forEach((e) => {
+      if (q) {
+        const hit =
+          e.title.toLowerCase().includes(q) ||
+          (e.location && e.location.toLowerCase().includes(q)) ||
+          (e.tag && e.tag.toLowerCase().includes(q));
+        if (!hit) return;
+      }
+      if (selectedDate) {
+        const dayStart = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+        const dayEnd = new Date(dayStart);
+        dayEnd.setDate(dayEnd.getDate() + 1);
+        const occs = getEventOccurrences(e, { from: dayStart, to: dayEnd, now: dayStart });
+        if (!(occs.length > 0 || (e._parsed && isSameDay(e._parsed, selectedDate)))) return;
+      } else {
+        if (!e._parsed) {
+          if (activeFilter !== "all") return;
+        } else {
+          const d = e._parsed;
+          if (activeFilter === "all" && isBefore(d, today)) return;
+          else if (activeFilter === "today" && !isToday(d)) return;
+          else if (activeFilter === "this-week" && !isWithinInterval(d, { start: today, end: weekEnd })) return;
+          else if (activeFilter === "this-weekend" && !isWithinInterval(d, { start: weekend.start, end: weekend.end })) return;
+          else if (activeFilter === "this-month" && !isWithinInterval(d, { start: today, end: monthEnd })) return;
+          else if (activeFilter === "this-year" && !isWithinInterval(d, { start: today, end: yearEnd })) return;
+          else if (activeFilter === "past" && !(isBefore(d, today) && !isToday(d))) return;
+        }
+      }
+      const t = (e.tag || "").trim();
+      if (t) map.set(t, (map.get(t) || 0) + 1);
+    });
+    return map;
+  }, [sortedEvents, search, activeFilter, selectedDate]);
+
+
 
 
   const filtered = useMemo(() => {
@@ -923,25 +968,31 @@ const Events = () => {
           open={openSection === "tag"}
           onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
         >
-          {availableTags.length > 0 ? (
-            <div>
-              <RefineRectOption
-                label="All"
-                active={!tagFilter}
-                onClick={() => setTagFilter(null)}
-              />
-              {availableTags.map((t) => (
+          {(() => {
+            const visibleTags = availableTags.filter((t) => (tagCounts.get(t) || 0) > 0);
+            const totalVisible = Array.from(tagCounts.values()).reduce((a, b) => a + b, 0);
+            if (visibleTags.length === 0) {
+              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No tags yet.</p>;
+            }
+            return (
+              <div>
                 <RefineRectOption
-                  key={t}
-                  label={t}
-                  active={tagFilter === t}
-                  onClick={() => setTagFilter(t)}
+                  label={`All (${totalVisible})`}
+                  active={!tagFilter}
+                  onClick={() => setTagFilter(null)}
                 />
-              ))}
-            </div>
-          ) : (
-            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No tags yet.</p>
-          )}
+                {visibleTags.map((t) => (
+                  <RefineRectOption
+                    key={t}
+                    label={`${t} (${tagCounts.get(t)})`}
+                    active={tagFilter === t}
+                    onClick={() => setTagFilter(t)}
+                  />
+                ))}
+              </div>
+            );
+          })()}
+
         </RefineSection>
 
 

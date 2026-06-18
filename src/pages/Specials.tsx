@@ -119,6 +119,26 @@ const Specials = () => {
     return ["All Specials", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
   }, [specials]);
 
+  // Counts per category tag, respecting search but not active category/filterType
+  const categoryCounts = useMemo(() => {
+    const map = new Map<string, number>();
+    if (!specials) return map;
+    const q = search.trim().toLowerCase();
+    for (const s of specials as any[]) {
+      if (q) {
+        const hit =
+          (s.title && s.title.toLowerCase().includes(q)) ||
+          (s.business_name && s.business_name.toLowerCase().includes(q)) ||
+          (s.description && s.description.toLowerCase().includes(q));
+        if (!hit) continue;
+      }
+      const t = (s.tag || "").toString().trim();
+      if (t) map.set(t, (map.get(t) || 0) + 1);
+    }
+    return map;
+  }, [specials, search]);
+
+
   const filteredSpecials = useMemo(() => {
     if (!specials) return [];
     let result = [...specials];
@@ -393,31 +413,39 @@ const Specials = () => {
           open={openSection === "category"}
           onToggle={() => setOpenSection(openSection === "category" ? null : "category")}
         >
-          {categoryTabs.filter((c) => c !== "All Specials").length > 0 ? (
-            <div>
-              <RefineRectOption
-                label="All"
-                active={activeTab === "All Specials" && filterType.length === 0}
-                onClick={() => {
-                  setActiveTab("All Specials");
-                  setFilterType([]);
-                }}
-              />
-              {categoryTabs.filter((c) => c !== "All Specials").map((t) => (
+          {(() => {
+            const visible = categoryTabs
+              .filter((c) => c !== "All Specials")
+              .filter((c) => (categoryCounts.get(c) || 0) > 0);
+            const total = Array.from(categoryCounts.values()).reduce((a, b) => a + b, 0);
+            if (visible.length === 0) {
+              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories available.</p>;
+            }
+            return (
+              <div>
                 <RefineRectOption
-                  key={t}
-                  label={t}
-                  active={activeTab === t || filterType.includes(t)}
+                  label={`All (${total})`}
+                  active={activeTab === "All Specials" && filterType.length === 0}
                   onClick={() => {
-                    setActiveTab(t);
+                    setActiveTab("All Specials");
                     setFilterType([]);
                   }}
                 />
-              ))}
-            </div>
-          ) : (
-            <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories available.</p>
-          )}
+                {visible.map((t) => (
+                  <RefineRectOption
+                    key={t}
+                    label={`${t} (${categoryCounts.get(t)})`}
+                    active={activeTab === t || filterType.includes(t)}
+                    onClick={() => {
+                      setActiveTab(t);
+                      setFilterType([]);
+                    }}
+                  />
+                ))}
+              </div>
+            );
+          })()}
+
         </RefineSection>
       </RefineDrawer>
     </div>
