@@ -62,8 +62,7 @@ const Row = ({ icon, eyebrow, value, href, external }: RowProps) => {
         display: "flex",
         alignItems: "center",
         gap: 14,
-        background: CARD,
-        borderRadius: 16,
+        background: "transparent",
         padding: "16px 18px",
         textDecoration: "none",
         color: "inherit",
@@ -194,48 +193,65 @@ const ContactUs = () => {
       />
       <PageHeader title="Contact" />
 
-      <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 4 }}>
-        <Row
-          icon={<Mail size={20} color={BROWN} strokeWidth={1.6} />}
-          eyebrow="Email"
-          value={CONTACT_EMAIL}
-          href={`mailto:${CONTACT_EMAIL}`}
-        />
-        <Row
-          icon={<Phone size={20} color={BROWN} strokeWidth={1.6} />}
-          eyebrow="Phone"
-          value={CONTACT_PHONE}
-          href={`tel:${PHONE_DIGITS}`}
-        />
-        <Row
-          icon={<WhatsAppIcon size={20} color={BROWN} />}
-          eyebrow="WhatsApp"
-          value={CONTACT_PHONE}
-          href={WHATSAPP_URL}
-          external
-        />
-        <Row
-          icon={<MapPin size={20} color={BROWN} strokeWidth={1.6} />}
-          eyebrow="Find Us"
-          value={ADDRESS}
-        />
+      <div style={{ padding: "20px 20px 0" }}>
+        <SectionLabel>Reach Out</SectionLabel>
+        <div
+          style={{
+            background: CARD,
+            borderRadius: 16,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Row
+            icon={<Mail size={20} color={BROWN} strokeWidth={1.6} />}
+            eyebrow="Email"
+            value={CONTACT_EMAIL}
+            href={`mailto:${CONTACT_EMAIL}`}
+          />
+          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <Row
+            icon={<Phone size={20} color={BROWN} strokeWidth={1.6} />}
+            eyebrow="Phone"
+            value={CONTACT_PHONE}
+            href={`tel:${PHONE_DIGITS}`}
+          />
+          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <Row
+            icon={<WhatsAppIcon size={20} color={BROWN} />}
+            eyebrow="WhatsApp"
+            value={CONTACT_PHONE}
+            href={WHATSAPP_URL}
+            external
+          />
+          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
+          <Row
+            icon={<MapPin size={20} color={BROWN} strokeWidth={1.6} />}
+            eyebrow="Find Us"
+            value={ADDRESS}
+          />
+        </div>
       </div>
 
       <div style={{ padding: "24px 20px 0" }}>
         <SectionLabel>Office Hours</SectionLabel>
-        <Row
-          icon={<Clock size={20} color={BROWN} strokeWidth={1.6} />}
-          eyebrow=""
-          value={
-            <div>
-              <div style={{ whiteSpace: "pre-line" }}>
-                {"Mon - Fri: 08:00 - 17:00\n"}
-                <span style={{ color: MUTED }}>{"Sat: 08:00 - 12:00\nSun: Closed"}</span>
+        <div style={{ background: CARD, borderRadius: 16, overflow: "hidden" }}>
+          <Row
+            icon={<Clock size={20} color={BROWN} strokeWidth={1.6} />}
+            eyebrow=""
+            value={
+              <div>
+                <div style={{ whiteSpace: "pre-line" }}>
+                  {"Mon - Fri: 08:00 - 17:00\n"}
+                  <span style={{ color: MUTED }}>{"Sat: 08:00 - 12:00\nSun: Closed"}</span>
+                </div>
               </div>
-            </div>
-          }
-        />
+            }
+          />
+        </div>
       </div>
+
 
       <div style={{ padding: "24px 20px 0" }}>
         <SectionLabel>Follow Along</SectionLabel>
