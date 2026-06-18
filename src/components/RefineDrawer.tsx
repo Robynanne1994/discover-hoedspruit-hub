@@ -153,6 +153,10 @@ export const RefineDrawer = ({
           </div>
         </div>
 
+        {/* Divider below header / above sections */}
+        <div style={{ height: 1, background: "rgba(0,0,0,0.10)", margin: "0 20px" }} />
+
+
         {/* Scroll area with cards */}
         <div
           style={{
@@ -311,7 +315,7 @@ export const RefineOption = ({
       gap: 12,
       width: "100%",
       textAlign: "left",
-      padding: "12px 0",
+      padding: "6px 0",
       background: "transparent",
       border: "none",
       cursor: "pointer",
@@ -321,7 +325,7 @@ export const RefineOption = ({
       style={{
         fontFamily: SANS,
         fontWeight: 500,
-        fontSize: 16,
+        fontSize: 14,
         color: INK,
         letterSpacing: "0.01em",
         lineHeight: 1.2,
@@ -333,8 +337,8 @@ export const RefineOption = ({
       aria-hidden
       style={{
         flexShrink: 0,
-        width: 22,
-        height: 22,
+        width: 20,
+        height: 20,
         borderRadius: "50%",
         border: active ? `2px solid ${DARK_BROWN}` : `1.5px solid rgba(26,26,26,0.30)`,
         display: "inline-flex",
@@ -346,8 +350,8 @@ export const RefineOption = ({
       {active && (
         <span
           style={{
-            width: 12,
-            height: 12,
+            width: 10,
+            height: 10,
             borderRadius: "50%",
             background: DARK_BROWN,
           }}
@@ -355,6 +359,7 @@ export const RefineOption = ({
       )}
     </span>
   </button>
+
 );
 
 // Toggle row — label + optional description on left, switch on right.
@@ -463,16 +468,16 @@ export const RefineRectOption = ({
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      padding: "10px 18px",
-      marginRight: 8,
-      marginBottom: 8,
+      padding: "7px 12px",
+      marginRight: 6,
+      marginBottom: 6,
       borderRadius: 999,
       border: active ? `1px solid ${DARK_BROWN}` : `1px solid ${BORDER}`,
       background: active ? DARK_BROWN : "#ffffff",
       color: active ? "#ffffff" : INK,
       fontFamily: SANS,
       fontWeight: 500,
-      fontSize: 14,
+      fontSize: 12,
       letterSpacing: "0.01em",
       lineHeight: 1.2,
       cursor: "pointer",
@@ -496,14 +501,14 @@ export const RefineChip = ({
   <button
     onClick={onClick}
     style={{
-      padding: "10px 16px",
+      padding: "7px 12px",
       borderRadius: 999,
       border: active ? `1px solid ${DARK_BROWN}` : `1px solid ${BORDER}`,
       background: active ? DARK_BROWN : "#ffffff",
       color: active ? "#ffffff" : INK,
       fontFamily: SANS,
       fontWeight: 500,
-      fontSize: 14,
+      fontSize: 12,
       letterSpacing: "0.01em",
       cursor: "pointer",
       transition: "background-color 0.12s ease, color 0.12s ease, border-color 0.12s ease",
@@ -512,6 +517,7 @@ export const RefineChip = ({
     {label}
   </button>
 );
+
 
 // Distance/range slider — value in [min, max]. When value >= max, label shows `maxLabel` (e.g. "Anywhere").
 export const RefineSlider = ({
