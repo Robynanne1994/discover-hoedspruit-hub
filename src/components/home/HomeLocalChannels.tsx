@@ -205,39 +205,6 @@ const HomeLocalChannels = () => {
                   </div>
                 )}
               </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (!user) {
-                    toast.error("Please sign in to save");
-                    return;
-                  }
-                  toggleSave.mutate({ itemId: r.id, isSaved });
-                }}
-                style={{
-                  width: 34,
-                  height: 34,
-                  borderRadius: 999,
-                  background: isSaved ? "#5b4632" : "rgba(107, 106, 94, 0.12)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                  border: "none",
-                  cursor: "pointer",
-                  transition: "background 150ms ease-out",
-                }}
-                aria-label={isSaved ? "Remove from saved" : "Save"}
-              >
-                <Heart
-                  size={16}
-                  strokeWidth={1.8}
-                  style={{
-                    color: isSaved ? "#fff" : "#2A2A24",
-                    fill: isSaved ? "#fff" : "none",
-                  }}
-                />
-              </button>
             </div>
           );
         })}
