@@ -238,31 +238,6 @@ const ContactUs = () => {
         </div>
       </div>
 
-      <div style={{ padding: "28px 20px 0" }}>
-        <a
-          href={DIRECTIONS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 10,
-            background: "#3a2e1f",
-            color: "#fff",
-            textDecoration: "none",
-            borderRadius: 999,
-            padding: "18px 24px",
-            fontFamily: FF,
-            fontSize: 16,
-            fontWeight: 400,
-            letterSpacing: "0.01em",
-          }}
-        >
-          <Navigation size={18} strokeWidth={1.6} />
-          Get Directions
-        </a>
-      </div>
 
       <BottomNav />
     </div>
