@@ -188,7 +188,6 @@ export const UNIVERSAL_FIELDS = [
   "additional_emails", "additional_email_labels",
   "additional_whatsapps", "additional_whatsapp_labels",
   "additional_websites", "additional_website_labels",
-  "action_phone_index", "action_email_index", "action_whatsapp_index", "action_website_index",
   "facebook", "instagram",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
   "categories", "subcategories",

@@ -14,6 +14,7 @@ import {
   NGO_ONLY_FIELDS, TRADES_ONLY_FIELDS, HOME_GARDEN_ONLY_FIELDS, WEDDINGS_EVENTS_ONLY_FIELDS,
   LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields, type FieldType,
 } from "@/lib/categoryFields";
+import { buildReferenceRow } from "@/lib/listingFieldOptions";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
@@ -63,14 +64,18 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
   if (rows.length === 0) return { headers: [], rows: [] };
 
   const headers = rows[0].map((header) => header.toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
-  const dataRows = rows.slice(1).map((values) => {
-    const row: Record<string, string> = {};
-    headers.forEach((header, index) => {
-      const v = values[index] ?? "";
-      row[header] = v.trim() === "-" ? "" : v;
-    });
-    return row;
-  });
+  const dataRows = rows.slice(1)
+    .map((values) => {
+      const row: Record<string, string> = {};
+      headers.forEach((header, index) => {
+        const v = values[index] ?? "";
+        row[header] = v.trim() === "-" ? "" : v;
+      });
+      return row;
+    })
+    // Skip the reference/template row (title cell begins with "#"). Lets exports
+    // ship an inline "options & format" cheat-sheet without breaking imports.
+    .filter((row) => !(row.title ?? "").trim().startsWith("#"));
 
   return { headers, rows: dataRows };
 }
@@ -618,13 +623,16 @@ const AdminImport = () => {
     URL.revokeObjectURL(url);
   };
 
+  const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
+
   const downloadTemplate = () => {
     if (!selectedCategoryId) {
       toast.error("Please select a category first");
       return;
     }
     const headers = csvHeaders;
-    const csv = headers.join(",") + "\n";
+    const refRow = buildReferenceRow(headers).map(escapeCSV).join(",");
+    const csv = headers.join(",") + "\n" + refRow + "\n";
     const safeName = isAllCategories ? "all_listings" : (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
     downloadCSV(csv, `${safeName}_template.csv`);
     toast.success("Template downloaded");
@@ -681,7 +689,6 @@ const AdminImport = () => {
     });
 
     const headers = csvHeaders;
-    const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
 
     const rows = listings.map((l) => {
       const fieldMap: Record<string, string> = {};
@@ -708,8 +715,11 @@ const AdminImport = () => {
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
     });
 
+    // Prepend a reference row (skipped on re-import) listing valid options / format per field.
+    const refRow = buildReferenceRow(headers).map(escapeCSV).join(",");
+
     const safeName = isAllCategories ? "all_listings" : (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
-    downloadCSV(headers.join(",") + "\n" + rows.join("\n") + "\n", `${safeName}_export.csv`);
+    downloadCSV(headers.join(",") + "\n" + refRow + "\n" + rows.join("\n") + "\n", `${safeName}_export.csv`);
     toast.success(`Exported ${listings.length} listings`);
   };
 

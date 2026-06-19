@@ -18,7 +18,7 @@ import ImageUpload from "@/components/admin/ImageUpload";
 import GalleryUpload from "@/components/admin/GalleryUpload";
 import TriStateToggle from "@/components/admin/TriStateToggle";
 import MultiContactField from "@/components/admin/MultiContactField";
-import ActionPicker from "@/components/admin/ActionPicker";
+
 import { sanitizeContactArray } from "@/lib/contacts";
 import { formatServiceLabel } from "@/lib/serviceLabels";
 import { DISPLAY_SECTIONS, sectionsForGroup, type DisplayMode, type SectionGroup, DISPLAY_DEFAULTS_SECTION } from "@/lib/detailsDisplayModes";
@@ -383,10 +383,9 @@ const AdminListings = () => {
         website_label: (values.website_label || "").trim() || null,
         additional_websites: sanitizeContactArray(values.additional_websites),
         additional_website_labels: (values.additional_website_labels || []).map((s: string) => (s || "").trim()),
-        action_phone_index: Math.max(0, Math.min(values.action_phone_index ?? 0, sanitizeContactArray(values.additional_phones).length)),
-        action_email_index: Math.max(0, Math.min(values.action_email_index ?? 0, sanitizeContactArray(values.additional_emails).length)),
-        action_whatsapp_index: Math.max(0, Math.min(values.action_whatsapp_index ?? 0, sanitizeContactArray(values.additional_whatsapps).length)),
-        action_website_index: Math.max(0, Math.min(values.action_website_index ?? 0, sanitizeContactArray(values.additional_websites).length)),
+        
+        
+        
         
         
         facebook: values.facebook || null,
@@ -1016,13 +1015,6 @@ const AdminListings = () => {
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
                     addLabel="Add phone"
                   />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.phone, ...form.additional_phones]}
-                    labels={[form.phone_label, ...form.additional_phone_labels]}
-                    selected={form.action_phone_index}
-                    onChange={(i) => setForm({ ...form, action_phone_index: i })}
-                  />
                 </div>
                 <div className="space-y-2">
                   <MultiContactField
@@ -1037,13 +1029,6 @@ const AdminListings = () => {
                     extraLabels={form.additional_email_labels}
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
                     addLabel="Add email"
-                  />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.email, ...form.additional_emails]}
-                    labels={[form.email_label, ...form.additional_email_labels]}
-                    selected={form.action_email_index}
-                    onChange={(i) => setForm({ ...form, action_email_index: i })}
                   />
                 </div>
                 <div className="space-y-2">
@@ -1060,13 +1045,6 @@ const AdminListings = () => {
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_website_labels: v })}
                     placeholder="https://..."
                     addLabel="Add website"
-                  />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.website, ...form.additional_websites]}
-                    labels={[form.website_label, ...form.additional_website_labels]}
-                    selected={form.action_website_index}
-                    onChange={(i) => setForm({ ...form, action_website_index: i })}
                   />
                 </div>
                 <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
@@ -1085,13 +1063,6 @@ const AdminListings = () => {
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_whatsapp_labels: v })}
                     placeholder="e.g. +27791234567"
                     addLabel="Add WhatsApp"
-                  />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.whatsapp, ...form.additional_whatsapps]}
-                    labels={[form.whatsapp_label, ...form.additional_whatsapp_labels]}
-                    selected={form.action_whatsapp_index}
-                    onChange={(i) => setForm({ ...form, action_whatsapp_index: i })}
                   />
                 </div>
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
