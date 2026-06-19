@@ -64,14 +64,18 @@ function parseCSV(text: string): { headers: string[]; rows: Record<string, strin
   if (rows.length === 0) return { headers: [], rows: [] };
 
   const headers = rows[0].map((header) => header.toLowerCase().replace(/["\s]/g, "").replace(/ /g, "_"));
-  const dataRows = rows.slice(1).map((values) => {
-    const row: Record<string, string> = {};
-    headers.forEach((header, index) => {
-      const v = values[index] ?? "";
-      row[header] = v.trim() === "-" ? "" : v;
-    });
-    return row;
-  });
+  const dataRows = rows.slice(1)
+    .map((values) => {
+      const row: Record<string, string> = {};
+      headers.forEach((header, index) => {
+        const v = values[index] ?? "";
+        row[header] = v.trim() === "-" ? "" : v;
+      });
+      return row;
+    })
+    // Skip the reference/template row (title cell begins with "#"). Lets exports
+    // ship an inline "options & format" cheat-sheet without breaking imports.
+    .filter((row) => !(row.title ?? "").trim().startsWith("#"));
 
   return { headers, rows: dataRows };
 }
