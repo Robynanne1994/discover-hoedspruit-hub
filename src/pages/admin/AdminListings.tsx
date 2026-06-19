@@ -1030,13 +1030,6 @@ const AdminListings = () => {
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_email_labels: v })}
                     addLabel="Add email"
                   />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.email, ...form.additional_emails]}
-                    labels={[form.email_label, ...form.additional_email_labels]}
-                    selected={form.action_email_index}
-                    onChange={(i) => setForm({ ...form, action_email_index: i })}
-                  />
                 </div>
                 <div className="space-y-2">
                   <MultiContactField
