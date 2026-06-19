@@ -1015,13 +1015,6 @@ const AdminListings = () => {
                     onExtraLabelsChange={(v) => setForm({ ...form, additional_phone_labels: v })}
                     addLabel="Add phone"
                   />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.phone, ...form.additional_phones]}
-                    labels={[form.phone_label, ...form.additional_phone_labels]}
-                    selected={form.action_phone_index}
-                    onChange={(i) => setForm({ ...form, action_phone_index: i })}
-                  />
                 </div>
                 <div className="space-y-2">
                   <MultiContactField
