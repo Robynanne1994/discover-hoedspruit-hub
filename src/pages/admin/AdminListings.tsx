@@ -383,10 +383,9 @@ const AdminListings = () => {
         website_label: (values.website_label || "").trim() || null,
         additional_websites: sanitizeContactArray(values.additional_websites),
         additional_website_labels: (values.additional_website_labels || []).map((s: string) => (s || "").trim()),
-        action_phone_index: Math.max(0, Math.min(values.action_phone_index ?? 0, sanitizeContactArray(values.additional_phones).length)),
-        action_email_index: Math.max(0, Math.min(values.action_email_index ?? 0, sanitizeContactArray(values.additional_emails).length)),
-        action_whatsapp_index: Math.max(0, Math.min(values.action_whatsapp_index ?? 0, sanitizeContactArray(values.additional_whatsapps).length)),
-        action_website_index: Math.max(0, Math.min(values.action_website_index ?? 0, sanitizeContactArray(values.additional_websites).length)),
+        
+        
+        
         
         
         facebook: values.facebook || null,
