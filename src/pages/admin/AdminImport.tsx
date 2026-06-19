@@ -623,13 +623,16 @@ const AdminImport = () => {
     URL.revokeObjectURL(url);
   };
 
+  const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
+
   const downloadTemplate = () => {
     if (!selectedCategoryId) {
       toast.error("Please select a category first");
       return;
     }
     const headers = csvHeaders;
-    const csv = headers.join(",") + "\n";
+    const refRow = buildReferenceRow(headers).map(escapeCSV).join(",");
+    const csv = headers.join(",") + "\n" + refRow + "\n";
     const safeName = isAllCategories ? "all_listings" : (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
     downloadCSV(csv, `${safeName}_template.csv`);
     toast.success("Template downloaded");
