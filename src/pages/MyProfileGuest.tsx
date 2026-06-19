@@ -135,6 +135,48 @@ const MyProfileGuest = () => {
 
       <Eyebrow>Help</Eyebrow>
       <Card items={helpItems} />
+
+      <div style={{ height: 36 }} />
+
+      <Eyebrow>Account</Eyebrow>
+      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 10 }}>
+        <button
+          onClick={() => navigate("/welcome", { state: { mode: "signup" } })}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 999,
+            background: "#423324",
+            color: "#FFFFFF",
+            border: "none",
+            fontFamily: SANS,
+            fontSize: 15,
+            fontWeight: 400,
+            letterSpacing: "0.1px",
+            cursor: "pointer",
+          }}
+        >
+          Create account
+        </button>
+        <button
+          onClick={() => navigate("/welcome", { state: { mode: "signin" } })}
+          style={{
+            width: "100%",
+            height: 52,
+            borderRadius: 999,
+            background: "transparent",
+            color: "#715a3d",
+            border: "1px solid #715a3d",
+            fontFamily: SANS,
+            fontSize: 15,
+            fontWeight: 400,
+            letterSpacing: "0.1px",
+            cursor: "pointer",
+          }}
+        >
+          Log in
+        </button>
+      </div>
     </div>
   );
 };
