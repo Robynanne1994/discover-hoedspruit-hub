@@ -1046,13 +1046,6 @@ const AdminListings = () => {
                     placeholder="https://..."
                     addLabel="Add website"
                   />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.website, ...form.additional_websites]}
-                    labels={[form.website_label, ...form.additional_website_labels]}
-                    selected={form.action_website_index}
-                    onChange={(i) => setForm({ ...form, action_website_index: i })}
-                  />
                 </div>
                 <div><Label>Facebook</Label><Input value={form.facebook} onChange={(e) => setForm({ ...form, facebook: e.target.value })} placeholder="https://facebook.com/..." /></div>
                 <div><Label>Instagram</Label><Input value={form.instagram} onChange={(e) => setForm({ ...form, instagram: e.target.value })} placeholder="https://instagram.com/..." /></div>
