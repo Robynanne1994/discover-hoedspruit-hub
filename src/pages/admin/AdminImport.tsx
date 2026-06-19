@@ -14,6 +14,7 @@ import {
   NGO_ONLY_FIELDS, TRADES_ONLY_FIELDS, HOME_GARDEN_ONLY_FIELDS, WEDDINGS_EVENTS_ONLY_FIELDS,
   LISTING_FIELD_SPECS, getCategorySpecificFields, getUniversalDbFields, type FieldType,
 } from "@/lib/categoryFields";
+import { buildReferenceRow } from "@/lib/listingFieldOptions";
 
 const ALL_CATEGORIES_VALUE = "__all__";
 type ListingRow = Database["public"]["Tables"]["listings"]["Row"];
