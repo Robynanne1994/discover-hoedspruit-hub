@@ -689,7 +689,6 @@ const AdminImport = () => {
     });
 
     const headers = csvHeaders;
-    const escapeCSV = (val: string) => val.includes(",") || val.includes('"') || val.includes("\n") ? `"${val.replace(/"/g, '""')}"` : val;
 
     const rows = listings.map((l) => {
       const fieldMap: Record<string, string> = {};
@@ -716,8 +715,11 @@ const AdminImport = () => {
       return headers.map((h) => escapeCSV(fieldMap[h] ?? "")).join(",");
     });
 
+    // Prepend a reference row (skipped on re-import) listing valid options / format per field.
+    const refRow = buildReferenceRow(headers).map(escapeCSV).join(",");
+
     const safeName = isAllCategories ? "all_listings" : (selectedCategoryTitle ?? "listings").replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
-    downloadCSV(headers.join(",") + "\n" + rows.join("\n") + "\n", `${safeName}_export.csv`);
+    downloadCSV(headers.join(",") + "\n" + refRow + "\n" + rows.join("\n") + "\n", `${safeName}_export.csv`);
     toast.success(`Exported ${listings.length} listings`);
   };
 
