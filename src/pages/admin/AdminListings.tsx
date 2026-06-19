@@ -1064,13 +1064,6 @@ const AdminListings = () => {
                     placeholder="e.g. +27791234567"
                     addLabel="Add WhatsApp"
                   />
-                  <ActionPicker
-                    label="Top action button uses"
-                    values={[form.whatsapp, ...form.additional_whatsapps]}
-                    labels={[form.whatsapp_label, ...form.additional_whatsapp_labels]}
-                    selected={form.action_whatsapp_index}
-                    onChange={(i) => setForm({ ...form, action_whatsapp_index: i })}
-                  />
                 </div>
                 <div><Label>Google Maps Link</Label><Input value={form.google_maps_link} onChange={(e) => setForm({ ...form, google_maps_link: e.target.value })} placeholder="https://maps.google.com/..." /></div>
                 <div className="grid grid-cols-2 gap-4">
