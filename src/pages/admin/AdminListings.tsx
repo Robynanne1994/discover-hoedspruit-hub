@@ -444,7 +444,7 @@ const AdminListings = () => {
         air_conditioned: values.air_conditioned,
         payment_methods: values.payment_methods,
         delivery_available: values.delivery_available,
-        click_and_collect: values.click_and_collect,
+        
         order_online: values.order_online,
         parking_available: values.parking_available,
         local_products: values.local_products,
@@ -663,7 +663,7 @@ const AdminListings = () => {
       air_conditioned: (l as any).air_conditioned ?? null,
       payment_methods: (l as any).payment_methods ?? [],
       delivery_available: (l as any).delivery_available ?? null,
-      click_and_collect: (l as any).click_and_collect ?? null,
+      
       order_online: (l as any).order_online ?? null,
       parking_available: (l as any).parking_available ?? null,
       local_products: (l as any).local_products ?? null,
