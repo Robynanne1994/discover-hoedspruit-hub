@@ -178,7 +178,7 @@ const PrefRow = ({
           style={{
             fontFamily: SANS,
             fontSize: 16,
-            fontWeight: 700,
+            fontWeight: 400,
             color: C.ink,
             lineHeight: 1.2,
             letterSpacing: "-0.1px",
