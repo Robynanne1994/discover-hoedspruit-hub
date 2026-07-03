@@ -1067,7 +1067,7 @@ const CategoryPage = () => {
         })()}
 
 
-        <RefineSection label="Distance from Town">
+        <RefineSection label="Max Distance from Town">
           <RefineSlider
             value={filterMaxKm}
             min={0.5}
