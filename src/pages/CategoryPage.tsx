@@ -942,7 +942,7 @@ const CategoryPage = () => {
           ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
           ...(filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
           ...(filterBeenTo ? [{ label: "Been To", onRemove: () => setFilterBeenTo(false) }] : []),
-          ...(filterMaxKm < MAX_KM ? [{ label: `Within ${filterMaxKm} km`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
+          ...(filterMaxKm < MAX_KM ? [{ label: `Max ${filterMaxKm} km from town`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
 
           ...(filterChildFriendly ? [{ label: "Child Friendly", onRemove: () => setFilterChildFriendly(false) }] : []),
           ...(filterPetFriendly ? [{ label: "Pet Friendly", onRemove: () => setFilterPetFriendly(false) }] : []),
