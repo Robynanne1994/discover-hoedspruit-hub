@@ -152,7 +152,7 @@ const App = () => (
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/events" element={<Events />} />
               <Route path="/events/:id" element={<EventDetail />} />
-              <Route path="/about" element={<About />} />
+              
               
               
               <Route path="/specials" element={<Specials />} />
