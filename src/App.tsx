@@ -30,7 +30,7 @@ import CategoryPage from "./pages/CategoryPage.tsx";
 import ListingDetail from "./pages/ListingDetail.tsx";
 import ContactUs from "./pages/ContactUs.tsx";
 import Events from "./pages/Events.tsx";
-import About from "./pages/About.tsx";
+
 import MyAccount from "./pages/MyAccount.tsx";
 import MyProfile from "./pages/MyProfile.tsx";
 import MyProfileGuest from "./pages/MyProfileGuest.tsx";
