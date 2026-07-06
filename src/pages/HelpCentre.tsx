@@ -12,7 +12,6 @@ const LINE = "#E2DAC6";
 
 const ROWS = [
   { label: "FAQs", href: "/faqs", icon: HelpCircle },
-  { label: "About", href: "/about", icon: Info },
   { label: "Terms & Policies", href: "/terms", icon: FileText },
   { label: "Contact Us", href: "/contact", icon: Mail },
 ];
