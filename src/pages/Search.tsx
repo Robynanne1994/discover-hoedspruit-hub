@@ -1,26 +1,28 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserPlus, UserCheck, Heart, UserCircle, Clock } from "lucide-react";
-import SearchBar from "@/components/ui/SearchBar";
+import { Search as SearchIcon, UserPlus, UserCheck, Heart, UserCircle, Clock, ArrowLeft } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useIsFavourited, useToggleFavourite } from "@/hooks/useFavourites";
-import BackButton from "@/components/BackButton";
-import PageHeader from "@/components/PageHeader";
 import { useIsFollowing, useFollowMutation } from "@/hooks/useFollows";
 import { useBlockedUsers } from "@/hooks/useBlockedUsers";
 import { toast } from "sonner";
 import Seo from "@/components/Seo";
 
+const DISPLAY = "'Helvetica World', 'Helvetica Neue', Helvetica, Arial, sans-serif";
+const BODY = "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif";
 
-const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
-const PRIMARY = "#715a3d";
-const INK = "#020202";
-const BODY = "#2b2420";
-const PAGE_BG = "#E6E0CC";
-const IVORY = "#DCD4BD";
-const DIVIDER = "rgba(18,18,20,0.08)";
+const C = {
+  bg: "#EBEBEB",
+  card: "#FFFFFF",
+  soft: "#F2EFEC",
+  ink: "#0A0A0A",
+  muted: "#8A8480",
+  border: "#E8E4DF",
+} as const;
+
+const PAGE_MARGIN = 24;
 
 type TopTab = "users" | "businesses";
 type UserSub = "suggested" | "followers" | "following";
@@ -37,112 +39,137 @@ const Search = () => {
   const [userSub, setUserSub] = useState<UserSub>("suggested");
   const [bizSub, setBizSub] = useState<BizSub>("listings");
   const [query, setQuery] = useState("");
+  const [searchFocused, setSearchFocused] = useState(false);
 
   const placeholder = useMemo(() => {
     if (topTab === "users") return "Search Hello Hoedspruit users";
     return "Search listings, events & specials";
   }, [topTab]);
 
+  const handleBack = () => {
+    if (fromProfile && profileId) navigate("/my-profile");
+    else navigate(-1);
+  };
+
   return (
-    <div style={{ minHeight: "100vh", background: PAGE_BG, paddingBottom: 100 }}>
+    <div style={{ minHeight: "100vh", background: C.bg, paddingBottom: 100, fontFamily: BODY, color: C.ink }}>
       <Seo
         title="Search — Hello Hoedspruit"
         description="Search Hello Hoedspruit users, listings, events and specials across the Lowveld."
         path="/search"
         noIndex
       />
+
       {/* Header */}
-      <div style={{ background: PAGE_BG }}>
-        <PageHeader
-          title="Search"
-          onBack={() => {
-            if (fromProfile && profileId) navigate("/my-profile");
-            else navigate(-1);
+      <div style={{ padding: `calc(env(safe-area-inset-top) + 20px) ${PAGE_MARGIN}px 0` }}>
+        <button
+          type="button"
+          aria-label="Back"
+          onClick={handleBack}
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            background: C.card,
+            border: "none",
+            padding: 0,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
           }}
-        />
+        >
+          <ArrowLeft size={18} color={C.ink} strokeWidth={1.8} />
+        </button>
+        <h1
+          style={{
+            margin: "24px 0 0",
+            fontFamily: DISPLAY,
+            fontWeight: 500,
+            fontSize: 40,
+            lineHeight: "40px",
+            letterSpacing: "-1.2px",
+            color: C.ink,
+          }}
+        >
+          Search
+        </h1>
       </div>
 
-      {/* Top tabs: Users / Businesses */}
-      <div style={{ display: "flex", padding: "4px 20px 0", gap: 0, borderBottom: `1px solid ${DIVIDER}` }}>
-        {(["businesses", "users"] as TopTab[]).map((t) => {
-          const active = topTab === t;
-          return (
-            <button
-              key={t}
-              type="button"
-              onClick={() => setTopTab(t)}
-              style={{
-                flex: 1,
-                background: "none",
-                border: "none",
-                padding: "14px 0 12px",
-                cursor: "pointer",
-                fontFamily: FONT,
-                fontSize: 16,
-                fontWeight: active ? 700 : 400,
-                color: active ? INK : "rgba(18,18,20,0.5)",
-                letterSpacing: "0.02em",
-                position: "relative",
-                textTransform: "capitalize",
-              }}
-            >
-              {t}
-              <span
-                style={{
-                  position: "absolute",
-                  left: "20%",
-                  right: "20%",
-                  bottom: -1,
-                  height: 2,
-                  background: active ? INK : "transparent",
-                  borderRadius: 2,
-                }}
+      {/* Top tabs */}
+      <div style={{ display: "flex", gap: 8, padding: `20px ${PAGE_MARGIN}px 0` }}>
+        {(["businesses", "users"] as TopTab[]).map((t) => (
+          <PillChip
+            key={t}
+            active={topTab === t}
+            onClick={() => setTopTab(t)}
+            label={t === "businesses" ? "Businesses" : "Users"}
+          />
+        ))}
+      </div>
+
+      {/* Search bar */}
+      <div style={{ padding: `16px ${PAGE_MARGIN}px 0` }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            height: 48,
+            borderRadius: 999,
+            background: searchFocused ? C.card : C.soft,
+            padding: "0 18px",
+            transition: "background 150ms ease-out",
+          }}
+        >
+          <SearchIcon size={20} color={C.ink} strokeWidth={1.5} />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setSearchFocused(true)}
+            onBlur={() => setSearchFocused(false)}
+            placeholder={placeholder}
+            style={{
+              flex: 1,
+              minWidth: 0,
+              border: "none",
+              outline: "none",
+              background: "transparent",
+              fontFamily: BODY,
+              fontWeight: 400,
+              fontSize: 16,
+              color: C.ink,
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Sub filters */}
+      <div style={{ display: "flex", gap: 8, padding: `16px ${PAGE_MARGIN}px 0`, flexWrap: "wrap" }}>
+        {topTab === "users"
+          ? (["suggested", "followers", "following"] as UserSub[]).map((s) => (
+              <PillChip
+                key={s}
+                active={userSub === s}
+                onClick={() => setUserSub(s)}
+                label={s === "suggested" ? "Suggested" : s === "followers" ? "Followers" : "Following"}
               />
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Search input */}
-      <div style={{ padding: "16px 20px 0 20px", marginBottom: 22 }}>
-        <SearchBar
-          variant="light"
-          value={query}
-          onChange={setQuery}
-          placeholder={placeholder}
-        />
-      </div>
-
-      {/* Sub pills */}
-      <div style={{ padding: "16px 20px 4px" }}>
-        {topTab === "users" ? (
-          <SubPills<UserSub>
-            value={userSub}
-            onChange={setUserSub}
-            options={[
-              { id: "suggested", label: "Suggested", icon: Users },
-              { id: "followers", label: "Followers", icon: UserCircle },
-              { id: "following", label: "Following", icon: UserCheck },
-            ]}
-          />
-        ) : (
-          <SubPills<BizSub>
-            value={bizSub}
-            onChange={setBizSub}
-            options={[
-              { id: "listings", label: "Listings", icon: FolderOpen },
-              { id: "events", label: "Events", icon: Calendar },
-              { id: "specials", label: "Specials", icon: Tag },
-            ]}
-          />
-        )}
+            ))
+          : (["listings", "events", "specials"] as BizSub[]).map((s) => (
+              <PillChip
+                key={s}
+                active={bizSub === s}
+                onClick={() => setBizSub(s)}
+                label={s === "listings" ? "Listings" : s === "events" ? "Events" : "Specials"}
+              />
+            ))}
       </div>
 
       {/* Results */}
-      <div style={{ padding: "16px 0 0" }}>
-        {topTab === "users" && (
-          <UsersResults sub={userSub} query={query} currentUserId={user?.id} />
-        )}
+      <div style={{ padding: "24px 0 0" }}>
+        {topTab === "users" && <UsersResults sub={userSub} query={query} currentUserId={user?.id} />}
         {topTab === "businesses" && bizSub === "listings" && <ListingsResults query={query} />}
         {topTab === "businesses" && bizSub === "events" && <EventsResults query={query} />}
         {topTab === "businesses" && bizSub === "specials" && <SpecialsResults query={query} />}
@@ -151,87 +178,68 @@ const Search = () => {
   );
 };
 
-/* -------------------- Sub pills -------------------- */
+/* -------------------- Pill chip -------------------- */
 
-interface SubPillsProps<T extends string> {
-  value: T;
-  onChange: (v: T) => void;
-  options: { id: T; label: string; icon: React.ComponentType<any> }[];
-}
-function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<T>) {
+const PillChip = ({
+  active,
+  onClick,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  label: string;
+}) => {
+  const ref = useRef<HTMLButtonElement>(null);
+  const down = () => {
+    if (ref.current) ref.current.style.transform = "scale(0.98)";
+  };
+  const up = () => {
+    if (ref.current) ref.current.style.transform = "scale(1)";
+  };
   return (
-    <div
+    <button
+      ref={ref}
+      type="button"
+      onClick={onClick}
+      onPointerDown={down}
+      onPointerUp={up}
+      onPointerLeave={up}
+      onPointerCancel={up}
       style={{
-        display: "flex",
-        background: IVORY,
-        borderRadius: 14,
-        padding: 6,
-        gap: 4,
+        border: "none",
+        cursor: "pointer",
+        borderRadius: 999,
+        padding: "8px 14px",
+        fontFamily: BODY,
+        fontWeight: 400,
+        fontSize: 14,
+        lineHeight: 1.2,
+        background: active ? C.ink : C.card,
+        color: active ? C.card : C.ink,
+        boxShadow: active ? "none" : "0 1px 2px rgba(0,0,0,0.04)",
+        transition: "transform 150ms ease-out, background 150ms ease-out, color 150ms ease-out",
       }}
     >
-      {options.map((opt) => {
-        const active = value === opt.id;
-        const Icon = opt.icon;
-        return (
-          <button
-            key={opt.id}
-            type="button"
-            onClick={() => onChange(opt.id)}
-            style={{
-              flex: 1,
-              background: active ? "#fff" : "transparent",
-              border: "none",
-              borderRadius: 10,
-              padding: "10px 4px",
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 4,
-              boxShadow: active ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
-            }}
-          >
-            <Icon size={20} color={active ? INK : "rgba(18,18,20,0.55)"} strokeWidth={1.8} />
-            <span
-              style={{
-                fontFamily: FONT,
-                fontSize: 12,
-                fontWeight: active ? 700 : 400,
-                color: active ? INK : "rgba(18,18,20,0.55)",
-                letterSpacing: "0.02em",
-              }}
-            >
-              {opt.label}
-            </span>
-          </button>
-        );
-      })}
-    </div>
+      {label}
+    </button>
   );
-}
+};
 
-/* -------------------- Section header -------------------- */
+/* -------------------- Section header (eyebrow) -------------------- */
 
-const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
-  <div
-    style={{
-      padding: "12px 20px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-    }}
-  >
+const SectionHeader = ({ label }: { label: string }) => (
+  <div style={{ padding: `0 ${PAGE_MARGIN}px 10px` }}>
     <span
       style={{
-        fontFamily: '"Bricolage Grotesque", ' + FONT,
-        fontSize: 15,
-        fontWeight: 700,
-        letterSpacing: "0.06em",
-        textTransform: "uppercase",
-        color: "#1A1A1A",
+        fontFamily: BODY,
+        fontWeight: 400,
+        fontSize: 12,
+        lineHeight: "14.4px",
+        letterSpacing: "0.24px",
+        color: C.muted,
       }}
     >
-      {count !== undefined ? `${label} (${count})` : label}
+      {label}
     </span>
   </div>
 );
@@ -239,18 +247,32 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
 const EmptyRow = ({ text }: { text: string }) => (
   <div
     style={{
-      padding: "32px 20px",
+      padding: "40px 24px",
       textAlign: "center",
-      fontFamily: FONT,
+      fontFamily: BODY,
+      fontWeight: 400,
       fontSize: 14,
-      color: "rgba(18,18,20,0.5)",
+      color: C.muted,
     }}
   >
     {text}
   </div>
 );
 
-/* -------------------- Row -------------------- */
+/* -------------------- Results card + row -------------------- */
+
+const ResultsCard = ({ children }: { children: React.ReactNode }) => (
+  <div
+    style={{
+      margin: `0 ${PAGE_MARGIN}px`,
+      background: C.card,
+      borderRadius: 24,
+      overflow: "hidden",
+    }}
+  >
+    {children}
+  </div>
+);
 
 interface RowProps {
   to: string;
@@ -261,97 +283,124 @@ interface RowProps {
   subtitle2?: string | null;
   thumb?: "round" | "square";
   action?: React.ReactNode;
+  isLast?: boolean;
 }
-const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb = "square", action }: RowProps) => {
+const ResultRow = ({
+  to,
+  image,
+  title,
+  titleOverride,
+  subtitle,
+  subtitle2,
+  thumb = "square",
+  action,
+  isLast,
+}: RowProps) => {
   const hasOverride = !!(titleOverride && titleOverride.trim());
   const display = hasOverride ? titleOverride!.trim() : title;
+  const thumbSize = thumb === "round" ? 48 : 56;
   return (
-  <Link
-    to={to}
-    style={{
-      display: "flex",
-      alignItems: "center",
-      gap: 14,
-      padding: "12px 20px",
-      borderBottom: `1px solid ${DIVIDER}`,
-      textDecoration: "none",
-    }}
-  >
-    <div
+    <Link
+      to={to}
       style={{
-        width: thumb === "round" ? 48 : 56,
-        height: thumb === "round" ? 48 : 56,
-        borderRadius: thumb === "round" ? 999 : 12,
-        background: IVORY,
-        overflow: "hidden",
-        flexShrink: 0,
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        gap: 14,
+        padding: 16,
+        textDecoration: "none",
+        position: "relative",
       }}
     >
-      {image ? (
-        <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      ) : (
-        <UserCircle size={28} color="rgba(18,18,20,0.25)" />
-      )}
-    </div>
-    <div style={{ flex: 1, minWidth: 0 }}>
-      <p
-        {...(hasOverride ? { "data-no-title-case": "true" } : {})}
+      <div
         style={{
-          margin: 0,
-          fontFamily: FONT,
-          fontSize: 16,
-          fontWeight: 700,
-          color: INK,
-          letterSpacing: "-0.1px",
+          width: thumbSize,
+          height: thumbSize,
+          borderRadius: thumb === "round" ? 999 : 12,
+          background: C.soft,
           overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
+          flexShrink: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        {display}
-      </p>
-      {subtitle && (
+        {image ? (
+          <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <UserCircle size={26} color={C.muted} strokeWidth={1.5} />
+        )}
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
         <p
+          {...(hasOverride ? { "data-no-title-case": "true" } : {})}
           style={{
-            margin: "2px 0 0",
-            fontFamily: FONT,
-            fontSize: subtitle2 ? 11 : 13,
-            color: "rgba(18,18,20,0.5)",
-            letterSpacing: "0.01em",
+            margin: 0,
+            fontFamily: BODY,
+            fontWeight: 400,
+            fontSize: 16,
+            lineHeight: 1.25,
+            color: C.ink,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
         >
-          {subtitle}
+          {display}
         </p>
-      )}
-      {subtitle2 && (
-        <p
+        {subtitle && (
+          <p
+            style={{
+              margin: "2px 0 0",
+              fontFamily: BODY,
+              fontWeight: 400,
+              fontSize: 12,
+              lineHeight: 1.3,
+              color: C.muted,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {subtitle}
+          </p>
+        )}
+        {subtitle2 && (
+          <p
+            style={{
+              margin: "1px 0 0",
+              fontFamily: BODY,
+              fontWeight: 400,
+              fontSize: 12,
+              lineHeight: 1.3,
+              color: C.muted,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {subtitle2}
+          </p>
+        )}
+      </div>
+      {action && <div style={{ flexShrink: 0 }}>{action}</div>}
+      {!isLast && (
+        <span
+          aria-hidden
           style={{
-            margin: "1px 0 0",
-            fontFamily: FONT,
-            fontSize: 11,
-            color: "rgba(18,18,20,0.5)",
-            letterSpacing: "0.01em",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
+            position: "absolute",
+            left: 16 + thumbSize + 14,
+            right: 16,
+            bottom: 0,
+            height: 1,
+            background: C.border,
           }}
-        >
-          {subtitle2}
-        </p>
+        />
       )}
-    </div>
-    {action && <div style={{ flexShrink: 0 }}>{action}</div>}
-  </Link>
+    </Link>
   );
 };
 
-/* -------------------- Outline buttons -------------------- */
+/* -------------------- Follow button -------------------- */
 
 const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
   const { user } = useAuth();
@@ -364,6 +413,7 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
 
   const isAccepted = followStatus === "accepted";
   const isPending = followStatus === "pending";
+  const filled = isBlocked || isAccepted || isPending;
 
   const handleUnblock = async () => {
     const { error } = await supabase
@@ -381,42 +431,40 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
     toast.success("User unblocked");
   };
 
+  const label = isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow";
+  const Icon = isBlocked ? null : isAccepted ? UserCheck : isPending ? Clock : UserPlus;
+
   return (
     <button
       type="button"
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (isBlocked) {
-          handleUnblock();
-          return;
-        }
+        if (isBlocked) return handleUnblock();
         if (isAccepted || isPending) unfollow.mutate();
         else follow.mutate();
       }}
       style={{
-        background: "transparent",
-        border: `1.5px solid ${PRIMARY}`,
+        background: filled ? C.ink : C.card,
+        color: filled ? C.card : C.ink,
+        border: filled ? "none" : `1px solid ${C.border}`,
         borderRadius: 999,
-        padding: "8px 18px",
-        fontFamily: FONT,
+        padding: "8px 16px",
+        fontFamily: BODY,
+        fontWeight: 400,
         fontSize: 13,
-        fontWeight: 700,
-        color: PRIMARY,
         cursor: "pointer",
-        display: "flex",
+        display: "inline-flex",
         alignItems: "center",
         gap: 6,
-        letterSpacing: "0.02em",
+        lineHeight: 1.2,
       }}
     >
-      {isBlocked ? null : isAccepted ? <UserCheck size={14} /> : isPending ? <Clock size={14} /> : <UserPlus size={14} />}
-      {isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow"}
+      {Icon && <Icon size={14} strokeWidth={1.5} color={filled ? C.card : C.ink} />}
+      {label}
     </button>
   );
 };
-
-
 
 const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "listing" | "event" | "special" }) => {
   const { user } = useAuth();
@@ -435,11 +483,11 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
         toggle.mutate({ itemId, itemType, currentlyFavourited: isFav });
       }}
       style={{
-        background: "transparent",
-        border: `1.5px solid ${PRIMARY}`,
-        borderRadius: 999,
-        width: 30,
-        height: 30,
+        background: C.card,
+        border: `1px solid ${C.border}`,
+        borderRadius: "50%",
+        width: 32,
+        height: 32,
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
@@ -447,13 +495,46 @@ const InlineSaveButton = ({ itemId, itemType }: { itemId: string; itemType: "lis
       }}
       aria-label={isFav ? "Remove from saved" : "Save"}
     >
-      <Heart
-        size={13}
-        color={PRIMARY}
-        fill={isFav ? PRIMARY : "none"}
-        strokeWidth={1.8}
-      />
+      <Heart size={14} color={C.ink} fill={isFav ? C.ink : "none"} strokeWidth={1.5} />
     </button>
+  );
+};
+
+/* -------------------- Discover more button -------------------- */
+
+const DiscoverMore = ({ to, label }: { to: string; label: string }) => {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const down = () => ref.current && (ref.current.style.transform = "scale(0.98)");
+  const up = () => ref.current && (ref.current.style.transform = "scale(1)");
+  return (
+    <div style={{ padding: `24px ${PAGE_MARGIN}px 8px`, display: "flex", justifyContent: "center" }}>
+      <Link
+        ref={ref}
+        to={to}
+        state={{ fromSearch: true }}
+        onPointerDown={down}
+        onPointerUp={up}
+        onPointerLeave={up}
+        onPointerCancel={up}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: 48,
+          padding: "0 24px",
+          borderRadius: 999,
+          background: C.ink,
+          color: C.card,
+          fontFamily: BODY,
+          fontWeight: 400,
+          fontSize: 15,
+          textDecoration: "none",
+          transition: "transform 150ms ease-out",
+        }}
+      >
+        {label}
+      </Link>
+    </div>
   );
 };
 
@@ -484,11 +565,6 @@ const UsersResults = ({
       Array.from(blockedMe ?? []).sort().join(","),
     ],
     queryFn: async () => {
-      // Helper: keep a profile if (a) they did not block me, and
-      // (b) for passive discovery, I did not block them. When the user
-      // types a search term we still hide users who blocked me, but we
-      // allow users I blocked through so I can still look them up by
-      // name/username.
       const applyBlocks = (list: any[], { allowIBlockedOnTermMatch }: { allowIBlockedOnTermMatch: boolean }) => {
         const t = term.toLowerCase();
         return list.filter((p: any) => {
@@ -539,7 +615,6 @@ const UsersResults = ({
     enabled: (!!currentUserId || sub === "suggested") && blocks !== undefined,
   });
 
-
   const headerLabel = sub === "suggested" ? "Discover" : sub === "followers" ? "Followers" : "Following";
 
   if (isLoading) return <EmptyRow text="Loading…" />;
@@ -554,18 +629,21 @@ const UsersResults = ({
 
   return (
     <>
-      <SectionHeader label={headerLabel} count={rows.length} />
-      {rows.map((u: any) => (
-        <ResultRow
-          key={u.id}
-          to={`/profile/${u.id}`}
-          image={u.avatar_url}
-          title={u.display_name || u.username || "User"}
-          subtitle={u.username ? `@${u.username}` : null}
-          thumb="round"
-          action={<InlineFollowButton targetUserId={u.id} />}
-        />
-      ))}
+      <SectionHeader label={headerLabel} />
+      <ResultsCard>
+        {rows.map((u: any, i: number) => (
+          <ResultRow
+            key={u.id}
+            to={`/profile/${u.id}`}
+            image={u.avatar_url}
+            title={u.display_name || u.username || "User"}
+            subtitle={u.username ? `@${u.username}` : null}
+            thumb="round"
+            isLast={i === rows.length - 1}
+            action={<InlineFollowButton targetUserId={u.id} />}
+          />
+        ))}
+      </ResultsCard>
     </>
   );
 };
@@ -592,40 +670,22 @@ const ListingsResults = ({ query }: { query: string }) => {
   if (!data || data.length === 0) return <EmptyRow text={term ? "No listings found" : "No listings"} />;
   return (
     <>
-      <SectionHeader label={term ? "Listings" : "Suggested"} />
-      {data.map((l) => (
-        <ResultRow
-          key={l.id}
-          to={`/listing/${l.id}`}
-          image={l.image_url}
-          title={l.title}
-          titleOverride={(l as any).title_override}
-          subtitle={null}
-          action={<InlineSaveButton itemId={l.id} itemType="listing" />}
-        />
-      ))}
-      {!term && (
-        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
-          <Link
-            to="/categories"
-            state={{ fromSearch: true }}
-            style={{
-              background: "transparent",
-              border: `1.5px solid ${PRIMARY}`,
-              borderRadius: 999,
-              padding: "12px 24px",
-              fontFamily: FONT,
-              fontSize: 14,
-              fontWeight: 700,
-              color: PRIMARY,
-              textDecoration: "none",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Discover More
-          </Link>
-        </div>
-      )}
+      <SectionHeader label={term ? "Listings" : "Discover"} />
+      <ResultsCard>
+        {data.map((l, i) => (
+          <ResultRow
+            key={l.id}
+            to={`/listing/${l.id}`}
+            image={l.image_url}
+            title={l.title}
+            titleOverride={(l as any).title_override}
+            subtitle={l.location || null}
+            isLast={i === data.length - 1}
+            action={<InlineSaveButton itemId={l.id} itemType="listing" />}
+          />
+        ))}
+      </ResultsCard>
+      {!term && <DiscoverMore to="/categories" label="Discover More" />}
     </>
   );
 };
@@ -653,41 +713,23 @@ const EventsResults = ({ query }: { query: string }) => {
   if (!data || data.length === 0) return <EmptyRow text={term ? "No events found" : "No upcoming events"} />;
   return (
     <>
-      <SectionHeader label={term ? "Events" : "Upcoming events"} />
-      {data.map((e) => (
-        <ResultRow
-          key={e.id}
-          to={`/events/${e.id}`}
-          image={e.image_url}
-          title={e.title}
-          titleOverride={(e as any).title_override}
-          subtitle={e.date || null}
-          subtitle2={e.location || null}
-          action={<InlineSaveButton itemId={e.id} itemType="event" />}
-        />
-      ))}
-      {!term && (
-        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
-          <Link
-            to="/events"
-            state={{ fromSearch: true }}
-            style={{
-              background: "transparent",
-              border: `1.5px solid ${PRIMARY}`,
-              borderRadius: 999,
-              padding: "12px 24px",
-              fontFamily: FONT,
-              fontSize: 14,
-              fontWeight: 700,
-              color: PRIMARY,
-              textDecoration: "none",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Discover More Events
-          </Link>
-        </div>
-      )}
+      <SectionHeader label={term ? "Events" : "Upcoming Events"} />
+      <ResultsCard>
+        {data.map((e, i) => (
+          <ResultRow
+            key={e.id}
+            to={`/events/${e.id}`}
+            image={e.image_url}
+            title={e.title}
+            titleOverride={(e as any).title_override}
+            subtitle={e.date || null}
+            subtitle2={e.location || null}
+            isLast={i === data.length - 1}
+            action={<InlineSaveButton itemId={e.id} itemType="event" />}
+          />
+        ))}
+      </ResultsCard>
+      {!term && <DiscoverMore to="/events" label="Discover More Events" />}
     </>
   );
 };
@@ -716,41 +758,23 @@ const SpecialsResults = ({ query }: { query: string }) => {
   if (!data || data.length === 0) return <EmptyRow text={term ? "No specials found" : "No active specials"} />;
   return (
     <>
-      <SectionHeader label={term ? "Specials" : "Active specials"} />
-      {data.map((s) => (
-        <ResultRow
-          key={s.id}
-          to={`/specials/${s.id}`}
-          image={s.image_url}
-          title={s.title}
-          titleOverride={(s as any).title_override}
-          subtitle={s.deal_label || null}
-          subtitle2={s.business_name || null}
-          action={<InlineSaveButton itemId={s.id} itemType="special" />}
-        />
-      ))}
-      {!term && (
-        <div style={{ padding: "24px 20px 8px", display: "flex", justifyContent: "center" }}>
-          <Link
-            to="/specials"
-            state={{ fromSearch: true }}
-            style={{
-              background: "transparent",
-              border: `1.5px solid ${PRIMARY}`,
-              borderRadius: 999,
-              padding: "12px 24px",
-              fontFamily: FONT,
-              fontSize: 14,
-              fontWeight: 700,
-              color: PRIMARY,
-              textDecoration: "none",
-              letterSpacing: "0.02em",
-            }}
-          >
-            Discover More Deals
-          </Link>
-        </div>
-      )}
+      <SectionHeader label={term ? "Specials" : "Active Specials"} />
+      <ResultsCard>
+        {data.map((s, i) => (
+          <ResultRow
+            key={s.id}
+            to={`/specials/${s.id}`}
+            image={s.image_url}
+            title={s.title}
+            titleOverride={(s as any).title_override}
+            subtitle={s.deal_label || null}
+            subtitle2={s.business_name || null}
+            isLast={i === data.length - 1}
+            action={<InlineSaveButton itemId={s.id} itemType="special" />}
+          />
+        ))}
+      </ResultsCard>
+      {!term && <DiscoverMore to="/specials" label="Discover More Deals" />}
     </>
   );
 };
