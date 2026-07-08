@@ -353,12 +353,38 @@ const CategoryPage = () => {
         if (listingIds.length === 0) return [];
       }
 
-      const { data, error } = await supabase
-        .from("listings")
-        .select("*")
-        .in("id", listingIds)
-        .order("is_featured", { ascending: false });
+      const [{ data, error }, { data: orderRows }] = await Promise.all([
+        supabase
+          .from("listings")
+          .select("*")
+          .in("id", listingIds)
+          .order("is_featured", { ascending: false }),
+        supabase
+          .from("listing_category_order")
+          .select("listing_id, position")
+          .eq("category_id", id!),
+      ]);
       if (error) throw error;
+
+      // Apply custom per-category ordering: keep is_featured pin at top,
+      // then within each featured/non-featured group, listings with a custom
+      // position come first (asc), the rest keep their existing arbitrary order.
+      const posMap = new Map<string, number>();
+      (orderRows || []).forEach((r: any) => posMap.set(r.listing_id, r.position));
+      if (posMap.size > 0 && data) {
+        const featured = data.filter((l: any) => l.is_featured);
+        const others = data.filter((l: any) => !l.is_featured);
+        const sortGroup = (arr: any[]) => {
+          const withPos = arr.filter((l) => posMap.has(l.id))
+            .sort((a, b) => (posMap.get(a.id)! - posMap.get(b.id)!));
+          const withoutPos = arr.filter((l) => !posMap.has(l.id));
+          return [...withPos, ...withoutPos];
+        };
+        const reordered = [...sortGroup(featured), ...sortGroup(others)];
+        (data as any).length = 0;
+        (data as any).push(...reordered);
+      }
+
 
       // Fetch all categories per listing (junction + legacy category_id)
       const [{ data: allJunction }, { data: allCats }, { data: catSubs }] = await Promise.all([
