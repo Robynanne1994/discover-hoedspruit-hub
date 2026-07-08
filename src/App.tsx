@@ -206,6 +206,8 @@ const App = () => (
                 <Route index element={<AdminDashboard />} />
                 <Route path="homepage" element={<AdminHomepage />} />
                 <Route path="categories" element={<AdminCategories />} />
+                <Route path="categories/:id/order" element={<AdminCategoryOrder />} />
+
                 <Route path="listings" element={<AdminListings />} />
                 <Route path="listings/bulk-edit" element={<AdminBulkEdit />} />
                 <Route path="events" element={<AdminEvents />} />
