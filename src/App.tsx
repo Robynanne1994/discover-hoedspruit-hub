@@ -16,6 +16,8 @@ import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import ModerationBanner from "./components/ModerationBanner.tsx";
 import AdminDashboard from "./pages/admin/AdminDashboard.tsx";
 import AdminCategories from "./pages/admin/AdminCategories.tsx";
+import AdminCategoryOrder from "./pages/admin/AdminCategoryOrder.tsx";
+
 import AdminNotifications from "./pages/admin/AdminNotifications.tsx";
 import AdminListings from "./pages/admin/AdminListings.tsx";
 import AdminEvents from "./pages/admin/AdminEvents.tsx";
@@ -206,6 +208,8 @@ const App = () => (
                 <Route index element={<AdminDashboard />} />
                 <Route path="homepage" element={<AdminHomepage />} />
                 <Route path="categories" element={<AdminCategories />} />
+                <Route path="categories/:id/order" element={<AdminCategoryOrder />} />
+
                 <Route path="listings" element={<AdminListings />} />
                 <Route path="listings/bulk-edit" element={<AdminBulkEdit />} />
                 <Route path="events" element={<AdminEvents />} />
