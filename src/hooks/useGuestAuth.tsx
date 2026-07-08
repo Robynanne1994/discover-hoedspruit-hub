@@ -27,7 +27,7 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [isGuest, setIsGuest] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
-    return sessionStorage.getItem(GUEST_KEY) === "1";
+    return localStorage.getItem(GUEST_KEY) === "1" || sessionStorage.getItem(GUEST_KEY) === "1";
   });
   const [promptOpen, setPromptOpen] = useState(false);
   const [action, setAction] = useState<string>("");
@@ -41,11 +41,13 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user, isGuest]);
 
   const enterGuest = useCallback(() => {
+    localStorage.setItem(GUEST_KEY, "1");
     sessionStorage.setItem(GUEST_KEY, "1");
     setIsGuest(true);
   }, []);
 
   const exitGuest = useCallback(() => {
+    localStorage.removeItem(GUEST_KEY);
     sessionStorage.removeItem(GUEST_KEY);
     setIsGuest(false);
   }, []);
