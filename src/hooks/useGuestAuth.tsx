@@ -41,11 +41,13 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
   }, [user, isGuest]);
 
   const enterGuest = useCallback(() => {
+    localStorage.setItem(GUEST_KEY, "1");
     sessionStorage.setItem(GUEST_KEY, "1");
     setIsGuest(true);
   }, []);
 
   const exitGuest = useCallback(() => {
+    localStorage.removeItem(GUEST_KEY);
     sessionStorage.removeItem(GUEST_KEY);
     setIsGuest(false);
   }, []);
