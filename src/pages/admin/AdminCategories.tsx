@@ -923,10 +923,16 @@ const SortableCategoryRow = ({
           <Button variant="ghost" size="icon" onClick={onEdit}>
             <Pencil className="h-4 w-4" />
           </Button>
+          <Button variant="ghost" size="icon" asChild title="Order listings">
+            <a href={`/admin/categories/${cat.id}/order`}>
+              <ArrowDownUp className="h-4 w-4" />
+            </a>
+          </Button>
           <Button variant="ghost" size="icon" onClick={onDelete}>
             <Trash2 className="h-4 w-4 text-destructive" />
           </Button>
         </div>
+
       </div>
       {children}
     </div>
