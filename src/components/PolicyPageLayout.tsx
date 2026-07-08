@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import BackArrowIcon from "@/components/ui/BackArrowIcon";
 import BottomNav from "@/components/BottomNav";
+
 
 interface PolicySection {
   heading: string;
@@ -53,15 +54,21 @@ const PolicyPageLayout = ({ title, lastUpdated, sections }: PolicyPageLayoutProp
   return (
     <div style={{ minHeight: "100vh", background: "#E4D0B6", paddingBottom: 100 }}>
       {/* Back button */}
-      <div style={{ paddingTop: 44, paddingLeft: 24 }}>
+      <div style={{ paddingTop: "calc(env(safe-area-inset-top) + 44px)", paddingLeft: 20 }}>
         <button
           onClick={() => navigate("/terms")}
-          style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0 }}
+          aria-label="Back"
+          style={{
+            width: 40, height: 40, borderRadius: "50%",
+            background: "#FFFFFF", border: "none", padding: 0, cursor: "pointer",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+          }}
         >
-          <ArrowLeft size={18} strokeWidth={2} color="#0a0a0a" />
-          <span style={{ fontSize: 15, fontWeight: 500, color: "#0a0a0a", letterSpacing: 0.2 }}>Back</span>
+          <BackArrowIcon size={18} color="#1A1A1A" />
         </button>
       </div>
+
 
       {/* Title */}
       <div style={{ padding: "28px 24px 0" }}>

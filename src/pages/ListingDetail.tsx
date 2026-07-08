@@ -268,10 +268,18 @@ const ListingDetail = () => {
   if (isLoading || !listing) {
     return (
       <div style={{ minHeight: "100vh", background: C.bg, fontFamily: FONT, color: C.text }}>
-        <div style={{ padding: "20px" }}>
-          <button onClick={() => navigate(-1)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", color: C.primary, fontFamily: FONT, fontSize: 15 }}>
-            <BackArrowIcon size={20} color={C.primary} />
-            <span>Back</span>
+        <div style={{ padding: "calc(env(safe-area-inset-top) + 16px) 16px 0" }}>
+          <button
+            onClick={() => navigate(-1)}
+            aria-label="Back"
+            style={{
+              width: 40, height: 40, borderRadius: "50%",
+              background: "#FFFFFF", border: "none", padding: 0, cursor: "pointer",
+              display: "inline-flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
+            }}
+          >
+            <BackArrowIcon size={18} color="#1A1A1A" />
           </button>
         </div>
         <div style={{ padding: "80px 20px", textAlign: "center", color: C.muted, fontSize: 14 }}>
@@ -280,6 +288,7 @@ const ListingDetail = () => {
       </div>
     );
   }
+
 
   // ----- Derived data -----
   const firstCategory = listingCategories && listingCategories.length > 0 ? listingCategories[0] : null;
