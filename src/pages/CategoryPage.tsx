@@ -940,7 +940,7 @@ const CategoryPage = () => {
             onRemove: () => setFilterSeating(filterSeating.filter((x) => x !== s)),
           })),
           ...(filterOpenNow ? [{ label: "Open Now", onRemove: () => setFilterOpenNow(false) }] : []),
-          ...(filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
+          ...(user && filterSaved ? [{ label: "Saved", onRemove: () => setFilterSaved(false) }] : []),
           ...(filterBeenTo ? [{ label: "Been To", onRemove: () => setFilterBeenTo(false) }] : []),
           ...(filterMaxKm < MAX_KM ? [{ label: `Max ${filterMaxKm} km from town`, onRemove: () => setFilterMaxKm(MAX_KM) }] : []),
 
@@ -1091,14 +1091,16 @@ const CategoryPage = () => {
           />
         </RefineSection>
 
-        <RefineSection>
-          <RefineToggle
-            label="Saved"
-            description="Only places you've saved"
-            active={filterSaved}
-            onClick={() => setFilterSaved(!filterSaved)}
-          />
-        </RefineSection>
+        {user && (
+          <RefineSection>
+            <RefineToggle
+              label="Saved"
+              description="Only places you've saved"
+              active={filterSaved}
+              onClick={() => setFilterSaved(!filterSaved)}
+            />
+          </RefineSection>
+        )}
 
 
 
