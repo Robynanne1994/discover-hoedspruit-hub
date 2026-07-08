@@ -1091,14 +1091,16 @@ const CategoryPage = () => {
           />
         </RefineSection>
 
-        <RefineSection>
-          <RefineToggle
-            label="Saved"
-            description="Only places you've saved"
-            active={filterSaved}
-            onClick={() => setFilterSaved(!filterSaved)}
-          />
-        </RefineSection>
+        {user && (
+          <RefineSection>
+            <RefineToggle
+              label="Saved"
+              description="Only places you've saved"
+              active={filterSaved}
+              onClick={() => setFilterSaved(!filterSaved)}
+            />
+          </RefineSection>
+        )}
 
 
 
