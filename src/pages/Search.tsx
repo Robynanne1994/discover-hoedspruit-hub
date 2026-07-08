@@ -21,10 +21,31 @@ const BODY = "#2b2420";
 const PAGE_BG = "#E6E0CC";
 const IVORY = "#DCD4BD";
 const DIVIDER = "rgba(18,18,20,0.08)";
+const WHITE = "#FFFFFF";
+const PILL_BORDER = "#E8E4DF";
+
+const pressScale = (s = "0.98") => ({
+  onPointerDown: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = `scale(${s})`),
+  onPointerUp: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+  onPointerLeave: (e: React.PointerEvent) => ((e.currentTarget as HTMLElement).style.transform = "scale(1)"),
+});
+
 
 type TopTab = "users" | "businesses";
 type UserSub = "suggested" | "followers" | "following";
 type BizSub = "listings" | "events" | "specials";
+
+const initialsOf = (displayName?: string | null, username?: string | null): string => {
+  if (displayName?.trim()) {
+    const parts = displayName.trim().split(/\s+/);
+    const first = parts[0][0] ?? "";
+    const second = parts[1]?.[0] ?? "";
+    return `${first}${second}`.toUpperCase();
+  }
+  if (username?.trim()) return username.trim()[0].toUpperCase();
+  return "";
+};
+
 
 const Search = () => {
   const { user } = useAuth();
@@ -163,10 +184,7 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
     <div
       style={{
         display: "flex",
-        background: IVORY,
-        borderRadius: 14,
-        padding: 6,
-        gap: 4,
+        gap: 8,
       }}
     >
       {options.map((opt) => {
@@ -179,26 +197,27 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
             onClick={() => onChange(opt.id)}
             style={{
               flex: 1,
-              background: active ? "#fff" : "transparent",
-              border: "none",
-              borderRadius: 10,
-              padding: "10px 4px",
+              background: active ? INK : WHITE,
+              border: `1px solid ${active ? INK : PILL_BORDER}`,
+              borderRadius: 999,
+              padding: "10px 12px",
               cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
+              display: "inline-flex",
               alignItems: "center",
-              gap: 4,
-              boxShadow: active ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+              justifyContent: "center",
+              gap: 8,
+              transition: "transform 150ms ease-out",
             }}
+            {...pressScale()}
           >
-            <Icon size={20} color={active ? INK : "rgba(18,18,20,0.55)"} strokeWidth={1.8} />
+            <Icon size={16} color={active ? WHITE : INK} strokeWidth={1.75} />
             <span
               style={{
                 fontFamily: FONT,
-                fontSize: 12,
-                fontWeight: active ? 700 : 400,
-                color: active ? INK : "rgba(18,18,20,0.55)",
-                letterSpacing: "0.02em",
+                fontSize: 14,
+                fontWeight: 400,
+                color: active ? WHITE : INK,
+                letterSpacing: "0.01em",
               }}
             >
               {opt.label}
@@ -209,6 +228,7 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
     </div>
   );
 }
+
 
 /* -------------------- Section header -------------------- */
 
@@ -261,8 +281,10 @@ interface RowProps {
   subtitle2?: string | null;
   thumb?: "round" | "square";
   action?: React.ReactNode;
+  initials?: string;
 }
-const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb = "square", action }: RowProps) => {
+const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb = "square", action, initials }: RowProps) => {
+
   const hasOverride = !!(titleOverride && titleOverride.trim());
   const display = hasOverride ? titleOverride!.trim() : title;
   return (
@@ -282,7 +304,8 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
         width: thumb === "round" ? 48 : 56,
         height: thumb === "round" ? 48 : 56,
         borderRadius: thumb === "round" ? 999 : 12,
-        background: IVORY,
+        background: thumb === "round" && !image && initials ? WHITE : IVORY,
+        border: thumb === "round" && !image && initials ? `1px solid ${PILL_BORDER}` : "none",
         overflow: "hidden",
         flexShrink: 0,
         display: "flex",
@@ -290,12 +313,27 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
         justifyContent: "center",
       }}
     >
+
       {image ? (
         <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      ) : thumb === "round" && initials ? (
+        <span
+          style={{
+            fontFamily: FONT,
+            fontWeight: 500,
+            fontSize: 16,
+            color: INK,
+            letterSpacing: "normal",
+            textTransform: "uppercase",
+          }}
+        >
+          {initials}
+        </span>
       ) : (
         <UserCircle size={28} color="rgba(18,18,20,0.25)" />
       )}
     </div>
+
     <div style={{ flex: 1, minWidth: 0 }}>
       <p
         {...(hasOverride ? { "data-no-title-case": "true" } : {})}
@@ -563,9 +601,11 @@ const UsersResults = ({
           title={u.display_name || u.username || "User"}
           subtitle={u.username ? `@${u.username}` : null}
           thumb="round"
+          initials={initialsOf(u.display_name, u.username)}
           action={<InlineFollowButton targetUserId={u.id} />}
         />
       ))}
+
     </>
   );
 };
