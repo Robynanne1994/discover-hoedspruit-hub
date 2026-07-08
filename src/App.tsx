@@ -104,6 +104,8 @@ const queryClient = new QueryClient({
   },
 });
 
+const WELCOME_SEEN_KEY = "hh-welcome-seen";
+
 const AuthGate = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   const { isGuest } = useGuestAuth();
@@ -112,12 +114,15 @@ const AuthGate = ({ children }: { children: React.ReactNode }) => {
   // The Business Portal has its own auth flow and must be reachable without
   // signing in to the consumer app first.
   if (location.pathname.startsWith("/business")) return <>{children}</>;
-  // No splash — render children immediately. While auth is still resolving,
-  // protected pages can show their own inline loading state if needed.
   if (loading) return <>{children}</>;
-  // Welcome route is always reachable so guests can return to sign up/in.
+  // Welcome route is always reachable so people can sign up/in later.
   if (location.pathname === "/welcome") return <>{children}</>;
-  if (!user && !isGuest) return <Welcome />;
+  // Only force the Welcome screen on the very first launch. After the user
+  // has seen it once (via Create Account, Log in, Continue as Guest, or an
+  // existing session), unauthenticated visitors browse freely — Apple 5.1.1(v).
+  const hasSeenWelcome =
+    typeof window !== "undefined" && localStorage.getItem(WELCOME_SEEN_KEY) === "1";
+  if (!user && !isGuest && !hasSeenWelcome) return <Welcome />;
   return <>{children}</>;
 };
 
