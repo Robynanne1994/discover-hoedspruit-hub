@@ -27,7 +27,7 @@ export const GuestAuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const [isGuest, setIsGuest] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
-    return sessionStorage.getItem(GUEST_KEY) === "1";
+    return localStorage.getItem(GUEST_KEY) === "1" || sessionStorage.getItem(GUEST_KEY) === "1";
   });
   const [promptOpen, setPromptOpen] = useState(false);
   const [action, setAction] = useState<string>("");
