@@ -190,12 +190,12 @@ export const UNIVERSAL_FIELDS = [
   "additional_websites", "additional_website_labels",
   "facebook", "instagram",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
-  "categories", "subcategories",
   "is_featured",
   "opening_hours", "details_display_mode",
   "custom_title_1", "custom_text_1",
   "custom_title_2", "custom_text_2",
   "custom_title_3", "custom_text_3",
+
 ] as const;
 
 
@@ -291,8 +291,10 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isHomeGardenCategory(categoryTitle)) push(HOME_GARDEN_ONLY_FIELDS);
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
   if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
+  out.push("categories", "subcategories");
   return out;
 }
+
 
 // Return the set of category-specific DB field names for a category (no virtual cols, no universals).
 export function getCategorySpecificFields(categoryTitle: string | null): string[] {
@@ -313,5 +315,6 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
 
 // Return the universal DB fields (excludes virtual `categories` / `subcategories`).
 export function getUniversalDbFields(): string[] {
-  return UNIVERSAL_FIELDS.filter((f) => f !== "categories" && f !== "subcategories");
+  return [...UNIVERSAL_FIELDS];
 }
+
