@@ -291,8 +291,10 @@ export function getCSVHeadersForCategory(categoryTitle: string | null): string[]
   if (categoryTitle && isHomeGardenCategory(categoryTitle)) push(HOME_GARDEN_ONLY_FIELDS);
   if (categoryTitle && isWeddingsEventsCategory(categoryTitle)) push(WEDDINGS_EVENTS_ONLY_FIELDS);
   if (categoryTitle && isWellnessBeautyCategory(categoryTitle)) push(WELLNESS_BEAUTY_ONLY_FIELDS);
+  out.push("categories", "subcategories");
   return out;
 }
+
 
 // Return the set of category-specific DB field names for a category (no virtual cols, no universals).
 export function getCategorySpecificFields(categoryTitle: string | null): string[] {
