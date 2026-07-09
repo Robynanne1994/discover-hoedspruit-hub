@@ -190,12 +190,12 @@ export const UNIVERSAL_FIELDS = [
   "additional_websites", "additional_website_labels",
   "facebook", "instagram",
   "google_maps_link", "google_rating", "google_reviews_count", "google_reviews_url",
-  "categories", "subcategories",
   "is_featured",
   "opening_hours", "details_display_mode",
   "custom_title_1", "custom_text_1",
   "custom_title_2", "custom_text_2",
   "custom_title_3", "custom_text_3",
+
 ] as const;
 
 
