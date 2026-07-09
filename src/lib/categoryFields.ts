@@ -315,5 +315,6 @@ export function getCategorySpecificFields(categoryTitle: string | null): string[
 
 // Return the universal DB fields (excludes virtual `categories` / `subcategories`).
 export function getUniversalDbFields(): string[] {
-  return UNIVERSAL_FIELDS.filter((f) => f !== "categories" && f !== "subcategories");
+  return [...UNIVERSAL_FIELDS];
 }
+
