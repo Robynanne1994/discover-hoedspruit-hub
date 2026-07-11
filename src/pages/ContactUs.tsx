@@ -189,7 +189,7 @@ const ContactUs = () => {
         description="Get in touch with the Hello Hoedspruit team by email, phone, WhatsApp or social — we'd love to hear from you."
         path="/contact"
       />
-      <PageHeader title="Contact" />
+      <PageHeader title="Contact Us" />
 
       <div style={{ padding: "20px 20px 0" }}>
         <SectionLabel>Reach Out</SectionLabel>
