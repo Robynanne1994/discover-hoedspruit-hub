@@ -55,7 +55,7 @@ const C = {
   dark: "#2E2418",
   muted: "#7A6E5C",
   line: "#E2DAC6",
-  rust: "#C0392B",
+  rust: "#423324",
   offTrack: "#D9CFB8",
 };
 
@@ -70,7 +70,6 @@ const Toggle = ({ checked, disabled }: { checked: boolean; disabled?: boolean })
       transition: "background-color 200ms ease-out",
       flexShrink: 0,
       opacity: disabled ? 0.55 : 1,
-      marginTop: 2,
     }}
   >
     <div
@@ -164,18 +163,17 @@ const PrefRow = ({
   return (
     <div
       style={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 16,
-        padding: "18px 0",
+        padding: "16px 0",
         borderTop: isFirst ? "none" : `1px solid ${C.line}`,
         opacity: disabled ? 0.55 : 1,
         pointerEvents: disabled ? "none" : "auto",
       }}
     >
-      <div style={{ flex: 1, paddingRight: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
         <div
           style={{
+            flex: 1,
+            paddingRight: 8,
             fontFamily: SANS,
             fontSize: 16,
             fontWeight: 400,
@@ -186,32 +184,32 @@ const PrefRow = ({
         >
           {title}
         </div>
-        {filterLink && (
-          <Link
-            to={filterLink.to}
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-              marginTop: 8,
-              fontFamily: SANS,
-              fontSize: 13,
-              fontWeight: 500,
-              color: C.rust,
-              textDecoration: "none",
-            }}
-          >
-            {linkText}
-          </Link>
-        )}
+        <button
+          onClick={onToggle}
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer", display: "flex" }}
+          aria-label={`Toggle ${title}`}
+        >
+          <Toggle checked={checked} />
+        </button>
       </div>
-      <button
-        onClick={onToggle}
-        style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
-        aria-label={`Toggle ${title}`}
-      >
-        <Toggle checked={checked} />
-      </button>
+      {filterLink && (
+        <Link
+          to={filterLink.to}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 6,
+            marginTop: 8,
+            fontFamily: SANS,
+            fontSize: 13,
+            fontWeight: 500,
+            color: C.rust,
+            textDecoration: "none",
+          }}
+        >
+          {linkText}
+        </Link>
+      )}
     </div>
   );
 };
@@ -368,7 +366,7 @@ const Notifications = () => {
                 style={{
                   background: C.card,
                   borderRadius: 18,
-                  padding: "4px 22px",
+                  padding: "8px 22px",
                   overflow: "hidden",
                 }}
               >
