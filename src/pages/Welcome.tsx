@@ -223,7 +223,7 @@ const Welcome = () => {
             className="w-full mt-3"
             style={{
               height: 52,
-              borderRadius: 16,
+              borderRadius: 9999,
               background: "transparent",
               border: "1.5px solid #715a3d",
               color: "#715a3d",
@@ -245,6 +245,7 @@ const Welcome = () => {
                 fontWeight: 500,
                 textDecoration: "underline",
                 textUnderlineOffset: 3,
+                borderRadius: 9999,
               }}
             >
               Log in
