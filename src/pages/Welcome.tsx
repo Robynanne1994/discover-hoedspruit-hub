@@ -63,9 +63,10 @@ const Welcome = () => {
   const { signIn, signUp } = useAuth();
 
   const RESIDENCY_OPTIONS = [
-    "I live in Hoedspruit",
-    "I am a visitor in Hoedspruit",
+    { label: "Local", value: "I live in Hoedspruit" },
+    { label: "Visitor", value: "I am a visitor in Hoedspruit" },
   ];
+
 
   useEffect(() => {
     if (location.state?.mode) setMode(location.state.mode);
