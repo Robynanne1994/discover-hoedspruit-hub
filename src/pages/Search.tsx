@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserPlus, UserCheck, Heart, UserCircle, Clock } from "lucide-react";
+import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserCheck, Heart, UserCircle } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
