@@ -704,6 +704,7 @@ const EventsResults = ({ query }: { query: string }) => {
           titleOverride={(e as any).title_override}
           subtitle={e.date || null}
           subtitle2={e.location || null}
+          initials={initialsOf((e as any).title_override || e.title, undefined)}
           action={<InlineSaveButton itemId={e.id} itemType="event" />}
         />
       ))}
