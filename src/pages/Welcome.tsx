@@ -267,7 +267,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" style={LABEL_STYLE}>
+                <Label htmlFor="firstName" style={CREATE_LABEL_STYLE}>
                   First Name
                 </Label>
                 <Input
