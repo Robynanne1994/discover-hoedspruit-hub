@@ -13,7 +13,7 @@ import PageHeader from "@/components/PageHeader";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 
-const LABEL_STYLE: React.CSSProperties = {
+const SIGNIN_LABEL_STYLE: React.CSSProperties = {
   fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
   fontWeight: 400,
   fontSize: 12,
@@ -23,6 +23,18 @@ const LABEL_STYLE: React.CSSProperties = {
   color: "#8A8480",
   display: "block",
   marginBottom: 6,
+};
+
+const CREATE_LABEL_STYLE: React.CSSProperties = {
+  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontWeight: 700,
+  fontSize: 14,
+  lineHeight: "16.8px",
+  letterSpacing: 0,
+  textTransform: "none",
+  color: "#0A0A0A",
+  display: "block",
+  marginBottom: 8,
 };
 
 const Welcome = () => {
@@ -255,7 +267,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" style={LABEL_STYLE}>
+                <Label htmlFor="firstName" style={CREATE_LABEL_STYLE}>
                   First Name
                 </Label>
                 <Input
@@ -270,7 +282,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="lastName" style={LABEL_STYLE}>
+                <Label htmlFor="lastName" style={CREATE_LABEL_STYLE}>
                   Surname
                 </Label>
                 <Input
@@ -285,7 +297,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="username" style={LABEL_STYLE}>
+                <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
                   Username
                 </Label>
                 <Input
@@ -300,7 +312,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label style={LABEL_STYLE}>
+                <Label style={CREATE_LABEL_STYLE}>
                   Are you a local or a visitor?
                 </Label>
                 <div className="flex flex-col gap-2">
@@ -343,7 +355,7 @@ const Welcome = () => {
             </div>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" style={LABEL_STYLE}>
+            <Label htmlFor="email" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
               Email
             </Label>
             <Input
@@ -362,7 +374,7 @@ const Welcome = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" style={LABEL_STYLE}>
+            <Label htmlFor="password" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
               Password
             </Label>
             <div className="relative">
