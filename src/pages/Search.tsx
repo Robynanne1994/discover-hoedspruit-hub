@@ -301,11 +301,11 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
   >
     <div
       style={{
-        width: thumb === "round" ? 48 : 56,
-        height: thumb === "round" ? 48 : 56,
-        borderRadius: thumb === "round" ? 999 : 12,
-        background: thumb === "round" && !image && initials ? WHITE : IVORY,
-        border: thumb === "round" && !image && initials ? `1px solid ${PILL_BORDER}` : "none",
+        width: 48,
+        height: 48,
+        borderRadius: 999,
+        background: !image && initials ? WHITE : IVORY,
+        border: !image && initials ? `1px solid ${PILL_BORDER}` : "none",
         overflow: "hidden",
         flexShrink: 0,
         display: "flex",
@@ -316,7 +316,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
 
       {image ? (
         <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      ) : thumb === "round" && initials ? (
+      ) : initials ? (
         <span
           style={{
             fontFamily: FONT,
