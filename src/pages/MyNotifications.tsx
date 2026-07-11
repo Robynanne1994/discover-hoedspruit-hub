@@ -44,11 +44,11 @@ const iconFor = (kind: string) => {
 
 const tintFor = (kind: string): { bg: string; fg: string } => {
   const k = (kind || "").toLowerCase();
-  if (k.includes("special") || k.includes("deal") || k.includes("offer")) return { bg: "#F8D7DE", fg: "#C0392B" };
+  if (k.includes("special") || k.includes("deal") || k.includes("offer")) return { bg: "#E8DCC8", fg: "#423324" };
   if (k.includes("event") || k.includes("reminder")) return { bg: "#E8E6DF", fg: INK };
   if (k.includes("security") || k.includes("alert")) return { bg: "#D6EBDB", fg: "#2E7D4F" };
   if (k.includes("welcome") || k.includes("profile") || k.includes("account")) return { bg: "#E8DCC8", fg: "#8B6F4B" };
-  if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return { bg: "#F8D7DE", fg: "#C0392B" };
+  if (k.includes("save") || k.includes("favourite") || k.includes("favorite")) return { bg: "#E8DCC8", fg: "#423324" };
   return { bg: "#E8E6DF", fg: INK };
 };
 
