@@ -235,7 +235,7 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
 const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
   <div
     style={{
-      padding: "12px 20px",
+      padding: "20px 20px 12px",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
@@ -244,11 +244,11 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
     <span
       style={{
         fontFamily: '"Bricolage Grotesque", ' + FONT,
-        fontSize: 15,
-        fontWeight: 700,
+        fontSize: 17,
+        fontWeight: 800,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: "#1A1A1A",
+        color: "#020202",
       }}
     >
       {count !== undefined ? `${label} (${count})` : label}
