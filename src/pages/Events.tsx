@@ -846,46 +846,49 @@ const Events = () => {
         </div>
       )}
 
-      {/* Filter pills */}
-      <div
-        ref={filterBarRef}
-        style={{
-          padding: "16px 20px 32px",
-          display: "flex",
-          gap: 10,
-          alignItems: "center",
-          overflowX: "auto",
-          scrollbarWidth: "none",
-        }}
-      >
-        {FILTERS.map((f) => {
-          const active = !selectedDate && activeFilter === f.value;
-          const count = getFilterCount(f.value, sortedEvents, selectedDate);
-          return (
-            <button
-              key={f.value}
-              ref={active ? activePillRef : undefined}
-              onClick={() => handleFilterPill(f.value)}
-              style={{
-                background: active ? "#423324" : "#FFFFFF",
-                border: `1px solid ${active ? "#423324" : "#E2DAC6"}`,
-                borderRadius: 999,
-                padding: "8px 18px",
-                cursor: "pointer",
-                fontFamily: SANS,
-                fontSize: 13,
-                fontWeight: 700,
-                letterSpacing: "0.01em",
-                color: active ? "#FFFFFF" : C.ink,
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-              }}
-            >
-              {f.label} <span style={{ opacity: 1 }}>({count})</span>
-            </button>
-          );
-        })}
-      </div>
+      {/* Filter pills — hidden while a search term is active */}
+      {!search.trim() && (
+        <div
+          ref={filterBarRef}
+          style={{
+            padding: "16px 20px 32px",
+            display: "flex",
+            gap: 10,
+            alignItems: "center",
+            overflowX: "auto",
+            scrollbarWidth: "none",
+          }}
+        >
+          {FILTERS.map((f) => {
+            const active = !selectedDate && activeFilter === f.value;
+            const count = getFilterCount(f.value, sortedEvents, selectedDate);
+            return (
+              <button
+                key={f.value}
+                ref={active ? activePillRef : undefined}
+                onClick={() => handleFilterPill(f.value)}
+                style={{
+                  background: active ? "#423324" : "#FFFFFF",
+                  border: `1px solid ${active ? "#423324" : "#E2DAC6"}`,
+                  borderRadius: 999,
+                  padding: "8px 18px",
+                  cursor: "pointer",
+                  fontFamily: SANS,
+                  fontSize: 13,
+                  fontWeight: 700,
+                  letterSpacing: "0.01em",
+                  color: active ? "#FFFFFF" : C.ink,
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                }}
+              >
+                {f.label} <span style={{ opacity: 1 }}>({count})</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+      {search.trim() && <div style={{ height: 20 }} />}
 
 
 
