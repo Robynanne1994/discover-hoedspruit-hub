@@ -225,12 +225,6 @@ const ContactUs = () => {
             href={WHATSAPP_URL}
             external
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
-          <Row
-            icon={<MapPin size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Find Us"
-            value={ADDRESS}
-          />
         </div>
       </div>
 
@@ -241,10 +235,19 @@ const ContactUs = () => {
             icon={<Clock size={20} color={BROWN} strokeWidth={1.6} />}
             eyebrow=""
             value={
-              <div style={{ whiteSpace: "pre-line" }}>
-                {"Monday - Friday\n08:00 - 17:00\n\n"}
-                {"Saturday\n08:00 - 12:00\n\n"}
-                {"Sunday\nClosed"}
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div>
+                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Monday - Friday</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>08:00 - 17:00</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Saturday</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>08:00 - 12:00</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Sunday</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>Closed</span>
+                </div>
               </div>
             }
           />
