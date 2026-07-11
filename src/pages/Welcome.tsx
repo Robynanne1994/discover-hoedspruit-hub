@@ -261,9 +261,17 @@ const Welcome = () => {
         title={mode === "signup" ? "Create Account" : "Welcome Back"}
         onBack={() => setMode("welcome")}
       />
+      <style>{`
+        .residency-select [data-radix-select-trigger-icon] > svg {
+          opacity: 1 !important;
+          color: #8A8480 !important;
+        }
+      `}</style>
 
       <div className={`flex-1 px-6 pb-12 flex flex-col ${mode === "signup" ? "pt-4" : "pt-6"}`}>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <div className={mode === "signup" ? "space-y-5" : "space-y-4"}>
+
           {mode === "signup" && (
             <>
               <div>
