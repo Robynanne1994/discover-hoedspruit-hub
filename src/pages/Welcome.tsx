@@ -179,6 +179,20 @@ const Welcome = () => {
         {/* Logo block */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-6">
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
+          <h1
+            style={{
+              fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+              color: "#423324",
+              fontSize: 22,
+              lineHeight: 1.2,
+              fontWeight: 500,
+              letterSpacing: "0.01em",
+              marginTop: 16,
+              textAlign: "center",
+            }}
+          >
+            Your Lowveld local
+          </h1>
         </div>
 
         {/* Bottom action area */}
