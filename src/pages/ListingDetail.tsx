@@ -463,8 +463,13 @@ const ListingDetail = () => {
 
   if (isListingAccommodation) {
     if (l.km_from_town) {
-      sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${l.km_from_town}km from Town`, on: true }] });
+      const kmNum = parseFloat(String(l.km_from_town).replace(/[^0-9.]/g, ""));
+      const kmLabel = Number.isFinite(kmNum)
+        ? (Math.round(kmNum * 100) / 100).toString()
+        : String(l.km_from_town);
+      sections.push({ key: "accom-distance", title: "Distance", iconComp: MapPin, fields: [{ label: `${kmLabel}km from Town`, on: true }] });
     }
+
     const food = filterDefined([
       { label: "Restaurant", value: l.has_restaurant }, { label: "Bar", value: l.has_bar },
       { label: "Room service", value: l.has_room_service }, { label: "Breakfast", value: l.has_breakfast },

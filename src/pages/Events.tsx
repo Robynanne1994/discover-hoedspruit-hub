@@ -509,7 +509,20 @@ const Events = () => {
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
   const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | null>("tag");
-  const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">("any");
+  const persistedFilters = (location.state as { filters?: { priceFilter?: "any" | "free" | "paid" } } | null)?.filters ?? null;
+  const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">(persistedFilters?.priceFilter ?? "any");
+
+  useEffect(() => {
+    navigate(location.pathname + location.search, {
+      replace: true,
+      state: {
+        ...(location.state as object | null),
+        filters: { priceFilter },
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [priceFilter]);
+
 
 
   const { data: events, isLoading } = useQuery({

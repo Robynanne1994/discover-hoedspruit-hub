@@ -992,7 +992,8 @@ const AdminListings = () => {
                   <Input
                     type="number"
                     inputMode="decimal"
-                    step="0.1"
+                    step="0.01"
+
                     min="0"
                     value={form.km_from_town}
                     onChange={(e) => setForm({ ...form, km_from_town: e.target.value })}
