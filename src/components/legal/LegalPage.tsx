@@ -2,9 +2,9 @@ import { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-import HomeSectionHead from "@/components/home/HomeSectionHead";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const DISPLAY = '"Bricolage Grotesque", ' + SANS;
 
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
