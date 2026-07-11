@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FileText, Shield, Cookie, Users, ArrowUpRight } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
@@ -7,9 +7,9 @@ import Seo from "@/components/Seo";
 const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
-const INK = "#020202";
-const ICON_BG = "#EFE7D4";
-const BROWN = "#715a3d";
+const INK = "#1A1A1A";
+const MUTED_INK = "#6B6A5E";
+const LINE = "#E2DAC6";
 
 const POLICIES = [
   { title: "Terms of Service", to: "/terms-of-use", Icon: FileText },
@@ -26,7 +26,7 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
       fontWeight: 700,
       letterSpacing: "0.06em",
       textTransform: "uppercase",
-      color: "#1A1A1A",
+      color: INK,
       margin: "0 0 10px 0",
       padding: "0 4px",
     }}
@@ -36,8 +36,6 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
 );
 
 const TermsPolicies = () => {
-  const navigate = useNavigate();
-
   return (
     <div style={{ minHeight: "100vh", background: BG, fontFamily: FF, color: INK, paddingBottom: 140 }}>
       <Seo
@@ -47,66 +45,42 @@ const TermsPolicies = () => {
       />
       <PageHeader title="Terms & Policies" />
 
-      <div style={{ padding: "20px 20px 0" }}>
+      <div style={{ padding: "24px 0 0" }}>
         <SectionLabel>Policies &amp; Agreements</SectionLabel>
-        <div
-          style={{
-            background: CARD,
-            borderRadius: 16,
-            overflow: "hidden",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div style={{ background: CARD, borderRadius: 20, margin: "0 24px", padding: "4px 22px" }}>
           {POLICIES.map((p, idx) => {
             const { Icon } = p;
             return (
-              <div key={p.title}>
-                {idx > 0 && <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />}
-                <button
-                  onClick={() => navigate(p.to)}
+              <Link
+                key={p.title}
+                to={p.to}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 16,
+                  padding: "18px 0",
+                  textDecoration: "none",
+                  borderTop: idx === 0 ? "none" : `1px solid ${LINE}`,
+                }}
+              >
+                <div style={{ width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <Icon size={20} strokeWidth={1.5} color={MUTED_INK} />
+                </div>
+                <span
                   style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 14,
-                    background: "transparent",
-                    padding: "16px 18px",
-                    border: "none",
-                    cursor: "pointer",
-                    textAlign: "left",
+                    flex: 1,
                     fontFamily: FF,
+                    fontSize: 16,
+                    fontWeight: 400,
+                    letterSpacing: "-0.1px",
+                    color: INK,
+                    lineHeight: 1.25,
                   }}
                 >
-                  <div
-                    style={{
-                      width: 44,
-                      height: 44,
-                      borderRadius: "50%",
-                      background: ICON_BG,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <Icon size={20} color={BROWN} strokeWidth={1.6} />
-                  </div>
-                  <div
-                    style={{
-                      flex: 1,
-                      fontFamily: FF,
-                      fontSize: 15,
-                      fontWeight: 400,
-                      color: INK,
-                      lineHeight: 1.3,
-                    }}
-                  >
-                    {p.title}
-                  </div>
-                  <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
-                </button>
-              </div>
+                  {p.title}
+                </span>
+                <ArrowUpRight size={18} color={INK} style={{ flexShrink: 0 }} />
+              </Link>
             );
           })}
         </div>
