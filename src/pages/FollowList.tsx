@@ -67,45 +67,27 @@ const ActionButton = ({
   onClick: (e: React.MouseEvent) => void;
   disabled?: boolean;
 }) => {
-  const base: React.CSSProperties = {
-    height: 34,
-    padding: "0 18px",
-    borderRadius: 999,
-    fontFamily: SANS,
-    fontWeight: 400,
-    fontSize: 13,
-    letterSpacing: "0.1px",
-    cursor: disabled ? "default" : "pointer",
-    flexShrink: 0,
-    opacity: disabled ? 0.6 : 1,
-    transition: "transform 120ms ease",
-  };
-  if (variant === "outlined") {
-    return (
-      <button
-        onClick={onClick}
-        disabled={disabled}
-        style={{
-          ...base,
-          background: COLOR.cream,
-          border: `1px solid ${COLOR.line}`,
-          color: COLOR.ink,
-          fontWeight: 500,
-        }}
-      >
-        {label}
-      </button>
-    );
-  }
+  const isSolid = variant === "solid";
   return (
     <button
       onClick={onClick}
       disabled={disabled}
       style={{
-        ...base,
-        background: COLOR.ink,
+        height: 34,
+        padding: "0 18px",
+        borderRadius: 999,
+        fontFamily: SANS,
+        fontWeight: 700,
+        fontSize: 13,
+        letterSpacing: "0.02em",
+        cursor: disabled ? "default" : "pointer",
+        flexShrink: 0,
+        opacity: disabled ? 0.6 : 1,
+        transition: "transform 120ms ease",
+        background: isSolid ? COLOR.brown : COLOR.soft,
         border: "none",
-        color: COLOR.cream,
+        color: isSolid ? "#FFFFFF" : "#020202",
+        minWidth: 92,
       }}
     >
       {label}
@@ -116,14 +98,16 @@ const ActionButton = ({
 const UserRow = ({
   user,
   index,
-  isFollowed,
+  label,
+  isSolid,
   onToggle,
   pending,
   isSelf,
 }: {
   user: RowUser;
   index: number;
-  isFollowed: boolean;
+  label: string;
+  isSolid: boolean;
   onToggle: () => void;
   pending: boolean;
   isSelf?: boolean;
@@ -132,7 +116,7 @@ const UserRow = ({
   const handle = user.username
     ? `@${user.username.toLowerCase()}`
     : `@${(user.display_name || "user").toLowerCase().replace(/\s+/g, "")}`;
-  const grad = AVATAR_GRADIENTS[index % AVATAR_GRADIENTS.length];
+  const initials = initialsOf(user.display_name);
 
   return (
     <div
@@ -153,20 +137,21 @@ const UserRow = ({
           borderRadius: "50%",
           flexShrink: 0,
           overflow: "hidden",
-          background: user.avatar_url ? "#000" : grad,
+          background: user.avatar_url ? "#000" : "#FFFFFF",
+          border: user.avatar_url ? "none" : `1px solid ${COLOR.pillBorder}`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundImage: user.avatar_url ? `url(${user.avatar_url})` : grad,
+          backgroundImage: user.avatar_url ? `url(${user.avatar_url})` : undefined,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: SERIF,
-          fontStyle: "italic",
-          fontSize: 18,
-          color: COLOR.cream,
+          fontFamily: SANS,
+          fontWeight: 500,
+          fontSize: 16,
+          color: COLOR.ink,
         }}
       >
-        {!user.avatar_url && initialsOf(user.display_name)}
+        {!user.avatar_url && initials}
       </div>
 
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -190,7 +175,7 @@ const UserRow = ({
         <p
           style={{
             margin: 0,
-            fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+            fontFamily: SANS,
             fontStyle: "normal",
             fontWeight: 400,
             fontSize: 13,
@@ -207,8 +192,8 @@ const UserRow = ({
       {!isSelf && (
         <div onClick={(e) => e.stopPropagation()}>
           <ActionButton
-            variant={isFollowed ? "outlined" : "solid"}
-            label={isFollowed ? "Following" : "Follow"}
+            variant={isSolid ? "solid" : "outlined"}
+            label={label}
             onClick={(e) => {
               e.stopPropagation();
               onToggle();
