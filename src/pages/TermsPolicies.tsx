@@ -28,7 +28,7 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
       textTransform: "uppercase",
       color: INK,
       margin: "0 0 10px 0",
-      padding: "0 4px",
+      padding: "0 24px",
     }}
   >
     {children}
