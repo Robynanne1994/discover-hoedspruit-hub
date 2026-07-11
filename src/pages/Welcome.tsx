@@ -13,7 +13,7 @@ import PageHeader from "@/components/PageHeader";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 
-const LABEL_STYLE: React.CSSProperties = {
+const SIGNIN_LABEL_STYLE: React.CSSProperties = {
   fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
   fontWeight: 400,
   fontSize: 12,
@@ -23,6 +23,18 @@ const LABEL_STYLE: React.CSSProperties = {
   color: "#8A8480",
   display: "block",
   marginBottom: 6,
+};
+
+const CREATE_LABEL_STYLE: React.CSSProperties = {
+  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontWeight: 700,
+  fontSize: 14,
+  lineHeight: "16.8px",
+  letterSpacing: 0,
+  textTransform: "none",
+  color: "#0A0A0A",
+  display: "block",
+  marginBottom: 8,
 };
 
 const Welcome = () => {
