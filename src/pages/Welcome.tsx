@@ -255,7 +255,7 @@ const Welcome = () => {
           {mode === "signup" && (
             <>
               <div className="space-y-1.5">
-                <Label htmlFor="firstName" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                <Label htmlFor="firstName" style={LABEL_STYLE}>
                   First Name
                 </Label>
                 <Input
@@ -270,7 +270,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="lastName" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                <Label htmlFor="lastName" style={LABEL_STYLE}>
                   Surname
                 </Label>
                 <Input
@@ -285,7 +285,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="username" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                <Label htmlFor="username" style={LABEL_STYLE}>
                   Username
                 </Label>
                 <Input
@@ -300,7 +300,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+                <Label style={LABEL_STYLE}>
                   Are you a local or a visitor?
                 </Label>
                 <div className="flex flex-col gap-2">
@@ -343,7 +343,7 @@ const Welcome = () => {
             </div>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+            <Label htmlFor="email" style={LABEL_STYLE}>
               Email
             </Label>
             <Input
@@ -362,7 +362,7 @@ const Welcome = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-xs font-medium" style={{ color: "#020202", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
+            <Label htmlFor="password" style={LABEL_STYLE}>
               Password
             </Label>
             <div className="relative">
