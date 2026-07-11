@@ -635,9 +635,9 @@ const MyAccount = () => {
       <div style={{ padding: "32px 24px 24px" }}>
         {user ? (
           <button
-            onClick={() => {
-              signOut();
-              navigate("/");
+            onClick={async () => {
+              await signOut();
+              navigate("/welcome");
             }}
             style={{
               width: "100%",
