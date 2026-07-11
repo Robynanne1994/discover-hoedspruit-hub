@@ -179,24 +179,24 @@ const Welcome = () => {
         {/* Logo block */}
         <div className="flex-1 flex flex-col items-center justify-center px-6 pt-20 pb-6">
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
+          <h1
+            style={{
+              fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+              color: "#423324",
+              fontSize: 22,
+              lineHeight: 1.2,
+              fontWeight: 500,
+              letterSpacing: "0.01em",
+              marginTop: 16,
+              textAlign: "center",
+            }}
+          >
+            Your Lowveld local
+          </h1>
         </div>
 
         {/* Bottom action area */}
         <div className="px-5 pb-10">
-          <h1
-            style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              color: "#020202",
-              fontSize: 26,
-              lineHeight: 1.15,
-              fontWeight: 550,
-              textTransform: "uppercase",
-              letterSpacing: "0.01em",
-              marginBottom: 22,
-            }}
-          >
-            Your lowveld local
-          </h1>
 
           <Button
             onClick={() => setMode("signup")}
@@ -357,8 +357,8 @@ const Welcome = () => {
               <span>{authError}</span>
             </div>
           )}
-          <div className={mode === "signup" ? "" : "space-y-1.5"}>
-            <Label htmlFor="email" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
+          <div>
+            <Label htmlFor="email" style={CREATE_LABEL_STYLE}>
               Email
             </Label>
             <Input
@@ -376,8 +376,8 @@ const Welcome = () => {
               }}
             />
           </div>
-          <div className={mode === "signup" ? "" : "space-y-1.5"}>
-            <Label htmlFor="password" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
+          <div>
+            <Label htmlFor="password" style={CREATE_LABEL_STYLE}>
               Password
             </Label>
             <div className="relative">
