@@ -508,9 +508,7 @@ const Events = () => {
   const [weekAnchor, setWeekAnchor] = useState<Date>(selectedDate ?? startOfToday());
   const [searchOpen, setSearchOpen] = useState(!!search);
   const [refineOpen, setRefineOpen] = useState(false);
-  const [openSection, setOpenSection] = useState<"tag" | "sort" | "dates" | "price" | null>("tag");
-  const [dateFrom, setDateFrom] = useState<string>(""); // YYYY-MM-DD
-  const [dateTo, setDateTo] = useState<string>("");
+  const [openSection, setOpenSection] = useState<"tag" | "sort" | "price" | null>("tag");
   const [priceFilter, setPriceFilter] = useState<"any" | "free" | "paid">("any");
 
 
