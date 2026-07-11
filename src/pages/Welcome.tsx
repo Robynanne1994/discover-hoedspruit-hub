@@ -282,7 +282,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="lastName" style={LABEL_STYLE}>
+                <Label htmlFor="lastName" style={CREATE_LABEL_STYLE}>
                   Surname
                 </Label>
                 <Input
@@ -297,7 +297,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label htmlFor="username" style={LABEL_STYLE}>
+                <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
                   Username
                 </Label>
                 <Input
@@ -312,7 +312,7 @@ const Welcome = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <Label style={LABEL_STYLE}>
+                <Label style={CREATE_LABEL_STYLE}>
                   Are you a local or a visitor?
                 </Label>
                 <div className="flex flex-col gap-2">
