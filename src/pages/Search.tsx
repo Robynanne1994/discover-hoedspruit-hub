@@ -640,7 +640,8 @@ const ListingsResults = ({ query }: { query: string }) => {
           image={l.image_url}
           title={l.title}
           titleOverride={(l as any).title_override}
-          subtitle={null}
+          subtitle={l.location || null}
+          initials={initialsOf((l as any).title_override || l.title, undefined)}
           action={<InlineSaveButton itemId={l.id} itemType="listing" />}
         />
       ))}
@@ -703,6 +704,7 @@ const EventsResults = ({ query }: { query: string }) => {
           titleOverride={(e as any).title_override}
           subtitle={e.date || null}
           subtitle2={e.location || null}
+          initials={initialsOf((e as any).title_override || e.title, undefined)}
           action={<InlineSaveButton itemId={e.id} itemType="event" />}
         />
       ))}
@@ -766,6 +768,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
           titleOverride={(s as any).title_override}
           subtitle={s.deal_label || null}
           subtitle2={s.business_name || null}
+          initials={initialsOf((s as any).title_override || s.title, undefined)}
           action={<InlineSaveButton itemId={s.id} itemType="special" />}
         />
       ))}
