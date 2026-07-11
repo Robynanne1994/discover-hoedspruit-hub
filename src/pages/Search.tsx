@@ -197,8 +197,8 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
             onClick={() => onChange(opt.id)}
             style={{
               flex: 1,
-              background: active ? INK : WHITE,
-              border: `1px solid ${active ? INK : PILL_BORDER}`,
+              background: active ? "#423324" : WHITE,
+              border: `1px solid ${active ? "#423324" : PILL_BORDER}`,
               borderRadius: 999,
               padding: "10px 12px",
               cursor: "pointer",
@@ -235,7 +235,7 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
 const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
   <div
     style={{
-      padding: "12px 20px",
+      padding: "20px 20px 12px",
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
@@ -244,11 +244,11 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
     <span
       style={{
         fontFamily: '"Bricolage Grotesque", ' + FONT,
-        fontSize: 15,
-        fontWeight: 700,
+        fontSize: 17,
+        fontWeight: 800,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: "#1A1A1A",
+        color: "#020202",
       }}
     >
       {count !== undefined ? `${label} (${count})` : label}
@@ -301,11 +301,11 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
   >
     <div
       style={{
-        width: thumb === "round" ? 48 : 56,
-        height: thumb === "round" ? 48 : 56,
-        borderRadius: thumb === "round" ? 999 : 12,
-        background: thumb === "round" && !image && initials ? WHITE : IVORY,
-        border: thumb === "round" && !image && initials ? `1px solid ${PILL_BORDER}` : "none",
+        width: 48,
+        height: 48,
+        borderRadius: 999,
+        background: !image && initials ? WHITE : IVORY,
+        border: !image && initials ? `1px solid ${PILL_BORDER}` : "none",
         overflow: "hidden",
         flexShrink: 0,
         display: "flex",
@@ -316,7 +316,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
 
       {image ? (
         <img src={image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-      ) : thumb === "round" && initials ? (
+      ) : initials ? (
         <span
           style={{
             fontFamily: FONT,

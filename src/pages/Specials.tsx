@@ -22,7 +22,7 @@ const COLOR = {
   divider: "#EAE4D5",
   pillBorder: "#E2DAC6",
   pillInactiveBg: "#FFFFFF",
-  pillActiveBg: "#2E2418",
+  pillActiveBg: "#423324",
   pillActiveFg: "#FFFFFF",
   badge: "#C0392B",
   badgeFg: "#FFFFFF",
