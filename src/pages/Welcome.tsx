@@ -13,6 +13,18 @@ import PageHeader from "@/components/PageHeader";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
 
 
+const LABEL_STYLE: React.CSSProperties = {
+  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontWeight: 400,
+  fontSize: 12,
+  lineHeight: "14.4px",
+  letterSpacing: "0.24px",
+  textTransform: "none",
+  color: "#8A8480",
+  display: "block",
+  marginBottom: 6,
+};
+
 const Welcome = () => {
   const location = useLocation() as { state?: { mode?: "signin" | "signup" } };
   const initialMode = location.state?.mode ?? "welcome";
