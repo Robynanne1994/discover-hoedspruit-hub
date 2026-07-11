@@ -171,30 +171,11 @@ const NotificationCategories = () => {
       {/* Top bar */}
       <PageHeader title={pageTitle} />
 
-      {/* Subline */}
-      <div style={{ padding: "24px 24px 0" }}>
-        <p
-          style={{
-            ...baseText,
-            fontFamily: SANS,
-            fontSize: 16,
-            fontWeight: 400,
-            color: COLORS.ink,
-            lineHeight: 1.45,
-            margin: 0,
-            marginBottom: 22,
-            maxWidth: 320,
-          }}
-        >
-          {meta.subline}
-        </p>
-      </div>
-
       {/* Quick actions */}
       <div
         style={{
-          padding: "0 24px",
-          marginBottom: 28,
+          padding: "20px 24px 0",
+          marginBottom: 24,
           display: "flex",
           gap: 8,
           alignItems: "center",
