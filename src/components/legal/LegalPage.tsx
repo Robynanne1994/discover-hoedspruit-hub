@@ -77,7 +77,7 @@ export const Section = ({ heading, children }: { heading: string; children: Reac
           fontSize: 15,
           letterSpacing: "0.06em",
           textTransform: "uppercase",
-          color: INK,
+          color: "#1A1A1A",
           margin: "0 0 12px 0",
           padding: 0,
         }}
