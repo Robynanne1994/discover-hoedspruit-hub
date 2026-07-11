@@ -211,22 +211,37 @@ const RowWithMutation = ({
   index,
   isFollowedInitially,
   isOwnFollowingPage,
+  isFollowersOfSelf,
   isSelf,
 }: {
   user: RowUser;
   index: number;
   isFollowedInitially: boolean;
   isOwnFollowingPage: boolean;
+  isFollowersOfSelf: boolean;
   isSelf?: boolean;
 }) => {
   const { follow, unfollow } = useFollowMutation(user.id);
+  const { data: followStatus } = useIsFollowing(user.id);
   const [confirmOpen, setConfirmOpen] = useState(false);
-  // On own following page, force outlined Following state
-  const isFollowed = isOwnFollowingPage ? true : isFollowedInitially;
+
+  const isAccepted = isOwnFollowingPage ? true : followStatus === "accepted" || isFollowedInitially;
+  const isPending = followStatus === "pending";
+
+  const label = isAccepted
+    ? "Following"
+    : isPending
+    ? "Requested"
+    : isFollowersOfSelf
+    ? "Follow Back"
+    : "Follow";
+  const isSolid = label === "Follow" || label === "Follow Back";
 
   const handleToggle = () => {
-    if (isFollowed) {
+    if (isAccepted) {
       setConfirmOpen(true);
+    } else if (isPending) {
+      unfollow.mutate();
     } else {
       follow.mutate();
     }
@@ -237,7 +252,8 @@ const RowWithMutation = ({
       <UserRow
         user={user}
         index={index}
-        isFollowed={isFollowed}
+        label={label}
+        isSolid={isSolid}
         onToggle={handleToggle}
         pending={follow.isPending || unfollow.isPending}
         isSelf={isSelf}
