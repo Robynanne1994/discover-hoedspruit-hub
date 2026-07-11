@@ -315,28 +315,23 @@ const Welcome = () => {
                 <Label style={CREATE_LABEL_STYLE}>
                   Are you a local or a visitor?
                 </Label>
-                <div className="flex flex-col gap-2">
-                  {RESIDENCY_OPTIONS.map((opt) => {
-                    const active = residency === opt;
-                    return (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => setResidency(opt)}
-                        className="h-12 rounded-xl text-left px-4 text-[15px] transition-colors"
-                        style={{
-                          background: active ? "#423324" : "#ffffff",
-                          color: active ? "#FFFFFF" : "#020202",
-                          border: active ? "1.5px solid #423324" : "1.5px solid #d9d2c0",
-                          fontWeight: active ? 600 : 400,
-                        }}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
+                <Select value={residency} onValueChange={setResidency}>
+                  <SelectTrigger className="residency-select h-12 w-full rounded-xl border border-border bg-white px-4 text-[15px]">
+                    <SelectValue
+                      placeholder="Select one"
+                      style={{ color: residency ? "#020202" : "#8A8480" }}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {RESIDENCY_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value} className="text-[15px]">
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+
             </>
           )}
           {authError && mode === "signin" && (
