@@ -768,6 +768,7 @@ const SpecialsResults = ({ query }: { query: string }) => {
           titleOverride={(s as any).title_override}
           subtitle={s.deal_label || null}
           subtitle2={s.business_name || null}
+          initials={initialsOf((s as any).title_override || s.title, undefined)}
           action={<InlineSaveButton itemId={s.id} itemType="special" />}
         />
       ))}
