@@ -1,4 +1,4 @@
-import { Mail, Phone, ArrowUpRight, MapPin, Clock, Globe, Navigation } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, Clock } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
@@ -44,8 +44,6 @@ const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;
 const INSTAGRAM_URL = "https://instagram.com/hellohoedspruit";
 const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61573298922814";
 const THREADS_URL = "https://www.threads.net/@hellohoedspruit";
-const ADDRESS = "Hoedspruit, Limpopo 1380";
-const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent("Hoedspruit, Limpopo")}`;
 
 type RowProps = {
   icon: React.ReactNode;
@@ -225,12 +223,6 @@ const ContactUs = () => {
             href={WHATSAPP_URL}
             external
           />
-          <div style={{ height: 1, background: "#EFE7D4", margin: "0 18px" }} />
-          <Row
-            icon={<MapPin size={20} color={BROWN} strokeWidth={1.6} />}
-            eyebrow="Find Us"
-            value={ADDRESS}
-          />
         </div>
       </div>
 
@@ -241,10 +233,19 @@ const ContactUs = () => {
             icon={<Clock size={20} color={BROWN} strokeWidth={1.6} />}
             eyebrow=""
             value={
-              <div style={{ whiteSpace: "pre-line" }}>
-                {"Monday - Friday\n08:00 - 17:00\n\n"}
-                {"Saturday\n08:00 - 12:00\n\n"}
-                {"Sunday\nClosed"}
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <div>
+                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Monday - Friday</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>08:00 - 17:00</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Saturday</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>08:00 - 12:00</span>
+                </div>
+                <div>
+                  <span style={{ fontSize: 16, fontWeight: 500, color: INK }}>Sunday</span>
+                  <span style={{ display: "block", fontSize: 15, fontWeight: 400, color: BODY, marginTop: 2 }}>Closed</span>
+                </div>
               </div>
             }
           />

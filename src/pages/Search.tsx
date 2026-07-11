@@ -356,7 +356,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
           style={{
             margin: "2px 0 0",
             fontFamily: FONT,
-            fontSize: subtitle2 ? 11 : 13,
+            fontSize: 11,
             color: "rgba(18,18,20,0.5)",
             letterSpacing: "0.01em",
             overflow: "hidden",
@@ -645,7 +645,6 @@ const ListingsResults = ({ query }: { query: string }) => {
           titleOverride={(l as any).title_override}
           subtitle={l.location || null}
           initials={initialsOf((l as any).title_override || l.title, undefined)}
-          action={<InlineSaveButton itemId={l.id} itemType="listing" />}
         />
       ))}
       {!term && (
