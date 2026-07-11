@@ -206,18 +206,11 @@ const CategoryPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const activeSubId = searchParams.get("sub");
 
-  // Persist filter/sort/search state per category so navigating into a listing
-  // and back preserves the filtered view.
-  const stateKey = `categoryPageState:${id ?? "_"}`;
-  const persisted = (() => {
-    if (typeof window === "undefined") return null;
-    try {
-      const raw = sessionStorage.getItem(stateKey);
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  })();
+  // Persist filter/sort/search state in history state so that navigating into a
+  // detail page and back preserves filters, but navigating anywhere else and
+  // returning to this list resets them (a fresh history entry starts empty).
+  const location = useLocation();
+  const persisted = (location.state as { filters?: any } | null)?.filters ?? null;
 
   const [refineOpen, setRefineOpen] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
@@ -243,27 +236,27 @@ const CategoryPage = () => {
 
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      sessionStorage.setItem(
-        stateKey,
-        JSON.stringify({
+    navigate(location.pathname + location.search, {
+      replace: true,
+      state: {
+        ...(location.state as object | null),
+        filters: {
           sortBy, search,
           filterCuisine, filterVibe, filterMeal, filterSeating,
           filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
           filterOpenNow, filterSaved, filterBeenTo,
           filterMaxKm,
-        }),
-      );
-    } catch {
-      // ignore quota / serialization errors
-    }
+        },
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    stateKey, sortBy, search,
+    sortBy, search,
     filterCuisine, filterVibe, filterMeal, filterSeating,
     filterChildFriendly, filterPetFriendly, filterWheelchair, filterWifi,
     filterOpenNow, filterSaved, filterBeenTo, filterMaxKm,
   ]);
+
 
 
 
