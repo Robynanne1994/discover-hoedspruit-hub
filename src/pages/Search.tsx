@@ -239,6 +239,8 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
+      borderBottom: `1px solid ${DIVIDER}`,
+      marginBottom: 4,
     }}
   >
     <span
