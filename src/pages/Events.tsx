@@ -649,23 +649,6 @@ const Events = () => {
       });
     }
 
-    // Date range filter (additive — must also fall inside range if provided)
-    if (dateFrom || dateTo) {
-      const fromD = dateFrom ? new Date(dateFrom + "T00:00:00") : null;
-      const toD = dateTo ? new Date(dateTo + "T23:59:59") : null;
-      list = list.filter((e) => {
-        const rangeFrom = fromD ?? new Date(0);
-        const rangeTo = toD ?? new Date(8640000000000000);
-        const occs = getEventOccurrences(e, { from: rangeFrom, to: rangeTo, now: rangeFrom });
-        if (occs.length > 0) return true;
-        if (e._parsed) {
-          if (fromD && e._parsed < fromD) return false;
-          if (toD && e._parsed > toD) return false;
-          return true;
-        }
-        return false;
-      });
-    }
 
     // Price filter
     if (priceFilter !== "any") {
