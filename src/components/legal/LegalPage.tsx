@@ -70,7 +70,20 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
 export const Section = ({ heading, children }: { heading: string; children: ReactNode }) => {
   return (
     <div>
-      <HomeSectionHead primary={heading} />
+      <h2
+        style={{
+          fontFamily: DISPLAY,
+          fontWeight: 700,
+          fontSize: 15,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          color: INK,
+          margin: "0 0 12px 0",
+          padding: 0,
+        }}
+      >
+        {heading}
+      </h2>
       <section
         style={{
           background: CARD,
