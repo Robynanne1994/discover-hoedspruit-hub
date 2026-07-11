@@ -723,22 +723,26 @@ const EventsResults = ({ query }: { query: string }) => {
             to="/events"
             state={{ fromSearch: true }}
             style={{
-              background: "transparent",
-              border: `1.5px solid ${PRIMARY}`,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              background: "#423324",
+              color: "#ffffff",
+              border: "none",
               borderRadius: 999,
-              padding: "12px 24px",
+              padding: "14px 24px",
               fontFamily: FONT,
+              fontWeight: 400,
               fontSize: 14,
-              fontWeight: 700,
-              color: PRIMARY,
               textDecoration: "none",
-              letterSpacing: "0.02em",
+              cursor: "pointer",
             }}
           >
             Discover More Events
           </Link>
         </div>
       )}
+
     </>
   );
 };
