@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { UtensilsCrossed, ShoppingBag, BedDouble, Mountain, Siren, PartyPopper, GraduationCap, Leaf, Sparkles, Stethoscope } from "lucide-react";
+import { UtensilsCrossed, ShoppingBag, BedDouble, Mountain, Siren, PartyPopper, GraduationCap, Leaf, Sparkles, Stethoscope, Hammer } from "lucide-react";
 
 export type HomeChip = "All" | "Eat" | "Stay" | "Do" | "Shop" | "Events" | "Specials";
 
@@ -16,6 +16,7 @@ const TILES = [
   { label: "Unwind", icon: Leaf, href: "/category/7d504654-a8d8-49c1-8cb7-75d2939bc7b1" },
   { label: "Pamper", icon: Sparkles, href: "/category/7d504654-a8d8-49c1-8cb7-75d2939bc7b1" },
   { label: "Medical", icon: Stethoscope, href: "/category/21a5617a-1ef6-4697-8853-774d00f17e96" },
+  { label: "Build", icon: Hammer, href: "/category/74812403-50f4-453c-b0d9-f66fdc54bb4c" },
 ];
 
 interface Props {
