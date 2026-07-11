@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, X, Pencil, ArrowLeft, ArrowUpRight, Heart } from "lucide-react";
+import { Plus, X, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -80,7 +80,7 @@ const CircleBtn = ({ children, onClick, ariaLabel }: { children: React.ReactNode
   </button>
 );
 
-const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen: (r: Resource) => void; isSaved: boolean; onToggleSave: (e: React.MouseEvent) => void }) => {
+const ChannelCard = ({ r, onOpen }: { r: Resource; onOpen: (r: Resource) => void }) => {
   const tags = [r.tag_1, r.tag_2].filter((t): t is string => !!t && !!t.trim());
   const metaParts = [r.meta, r.meta_2].filter((m) => m && m.trim());
   const displayTitle = (r.title_override?.trim()) || r.title;
@@ -96,28 +96,6 @@ const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen
       }}
       {...press}
     >
-      {/* Heart save button — top right */}
-      <button
-        onClick={onToggleSave}
-        style={{
-          position: "absolute", top: 12, right: 12, zIndex: 2,
-          width: 32, height: 32, borderRadius: 999,
-          background: isSaved ? DARK : "rgba(122, 110, 92, 0.12)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          border: "none", cursor: "pointer", transition: "background 150ms ease-out",
-        }}
-        aria-label={isSaved ? "Remove from saved" : "Save"}
-      >
-        <Heart
-          size={15}
-          strokeWidth={1.8}
-          style={{
-            color: isSaved ? CARD : INK,
-            fill: isSaved ? CARD : "none",
-          }}
-        />
-      </button>
-
       <div onClick={() => onOpen(r)} style={{ display: "flex", gap: 14, alignItems: "flex-start", cursor: "pointer" }}>
         <div
           style={{
@@ -125,7 +103,7 @@ const ChannelCard = ({ r, onOpen, isSaved, onToggleSave }: { r: Resource; onOpen
             background: r.image_url ? `center/cover no-repeat url(${r.image_url})` : gradientFor(r.id),
           }}
         />
-        <div style={{ flex: 1, minWidth: 0, paddingRight: 28 }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <h4
             data-no-title-case={hasOverride ? "true" : undefined}
             style={{
