@@ -1,4 +1,4 @@
-import { Mail, Phone, ArrowUpRight, MapPin, Clock, Globe, Navigation } from "lucide-react";
+import { Mail, Phone, ArrowUpRight, Clock } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
