@@ -6,6 +6,17 @@ import { Button, Input, Label, FieldError, Body, H2, Small } from "@/components/
 import { toast } from "sonner";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 
+const LABEL_STYLE: React.CSSProperties = {
+  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontWeight: 400,
+  fontSize: 12,
+  lineHeight: "14.4px",
+  letterSpacing: "0.24px",
+  textTransform: "none",
+  color: "#8A8480",
+  marginBottom: 6,
+};
+
 const BusinessSignIn = () => {
   const navigate = useNavigate();
   const { user, authLoading, isOwner, loading } = useBusinessOwner();
@@ -41,11 +52,11 @@ const BusinessSignIn = () => {
       </div>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" style={LABEL_STYLE}>Email</Label>
           <Input id="email" type="email" value={email} required onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password" style={LABEL_STYLE}>Password</Label>
           <Input id="password" type="password" value={password} required minLength={6} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <FieldError>{err}</FieldError>
