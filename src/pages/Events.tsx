@@ -676,7 +676,7 @@ const Events = () => {
     }
     // date-asc is already the default order from sortedEvents
     return sorted;
-  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy, dateFrom, dateTo, priceFilter]);
+  }, [sortedEvents, search, tagFilter, activeFilter, selectedDate, sortBy, priceFilter]);
 
 
   const sectionTitle = useMemo(() => {
@@ -960,8 +960,6 @@ const Events = () => {
         onClear={() => {
           setTagFilter(null);
           setSortBy("date-asc");
-          setDateFrom("");
-          setDateTo("");
           setPriceFilter("any");
           setActiveFilter("all");
           setSelectedDate(null);
