@@ -608,7 +608,7 @@ const UsersResults = ({
           subtitle={u.username ? `@${u.username}` : null}
           thumb="round"
           initials={initialsOf(u.display_name, u.username)}
-          action={<InlineFollowButton targetUserId={u.id} />}
+          action={<InlineFollowButton targetUserId={u.id} followsMe={sub === "followers"} />}
         />
       ))}
 
