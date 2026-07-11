@@ -74,18 +74,31 @@ const Specials = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const fromSearch = !!(location.state as { fromSearch?: boolean } | null)?.fromSearch;
-  const [search, setSearch] = useState("");
-  const [searchOpen, setSearchOpen] = useState(false);
+  const persisted = (location.state as { filters?: any } | null)?.filters ?? null;
+  const [search, setSearch] = useState<string>(persisted?.search ?? "");
+  const [searchOpen, setSearchOpen] = useState<boolean>(!!persisted?.search);
   const [showFilters, setShowFilters] = useState(false);
-  const [filterType, setFilterType] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState<SortKey>("default");
+  const [filterType, setFilterType] = useState<string[]>(persisted?.filterType ?? []);
+  const [sortBy, setSortBy] = useState<SortKey>(persisted?.sortBy ?? "default");
   const [openSection, setOpenSection] = useState<"sort" | "category" | null>("sort");
-  const [activeTab, setActiveTab] = useState<string>("All Specials");
+  const [activeTab, setActiveTab] = useState<string>(persisted?.activeTab ?? "All Specials");
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (searchOpen) searchInputRef.current?.focus();
   }, [searchOpen]);
+
+  useEffect(() => {
+    navigate(location.pathname + location.search, {
+      replace: true,
+      state: {
+        ...(location.state as object | null),
+        filters: { search, filterType, sortBy, activeTab },
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search, filterType, sortBy, activeTab]);
+
 
   const { data: specials, isLoading } = useQuery({
     queryKey: ["all-specials"],
