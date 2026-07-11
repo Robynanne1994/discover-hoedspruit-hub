@@ -9,6 +9,7 @@ import {
   useFollowMutation,
   useMyFollowingIds,
   useFollowCounts,
+  useIsFollowing,
 } from "@/hooks/useFollows";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "@/components/ui/skeleton";
