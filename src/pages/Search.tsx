@@ -419,6 +419,9 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
     toast.success("User unblocked");
   };
 
+  const label = isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow";
+  const isFollow = label === "Follow";
+
   return (
     <button
       type="button"
@@ -433,23 +436,23 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
         else follow.mutate();
       }}
       style={{
-        background: "transparent",
-        border: `1.5px solid ${PRIMARY}`,
+        background: isFollow ? "#423324" : "#F2EFE5",
+        border: "none",
         borderRadius: 999,
         padding: "8px 18px",
         fontFamily: FONT,
         fontSize: 13,
         fontWeight: 700,
-        color: PRIMARY,
+        color: isFollow ? "#FFFFFF" : "#020202",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
-        gap: 6,
+        justifyContent: "center",
         letterSpacing: "0.02em",
+        minWidth: 92,
       }}
     >
-      {isBlocked ? null : isAccepted ? <UserCheck size={14} /> : isPending ? <Clock size={14} /> : <UserPlus size={14} />}
-      {isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow"}
+      {label}
     </button>
   );
 };
