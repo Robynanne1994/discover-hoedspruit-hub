@@ -2,84 +2,14 @@ import { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-
-import {
-  CalendarClock,
-  FileText,
-  Heart,
-  ShieldCheck,
-  MapPin,
-  Ban,
-  AlertOctagon,
-  Flag,
-  Mail,
-  Cookie,
-  Eye,
-  Share2,
-  Lock,
-  Baby,
-  RefreshCw,
-  Users,
-  Building2,
-  UserCircle,
-  ScrollText,
-  Copyright,
-  Link2,
-  Scale,
-  AlertTriangle,
-  XCircle,
-  Gavel,
-  Settings,
-  Database,
-} from "lucide-react";
+import HomeSectionHead from "@/components/home/HomeSectionHead";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
-const INK = "#1A1A1A";
-const BODY = "#2b2420";
-const ICON_BG = "rgba(26,26,26,0.06)";
-const RUST = "#9B5A3C";
-
-const ICON_MAP: Record<string, any> = {
-  // Terms
-  "agreement to terms": FileText,
-  "who we are": Users,
-  "use of the app": Settings,
-  accounts: UserCircle,
-  "content & listings": ScrollText,
-  "user content": Eye,
-  "intellectual property": Copyright,
-  "third-party links": Link2,
-  "limitation of liability": Scale,
-  disclaimer: AlertTriangle,
-  termination: XCircle,
-  "changes to these terms": RefreshCw,
-  "governing law": Gavel,
-  // Privacy
-  "information we collect": Database,
-  "how we use your information": Settings,
-  "data sharing": Share2,
-  "cookies & tracking": Cookie,
-  "your rights": ShieldCheck,
-  "data security": Lock,
-  "children's privacy": Baby,
-  "changes to this policy": RefreshCw,
-  // Cookies
-  "what are cookies": Cookie,
-  "how we use cookies": Settings,
-  "third-party cookies": Share2,
-  "managing your preferences": Settings,
-  // Community
-  "be respectful": Heart,
-  "keep it honest": ShieldCheck,
-  "stay on topic": MapPin,
-  "no spam or self-promotion": Ban,
-  "no illegal content": AlertOctagon,
-  "reporting & enforcement": Flag,
-  contact: Mail,
-};
+const INK = "#0A0A0A";
+const MUTED = "#8A8480";
 
 interface LegalPageProps {
   title: string;
@@ -103,44 +33,12 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
       {/* Top bar — shared header so the page title matches the rest of the app */}
       <PageHeader title={displayTitle} />
 
-
       {/* Sections */}
-      <div style={{ padding: "20px 20px 0", display: "flex", flexDirection: "column", gap: 14 }}>
+      <div style={{ padding: "24px 20px 0", display: "flex", flexDirection: "column", gap: 32 }}>
         {lastUpdated && (
-          <section
-            style={{
-              background: CARD,
-              borderRadius: 18,
-              padding: "22px 22px 24px",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-              <div
-                aria-hidden
-                style={{
-                  width: 36, height: 36, borderRadius: "50%", background: ICON_BG,
-                  display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-                }}
-              >
-                <CalendarClock size={17} color={INK} strokeWidth={1.8} />
-              </div>
-              <h2
-                style={{
-                  fontFamily: SANS,
-                  fontWeight: 700,
-                  fontSize: 13,
-                  lineHeight: 1.2,
-                  letterSpacing: -0.1,
-                  color: INK,
-                  margin: 0,
-                  textTransform: "none",
-                }}
-              >
-                Last Updated
-              </h2>
-            </div>
+          <Section heading="Last Updated">
             <P last>{lastUpdated}</P>
-          </section>
+          </Section>
         )}
         {children}
       </div>
@@ -158,7 +56,7 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
           <p
             style={{
               fontFamily: SANS, fontStyle: "italic", fontWeight: 400,
-              fontSize: 14, lineHeight: 1.6, color: BODY, margin: 0,
+              fontSize: 14, lineHeight: 1.6, color: MUTED, margin: 0,
             }}
           >
             {footer}
@@ -170,42 +68,19 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
 };
 
 export const Section = ({ heading, children }: { heading: string; children: ReactNode }) => {
-  const Icon = ICON_MAP[heading.toLowerCase()] || FileText;
   return (
-    <section
-      style={{
-        background: CARD,
-        borderRadius: 18,
-        padding: "22px 22px 24px",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
-        <div
-          aria-hidden
-          style={{
-            width: 36, height: 36, borderRadius: "50%", background: ICON_BG,
-            display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
-          }}
-        >
-          <Icon size={17} color={INK} strokeWidth={1.8} />
-        </div>
-        <h2
-          style={{
-          fontFamily: SANS,
-          fontWeight: 700,
-          fontSize: 13,
-          lineHeight: 1.2,
-          letterSpacing: -0.1,
-          color: INK,
-          margin: 0,
-          textTransform: "none",
+    <div>
+      <HomeSectionHead primary={heading} />
+      <section
+        style={{
+          background: CARD,
+          borderRadius: 24,
+          padding: 20,
         }}
       >
-        {heading}
-        </h2>
-      </div>
-      {children}
-    </section>
+        {children}
+      </section>
+    </div>
   );
 };
 
@@ -213,12 +88,12 @@ export const P = ({ children, last }: { children: ReactNode; last?: boolean }) =
   <p
     style={{
       fontFamily: SANS,
-      fontSize: 12.5,
+      fontSize: 14,
       fontWeight: 400,
-      lineHeight: 1.55,
-      color: BODY,
+      lineHeight: 1.6,
+      color: INK,
       margin: 0,
-      marginBottom: last ? 0 : 12,
+      marginBottom: last ? 0 : 14,
     }}
   >
     {children}
@@ -252,22 +127,22 @@ export const List = ({ items }: { items: ReactNode[] }) => (
           position: "relative",
           paddingLeft: 18,
           fontFamily: SANS,
-          fontSize: 12.5,
+          fontSize: 14,
           fontWeight: 400,
-          lineHeight: 1.55,
-          color: BODY,
-          marginBottom: i === items.length - 1 ? 0 : 8,
+          lineHeight: 1.6,
+          color: INK,
+          marginBottom: i === items.length - 1 ? 0 : 10,
         }}
       >
         <span
           style={{
             position: "absolute",
             left: 0,
-            top: 10,
+            top: 9,
             width: 5,
             height: 5,
             borderRadius: "50%",
-            background: RUST,
+            background: INK,
           }}
         />
         {item}
