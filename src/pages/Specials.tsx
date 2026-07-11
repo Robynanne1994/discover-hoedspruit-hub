@@ -281,16 +281,45 @@ const Specials = () => {
                 width: 40,
                 height: 40,
                 borderRadius: 999,
-                background: filterType.length > 0 || sortBy !== "default" ? COLOR.ink : "#FFFFFF",
+                background: "#FFFFFF",
                 border: "1px solid rgba(0,0,0,0.06)",
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: filterType.length > 0 || sortBy !== "default" ? COLOR.cardBg : "#020202",
+                color: "#020202",
+                position: "relative",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />
+              {(() => {
+                const activeRefineCount =
+                  (activeTab !== "All Specials" || filterType.length > 0 ? 1 : 0) +
+                  (sortBy !== "default" ? 1 : 0);
+                return activeRefineCount > 0 ? (
+                  <span
+                    style={{
+                      position: "absolute",
+                      top: -3,
+                      right: -3,
+                      minWidth: 16,
+                      height: 16,
+                      borderRadius: 999,
+                      background: COLOR.badge,
+                      color: COLOR.badgeFg,
+                      fontFamily: SANS,
+                      fontSize: 9,
+                      fontWeight: 700,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      padding: "0 3px",
+                    }}
+                  >
+                    {activeRefineCount}
+                  </span>
+                ) : null;
+              })()}
             </button>
           </>
         }
