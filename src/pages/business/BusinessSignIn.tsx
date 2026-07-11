@@ -52,11 +52,11 @@ const BusinessSignIn = () => {
       </div>
       <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" style={LABEL_STYLE}>Email</Label>
           <Input id="email" type="email" value={email} required onChange={(e) => setEmail(e.target.value)} />
         </div>
         <div>
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password" style={LABEL_STYLE}>Password</Label>
           <Input id="password" type="password" value={password} required minLength={6} onChange={(e) => setPassword(e.target.value)} />
         </div>
         <FieldError>{err}</FieldError>
