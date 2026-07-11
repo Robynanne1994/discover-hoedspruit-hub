@@ -34,7 +34,7 @@ const CREATE_LABEL_STYLE: React.CSSProperties = {
   textTransform: "none",
   color: "#0A0A0A",
   display: "block",
-  marginBottom: 8,
+  marginBottom: 4,
 };
 
 const Welcome = () => {
@@ -253,20 +253,11 @@ const Welcome = () => {
         onBack={() => setMode("welcome")}
       />
 
-      <div className="flex-1 px-6 pt-6 pb-12 flex flex-col">
-        {mode === "signup" && (
-          <p className="text-sm mb-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
-            {"\n"}
-          </p>
-        )}
-
-
-
-
+      <div className={`flex-1 px-6 pb-12 flex flex-col ${mode === "signup" ? "pt-4" : "pt-6"}`}>
         <form onSubmit={handleSubmit} className="space-y-4">
           {mode === "signup" && (
             <>
-              <div className="space-y-1.5">
+              <div>
                 <Label htmlFor="firstName" style={CREATE_LABEL_STYLE}>
                   First Name
                 </Label>
@@ -281,7 +272,7 @@ const Welcome = () => {
                   style={{ background: "#ffffff", color: "#020202" }}
                 />
               </div>
-              <div className="space-y-1.5">
+              <div>
                 <Label htmlFor="lastName" style={CREATE_LABEL_STYLE}>
                   Surname
                 </Label>
@@ -296,7 +287,7 @@ const Welcome = () => {
                   style={{ background: "#ffffff", color: "#020202" }}
                 />
               </div>
-              <div className="space-y-1.5">
+              <div>
                 <Label htmlFor="username" style={CREATE_LABEL_STYLE}>
                   Username
                 </Label>
@@ -311,7 +302,7 @@ const Welcome = () => {
                   style={{ background: "#ffffff", color: "#020202" }}
                 />
               </div>
-              <div className="space-y-1.5">
+              <div>
                 <Label style={CREATE_LABEL_STYLE}>
                   Are you a local or a visitor?
                 </Label>
@@ -354,7 +345,7 @@ const Welcome = () => {
               <span>{authError}</span>
             </div>
           )}
-          <div className="space-y-1.5">
+          <div className={mode === "signup" ? "" : "space-y-1.5"}>
             <Label htmlFor="email" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
               Email
             </Label>
@@ -373,7 +364,7 @@ const Welcome = () => {
               }}
             />
           </div>
-          <div className="space-y-1.5">
+          <div className={mode === "signup" ? "" : "space-y-1.5"}>
             <Label htmlFor="password" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
               Password
             </Label>
