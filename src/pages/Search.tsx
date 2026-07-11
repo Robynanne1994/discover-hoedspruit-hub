@@ -393,7 +393,7 @@ const ResultRow = ({ to, image, title, titleOverride, subtitle, subtitle2, thumb
 
 /* -------------------- Outline buttons -------------------- */
 
-const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
+const InlineFollowButton = ({ targetUserId, followsMe }: { targetUserId: string; followsMe?: boolean }) => {
   const { user } = useAuth();
   const { data: followStatus } = useIsFollowing(targetUserId);
   const { follow, unfollow } = useFollowMutation(targetUserId);
@@ -421,8 +421,9 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
     toast.success("User unblocked");
   };
 
-  const label = isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow";
-  const isFollow = label === "Follow";
+  const followLabel = followsMe ? "Follow Back" : "Follow";
+  const label = isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : followLabel;
+  const isFollow = label === "Follow" || label === "Follow Back";
 
   return (
     <button
