@@ -75,9 +75,20 @@ export const Button = ({ variant = "primary", full, style, children, ...rest }: 
   );
 };
 
-export const Label = ({ children, htmlFor }: { children: ReactNode; htmlFor?: string }) => (
+export const Label = ({
+  children,
+  htmlFor,
+  style,
+  className,
+}: {
+  children: ReactNode;
+  htmlFor?: string;
+  style?: CSSProperties;
+  className?: string;
+}) => (
   <label
     htmlFor={htmlFor}
+    className={className}
     style={{
       display: "block",
       fontFamily: FONT,
@@ -86,6 +97,7 @@ export const Label = ({ children, htmlFor }: { children: ReactNode; htmlFor?: st
       letterSpacing: "0.06em",
       textTransform: "uppercase",
       marginBottom: 8,
+      ...style,
     }}
   >
     {children}
