@@ -79,7 +79,6 @@ const rowLabelStyle: React.CSSProperties = {
   fontWeight: 600,
   letterSpacing: "0.16em",
   textTransform: "uppercase",
-  color: MUTED,
   marginBottom: 4,
   display: "block",
 };
@@ -95,6 +94,8 @@ const rowValueStyle: React.CSSProperties = {
 
 const rowInputStyle: React.CSSProperties = {
   ...rowValueStyle,
+  fontSize: 16,
+  lineHeight: 1.25,
   border: "none",
   outline: "none",
   background: "transparent",
@@ -607,7 +608,7 @@ const AccountInfo = () => {
           cursor: "pointer",
         }}
       >
-        <span style={rowLabelStyle}>{label}</span>
+        <span className="text-primary" style={rowLabelStyle}>{label}</span>
         {children}
         {!isEditingThis && (
           <Pencil
