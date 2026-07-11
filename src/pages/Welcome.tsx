@@ -355,7 +355,7 @@ const Welcome = () => {
             </div>
           )}
           <div className="space-y-1.5">
-            <Label htmlFor="email" style={LABEL_STYLE}>
+            <Label htmlFor="email" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
               Email
             </Label>
             <Input
@@ -374,7 +374,7 @@ const Welcome = () => {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="password" style={LABEL_STYLE}>
+            <Label htmlFor="password" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
               Password
             </Label>
             <div className="relative">
