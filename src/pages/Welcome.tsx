@@ -197,20 +197,6 @@ const Welcome = () => {
 
         {/* Bottom action area */}
         <div className="px-5 pb-10">
-          <h1
-            style={{
-              fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-              color: "#020202",
-              fontSize: 26,
-              lineHeight: 1.15,
-              fontWeight: 550,
-              textTransform: "uppercase",
-              letterSpacing: "0.01em",
-              marginBottom: 22,
-            }}
-          >
-            Your lowveld local
-          </h1>
 
           <Button
             onClick={() => setMode("signup")}
