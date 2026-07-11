@@ -357,8 +357,8 @@ const Welcome = () => {
               <span>{authError}</span>
             </div>
           )}
-          <div className={mode === "signup" ? "" : "space-y-1.5"}>
-            <Label htmlFor="email" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
+          <div>
+            <Label htmlFor="email" style={CREATE_LABEL_STYLE}>
               Email
             </Label>
             <Input
@@ -376,8 +376,8 @@ const Welcome = () => {
               }}
             />
           </div>
-          <div className={mode === "signup" ? "" : "space-y-1.5"}>
-            <Label htmlFor="password" style={mode === "signup" ? CREATE_LABEL_STYLE : SIGNIN_LABEL_STYLE}>
+          <div>
+            <Label htmlFor="password" style={CREATE_LABEL_STYLE}>
               Password
             </Label>
             <div className="relative">
