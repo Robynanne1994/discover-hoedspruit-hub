@@ -44,8 +44,6 @@ const WHATSAPP_URL = `https://wa.me/${PHONE_DIGITS}`;
 const INSTAGRAM_URL = "https://instagram.com/hellohoedspruit";
 const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61573298922814";
 const THREADS_URL = "https://www.threads.net/@hellohoedspruit";
-const ADDRESS = "Hoedspruit, Limpopo 1380";
-const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent("Hoedspruit, Limpopo")}`;
 
 type RowProps = {
   icon: React.ReactNode;
