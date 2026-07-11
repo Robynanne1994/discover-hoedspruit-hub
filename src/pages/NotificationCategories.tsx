@@ -20,7 +20,7 @@ const COLORS = {
   ink: "#1A1A1A",
   muted: "#7A6E5C",
   line: "#E2DAC6",
-  rust: "#C0392B",
+  rust: "#423324",
   toggleOn: "#2E2418",
   toggleOff: "#D9CFB8",
 };
@@ -241,7 +241,7 @@ const NotificationCategories = () => {
                 style={{
                   background: COLORS.card,
                   borderRadius: 18,
-                  padding: "4px 22px",
+                  padding: "8px 22px",
                   overflow: "hidden",
                 }}
               >
