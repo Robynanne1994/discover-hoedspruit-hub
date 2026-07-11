@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Plus, X, Pencil, ArrowLeft, ArrowUpRight } from "lucide-react";
-import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import PageHeader from "@/components/PageHeader";
@@ -265,8 +264,7 @@ const SectionHeader = ({ title, count }: { title: string; count: number }) => (
 
 const BushTelegraph = () => {
   const navigate = useNavigate();
-  const { user, isAdmin } = useAuth();
-  const queryClient = useQueryClient();
+  const { isAdmin } = useAuth();
   const [active, setActive] = useState<string>("All");
   const [sheetOpen, setSheetOpen] = useState(false);
 
@@ -275,78 +273,6 @@ const BushTelegraph = () => {
     else if (r.url) window.open(r.url, "_blank", "noopener,noreferrer");
   };
 
-  const { data: savedResourceIds } = useQuery({
-    queryKey: ["saved-resource-ids", user?.id],
-    queryFn: async () => {
-      if (!user) return new Set<string>();
-      const { data } = await supabase
-        .from("favourites" as any)
-        .select("item_id")
-        .eq("user_id", user.id)
-        .eq("item_type", "resource");
-      return new Set((data || []).map((f: any) => f.item_id));
-    },
-    enabled: !!user,
-  });
-
-  const toggleSave = useMutation({
-    mutationFn: async ({ itemId, isSaved }: { itemId: string; isSaved: boolean }) => {
-      if (!user) throw new Error("not-signed-in");
-      if (isSaved) {
-        const { error } = await supabase
-          .from("favourites" as any)
-          .delete()
-          .eq("user_id", user.id)
-          .eq("item_id", itemId)
-          .eq("item_type", "resource");
-        if (error) throw error;
-      } else {
-        const { error } = await supabase
-          .from("favourites" as any)
-          .insert({ user_id: user.id, item_id: itemId, item_type: "resource" });
-        if (error) throw error;
-      }
-    },
-    // Optimistically flip the saved state in the local id-set and the shared
-    // favourites cache so the heart toggles instantly. Refetching these on
-    // success is what made the resource list flash on every save.
-    onMutate: async ({ itemId, isSaved }) => {
-      const idsKey = ["saved-resource-ids", user?.id];
-      const setKey = ["favourites-set", user?.id];
-      await Promise.all([
-        queryClient.cancelQueries({ queryKey: idsKey }),
-        queryClient.cancelQueries({ queryKey: setKey }),
-      ]);
-      const prevIds = queryClient.getQueryData<Set<string>>(idsKey);
-      const prevSet = queryClient.getQueryData<Set<string>>(setKey);
-      if (prevIds) {
-        const next = new Set(prevIds);
-        if (isSaved) next.delete(itemId);
-        else next.add(itemId);
-        queryClient.setQueryData(idsKey, next);
-      }
-      if (prevSet) {
-        const next = new Set(prevSet);
-        const k = `resource:${itemId}`;
-        if (isSaved) next.delete(k);
-        else next.add(k);
-        queryClient.setQueryData(setKey, next);
-      }
-      return { idsKey, setKey, prevIds, prevSet };
-    },
-    onSuccess: (_d, vars) => {
-      // Keep the profile's saved-resources list eventually consistent; it isn't
-      // mounted here, so this only marks it stale (no refetch, no flicker).
-      queryClient.invalidateQueries({ queryKey: ["my-saved-resources"] });
-      toast.success(vars.isSaved ? "Removed from saved" : "Saved to your resources");
-    },
-    onError: (err: any, _v, ctx) => {
-      if (ctx?.prevIds !== undefined) queryClient.setQueryData(ctx.idsKey, ctx.prevIds);
-      if (ctx?.prevSet !== undefined) queryClient.setQueryData(ctx.setKey, ctx.prevSet);
-      if (err?.message === "not-signed-in") toast.error("Please sign in to save");
-      else toast.error(err?.message || "Could not update saved");
-    },
-  });
 
   const { data: resources = [] } = useQuery({
     queryKey: ["bush-telegraph"],
@@ -472,25 +398,13 @@ const BushTelegraph = () => {
                 count={section.items.length}
               />
               <div style={{ display: "flex", flexDirection: "column", gap: 12, padding: "0 20px" }}>
-                {section.items.map((r) => {
-                  const isSaved = !!(savedResourceIds && savedResourceIds.has(r.id));
-                  return (
-                    <ChannelCard
-                      key={r.id}
-                      r={r}
-                      onOpen={openResource}
-                      isSaved={isSaved}
-                      onToggleSave={(e) => {
-                        e.stopPropagation();
-                        if (!user) {
-                          toast.error("Please sign in to save");
-                          return;
-                        }
-                        toggleSave.mutate({ itemId: r.id, isSaved });
-                      }}
-                    />
-                  );
-                })}
+                {section.items.map((r) => (
+                  <ChannelCard
+                    key={r.id}
+                    r={r}
+                    onOpen={openResource}
+                  />
+                ))}
               </div>
             </div>
           );
