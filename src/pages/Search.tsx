@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserPlus, UserCheck, Heart, UserCircle, Clock } from "lucide-react";
+import { Search as SearchIcon, Users, FolderOpen, Calendar, Tag, UserCheck, Heart, UserCircle } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -419,6 +419,9 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
     toast.success("User unblocked");
   };
 
+  const label = isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow";
+  const isFollow = label === "Follow";
+
   return (
     <button
       type="button"
@@ -433,23 +436,23 @@ const InlineFollowButton = ({ targetUserId }: { targetUserId: string }) => {
         else follow.mutate();
       }}
       style={{
-        background: "transparent",
-        border: `1.5px solid ${PRIMARY}`,
+        background: isFollow ? "#423324" : "#F2EFE5",
+        border: "none",
         borderRadius: 999,
         padding: "8px 18px",
         fontFamily: FONT,
         fontSize: 13,
         fontWeight: 700,
-        color: PRIMARY,
+        color: isFollow ? "#FFFFFF" : "#020202",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
-        gap: 6,
+        justifyContent: "center",
         letterSpacing: "0.02em",
+        minWidth: 92,
       }}
     >
-      {isBlocked ? null : isAccepted ? <UserCheck size={14} /> : isPending ? <Clock size={14} /> : <UserPlus size={14} />}
-      {isBlocked ? "Unblock" : isAccepted ? "Following" : isPending ? "Requested" : "Follow"}
+      {label}
     </button>
   );
 };

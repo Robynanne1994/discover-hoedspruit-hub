@@ -198,16 +198,17 @@ const PrefRow = ({
           style={{
             display: "inline-flex",
             alignItems: "center",
-            gap: 6,
+            gap: 4,
             marginTop: 8,
             fontFamily: SANS,
             fontSize: 13,
             fontWeight: 500,
-            color: C.rust,
+            color: "#F26A48",
             textDecoration: "none",
           }}
         >
-          {linkText}
+          {linkText?.replace(" ›", "")}
+          <span style={{ fontSize: 11 }}>→</span>
         </Link>
       )}
     </div>
