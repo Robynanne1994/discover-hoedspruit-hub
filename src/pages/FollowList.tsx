@@ -30,22 +30,16 @@ const COLOR = {
   muted: "#8A8275",
   subtle: "rgba(26,26,26,0.55)",
   line: "rgba(26,26,26,0.10)",
+  pillBorder: "#E8E4DF",
+  brown: "#423324",
+  soft: "#F2EFE5",
 };
 
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const AVATAR_GRADIENTS = [
-  "linear-gradient(135deg, #8a6f4d, #c4a374)",
-  "linear-gradient(135deg, #6b7a5a, #a8b58c)",
-  "linear-gradient(135deg, #a86b52, #d4a087)",
-  "linear-gradient(135deg, #5d6b7a, #8fa3b3)",
-  "linear-gradient(135deg, #8a5d6b, #c08a96)",
-  "linear-gradient(135deg, #7a6b4a, #b8a473)",
-];
-
 const initialsOf = (name?: string | null) => {
-  if (!name) return "·";
+  if (!name) return "";
   return name
     .trim()
     .split(/\s+/)
