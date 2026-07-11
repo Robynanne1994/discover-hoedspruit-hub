@@ -640,7 +640,8 @@ const ListingsResults = ({ query }: { query: string }) => {
           image={l.image_url}
           title={l.title}
           titleOverride={(l as any).title_override}
-          subtitle={null}
+          subtitle={l.location || null}
+          initials={initialsOf((l as any).title_override || l.title, undefined)}
           action={<InlineSaveButton itemId={l.id} itemType="listing" />}
         />
       ))}
