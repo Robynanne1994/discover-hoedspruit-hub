@@ -197,8 +197,8 @@ function SubPills<T extends string>({ value, onChange, options }: SubPillsProps<
             onClick={() => onChange(opt.id)}
             style={{
               flex: 1,
-              background: active ? INK : WHITE,
-              border: `1px solid ${active ? INK : PILL_BORDER}`,
+              background: active ? "#423324" : WHITE,
+              border: `1px solid ${active ? "#423324" : PILL_BORDER}`,
               borderRadius: 999,
               padding: "10px 12px",
               cursor: "pointer",
