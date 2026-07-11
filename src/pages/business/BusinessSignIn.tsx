@@ -6,6 +6,17 @@ import { Button, Input, Label, FieldError, Body, H2, Small } from "@/components/
 import { toast } from "sonner";
 import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 
+const LABEL_STYLE: React.CSSProperties = {
+  fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+  fontWeight: 400,
+  fontSize: 12,
+  lineHeight: "14.4px",
+  letterSpacing: "0.24px",
+  textTransform: "none",
+  color: "#8A8480",
+  marginBottom: 6,
+};
+
 const BusinessSignIn = () => {
   const navigate = useNavigate();
   const { user, authLoading, isOwner, loading } = useBusinessOwner();
