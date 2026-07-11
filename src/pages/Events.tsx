@@ -867,8 +867,8 @@ const Events = () => {
               ref={active ? activePillRef : undefined}
               onClick={() => handleFilterPill(f.value)}
               style={{
-                background: active ? "#2E2418" : "#FFFFFF",
-                border: `1px solid ${active ? "#2E2418" : "#E2DAC6"}`,
+                background: active ? "#423324" : "#FFFFFF",
+                border: `1px solid ${active ? "#423324" : "#E2DAC6"}`,
                 borderRadius: 999,
                 padding: "8px 18px",
                 cursor: "pointer",
