@@ -5,12 +5,20 @@ import { useGuestAuth } from "@/hooks/useGuestAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "sonner";
 import { ArrowLeft, Eye, EyeOff, AlertCircle } from "lucide-react";
 import hhLogo from "@/assets/hh-logo.png";
 import Seo from "@/components/Seo";
 import PageHeader from "@/components/PageHeader";
 import { validatePassword, PASSWORD_REQUIREMENTS_TEXT } from "@/lib/passwordPolicy";
+
 
 
 const SIGNIN_LABEL_STYLE: React.CSSProperties = {
@@ -55,9 +63,10 @@ const Welcome = () => {
   const { signIn, signUp } = useAuth();
 
   const RESIDENCY_OPTIONS = [
-    "I live in Hoedspruit",
-    "I am a visitor in Hoedspruit",
+    { label: "Local", value: "I live in Hoedspruit" },
+    { label: "Visitor", value: "I am a visitor in Hoedspruit" },
   ];
+
 
   useEffect(() => {
     if (location.state?.mode) setMode(location.state.mode);
@@ -252,9 +261,17 @@ const Welcome = () => {
         title={mode === "signup" ? "Create Account" : "Welcome Back"}
         onBack={() => setMode("welcome")}
       />
+      <style>{`
+        .residency-select [data-radix-select-trigger-icon] > svg {
+          opacity: 1 !important;
+          color: #8A8480 !important;
+        }
+      `}</style>
 
       <div className={`flex-1 px-6 pb-12 flex flex-col ${mode === "signup" ? "pt-4" : "pt-6"}`}>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <div className={mode === "signup" ? "space-y-5" : "space-y-4"}>
+
           {mode === "signup" && (
             <>
               <div>
@@ -306,28 +323,23 @@ const Welcome = () => {
                 <Label style={CREATE_LABEL_STYLE}>
                   Are you a local or a visitor?
                 </Label>
-                <div className="flex flex-col gap-2">
-                  {RESIDENCY_OPTIONS.map((opt) => {
-                    const active = residency === opt;
-                    return (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => setResidency(opt)}
-                        className="h-12 rounded-xl text-left px-4 text-[15px] transition-colors"
-                        style={{
-                          background: active ? "#423324" : "#ffffff",
-                          color: active ? "#FFFFFF" : "#020202",
-                          border: active ? "1.5px solid #423324" : "1.5px solid #d9d2c0",
-                          fontWeight: active ? 600 : 400,
-                        }}
-                      >
-                        {opt}
-                      </button>
-                    );
-                  })}
-                </div>
+                <Select value={residency} onValueChange={setResidency}>
+                  <SelectTrigger className="residency-select h-12 w-full rounded-xl border border-border bg-white px-4 text-[15px]">
+                    <SelectValue
+                      placeholder="Select one"
+                      style={{ color: residency ? "#020202" : "#8A8480" }}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {RESIDENCY_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={opt.value} className="text-[15px]">
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
+
             </>
           )}
           {authError && mode === "signin" && (
@@ -394,10 +406,12 @@ const Welcome = () => {
               </button>
             </div>
           </div>
+          </div>
 
           <Button
+
             type="submit"
-            className="w-full h-12 font-semibold rounded-full mt-2"
+            className="w-full h-12 font-semibold rounded-full mt-6"
             style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
             disabled={loading}
           >
@@ -408,6 +422,7 @@ const Welcome = () => {
               : "Sign in"}
           </Button>
         </form>
+
 
         <p className="text-center text-sm mt-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account yet?"}{" "}
