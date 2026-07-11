@@ -70,7 +70,9 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
 export const Section = ({ heading, children }: { heading: string; children: ReactNode }) => {
   return (
     <div>
-      <h2
+      <div
+        role="heading"
+        aria-level={2}
         style={{
           fontFamily: DISPLAY,
           fontWeight: 700,
@@ -83,7 +85,7 @@ export const Section = ({ heading, children }: { heading: string; children: Reac
         }}
       >
         {heading}
-      </h2>
+      </div>
       <section
         style={{
           background: CARD,
