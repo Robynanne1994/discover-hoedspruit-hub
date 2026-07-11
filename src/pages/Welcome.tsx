@@ -409,7 +409,7 @@ const Welcome = () => {
 
           <Button
             type="submit"
-            className="w-full h-12 font-semibold rounded-full mt-2"
+            className="w-full h-12 font-semibold rounded-full mt-6"
             style={{ background: "#423324", color: "#FFFFFF", fontSize: 16 }}
             disabled={loading}
           >
@@ -420,6 +420,7 @@ const Welcome = () => {
               : "Sign in"}
           </Button>
         </form>
+
 
         <p className="text-center text-sm mt-6" style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", color: "#2b2420" }}>
           {mode === "signup" ? "Already have an account?" : "Don't have an account yet?"}{" "}
