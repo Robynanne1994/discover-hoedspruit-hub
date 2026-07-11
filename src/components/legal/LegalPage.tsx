@@ -2,9 +2,9 @@ import { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/PageHeader";
 import Seo from "@/components/Seo";
-import HomeSectionHead from "@/components/home/HomeSectionHead";
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const DISPLAY = '"Bricolage Grotesque", ' + SANS;
 
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
@@ -70,7 +70,22 @@ export const LegalPage = ({ title, footer, lastUpdated, children }: LegalPagePro
 export const Section = ({ heading, children }: { heading: string; children: ReactNode }) => {
   return (
     <div>
-      <HomeSectionHead primary={heading} />
+      <div
+        role="heading"
+        aria-level={2}
+        style={{
+          fontFamily: DISPLAY,
+          fontWeight: 700,
+          fontSize: 15,
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          color: "#1A1A1A",
+          margin: "0 0 12px 0",
+          padding: 0,
+        }}
+      >
+        {heading}
+      </div>
       <section
         style={{
           background: CARD,
