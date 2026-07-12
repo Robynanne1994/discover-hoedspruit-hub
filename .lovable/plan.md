@@ -1,25 +1,24 @@
-Plan: Restyle the SpecialCard footer on `/specials` to match the uploaded screenshot.
+Redesign `src/components/BottomNav.tsx` to match the attached screenshot while keeping existing logic (icon-only when inactive, icon + label when active) and the Helvetica Neue font stack.
 
-Scope
-- File: `src/pages/Specials.tsx`
-- Component: `SpecialCard` footer only (the bottom row with clock icon, validity text, and price/savings pill).
+## Visual changes
 
-Changes
-1. Split validity text into two lines:
-   - Add a helper (or extend `formatValidTill`) that returns a `{ primary, secondary }` object.
-   - `Ongoing` → primary "Ongoing", secondary "No expiry".
-   - `Valid until <date>` → primary "Valid until", secondary "<date>".
-   - `Valid for <date>` → primary "Valid for", secondary "<date>".
-   - Top line is rendered slightly darker/bolder; bottom line is smaller and muted.
-2. Icon treatment:
-   - Wrap the `Clock` icon in a light cream circular background so it sits beside both text lines.
-   - Size the icon to fit the two-line height (e.g. 16–18px inside a 32–36px circle).
-3. Add a vertical divider:
-   - 1px line between the validity block and the price pill, using the existing divider colour (`COLOR.divider` / `#EAE4D5`).
-4. Restyle the price/savings pill:
-   - Background: olive green (e.g. `#6B7C5C`).
-   - Text: white, bold, uppercase, small tracking.
-   - Height/padding sized to match the two-line validity block height.
-5. Keep existing fonts (Helvetica Neue), card background, and corner radii; only the footer row changes.
+- Bar background: change from dark `#48484a` to cream/ivory `#F5F0E8` (matches screenshot's light pill bar).
+- Bar shape: rounded pill, subtle shadow, thin light border. Height ~64–68px to match the screenshot's more compact bar.
+- Inactive items:
+  - Icon color: dark ink `#1A1A1A` (currently white).
+  - Under-icon label: HIDDEN (keep current logic — no text when inactive), even though the screenshot shows labels. Per user: "keep my logic with just icons and then text when active".
+  - Stroke width ~1.75, size ~22.
+- Active item:
+  - Pill background: brand brown `#423324` (screenshot's dark brown pill).
+  - Icon color: white, size ~22, stroke ~2.
+  - Label: white, Helvetica Neue 13px, weight 600, letter-spacing 0.01em, shown to the right of the icon (current behavior preserved).
+  - Pill padding tightened to match screenshot proportions (~0 14px, height ~44px).
+- Spacing: even distribution across 5 items; inactive items shrink, active item expands (existing flex logic kept).
 
-No other pages or components are affected. A typecheck will be run after the edit.
+## Non-changes
+
+- Keep 5 nav items and their routes.
+- Keep active-route detection logic.
+- Keep guest vs. signed-in Profile destination.
+- Keep font family (Helvetica Neue).
+- Do not touch any other file.
