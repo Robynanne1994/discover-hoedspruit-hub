@@ -31,7 +31,7 @@ import { useRequireAuth } from "@/hooks/useGuestAuth";
 
 const PAGE_BG = "#E6E0CC";
 const CREAM = "#f5f0e8";
-const INK = "#020202";
+const INK = "#1A1A1A";
 const BODY = "#2b2420";
 const MUTED = "#6b5d4a";
 const LINE = "rgba(0,0,0,0.08)";

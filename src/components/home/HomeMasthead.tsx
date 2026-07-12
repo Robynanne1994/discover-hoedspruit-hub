@@ -38,7 +38,7 @@ const HomeMasthead = () => {
                 fontSize: 22,
                 lineHeight: 1.05,
                 letterSpacing: "0.01em",
-                color: "#020202",
+                color: "#1A1A1A",
               }}
             >
               Hello
@@ -75,7 +75,7 @@ const HomeMasthead = () => {
               border: "1px solid rgba(0,0,0,0.06)",
             }}
           >
-            <Search size={18} color="#020202" strokeWidth={1.8} />
+            <Search size={18} color="#1A1A1A" strokeWidth={1.8} />
           </Link>
           {user && (
             <Link
@@ -93,7 +93,7 @@ const HomeMasthead = () => {
                 border: "1px solid rgba(0,0,0,0.06)",
               }}
             >
-              <Bell size={18} color="#020202" strokeWidth={1.8} />
+              <Bell size={18} color="#1A1A1A" strokeWidth={1.8} />
               {unread > 0 && (
                 <span
                   aria-hidden

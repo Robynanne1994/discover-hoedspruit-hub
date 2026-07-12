@@ -7,7 +7,7 @@ const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const BG = "#EBEBEB";
-const INK = "#020202";
+const INK = "#1A1A1A";
 const MUTED = "rgba(2,2,2,0.55)";
 const DIVIDER = "rgba(2,2,2,0.08)";
 const ACCENT = "#5C6446";

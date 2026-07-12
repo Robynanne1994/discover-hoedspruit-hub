@@ -114,7 +114,7 @@ const HomeWhatsOn = () => {
                     }}
                   >
                     <span style={{ fontFamily: HN, fontSize: 9, letterSpacing: "0.08em", color: "#6B6A5E" }}>{monLbl}</span>
-                    <span style={{ fontFamily: HN, fontSize: 17, color: "#020202", marginTop: 2 }}>{dayNum}</span>
+                    <span style={{ fontFamily: HN, fontSize: 17, color: "#1A1A1A", marginTop: 2 }}>{dayNum}</span>
                   </div>
                 )}
                 <div style={{ position: "absolute", left: 14, right: 14, bottom: 14 }}>

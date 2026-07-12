@@ -9,7 +9,7 @@ import { Tag, Calendar, Pencil, ArrowUpRight, MapPin, Star } from "lucide-react"
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
-const INK = "#020202";
+const INK = "#1A1A1A";
 const BODY = "#2B2420";
 const MUTED = "rgba(2,2,2,0.55)";
 const IVORY = "#f5f0e8";

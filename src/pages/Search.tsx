@@ -16,7 +16,7 @@ import Seo from "@/components/Seo";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PRIMARY = "#715a3d";
-const INK = "#020202";
+const INK = "#1A1A1A";
 const BODY = "#2b2420";
 const PAGE_BG = "#E6E0CC";
 const IVORY = "#DCD4BD";
@@ -250,7 +250,7 @@ const SectionHeader = ({ label, count }: { label: string; count?: number }) => (
         fontWeight: 800,
         letterSpacing: "0.06em",
         textTransform: "uppercase",
-        color: "#020202",
+        color: "#1A1A1A",
       }}
     >
       {count !== undefined ? `${label} (${count})` : label}
@@ -446,7 +446,7 @@ const InlineFollowButton = ({ targetUserId, followsMe }: { targetUserId: string;
         fontFamily: FONT,
         fontSize: 13,
         fontWeight: 700,
-        color: isFollow ? "#FFFFFF" : "#020202",
+        color: isFollow ? "#FFFFFF" : "#1A1A1A",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",

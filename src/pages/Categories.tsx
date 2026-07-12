@@ -14,7 +14,7 @@ const FONT_BODY = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const COLORS = {
   bg: "#E6E0CC",
   card: "#FFFFFF",
-  ink: "#020202",
+  ink: "#1A1A1A",
   muted: "#9A9A92",
   divider: "rgba(2,2,2,0.08)",
   emergencyBg: "#FBE6E6",
@@ -206,7 +206,7 @@ const Categories = () => {
                 cursor: "pointer",
               }}
             >
-              <ArrowLeft size={18} strokeWidth={1.8} color="#020202" />
+              <ArrowLeft size={18} strokeWidth={1.8} color="#1A1A1A" />
             </button>
           ) : null
         }
@@ -227,9 +227,9 @@ const Categories = () => {
             }}
           >
             {searchOpen ? (
-              <X size={18} strokeWidth={1.8} color="#020202" />
+              <X size={18} strokeWidth={1.8} color="#1A1A1A" />
             ) : (
-              <Search size={18} strokeWidth={1.8} color="#020202" />
+              <Search size={18} strokeWidth={1.8} color="#1A1A1A" />
             )}
           </button>
         }

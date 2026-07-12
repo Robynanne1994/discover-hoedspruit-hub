@@ -24,7 +24,7 @@ const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: Bus
   const isDark = theme === "dark";
   const bg = isDark ? "#555340" : "#EBEBEB";
   const fg = isDark ? "#FFFFFF" : "#2B2420";
-  const headingColor = isDark ? "#FFFFFF" : "#020202";
+  const headingColor = isDark ? "#FFFFFF" : "#1A1A1A";
 
   return (
     <div style={{ minHeight: "100vh", background: bg, fontFamily: FONT, color: fg }}>

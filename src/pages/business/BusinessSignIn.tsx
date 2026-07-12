@@ -62,7 +62,7 @@ const BusinessSignIn = () => {
         <FieldError>{err}</FieldError>
         <Button type="submit" full disabled={busy}>{busy ? "Signing in..." : "Sign in"}</Button>
         <Small soft style={{ textAlign: "center" }}>
-          New here? <Link to="/business/sign-up" style={{ color: "#020202", textDecoration: "underline" }}>Create an account</Link>
+          New here? <Link to="/business/sign-up" style={{ color: "#1A1A1A", textDecoration: "underline" }}>Create an account</Link>
         </Small>
       </form>
     </BusinessShell>

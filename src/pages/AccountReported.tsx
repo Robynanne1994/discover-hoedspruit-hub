@@ -64,7 +64,7 @@ const StatusPill = ({ status }: { status: string }) => {
 };
 
 const SHEET_BG = "#f5f0e8";
-const HEADING = "#020202";
+const HEADING = "#1A1A1A";
 const BODY = "#2b2420";
 const LABEL = "#8a7a63";
 const DIVIDER = "#e2dccb";

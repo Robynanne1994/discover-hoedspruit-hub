@@ -4,7 +4,7 @@ import { useBusinessOwner } from "@/hooks/useBusinessOwner";
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const Loading = () => (
-  <div style={{ minHeight: "100vh", background: "#5C6446", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, color: "#020202" }}>
+  <div style={{ minHeight: "100vh", background: "#5C6446", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: FONT, color: "#1A1A1A" }}>
     Loading...
   </div>
 );
