@@ -85,7 +85,7 @@ const rowLabelStyle: React.CSSProperties = {
 
 const rowValueStyle: React.CSSProperties = {
   fontFamily: FF,
-  fontSize: 17,
+  fontSize: 15,
   fontWeight: 400,
   lineHeight: 1.3,
   letterSpacing: "-0.1px",
