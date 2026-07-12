@@ -188,7 +188,7 @@ const WeekStrip = ({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h2
           style={{
-            fontFamily: SANS,
+            fontFamily: HEAD,
             fontWeight: 700,
             fontSize: 18,
             color: C.ink,
