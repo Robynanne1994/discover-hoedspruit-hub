@@ -782,7 +782,7 @@ const CategoryPage = () => {
                 width: 40,
                 height: 40,
                 borderRadius: "50%",
-                background: activeFilterCount > 0 ? "#2A2A24" : "#FFFFFF",
+                background: activeFilterCount > 0 ? "#423324" : "#FFFFFF",
                 border: "none",
                 display: "inline-flex",
                 alignItems: "center",
