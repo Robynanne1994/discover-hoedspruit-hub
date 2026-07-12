@@ -688,16 +688,16 @@ const EventDetail = () => {
               {sectionHeading("Pricing")}
               <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
                 {(() => {
-                  const sections: { Icon: any; label: string; body: React.ReactNode }[] = [];
+                  const sections: { Icon: any; label: string; body: React.ReactNode; compact?: boolean }[] = [];
                   if (price) {
                     sections.push({
-                      Icon: Banknote, label: "Price",
+                      Icon: Banknote, label: "Price", compact: true,
                       body: <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{price}</div>,
                     });
                   }
                   if (priceNotes.length > 0) {
                     sections.push({
-                      Icon: ReceiptText, label: "Price Notes",
+                      Icon: ReceiptText, label: "Price Notes", compact: priceNotes.length === 1,
                       body: priceNotes.length === 1 ? (
                         <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>{priceNotes[0]}</div>
                       ) : (
@@ -729,15 +729,28 @@ const EventDetail = () => {
                       ),
                     });
                   }
-                  return sections.map((s, i) => (
-                  <div key={i} style={{ padding: 18, borderBottom: i < sections.length - 1 ? `1px solid ${C.divider}` : undefined }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 10, position: "relative", marginBottom: 10 }}>
-                        <s.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                        <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
+                  return sections.map((s, i) => {
+                    if (s.compact) {
+                      return (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderTop: i === 0 ? "none" : `1px solid ${C.divider}` }}>
+                          <s.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{s.label}</div>
+                            <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{s.body}</div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={i} style={{ padding: 18, borderBottom: i < sections.length - 1 ? `1px solid ${C.divider}` : undefined }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
+                          <s.Icon size={16} strokeWidth={1.5} color={C.primary} />
+                          <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
+                        </div>
+                        {s.body}
                       </div>
-                      {s.body}
-                    </div>
-                  ));
+                    );
+                  });
                 })()}
               </div>
             </div>
