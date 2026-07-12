@@ -1,6 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import { ArrowLeft, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -367,13 +368,10 @@ const FollowList = () => {
     if (isFollowers) {
       const url = `${window.location.origin}/profile/${id}`;
       try {
-        if (navigator.share) {
-          await navigator.share({ title: "My profile", url });
-        } else {
-          await navigator.clipboard.writeText(url);
-        }
+        await navigator.clipboard.writeText(url);
+        toast.success("Link copied!");
       } catch {
-        /* no-op */
+        toast.error("Could not copy link");
       }
     } else {
       navigate("/search", { state: { fromProfile: true, profileId: id } });

@@ -6,7 +6,8 @@ import ImageLightbox from "@/components/ImageLightbox";
 import EventEditDialog from "@/components/admin/EventEditDialog";
 import {
   Calendar, Clock, MapPin, RotateCcw, Share2, ArrowUpRight, Heart,
-  Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, StickyNote, Check,
+  Mail, Phone, Globe, Banknote, Pencil, Send, Navigation, CalendarPlus, ExternalLink, Check,
+  ReceiptText, NotebookPen,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
@@ -585,7 +586,7 @@ const EventDetail = () => {
   }
   if (notes.length > 0) {
     detailRows.push({
-      Icon: StickyNote,
+      Icon: NotebookPen,
       label: "Notes",
       value: notes.length === 1 ? (
         <span style={{ whiteSpace: "pre-line" }}>{notes[0]}</span>
@@ -687,16 +688,16 @@ const EventDetail = () => {
               {sectionHeading("Pricing")}
               <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
                 {(() => {
-                  const sections: { Icon: any; label: string; body: React.ReactNode }[] = [];
+                  const sections: { Icon: any; label: string; body: React.ReactNode; compact?: boolean }[] = [];
                   if (price) {
                     sections.push({
-                      Icon: Banknote, label: "Price",
+                      Icon: Banknote, label: "Price", compact: true,
                       body: <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{price}</div>,
                     });
                   }
                   if (priceNotes.length > 0) {
                     sections.push({
-                      Icon: StickyNote, label: "Price Notes",
+                      Icon: ReceiptText, label: "Price Notes", compact: priceNotes.length === 1,
                       body: priceNotes.length === 1 ? (
                         <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>{priceNotes[0]}</div>
                       ) : (
@@ -728,15 +729,29 @@ const EventDetail = () => {
                       ),
                     });
                   }
-                  return sections.map((s, i) => (
-                  <div key={i} style={{ padding: 18, borderBottom: i < sections.length - 1 ? `1px solid ${C.divider}` : undefined }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 10, position: "relative", marginBottom: 10 }}>
-                        <s.Icon size={18} strokeWidth={1.5} color={C.primary} />
-                        <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
+                  return sections.map((s, i) => {
+                    const isLast = i === sections.length - 1;
+                    if (s.compact) {
+                      return (
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderBottom: isLast ? undefined : `1px solid ${C.divider}` }}>
+                          <s.Icon size={18} strokeWidth={1.5} color={C.primary} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{s.label}</div>
+                            <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{s.body}</div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return (
+                      <div key={i} style={{ padding: 18, borderBottom: isLast ? undefined : `1px solid ${C.divider}` }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
+                          <s.Icon size={16} strokeWidth={1.5} color={C.primary} />
+                          <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
+                        </div>
+                        {s.body}
                       </div>
-                      {s.body}
-                    </div>
-                  ));
+                    );
+                  });
                 })()}
               </div>
             </div>
