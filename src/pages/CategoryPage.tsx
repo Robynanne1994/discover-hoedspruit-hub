@@ -676,7 +676,7 @@ const CategoryPage = () => {
   const CARD_BG = "#FFFFFF";
   const INK = "#1A1A1A";
   const MUTED = "#6B6A5E";
-  const PILL_DARK = "#2A2A24";
+  const PILL_DARK = "#423324";
   const OPEN_COLOR = "#2E7D4F";
   const CLOSED_COLOR = "#C0392B";
 
