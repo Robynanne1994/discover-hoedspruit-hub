@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft } from "lucide-react";
+import { Search, SlidersHorizontal, X, Store, Clock, Tag, ArrowLeft, MapPin } from "lucide-react";
 import SearchBar from "@/components/ui/SearchBar";
 import PageHeader from "@/components/PageHeader";
 import { RefineDrawer, RefineSection, RefineChip, RefineOption, RefineRectOption } from "@/components/RefineDrawer";
@@ -573,13 +573,17 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
         {special.business_name && (
           <div
             style={{
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 4,
               fontFamily: SANS,
               fontSize: 13,
               color: COLOR.mutedInk,
               marginTop: 2,
             }}
           >
-            {special.business_name}
+            <MapPin size={13} strokeWidth={1.6} style={{ marginTop: 2, flexShrink: 0 }} />
+            <span style={{ wordBreak: "break-word", overflowWrap: "anywhere" }}>{special.business_name}</span>
           </div>
         )}
 
