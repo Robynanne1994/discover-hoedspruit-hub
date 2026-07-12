@@ -554,7 +554,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
       </div>
 
       {/* Body */}
-      <div style={{ padding: "14px 18px 18px 18px" }}>
+      <div style={{ padding: "14px 14px 14px 14px" }}>
         <h3
           {...noTitleCaseProps(special)}
           style={{
@@ -584,7 +584,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
         )}
 
         {/* Divider */}
-        <div style={{ height: 1, background: COLOR.divider, margin: "8px 0 14px 0" }} />
+        <div style={{ height: 1, background: COLOR.divider, margin: "8px 0 12px 0" }} />
 
         {/* Footer */}
         <div style={{ display: "flex", alignItems: "center" }}>
@@ -593,7 +593,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 8,
+              gap: 6,
               flex: 1,
               minWidth: 0,
               justifyContent: "flex-start",
@@ -601,8 +601,8 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
           >
             <div
               style={{
-                width: 34,
-                height: 34,
+                width: 32,
+                height: 32,
                 borderRadius: 999,
                 background: "#F4EFE3",
                 display: "flex",
@@ -611,9 +611,9 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
                 flexShrink: 0,
               }}
             >
-              <Clock size={16} strokeWidth={1.6} color={COLOR.mutedInk} />
+              <Clock size={15} strokeWidth={1.6} color={COLOR.mutedInk} />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 1, minWidth: 0 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 0, minWidth: 0 }}>
               <span
                 style={{
                   fontFamily: SANS,
@@ -641,7 +641,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
 
           {/* Divider — centred between the two pieces */}
           {priceValue ? (
-            <div style={{ width: 1, height: 34, background: COLOR.divider, flexShrink: 0, margin: "0 12px" }} />
+            <div style={{ width: 1, height: 32, background: COLOR.divider, flexShrink: 0, margin: "0 8px" }} />
           ) : null}
 
           {/* Price pill */}
@@ -668,8 +668,8 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
                   fontWeight: 700,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
-                  padding: "0 16px",
-                  height: 34,
+                  padding: "0 12px",
+                  height: 32,
                   borderRadius: 9999,
                 }}
               >
