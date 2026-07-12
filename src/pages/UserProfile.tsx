@@ -748,7 +748,7 @@ const UserProfile = () => {
           >
             <h2
               style={{
-                fontFamily: SANS,
+                fontFamily: HEAD,
                 fontWeight: 600,
                 fontSize: 15,
                 letterSpacing: "0.01em",
