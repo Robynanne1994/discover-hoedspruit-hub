@@ -57,7 +57,12 @@ const savingValue = (s: any): number => {
   return -Infinity;
 };
 
-const formatValidTill = (s: any): string => {
+interface ValidityLines {
+  primary: string;
+  secondary: string;
+}
+
+const formatValidTill = (s: any): ValidityLines => {
   const from = s.valid_from ? new Date(s.valid_from) : null;
   const until = s.valid_until ? new Date(s.valid_until) : null;
   if (from && until) {
@@ -65,10 +70,10 @@ const formatValidTill = (s: any): string => {
       from.getFullYear() === until.getFullYear() &&
       from.getMonth() === until.getMonth() &&
       from.getDate() === until.getDate();
-    if (sameDay) return `Valid for ${format(until, "d MMMM yyyy")}`;
+    if (sameDay) return { primary: "Valid for", secondary: format(until, "d MMMM yyyy") };
   }
-  if (until) return `Valid until ${format(until, "d MMMM yyyy")}`;
-  return "Ongoing";
+  if (until) return { primary: "Valid until", secondary: format(until, "d MMMM yyyy") };
+  return { primary: "Ongoing", secondary: "No expiry" };
 };
 
 const Specials = () => {
