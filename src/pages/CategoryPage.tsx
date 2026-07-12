@@ -697,20 +697,20 @@ const CategoryPage = () => {
       onClick={onClick}
       style={{
         flexShrink: 0,
-        height: 38,
-        padding: "0 16px",
+        height: 30,
+        padding: "0 12px",
         borderRadius: 9999,
         background: active ? "#423324" : "#FFFFFF",
         color: active ? "#FFFFFF" : INK,
         border: active ? "1px solid #423324" : "none",
         fontFamily: sans,
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: 500,
         letterSpacing: "0.08em",
         textTransform: "uppercase",
         display: "inline-flex",
         alignItems: "center",
-        gap: 8,
+        gap: 6,
         cursor: "pointer",
       }}
     >
