@@ -27,7 +27,7 @@ const BottomNav = () => {
         borderRadius: "32px 32px 0 0",
         height: 66,
         padding: "0 10px",
-        border: "1px solid rgba(0,0,0,0.05)",
+        borderTop: "1px solid rgba(0,0,0,0.08)",
         boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
       }}
     >
