@@ -57,7 +57,12 @@ const savingValue = (s: any): number => {
   return -Infinity;
 };
 
-const formatValidTill = (s: any): string => {
+interface ValidityLines {
+  primary: string;
+  secondary: string;
+}
+
+const formatValidTill = (s: any): ValidityLines => {
   const from = s.valid_from ? new Date(s.valid_from) : null;
   const until = s.valid_until ? new Date(s.valid_until) : null;
   if (from && until) {
@@ -65,10 +70,10 @@ const formatValidTill = (s: any): string => {
       from.getFullYear() === until.getFullYear() &&
       from.getMonth() === until.getMonth() &&
       from.getDate() === until.getDate();
-    if (sameDay) return `Valid for ${format(until, "d MMMM yyyy")}`;
+    if (sameDay) return { primary: "Valid for", secondary: format(until, "d MMMM yyyy") };
   }
-  if (until) return `Valid until ${format(until, "d MMMM yyyy")}`;
-  return "Ongoing";
+  if (until) return { primary: "Valid until", secondary: format(until, "d MMMM yyyy") };
+  return { primary: "Ongoing", secondary: "No expiry" };
 };
 
 const Specials = () => {
@@ -502,7 +507,8 @@ const Specials = () => {
 };
 
 const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }) => {
-  const validText = formatValidTill(special);
+  const { primary: validPrimary, secondary: validSecondary } = formatValidTill(special);
+  const priceValue = special.price || (special as any).savings || special.original_price;
   return (
     <article
       onClick={onClick}
@@ -581,23 +587,64 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
         <div style={{ height: 1, background: COLOR.divider, margin: "8px 0 14px 0" }} />
 
         {/* Footer */}
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* Validity block */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: 6,
-              fontFamily: SANS,
-              fontSize: 13,
-              color: COLOR.mutedInk,
+              gap: 8,
               flex: 1,
               minWidth: 0,
             }}
           >
-            <Clock size={13} strokeWidth={1.6} color={COLOR.mutedInk} style={{ flexShrink: 0 }} />
-            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{validText}</span>
+            <div
+              style={{
+                width: 34,
+                height: 34,
+                borderRadius: 999,
+                background: "#F4EFE3",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <Clock size={16} strokeWidth={1.6} color={COLOR.mutedInk} />
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 1, minWidth: 0 }}>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  color: COLOR.ink,
+                  lineHeight: 1.3,
+                }}
+              >
+                {validPrimary}
+              </span>
+              <span
+                style={{
+                  fontFamily: SANS,
+                  fontSize: 11,
+                  fontWeight: 400,
+                  color: COLOR.mutedInk,
+                  lineHeight: 1.3,
+                }}
+              >
+                {validSecondary}
+              </span>
+            </div>
           </div>
-          {(special.price || (special as any).savings || special.original_price) ? (
+
+          {/* Divider */}
+          {priceValue ? (
+            <div style={{ width: 1, height: 34, background: COLOR.divider, flexShrink: 0 }} />
+          ) : null}
+
+          {/* Price pill */}
+          {priceValue ? (
             <span
               style={{
                 flexShrink: 0,
@@ -605,19 +652,19 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
                 alignItems: "center",
                 justifyContent: "center",
                 lineHeight: 1,
-                border: "1.5px solid #BFE5C8",
-                color: "#2E7D4F",
-                background: "#F1FAF3",
+                background: "#6B7C5C",
+                color: "#FFFFFF",
                 fontFamily: SANS,
                 fontSize: 12,
                 fontWeight: 700,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                padding: "6px 14px",
+                padding: "0 16px",
+                height: 34,
                 borderRadius: 9999,
               }}
             >
-              {special.price || (special as any).savings || special.original_price}
+              {priceValue}
             </span>
           ) : null}
         </div>
