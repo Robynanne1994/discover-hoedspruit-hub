@@ -20,11 +20,11 @@ const BottomNav = () => {
 
   return (
     <nav
-      className="fixed left-3 right-3 z-50 md:hidden"
+      className="fixed left-0 right-0 z-50 md:hidden"
       style={{
-        bottom: 12,
+        bottom: 0,
         background: BAR_BG,
-        borderRadius: 32,
+        borderRadius: "32px 32px 0 0",
         height: 66,
         padding: "0 10px",
         border: "1px solid rgba(0,0,0,0.05)",
