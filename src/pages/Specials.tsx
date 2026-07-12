@@ -587,7 +587,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
         <div style={{ height: 1, background: COLOR.divider, margin: "8px 0 14px 0" }} />
 
         {/* Footer */}
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ display: "flex", alignItems: "center" }}>
           {/* Validity block */}
           <div
             style={{
@@ -596,6 +596,7 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
               gap: 8,
               flex: 1,
               minWidth: 0,
+              justifyContent: "flex-start",
             }}
           >
             <div
@@ -638,34 +639,43 @@ const SpecialCard = ({ special, onClick }: { special: any; onClick: () => void }
             </div>
           </div>
 
-          {/* Divider */}
+          {/* Divider — centred between the two pieces */}
           {priceValue ? (
-            <div style={{ width: 1, height: 34, background: COLOR.divider, flexShrink: 0 }} />
+            <div style={{ width: 1, height: 34, background: COLOR.divider, flexShrink: 0, margin: "0 12px" }} />
           ) : null}
 
           {/* Price pill */}
           {priceValue ? (
-            <span
+            <div
               style={{
-                flexShrink: 0,
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                lineHeight: 1,
-                background: "#6B7C5C",
-                color: "#FFFFFF",
-                fontFamily: SANS,
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                padding: "0 16px",
-                height: 34,
-                borderRadius: 9999,
+                flex: 1,
+                display: "flex",
+                justifyContent: "flex-end",
+                minWidth: 0,
               }}
             >
-              {priceValue}
-            </span>
+              <span
+                style={{
+                  flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  lineHeight: 1,
+                  background: "#6B7C5C",
+                  color: "#FFFFFF",
+                  fontFamily: SANS,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  padding: "0 16px",
+                  height: 34,
+                  borderRadius: 9999,
+                }}
+              >
+                {priceValue}
+              </span>
+            </div>
           ) : null}
         </div>
       </div>
