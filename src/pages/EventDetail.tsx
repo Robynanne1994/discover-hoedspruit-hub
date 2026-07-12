@@ -730,9 +730,10 @@ const EventDetail = () => {
                     });
                   }
                   return sections.map((s, i) => {
+                    const isLast = i === sections.length - 1;
                     if (s.compact) {
                       return (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderTop: i === 0 ? "none" : `1px solid ${C.divider}` }}>
+                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", borderBottom: isLast ? undefined : `1px solid ${C.divider}` }}>
                           <s.Icon size={18} strokeWidth={1.5} color={C.primary} />
                           <div style={{ flex: 1, minWidth: 0 }}>
                             <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{s.label}</div>
@@ -742,7 +743,7 @@ const EventDetail = () => {
                       );
                     }
                     return (
-                      <div key={i} style={{ padding: 18, borderBottom: i < sections.length - 1 ? `1px solid ${C.divider}` : undefined }}>
+                      <div key={i} style={{ padding: 18, borderBottom: isLast ? undefined : `1px solid ${C.divider}` }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
                           <s.Icon size={16} strokeWidth={1.5} color={C.primary} />
                           <h3 style={{ margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12, letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1 }}>{s.label}</h3>
