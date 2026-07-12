@@ -20,6 +20,7 @@ const SUBTLE = "rgba(26,26,26,0.55)";
 const LINE = "rgba(26,26,26,0.10)";
 const RUST = "#9B5A3C";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) =>
   (s || "").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
