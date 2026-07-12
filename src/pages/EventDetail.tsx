@@ -697,7 +697,7 @@ const EventDetail = () => {
                   }
                   if (priceNotes.length > 0) {
                     sections.push({
-                      Icon: StickyNote, label: "Price Notes",
+                      Icon: ReceiptText, label: "Price Notes",
                       body: priceNotes.length === 1 ? (
                         <div style={{ fontFamily: FONT, fontSize: 14, fontWeight: 400, color: C.text, wordBreak: "break-word" }}>{priceNotes[0]}</div>
                       ) : (
