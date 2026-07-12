@@ -138,6 +138,15 @@ const Specials = () => {
     return ["All Specials", ...Array.from(set).filter(Boolean).sort((a, b) => a.localeCompare(b))];
   }, [specials]);
 
+  const tabIcon = (tab: string) => {
+    const t = tab.toLowerCase();
+    if (t === "all specials") return <Tag size={16} strokeWidth={1.8} />;
+    if (t.includes("accommodation") || t.includes("stay") || t.includes("sleep")) return <Bed size={16} strokeWidth={1.8} />;
+    if (t.includes("food") || t.includes("drink") || t.includes("restaurant") || t.includes("dining")) return <Utensils size={16} strokeWidth={1.8} />;
+    if (t.includes("activity") || t.includes("activities") || t.includes("adventure") || t.includes("tour")) return <PersonStanding size={16} strokeWidth={1.8} />;
+    return <Tag size={16} strokeWidth={1.8} />;
+  };
+
   // Counts per category tag, respecting search but not active category/filterType
   const categoryCounts = useMemo(() => {
     const map = new Map<string, number>();
