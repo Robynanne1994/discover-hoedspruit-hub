@@ -448,7 +448,7 @@ const MyProfile = () => {
                 <>
                   <h2
                     style={{
-                      fontFamily: SANS,
+                      fontFamily: HEAD,
                       fontWeight: 700,
                       fontSize: 15,
                       lineHeight: 1.2,
