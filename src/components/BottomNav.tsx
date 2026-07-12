@@ -71,8 +71,8 @@ const BottomNav = () => {
                 <span
                   style={{
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 13,
-                    fontWeight: 600,
+                    fontSize: 11,
+                    fontWeight: 500,
                     color: "#ffffff",
                     letterSpacing: "0.01em",
                     whiteSpace: "nowrap",
