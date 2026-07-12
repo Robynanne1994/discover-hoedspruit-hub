@@ -33,14 +33,29 @@ const BottomNav = () => {
     >
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 4 }}>
         {navItems.map((item) => {
-          const isActive =
-            item.href === "/"
-              ? location.pathname === "/"
-              : item.href === "/categories"
-                ? location.pathname.startsWith("/categories") ||
-                  location.pathname.startsWith("/category") ||
-                  location.pathname.startsWith("/listing")
-                : location.pathname.startsWith(item.href);
+          const path = location.pathname;
+          let isActive = false;
+          if (item.href === "/") {
+            isActive = path === "/";
+          } else if (item.href === "/categories") {
+            isActive =
+              path.startsWith("/categories") ||
+              path.startsWith("/category") ||
+              path.startsWith("/listing");
+          } else if (item.href === "/specials") {
+            isActive = path.startsWith("/specials");
+          } else if (item.href === "/events") {
+            isActive = path.startsWith("/events");
+          } else if (item.href === "/my-profile" || item.href === "/my-profile-guest") {
+            isActive =
+              path.startsWith("/my-profile") ||
+              path.startsWith("/my-account") ||
+              path.startsWith("/account-settings") ||
+              path.startsWith("/my-notifications") ||
+              path.startsWith("/notification-preferences") ||
+              path.startsWith("/notifications/categories") ||
+              path.startsWith("/follow-requests");
+          }
           const Icon = item.icon;
 
           return (
