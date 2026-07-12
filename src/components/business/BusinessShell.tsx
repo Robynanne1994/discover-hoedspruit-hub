@@ -61,7 +61,7 @@ const BusinessShell = ({ title, back, children, hideBack, theme = "light" }: Bus
             <BackArrowIcon size={24} />
           </button>
         )}
-        <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 22, fontWeight: 400, letterSpacing: "-0.3px", color: headingColor, margin: 0 }}>
+        <h1 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontStyle: "italic", fontSize: 22, fontWeight: 400, letterSpacing: "-0.3px", color: headingColor, margin: 0 }}>
           {title.toLowerCase()}
         </h1>
       </header>

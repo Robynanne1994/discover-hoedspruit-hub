@@ -181,7 +181,7 @@ const Welcome = () => {
           <img src={hhLogo} alt="Hello Hoedspruit" style={{ width: 220, height: "auto" }} />
           <h1
             style={{
-              fontFamily: "'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
+              fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', 'Helvetica World', Helvetica, Arial, sans-serif",
               color: "#423324",
               fontSize: 22,
               lineHeight: 1.2,

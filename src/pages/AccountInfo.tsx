@@ -1248,7 +1248,7 @@ const PhotoPickerSheet = ({
         </div>
         <h2
           style={{
-            fontFamily: FF,
+            fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif",
             fontWeight: 400,
             fontSize: 22,
             color: INK,
@@ -1394,7 +1394,7 @@ const ChangePasswordSheet = ({ onClose }: { onClose: () => void }) => {
             <X size={20} color={INK} strokeWidth={1.75} />
           </button>
         </div>
-        <h2 style={{ fontFamily: FF, fontWeight: 400, fontSize: 22, color: INK, margin: "0 0 8px" }}>Change Password</h2>
+        <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 22, color: INK, margin: "0 0 8px" }}>Change Password</h2>
         <p style={{ fontFamily: FF, fontSize: 14, lineHeight: 1.55, color: MUTED, margin: "0 0 20px" }}>
           Choose a strong new password. {PASSWORD_REQUIREMENTS_TEXT}
         </p>

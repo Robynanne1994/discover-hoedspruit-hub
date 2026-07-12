@@ -26,6 +26,7 @@ import Seo from "@/components/Seo";
 
 
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const C = {
   page: "#E6E0CC",
@@ -187,7 +188,7 @@ const WeekStrip = ({
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
         <h2
           style={{
-            fontFamily: SANS,
+            fontFamily: HEAD,
             fontWeight: 700,
             fontSize: 18,
             color: C.ink,
@@ -899,7 +900,7 @@ const Events = () => {
         >
           <h2
             style={{
-              fontFamily: SANS,
+              fontFamily: HEAD,
               fontWeight: 700,
               fontSize: 20,
               color: C.ink,

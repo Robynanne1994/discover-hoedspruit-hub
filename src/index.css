@@ -203,12 +203,15 @@ body {
 
 
   h1,
-  h2,
+  h2 {
+    font-family: "Bricolage Grotesque", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #1A1A1A;
+  }
   h3,
   h4,
   h5,
   h6 {
-    font-family: var(--font-heading);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 400;
     letter-spacing: -0.02em;
     text-transform: capitalize;
@@ -217,20 +220,19 @@ body {
 
   h1 {
     @apply text-[53px] leading-[1];
-    text-transform: lowercase !important;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-transform: capitalize;
   }
   h1.title-cap {
-    text-transform: capitalize !important;
+    text-transform: capitalize;
   }
   h2 {
-    font-family: var(--font-heading);
-    font-weight: 400;
-    font-style: normal;
-    font-size: 32px;
+    font-size: 24px;
+    font-weight: 700;
     line-height: 1;
     letter-spacing: -0.02em;
-    color: #1A1A1A;
-    text-transform: lowercase !important;
+    text-transform: none;
   }
   h3 {
     @apply text-[22px] leading-[1];
@@ -284,17 +286,6 @@ body {
   letter-spacing: inherit;
 }
 
-h2 {
-  font-family: "Bricolage Grotesque", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-  font-size: 24px !important;
-  font-weight: 700 !important;
-  text-transform: none !important;
-}
-
-/* Force Title Case on all H1s globally (small words handled by TitleCaseH1.tsx) */
-h1 {
-  text-transform: capitalize !important;
-}
 .home-page h1 {
   text-transform: capitalize !important;
 }

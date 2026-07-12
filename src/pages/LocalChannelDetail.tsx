@@ -13,6 +13,7 @@ import Seo from "@/components/Seo";
 
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const PAGE_BG = "#E6E0CC";
 const CARD = "#ffffff";
 const IVORY = "#f5f0e8";
@@ -222,7 +223,7 @@ const LocalChannelDetail = () => {
         })()}
         <h1
           data-no-title-case={resource.title_override?.trim() ? "true" : undefined}
-          style={{ fontFamily: HN, fontWeight: 700, fontSize: 28, lineHeight: 1.15, color: INK, margin: 0, letterSpacing: "0.01em", textTransform: resource.title_override?.trim() ? "none" : undefined }}
+          style={{ fontFamily: HEAD, fontWeight: 700, fontSize: 28, lineHeight: 1.15, color: INK, margin: 0, letterSpacing: "0.01em", textTransform: resource.title_override?.trim() ? "none" : undefined }}
         >
           {displayTitle}
         </h1>
@@ -310,7 +311,7 @@ const LocalChannelDetail = () => {
               <div style={{ padding: "24px 20px 0" }}>
                 <h2 style={{
                   margin: "0 0 12px",
-                  fontFamily: HN, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+                  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
                   letterSpacing: 0, textTransform: "none", color: INK,
                 }}>
                   Details
@@ -390,7 +391,7 @@ const LocalChannelDetail = () => {
               <div style={{ padding: "24px 20px 0" }}>
                 <h2 style={{
                   margin: "0 0 12px",
-                  fontFamily: HN, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+                  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
                   letterSpacing: 0, textTransform: "none", color: INK,
                 }}>
                   About

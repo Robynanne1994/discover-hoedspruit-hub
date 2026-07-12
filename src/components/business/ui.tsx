@@ -1,6 +1,7 @@
 import { ReactNode, CSSProperties, ButtonHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, forwardRef } from "react";
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 export const COLORS = {
   bg: "#EBEBEB",
@@ -161,7 +162,7 @@ export const StatusPill = ({ status }: { status: StatusKind | string }) => {
 };
 
 export const H2 = ({ children, style }: { children: ReactNode; style?: CSSProperties }) => (
-  <h2 style={{ fontFamily: FONT, fontSize: 34, fontWeight: 400, color: COLORS.heading, margin: 0, lineHeight: 1.1, ...style }}>
+  <h2 style={{ fontFamily: HEAD, fontSize: 34, fontWeight: 400, color: COLORS.heading, margin: 0, lineHeight: 1.1, ...style }}>
     {children}
   </h2>
 );

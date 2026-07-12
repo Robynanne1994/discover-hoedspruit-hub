@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 interface Props {
   primary: string;
@@ -25,7 +26,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel = "View All", actionHref 
       <h2
         style={{
           margin: 0,
-          fontFamily: HN,
+          fontFamily: HEAD,
           fontWeight: 400,
           fontSize: 22,
           letterSpacing: "0.01em",

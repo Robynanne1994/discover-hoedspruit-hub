@@ -36,6 +36,7 @@ const BODY = "#2b2420";
 const MUTED = "#6b5d4a";
 const LINE = "rgba(0,0,0,0.08)";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const SERIF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) =>
@@ -446,7 +447,7 @@ const UserProfile = () => {
           >
             <h2
               style={{
-                fontFamily: SANS,
+                fontFamily: HEAD,
                 fontWeight: 400,
                 fontSize: 16,
                 letterSpacing: "0.01em",
@@ -601,7 +602,7 @@ const UserProfile = () => {
                 <>
                   <h1
                     style={{
-                      fontFamily: SANS,
+                      fontFamily: HEAD,
                       fontWeight: 700,
                       fontSize: 15,
                       lineHeight: 1.2,
@@ -747,7 +748,7 @@ const UserProfile = () => {
           >
             <h2
               style={{
-                fontFamily: SANS,
+                fontFamily: HEAD,
                 fontWeight: 600,
                 fontSize: 15,
                 letterSpacing: "0.01em",
