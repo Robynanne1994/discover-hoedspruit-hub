@@ -900,7 +900,7 @@ const Events = () => {
         >
           <h2
             style={{
-              fontFamily: SANS,
+              fontFamily: HEAD,
               fontWeight: 700,
               fontSize: 20,
               color: C.ink,
