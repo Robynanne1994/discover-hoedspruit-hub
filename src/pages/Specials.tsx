@@ -380,17 +380,23 @@ const Specials = () => {
                   background: isActive ? COLOR.pillActiveBg : COLOR.pillInactiveBg,
                   border: `1px solid ${isActive ? COLOR.pillActiveBg : COLOR.pillBorder}`,
                   borderRadius: 999,
-                  padding: "8px 18px",
+                  padding: "8px 16px",
                   cursor: "pointer",
                   fontFamily: SANS,
-                  fontSize: 13,
+                  fontSize: 14,
                   fontWeight: 700,
                   letterSpacing: "0.01em",
                   color: isActive ? COLOR.pillActiveFg : COLOR.ink,
                   whiteSpace: "nowrap",
                   flexShrink: 0,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
                 }}
               >
+                <span style={{ display: "inline-flex", alignItems: "center", color: isActive ? COLOR.pillActiveFg : COLOR.ink }}>
+                  {tabIcon(tab)}
+                </span>
                 {tab}
               </button>
             );
