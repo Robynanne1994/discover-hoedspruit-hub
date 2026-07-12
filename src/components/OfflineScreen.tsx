@@ -61,6 +61,7 @@ const OfflineScreen = () => {
       </div>
       <h1
         style={{
+          fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif",
           fontSize: 20,
           fontWeight: 400,
           letterSpacing: "0.04em",
