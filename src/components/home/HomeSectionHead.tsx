@@ -27,8 +27,8 @@ const HomeSectionHead = ({ primary, serif, actionLabel = "View All", actionHref 
         style={{
           margin: 0,
           fontFamily: HEAD,
-          fontWeight: 400,
-          fontSize: 22,
+          fontWeight: 700,
+          fontSize: 24,
           letterSpacing: "0.01em",
           color: "#1A1A1A",
         }}
