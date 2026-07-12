@@ -586,7 +586,7 @@ const EventDetail = () => {
   }
   if (notes.length > 0) {
     detailRows.push({
-      Icon: StickyNote,
+      Icon: NotebookPen,
       label: "Notes",
       value: notes.length === 1 ? (
         <span style={{ whiteSpace: "pre-line" }}>{notes[0]}</span>
