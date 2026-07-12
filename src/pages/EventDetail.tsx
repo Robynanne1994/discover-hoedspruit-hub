@@ -523,7 +523,7 @@ const EventDetail = () => {
     );
   };
 
-  const detailRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  const detailRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean; compact?: boolean }[] = [];
   if (isMultiPerformance) {
     const todayMid = new Date();
     todayMid.setHours(0, 0, 0, 0);
@@ -578,16 +578,17 @@ const EventDetail = () => {
       // Already inline above — no separate Time row.
     }
   } else {
-    if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay });
-    if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay });
+    if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay, compact: true });
+    if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay, compact: true });
   }
   if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
-    detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
+    detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence, compact: true });
   }
   if (notes.length > 0) {
     detailRows.push({
       Icon: NotebookPen,
       label: "Notes",
+      compact: notes.length === 1,
       value: notes.length === 1 ? (
         <span style={{ whiteSpace: "pre-line" }}>{notes[0]}</span>
       ) : (
@@ -633,9 +634,45 @@ const EventDetail = () => {
   const renderRowsCard = (rows: typeof detailRows) => (
     <div style={{ background: C.surface, borderRadius: 16, border: `1px solid ${C.border}`, overflow: "hidden" }}>
       {rows.map((r, i) => {
+        const rowStyle: React.CSSProperties = {
+          padding: 18,
+          borderBottom: i < rows.length - 1 ? `1px solid ${C.divider}` : undefined,
+          textDecoration: "none", display: "block", color: "inherit",
+        };
+        if (r.compact) {
+          const inner = (
+            <>
+              {r.Icon && <r.Icon size={18} strokeWidth={1.5} color={C.primary} />}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 11, fontWeight: 400, textTransform: "uppercase", letterSpacing: "0.08em", color: C.muted }}>{r.label}</div>
+                <div style={{ fontSize: 14, fontWeight: 400, color: C.heading, wordBreak: "break-word" }}>{r.value}</div>
+              </div>
+              {r.href && <ArrowUpRight size={16} color={C.muted} />}
+            </>
+          );
+          const compactStyle: React.CSSProperties = {
+            ...rowStyle,
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+            padding: "14px 16px",
+          };
+          if (r.href) {
+            return (
+              <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={compactStyle}>
+                {inner}
+              </a>
+            );
+          }
+          return (
+            <div key={i} style={compactStyle}>
+              {inner}
+            </div>
+          );
+        }
         const header = (
-          <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 10, position: "relative", marginBottom: 10 }}>
-            {r.Icon && <r.Icon size={18} strokeWidth={1.5} color={C.primary} />}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, paddingBottom: 4, position: "relative", marginBottom: 6 }}>
+            {r.Icon && <r.Icon size={16} strokeWidth={1.5} color={C.primary} />}
             <h3 style={{
               margin: 0, fontFamily: FONT, fontWeight: 400, fontSize: 12,
               letterSpacing: "0.08em", textTransform: "uppercase", color: C.heading, flex: 1,
@@ -648,11 +685,6 @@ const EventDetail = () => {
             {r.value}
           </div>
         );
-        const rowStyle: React.CSSProperties = {
-          padding: 18,
-          borderBottom: i < rows.length - 1 ? `1px solid ${C.divider}` : undefined,
-          textDecoration: "none", display: "block", color: "inherit",
-        };
         if (r.href) {
           return (
             <a key={i} href={r.href} {...(r.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} style={rowStyle}>
