@@ -988,21 +988,21 @@ const Events = () => {
           label="Sort by"
           summary={
             sortBy === "date-asc" ? "Date (Soonest First)" :
-            sortBy === "date-desc" ? "Date (latest first)" :
-            sortBy === "title-asc" ? "Title (A–Z)" :
-            "Title (Z–A)"
+            sortBy === "date-desc" ? "Date (Latest First)" :
+            sortBy === "title-asc" ? "Alphabetically (A-Z)" :
+            "Alphabetically (Z-A)"
           }
           open={openSection === "sort"}
           onToggle={() => setOpenSection(openSection === "sort" ? null : "sort")}
         >
           <RefineOption label="Date (Soonest First)" active={sortBy === "date-asc"} onClick={() => setSortBy("date-asc")} />
-          <RefineOption label="Date (latest first)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
-          <RefineOption label="Title (A–Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
-          <RefineOption label="Title (Z–A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
+          <RefineOption label="Date (Latest First)" active={sortBy === "date-desc"} onClick={() => setSortBy("date-desc")} />
+          <RefineOption label="Alphabetically (A-Z)" active={sortBy === "title-asc"} onClick={() => setSortBy("title-asc")} />
+          <RefineOption label="Alphabetically (Z-A)" active={sortBy === "title-desc"} onClick={() => setSortBy("title-desc")} />
         </RefineSection>
 
         <RefineSection
-          label="Tag"
+          label="Category"
           summary={tagFilter || undefined}
           open={openSection === "tag"}
           onToggle={() => setOpenSection(openSection === "tag" ? null : "tag")}
@@ -1011,7 +1011,7 @@ const Events = () => {
             const visibleTags = availableTags.filter((t) => (tagCounts.get(t) || 0) > 0);
             const totalVisible = Array.from(tagCounts.values()).reduce((a, b) => a + b, 0);
             if (visibleTags.length === 0) {
-              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No tags yet.</p>;
+              return <p style={{ fontSize: 13, color: "rgba(0,0,0,0.5)", margin: 0 }}>No categories yet.</p>;
             }
             return (
               <div>

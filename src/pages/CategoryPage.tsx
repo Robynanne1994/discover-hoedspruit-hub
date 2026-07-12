@@ -474,6 +474,7 @@ const CategoryPage = () => {
       const allIds = Array.from(idSet);
 
       const empty = {
+        total: 0,
         subCounts: new Map<string, number>(),
         cuisine: new Map<string, number>(),
         vibe: new Map<string, number>(),
@@ -521,7 +522,7 @@ const CategoryPage = () => {
         ? allIds.filter((lid) => savedIds.has(lid)).length
         : 0;
 
-      return { subCounts, cuisine, vibe, meal, seating, openNow, saved: savedCount };
+      return { total: allIds.length, subCounts, cuisine, vibe, meal, seating, openNow, saved: savedCount };
     },
   });
 
@@ -1003,7 +1004,7 @@ const CategoryPage = () => {
               open={openSection === "subcategory"}
               onToggle={() => setOpenSection(openSection === "subcategory" ? null : "subcategory")}
             >
-              <RefineRectOption label={withCount("All", totalCount)} active={!activeSubId} onClick={() => handleSubFilter(null)} />
+              <RefineRectOption label={withCount("All", facetCounts?.total)} active={!activeSubId} onClick={() => handleSubFilter(null)} />
               {visibleSubs.map((sub) => (
                 <RefineRectOption
                   key={sub.id}

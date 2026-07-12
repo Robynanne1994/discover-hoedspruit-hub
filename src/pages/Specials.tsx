@@ -29,14 +29,15 @@ const COLOR = {
   priceStrike: "#9C9387",
 };
 
-type SortKey = "default" | "alphabetical" | "ending_soon" | "biggest_saving" | "newest";
+type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "default", label: "Default" },
-  { key: "alphabetical", label: "Alphabetically" },
+  { key: "alphabetical", label: "Alphabetically (A-Z)" },
+  { key: "alphabetical_desc", label: "Alphabetically (Z-A)" },
   { key: "ending_soon", label: "Ending Soon" },
   { key: "biggest_saving", label: "Biggest Savings" },
-  { key: "newest", label: "Newest" },
+  { key: "newest", label: "Newest (Added)" },
 ];
 
 // Extract the first numeric value from a price/savings string (e.g. "Save R200" -> 200)
@@ -180,6 +181,10 @@ const Specials = () => {
       result.sort((a: any, b: any) =>
         getDisplayTitle(a).localeCompare(getDisplayTitle(b), undefined, { sensitivity: "base" })
       );
+    } else if (sortBy === "alphabetical_desc") {
+      result.sort((a: any, b: any) =>
+        getDisplayTitle(b).localeCompare(getDisplayTitle(a), undefined, { sensitivity: "base" })
+      );
     } else if (sortBy === "ending_soon") {
       // Soonest expiry first; ongoing specials (no end date) sort to the bottom
       result.sort((a: any, b: any) => {
@@ -190,10 +195,10 @@ const Specials = () => {
     } else if (sortBy === "biggest_saving") {
       result.sort((a: any, b: any) => savingValue(b) - savingValue(a));
     } else if (sortBy === "newest") {
-      // Most recently active first
+      // Most recently added first
       result.sort((a: any, b: any) => {
-        const ta = new Date(a.updated_at || a.created_at).getTime();
-        const tb = new Date(b.updated_at || b.created_at).getTime();
+        const ta = new Date(a.created_at).getTime();
+        const tb = new Date(b.created_at).getTime();
         return tb - ta;
       });
     }
