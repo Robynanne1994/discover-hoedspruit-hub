@@ -181,6 +181,10 @@ const Specials = () => {
       result.sort((a: any, b: any) =>
         getDisplayTitle(a).localeCompare(getDisplayTitle(b), undefined, { sensitivity: "base" })
       );
+    } else if (sortBy === "alphabetical_desc") {
+      result.sort((a: any, b: any) =>
+        getDisplayTitle(b).localeCompare(getDisplayTitle(a), undefined, { sensitivity: "base" })
+      );
     } else if (sortBy === "ending_soon") {
       // Soonest expiry first; ongoing specials (no end date) sort to the bottom
       result.sort((a: any, b: any) => {
@@ -191,10 +195,10 @@ const Specials = () => {
     } else if (sortBy === "biggest_saving") {
       result.sort((a: any, b: any) => savingValue(b) - savingValue(a));
     } else if (sortBy === "newest") {
-      // Most recently active first
+      // Most recently added first
       result.sort((a: any, b: any) => {
-        const ta = new Date(a.updated_at || a.created_at).getTime();
-        const tb = new Date(b.updated_at || b.created_at).getTime();
+        const ta = new Date(a.created_at).getTime();
+        const tb = new Date(b.created_at).getTime();
         return tb - ta;
       });
     }
