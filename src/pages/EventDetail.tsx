@@ -22,6 +22,7 @@ import Seo from "@/components/Seo";
 
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 // Design tokens (match ListingDetail)
 const C = {
@@ -64,7 +65,7 @@ const pressScale = (s = "0.98") => ({
 
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: FONT, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
   letterSpacing: 0, textTransform: "none", color: C.heading,
 };
 const paraStyle: React.CSSProperties = {
@@ -981,7 +982,7 @@ const EventDetail = () => {
         <h1
           data-no-title-case={(event as any).title_override?.trim() ? "true" : undefined}
           style={{
-            margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
+            margin: 0, fontFamily: HEAD, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
             color: C.heading, letterSpacing: "0.01em",
           }}
         >

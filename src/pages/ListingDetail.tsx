@@ -47,6 +47,7 @@ const InstagramIcon = ({ size = 20, color = C.primary, ...props }: { size?: numb
 );
 
 const FONT = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 const DAY_LABELS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 // Design tokens
@@ -1294,7 +1295,7 @@ const ListingDetail = () => {
         <h1
           data-no-title-case={(listing as any).title_override?.trim() ? "true" : undefined}
           style={{
-            margin: 0, fontFamily: FONT, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
+            margin: 0, fontFamily: HEAD, fontWeight: 700, fontSize: 28, lineHeight: 1.15,
             color: C.heading, letterSpacing: "0.01em",
           }}
         >
@@ -1417,7 +1418,7 @@ const ListingDetail = () => {
 // ----- Shared inline styles -----
 const headStyle: React.CSSProperties = {
   margin: "0 0 12px",
-  fontFamily: FONT, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
+  fontFamily: HEAD, fontWeight: 700, fontSize: 22, lineHeight: 1.2,
   letterSpacing: 0, textTransform: "none",
   color: C.heading,
 };

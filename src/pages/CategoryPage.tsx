@@ -1309,7 +1309,7 @@ const CategoryPage = () => {
           >
             <MapPin size={42} strokeWidth={1.6} color={MUTED} />
           </div>
-          <h2 style={{ fontFamily: sans, fontSize: 26, fontWeight: 700, color: INK, margin: "0 0 14px", letterSpacing: "-0.3px" }}>
+          <h2 style={{ fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 26, fontWeight: 700, color: INK, margin: "0 0 14px", letterSpacing: "-0.3px" }}>
             {isSearchEmpty ? "No matches found." : "Nothing here yet."}
           </h2>
           <p style={{ fontFamily: sans, fontSize: 17, fontWeight: 400, lineHeight: 1.5, color: MUTED, margin: 0 }}>

@@ -5,6 +5,7 @@ import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
 import hhLogo from "@/assets/hh-logo.png";
 
 const HN = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const HomeMasthead = () => {
   const { user } = useAuth();
@@ -33,7 +34,7 @@ const HomeMasthead = () => {
               aria-label="Hello Hoedspruit — Your Lowveld local guide to restaurants, lodges, events and specials"
               style={{
                 margin: 0,
-                fontFamily: HN,
+                fontFamily: HEAD,
                 fontWeight: 400,
                 fontSize: 22,
                 lineHeight: 1.05,
