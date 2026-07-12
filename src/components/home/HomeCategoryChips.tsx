@@ -55,7 +55,7 @@ const HomeCategoryChips = (_props: Props) => {
               transition: "transform 150ms ease-out",
             }}
           >
-            <Icon size={26} color="#020202" strokeWidth={1.4} />
+            <Icon size={26} color="#1A1A1A" strokeWidth={1.4} />
             <span style={{ fontFamily: HN, fontSize: 12, color: "#2b2420", letterSpacing: "0.01em" }}>
               {label}
             </span>

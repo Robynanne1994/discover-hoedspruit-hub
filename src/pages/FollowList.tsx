@@ -87,7 +87,7 @@ const ActionButton = ({
         transition: "transform 120ms ease",
         background: isSolid ? COLOR.brown : COLOR.soft,
         border: "none",
-        color: isSolid ? "#FFFFFF" : "#020202",
+        color: isSolid ? "#FFFFFF" : "#1A1A1A",
         minWidth: 92,
       }}
     >

@@ -56,7 +56,7 @@ const C = {
   ivory: "#f5f0e8",
   border: "#E8E4DF",
   divider: "#EDE9E3",
-  heading: "#020202",
+  heading: "#1A1A1A",
   text: "#2b2420",
   muted: "#8A8480",
   primary: "#715a3d",

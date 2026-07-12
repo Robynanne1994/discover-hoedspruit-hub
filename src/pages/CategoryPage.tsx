@@ -673,7 +673,7 @@ const CategoryPage = () => {
 
   const PAGE_BG = "#E6E0CC";
   const CARD_BG = "#FFFFFF";
-  const INK = "#020202";
+  const INK = "#1A1A1A";
   const MUTED = "#6B6A5E";
   const PILL_DARK = "#2A2A24";
   const OPEN_COLOR = "#2E7D4F";
@@ -791,7 +791,7 @@ const CategoryPage = () => {
                 position: "relative",
               }}
             >
-              <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#020202"} />
+              <SlidersHorizontal size={16} strokeWidth={2} color={activeFilterCount > 0 ? "#FFFFFF" : "#1A1A1A"} />
               {activeFilterCount > 0 && (
                 <span
                   style={{

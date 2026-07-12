@@ -31,7 +31,7 @@ const C = {
   page: "#E6E0CC",
   ivory: "#f5f0e8",
   white: "#ffffff",
-  ink: "#020202",
+  ink: "#1A1A1A",
   body: "#2b2420",
   muted: "#6b6a5e",
   dark: "#48484a",
@@ -766,7 +766,7 @@ const Events = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: "#020202",
+                color: "#1A1A1A",
               }}
             >
               <ArrowLeft size={18} strokeWidth={1.8} />
@@ -795,7 +795,7 @@ const Events = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: "#020202",
+                color: "#1A1A1A",
               }}
             >
               {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
@@ -813,7 +813,7 @@ const Events = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: tagFilter ? C.page : "#020202",
+                color: tagFilter ? C.page : "#1A1A1A",
               }}
             >
               <SlidersHorizontal size={18} strokeWidth={1.8} />

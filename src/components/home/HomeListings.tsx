@@ -69,7 +69,7 @@ const HomeListings = ({ sectionKey, categorySearch, defaultTitle, seeAllHref }: 
                 style={{
                   fontFamily: HN,
                   fontSize: 13,
-                  color: "#020202",
+                  color: "#1A1A1A",
                   lineHeight: 1.2,
                   marginBottom: 2,
                   wordBreak: "break-word",

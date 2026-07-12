@@ -29,7 +29,7 @@ const HomeSectionHead = ({ primary, serif, actionLabel = "View All", actionHref 
           fontWeight: 400,
           fontSize: 22,
           letterSpacing: "0.01em",
-          color: "#020202",
+          color: "#1A1A1A",
         }}
       >
         {title}

@@ -41,7 +41,7 @@ const OfflineScreen = () => {
         textAlign: "center",
         fontFamily:
           '"Helvetica Neue", Helvetica, Arial, sans-serif',
-        color: "#020202",
+        color: "#1A1A1A",
       }}
     >
       <div

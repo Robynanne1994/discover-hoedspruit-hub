@@ -17,7 +17,7 @@ const FF = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const TEXT = "#2b2420";
 
 const VARIANTS: Record<Variant, { bg: string; icon: string }> = {
-  light: { bg: "#FFFFFF", icon: "#020202" },
+  light: { bg: "#FFFFFF", icon: "#1A1A1A" },
   cream: { bg: "rgba(238, 232, 218, 0.92)", icon: "#6B6A5E" },
 };
 

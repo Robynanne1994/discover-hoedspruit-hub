@@ -8,7 +8,7 @@ const DISPLAY = '"Bricolage Grotesque", ' + SANS;
 
 const BG = "#E6E0CC";
 const CARD = "#FFFFFF";
-const INK = "#0A0A0A";
+const INK = "#1A1A1A";
 const MUTED = "#8A8480";
 
 interface LegalPageProps {

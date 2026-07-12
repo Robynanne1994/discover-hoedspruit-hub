@@ -25,7 +25,7 @@ const FollowStats = ({ userId }: FollowStatsProps) => {
         className="flex items-center active:scale-95 transition-transform"
         style={{ gap: 4 }}
       >
-        <span style={{ fontSize: 15, fontWeight: 600, color: "#020202" }}>{counts?.followers ?? 0}</span>
+        <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A1A" }}>{counts?.followers ?? 0}</span>
         <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)" }}>Followers</span>
       </Link>
       <Link
@@ -33,7 +33,7 @@ const FollowStats = ({ userId }: FollowStatsProps) => {
         className="flex items-center active:scale-95 transition-transform"
         style={{ gap: 4 }}
       >
-        <span style={{ fontSize: 15, fontWeight: 600, color: "#020202" }}>{counts?.following ?? 0}</span>
+        <span style={{ fontSize: 15, fontWeight: 600, color: "#1A1A1A" }}>{counts?.following ?? 0}</span>
         <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(18,18,20,0.55)" }}>Following</span>
       </Link>
     </div>

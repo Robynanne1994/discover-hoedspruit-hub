@@ -40,7 +40,7 @@ const CREATE_LABEL_STYLE: React.CSSProperties = {
   lineHeight: "16.8px",
   letterSpacing: 0,
   textTransform: "none",
-  color: "#0A0A0A",
+  color: "#1A1A1A",
   display: "block",
   marginBottom: 4,
 };
@@ -287,7 +287,7 @@ const Welcome = () => {
                   required
                   placeholder="Your first name"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={{ background: "#ffffff", color: "#020202" }}
+                  style={{ background: "#ffffff", color: "#1A1A1A" }}
                 />
               </div>
               <div>
@@ -302,7 +302,7 @@ const Welcome = () => {
                   required
                   placeholder="Your surname"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={{ background: "#ffffff", color: "#020202" }}
+                  style={{ background: "#ffffff", color: "#1A1A1A" }}
                 />
               </div>
               <div>
@@ -317,7 +317,7 @@ const Welcome = () => {
                   required
                   placeholder="Choose a unique username"
                   className="h-12 rounded-xl bg-card border-border text-[15px]"
-                  style={{ background: "#ffffff", color: "#020202" }}
+                  style={{ background: "#ffffff", color: "#1A1A1A" }}
                 />
               </div>
               <div>
@@ -328,7 +328,7 @@ const Welcome = () => {
                   <SelectTrigger className="residency-select h-12 w-full rounded-xl border border-border bg-white px-4 text-[15px]">
                     <SelectValue
                       placeholder="Select one"
-                      style={{ color: residency ? "#020202" : "#8A8480" }}
+                      style={{ color: residency ? "#1A1A1A" : "#8A8480" }}
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -372,7 +372,7 @@ const Welcome = () => {
               className="h-12 rounded-xl bg-card border-border text-[15px]"
               style={{
                 background: "#ffffff",
-                color: "#020202",
+                color: "#1A1A1A",
                 ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
               }}
             />
@@ -393,7 +393,7 @@ const Welcome = () => {
                 className="h-12 rounded-xl bg-card border-border text-[15px] pr-12"
                 style={{
                   background: "#ffffff",
-                  color: "#020202",
+                  color: "#1A1A1A",
                   ...(authError && mode === "signin" ? { border: "1.5px solid #e5484d" } : {}),
                 }}
               />

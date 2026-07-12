@@ -250,11 +250,11 @@ const MyAccount = () => {
     return (
       <div className="min-h-screen pb-20" style={{ background: "transparent", fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
         <div style={{ paddingTop: 44, paddingLeft: 24, paddingRight: 24, marginBottom: 12 }}>
-          <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#020202", textTransform: "none", margin: 0 }}>Profile</h1>
+          <h1 style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", fontWeight: 400, fontSize: 40, lineHeight: 0.95, letterSpacing: "-0.01em", color: "#1A1A1A", textTransform: "none", margin: 0 }}>Profile</h1>
         </div>
         <div className="text-center" style={{ paddingTop: 60 }}>
           <UserCircle style={{ width: 48, height: 48, color: "rgba(18,18,20,0.15)", margin: "0 auto" }} />
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#020202", marginTop: 16, marginBottom: 8 }}>Welcome to Hello Hoedspruit</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: "#1A1A1A", marginTop: 16, marginBottom: 8 }}>Welcome to Hello Hoedspruit</h3>
           <p style={{ fontSize: 14, color: "rgba(18,18,20,0.4)", maxWidth: 260, margin: "0 auto 24px" }}>Sign in to access your profile, saved listings, and events.</p>
           <Link to="/auth"><Button className="rounded-full px-8 text-[13px] font-medium">Sign In / Create Account</Button></Link>
         </div>

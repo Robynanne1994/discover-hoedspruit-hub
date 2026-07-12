@@ -17,7 +17,7 @@ import { ArrowUpRight } from "lucide-react";
  */
 
 const COLORS = {
-  heading: "#020202",
+  heading: "#1A1A1A",
   text: "#2b2420",
   primary: "#715a3d",
 };

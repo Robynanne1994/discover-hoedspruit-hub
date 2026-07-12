@@ -240,7 +240,7 @@ const Specials = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: "#020202",
+                color: "#1A1A1A",
               }}
             >
               <ArrowLeft size={18} strokeWidth={1.8} />
@@ -269,7 +269,7 @@ const Specials = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: "#020202",
+                color: "#1A1A1A",
               }}
             >
               {searchOpen ? <X size={18} strokeWidth={1.8} /> : <Search size={18} strokeWidth={1.8} />}
@@ -287,7 +287,7 @@ const Specials = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                color: "#020202",
+                color: "#1A1A1A",
                 position: "relative",
               }}
             >

@@ -11,7 +11,7 @@ const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const BG = "#E6E0CC";
 const CARD = "#ffffff";
-const INK = "#020202";
+const INK = "#1A1A1A";
 const MUTED = "#6B6A5E";
 const BODY = "#3A332B";
 const HAIRLINE = "rgba(0,0,0,0.06)";
