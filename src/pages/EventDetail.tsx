@@ -523,7 +523,7 @@ const EventDetail = () => {
     );
   };
 
-  const detailRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean }[] = [];
+  const detailRows: { Icon?: any; label: React.ReactNode; value: React.ReactNode; href?: string; external?: boolean; compact?: boolean }[] = [];
   if (isMultiPerformance) {
     const todayMid = new Date();
     todayMid.setHours(0, 0, 0, 0);
@@ -578,16 +578,17 @@ const EventDetail = () => {
       // Already inline above — no separate Time row.
     }
   } else {
-    if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay });
-    if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay });
+    if (dateDisplay) detailRows.push({ Icon: Calendar, label: "Date", value: dateDisplay, compact: true });
+    if (timeDisplay) detailRows.push({ Icon: Clock, label: "Time", value: timeDisplay, compact: true });
   }
   if (e.recurrence && e.recurrence.trim().toLowerCase() !== "none" && !isMultiPerformance) {
-    detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence });
+    detailRows.push({ Icon: RotateCcw, label: "Recurrence", value: e.recurrence, compact: true });
   }
   if (notes.length > 0) {
     detailRows.push({
       Icon: NotebookPen,
       label: "Notes",
+      compact: notes.length === 1,
       value: notes.length === 1 ? (
         <span style={{ whiteSpace: "pre-line" }}>{notes[0]}</span>
       ) : (
