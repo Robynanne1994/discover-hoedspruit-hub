@@ -29,14 +29,15 @@ const COLOR = {
   priceStrike: "#9C9387",
 };
 
-type SortKey = "default" | "alphabetical" | "ending_soon" | "biggest_saving" | "newest";
+type SortKey = "default" | "alphabetical" | "alphabetical_desc" | "ending_soon" | "biggest_saving" | "newest";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "default", label: "Default" },
-  { key: "alphabetical", label: "Alphabetically" },
+  { key: "alphabetical", label: "Alphabetically (A-Z)" },
+  { key: "alphabetical_desc", label: "Alphabetically (Z-A)" },
   { key: "ending_soon", label: "Ending Soon" },
   { key: "biggest_saving", label: "Biggest Savings" },
-  { key: "newest", label: "Newest" },
+  { key: "newest", label: "Newest (Added)" },
 ];
 
 // Extract the first numeric value from a price/savings string (e.g. "Save R200" -> 200)
