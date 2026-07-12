@@ -2,16 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 import { Home, Compass, Tag, Calendar, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
-const PILL_BG = "#f5f0e8";
-const PILL_FG = "#2b2420";
-const INACTIVE = "#f5f0e8";
+const BAR_BG = "#F5F0E8";
+const ACTIVE_BG = "#423324";
+const INACTIVE_FG = "#1A1A1A";
 
 const BottomNav = () => {
   const location = useLocation();
   const { user } = useAuth();
 
-  // Guests (no signed-in user) get the lightweight Help & Info page instead of
-  // the personal profile page, which requires an account.
   const navItems = [
     { label: "Home", href: "/", icon: Home },
     { label: "Explore", href: "/categories", icon: Compass },
@@ -25,16 +23,15 @@ const BottomNav = () => {
       className="fixed left-3 right-3 z-50 md:hidden"
       style={{
         bottom: 12,
-        background: "#48484a",
-        borderRadius: 28,
-        height: 74,
+        background: BAR_BG,
+        borderRadius: 32,
+        height: 66,
         padding: "0 10px",
-        border: "1px solid rgba(255,255,255,0.10)",
-        boxShadow:
-          "0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12)",
+        border: "1px solid rgba(0,0,0,0.05)",
+        boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 6 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-around", height: "100%", gap: 4 }}>
         {navItems.map((item) => {
           const isActive =
             item.href === "/"
@@ -57,31 +54,26 @@ const BottomNav = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 textDecoration: "none",
-                height: 48,
+                height: 44,
                 borderRadius: 999,
-                background: isActive
-                  ? "rgba(255,255,255,0.92)"
-                  : "transparent",
-                boxShadow: isActive
-                  ? "inset 0 1px 0 rgba(255,255,255,0.6), 0 2px 8px rgba(0,0,0,0.15)"
-                  : "none",
+                background: isActive ? ACTIVE_BG : "transparent",
                 gap: 8,
-                padding: isActive ? "0 16px" : 0,
+                padding: isActive ? "0 14px" : 0,
                 transition: "background 200ms ease, padding 200ms ease",
               }}
             >
               <Icon
-                size={24}
-                color={isActive ? PILL_FG : "#ffffff"}
-                strokeWidth={isActive ? 2.25 : 1.75}
+                size={22}
+                color={isActive ? "#ffffff" : INACTIVE_FG}
+                strokeWidth={isActive ? 2 : 1.75}
               />
               {isActive && (
                 <span
                   style={{
                     fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: 600,
-                    color: PILL_FG,
+                    color: "#ffffff",
                     letterSpacing: "0.01em",
                     whiteSpace: "nowrap",
                   }}
