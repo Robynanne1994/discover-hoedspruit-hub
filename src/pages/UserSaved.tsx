@@ -74,6 +74,12 @@ const UserSaved = () => {
     }
   }, [authUser, id, navigate]);
 
+  // Reset pill filters to their first option whenever the main saved tab changes
+  useEffect(() => {
+    setEventsSub("upcoming");
+    setDealsSub("active");
+  }, [tab]);
+
   const { data: profile } = useQuery({
     queryKey: ["user-saved-profile", id],
     enabled: !!id,

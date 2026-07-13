@@ -102,6 +102,12 @@ const MyProfile = () => {
     }
   }, [authLoading, user, isGuest, navigate]);
 
+  // Reset pill filters to their first option whenever the main saved tab changes
+  useEffect(() => {
+    setEventsSub("upcoming");
+    setDealsSub("active");
+  }, [tab]);
+
   const id = user?.id;
   const queryClient = useQueryClient();
 
