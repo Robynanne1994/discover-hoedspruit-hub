@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 export type FollowStatus = "pending" | "accepted" | null;
+
 
 export const useFollowCounts = (userId: string | undefined) => {
   return useQuery({
