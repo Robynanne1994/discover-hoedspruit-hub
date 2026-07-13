@@ -472,18 +472,6 @@ function NotifCard({
             {n.body}
           </p>
         )}
-        <span
-          style={{
-            fontFamily: SANS,
-            fontWeight: 400,
-            fontSize: 11,
-            letterSpacing: "1.2px",
-            textTransform: "uppercase",
-            color: MUTED,
-          }}
-        >
-          {relativeShort(n.created_at)}
-        </span>
         {n.kind === "follow_request" && n.ref_id && onRespond && (
           <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
             <button
@@ -531,6 +519,19 @@ function NotifCard({
             </button>
           </div>
         )}
+        <span
+          style={{
+            fontFamily: SANS,
+            fontWeight: 400,
+            fontSize: 11,
+            letterSpacing: "1.2px",
+            textTransform: "uppercase",
+            color: MUTED,
+            marginTop: n.kind === "follow_request" && n.ref_id && onRespond ? 8 : 0,
+          }}
+        >
+          {relativeShort(n.created_at)}
+        </span>
       </div>
       {isUnread && (
         <span
