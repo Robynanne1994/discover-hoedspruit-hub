@@ -387,11 +387,11 @@ const EventCard = ({ event }: { event: any }) => {
               color: C.body,
               margin: 0,
               display: "flex",
-              alignItems: "center",
+              alignItems: "flex-start",
               gap: 6,
             }}
           >
-            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted }} />
+            <Calendar size={12} strokeWidth={1.8} style={{ flexShrink: 0, color: C.muted, marginTop: 1 }} />
             <span style={{
               display: "-webkit-box",
               WebkitLineClamp: 1,
