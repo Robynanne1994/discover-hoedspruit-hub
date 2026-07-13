@@ -549,21 +549,47 @@ const UsersResults = ({
 
       if (sub === "suggested") {
         let followingIds: string[] = [];
+        let followerIds: string[] = [];
         if (currentUserId) {
-          const { data: f } = await supabase
-            .from("follows")
-            .select("following_id")
-            .eq("follower_id", currentUserId);
-          followingIds = (f || []).map((r: any) => r.following_id);
+          const [outRes, inRes] = await Promise.all([
+            supabase.from("follows").select("following_id").eq("follower_id", currentUserId),
+            supabase
+              .from("follows")
+              .select("follower_id")
+              .eq("following_id", currentUserId)
+              .eq("status", "accepted"),
+          ]);
+          followingIds = (outRes.data || []).map((r: any) => r.following_id);
+          followerIds = (inRes.data || []).map((r: any) => r.follower_id);
         }
-        const { data } = await supabase.rpc("search_public_profiles", {
+        const { data: discover } = await supabase.rpc("search_public_profiles", {
           _term: term || "",
           _limit: 50,
         });
+        // Merge in followers (people who follow me) that I don't follow back,
+        // so they surface as suggested with a Follow-back option.
+        const notFollowedBackIds = followerIds.filter((id) => !followingIds.includes(id));
+        let followerProfiles: any[] = [];
+        if (notFollowedBackIds.length) {
+          const { data } = await supabase.rpc("get_public_profiles", { _ids: notFollowedBackIds });
+          followerProfiles = data || [];
+        }
         const excluded = new Set<string>(followingIds);
         if (currentUserId) excluded.add(currentUserId);
-        const base = (data || []).filter((p: any) => !excluded.has(p.id));
-        return applyBlocks(base, { allowIBlockedOnTermMatch: true });
+        const merged: any[] = [];
+        const seen = new Set<string>();
+        for (const p of [...followerProfiles, ...(discover || [])]) {
+          if (excluded.has(p.id) || seen.has(p.id)) continue;
+          if (term) {
+            const t = term.toLowerCase();
+            const name = (p.display_name || "").toLowerCase();
+            const handle = (p.username || "").toLowerCase();
+            if (!name.includes(t) && !handle.includes(t)) continue;
+          }
+          seen.add(p.id);
+          merged.push(p);
+        }
+        return applyBlocks(merged, { allowIBlockedOnTermMatch: true });
       }
       if (!currentUserId) return [];
       const col = sub === "followers" ? "follower_id" : "following_id";
