@@ -731,29 +731,38 @@ export type Database = {
       }
       feedback: {
         Row: {
+          admin_reply: string | null
           created_at: string
           feedback_type: string
           id: string
           is_read: boolean
           message: string
+          replied_at: string | null
+          replied_by: string | null
           subject: string | null
           user_id: string
         }
         Insert: {
+          admin_reply?: string | null
           created_at?: string
           feedback_type: string
           id?: string
           is_read?: boolean
           message: string
+          replied_at?: string | null
+          replied_by?: string | null
           subject?: string | null
           user_id: string
         }
         Update: {
+          admin_reply?: string | null
           created_at?: string
           feedback_type?: string
           id?: string
           is_read?: boolean
           message?: string
+          replied_at?: string | null
+          replied_by?: string | null
           subject?: string | null
           user_id?: string
         }

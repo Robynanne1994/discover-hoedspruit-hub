@@ -1,11 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Trash2, Mail, MessageSquare, Eye, Radio, ExternalLink } from "lucide-react";
+import { Trash2, Mail, MessageSquare, Eye, Radio, ExternalLink, Send } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 
@@ -26,6 +27,9 @@ type Feedback = {
   message: string;
   is_read: boolean;
   created_at: string;
+  admin_reply?: string | null;
+  replied_at?: string | null;
+  replied_by?: string | null;
 };
 
 type ResourceSuggestion = Contact & {
@@ -175,6 +179,51 @@ const AdminSubmissions = () => {
       qc.invalidateQueries({ queryKey: ["admin-count-contact-submissions-unread"] });
       toast.success("Deleted");
     },
+  });
+
+  const sendReply = useMutation({
+    mutationFn: async ({
+      feedback,
+      reply,
+    }: {
+      feedback: Feedback & { _profile?: FeedbackProfile };
+      reply: string;
+    }) => {
+      const trimmed = reply.trim();
+      if (!trimmed) throw new Error("Reply cannot be empty");
+      const { data: authData } = await supabase.auth.getUser();
+      const adminId = authData.user?.id ?? null;
+
+      const { error: upErr } = await supabase
+        .from("feedback")
+        .update({
+          admin_reply: trimmed,
+          replied_at: new Date().toISOString(),
+          replied_by: adminId,
+          is_read: true,
+        })
+        .eq("id", feedback.id);
+      if (upErr) throw upErr;
+
+      const subjectLabel = feedback.subject || `${feedback.feedback_type} feedback`;
+      const { error: notifErr } = await supabase.from("business_notifications").insert({
+        user_id: feedback.user_id,
+        kind: "feedback_reply",
+        status: "unread",
+        title: "We replied to your feedback",
+        body: trimmed,
+        link: "/my-notifications",
+        ref_table: "feedback",
+        ref_id: feedback.id,
+      });
+      if (notifErr) throw notifErr;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["admin-feedback"] });
+      qc.invalidateQueries({ queryKey: ["admin-count-feedback-unread"] });
+      toast.success("Reply sent");
+    },
+    onError: (e: Error) => toast.error(e.message || "Failed to send reply"),
   });
 
   const fmt = (d: string) => format(new Date(d), "d MMM yyyy, HH:mm");
@@ -417,44 +466,126 @@ const AdminSubmissions = () => {
             </>
           )}
           {viewing?.kind === "feedback" && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="capitalize">
-                  {viewing.data.subject || `${viewing.data.feedback_type} feedback`}
-                </DialogTitle>
-                <DialogDescription>
-                  {viewing.data._profile?.display_name ?? "User"}
-                  {viewing.data._profile?.email ? ` · ${viewing.data._profile.email}` : ""}
-                  {" · "}
-                  {fmt(viewing.data.created_at)}
-                </DialogDescription>
-              </DialogHeader>
-              <Badge variant="secondary" className="w-fit capitalize">
-                {viewing.data.feedback_type}
-              </Badge>
-              <p className="text-sm whitespace-pre-wrap text-foreground">{viewing.data.message}</p>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    markRead.mutate({ id: viewing.data.id, is_read: !viewing.data.is_read })
+            <FeedbackReplyPanel
+              feedback={viewing.data}
+              onMarkRead={(is_read) => markRead.mutate({ id: viewing.data.id, is_read })}
+              onSend={(reply) =>
+                sendReply.mutate(
+                  { feedback: viewing.data, reply },
+                  {
+                    onSuccess: () => {
+                      setViewing({
+                        kind: "feedback",
+                        data: {
+                          ...viewing.data,
+                          admin_reply: reply.trim(),
+                          replied_at: new Date().toISOString(),
+                          is_read: true,
+                        },
+                      });
+                    },
                   }
-                >
-                  Mark as {viewing.data.is_read ? "unread" : "read"}
-                </Button>
-                {viewing.data._profile?.email && (
-                  <Button asChild>
-                    <a href={`mailto:${viewing.data._profile.email}?subject=Re: your feedback`}>
-                      Reply
-                    </a>
-                  </Button>
-                )}
-              </div>
-            </>
+                )
+              }
+              sending={sendReply.isPending}
+              fmt={fmt}
+            />
           )}
         </DialogContent>
       </Dialog>
     </div>
+  );
+};
+
+type FeedbackReplyPanelProps = {
+  feedback: Feedback & { _profile?: FeedbackProfile };
+  onMarkRead: (is_read: boolean) => void;
+  onSend: (reply: string) => void;
+  sending: boolean;
+  fmt: (d: string) => string;
+};
+
+const FeedbackReplyPanel = ({
+  feedback,
+  onMarkRead,
+  onSend,
+  sending,
+  fmt,
+}: FeedbackReplyPanelProps) => {
+  const [reply, setReply] = useState("");
+  const [editing, setEditing] = useState(false);
+  useEffect(() => {
+    setReply("");
+    setEditing(false);
+  }, [feedback.id]);
+
+  const hasReply = !!feedback.admin_reply;
+
+  return (
+    <>
+      <DialogHeader>
+        <DialogTitle className="capitalize">
+          {feedback.subject || `${feedback.feedback_type} feedback`}
+        </DialogTitle>
+        <DialogDescription>
+          {feedback._profile?.display_name ?? "User"}
+          {feedback._profile?.email ? ` · ${feedback._profile.email}` : ""}
+          {" · "}
+          {fmt(feedback.created_at)}
+        </DialogDescription>
+      </DialogHeader>
+      <Badge variant="secondary" className="w-fit capitalize">
+        {feedback.feedback_type}
+      </Badge>
+      <p className="text-sm whitespace-pre-wrap text-foreground">{feedback.message}</p>
+
+      {hasReply && !editing && (
+        <div className="rounded-lg border border-border bg-muted/40 p-3 space-y-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Your reply{feedback.replied_at ? ` · ${fmt(feedback.replied_at)}` : ""}
+          </p>
+          <p className="text-sm whitespace-pre-wrap text-foreground">{feedback.admin_reply}</p>
+          <div className="pt-1">
+            <Button variant="ghost" size="sm" onClick={() => { setReply(feedback.admin_reply ?? ""); setEditing(true); }}>
+              Send another reply
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {(!hasReply || editing) && (
+        <div className="space-y-2">
+          <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            Reply to user
+          </label>
+          <Textarea
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            placeholder="Write your reply. The user will receive this as an in-app notification."
+            rows={5}
+          />
+          <p className="text-xs text-muted-foreground">
+            This reply is delivered as an in-app notification to the user.
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" onClick={() => onMarkRead(!feedback.is_read)}>
+          Mark as {feedback.is_read ? "unread" : "read"}
+        </Button>
+        {(!hasReply || editing) && (
+          <Button
+            onClick={() => onSend(reply)}
+            disabled={sending || !reply.trim()}
+            className="gap-2"
+          >
+            <Send className="h-4 w-4" />
+            {sending ? "Sending…" : "Send reply"}
+          </Button>
+        )}
+      </div>
+    </>
   );
 };
 
