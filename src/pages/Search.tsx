@@ -740,7 +740,6 @@ const EventsResults = ({ query }: { query: string }) => {
           subtitle={e.date || null}
           subtitle2={e.location || null}
           initials={initialsOf((e as any).title_override || e.title, undefined)}
-          action={<InlineSaveButton itemId={e.id} itemType="event" />}
         />
       ))}
       {!term && (
@@ -808,7 +807,6 @@ const SpecialsResults = ({ query }: { query: string }) => {
           subtitle={s.deal_label || null}
           subtitle2={s.business_name || null}
           initials={initialsOf((s as any).title_override || s.title, undefined)}
-          action={<InlineSaveButton itemId={s.id} itemType="special" />}
         />
       ))}
       {!term && (
