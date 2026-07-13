@@ -252,6 +252,7 @@ const AccountInfo = () => {
     }
     queryClient.invalidateQueries({ queryKey: ["profile"] });
     queryClient.invalidateQueries({ queryKey: ["user-profile"] });
+    queryClient.invalidateQueries({ queryKey: ["my-profile", user.id] });
     toast.success("Privacy updated.");
   };
 
