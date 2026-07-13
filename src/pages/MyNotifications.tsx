@@ -384,7 +384,8 @@ function NotifCard({
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
   const isFeedbackReply = n.kind === "feedback_reply";
-  const showAvatar = false;
+  const isUserRelated = n.kind === "follow_request";
+  const showIcon = !isFeedbackReply && !isUserRelated;
   const initials = (actor?.display_name || "·")
     .trim()
     .split(/\s+/)
@@ -398,7 +399,7 @@ function NotifCard({
         position: "relative",
         display: "flex",
         alignItems: "flex-start",
-        gap: 14,
+        gap: showIcon ? 14 : 0,
         background: CARD,
         borderRadius: 16,
         border: `1px solid ${HAIRLINE}`,
@@ -406,35 +407,7 @@ function NotifCard({
         cursor: n.link ? "pointer" : "default",
       }}
     >
-      {isFeedbackReply ? null : showAvatar ? (
-        <div
-          style={{
-            width: 44,
-            height: 44,
-            borderRadius: 999,
-            overflow: "hidden",
-            flexShrink: 0,
-            background: "linear-gradient(135deg, #8a6f4d, #c4a374)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#fff",
-            fontFamily: SANS,
-            fontSize: 15,
-            fontWeight: 600,
-          }}
-        >
-          {actor?.avatar_url ? (
-            <img
-              src={actor.avatar_url}
-              alt=""
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-          ) : (
-            initials
-          )}
-        </div>
-      ) : (
+      {showIcon && (
         <div
           style={{
             width: 44,
