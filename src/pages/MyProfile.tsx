@@ -19,14 +19,21 @@ const MUTED = "#8A8275";
 const SUBTLE = "rgba(26,26,26,0.55)";
 const LINE = "rgba(26,26,26,0.10)";
 const RUST = "#9B5A3C";
+const WHITE = "#FFFFFF";
+const PILL_BORDER = "#E8E4DF";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
 const HEAD = "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif";
 
 const titleCase = (s?: string | null) =>
   (s || "").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
-const getInitial = (s?: string | null) =>
-  (s || "?").trim().charAt(0).toUpperCase() || "?";
+const getInitial = (s?: string | null) => {
+  if (!s?.trim()) return "?";
+  const parts = s.trim().split(/\s+/);
+  const first = parts[0][0] ?? "";
+  const second = parts[1]?.[0] ?? "";
+  return `${first}${second}`.toUpperCase() || "?";
+};
 
 const fmtCount = (n: number) => n.toLocaleString("en-US");
 
