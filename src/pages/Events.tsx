@@ -424,14 +424,14 @@ const EventCard = ({ event }: { event: any }) => {
               color: C.muted,
               margin: 0,
               display: "flex",
-              alignItems: "flex-start",
+              alignItems: "center",
               gap: 6,
               wordBreak: "break-word",
               overflowWrap: "anywhere",
               overflow: "hidden",
             }}
           >
-            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0, marginTop: 3 }} />
+            <MapPin size={12} strokeWidth={1.8} style={{ flexShrink: 0 }} />
             <span style={{
               display: "-webkit-box",
               WebkitLineClamp: 2,
