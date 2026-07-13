@@ -28,22 +28,28 @@ export const useIsFollowing = (targetUserId: string | undefined) => {
 
   useEffect(() => {
     if (!user || !targetUserId || user.id === targetUserId) return;
+    const invalidate = () => {
+      qc.invalidateQueries({ queryKey: ["is-following", user.id, targetUserId] });
+      qc.invalidateQueries({ queryKey: ["my-following-ids", user.id] });
+      qc.invalidateQueries({ queryKey: ["follow-counts"] });
+    };
     const channel = supabase
-      .channel(`follows-${user.id}-${targetUserId}`)
+      .channel(`follows-watch-${user.id}-${targetUserId}`)
       .on(
         "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "follows",
-          filter: `follower_id=eq.${user.id}`,
-        },
+        { event: "*", schema: "public", table: "follows" },
         (payload: any) => {
-          const row = payload.new || payload.old;
-          if (row?.following_id === targetUserId) {
-            qc.invalidateQueries({ queryKey: ["is-following", user.id, targetUserId] });
-            qc.invalidateQueries({ queryKey: ["my-following-ids", user.id] });
-            qc.invalidateQueries({ queryKey: ["follow-counts"] });
+          const row = payload.new || payload.old || {};
+          // DELETE payloads may be sparse without REPLICA IDENTITY FULL; refetch on any delete
+          if (payload.eventType === "DELETE") {
+            invalidate();
+            return;
+          }
+          if (
+            (row.follower_id === user.id && row.following_id === targetUserId) ||
+            (row.follower_id === targetUserId && row.following_id === user.id)
+          ) {
+            invalidate();
           }
         }
       )
