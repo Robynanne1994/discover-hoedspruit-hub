@@ -1,5 +1,5 @@
 import { useState, useEffect, CSSProperties } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Loader2, ChevronDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,6 +36,22 @@ const Feedback = () => {
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<{ subject?: string; message?: string; type?: string }>({});
   const [submitting, setSubmitting] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") === "replies" ? "replies" : "submit";
+  const [replies, setReplies] = useState<Array<{ id: string; subject: string | null; message: string; admin_reply: string; replied_at: string }>>([]);
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("feedback")
+        .select("id,subject,message,admin_reply,replied_at")
+        .eq("user_id", user.id)
+        .not("admin_reply", "is", null)
+        .order("replied_at", { ascending: false });
+      setReplies((data ?? []) as any);
+    })();
+  }, [user]);
+  const hasReplies = replies.length > 0;
 
   useEffect(() => {
     const id = "feedback-placeholder-style";
@@ -109,16 +125,41 @@ const Feedback = () => {
       <PageHeader title="Feedback" />
 
 
-      {/* Heading */}
-      <h1 style={{
-        fontFamily: "'Bricolage Grotesque', 'Helvetica Neue', Helvetica, Arial, sans-serif", fontSize: 26, fontWeight: 700, color: INK,
-        lineHeight: 1.2, margin: 0, padding: "16px 24px 12px",
-      }}>
-        {"\n"}
-      </h1>
+      {/* Tabs (only if user has any admin replies) */}
+      {hasReplies && (
+        <div style={{ padding: "12px 20px 4px", display: "flex", gap: 8 }}>
+          {([
+            { key: "submit", label: "Submit Feedback" },
+            { key: "replies", label: "Feedback Replies" },
+          ] as const).map((t) => {
+            const active = activeTab === t.key;
+            return (
+              <button
+                key={t.key}
+                onClick={() => setSearchParams(t.key === "submit" ? {} : { tab: "replies" })}
+                style={{
+                  flex: 1,
+                  height: 40,
+                  borderRadius: 999,
+                  border: "none",
+                  background: active ? "#423324" : "#F5EFDD",
+                  color: active ? "#fff" : INK,
+                  fontFamily: FF,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                {t.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Form */}
-      <div style={{ padding: "0 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+      {activeTab === "submit" && (
+      <div style={{ padding: "16px 24px 0", display: "flex", flexDirection: "column", gap: 18 }}>{/* was: padding "0 24px" */}
         {/* Topic */}
         <div>
           <label style={labelStyle}>Topic</label>
@@ -241,6 +282,59 @@ const Feedback = () => {
           {"\n"}
         </p>
       </div>
+      )}
+
+      {activeTab === "replies" && (
+        <div style={{ padding: "16px 20px 0", display: "flex", flexDirection: "column", gap: 12 }}>
+          {replies.map((r) => (
+            <div
+              key={r.id}
+              style={{
+                background: CARD,
+                borderRadius: 16,
+                padding: 18,
+                display: "flex",
+                flexDirection: "column",
+                gap: 10,
+              }}
+            >
+              <div>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>
+                  Subject
+                </div>
+                <div style={{ fontFamily: FF, fontSize: 15, fontWeight: 600, color: INK, lineHeight: 1.3 }}>
+                  {r.subject || "—"}
+                </div>
+              </div>
+              <div style={{ height: 1, background: "rgba(0,0,0,0.08)" }} />
+              <div>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 6 }}>
+                  Admin reply
+                </div>
+                <p style={{ margin: 0, fontFamily: FF, fontSize: 14, lineHeight: 1.5, color: INK, whiteSpace: "pre-wrap" }}>
+                  {r.admin_reply}
+                </p>
+              </div>
+              <div>
+                <div style={{ fontFamily: FF, fontSize: 10.5, fontWeight: 700, letterSpacing: "1.4px", textTransform: "uppercase", color: MUTED, marginBottom: 4 }}>
+                  Your message
+                </div>
+                <p
+                  style={{
+                    margin: 0, fontFamily: FF, fontSize: 13, lineHeight: 1.5, color: MUTED,
+                    display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden", whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {r.message}
+                </p>
+              </div>
+              <div style={{ fontFamily: FF, fontSize: 11, fontWeight: 500, letterSpacing: "1px", textTransform: "uppercase", color: MUTED }}>
+                {new Date(r.replied_at).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

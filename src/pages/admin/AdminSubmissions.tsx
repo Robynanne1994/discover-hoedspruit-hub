@@ -210,9 +210,9 @@ const AdminSubmissions = () => {
         user_id: feedback.user_id,
         kind: "feedback_reply",
         status: "unread",
-        title: "We replied to your feedback",
+        title: "Admin has replied to your feedback",
         body: trimmed,
-        link: "/my-notifications",
+        link: "/feedback?tab=replies",
         ref_table: "feedback",
         ref_id: feedback.id,
       });

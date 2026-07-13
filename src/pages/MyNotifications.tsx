@@ -162,6 +162,27 @@ export default function MyNotifications() {
   );
   const actorMap = useFollowRequestActors(followRequestRefIds);
 
+  const feedbackRefIds = useMemo(
+    () => notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string),
+    [notifs]
+  );
+  const [feedbackSubjects, setFeedbackSubjects] = useState<Record<string, string>>({});
+  useEffect(() => {
+    if (feedbackRefIds.length === 0) return;
+    const missing = feedbackRefIds.filter((id) => !(id in feedbackSubjects));
+    if (missing.length === 0) return;
+    (async () => {
+      const { data } = await supabase.from("feedback").select("id,subject").in("id", missing);
+      if (data) {
+        setFeedbackSubjects((prev) => {
+          const next = { ...prev };
+          (data as any[]).forEach((r) => { next[r.id] = r.subject || ""; });
+          return next;
+        });
+      }
+    })();
+  }, [feedbackRefIds, feedbackSubjects]);
+
   const markAllRead = useCallback(async () => {
     if (!user) return;
     const unread = notifs.filter((n) => !n.is_read).map((n) => n.id);
@@ -282,6 +303,7 @@ export default function MyNotifications() {
                     onClick={() => n.link && navigate(n.link)}
                     onRespond={respondFollowRequest}
                     actor={n.ref_id ? actorMap[n.ref_id] : undefined}
+                    feedbackSubject={n.kind === "feedback_reply" && n.ref_id ? feedbackSubjects[n.ref_id] : undefined}
                   />
                 ))}
               </div>
@@ -349,15 +371,18 @@ function NotifCard({
   onClick,
   onRespond,
   actor,
+  feedbackSubject,
 }: {
   n: Notif;
   isUnread: boolean;
   onClick: () => void;
   onRespond?: (n: Notif, accept: boolean) => void;
   actor?: FollowActor;
+  feedbackSubject?: string;
 }) {
   const Icon = iconFor(n.kind);
   const tint = tintFor(n.kind);
+  const isFeedbackReply = n.kind === "feedback_reply";
   const showAvatar = n.kind === "follow_request" && actor;
   const initials = (actor?.display_name || "·")
     .trim()
@@ -380,7 +405,7 @@ function NotifCard({
         cursor: n.link ? "pointer" : "default",
       }}
     >
-      {showAvatar ? (
+      {isFeedbackReply ? null : showAvatar ? (
         <div
           style={{
             width: 44,
@@ -438,6 +463,22 @@ function NotifCard({
         >
           {n.title}
         </p>
+        {isFeedbackReply && feedbackSubject && (
+          <p
+            style={{
+              margin: "4px 0 0",
+              fontFamily: SANS,
+              fontWeight: 500,
+              fontSize: 12,
+              color: MUTED,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Subject: {feedbackSubject}
+          </p>
+        )}
         {n.body && (
           <p
             style={{

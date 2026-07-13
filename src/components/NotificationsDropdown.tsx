@@ -98,6 +98,23 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
   const followRequestRefIds = notifs.filter((n) => n.kind === "follow_request" && n.ref_id).map((n) => n.ref_id as string);
   const actorMap = useFollowRequestActors(followRequestRefIds);
 
+  const feedbackRefIds = notifs.filter((n) => n.kind === "feedback_reply" && n.ref_id).map((n) => n.ref_id as string);
+  const [feedbackSubjects, setFeedbackSubjects] = useState<Record<string, string>>({});
+  useEffect(() => {
+    const missing = feedbackRefIds.filter((id) => !(id in feedbackSubjects));
+    if (missing.length === 0) return;
+    (async () => {
+      const { data } = await supabase.from("feedback").select("id,subject").in("id", missing);
+      if (data) {
+        setFeedbackSubjects((prev) => {
+          const next = { ...prev };
+          (data as any[]).forEach((r) => { next[r.id] = r.subject || ""; });
+          return next;
+        });
+      }
+    })();
+  }, [feedbackRefIds.join(","), feedbackSubjects]);
+
   const onRowClick = async (n: Notif) => {
     setOpen(false);
     if (!n.is_read) {
@@ -345,6 +362,22 @@ export const NotificationsBell = ({ background = CREAM }: Props) => {
                           {timeAgo(n.created_at)}
                         </span>
                       </div>
+                      {n.kind === "feedback_reply" && n.ref_id && feedbackSubjects[n.ref_id] && (
+                        <p
+                          style={{
+                            margin: "3px 0 0",
+                            fontFamily: SANS,
+                            fontSize: 11.5,
+                            fontWeight: 500,
+                            color: MUTED,
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          }}
+                        >
+                          Subject: {feedbackSubjects[n.ref_id]}
+                        </p>
+                      )}
                       {n.body && (
                         <p
                           style={{
