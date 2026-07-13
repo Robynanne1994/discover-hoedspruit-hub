@@ -515,11 +515,24 @@ function NotifCard({
                 fontWeight: 600,
               }}
             >
-              Decline
-            </button>
-          </div>
-        )}
-      </div>
+            Decline
+          </button>
+        </div>
+      )}
+      <span
+        style={{
+          fontFamily: SANS,
+          fontWeight: 400,
+          fontSize: 11,
+          letterSpacing: "1.2px",
+          textTransform: "uppercase",
+          color: MUTED,
+          marginTop: n.kind === "follow_request" && n.ref_id && onRespond ? 8 : 0,
+        }}
+      >
+        {relativeShort(n.created_at)}
+      </span>
+    </div>
       {isUnread && (
         <span
           aria-hidden
