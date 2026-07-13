@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Check, X } from "lucide-react";
+import { Check, X, UserCircle } from "lucide-react";
 import PageHeader from "@/components/PageHeader";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useFollowRequests, useRespondToFollowRequest } from "@/hooks/useFollows";
@@ -10,15 +10,18 @@ const INK = "#1A1A1A";
 const MUTED = "rgba(26,26,26,0.55)";
 const LINE = "rgba(26,26,26,0.10)";
 const SANS = "'Helvetica Neue', Helvetica, Arial, sans-serif";
+const WHITE = "#FFFFFF";
+const PILL_BORDER = "#E8E4DF";
 
-const initialsOf = (name?: string | null) => {
-  if (!name) return "·";
-  return name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((p) => p[0]?.toUpperCase() ?? "")
-    .join("");
+const initialsOf = (displayName?: string | null, username?: string | null) => {
+  if (displayName?.trim()) {
+    const parts = displayName.trim().split(/\s+/);
+    const first = parts[0][0] ?? "";
+    const second = parts[1]?.[0] ?? "";
+    return `${first}${second}`.toUpperCase();
+  }
+  if (username?.trim()) return username.trim()[0].toUpperCase();
+  return "";
 };
 
 const FollowRequests = () => {
