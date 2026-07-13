@@ -495,7 +495,7 @@ function NotifCard({
                 height: 34,
                 padding: "0 16px",
                 borderRadius: 999,
-                background: INK,
+                background: BROWN,
                 color: "#fff",
                 border: "none",
                 cursor: "pointer",
