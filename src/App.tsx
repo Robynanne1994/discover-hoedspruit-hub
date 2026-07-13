@@ -214,25 +214,6 @@ const App = () => (
                 <Route path="moderated-users" element={<AdminModeratedUsers />} />
                 <Route path="faqs" element={<AdminFAQs />} />
               </Route>
-              <Route path="/business/sign-in" element={<BusinessSignIn />} />
-              <Route path="/business/start" element={<BusinessStart />} />
-              <Route path="/for-business" element={<BusinessStart />} />
-              <Route path="/plans" element={<BusinessStart />} />
-              <Route path="/business/sign-up" element={<BusinessSignUp />} />
-              <Route path="/business/claim" element={<BusinessClaim />} />
-              <Route element={<BusinessGate />}>
-                <Route path="/business/subscribe" element={<BusinessSubscribe />} />
-                <Route path="/business/dashboard" element={<BusinessDashboard />} />
-                <Route path="/business/listing" element={<BusinessListing />} />
-                <Route path="/business/specials" element={<BusinessSpecials />} />
-                <Route path="/business/specials/new" element={<BusinessSpecialForm mode="new" />} />
-                <Route path="/business/specials/:id" element={<BusinessSpecialForm mode="edit" />} />
-                <Route path="/business/events" element={<BusinessEvents />} />
-                <Route path="/business/events/new" element={<BusinessEventForm mode="new" />} />
-                <Route path="/business/events/:id" element={<BusinessEventForm mode="edit" />} />
-                <Route path="/business/feature/:type/:id" element={<BusinessFeature />} />
-                <Route path="/business/billing" element={<BusinessBilling />} />
-              </Route>
               <Route path="*" element={<NotFound />} />
               </Routes>
               </main>
